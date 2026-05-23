@@ -8,7 +8,7 @@ import type { GetRequestRecipe } from '@/shared/libs/api-client/rules/types';
 
 export interface RecipeParams {
   serverId: string;
-  filePath: string;
+  filePath?: string;
   line?: number;
 }
 
