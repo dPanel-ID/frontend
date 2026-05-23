@@ -1,5 +1,10 @@
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
+import {
+  LS_ORGANIZATION_ID,
+  normalizeWorkspaceOrganizationId,
+} from '@/shared/libs/api-client/config';
+
 import { useAppLogsModel } from '../-model/app-logs';
 
 export default function useLogsDownloadUsecase() {
@@ -9,7 +14,9 @@ export default function useLogsDownloadUsecase() {
   ]);
 
   const handleUsecase = useHandler(() => {
-    const orgId = window.localStorage.getItem('organization_id');
+    const orgId = normalizeWorkspaceOrganizationId(
+      window.localStorage.getItem(LS_ORGANIZATION_ID),
+    );
     if (!logFilename || !logMetadata || !orgId) return;
 
     const { appName, serverId, userName } = logMetadata;

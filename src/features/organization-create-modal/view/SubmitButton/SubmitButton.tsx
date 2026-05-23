@@ -1,10 +1,13 @@
 import { LoaderCircleIcon } from 'lucide-react';
 
+import { useAuthEmit } from '@/services/auth/model/events';
 import { useModalEmit } from '@/services/modal/model/event';
 import { useToaster } from '@/services/toaster';
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { organizationToWorkspaceId } from '@/shared/api/-dtos';
 import { ApiOrganization } from '@/shared/api';
+import { LS_ORGANIZATION_ID } from '@/shared/libs/api-client/config';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 
 import { useDcContext } from '../../model';
@@ -14,6 +17,7 @@ export default function SubmitButton() {
 
   const [openToaster] = useToaster();
   const emitModal = useModalEmit();
+  const authEmit = useAuthEmit();
   const t = useDevetekTranslations();
 
   const handleClick = form.handleSubmit(async (values) => {
@@ -37,6 +41,12 @@ export default function SubmitButton() {
       return;
     }
 
+    const workspaceId =
+      response.workspace_id || organizationToWorkspaceId(response.id);
+    if (workspaceId) {
+      localStorage.setItem(LS_ORGANIZATION_ID, workspaceId);
+    }
+
     emitModal('%%modal/close', null);
 
     openToaster({
@@ -44,17 +54,14 @@ export default function SubmitButton() {
       message: t('modal.createTeam.toaster.success', { name: values.name }),
     });
 
+    authEmit('%%auth/user-profile::refresh', null);
     props.onSubmitSuccess?.();
   });
 
   const isSubmitting = form.formState.isSubmitting;
 
   return (
-    <Button
-      className="w-full"
-      onClick={handleClick}
-      disabled={isSubmitting}
-    >
+    <Button className="w-full" onClick={handleClick} disabled={isSubmitting}>
       {isSubmitting ? (
         <LoaderCircleIcon className="animate-spin" />
       ) : (

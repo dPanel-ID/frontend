@@ -198,7 +198,7 @@ const SectionServer = () => {
   ]);
 
   const handleClickAddNewServer = () => {
-    window.open('/servers/create', '_blank')?.focus();
+    window.open(`${import.meta.env.BASE_URL}servers/create`, '_blank')?.focus();
   };
 
   const totalPage =

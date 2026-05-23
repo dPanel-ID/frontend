@@ -7,18 +7,20 @@ import { apiDoPost } from '../libs/api-client';
 // =============================================================================
 
 export interface RecipeParams {
-  email: string;
+  username: string;
+  email?: string;
   password: string;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
-  const { email, password } = params;
+  const { username, email, password } = params;
 
   return {
     method: 'POST',
     url: `/v1/auth/login`,
     data: {
-      email,
+      username,
+      email: email ?? username,
       password,
     },
   };

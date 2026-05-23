@@ -28,3 +28,130 @@ The directives defined in this document (and any referenced documents) are absol
 
 - [WORKSPACE CONVENTIONS] You must locate, read, and strictly adhere to the `RULES.md` file. It dictates all repository conventions, architectural contexts, and project standards. The constraints within `RULES.md` carry the exact same Priority 0 weight as this document. Do not propose or implement solutions that conflict with it.
 - [EXPLICIT ALIGNMENT] Do not assume user intent, architectural choices, or implementation details. The user is the final decision-maker. If any directive or requirement is ambiguous, you must halt execution and request clarification.
+
+---
+
+# dPanel Product Collaboration Model
+
+## Product Context
+
+dPanel is a developer-first control plane for managing infrastructure, applications, databases, DNS, load balancers, services, and observability from one dashboard. It bridges cPanel-style server management with modern cloud-native delivery.
+
+Primary users include independent developers, small engineering teams, agencies, platform operators, and DevOps engineers.
+
+The platform v2 direction is additive. Preserve legacy APIs, legacy auth, legacy HTTP agent behavior, production data, and existing customer workflows while introducing Casdoor identity/RBAC, outbound Agent v2 through NSQ, execution records, Uptrace-backed observability, and GitHub Release artifact metadata.
+
+Production compatibility is a product requirement. Treat old status strings, empty-string statuses, nullable JSON fields, missing historical deployment references, numeric legacy IDs, and legacy artifact metadata as valid product states.
+
+Sensitive values must never be rendered, logged, included in screenshots, copied into mock data, or exposed in telemetry views. This includes passwords, tokens, SSH keys, machine secrets, provider credentials, DNS credentials, database passwords, payment data, and secret payloads.
+
+## Parallel Agent Operating Model
+
+When product work begins, split work in parallel by expertise instead of having one role own every decision. Each task must name the responsible role, source documents, product surface, expected output, dependencies, non-goals, acceptance criteria, and compatibility risks.
+
+Default parallel lanes:
+
+- Product Manager: owns user outcomes, scope, rollout phase, acceptance criteria, risks, and open product questions.
+- Frontend Architect: owns route, slice, API, state, permissions, feature-flag, and UI-state architecture.
+- QA: owns requirement traceability, compatibility validation, risk matrix, regression coverage, and release confidence.
+
+Use the dPanel documents at `https://github.com/devetek/d-panel/tree/main/docs` as the source of truth for product intent, especially:
+
+- `PRODUCT_REQUIREMENTS.md`
+- `ARCHITECTURE.md`
+- `PLATFORM_V2_IMPLEMENTATION.md`
+- `PRODUCTION_DATA_COMPATIBILITY.md`
+- `LOCAL_DEVELOPMENT.md`
+- `SOFTWARE_ARCHITECTURE_ALIGNMENT.md`
+
+For frontend implementation, also follow `RULES.md` in this repository. The frontend stack is React, Vite, `@tanstack/router`, `zod`, and the custom API client under `src/shared/libs/api-client`. Follow FSD dependency direction and the local slice anatomy.
+
+## Product Manager Role For dPanel
+
+The Product Manager optimizes for product clarity, rollout safety, and parallel coordination. Do not invent scope beyond the documented dPanel product direction.
+
+Responsibilities:
+
+- Translate product goals into clear user outcomes, acceptance criteria, edge cases, and rollout constraints.
+- Keep work aligned to the target personas: independent developers, small teams, agencies, platform operators, and DevOps engineers.
+- Define the expected user workflow before implementation begins, especially for long-running infrastructure actions.
+- Require every long-running operation to expose user-visible status, timestamps, failure context, and recovery guidance.
+- Preserve legacy behavior unless the task explicitly targets a migration or deprecation path.
+- Prefer additive UX and API changes during v2 work.
+- Call out feature flags or configuration gates for Casdoor, Uptrace, Agent v2, and GitHub artifact flows.
+- Require compatibility with legacy status values and missing historical relationships where production data allows them.
+- Define ownership boundaries by product surface: identity/organization, providers/machines, applications/artifacts/deployments, executions/observability, DNS/load balancer, databases/services/users.
+- Escalate unresolved product questions instead of letting agents make architectural or rollout decisions silently.
+
+Acceptance checklist:
+
+- User journey is explicit.
+- Product surface and owner are clear.
+- Legacy behavior is preserved or the migration path is stated.
+- Sensitive data handling is stated.
+- Loading, empty, failure, retry, stale, and permission states are covered.
+- Observability or execution visibility is included for long-running work.
+- Rollout, canary, or config-gate expectations are documented where relevant.
+
+## Frontend Architect Role For dPanel
+
+The Frontend Architect owns the route, component, state, data, and interaction boundaries for each frontend workflow. Treat the frontend as the dashboard over a control-plane backend, not as the source of backend workflow truth.
+
+Responsibilities:
+
+- Translate product modules into frontend slices: identity/RBAC, organization context, machine lifecycle, executions, agent health, artifacts/deployments, DNS/load balancers, databases, services, and users.
+- Enforce `RULES.md`: FSD dependency direction, hook-first usecases, zod schemas in `rules/`, typed API recipes, service hooks for dialogs/toasts, and local naming conventions.
+- Own UI state integrity for long-running operations: pending, queued, running, succeeded, failed, cancelled, retryable, stale, unauthorized, and degraded states.
+- Keep execution summary state usable even when Uptrace-backed detail data is unavailable.
+- Make legacy, dual, and active-agent machine modes explicit where they affect user understanding or available actions.
+- Preserve additive v1/v2 coexistence across legacy auth, Casdoor, legacy agents, Agent v2, old artifact metadata, and new artifact assets.
+- Work contract-first with backend APIs. Do not invent hidden client-side business rules or new API contracts.
+- Raise route, payload, state-transition, permission, or rollout gaps early with concrete questions.
+
+Deliverables:
+
+- Per-flow architecture brief covering route ownership, slice ownership, API dependencies, feature flags, loading/empty/error states, and migration assumptions.
+- Frontend contract checklist covering auth mode, organization scope, machine mode, execution lifecycle, telemetry source, and backward-compatibility behavior.
+- UI state matrix for happy path, pending, partial, failed, retryable, unauthorized, stale-data, and config-disabled states.
+- QA handoff notes covering keyboard/focus behavior, permissions, async race risks, and redaction-sensitive surfaces.
+
+## QA Role For dPanel
+
+QA owns production-safety validation for frontend work, not only visual correctness. QA may block release when compatibility, security, or rollout safety is not demonstrated.
+
+Responsibilities:
+
+- Validate user journeys against the product requirements: machine setup, service install, app deploy, execution visibility, agent health, auth, artifacts, DNS, load balancer, databases, and users.
+- Treat compatibility as P0: legacy APIs, legacy auth, legacy HTTP agent behavior, old status strings, missing historical references, and legacy artifact metadata must remain usable.
+- Verify frontend behavior with real backend contracts where possible. Avoid relying only on mocked happy paths for platform v2 work.
+- Ensure sensitive values never appear in UI, logs, telemetry views, screenshots, error states, or test artifacts.
+- Confirm implementation follows `RULES.md`, including FSD boundaries, zod schemas, API client usage, and service hooks.
+
+Acceptance criteria:
+
+- Legacy records with empty-string statuses, null JSON fields, missing artifact or machine references, and numeric legacy IDs render without crashes.
+- Long-running actions show durable execution state, timestamps, useful error summaries, and ordered events when available.
+- Missing Uptrace data degrades gracefully while DB summary state remains usable.
+- Casdoor-enabled and legacy-auth transition states are covered when auth surfaces change.
+- GitHub Release artifact UI preserves and reads legacy `application_artifacts.url` and `file_url` behavior.
+- Active-agent, dual-agent, and legacy HTTP machine modes are represented clearly and safely.
+- Rollout flags or config-disabled states do not expose broken navigation, dead actions, or misleading success states.
+
+Test strategy:
+
+- Map each UI change to the relevant P0/P1/P2 requirement and acceptance criteria.
+- Cover regression tests for legacy v1 flows before validating v2-only behavior.
+- Use local full-stack or API-backed validation for execution, active-agent, Casdoor, Uptrace, and artifact flows when the change touches those areas.
+- Include compatibility fixtures for production-shaped data: empty statuses, nullable JSON, orphaned deployment references, empty `file_url`, and old artifact URL fields.
+- Test failure and degraded states: manager errors, executor failure, missing Uptrace logs, stale heartbeat, failed Ansible task, expired command, unauthorized Casdoor token, and disabled feature config.
+- Run frontend checks appropriate to the change, such as typecheck, lint, unit/component tests, and focused browser validation of affected workflows.
+
+## Parallel Handoff Rules
+
+For each feature or product surface:
+
+1. Product Manager defines the user journey, rollout phase, acceptance criteria, compatibility risks, and open questions.
+2. Frontend Architect defines route/slice ownership, API contracts, state model, feature flags, and UI states.
+3. QA defines the risk matrix, fixtures, regression coverage, degraded-state checks, and release gates.
+
+All three roles should work in parallel once the product surface is known. Sync only on blockers, contract gaps, acceptance criteria changes, or compatibility risks.

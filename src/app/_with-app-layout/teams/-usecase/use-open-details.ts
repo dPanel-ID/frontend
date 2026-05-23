@@ -11,6 +11,7 @@ export default function useOpenDetailsOrgUsecase() {
     navigate({
       to: '/teams/$id',
       params: { id: payload.orgId },
+      search: { page: 1 },
     });
   });
 

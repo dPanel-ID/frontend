@@ -1,6 +1,7 @@
 import type z from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
+import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
 
 import type { DTOs } from '@/shared/api';
 import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
@@ -35,7 +36,7 @@ export const toServerCard = createAdapter<DTOs.MachineV1, ServerCard>((raw) =>
       name: raw.hostname,
     },
     ownership: {
-      owner: raw.user?.username,
+      owner: resolveOwnershipOwner(raw),
       team: raw.organization?.name,
     },
     ssh: {
@@ -72,7 +73,7 @@ export const toServerDetail = createAdapter<DTOs.MachineV1, ServerDetail>(
         name: raw.hostname,
       },
       ownership: {
-        owner: raw.user?.username,
+        owner: resolveOwnershipOwner(raw),
         team: raw.organization?.name,
       },
       secret: {

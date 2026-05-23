@@ -26,6 +26,14 @@ export interface Dto {
   router?: string;
   user?: DTOs.User;
   github: DTOs.Github;
+  active_workspace?: string;
+  workspaces?: Array<{
+    id: string;
+    type: string;
+    name: string;
+    local_organization_id?: string;
+    roles?: string[];
+  }>;
 }
 
 export function useGet(params?: WithApiGetOptions) {

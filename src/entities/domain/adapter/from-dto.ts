@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
+import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
 
 import type { DTOs } from '@/shared/api';
 import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
@@ -14,7 +15,7 @@ export const toDomainCard = createAdapter<DTOs.DomainV1, DomainCard>((raw) => {
   return schemaDomainCard.parse({
     id: String(raw.id),
     ownership: {
-      owner: raw.user?.fullname || raw.user?.username || raw.user?.email,
+      owner: resolveOwnershipOwner(raw),
       team: raw.organization?.name,
     },
     timestamp: {
@@ -34,10 +35,7 @@ export const toDomainDetails = createAdapter<
   return schemaDomainDetails.parse({
     id: String(rawDomain.id),
     ownership: {
-      owner:
-        rawDomain.user?.fullname ||
-        rawDomain.user?.username ||
-        rawDomain.user?.email,
+      owner: resolveOwnershipOwner(rawDomain),
       team: rawDomain.organization?.name,
     },
     timestamp: {

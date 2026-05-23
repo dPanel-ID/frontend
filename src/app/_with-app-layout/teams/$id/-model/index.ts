@@ -8,10 +8,6 @@ export const [FilterProvider, useFilter] = buildContext('Filter', () => {
   const searchParams = useSearch({ from: '/_with-app-layout/teams/$id/' });
   const navigate = useNavigate();
 
-  const [searchQuery, setSearchQuery] = useState(() => {
-    return searchParams.q || '';
-  });
-
   const [pagination, setPagination] = useState(() => {
     const page = Number(searchParams.page) || 1;
     return page > 0 ? page : 1;
@@ -22,16 +18,15 @@ export const [FilterProvider, useFilter] = buildContext('Filter', () => {
       from: '/teams/$id',
       to: '.',
       search: {
-        q: searchQuery,
         page: pagination,
       },
     });
-  }, [navigate, pagination, searchQuery]);
+  }, [navigate, pagination]);
 
   return {
-    searchQuery,
+    searchQuery: '',
     pagination,
-    setSearchQuery,
+    setSearchQuery: (_value: string) => {},
     setPagination,
   };
 });

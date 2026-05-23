@@ -5,6 +5,7 @@ import { useToaster } from '@/services/toaster';
 
 import {
   LS_ORGANIZATION_ID,
+  normalizeWorkspaceOrganizationId,
   X_AUTH_ORGANIZATION_ID,
 } from '@/shared/libs/api-client/config';
 import { apiClient } from '@/shared/libs/api-client/lib/client';
@@ -126,7 +127,9 @@ export default function useToolsActionsUsecase() {
 
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
-      const organizationId = localStorage.getItem(LS_ORGANIZATION_ID) || null;
+      const organizationId = normalizeWorkspaceOrganizationId(
+        localStorage.getItem(LS_ORGANIZATION_ID),
+      );
 
       if (organizationId) {
         xhr.setRequestHeader(X_AUTH_ORGANIZATION_ID, organizationId);

@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
+import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
 
 import type { DTOs } from '@/shared/api';
 import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
@@ -29,7 +30,7 @@ export const toLoadBalancerCard = createAdapter<
     domain: raw.domain,
     description: raw.name,
     ownership: {
-      owner: raw.user?.fullname || raw.user?.username,
+      owner: resolveOwnershipOwner(raw),
       team: raw.organization?.name,
     },
     timestamp: {
@@ -52,7 +53,7 @@ export const toLoadBalancerDetails = createAdapter<
     state: ctorState(raw),
     domain: raw.domain,
     ownership: {
-      owner: raw.user?.fullname || raw.user?.username,
+      owner: resolveOwnershipOwner(raw),
       team: raw.organization?.name,
     },
     timestamp: {

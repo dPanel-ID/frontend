@@ -25,8 +25,14 @@ export const [MembersDataModelProvider, useMembersDataModel] = buildSelector(
     members: useAdapter(response, (raw) => ({
       list: raw.org_peoples ?? [],
       pagination: raw.pagination,
-      orgName: raw.org_peoples?.[0]?.organization?.name ?? null,
-      orgDescription: raw.org_peoples?.[0]?.organization?.description ?? null,
+      orgName:
+        raw.organization?.name ??
+        raw.org_peoples?.[0]?.organization?.name ??
+        null,
+      orgDescription:
+        raw.organization?.description ??
+        raw.org_peoples?.[0]?.organization?.description ??
+        null,
     })),
     orgId,
     refresh,

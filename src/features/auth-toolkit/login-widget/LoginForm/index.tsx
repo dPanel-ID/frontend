@@ -58,7 +58,7 @@ export default function LoginForm() {
         </div>
 
         <div className="mt-4 w-full flex flex-col gap-y-2">
-          <LoginField form={form} formName="email" />
+          <LoginField form={form} formName="username" />
           <LoginField
             form={form}
             formName="password"

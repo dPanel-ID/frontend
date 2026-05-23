@@ -8,6 +8,7 @@ export interface TeamsPopupProps {
 
   onClickAddNewTeams: () => void;
   onClickTeam: (teamId: string) => void;
+  onClickTeamDetails: (teamId: string) => void;
   onClickPersonal: () => void;
 }
 
@@ -15,6 +16,7 @@ export interface TeamsListProps {
   teams: TeamPopupItem[];
   selectedTeamId?: string | null;
   onClickTeam: (teamId: string) => void;
+  onClickTeamDetails: (teamId: string) => void;
 }
 
 export interface TeamActionsOptionsProps {

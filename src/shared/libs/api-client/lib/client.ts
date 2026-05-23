@@ -3,7 +3,11 @@ import axios, { AxiosError, AxiosHeaders } from 'axios';
 
 import { isBrowser } from '../../browser/environment';
 import { iife } from '../../browser/fn';
-import { LS_ORGANIZATION_ID, X_AUTH_ORGANIZATION_ID } from '../config';
+import {
+  LS_ORGANIZATION_ID,
+  X_AUTH_ORGANIZATION_ID,
+  normalizeWorkspaceOrganizationId,
+} from '../config';
 import type { ApiClientResponse, BaseResponse } from '../rules/types';
 
 import { BaseResponseError } from './error';
@@ -17,7 +21,19 @@ axiosClient.interceptors.request.use((config) => {
   const organizationId = iife(() => {
     if (!isBrowser()) return null;
 
-    return localStorage.getItem(LS_ORGANIZATION_ID) || null;
+    const storedOrganizationId =
+      localStorage.getItem(LS_ORGANIZATION_ID) || null;
+    const normalizedOrganizationId =
+      normalizeWorkspaceOrganizationId(storedOrganizationId);
+
+    if (
+      storedOrganizationId &&
+      normalizedOrganizationId !== storedOrganizationId
+    ) {
+      localStorage.setItem(LS_ORGANIZATION_ID, normalizedOrganizationId!);
+    }
+
+    return normalizedOrganizationId;
   });
 
   if (organizationId) {

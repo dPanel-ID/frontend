@@ -44,7 +44,7 @@ export default function LoginField<F extends FieldValues, K extends FormKey<F>>(
 
       <Input
         {...form.register(formName)}
-        type={formName}
+        type={formName === 'password' ? 'password' : 'text'}
         className="w-full"
         variant="3d"
       />
