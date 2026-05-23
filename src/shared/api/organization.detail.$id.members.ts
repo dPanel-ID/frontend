@@ -36,6 +36,15 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
 
 export interface Dto {
   org_peoples?: DTOs.OrganizationPeopleV1[];
+  organization?: DTOs.OrganizationV1;
+  workspace_id?: string;
+  workspace?: {
+    id: string;
+    type: string;
+    name: string;
+    local_organization_id?: string;
+    roles?: string[];
+  };
   pagination: DTOs.Pagination;
 }
 

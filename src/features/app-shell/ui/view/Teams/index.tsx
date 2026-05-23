@@ -1,10 +1,13 @@
 import { useNavigate } from '@tanstack/react-router';
 
-import { useAuthLoggedIn } from '@/services/auth/usecase';
-
 import type { TeamPopupItem } from '@/features/app-shell/rules/types';
 
-import { ApiOrganizationPeople } from '@/shared/api';
+import { useOrganizationCreateModal } from '@/features/organization-create-modal';
+import { ApiOrganization } from '@/shared/api';
+import {
+  organizationToWorkspaceId,
+  workspaceToOrganizationId,
+} from '@/shared/api/-dtos';
 import { iife } from '@/shared/libs/browser/fn';
 import {
   Popover,
@@ -23,15 +26,18 @@ export default function Teams(props: TeamsProps) {
   const { collapsed } = props;
 
   const navigate = useNavigate();
+  const [openOrganizationCreateModal] = useOrganizationCreateModal();
 
-  const { userProfile } = useAuthLoggedIn();
-  const [resOrganizationPeople] = ApiOrganizationPeople.Find.useGet({
+  const [resOrganizations, refreshOrganizations] = ApiOrganization.Find.useGet({
     page: 1,
     pageSize: 100,
-    userId: userProfile.id,
   });
 
-  const selectedTeamId = localStorage.getItem('organization_id') || null;
+  const selectedTeamId = iife(() => {
+    const stored = localStorage.getItem('organization_id') || null;
+    if (!stored) return null;
+    return organizationToWorkspaceId(stored);
+  });
 
   const handleClickSelectTeam = (teamId: string) => {
     if (selectedTeamId === teamId) {
@@ -49,30 +55,44 @@ export default function Teams(props: TeamsProps) {
   };
 
   const handleClickAddNewTeams = () => {
-    navigate({ to: '/teams' });
+    openOrganizationCreateModal({
+      onSubmitSuccess: () => {
+        refreshOrganizations();
+        window.location.reload();
+      },
+    });
     return;
   };
 
+  const handleClickTeamDetails = (teamId: string) => {
+    navigate({
+      to: '/teams/$id',
+      params: { id: workspaceToOrganizationId(teamId) },
+      search: { page: 1 },
+    });
+  };
+
   const teams: TeamPopupItem[] = iife(() => {
-    if (resOrganizationPeople.$status !== 'success') return [];
+    if (resOrganizations.$status !== 'success') return [];
 
-    return (resOrganizationPeople.org_peoples ?? []).map((org) => {
-      const { organization, organization_id } = org;
+    return (resOrganizations.organizations ?? []).flatMap((org) => {
+      if (!org.id) return [];
 
-      return {
-        name: organization!.name!,
-        id: organization_id!,
-      };
+      return [
+        {
+          name: org.name || org.id,
+          id: organizationToWorkspaceId(org.id),
+        },
+      ];
     });
   });
 
   const teamName = iife(() => {
-    if (resOrganizationPeople.$status !== 'success') return undefined;
+    if (resOrganizations.$status !== 'success') return undefined;
 
-    const { organization } =
-      resOrganizationPeople.org_peoples?.find(
-        (org) => org.organization_id === selectedTeamId,
-      ) ?? {};
+    const organization = resOrganizations.organizations?.find(
+      (org) => org.id && organizationToWorkspaceId(org.id) === selectedTeamId,
+    );
     if (!organization) return undefined;
 
     return organization.name!;
@@ -94,6 +114,7 @@ export default function Teams(props: TeamsProps) {
           onClickAddNewTeams={handleClickAddNewTeams}
           selectedTeamId={selectedTeamId}
           onClickTeam={handleClickSelectTeam}
+          onClickTeamDetails={handleClickTeamDetails}
           onClickPersonal={handleClickPersonal}
         />
       </PopoverContent>

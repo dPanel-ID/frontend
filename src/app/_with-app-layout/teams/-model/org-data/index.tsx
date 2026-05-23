@@ -1,4 +1,4 @@
-import { ApiOrganizationPeople } from '@/shared/api';
+import { ApiOrganization } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
 
@@ -10,7 +10,7 @@ export const [OrgDataModelProvider, useOrgDataModel] = buildSelector(
 )(() => {
   const { searchQuery, currentPage } = useFilterModel();
 
-  const [response, refresh] = ApiOrganizationPeople.Find.useGet({
+  const [response, refresh] = ApiOrganization.Find.useGet({
     name: searchQuery,
     page: currentPage,
     pageSize: 10,
@@ -22,7 +22,7 @@ export const [OrgDataModelProvider, useOrgDataModel] = buildSelector(
 
   return {
     organizations: useAdapter(response, (raw) => ({
-      list: raw.org_peoples?.flatMap((p) => (p.organization ? [p.organization] : [])) ?? [],
+      list: raw.organizations ?? [],
       pagination: raw.pagination,
     })),
     refresh,

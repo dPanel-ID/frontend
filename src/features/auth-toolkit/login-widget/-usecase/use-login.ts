@@ -34,10 +34,10 @@ export default function useLoginUsecase() {
 
   const handleLoginTraditional = useHandler(
     async (payload: LoginTraditional) => {
-      const { email, password } = payload;
+      const { username, password } = payload;
 
       const response = await ApiUser.Login.doPost({
-        email,
+        username,
         password,
       });
 
@@ -52,7 +52,7 @@ export default function useLoginUsecase() {
       pushToast({
         variant: 'error',
         title: t('toaster.loginByEmail.error', {
-          email,
+          email: username,
         }),
         message: response.error.message,
       });

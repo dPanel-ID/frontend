@@ -4,6 +4,7 @@ import {
   CircleDashedIcon,
   CircleXIcon,
   ClockIcon,
+  HourglassIcon,
   TrashIcon,
 } from 'lucide-react';
 
@@ -14,6 +15,13 @@ export const SERVER_STATE_METADATA: Record<
   SchemaServerParts.State['status'],
   ServerStateMetadata
 > = {
+  pending: {
+    icon: HourglassIcon,
+    color: '--color-gray-500',
+    i18n: {
+      statusLabel: 'common.terms.pending',
+    },
+  },
   ready: {
     icon: CheckCircleIcon,
     color: '--color-green-600',

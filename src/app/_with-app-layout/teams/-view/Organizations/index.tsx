@@ -1,7 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { PlusCircleIcon } from 'lucide-react';
 
-import { useAuthLoggedIn } from '@/services/auth';
 import { useDialog } from '@/services/dialog';
 import { useToaster } from '@/services/toaster';
 
@@ -25,7 +24,6 @@ import { useFilter } from '../../-model/filter';
 import { OrganizationAction } from '../../-presentation/OrganizationAction';
 
 export default function Organizations() {
-  const userId = useAuthLoggedIn().userProfile.id;
   const [openToaster] = useToaster();
   const [openDialog] = useDialog();
   const navigate = useNavigate();
@@ -35,7 +33,6 @@ export default function Organizations() {
 
   const [response, refresh] = ApiOrganization.Find.useGet({
     name: searchQuery,
-    userId,
     page: pagination,
   });
 
@@ -46,6 +43,7 @@ export default function Organizations() {
         params: {
           id: orgID,
         },
+        search: { page: 1 },
       });
   };
 

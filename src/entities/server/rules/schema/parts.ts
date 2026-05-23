@@ -30,6 +30,7 @@ export const ssh = z.object({
 export type State = z.output<typeof state>;
 export const state = SchemaCommon.createState(
   [
+    'pending',
     'ready',
     'progress',
     'failed',

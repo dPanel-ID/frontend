@@ -1,6 +1,11 @@
 import { useMemo, useState } from 'react';
 
-import { CheckIcon, CircleUserRoundIcon, PlusIcon } from 'lucide-react';
+import {
+  CheckIcon,
+  CircleUserRoundIcon,
+  PlusIcon,
+  UsersIcon,
+} from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -17,7 +22,8 @@ import type {
 } from './types';
 
 const TeamsList = (props: TeamsListProps) => {
-  const { teams, selectedTeamId, onClickTeam } = props;
+  const { teams, selectedTeamId, onClickTeam, onClickTeamDetails } = props;
+  const t = useDevetekTranslations();
 
   return (
     <div className="flex flex-col max-h-[40svh] overflow-hidden overflow-y-auto pb-2">
@@ -28,19 +34,42 @@ const TeamsList = (props: TeamsListProps) => {
           onClickTeam(team.id);
         };
 
-        return (
-          <button
-            key={id}
-            className="p-3 cursor-pointer hover:bg-primary/10 transition-all flex items-center justify-between w-full text-left"
-            onClick={handleClick}
-          >
-            <div className="flex flex-col">
-              <p className="text-sm text-primary font-semibold">{name}</p>
-              <p className="text-xs italic text-primary/70">Team ID: {id}</p>
-            </div>
+        const handleClickDetails = () => {
+          onClickTeamDetails(team.id);
+        };
 
-            {id === selectedTeamId && <CheckIcon className="size-4" />}
-          </button>
+        return (
+          <div
+            key={id}
+            className="p-2 hover:bg-primary/10 transition-all flex items-center justify-between gap-2 w-full text-left"
+          >
+            <button
+              type="button"
+              className="min-w-0 flex-1 cursor-pointer text-left"
+              onClick={handleClick}
+            >
+              <div className="flex flex-col min-w-0">
+                <p className="text-sm text-primary font-semibold truncate">
+                  {name}
+                </p>
+                <p className="text-xs italic text-primary/70 truncate">
+                  Team ID: {id}
+                </p>
+              </div>
+            </button>
+
+            <div className="flex items-center gap-1 shrink-0">
+              {id === selectedTeamId && <CheckIcon className="size-4" />}
+              <button
+                type="button"
+                className="size-8 rounded flex items-center justify-center cursor-pointer hover:bg-primary/10 text-primary/70"
+                title={t('common.actions.details')}
+                onClick={handleClickDetails}
+              >
+                <UsersIcon className="size-4" />
+              </button>
+            </div>
+          </div>
         );
       })}
     </div>
@@ -100,6 +129,7 @@ export default function TeamsPopup(props: TeamsPopupProps) {
     onClickAddNewTeams,
     onClickPersonal,
     onClickTeam,
+    onClickTeamDetails,
   } = props;
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -157,6 +187,7 @@ export default function TeamsPopup(props: TeamsPopupProps) {
         teams={filteredTeams}
         selectedTeamId={selectedTeamId}
         onClickTeam={onClickTeam}
+        onClickTeamDetails={onClickTeamDetails}
       />
 
       <TeamActionsOptions actions={actions} onClickAction={handleClickAction} />

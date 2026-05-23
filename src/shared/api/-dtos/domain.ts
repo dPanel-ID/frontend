@@ -9,6 +9,9 @@ export interface DomainV1 {
   is_public?: boolean;
   origin_dns_id?: string;
   credential?: Record<string, any>;
+  owner?: number;
+  organization_id?: string;
+  user_id?: number;
   created_at?: Date;
   updated_at?: Date;
   installer_status?: string;
