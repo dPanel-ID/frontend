@@ -330,10 +330,6 @@
         }
       }
     },
-    "runningServices": {
-      "headerTitle": "Running Services",
-      "headerDesc": "See all running services for this server."
-    },
     "loadBalancers": {
       "headerTitle": "Load Balancers",
       "headerDesc": "View your load balancers here.",
@@ -631,10 +627,12 @@
     "loadBalancerDelete": {
       "success": "Successfully deleted load balancer « {loadBalancer} ».",
       "error": "Failed to delete load balancer « {loadBalancer} »!"
-    },    "loadBalancerRestore": {
+    },
+    "loadBalancerRestore": {
       "success": "Successfully restored load balancer « {loadBalancer} ».",
       "error": "Failed to restore load balancer « {loadBalancer} »!"
-    },    "loadBalancerCreate": {
+    },
+    "loadBalancerCreate": {
       "success": "Load balancer created successfully.",
       "error": "Failed to create load balancer."
     },

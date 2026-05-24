@@ -49,22 +49,24 @@ export default function DeletePopup(props: UploadPopupProps) {
   return (
     <Dropdown
       gapInPx={4}
-      className="rounded-xl"
+      className="rounded-lg border bg-card shadow-lg"
       refTarget={refTargetCached}
       alignment="right"
       position="bottom"
       isOpen={isDropdownUploadOpen}
       onClickOutside={() => setIsDropdownUploadOpen(false)}
     >
-      <div className="p-4 w-[210px] flex flex-col items-center overflow-hidden">
-        <FileWarningIcon className="text-primary size-10 mb-2" />
+      <div className="flex w-[240px] flex-col items-center overflow-hidden p-4">
+        <div className="mb-3 flex size-10 items-center justify-center rounded-lg border bg-background">
+          <FileWarningIcon className="size-5 text-muted-foreground" />
+        </div>
 
-        <p className="font-medium text-primary text-sm text-center">
+        <p className="text-center text-sm font-medium text-primary">
           Are you sure you want to delete the following {selectedItem?.kind}:
         </p>
 
-        <div className="overflow-hidden px-2 py-1 my-2 max-w-full rounded bg-primary/5">
-          <p className="w-full text-primary text-sm text-center overflow-hidden overflow-ellipsis">
+        <div className="my-3 max-w-full overflow-hidden rounded-md border bg-background px-2 py-1">
+          <p className="w-full overflow-hidden text-ellipsis text-center text-sm text-primary">
             {selectedItem?.name}
           </p>
         </div>

@@ -10,10 +10,12 @@ export function PlaceholderState(props: PlaceholderStateProps) {
   switch (variant) {
     case 'initial':
       return (
-        <div className="w-full h-full flex flex-col items-center justify-center">
-          <RocketIcon className="size-20 text-primary opacity-30" />
+        <div className="flex h-full w-full flex-col items-center justify-center px-6 text-center">
+          <div className="flex size-16 items-center justify-center rounded-lg border border-dashed bg-background">
+            <RocketIcon className="size-8 text-muted-foreground" />
+          </div>
 
-          <p className="mt-4 text-primary/70">
+          <p className="mt-4 text-sm font-medium text-muted-foreground">
             Please select a directory first.
           </p>
         </div>
@@ -21,7 +23,7 @@ export function PlaceholderState(props: PlaceholderStateProps) {
 
     case 'loading':
       return (
-        <div className="flex items-center justify-center">
+        <div className="flex h-full items-center justify-center">
           <Spinner />
         </div>
       );

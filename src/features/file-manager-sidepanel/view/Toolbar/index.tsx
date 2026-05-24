@@ -84,8 +84,8 @@ export default function Toolbar() {
 
   return (
     <>
-      <div className="flex items-center w-full overflow-hidden overflow-x-auto">
-        <div className="w-full min-w-max flex items-center gap-4 px-2 py-3.5">
+      <div className="flex w-full items-center gap-2 overflow-hidden overflow-x-auto py-2">
+        <div className="flex w-full min-w-max items-center gap-3 px-2">
           <ToolbarButtonGroup
             actions={[
               {
@@ -176,7 +176,7 @@ export default function Toolbar() {
         </div>
 
         <SearchInput
-          classNameWrapper="min-w-[200px]"
+          classNameWrapper="min-w-[220px] mr-2"
           value={searchQuery}
           onChange={(value) => {
             emit('#file-manager-sidepanel/browser-search-query', value);

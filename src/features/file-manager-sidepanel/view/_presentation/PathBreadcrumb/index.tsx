@@ -41,8 +41,8 @@ export default function PathBreadcrumb(props: PathBreadcrumbProps) {
 
         const cnButton = cn(
           'shrink-0 not-disabled:cursor-pointer bg-card px-2 py-0.5 transition-all text-primary text-sm',
-          'not-disabled:hover:border-border/100 not-disabled:hover:shadow-md',
-          'rounded-lg border border-border/0',
+          'not-disabled:hover:border-border/100 not-disabled:hover:bg-border/40',
+          'rounded-md border border-border/0',
         );
 
         return (
@@ -69,7 +69,9 @@ export default function PathBreadcrumb(props: PathBreadcrumbProps) {
         classNameTooltip="z-[100]"
       >
         <button
-          className="p-1.5 rounded-full border hover:bg-background"
+          aria-label="Copy full path"
+          title="Copy full path"
+          className="rounded-md border bg-card p-1.5 hover:bg-border/40"
           onClick={onClickCopy}
         >
           <CopyIcon className="size-2.5" />

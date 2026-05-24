@@ -10,22 +10,21 @@ export default function ToolbarButtonGroup(props: Props) {
   const allDisabled = actions.find((action) => !action.isDisabled) == null;
 
   const cnContainer = cn(
-    'overflow-hidden rounded-xl flex items-center shrink-0 transition-all h-9.5',
-    !allDisabled && 'shadow-lg shadow-black/5',
-    // "data-[all-disabled=false]:shadow-lg"
+    'flex h-9 shrink-0 items-center overflow-hidden rounded-lg border bg-card transition-all',
+    !allDisabled && 'shadow-sm',
   );
 
   const cnButtonBase = cn(
     'flex items-center justify-center h-full p-1',
-    'border-t border-b transition-all group disabled:cursor-no-drop',
-    'data-[l=true]:border-l data-[l=true]:rounded-l-xl',
-    'data-[r=true]:border-r data-[r=true]:rounded-r-xl',
+    'transition-all group disabled:cursor-no-drop',
+    'data-[l=true]:rounded-l-lg',
+    'data-[r=true]:rounded-r-lg',
   );
 
-  const cnIconWrapperBase = cn('data-[active=true]:bg-border p-1 rounded-lg');
+  const cnIconWrapperBase = cn('data-[active=true]:bg-border p-1 rounded-md');
 
   const cnSeparatorWrapper = cn(
-    'w-[1px] h-full bg-card data-[disabled=true]:bg-background border-t border-b flex items-center',
+    'flex h-full w-px items-center bg-border/70 data-[disabled=true]:bg-border/40',
   );
 
   return (

@@ -6,7 +6,6 @@ import { FilesystemModelProvider } from '../model/filesystem';
 import type { FileManagerSidepanelProps as Props } from '../rules/types';
 import useFilesystemHistoryUsecase from '../usecase/filesystem-history';
 import useFilesystemWatchUsecase from '../usecase/filesystem-watch';
-import useSidepanelMgmtUsecase from '../usecase/sidepanel-mgmt';
 import useToolsActionsUsecase from '../usecase/tools-actions';
 
 import Layout from './_presentation/Layout';
@@ -18,7 +17,6 @@ import Toolbar from './Toolbar';
 const Controller = () => {
   useFilesystemHistoryUsecase();
   useFilesystemWatchUsecase();
-  useSidepanelMgmtUsecase();
   useToolsActionsUsecase();
 
   return null;

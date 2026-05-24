@@ -50,14 +50,13 @@ export default function Content() {
   const isActionMenuOpen =
     actionMenuItem?.kind === 'file' && actionMenuFullPath === currentFullPath;
 
-  if (!searchQuery && deferredSearchQuery) {
-    setDeferredSearchQuery('');
-  }
-
   useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      setDeferredSearchQuery(searchQuery);
-    }, 300);
+    const timeout = window.setTimeout(
+      () => {
+        setDeferredSearchQuery(searchQuery);
+      },
+      searchQuery ? 300 : 0,
+    );
 
     return () => {
       window.clearTimeout(timeout);
@@ -79,7 +78,7 @@ export default function Content() {
     if (content.kind === 'file') {
       setActionMenuTarget(target);
       setActionMenuItem(content);
-      setActionMenuFullPath(currentFullPath);
+      setActionMenuFullPath(currentFullPath ?? null);
       return;
     }
 
@@ -159,7 +158,7 @@ export default function Content() {
   });
 
   return (
-    <div className="h-full rounded-tl-xl bg-card grid grid-rows-[1fr_auto] overflow-hidden">
+    <div className="grid h-full grid-rows-[1fr_auto] overflow-hidden bg-card">
       {elContent}
 
       <Dropdown
@@ -195,7 +194,7 @@ export default function Content() {
         </div>
       </Dropdown>
 
-      <div className="min-h-12 border-t grid grid-cols-[1fr_auto] overflow-hidden overflow-x-auto w-full">
+      <div className="grid min-h-12 w-full grid-cols-[1fr_auto] overflow-hidden overflow-x-auto border-t bg-background/60">
         <PathBreadcrumb
           basePath={basePath}
           selectedFileName={

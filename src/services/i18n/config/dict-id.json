@@ -321,10 +321,6 @@
         }
       }
     },
-    "runningServices": {
-      "headerTitle": "Service Berjalan",
-      "headerDesc": "Lihat semua service yang sedang berjalan di server ini."
-    },
     "loadBalancers": {
       "headerTitle": "Load Balancer",
       "headerDesc": "Lihat load balancer anda di sini.",
@@ -614,10 +610,12 @@
     "loadBalancerDelete": {
       "success": "Berhasil menghapus load balancer « {loadBalancer} ».",
       "error": "Gagal menghapus load balancer « {loadBalancer} »!"
-    },    "loadBalancerRestore": {
+    },
+    "loadBalancerRestore": {
       "success": "Berhasil memulihkan load balancer « {loadBalancer} ».",
       "error": "Gagal memulihkan load balancer « {loadBalancer} »!"
-    },    "domainDelete": {
+    },
+    "domainDelete": {
       "success": "Berhasil menghapus domain « {domain} ».",
       "error": "Gagal menghapus domain « {domain} »!"
     },

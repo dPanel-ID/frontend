@@ -41,11 +41,11 @@ export default function NewFolderPopup(props: NewFolderPopupProps) {
       position="bottom"
       isOpen={isOpen}
       onClickOutside={() => onOpenChange(false)}
-      className="rounded-2xl"
+      className="rounded-lg border bg-card shadow-lg"
     >
-      <div className="p-3 flex flex-col gap-y-1 w-60">
+      <div className="flex w-64 flex-col gap-y-2 p-3">
         <div className="flex w-full items-center justify-between">
-          <p className="text-sm font-bold text-primary">Folder Name:</p>
+          <p className="text-sm font-semibold text-primary">Folder name</p>
 
           <Button
             disabled={!folderName}
@@ -57,7 +57,7 @@ export default function NewFolderPopup(props: NewFolderPopupProps) {
           </Button>
         </div>
         <InputWithValidation
-          placeholder="Fill in the folder's name"
+          placeholder="New folder name"
           onAcceptedChange={setFolderName}
           validations={[
             /^[a-zA-Z0-9_-]+$/,
