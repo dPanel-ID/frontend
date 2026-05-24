@@ -10,7 +10,7 @@ import Layout from './_presentation/Layout';
 import { StatisticsCard } from './_presentation/StatisticsCard';
 import { AsideStatisticsStates as UIStates } from './_States';
 
-const [guardServerDetail, useServerDetail] = guardedSelects({
+const [guardServerDetail] = guardedSelects({
   initialIsLoading: true,
   fallbackLoading: UIStates.Loading,
   fallbackError: UIStates.Loading,
@@ -28,14 +28,20 @@ const [guardStats] = guardedSelects({
 
 export default guardServerDetail(
   guardStats(function AsideStatistics() {
-    const [coreCount] = useServerDetail((s) => [s.specs.cpu.coreCount]);
-
-    const [cpuStatsDataset, memoryStatsDataset, diskStatsDataset] =
+    const [cpuCoreCount, cpuStatsDataset, memoryStatsDataset, diskStatsDataset] =
       useServerStatsModel((s) => [
+        s.cpu.coreCount,
         s.cpu.statsDataset,
         s.memory.statsDataset,
         s.disk.statsDataset,
       ]);
+
+    const coreCount =
+      cpuCoreCount.$status === 'success'
+        ? cpuCoreCount.coreCount
+        : cpuCoreCount.$status === 'loading' && cpuCoreCount.prevData
+          ? cpuCoreCount.prevData.coreCount
+          : null;
 
     return (
       <Layout>

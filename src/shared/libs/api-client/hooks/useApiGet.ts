@@ -100,7 +100,10 @@ export default function useApiGet<D>(
             throw Error('Data is empty!');
           }
 
-          const data = baseData.data as Response<D>;
+          const data =
+            typeof baseData.data === 'object'
+              ? (baseData.data as Response<D>)
+              : ({ value: baseData.data } as unknown as Response<D>);
           data.$status = 'success';
 
           setResponse(data);

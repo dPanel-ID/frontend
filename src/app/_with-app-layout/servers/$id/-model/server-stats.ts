@@ -29,6 +29,11 @@ export const [ServerStatsModelProvider, useServerStatsModel] = buildSelector(
 )((props: ServerStatsModelProps) => {
   const { serverId } = props;
 
+  const [responseCpuCoreCount, refreshCpuCoreCount] =
+    ApiServer.Origin.$Id.Cpu.useGet({
+      serverId,
+    });
+
   const [responseCpuUsage, refreshCpuUsage] =
     ApiServer.Origin.$Id.Cpu.Usage.useGet({
       serverId,
@@ -54,10 +59,15 @@ export const [ServerStatsModelProvider, useServerStatsModel] = buildSelector(
     });
 
   useSubscribe('@servers::detail/server-stats-refresh', () => {
+    refreshCpuCoreCount();
     refreshCpuUsage();
     refreshDiskUsage();
     refreshMemoryUsage();
   });
+
+  const cpuCoreCount = useAdapter(responseCpuCoreCount, (raw) =>
+    AdapterServerStatisticsFromDto.cpuCore(raw).unwrap(),
+  );
 
   const cpuUsage = useAdapter(responseCpuUsage, (raw) =>
     AdapterServerStatisticsFromDto.usageCpu(raw).unwrap(),
@@ -100,6 +110,7 @@ export const [ServerStatsModelProvider, useServerStatsModel] = buildSelector(
 
   return {
     cpu: {
+      coreCount: cpuCoreCount,
       usage: cpuUsage,
       statsDataset: cpuStatsDataset,
     },

@@ -3,6 +3,7 @@ import * as Delete$Id from './server.delete.$id';
 import * as Detail$Id from './server.detail.$id';
 import * as Detail$IdLog from './server.detail.$id.log';
 import * as Find from './server.find';
+import * as Origin$IdCpu from './server.origin.$id.cpu';
 import * as Origin$IdCpuUsage from './server.origin.$id.cpu.usage';
 import * as Origin$IdDiskUsage from './server.origin.$id.disk.usage';
 import * as Origin$IdLog from './server.origin.$id.log';
@@ -30,6 +31,7 @@ const Root = {
   Origin: {
     $Id: {
       Cpu: {
+        ...Origin$IdCpu,
         Usage: Origin$IdCpuUsage,
       },
       Disk: {
