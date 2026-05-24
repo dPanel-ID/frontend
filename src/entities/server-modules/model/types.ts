@@ -1,11 +1,5 @@
-export type ServerModuleCategoryTag =
-  | 'cms'
-  | 'language'
-  | 'database'
-  | 'container'
-  | 'utilities'
-  | 'infrastructure';
-export type ServerModulePlatformTag = 'vm';
+export type ServerModuleCategoryTag = string;
+export type ServerModulePlatformTag = string;
 
 export interface ServerModule {
   category: ServerModuleCategoryTag[];
@@ -13,10 +7,16 @@ export interface ServerModule {
 
   id: string;
   moduleID?: number;
+  installerName?: string;
+  installerType?: string;
   name: string;
   description: string;
   logoUrl: string;
   has_submodule: boolean;
+  actions?: string[];
+  source?: 'catalog' | 'static';
+  refName?: string;
+  resolvedCommit?: string;
 }
 
 export interface ServerModuleCategory {

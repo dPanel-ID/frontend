@@ -14,8 +14,8 @@ export default function Submodules() {
   const [response, refresh] = ApiService.Find.useGet({
     pageSize: 99,
     serverId: String(serverID),
-    moduleName: moduleInfo.id,
-    moduleType: moduleInfo.category[0],
+    moduleName: moduleInfo.installerName ?? moduleInfo.id,
+    moduleType: moduleInfo.installerType ?? moduleInfo.category[0],
     options: {
       skip: !serverID,
     },
