@@ -19,12 +19,12 @@ export function ctorCloud(
 }
 
 export function ctorSpecs(
-  raw: DTOs.MachineV1,
+  _raw: DTOs.MachineV1,
 ): KeysOnlyDeep<z.input<typeof specs>> {
   return {
     cpu: {
-      coreCount: raw.cpu_core,
-      virtualCoreCount: raw.vcpu,
+      coreCount: 0,
+      virtualCoreCount: 0,
     },
   };
 }
