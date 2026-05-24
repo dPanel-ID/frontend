@@ -48,8 +48,8 @@ export const toServerCard = createAdapter<DTOs.MachineV1, ServerCard>((raw) =>
       status: raw.status,
     },
     system: {
-      name: raw.distributor,
-      version: raw.version,
+      name: raw.distributor ?? raw.os_family,
+      version: raw.version ?? raw.os_codename,
     },
     timestamp: {
       created: raw.created_at,
@@ -88,8 +88,8 @@ export const toServerDetail = createAdapter<DTOs.MachineV1, ServerDetail>(
         status: raw.status,
       },
       system: {
-        name: raw.distributor,
-        version: raw.version,
+        name: raw.distributor ?? raw.os_family,
+        version: raw.version ?? raw.os_codename,
       },
       timestamp: {
         created: raw.created_at,
