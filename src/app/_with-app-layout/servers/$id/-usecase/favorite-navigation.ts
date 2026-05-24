@@ -10,28 +10,13 @@ export default function useFavoriteNavigationUsecase() {
 
   const navigate = useNavigate();
 
-  const handleUsecase = useHandler((payload: Payload) => {
-    const { to } = payload;
-
-    switch (to) {
-      case 'modules-discover':
-        navigate({
-          to: '/discover/modules',
-          search: {
-            serverId,
-          },
-        });
-        break;
-
-      case 'see-more-services':
-        navigate({
-          to: '/servers/$id/running-services',
-          params: {
-            id: serverId,
-          },
-        });
-        break;
-    }
+  const handleUsecase = useHandler((_payload: Payload) => {
+    navigate({
+      to: '/discover/modules',
+      search: {
+        serverId,
+      },
+    });
   });
 
   return [handleUsecase] as const;

@@ -6,7 +6,7 @@ export default function ServicesTable(props: ServicesTableProps) {
     props;
 
   return (
-    <div className="min-w-[600px] w-full rounded-lg border overflow-hidden">
+    <div className="min-w-[640px] w-full overflow-hidden rounded-lg border border-border bg-card shadow-sm">
       <Partials.RowHeader />
 
       {services.map((service) => {
@@ -31,7 +31,7 @@ export default function ServicesTable(props: ServicesTableProps) {
 
 ServicesTable.PlaceholderLoading = function PlaceholderLoading() {
   return (
-    <div className="min-w-[600px] w-full rounded-lg border overflow-hidden">
+    <div className="min-w-[640px] w-full overflow-hidden rounded-lg border border-border bg-card shadow-sm">
       <Partials.RowHeader />
 
       <Partials.Row.PlaceholderLoading />

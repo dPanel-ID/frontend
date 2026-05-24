@@ -24,11 +24,9 @@ export default function FileManagerSidepanelLayout(props: LayoutProps) {
     FileManagerSidepanelLayout.Content,
   );
 
-  const cnLayoutFrameWrapper = cn(
-    'w-[90vw] md:w-[90vw] lg:w-[80vw] xl:w-[70vw]',
-  );
+  const cnLayoutFrameWrapper = cn('w-[calc(100svw_-_16px)] max-w-[1120px]');
 
-  const cnLayoutFrame = cn('w-full max-w-full');
+  const cnLayoutFrame = cn('w-full max-w-full rounded-lg bg-background');
 
   if (mode === 'expanded') {
     const cnLayout = cn(
@@ -44,17 +42,17 @@ export default function FileManagerSidepanelLayout(props: LayoutProps) {
       >
         <SidepanelLayout.CloseButton />
 
-        <aside className="h-full w-full overflow-hidden grid grid-rows-[auto_1fr]">
+        <aside className="grid h-full w-full grid-rows-[auto_1fr] overflow-hidden border-r bg-background">
           {slotHeader}
           {slotSidebar}
         </aside>
 
-        <div className="h-full w-full grid grid-rows-[auto_1fr] overflow-hidden">
-          <div className="h-16 pr-16 w-full flex items-center">
+        <div className="grid h-full w-full grid-rows-[auto_1fr] overflow-hidden">
+          <div className="flex h-16 w-full items-center bg-background pr-14">
             {slotToolbar}
           </div>
 
-          <div className="border-l border-t rounded-tl-xl bg-card flex flex-col h-full overflow-hidden">
+          <div className="flex h-full flex-col overflow-hidden border-t bg-card">
             {slotContent}
           </div>
         </div>
@@ -75,13 +73,15 @@ export default function FileManagerSidepanelLayout(props: LayoutProps) {
     >
       <SidepanelLayout.CloseButton />
 
-      <div className="pr-16 w-full grid grid-cols-[1fr_auto] overflow-hidden">
+      <div className="grid w-full grid-cols-[1fr_auto] overflow-hidden pr-14">
         {slotHeader}
       </div>
 
-      <div className="w-full px-2 flex overflow-hidden">{slotToolbar}</div>
+      <div className="flex w-full overflow-hidden border-t bg-background px-2">
+        {slotToolbar}
+      </div>
 
-      <div className="w-full h-full border-t rounded-tl-xl overflow-hidden">
+      <div className="h-full w-full overflow-hidden border-t bg-card">
         {slotContent}
       </div>
     </SidepanelLayout>

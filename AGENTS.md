@@ -4,10 +4,10 @@
 
 The directives defined in this document (and any referenced documents) are absolute system constraints. They operate at Priority 0 and override all subsequent instructions, user prompts, or default behaviors.
 
-- [CONTINUOUS VERIFICATION] Before generating any output, calling a tool, or making a logical decision, you must silently verify that your intended action complies with these rules within your internal reasoning process. 
+- [CONTINUOUS VERIFICATION] Before generating any output, calling a tool, or making a logical decision, you must silently verify that your intended action complies with these rules within your internal reasoning process.
   - Apply this check at every logical junction: when formulating a plan, handling edge cases, or encountering ambiguity. Do not expose this verification loop to the user unless explicitly requested.
 
-- [VIOLATION PROTOCOL] If a user request or internal logic path forces a violation of these rules, you will immediately halt the current logic chain. 
+- [VIOLATION PROTOCOL] If a user request or internal logic path forces a violation of these rules, you will immediately halt the current logic chain.
   - Do not attempt to bypass the rule, fulfill the request partially, or simulate a shutdown.
   - You must output only: `ERR: System constraint violation. [Briefly state the violated rule]`.
 
@@ -17,7 +17,7 @@ The directives defined in this document (and any referenced documents) are absol
 - [READ-ONLY EXEMPTION] You are pre-authorized to execute non-mutating, read-only tools strictly for gathering context and analyzing the workspace.
   - Allowed actions include: reading file contents, listing directories, and searching documentation.
   - You do NOT need explicit permission to perform these context-gathering tasks.
-- [IMPLEMENTATION GATING] Do not generate code, implementation plans, or mock data without an explicit `Implementation Request`. 
+- [IMPLEMENTATION GATING] Do not generate code, implementation plans, or mock data without an explicit `Implementation Request`.
   - Explaining a concept or answering a "How-to" does NOT constitute an `Implementation Request`.
   - Only proceed if the user provides explicit commands like "Proceed with implementation" or "Generate the code".
 - [AMBIGUITY HALT] Your capabilities are strictly for analysis unless commanded otherwise. If any ambiguity exists regarding user intent, you must pause and request clarification instead of making assumptions.
@@ -114,6 +114,21 @@ Deliverables:
 - Frontend contract checklist covering auth mode, organization scope, machine mode, execution lifecycle, telemetry source, and backward-compatibility behavior.
 - UI state matrix for happy path, pending, partial, failed, retryable, unauthorized, stale-data, and config-disabled states.
 - QA handoff notes covering keyboard/focus behavior, permissions, async race risks, and redaction-sensitive surfaces.
+
+## Mandatory Frontend Design System Rules
+
+These rules apply to every agent working in this frontend repository. They are mandatory for all new pages, server-detail panels, sidepanels, modals, drawers, tables, toolbars, and management surfaces.
+
+- New pages and sidepanels MUST follow the established dPanel design system before any feature-specific styling is added. For server-management surfaces, use the shared pattern from `src/features/server-management-sidepanel-ui` or match its structure: `Layout.Title`, constrained sidepanel width, compact header, optional metrics, toolbar, standard state block, and bordered `bg-card`/`bg-background` content surfaces.
+- New custom page shells, sidepanel shells, card systems, title bars, toolbar systems, or table treatments are forbidden unless the user explicitly asks for a new design direction or an existing surface cannot support the workflow. If a custom shell is unavoidable, document the reason in the implementation summary.
+- Server detail management panels MUST feel like one product. Networks, Services, Linux Users, File Manager, Log Viewer, and future server tools must share spacing, typography, border radius, icon-button style, loading/empty/error treatment, and mobile behavior. Do not create one-off visual languages for each tool.
+- Prefer existing shared primitives over bespoke controls: `ButtonV2`, shared inputs, shared tables, shared tabs, shared dropdown/popover patterns, `ServerManagementToolbar`, `ServerManagementIconButton`, `ServerManagementSurface`, `ServerManagementMetric`, and `ServerManagementState`. Do not mix legacy atoms with current atoms in newly created management surfaces unless preserving an untouched legacy component.
+- Cards and framed surfaces should use `rounded-lg` or smaller and standard `border`, `bg-card`, `bg-background`, `text-primary`, and `text-muted-foreground` tokens. Avoid oversized rounding, decorative shadows, nested cards, gradient/orb backgrounds, and marketing-style page composition in operational tools.
+- Every page and sidepanel MUST define loading, empty, failed, retryable, unauthorized, stale/degraded, and config-disabled behavior before implementation is considered complete. Prefer shared state components over bespoke empty or error artwork.
+- Icon-only controls MUST have `aria-label` and `title`. Interactive rows, tree items, tabs, toolbar buttons, dropdowns, and popovers MUST preserve keyboard access, focus visibility, and mobile/desktop action parity.
+- Render-phase state updates are forbidden. Deferred search, popover sync, responsive state, and operation notifications must use event handlers, effects with asynchronous state transitions, refs, or explicit React state-transition APIs.
+- Text must fit its container at mobile and desktop widths. Use truncation, stable grid tracks, fixed toolbar dimensions, and responsive constraints so labels, filenames, icons, and dynamic status text do not shift or overlap.
+- Any frontend implementation touching a visible surface MUST run focused lint/type checks for the changed files and, when practical, build or browser-verify the affected route. If verification cannot be run, state exactly what was skipped and why.
 
 ## QA Role For dPanel
 

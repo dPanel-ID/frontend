@@ -22,7 +22,7 @@ export const FolderRootRow = (props: RootRowProps) => {
   const { basePath } = props;
 
   return (
-    <div className="px-2 py-1 w-full min-w-max rounded-lg flex items-center gap-1 text-left text-primary/70 font-medium text-sm">
+    <div className="flex w-full min-w-max items-center gap-1 rounded-lg px-2 py-1 text-left text-sm font-medium text-muted-foreground">
       <FolderOpenIcon className="size-4 shrink-0" />
       <p className="pl-0.5">{basePath}</p>
     </div>
@@ -34,9 +34,9 @@ export const FolderItemRow = (props: RowProps) => {
     props;
 
   const cnButton = cn(
-    'px-2 py-1 w-full min-w-max rounded-lg flex items-center gap-1 text-left transition-all border hover:bg-card/50 select-none',
+    'flex w-full min-w-max items-center gap-1 rounded-lg border px-2 py-1 text-left text-sm transition-all hover:bg-card/50 select-none',
     !isSelected && 'border-border/0',
-    isSelected && 'bg-card border-border/100 shadow',
+    isSelected && 'bg-card border-border/100 shadow-sm',
   );
 
   const IconFolder = useMemo(() => {
@@ -70,9 +70,11 @@ export const BasePathFailed = (props: BasePathFailedProps) => {
   ) {
     return (
       <div className="pt-4 w-full h-full flex flex-col items-center justify-center">
-        <FileWarningIcon className="size-16 text-primary opacity-30" />
+        <div className="flex size-16 items-center justify-center rounded-lg border border-dashed bg-card">
+          <FileWarningIcon className="size-8 text-muted-foreground" />
+        </div>
 
-        <p className="mt-4 px-4 text-sm text-primary/70 text-center">
+        <p className="mt-4 px-4 text-center text-sm text-muted-foreground">
           Sorry, you haven&apos;t deployed to this server yet.
         </p>
       </div>

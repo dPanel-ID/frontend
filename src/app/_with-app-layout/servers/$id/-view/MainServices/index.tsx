@@ -1,4 +1,3 @@
-import { useNavigate } from '@tanstack/react-router';
 import { SettingsIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
@@ -64,23 +63,9 @@ const RunningServices = guard(() => {
 });
 
 export default function MainServices() {
-  const [serverId, refreshServices] = useServerDataModel((s) => [
-    s.serverId,
-    s.refreshServices,
-  ]);
-
-  const navigate = useNavigate();
+  const [refreshServices] = useServerDataModel((s) => [s.refreshServices]);
 
   const t = useDevetekTranslations();
-
-  const handleClickSeeMore = () => {
-    navigate({
-      to: '/servers/$id/running-services',
-      params: {
-        id: serverId,
-      },
-    });
-  };
 
   const handleClickRefresh = () => {
     refreshServices();
@@ -95,10 +80,6 @@ export default function MainServices() {
         <div className="flex items-center gap-2">
           <Button size="sm" variant="outline" onClick={handleClickRefresh}>
             Refresh
-          </Button>
-
-          <Button size="sm" variant="outline" onClick={handleClickSeeMore}>
-            {t('common.actions.seeMore')}
           </Button>
         </div>
       }

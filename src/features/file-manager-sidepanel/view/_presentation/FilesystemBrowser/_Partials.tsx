@@ -8,18 +8,22 @@ import type { BaseButtonProps, GridItemProps, RowItemProps } from './types';
 
 export const CN_CONTENT_ITEM_BASE = cn(
   'text-primary',
-  'data-[selected=true]:bg-primary! data-[selected=true]:text-white! dark:data-[selected=true]:text-black! transition-all',
-  'hover:bg-primary! hover:text-white dark:hover:text-black select-none',
+  'data-[selected=true]:bg-border! data-[selected=true]:text-primary! transition-all',
+  'hover:bg-border/50 select-none',
 );
 
 export const RowHeader = () => (
-  <div className="border-b px-4 py-2 grid gap-x-1 grid-cols-[2.5fr_0.5fr_1fr_1fr]">
-    <p className="flex items-center text-sm font-semibold text-primary pl-6">
+  <div className="grid grid-cols-[minmax(220px,2.5fr)_96px_140px_140px] gap-x-2 border-b bg-background/60 px-4 py-2">
+    <p className="flex items-center pl-6 text-[11px] font-semibold uppercase text-muted-foreground">
       Name
     </p>
-    <p className="flex items-center text-sm font-semibold text-primary">Size</p>
-    <p className="flex items-center text-sm font-semibold text-primary">Kind</p>
-    <p className="flex items-center text-sm font-semibold text-primary">
+    <p className="flex items-center text-[11px] font-semibold uppercase text-muted-foreground">
+      Size
+    </p>
+    <p className="flex items-center text-[11px] font-semibold uppercase text-muted-foreground">
+      Kind
+    </p>
+    <p className="flex items-center text-[11px] font-semibold uppercase text-muted-foreground">
       Last Modified
     </p>
   </div>
@@ -80,8 +84,8 @@ export const RowItem = (props: RowItemProps) => {
 
   const cnContentItemTable = cn(
     CN_CONTENT_ITEM_BASE,
-    'text-primary text-left break-all w-full px-2 py-1 rounded transition-all data-[odd=true]:bg-background group',
-    'w-full grid gap-x-2 grid-cols-[2.5fr_0.5fr_1fr_1fr] [&>p]:flex [&>p]:items-center',
+    'w-full rounded-md px-2 py-1.5 text-left text-primary data-[odd=true]:bg-background group',
+    'grid grid-cols-[minmax(220px,2.5fr)_96px_140px_140px] gap-x-2 [&>p]:flex [&>p]:items-center',
   );
 
   return (
@@ -92,18 +96,27 @@ export const RowItem = (props: RowItemProps) => {
       onClick={onClick}
       onDoubleClick={onDoubleClick}
     >
-      <p className="flex items-center gap-2">
+      <p className="flex min-w-0 items-center gap-2">
         <Icon className="size-4 shrink-0" />
-        {contentName}
+        <span className="truncate">{contentName}</span>
       </p>
 
-      <p className="text-sm" data-selected={isSelected}>
+      <p
+        className="truncate text-sm text-muted-foreground"
+        data-selected={isSelected}
+      >
         {contentFileSizeFormatted}
       </p>
-      <p className="text-sm" data-selected={isSelected}>
+      <p
+        className="truncate text-sm text-muted-foreground"
+        data-selected={isSelected}
+      >
         {contentFileExtension}
       </p>
-      <p className="text-sm" data-selected={isSelected}>
+      <p
+        className="truncate text-sm text-muted-foreground"
+        data-selected={isSelected}
+      >
         {getDistanceFromNow(contentLastUpdated)}
       </p>
     </BaseButton>
@@ -115,7 +128,7 @@ export const GridItem = (props: GridItemProps) => {
 
   const cnContentItemTile = cn(
     CN_CONTENT_ITEM_BASE,
-    'min-h-10 flex flex-col items-center gap-y-1 px-2 py-4 rounded break-all',
+    'flex min-h-24 flex-col items-center justify-center gap-y-2 rounded-lg border bg-background px-2 py-4 text-sm',
   );
 
   return (

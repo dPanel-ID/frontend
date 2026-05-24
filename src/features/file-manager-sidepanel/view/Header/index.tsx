@@ -25,9 +25,9 @@ const ServerName = () => {
 
 export default function Header() {
   return (
-    <header className="px-4 py-3 w-[160px] shrink-0 flex flex-col gap-x-2">
-      <h3 className="text-lg font-bold">File Manager</h3>
-      <h6 className="text-sm text-primary/70 gap-1 flex items-center overflow-hidden">
+    <header className="flex min-w-0 shrink-0 flex-col justify-center px-4 py-3">
+      <h3 className="truncate text-lg font-bold text-primary">File Manager</h3>
+      <h6 className="flex items-center gap-1 overflow-hidden text-sm text-muted-foreground">
         <IconServer className="size-4" />
         <p className="line-clamp-1">
           <ServerName />

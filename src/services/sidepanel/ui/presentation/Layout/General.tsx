@@ -28,7 +28,7 @@ export default function SidepanelLayoutGeneral(props: Props) {
       classNameWrapper={classNameFrameWrapper}
       classNameFrame={classNameFrame}
     >
-      <div className={cnContent}>{children}</div>xz
+      <div className={cnContent}>{children}</div>
     </Drawer.Frame>
   );
 }

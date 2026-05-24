@@ -24,7 +24,7 @@ import type { OperationRowProps } from './types';
 
 export function OperationEmptyState() {
   return (
-    <div className="h-20 flex items-center justify-center">
+    <div className="flex h-20 items-center justify-center rounded-lg border border-dashed bg-background text-sm text-muted-foreground">
       No operations yet.
     </div>
   );
@@ -85,21 +85,24 @@ export function OperationRow(props: OperationRowProps) {
   });
 
   return (
-    <div key={id} className="flex items-center gap-2.5 overflow-hidden">
-      <div className="shrink-0 relative">
+    <div
+      key={id}
+      className="flex items-center gap-2.5 overflow-hidden rounded-lg border bg-background px-3 py-2"
+    >
+      <div className="relative shrink-0">
         <OpIcon className="relative shrink-0 size-6" />
 
         {StatusIcon && (
-          <div className="absolute -right-1 -bottom-1 rounded-full bg-primary text-white dark:text-secondary size-3.75 p-0.5">
-            <StatusIcon className="w-full h-full" />
+          <div className="absolute -bottom-1 -right-1 size-3.75 rounded-full bg-primary p-0.5 text-white dark:text-secondary">
+            <StatusIcon className="h-full w-full" />
           </div>
         )}
       </div>
-      <div className="flex flex-col overflow-hidden">
-        <p className="overflow-hidden text-ellipsis text-xs text-primary/70">
+      <div className="flex min-w-0 flex-col overflow-hidden">
+        <p className="overflow-hidden text-ellipsis text-xs text-muted-foreground">
           {kind} • {getDistanceFromNow(timestamp, locale)}
         </p>
-        <p className="overflow-hidden text-ellipsis text-sm text-primary font-bold">
+        <p className="overflow-hidden text-ellipsis text-sm font-semibold text-primary">
           {label}
         </p>
       </div>
