@@ -29,7 +29,7 @@ export default function StatisticCardUsageCPU(props: Props) {
           <div className="flex flex-col">
             <p className="text-xs font-medium">
               {t('common.terms.coreCount')}:{' '}
-              <span className="font-bold">{coreCount}</span>
+              <span className="font-bold">{coreCount ?? '-'}</span>
             </p>
           </div>
         </div>
@@ -58,6 +58,6 @@ export default function StatisticCardUsageCPU(props: Props) {
 }
 
 interface Props {
-  coreCount: number;
+  coreCount: number | null;
   datasets: CpuStats[];
 }

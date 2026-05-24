@@ -1,6 +1,11 @@
 import dayjs from 'dayjs';
 import z from 'zod';
 
+export type CpuCoreStats = z.output<typeof schemaCpuCoreStats>;
+export const schemaCpuCoreStats = z.object({
+  coreCount: z.number().int().nonnegative(),
+});
+
 export type CpuStats = z.output<typeof schemaCpuStats>;
 export const schemaCpuStats = z
   .object({

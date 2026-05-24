@@ -2,17 +2,36 @@ import type z from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
 
+import type { Dto as CpuCoreDto } from '@/shared/api/server.origin.$id.cpu';
 import type { Dto as CpuUsageDto } from '@/shared/api/server.origin.$id.cpu.usage';
 import type { Dto as DiskUsageDto } from '@/shared/api/server.origin.$id.disk.usage';
 import type { Dto as MemoryUsageDto } from '@/shared/api/server.origin.$id.memory.usage';
 import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
 
-import type { CpuStats, DiskStats, MemoryStats } from '../rules/schema';
+import type {
+  CpuCoreStats,
+  CpuStats,
+  DiskStats,
+  MemoryStats,
+} from '../rules/schema';
 import {
+  schemaCpuCoreStats,
   schemaCpuStats,
   schemaDiskStats,
   schemaMemoryStats,
 } from '../rules/schema';
+
+export const cpuCore = createAdapter<CpuCoreDto, CpuCoreStats>((raw) => {
+  const coreCount = raw.value ?? raw.cpu_core ?? raw.core_count ?? raw.coreCount;
+
+  if (coreCount == null) {
+    throw Error('CPU core count is unavailable');
+  }
+
+  return schemaCpuCoreStats.parse({
+    coreCount,
+  } satisfies KeysOnlyDeep<z.input<typeof schemaCpuCoreStats>>);
+});
 
 export const usageCpu = createAdapter<CpuUsageDto, CpuStats>((raw) =>
   schemaCpuStats.parse({
