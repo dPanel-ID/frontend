@@ -29,7 +29,7 @@ type EventsRegistry = Rescope<
     'filesystem-[internal]-history-update': FilesystemBrowserHistory;
     'filesystem-history-navigate': 'back' | 'forward';
     'filesystem-history-navigate-to': FullPath;
-    'filesystem-history-navigate-refresh': null;
+    'filesystem-history-navigate-refresh': { fullPath: FullPath } | null;
 
     'browser-fs-operation-add': FsOperationReport;
     'browser-fs-operation-update': FsOperationReport;
@@ -48,8 +48,8 @@ type EventsRegistry = Rescope<
       folderName: string;
       permissionCode: string;
     };
-    'tool-selected-file-preview': null;
-    'tool-selected-file-download': null;
+    'tool-selected-file-preview': SchemaFilesystemContent | null;
+    'tool-selected-file-download': SchemaFilesystemContent | null;
     'tool-selected-item-delete': null;
   }
 >;

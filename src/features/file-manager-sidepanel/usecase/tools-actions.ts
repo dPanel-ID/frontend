@@ -5,8 +5,8 @@ import { useToaster } from '@/services/toaster';
 
 import {
   LS_ORGANIZATION_ID,
-  normalizeWorkspaceOrganizationId,
   X_AUTH_ORGANIZATION_ID,
+  normalizeWorkspaceOrganizationId,
 } from '@/shared/libs/api-client/config';
 import { apiClient } from '@/shared/libs/api-client/lib/client';
 import { openUploadDialog } from '@/shared/libs/browser/upload-dialog';
@@ -15,6 +15,22 @@ import { useBrowserModel } from '../model/browser';
 import { useCommonModel } from '../model/common';
 import { useEmit, useSubscribe } from '../model/events';
 import { useFilesystemModel } from '../model/filesystem';
+
+function createOriginFolderURL(
+  serverId: string,
+  path: string,
+  query: Record<string, string | undefined>,
+) {
+  const searchParams = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(query)) {
+    if (value) {
+      searchParams.set(key, value);
+    }
+  }
+
+  return `${import.meta.env.VITE_BACKEND}/v1/folder/origin/${serverId}${path}?${searchParams.toString()}`;
+}
 
 export default function useToolsActionsUsecase() {
   const [pushToast] = useToaster();
@@ -59,6 +75,10 @@ export default function useToolsActionsUsecase() {
   });
 
   useSubscribe('#file-manager-sidepanel/tool-current-path-upload', async () => {
+    if (!currentFullPath) return;
+
+    const targetFullPath = currentFullPath;
+
     const uploadDialogResult = await openUploadDialog({
       allowMultiple: true,
     });
@@ -104,10 +124,9 @@ export default function useToolsActionsUsecase() {
           return;
         }
 
-        emit(
-          '#file-manager-sidepanel/filesystem-history-navigate-refresh',
-          null,
-        );
+        emit('#file-manager-sidepanel/filesystem-history-navigate-refresh', {
+          fullPath: targetFullPath,
+        });
         emit('#file-manager-sidepanel/browser-fs-operation-update-status', {
           id: currentId,
           timestamp: dayjs().format(),
@@ -119,7 +138,10 @@ export default function useToolsActionsUsecase() {
 
       xhr.open(
         'post',
-        `${import.meta.env.VITE_BACKEND}/v1/folder/origin/${serverId}/upload?workdir=${currentFullPath}&username=${userProfile.username}`,
+        createOriginFolderURL(serverId, '/upload', {
+          workdir: targetFullPath,
+          username: userProfile.username,
+        }),
         true,
       );
 
@@ -153,6 +175,7 @@ export default function useToolsActionsUsecase() {
       if (!currentFullPath) return;
 
       const { folderName, permissionCode } = payload;
+      const targetFullPath = currentFullPath;
 
       const operationId = String(Math.floor(Math.random() * 1_000_000));
 
@@ -170,8 +193,9 @@ export default function useToolsActionsUsecase() {
         data: {
           name: folderName,
           type: 'folder',
-          path: currentFullPath,
+          path: targetFullPath,
           permission: permissionCode,
+          username: userProfile.username,
         },
       });
 
@@ -196,25 +220,33 @@ export default function useToolsActionsUsecase() {
         timestamp: dayjs().format(),
       });
 
-      emit('#file-manager-sidepanel/filesystem-history-navigate-refresh', null);
+      emit('#file-manager-sidepanel/filesystem-history-navigate-refresh', {
+        fullPath: targetFullPath,
+      });
     },
   );
 
-  useSubscribe('#file-manager-sidepanel/tool-selected-file-download', () => {
-    if (!selectedItem || !currentFullPath || selectedItem.kind === 'folder')
-      return;
+  useSubscribe(
+    '#file-manager-sidepanel/tool-selected-file-download',
+    (item) => {
+      const file = item ?? selectedItem;
+      if (!file || !currentFullPath || file.kind === 'folder') return;
 
-    window.open(
-      `${import.meta.env.VITE_BACKEND}/v1/folder/origin/${serverId}/download?workdir=${currentFullPath}&file=${selectedItem.name}`,
-      '_blank',
-    );
-  });
+      window.open(
+        createOriginFolderURL(serverId, '/download', {
+          workdir: currentFullPath,
+          file: file.name,
+        }),
+        '_blank',
+      );
+    },
+  );
 
-  useSubscribe('#file-manager-sidepanel/tool-selected-file-preview', () => {
-    if (!selectedItem || !currentFullPath || selectedItem.kind === 'folder')
-      return;
+  useSubscribe('#file-manager-sidepanel/tool-selected-file-preview', (item) => {
+    const file = item ?? selectedItem;
+    if (!file || !currentFullPath || file.kind === 'folder') return;
 
-    onPreviewFile?.(currentFullPath, selectedItem);
+    onPreviewFile?.(currentFullPath, file);
   });
 
   useSubscribe(
@@ -222,13 +254,15 @@ export default function useToolsActionsUsecase() {
     async () => {
       if (!selectedItem || !currentFullPath) return;
 
+      const itemToDelete = selectedItem;
+      const targetFullPath = currentFullPath;
       const operationId = String(Math.floor(Math.random() * 1_000_000));
 
       emit('#file-manager-sidepanel/browser-fs-operation-add', {
         operationKind: 'delete',
-        fsKind: selectedItem.kind,
+        fsKind: itemToDelete.kind,
         id: operationId,
-        itemName: selectedItem.name,
+        itemName: itemToDelete.name,
         status: 'loading',
         timestamp: dayjs().format(),
       });
@@ -237,8 +271,8 @@ export default function useToolsActionsUsecase() {
         url: `v2/folder/origin/${serverId}/delete`,
         method: 'POST',
         data: {
-          name: selectedItem.name,
-          path: currentFullPath,
+          name: itemToDelete.name,
+          path: targetFullPath,
         },
       });
 
@@ -251,7 +285,7 @@ export default function useToolsActionsUsecase() {
 
         pushToast({
           variant: 'error',
-          title: `Failed to delete ${selectedItem.name}!`,
+          title: `Failed to delete ${itemToDelete.name}!`,
           message: response.error.message,
         });
         return;
@@ -263,7 +297,10 @@ export default function useToolsActionsUsecase() {
         timestamp: dayjs().format(),
       });
 
-      emit('#file-manager-sidepanel/filesystem-history-navigate-refresh', null);
+      emit('#file-manager-sidepanel/browser-select-item', null);
+      emit('#file-manager-sidepanel/filesystem-history-navigate-refresh', {
+        fullPath: targetFullPath,
+      });
     },
   );
 }

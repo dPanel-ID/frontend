@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import {
   BellIcon,
@@ -36,8 +36,9 @@ export default function Toolbar() {
   const [refButtonOperations, setRefButtonOperations] =
     useState<HTMLButtonElement | null>(null);
 
-  const [refNewFolderPopup, setRefNewFolderPopup] =
-    useState<HTMLButtonElement | null>(null);
+  const refNewFolderPopup = useRef<HTMLButtonElement | null>(null);
+
+  const [isNewFolderOpen, setIsNewFolderOpen] = useState(false);
 
   const [selectedItem, searchQuery, viewMode] = useBrowserModel((s) => [
     s.selectedItem,
@@ -77,6 +78,10 @@ export default function Toolbar() {
     emit('#file-manager-sidepanel/tool-current-path-upload', null);
   };
 
+  const handleClickNewFolder = () => {
+    setIsNewFolderOpen((prev) => !prev);
+  };
+
   return (
     <>
       <div className="flex items-center w-full overflow-hidden overflow-x-auto">
@@ -84,11 +89,13 @@ export default function Toolbar() {
           <ToolbarButtonGroup
             actions={[
               {
+                ariaLabel: 'Go back',
                 icon: ChevronLeftIcon,
                 isDisabled: !canGoBack,
                 onClick: handleClickBack,
               },
               {
+                ariaLabel: 'Go forward',
                 icon: ChevronRightIcon,
                 isDisabled: !canGoForward,
                 onClick: handleClickForward,
@@ -100,11 +107,13 @@ export default function Toolbar() {
             <ToolbarButtonGroup
               actions={[
                 {
+                  ariaLabel: 'Grid view',
                   isActive: viewMode === 'grid',
                   icon: GridIcon,
                   onClick: handleClickViewMode('grid'),
                 },
                 {
+                  ariaLabel: 'List view',
                   isActive: viewMode === 'table',
                   icon: ListIcon,
                   onClick: handleClickViewMode('table'),
@@ -119,16 +128,19 @@ export default function Toolbar() {
             <ToolbarButtonGroup
               actions={[
                 {
+                  ariaLabel: 'Preview selected file',
                   icon: EyeIcon,
                   isDisabled: selectedItem.kind !== 'file',
                   onClick: handleClickPreview,
                 },
                 {
+                  ariaLabel: 'Download selected file',
                   icon: DownloadIcon,
                   isDisabled: selectedItem.kind !== 'file',
                   onClick: handleClickDownload,
                 },
                 {
+                  ariaLabel: 'Delete selected item',
                   ref: setRefButtonDelete,
                   icon: TrashIcon,
                   iconColor: 'danger',
@@ -143,16 +155,19 @@ export default function Toolbar() {
           <ToolbarButtonGroup
             actions={[
               {
+                ariaLabel: 'Upload files',
                 icon: UploadIcon,
                 isDisabled: !currentFullPath,
                 onClick: handleClickUpload,
               },
               {
+                ariaLabel: 'New folder',
                 icon: FolderPlusIcon,
-                isDisabled: !currentFullPath,
-                ref: setRefNewFolderPopup,
+                ref: refNewFolderPopup,
+                onClick: handleClickNewFolder,
               },
               {
+                ariaLabel: 'File operations',
                 icon: BellIcon,
                 ref: setRefButtonOperations,
               },
@@ -170,7 +185,11 @@ export default function Toolbar() {
       </div>
 
       <DeletePopup refTarget={refButtonDelete} />
-      <NewFolderPopup refTarget={refNewFolderPopup} />
+      <NewFolderPopup
+        refTarget={refNewFolderPopup}
+        isOpen={isNewFolderOpen}
+        onOpenChange={setIsNewFolderOpen}
+      />
       <OperationsPopup refTarget={refButtonOperations} />
     </>
   );

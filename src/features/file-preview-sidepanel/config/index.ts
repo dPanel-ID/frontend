@@ -8,6 +8,8 @@ export type PreviewConfig =
   | { kind: 'image-blob' }; // TODO
 
 export const FILEMATCH_REGISTRY: Record<string, PreviewConfig> = {
+  // Images
+  '\\.(png|jpe?g|gif|webp|svg)$': { kind: 'image-blob' },
   // Web
   '\\.m?jsx?$': openCodeEditor('javascript'),
   '\\.(d\\.)?m?tsx?$': openCodeEditor('typescript'),

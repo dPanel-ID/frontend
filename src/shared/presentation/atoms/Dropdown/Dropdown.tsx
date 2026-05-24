@@ -56,7 +56,9 @@ export default function Dropdown(props: DropdownProps) {
     };
   }, [isOpen]);
 
-  useClickOutside({ current: refDropdown }, () => onClickOutside?.());
+  useClickOutside([{ current: refDropdown }, refTarget], () =>
+    onClickOutside?.(),
+  );
 
   useLayoutEffect(() => {
     setTimeout(() => {
@@ -94,30 +96,36 @@ export default function Dropdown(props: DropdownProps) {
   if (rectTarget && rectDropdown) {
     switch (position) {
       case 'bottom':
-        calculatedY =
-          rectTarget.y + window.scrollY + rectTarget.height + gapInPx;
+        calculatedY = rectTarget.y + rectTarget.height + gapInPx;
         break;
 
       case 'top':
-        calculatedY =
-          rectTarget.y + window.scrollY - rectDropdown.height - gapInPx;
+        calculatedY = rectTarget.y - rectDropdown.height - gapInPx;
         break;
     }
 
     switch (alignment) {
       case 'left':
-        calculatedX = rectTarget.x + window.scrollX;
+        calculatedX = rectTarget.x;
         break;
 
       case 'right':
-        calculatedX =
-          rectTarget.x + window.scrollX + rectTarget.width - rectDropdown.width;
+        calculatedX = rectTarget.x + rectTarget.width - rectDropdown.width;
         break;
     }
+
+    calculatedX = Math.max(
+      8,
+      Math.min(calculatedX, window.innerWidth - rectDropdown.width - 8),
+    );
+    calculatedY = Math.max(
+      8,
+      Math.min(calculatedY, window.innerHeight - rectDropdown.height - 8),
+    );
   }
 
   const cnDropdown = cn(
-    'absolute z-50',
+    'fixed z-[1000]',
     'shadow-lg border bg-popover rounded-md',
     'transition-all duration-150 ease-out',
     !isVisible && 'opacity-0 scale-95',

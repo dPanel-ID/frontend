@@ -32,11 +32,10 @@ const BaseButton = (props: BaseButtonProps) => {
   const refTapTimeout = useRef<number | null>(null);
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
-    console.log('x');
-
     e.preventDefault();
     e.stopPropagation();
 
+    const target = e.currentTarget;
     const now = Date.now();
     const diff = now - refLastTap.current;
 
@@ -45,10 +44,10 @@ const BaseButton = (props: BaseButtonProps) => {
         clearTimeout(refTapTimeout.current);
       }
 
-      onDoubleClick?.(e);
+      onDoubleClick?.(target);
     } else {
       refTapTimeout.current = window.setTimeout(() => {
-        onClick?.(e);
+        onClick?.(target);
       }, 250);
     }
 

@@ -84,9 +84,18 @@ const xChar = (exec: boolean, setBit: boolean, letter: 's' | 't') =>
 
 export function translateUnixPermission(input: string): Permission {
   const raw = input.trim();
+  const normalizedRaw = raw.startsWith('0o') ? raw.slice(2) : raw;
 
-  if (/^[0-7]{3,4}$/.test(raw)) {
-    return parseFromOctal(raw);
+  if (/^[bcdlps-][r-][w-][xsStT-][r-][w-][xsStT-][r-][w-][xtT-]$/.test(raw)) {
+    return parseFromSymbolic(raw.slice(1));
+  }
+
+  if (/^[0-7]{3,4}$/.test(normalizedRaw)) {
+    return parseFromOctal(normalizedRaw);
+  }
+
+  if (/^[0-7]{5,6}$/.test(normalizedRaw)) {
+    return parseFromOctal(normalizedRaw.slice(-4));
   }
 
   if (/^[r-][w-][xsStT-][r-][w-][xsStT-][r-][w-][xtT-]$/.test(raw)) {

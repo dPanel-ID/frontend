@@ -8,6 +8,7 @@ export interface ToolbarButtonGroupProps {
 
 export interface Action {
   ref?: Ref<HTMLButtonElement | null>;
+  ariaLabel?: string;
   icon: (props: LucideProps) => ReactNode;
   iconColor?: 'normal' | 'danger';
   isActive?: boolean;
