@@ -37,8 +37,8 @@ export default function ModuleCard(props: Props) {
   const [responseService] = ApiService.Find.useGet({
     pageSize: 99,
     serverId,
-    moduleName: moduleInfo.id,
-    moduleType: moduleInfo.category[0],
+    moduleName: moduleInfo.installerName ?? moduleInfo.id,
+    moduleType: moduleInfo.installerType ?? moduleInfo.category[0],
     options: {
       skip: !serverId,
     },

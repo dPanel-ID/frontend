@@ -19,8 +19,8 @@ export default function SingleModule() {
   const [response, refresh] = ApiService.Find.useGet({
     pageSize: 1,
     serverId: String(serverID),
-    moduleName: moduleInfo.id,
-    moduleType: moduleInfo.category[0],
+    moduleName: moduleInfo.installerName ?? moduleInfo.id,
+    moduleType: moduleInfo.installerType ?? moduleInfo.category[0],
     options: {
       skip: !serverID,
     },
@@ -104,7 +104,10 @@ export default function SingleModule() {
               </h6>
               {renderedJSON.status === 'success' ? (
                 <div className="border bg-card rounded-lg">
-                  <textarea className="text-xs overflow-auto p-2 whitespace-pre-wrap w-full" rows={10}>
+                  <textarea
+                    className="text-xs overflow-auto p-2 whitespace-pre-wrap w-full"
+                    rows={10}
+                  >
                     {renderedJSON.rendered}
                   </textarea>
                 </div>

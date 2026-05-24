@@ -20,6 +20,46 @@ import type {
   ServerModulePlatform,
 } from '../model/types';
 
+export const SERVER_MODULE_LOGOS: Record<string, string> = {
+  adminer: LogoAdminerDBM,
+  bun: LogoBun,
+  caddy: LogoCaddyServer,
+  caddyserver: LogoCaddyServer,
+  docker: LogoDocker,
+  ffmpeg: LogoFFMPEG,
+  frankenphp: LogoFrankenPHP,
+  go: LogoGolang,
+  golang: LogoGolang,
+  mariadb: LogoMariaDB,
+  mongodb: LogoMongoDB,
+  nodejs: LogoNodejs,
+  php: LogoPHP,
+  postgresql: LogoPostgreSQL,
+  python: LogoPython,
+  redis: LogoRedis,
+  ruby: LogoRuby,
+};
+
+export function resolveServerModuleLogo(module: {
+  id?: string;
+  icon?: string;
+  logoUrl?: string;
+}) {
+  if (module.logoUrl) return module.logoUrl;
+
+  const iconKey = module.icon?.toLowerCase();
+  if (iconKey && SERVER_MODULE_LOGOS[iconKey]) {
+    return SERVER_MODULE_LOGOS[iconKey];
+  }
+
+  const idKey = module.id?.toLowerCase();
+  if (idKey && SERVER_MODULE_LOGOS[idKey]) {
+    return SERVER_MODULE_LOGOS[idKey];
+  }
+
+  return LogoDocker;
+}
+
 export const HARDCODED_SERVER_MODULES: ServerModule[] = [
   {
     category: ['language'],

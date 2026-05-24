@@ -305,5 +305,6 @@ export const PAYLOAD_REGISTRY: Record<string, PayloadFn> = {
   ffmpeg: payloadUtFFMPEG,
   docker: payloadUtDocker,
   frankenphp: payloadUtFrankenPHP,
+  caddy: payloadUtCaddyServer,
   caddyserver: payloadUtCaddyServer,
 };
