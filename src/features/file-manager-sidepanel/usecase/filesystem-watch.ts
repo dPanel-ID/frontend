@@ -71,19 +71,20 @@ export default function useFilesystemWatchUsecase() {
 
   useSubscribe(
     '#file-manager-sidepanel/filesystem-history-navigate-refresh',
-    () => {
-      if (!currentFullPath) return;
+    (payload) => {
+      const fullPath = payload?.fullPath ?? currentFullPath;
+      if (!fullPath) return;
 
       ApiFolder.Origin.$ServerId
         .fetchGet({
-          basePath: currentFullPath,
+          basePath: fullPath,
           serverId,
         })
         .then(mapResponse)
         .then((mappedResponse) => {
           emit('#file-manager-sidepanel/filesystem-[internal]-registry-add', {
             entry: mappedResponse,
-            fullPath: currentFullPath,
+            fullPath,
           });
         });
     },

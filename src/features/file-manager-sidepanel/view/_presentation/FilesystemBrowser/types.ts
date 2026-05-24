@@ -1,4 +1,4 @@
-import type { MouseEventHandler, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import type { LucideProps } from 'lucide-react';
 
@@ -12,15 +12,21 @@ export interface FilesystemBrowserProps {
   searchQuery: string;
   selectedItem?: SchemaFilesystemContent | null;
   onClickBackground?: () => void;
-  onItemClick?: (content: SchemaFilesystemContent) => void;
-  onItemDoubleClick?: (content: SchemaFilesystemContent) => void;
+  onItemClick?: (
+    content: SchemaFilesystemContent,
+    target: HTMLButtonElement,
+  ) => void;
+  onItemDoubleClick?: (
+    content: SchemaFilesystemContent,
+    target: HTMLButtonElement,
+  ) => void;
 }
 
 export interface RowItemProps {
   isSelected?: boolean;
   isOdd?: boolean;
-  onClick?: () => void;
-  onDoubleClick?: () => void;
+  onClick?: (target: HTMLButtonElement) => void;
+  onDoubleClick?: (target: HTMLButtonElement) => void;
 
   icon: (props: LucideProps) => ReactNode;
 
@@ -32,8 +38,8 @@ export interface RowItemProps {
 
 export interface GridItemProps {
   isSelected?: boolean;
-  onClick?: () => void;
-  onDoubleClick?: () => void;
+  onClick?: (target: HTMLButtonElement) => void;
+  onDoubleClick?: (target: HTMLButtonElement) => void;
   icon: (props: LucideProps) => ReactNode;
 
   contentName: string;
@@ -42,7 +48,7 @@ export interface GridItemProps {
 export type BaseButtonProps = {
   className?: string;
   children: ReactNode;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-  onDoubleClick?: MouseEventHandler<HTMLButtonElement>;
+  onClick?: (target: HTMLButtonElement) => void;
+  onDoubleClick?: (target: HTMLButtonElement) => void;
   [key: `data-${string}`]: string;
 };

@@ -8,18 +8,27 @@ import { useTheme } from '@/services/theme/model';
 
 import { usePreviewModel } from '../../model/preview';
 
-import { Failed, Loading, Unsupported } from './_Partials';
+import { Failed, Loading } from './_Partials';
 
 export default function Content() {
   const [theme] = useTheme();
 
-  const [fileContent, matchedConfig] = usePreviewModel((s) => [
+  const [fileContent, imagePreviewURL, matchedConfig] = usePreviewModel((s) => [
     s.fileContent,
+    s.imagePreviewURL,
     s.matchedConfig,
   ]);
 
-  if (!matchedConfig && fileContent.$status === 'initial') {
-    return <Unsupported />;
+  if (matchedConfig.kind === 'image-blob') {
+    return (
+      <div className="h-full overflow-auto bg-card p-4">
+        <img
+          src={imagePreviewURL}
+          alt=""
+          className="mx-auto max-h-full max-w-full object-contain"
+        />
+      </div>
+    );
   }
 
   if (fileContent.$status === 'initial' || fileContent.$status === 'loading') {
@@ -35,10 +44,7 @@ export default function Content() {
       <SyntaxHighlighter
         style={theme === 'dark' ? monokaiSublime : googlecode}
         showLineNumbers
-        language={
-          (matchedConfig?.kind === 'code' && matchedConfig.language) ||
-          undefined
-        }
+        language={matchedConfig.language}
       >
         {fileContent.content}
       </SyntaxHighlighter>

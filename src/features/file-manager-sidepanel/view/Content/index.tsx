@@ -1,9 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
+import { DownloadIcon, EyeIcon } from 'lucide-react';
 
 import type { SchemaFilesystemContent } from '@/entities/file-manager/rules/schema';
 
 import { iife } from '@/shared/libs/browser/fn';
 import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
+import { Button } from '@/shared/presentation/atoms/Button';
+import { Dropdown } from '@/shared/presentation/atoms/Dropdown';
 import { FailedState } from '@/widgets/failed-state';
 
 import { useBrowserModel } from '../../model/browser';
@@ -30,6 +34,21 @@ export default function Content() {
   ]);
 
   const [deferredSearchQuery, setDeferredSearchQuery] = useState('');
+  const [actionMenuItem, setActionMenuItem] =
+    useState<SchemaFilesystemContent | null>(null);
+  const [actionMenuTarget, setActionMenuTarget] =
+    useState<HTMLButtonElement | null>(null);
+  const [actionMenuFullPath, setActionMenuFullPath] = useState<string | null>(
+    null,
+  );
+
+  const refActionMenuTarget = useMemo(
+    () => ({ current: actionMenuTarget }),
+    [actionMenuTarget],
+  );
+
+  const isActionMenuOpen =
+    actionMenuItem?.kind === 'file' && actionMenuFullPath === currentFullPath;
 
   if (!searchQuery && deferredSearchQuery) {
     setDeferredSearchQuery('');
@@ -45,18 +64,38 @@ export default function Content() {
     };
   }, [searchQuery]);
 
-  const handleClickBrowserItem = (content: SchemaFilesystemContent) => {
+  const closeActionMenu = () => {
+    setActionMenuItem(null);
+    setActionMenuTarget(null);
+    setActionMenuFullPath(null);
+  };
+
+  const handleClickBrowserItem = (
+    content: SchemaFilesystemContent,
+    target: HTMLButtonElement,
+  ) => {
     emit('#file-manager-sidepanel/browser-select-item', content);
+
+    if (content.kind === 'file') {
+      setActionMenuTarget(target);
+      setActionMenuItem(content);
+      setActionMenuFullPath(currentFullPath);
+      return;
+    }
+
+    closeActionMenu();
   };
 
   const handleDoubleClickBrowserItem = (content: SchemaFilesystemContent) => {
+    closeActionMenu();
+
     if (content.kind === 'folder') {
       emit(
         '#file-manager-sidepanel/filesystem-history-navigate-to',
         `${currentFullPath}/${content.name}`,
       );
     } else {
-      emit('#file-manager-sidepanel/tool-selected-file-preview', null);
+      emit('#file-manager-sidepanel/tool-selected-file-preview', content);
     }
   };
 
@@ -66,10 +105,26 @@ export default function Content() {
 
   const handleClickBrowserBackground = () => {
     emit('#file-manager-sidepanel/browser-select-item', null);
+    closeActionMenu();
   };
 
   const handleClickFooterSegments = (newPath: string) => {
+    closeActionMenu();
     emit('#file-manager-sidepanel/filesystem-history-navigate-to', newPath);
+  };
+
+  const handleClickPreviewFile = () => {
+    if (!actionMenuItem || actionMenuItem.kind !== 'file') return;
+
+    emit('#file-manager-sidepanel/tool-selected-file-preview', actionMenuItem);
+    closeActionMenu();
+  };
+
+  const handleClickDownloadFile = () => {
+    if (!actionMenuItem || actionMenuItem.kind !== 'file') return;
+
+    emit('#file-manager-sidepanel/tool-selected-file-download', actionMenuItem);
+    closeActionMenu();
   };
 
   const elContent = iife(() => {
@@ -106,6 +161,39 @@ export default function Content() {
   return (
     <div className="h-full rounded-tl-xl bg-card grid grid-rows-[1fr_auto] overflow-hidden">
       {elContent}
+
+      <Dropdown
+        refTarget={refActionMenuTarget}
+        isOpen={isActionMenuOpen}
+        position="bottom"
+        alignment="left"
+        gapInPx={4}
+        onClickOutside={closeActionMenu}
+      >
+        <div className="flex w-44 flex-col gap-1 p-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="justify-start"
+            onClick={handleClickPreviewFile}
+          >
+            <EyeIcon />
+            Open
+          </Button>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="justify-start"
+            onClick={handleClickDownloadFile}
+          >
+            <DownloadIcon />
+            Download
+          </Button>
+        </div>
+      </Dropdown>
 
       <div className="min-h-12 border-t grid grid-cols-[1fr_auto] overflow-hidden overflow-x-auto w-full">
         <PathBreadcrumb

@@ -6,8 +6,8 @@ import {
   ShieldIcon,
 } from 'lucide-react';
 
-import { useToaster } from '@/services/toaster';
 import { useDevetekTranslations } from '@/services/i18n';
+import { useToaster } from '@/services/toaster';
 
 import { useFileManagerSidepanel } from '@/features/file-manager-sidepanel';
 import { useFilePreviewSidepanel } from '@/features/file-preview-sidepanel';

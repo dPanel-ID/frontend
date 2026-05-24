@@ -33,6 +33,7 @@ export default function ToolbarButtonGroup(props: Props) {
       {actions.map((action, index) => {
         const {
           ref,
+          ariaLabel,
           isActive,
           icon: Icon,
           iconColor = 'normal',
@@ -68,6 +69,9 @@ export default function ToolbarButtonGroup(props: Props) {
           <Fragment key={index}>
             <button
               ref={ref}
+              type="button"
+              aria-label={ariaLabel}
+              title={ariaLabel}
               disabled={isDisabled}
               data-l={index === 0}
               data-r={index === actions.length - 1}

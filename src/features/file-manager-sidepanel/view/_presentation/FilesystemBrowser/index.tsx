@@ -51,18 +51,24 @@ export default function FilesystemBrowser(props: Props) {
           {folders.map((folder) => {
             const { name } = folder;
 
-            const handleClick = () => {
-              onItemClick?.({
-                ...folder,
-                kind: 'folder',
-              });
+            const handleClick = (target: HTMLButtonElement) => {
+              onItemClick?.(
+                {
+                  ...folder,
+                  kind: 'folder',
+                },
+                target,
+              );
             };
 
-            const handleDoubleClick = () => {
-              onItemDoubleClick?.({
-                ...folder,
-                kind: 'folder',
-              });
+            const handleDoubleClick = (target: HTMLButtonElement) => {
+              onItemDoubleClick?.(
+                {
+                  ...folder,
+                  kind: 'folder',
+                },
+                target,
+              );
             };
 
             return (
@@ -79,18 +85,24 @@ export default function FilesystemBrowser(props: Props) {
           {files.map((file) => {
             const { name } = file;
 
-            const handleClick = () => {
-              onItemClick?.({
-                ...file,
-                kind: 'file',
-              });
+            const handleClick = (target: HTMLButtonElement) => {
+              onItemClick?.(
+                {
+                  ...file,
+                  kind: 'file',
+                },
+                target,
+              );
             };
 
-            const handleDoubleClick = () => {
-              onItemDoubleClick?.({
-                ...file,
-                kind: 'file',
-              });
+            const handleDoubleClick = (target: HTMLButtonElement) => {
+              onItemDoubleClick?.(
+                {
+                  ...file,
+                  kind: 'file',
+                },
+                target,
+              );
             };
 
             const Icon = getFileIconFromFilename(name);
@@ -121,18 +133,24 @@ export default function FilesystemBrowser(props: Props) {
         {folders.map((folder, index) => {
           const { name, timestamp } = folder;
 
-          const handleClick = () => {
-            onItemClick?.({
-              ...folder,
-              kind: 'folder',
-            });
+          const handleClick = (target: HTMLButtonElement) => {
+            onItemClick?.(
+              {
+                ...folder,
+                kind: 'folder',
+              },
+              target,
+            );
           };
 
-          const handleDoubleClick = () => {
-            onItemDoubleClick?.({
-              ...folder,
-              kind: 'folder',
-            });
+          const handleDoubleClick = (target: HTMLButtonElement) => {
+            onItemDoubleClick?.(
+              {
+                ...folder,
+                kind: 'folder',
+              },
+              target,
+            );
           };
 
           return (
@@ -152,18 +170,24 @@ export default function FilesystemBrowser(props: Props) {
         {files.map((file, index) => {
           const { name, size, timestamp } = file;
 
-          const handleClick = () => {
-            onItemClick?.({
-              ...file,
-              kind: 'file',
-            });
+          const handleClick = (target: HTMLButtonElement) => {
+            onItemClick?.(
+              {
+                ...file,
+                kind: 'file',
+              },
+              target,
+            );
           };
 
-          const handleDoubleClick = () => {
-            onItemDoubleClick?.({
-              ...file,
-              kind: 'file',
-            });
+          const handleDoubleClick = (target: HTMLButtonElement) => {
+            onItemDoubleClick?.(
+              {
+                ...file,
+                kind: 'file',
+              },
+              target,
+            );
           };
 
           const augmentedIndex = isEven ? index : index + 1;
