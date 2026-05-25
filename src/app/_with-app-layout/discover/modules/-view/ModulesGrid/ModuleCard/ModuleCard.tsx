@@ -1,12 +1,9 @@
 'use client';
 
-import { groupSubmodulesGetVersions } from '@/entities/server-modules/model/groupBy';
 import type { ServerModule } from '@/entities/server-modules/model/types';
 
 import { useServerModulesDetailModal } from '@/features/server-modules-detail-modal';
 
-import { ApiService } from '@/shared/api';
-import { iife } from '@/shared/libs/browser/fn';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Card } from '@/shared/presentation/atoms/Card';
 
@@ -34,26 +31,11 @@ export default function ModuleCard(props: Props) {
     });
   };
 
-  const [responseService] = ApiService.Find.useGet({
-    pageSize: 99,
-    serverId,
-    moduleName: moduleInfo.installerName ?? moduleInfo.id,
-    moduleType: moduleInfo.installerType ?? moduleInfo.category[0],
-    options: {
-      skip: !serverId,
-    },
-  });
-
-  const installedModuleID = iife(() => {
-    return responseService.$status === 'success' &&
-      Number(responseService.services?.length) > 0
-      ? (responseService.services?.[0]?.id ?? -1)
-      : -1;
-  });
-
+  const installedModuleID = moduleInfo.moduleID ?? -1;
+  const isInstalled = moduleInfo.installationStatus === 'installed';
   const versions =
-    responseService.$status === 'success'
-      ? groupSubmodulesGetVersions(responseService.services)
+    moduleInfo.installation?.module_source_commit != null
+      ? [{ version: moduleInfo.installation.module_source_commit.slice(0, 7) }]
       : [];
 
   return (
@@ -63,10 +45,7 @@ export default function ModuleCard(props: Props) {
           moduleName={moduleInfo.name}
           moduleDescription={moduleInfo.description}
           moduleIcon={moduleInfo.logoUrl}
-          isInstalled={
-            responseService.$status === 'success' &&
-            Number(responseService.services?.length) > 0
-          }
+          isInstalled={isInstalled}
         />
 
         {versions.length > 0 && <InstalledVersions versions={versions} />}

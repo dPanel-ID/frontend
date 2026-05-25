@@ -6,6 +6,13 @@ import { Button } from '@/shared/presentation/atoms/Button';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/presentation/atoms/Select';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { TextArea } from '@/shared/presentation/atoms/TextArea';
 import { FailedState } from '@/widgets/failed-state';
@@ -165,7 +172,23 @@ export default function Installation() {
             <span className="text-xs text-primary/55">{input.description}</span>
           )}
 
-          {input.type === 'boolean' ? (
+          {input.options?.length ? (
+            <Select
+              value={String(value)}
+              onValueChange={(next) => handleChange(input.name, next)}
+            >
+              <SelectTrigger className="bg-card">
+                <SelectValue placeholder="Select option" />
+              </SelectTrigger>
+              <SelectContent>
+                {input.options.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : input.type === 'boolean' ? (
             <div className="flex items-center gap-2 rounded-lg border bg-background px-3 py-2">
               <Checkbox
                 checked={Boolean(value)}

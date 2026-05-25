@@ -31,9 +31,62 @@ export interface ModuleCatalogItemV1 {
   platforms?: string[];
   icon?: string;
   icon_url?: string;
+  install_strategy?: string;
+  instance_key?: {
+    template?: string;
+    fields?: string[];
+  };
   supported: boolean;
   unsupported_reasons?: string[];
   actions?: string[];
+  installation?: ModuleInstallationSummaryV1;
+  installations?: ModuleInstallationSummaryV1[];
+}
+
+export interface ModuleInstallationSummaryV1 {
+  installation_key?: string;
+  install_strategy?: string;
+  status: string;
+  source?: string;
+  module_ref?: string;
+  module_commit?: string;
+  module_source_commit?: string;
+  variables_hash?: string;
+  last_error?: string;
+  installed_at?: string;
+  last_observed_at?: string;
+  outdated?: boolean;
+}
+
+export interface ModuleInstallationV1 extends ModuleInstallationSummaryV1 {
+  id: string;
+  workspace_id?: string;
+  scope_type: string;
+  scope_id: string;
+  machine_id?: string;
+  hostgroup_id?: string;
+  installation_key?: string;
+  install_strategy?: string;
+  inventory_path?: string;
+  module_name: string;
+  name: string;
+  display_name?: string;
+  module_source_owner?: string;
+  module_source_repo?: string;
+  module_source_ref?: string;
+  playbook_path?: string;
+  roles?: string[];
+  variables?: Record<string, unknown>;
+  last_execution_id?: string;
+  last_command_id?: string;
+  last_verified_at?: string;
+  updated_at?: string;
+}
+
+export interface ServerModuleInventoryV1 {
+  modules?: ModuleInstallationV1[];
+  refreshed: boolean;
+  observed_at?: string;
 }
 
 export interface ModuleSourceV1 {

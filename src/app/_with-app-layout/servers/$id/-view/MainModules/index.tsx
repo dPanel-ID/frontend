@@ -1,12 +1,15 @@
-import { PuzzleIcon } from 'lucide-react';
+import { useState } from 'react';
+
+import { PuzzleIcon, RefreshCwIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
+import { useToaster } from '@/services/toaster';
 
-import { excludeNully } from '@/shared/libs/browser/typeguards';
 import {
   couple,
   guardedSelects,
 } from '@/shared/libs/react-factories/guardedSelect';
+import { Button } from '@/shared/presentation/atoms/Button';
 import CardSectionTitled from '@/shared/presentation/molecules/CardSectionTitled';
 
 import { useEmit } from '../../-model/events';
@@ -19,27 +22,41 @@ const [guard, useServerModules] = guardedSelects({
   initialIsLoading: true,
   fallbackLoading: UIStates.Loading,
   fallbackError: UIStates.Failed,
-})(couple(useServerDataModel, (s) => s.modules));
+})(couple(useServerDataModel, (s: any) => s.modules));
 
 export default guard(function MainModules() {
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const emit = useEmit();
   const [modules] = useServerModules((s) => [s.modules]);
+  const [refreshModuleInventory] = useServerDataModel((s) => [
+    s.refreshModuleInventory,
+  ]);
+  const [openToaster] = useToaster();
 
   const t = useDevetekTranslations();
 
-  const mappedModuleIdentifiers = (modules ?? [])
-    .map((service) => {
-      if (!service.installer_name || !service.installer_type) return null;
+  const handleClickRefresh = async () => {
+    setIsRefreshing(true);
+    const response = await refreshModuleInventory();
+    setIsRefreshing(false);
+    if (response.$status === 'failed') {
+      openToaster({
+        variant: 'error',
+        title: <>Refresh failed</>,
+        message:
+          'message' in response.error
+            ? response.error.message
+            : 'Unable to refresh server modules.',
+      });
+      return;
+    }
+    openToaster({
+      variant: 'success',
+      message: <>Server modules refreshed.</>,
+    });
+  };
 
-      return [
-        service.id ?? -1,
-        service.installer_name,
-        service.installer_type,
-      ] as const;
-    })
-    .filter(excludeNully);
-
-  if (mappedModuleIdentifiers.length < 1) {
+  if (!modules || modules.length < 1) {
     return <UIStates.Empty />;
   }
 
@@ -58,8 +75,24 @@ export default guard(function MainModules() {
         label: t('common.actions.discover'),
         onClick: handleClickDiscover,
       }}
+      toolbarContent={
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="outline" onClick={handleClickDiscover}>
+            {t('common.actions.discover')}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={isRefreshing}
+            onClick={handleClickRefresh}
+          >
+            <RefreshCwIcon className="size-4" />
+            Refresh
+          </Button>
+        </div>
+      }
     >
-      <ModulesList modules={mappedModuleIdentifiers} />
+      <ModulesList modules={modules} />
     </CardSectionTitled>
   );
 });

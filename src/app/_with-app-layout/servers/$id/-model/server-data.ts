@@ -31,12 +31,20 @@ export const [ServerDataModelProvider, useServerDataModel] = buildSelector(
       },
     });
 
-  const [responseModules, refreshModules] = ApiService.Installed.useGet({
-    machineID: Number(serverId),
+  const [responseModules, refreshModules] = ApiServer.Modules.$Id.useGet({
+    serverId: String(serverId),
     options: {
       skip: responseServerDetail.$status !== 'success',
     },
   });
+
+  const refreshModuleInventory = async () => {
+    const result = await ApiServer.Modules.$Id.Refresh.doPost({
+      serverId: String(serverId),
+    });
+    refreshModules();
+    return result;
+  };
 
   useSubscribe('@servers::detail/server-detail-refresh', () =>
     refreshServerDetail(),
@@ -55,6 +63,7 @@ export const [ServerDataModelProvider, useServerDataModel] = buildSelector(
     refreshServerDetail,
     refreshServices,
     refreshModules,
+    refreshModuleInventory,
     detail: useAdapter(responseServerDetail, (raw) =>
       AdapterServerFromDto.toServerDetail(raw).unwrap(),
     ),
@@ -68,13 +77,11 @@ export const [ServerDataModelProvider, useServerDataModel] = buildSelector(
         ),
       };
     }),
-    // TODO: Revamp Modules Entity
     modules: useAdapter(responseModules, (raw) => {
-      const { pagination, services: modules } = raw;
-
       return {
-        pagination,
-        modules,
+        modules: raw.modules ?? [],
+        refreshed: raw.refreshed,
+        observedAt: raw.observed_at,
       };
     }),
   };

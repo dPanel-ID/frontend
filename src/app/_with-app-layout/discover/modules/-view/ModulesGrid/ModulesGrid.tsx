@@ -10,7 +10,7 @@ import {
 } from '@/entities/server-modules/config/registry';
 import type { ServerModule } from '@/entities/server-modules/model/types';
 
-import { ApiModule } from '@/shared/api';
+import { ApiModule, ApiServer } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Input } from '@/shared/presentation/atoms/Input';
@@ -90,6 +90,8 @@ function toServerModule(
     source: 'catalog',
     refName,
     resolvedCommit,
+    installation: module.installation,
+    installationStatus: module.installation?.status,
   };
 }
 
@@ -97,9 +99,10 @@ export default function ModulesGrid() {
   const { serverID } = useFiltersContext();
   const [selectedModuleIds, setSelectedModuleIds] = useState<string[]>([]);
   const [playbookName, setPlaybookName] = useState('Custom server playbook');
+  const [isRefreshingInventory, setIsRefreshingInventory] = useState(false);
   const [openDialog] = useDialog();
   const [openToaster] = useToaster();
-  const [response] = ApiModule.Find.useGet({
+  const [response, refreshCatalog] = ApiModule.Find.useGet({
     serverId: serverID ? String(serverID) : undefined,
   });
 
@@ -200,8 +203,36 @@ export default function ModulesGrid() {
             message: <>Custom playbook was queued successfully.</>,
           });
           setSelectedModuleIds([]);
+          refreshCatalog();
         },
       },
+    });
+  };
+
+  const handleRefreshInventory = async () => {
+    if (!serverID) return;
+    setIsRefreshingInventory(true);
+    const refreshResponse = await ApiServer.Modules.$Id.Refresh.doPost({
+      serverId: String(serverID),
+    });
+    setIsRefreshingInventory(false);
+
+    if (refreshResponse.$status === 'failed') {
+      openToaster({
+        variant: 'error',
+        title: <>Refresh failed</>,
+        message:
+          'message' in refreshResponse.error
+            ? refreshResponse.error.message
+            : 'Unable to refresh server modules.',
+      });
+      return;
+    }
+
+    refreshCatalog();
+    openToaster({
+      variant: 'success',
+      message: <>Server modules refreshed.</>,
     });
   };
 
@@ -247,6 +278,21 @@ export default function ModulesGrid() {
             onClick={handleRunCustomPlaybook}
           >
             Run playbook ({selectedModules.length})
+          </Button>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-background px-3 py-2">
+          <p className="text-xs text-primary/60">
+            Refresh reads module metadata from the selected server through the
+            active agent.
+          </p>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={!serverID || isRefreshingInventory}
+            onClick={handleRefreshInventory}
+          >
+            Refresh installed modules
           </Button>
         </div>
 
