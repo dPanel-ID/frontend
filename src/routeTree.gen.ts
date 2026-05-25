@@ -20,9 +20,6 @@ import { Route as WithAppLayoutApplicationsIndexRouteImport } from './app/_with-
 import { Route as WithAppLayoutTeamsIdIndexRouteImport } from './app/_with-app-layout/teams/$id/index'
 import { Route as WithAppLayoutServersCreateIndexRouteImport } from './app/_with-app-layout/servers/create/index'
 import { Route as WithAppLayoutServersIdIndexRouteImport } from './app/_with-app-layout/servers/$id/index'
-import { Route as WithAppLayoutPawonServiceIndexRouteImport } from './app/_with-app-layout/pawon/service/index'
-import { Route as WithAppLayoutPawonPaymentIndexRouteImport } from './app/_with-app-layout/pawon/payment/index'
-import { Route as WithAppLayoutPawonPackageIndexRouteImport } from './app/_with-app-layout/pawon/package/index'
 import { Route as WithAppLayoutBackendLoadBalancersIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/index'
 import { Route as WithAppLayoutBackendDomainIndexRouteImport } from './app/_with-app-layout/backend/domain/index'
 import { Route as WithAppLayoutBackendDatabaseIndexRouteImport } from './app/_with-app-layout/backend/database/index'
@@ -31,7 +28,6 @@ import { Route as WithAppLayoutApplicationsCreateIndexRouteImport } from './app/
 import { Route as WithAppLayoutApplicationsIdIndexRouteImport } from './app/_with-app-layout/applications/$id/index'
 import { Route as WithAppLayoutServersCreateVmManualIndexRouteImport } from './app/_with-app-layout/servers/create/vm-manual/index'
 import { Route as WithAppLayoutServersCreateVmInstantIndexRouteImport } from './app/_with-app-layout/servers/create/vm-instant/index'
-import { Route as WithAppLayoutPawonPackageIdIndexRouteImport } from './app/_with-app-layout/pawon/package/$id/index'
 import { Route as WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/index'
 import { Route as WithAppLayoutBackendSecretManagersSshKeyIdIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/$id/index'
 
@@ -96,24 +92,6 @@ const WithAppLayoutServersIdIndexRoute =
     path: '/servers/$id/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutPawonServiceIndexRoute =
-  WithAppLayoutPawonServiceIndexRouteImport.update({
-    id: '/pawon/service/',
-    path: '/pawon/service/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutPawonPaymentIndexRoute =
-  WithAppLayoutPawonPaymentIndexRouteImport.update({
-    id: '/pawon/payment/',
-    path: '/pawon/payment/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutPawonPackageIndexRoute =
-  WithAppLayoutPawonPackageIndexRouteImport.update({
-    id: '/pawon/package/',
-    path: '/pawon/package/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
 const WithAppLayoutBackendLoadBalancersIndexRoute =
   WithAppLayoutBackendLoadBalancersIndexRouteImport.update({
     id: '/backend/load-balancers/',
@@ -162,12 +140,6 @@ const WithAppLayoutServersCreateVmInstantIndexRoute =
     path: '/servers/create/vm-instant/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutPawonPackageIdIndexRoute =
-  WithAppLayoutPawonPackageIdIndexRouteImport.update({
-    id: '/pawon/package/$id/',
-    path: '/pawon/package/$id/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
 const WithAppLayoutBackendSecretManagersSshKeyIndexRoute =
   WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport.update({
     id: '/backend/secret-managers/ssh-key/',
@@ -195,14 +167,10 @@ export interface FileRoutesByFullPath {
   '/backend/database': typeof WithAppLayoutBackendDatabaseIndexRoute
   '/backend/domain': typeof WithAppLayoutBackendDomainIndexRoute
   '/backend/load-balancers': typeof WithAppLayoutBackendLoadBalancersIndexRoute
-  '/pawon/package': typeof WithAppLayoutPawonPackageIndexRoute
-  '/pawon/payment': typeof WithAppLayoutPawonPaymentIndexRoute
-  '/pawon/service': typeof WithAppLayoutPawonServiceIndexRoute
   '/servers/$id': typeof WithAppLayoutServersIdIndexRoute
   '/servers/create': typeof WithAppLayoutServersCreateIndexRoute
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
   '/backend/secret-managers/ssh-key': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
-  '/pawon/package/$id': typeof WithAppLayoutPawonPackageIdIndexRoute
   '/servers/create/vm-instant': typeof WithAppLayoutServersCreateVmInstantIndexRoute
   '/servers/create/vm-manual': typeof WithAppLayoutServersCreateVmManualIndexRoute
   '/backend/secret-managers/ssh-key/$id': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
@@ -221,14 +189,10 @@ export interface FileRoutesByTo {
   '/backend/database': typeof WithAppLayoutBackendDatabaseIndexRoute
   '/backend/domain': typeof WithAppLayoutBackendDomainIndexRoute
   '/backend/load-balancers': typeof WithAppLayoutBackendLoadBalancersIndexRoute
-  '/pawon/package': typeof WithAppLayoutPawonPackageIndexRoute
-  '/pawon/payment': typeof WithAppLayoutPawonPaymentIndexRoute
-  '/pawon/service': typeof WithAppLayoutPawonServiceIndexRoute
   '/servers/$id': typeof WithAppLayoutServersIdIndexRoute
   '/servers/create': typeof WithAppLayoutServersCreateIndexRoute
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
   '/backend/secret-managers/ssh-key': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
-  '/pawon/package/$id': typeof WithAppLayoutPawonPackageIdIndexRoute
   '/servers/create/vm-instant': typeof WithAppLayoutServersCreateVmInstantIndexRoute
   '/servers/create/vm-manual': typeof WithAppLayoutServersCreateVmManualIndexRoute
   '/backend/secret-managers/ssh-key/$id': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
@@ -249,14 +213,10 @@ export interface FileRoutesById {
   '/_with-app-layout/backend/database/': typeof WithAppLayoutBackendDatabaseIndexRoute
   '/_with-app-layout/backend/domain/': typeof WithAppLayoutBackendDomainIndexRoute
   '/_with-app-layout/backend/load-balancers/': typeof WithAppLayoutBackendLoadBalancersIndexRoute
-  '/_with-app-layout/pawon/package/': typeof WithAppLayoutPawonPackageIndexRoute
-  '/_with-app-layout/pawon/payment/': typeof WithAppLayoutPawonPaymentIndexRoute
-  '/_with-app-layout/pawon/service/': typeof WithAppLayoutPawonServiceIndexRoute
   '/_with-app-layout/servers/$id/': typeof WithAppLayoutServersIdIndexRoute
   '/_with-app-layout/servers/create/': typeof WithAppLayoutServersCreateIndexRoute
   '/_with-app-layout/teams/$id/': typeof WithAppLayoutTeamsIdIndexRoute
   '/_with-app-layout/backend/secret-managers/ssh-key/': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
-  '/_with-app-layout/pawon/package/$id/': typeof WithAppLayoutPawonPackageIdIndexRoute
   '/_with-app-layout/servers/create/vm-instant/': typeof WithAppLayoutServersCreateVmInstantIndexRoute
   '/_with-app-layout/servers/create/vm-manual/': typeof WithAppLayoutServersCreateVmManualIndexRoute
   '/_with-app-layout/backend/secret-managers/ssh-key/$id/': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
@@ -277,14 +237,10 @@ export interface FileRouteTypes {
     | '/backend/database'
     | '/backend/domain'
     | '/backend/load-balancers'
-    | '/pawon/package'
-    | '/pawon/payment'
-    | '/pawon/service'
     | '/servers/$id'
     | '/servers/create'
     | '/teams/$id'
     | '/backend/secret-managers/ssh-key'
-    | '/pawon/package/$id'
     | '/servers/create/vm-instant'
     | '/servers/create/vm-manual'
     | '/backend/secret-managers/ssh-key/$id'
@@ -303,14 +259,10 @@ export interface FileRouteTypes {
     | '/backend/database'
     | '/backend/domain'
     | '/backend/load-balancers'
-    | '/pawon/package'
-    | '/pawon/payment'
-    | '/pawon/service'
     | '/servers/$id'
     | '/servers/create'
     | '/teams/$id'
     | '/backend/secret-managers/ssh-key'
-    | '/pawon/package/$id'
     | '/servers/create/vm-instant'
     | '/servers/create/vm-manual'
     | '/backend/secret-managers/ssh-key/$id'
@@ -330,14 +282,10 @@ export interface FileRouteTypes {
     | '/_with-app-layout/backend/database/'
     | '/_with-app-layout/backend/domain/'
     | '/_with-app-layout/backend/load-balancers/'
-    | '/_with-app-layout/pawon/package/'
-    | '/_with-app-layout/pawon/payment/'
-    | '/_with-app-layout/pawon/service/'
     | '/_with-app-layout/servers/$id/'
     | '/_with-app-layout/servers/create/'
     | '/_with-app-layout/teams/$id/'
     | '/_with-app-layout/backend/secret-managers/ssh-key/'
-    | '/_with-app-layout/pawon/package/$id/'
     | '/_with-app-layout/servers/create/vm-instant/'
     | '/_with-app-layout/servers/create/vm-manual/'
     | '/_with-app-layout/backend/secret-managers/ssh-key/$id/'
@@ -428,27 +376,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithAppLayoutServersIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/pawon/service/': {
-      id: '/_with-app-layout/pawon/service/'
-      path: '/pawon/service'
-      fullPath: '/pawon/service'
-      preLoaderRoute: typeof WithAppLayoutPawonServiceIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/pawon/payment/': {
-      id: '/_with-app-layout/pawon/payment/'
-      path: '/pawon/payment'
-      fullPath: '/pawon/payment'
-      preLoaderRoute: typeof WithAppLayoutPawonPaymentIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/pawon/package/': {
-      id: '/_with-app-layout/pawon/package/'
-      path: '/pawon/package'
-      fullPath: '/pawon/package'
-      preLoaderRoute: typeof WithAppLayoutPawonPackageIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
     '/_with-app-layout/backend/load-balancers/': {
       id: '/_with-app-layout/backend/load-balancers/'
       path: '/backend/load-balancers'
@@ -505,13 +432,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithAppLayoutServersCreateVmInstantIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/pawon/package/$id/': {
-      id: '/_with-app-layout/pawon/package/$id/'
-      path: '/pawon/package/$id'
-      fullPath: '/pawon/package/$id'
-      preLoaderRoute: typeof WithAppLayoutPawonPackageIdIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
     '/_with-app-layout/backend/secret-managers/ssh-key/': {
       id: '/_with-app-layout/backend/secret-managers/ssh-key/'
       path: '/backend/secret-managers/ssh-key'
@@ -541,14 +461,10 @@ interface WithAppLayoutRouteRouteChildren {
   WithAppLayoutBackendDatabaseIndexRoute: typeof WithAppLayoutBackendDatabaseIndexRoute
   WithAppLayoutBackendDomainIndexRoute: typeof WithAppLayoutBackendDomainIndexRoute
   WithAppLayoutBackendLoadBalancersIndexRoute: typeof WithAppLayoutBackendLoadBalancersIndexRoute
-  WithAppLayoutPawonPackageIndexRoute: typeof WithAppLayoutPawonPackageIndexRoute
-  WithAppLayoutPawonPaymentIndexRoute: typeof WithAppLayoutPawonPaymentIndexRoute
-  WithAppLayoutPawonServiceIndexRoute: typeof WithAppLayoutPawonServiceIndexRoute
   WithAppLayoutServersIdIndexRoute: typeof WithAppLayoutServersIdIndexRoute
   WithAppLayoutServersCreateIndexRoute: typeof WithAppLayoutServersCreateIndexRoute
   WithAppLayoutTeamsIdIndexRoute: typeof WithAppLayoutTeamsIdIndexRoute
   WithAppLayoutBackendSecretManagersSshKeyIndexRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
-  WithAppLayoutPawonPackageIdIndexRoute: typeof WithAppLayoutPawonPackageIdIndexRoute
   WithAppLayoutServersCreateVmInstantIndexRoute: typeof WithAppLayoutServersCreateVmInstantIndexRoute
   WithAppLayoutServersCreateVmManualIndexRoute: typeof WithAppLayoutServersCreateVmManualIndexRoute
   WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
@@ -570,15 +486,11 @@ const WithAppLayoutRouteRouteChildren: WithAppLayoutRouteRouteChildren = {
   WithAppLayoutBackendDomainIndexRoute: WithAppLayoutBackendDomainIndexRoute,
   WithAppLayoutBackendLoadBalancersIndexRoute:
     WithAppLayoutBackendLoadBalancersIndexRoute,
-  WithAppLayoutPawonPackageIndexRoute: WithAppLayoutPawonPackageIndexRoute,
-  WithAppLayoutPawonPaymentIndexRoute: WithAppLayoutPawonPaymentIndexRoute,
-  WithAppLayoutPawonServiceIndexRoute: WithAppLayoutPawonServiceIndexRoute,
   WithAppLayoutServersIdIndexRoute: WithAppLayoutServersIdIndexRoute,
   WithAppLayoutServersCreateIndexRoute: WithAppLayoutServersCreateIndexRoute,
   WithAppLayoutTeamsIdIndexRoute: WithAppLayoutTeamsIdIndexRoute,
   WithAppLayoutBackendSecretManagersSshKeyIndexRoute:
     WithAppLayoutBackendSecretManagersSshKeyIndexRoute,
-  WithAppLayoutPawonPackageIdIndexRoute: WithAppLayoutPawonPackageIdIndexRoute,
   WithAppLayoutServersCreateVmInstantIndexRoute:
     WithAppLayoutServersCreateVmInstantIndexRoute,
   WithAppLayoutServersCreateVmManualIndexRoute:
