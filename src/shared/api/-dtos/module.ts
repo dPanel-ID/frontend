@@ -70,6 +70,7 @@ export interface ModuleActionV1 {
   playbook: string;
   confirm?: boolean;
   risk?: string;
+  roles?: string[];
 }
 
 export interface ModuleCatalogDetailV1 extends ModuleCatalogItemV1 {

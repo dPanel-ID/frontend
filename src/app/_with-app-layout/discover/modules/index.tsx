@@ -17,8 +17,8 @@ function DiscoverModulesPage() {
   return (
     <>
       <PageHeader
-        title="Modules Discovery"
-        description="Discover tons of modules for your server."
+        title="Server Roles"
+        description="Install ready-made capabilities or run a custom playbook on a selected server."
         heroIcon={PuzzleIcon}
       />
 

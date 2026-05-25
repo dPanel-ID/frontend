@@ -1,4 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+
+import { useDialog } from '@/services/dialog';
+import { useToaster } from '@/services/toaster';
 
 import {
   HARDCODED_SERVER_MODULES,
@@ -9,6 +12,8 @@ import type { ServerModule } from '@/entities/server-modules/model/types';
 
 import { ApiModule } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
+import { Button } from '@/shared/presentation/atoms/Button';
+import { Input } from '@/shared/presentation/atoms/Input';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { FailedState } from '@/widgets/failed-state';
 
@@ -90,6 +95,10 @@ function toServerModule(
 
 export default function ModulesGrid() {
   const { serverID } = useFiltersContext();
+  const [selectedModuleIds, setSelectedModuleIds] = useState<string[]>([]);
+  const [playbookName, setPlaybookName] = useState('Custom server playbook');
+  const [openDialog] = useDialog();
+  const [openToaster] = useToaster();
   const [response] = ApiModule.Find.useGet({
     serverId: serverID ? String(serverID) : undefined,
   });
@@ -131,6 +140,71 @@ export default function ModulesGrid() {
     });
   }, [groupedModules]);
 
+  const selectedModules = useMemo(() => {
+    const selected = new Set(selectedModuleIds);
+    return modules.filter((module) => selected.has(module.id));
+  }, [modules, selectedModuleIds]);
+
+  const handleTogglePlaybookModule = (moduleId: string) => {
+    setSelectedModuleIds((current) => {
+      if (current.includes(moduleId)) {
+        return current.filter((id) => id !== moduleId);
+      }
+      return [...current, moduleId];
+    });
+  };
+
+  const handleRunCustomPlaybook = () => {
+    if (!serverID || selectedModules.length === 0 || !catalog) return;
+
+    openDialog({
+      title: 'Run custom playbook',
+      content: (
+        <>
+          Run {selectedModules.length} selected role
+          {selectedModules.length > 1 ? 's' : ''} on this server?
+        </>
+      ),
+      variant: 'info',
+      actions: {
+        variant: 'YesNo',
+        yes: async () => {
+          const runResponse = await ApiModule.Custom.Run.doPost({
+            payload: {
+              server_id: String(serverID),
+              name: playbookName,
+              ref: {
+                name: catalog.repository.ref.name,
+                expected_commit: catalog.repository.ref.resolved_commit,
+              },
+              roles: selectedModules.map((module) => ({
+                name: module.id,
+              })),
+            },
+          });
+
+          if (runResponse.$status === 'failed') {
+            openToaster({
+              variant: 'error',
+              title: <>Failed to run custom playbook</>,
+              message:
+                'message' in runResponse.error
+                  ? runResponse.error.message
+                  : 'Unable to start the playbook.',
+            });
+            return;
+          }
+
+          openToaster({
+            variant: 'success',
+            message: <>Custom playbook was queued successfully.</>,
+          });
+          setSelectedModuleIds([]);
+        },
+      },
+    });
+  };
+
   if (response.$status === 'loading' && !catalog) {
     return (
       <div className="py-10 flex justify-center">
@@ -153,6 +227,43 @@ export default function ModulesGrid() {
 
   return (
     <div className="flex flex-col gap-6">
+      <div className="rounded-xl border bg-card p-4 flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
+          <h3 className="text-base font-bold text-primary">Custom Playbook</h3>
+          <p className="text-sm text-primary/60">
+            Select several roles, give the playbook a simple name, then run them
+            in one ordered server task.
+          </p>
+        </div>
+
+        <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+          <Input
+            value={playbookName}
+            onChange={(event) => setPlaybookName(event.target.value)}
+            placeholder="Custom server playbook"
+          />
+          <Button
+            disabled={!serverID || selectedModules.length === 0}
+            onClick={handleRunCustomPlaybook}
+          >
+            Run playbook ({selectedModules.length})
+          </Button>
+        </div>
+
+        {selectedModules.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {selectedModules.map((module) => (
+              <span
+                key={module.id}
+                className="rounded-md bg-background px-2 py-1 text-xs font-medium text-primary/70"
+              >
+                {module.name}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
       {categories.map((category) => {
         const modulesInCategory = groupedModules[category] ?? [];
         const name = CATEGORY_LABELS.get(category) ?? titleize(category);
@@ -164,7 +275,11 @@ export default function ModulesGrid() {
               {modulesInCategory.map((mod) => {
                 return (
                   <ModulesGridLayout.Item key={mod.id}>
-                    <ModuleCard moduleInfo={mod} />
+                    <ModuleCard
+                      moduleInfo={mod}
+                      selectedForPlaybook={selectedModuleIds.includes(mod.id)}
+                      onTogglePlaybook={handleTogglePlaybookModule}
+                    />
                   </ModulesGridLayout.Item>
                 );
               })}

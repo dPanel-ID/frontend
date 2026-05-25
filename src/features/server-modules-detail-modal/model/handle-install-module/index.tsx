@@ -1,10 +1,21 @@
 import { useDialog } from '@/services/dialog';
 import { useToaster } from '@/services/toaster';
 
-import { ApiService } from '@/shared/api';
+import { ApiModule } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import { useBaseContext } from '../../config/base-context';
+
+interface InstallModuleParams {
+  action: string;
+  actionTitle?: string;
+  serverID: string;
+  variables: Record<string, unknown>;
+  ref?: {
+    name?: string;
+    expected_commit?: string;
+  };
+}
 
 export default function useHandleInstallModule() {
   const [openDialog] = useDialog();
@@ -12,53 +23,51 @@ export default function useHandleInstallModule() {
 
   const [openToaster] = useToaster();
 
-  const installModule = useHandler(
-    (version: string, configuration: Record<string, unknown>) => {
-      openDialog({
-        title: 'Install module',
-        content: (
-          <>
-            Are you sure you want to install module {moduleInfo.name} version{' '}
-            {version}?
-          </>
-        ),
-        variant: 'info',
-        actions: {
-          variant: 'YesNo',
-          yes: async () => {
-            const response = await ApiService.Create.doPost({
-              payload: {
-                ...configuration,
-              },
-            });
+  const installModule = useHandler((params: InstallModuleParams) => {
+    const actionTitle = params.actionTitle || params.action;
+    openDialog({
+      title: 'Install role',
+      content: (
+        <>
+          Run {actionTitle} for {moduleInfo.name} on the selected server?
+        </>
+      ),
+      variant: 'info',
+      actions: {
+        variant: 'YesNo',
+        yes: async () => {
+          const response = await ApiModule.Action.$Name.$Action.Run.doPost({
+            name: moduleInfo.id,
+            action: params.action,
+            payload: {
+              server_id: params.serverID,
+              variables: params.variables,
+              ref: params.ref,
+            },
+          });
 
-            if (response.$status === 'failed') {
-              openToaster({
-                variant: 'error',
-                title: (
-                  <>
-                    Failed to install module {moduleInfo.name} version {version}
-                  </>
-                ),
-                message: response.error.message,
-              });
-              return;
-            }
-
+          if (response.$status === 'failed') {
             openToaster({
-              variant: 'success',
-              message: (
-                <>
-                  Successfully installed module {moduleInfo.name} version{' '}
-                  {version}
-                </>
-              ),
+              variant: 'error',
+              title: <>Failed to install {moduleInfo.name}</>,
+              message:
+                'message' in response.error
+                  ? response.error.message
+                  : 'Unable to start the installation.',
             });
-          },
+            return;
+          }
+
+          openToaster({
+            variant: 'success',
+            message: (
+              <>{moduleInfo.name} installation was queued successfully.</>
+            ),
+          });
         },
-      });
-    },
-  );
+      },
+    });
+  });
 
   return {
     installModule,
