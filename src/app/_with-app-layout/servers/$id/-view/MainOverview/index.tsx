@@ -332,23 +332,7 @@ export default function MainOverview() {
             </section>
 
             <section className="rounded-xl border bg-background/40">
-              <SectionHeader
-                icon={DatabaseIcon}
-                title="Database Monitoring"
-                action={
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() =>
-                      emit('@servers::detail/favorite-navigation', {
-                        to: 'modules-discover',
-                      })
-                    }
-                  >
-                    Install Database
-                  </Button>
-                }
-              />
+              <SectionHeader icon={DatabaseIcon} title="Database Monitoring" />
 
               <div className="flex flex-col gap-3 p-3">
                 <DatabaseEngineGrid modules={overview.databaseModules} />

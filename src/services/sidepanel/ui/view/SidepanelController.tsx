@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 
 import Drawer from '@/shared/presentation/atoms/Drawer';
 
@@ -38,15 +38,41 @@ export default function SidepanelController() {
     setAllowClickOutsideClose(value);
   });
 
-  const handleClickOverlay = () => {
-    if (!allowClickOutsideClose || payloadList.length < 1) return;
+  const closeTopSidepanel = useCallback(() => {
+    if (!allowClickOutsideClose || payloadList.length < 1) return false;
 
     setPayloadList((prev) => {
+      if (prev.length < 1) return prev;
+
       const newList = [...prev];
       newList.pop();
       return newList;
     });
+
+    return true;
+  }, [allowClickOutsideClose, payloadList.length]);
+
+  const handleClickOverlay = () => {
+    closeTopSidepanel();
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+
+      const didClose = closeTopSidepanel();
+      if (!didClose) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [closeTopSidepanel]);
 
   return (
     <Drawer position="right" zIndex={40} onClickOverlay={handleClickOverlay}>
