@@ -316,6 +316,7 @@
       "headerTitle": "Servers",
       "headerDesc": "View your deployed servers here.",
       "headerFootnote": "Supported operating systems: Ubuntu 22.04, 22.10, 24.04; Debian 11, 12. Visit our <a>YouTube channel</a> for a tutorial.",
+      "createServer": "Create Server",
       "emptyState": {
         "title": "No servers found.",
         "message": "Why not add new one to get started?",

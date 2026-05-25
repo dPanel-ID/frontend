@@ -1,7 +1,13 @@
+import { useMemo } from 'react';
+
 import { useNavigate } from '@tanstack/react-router';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import type { ServerCard as ServerCardModel } from '@/entities/server/rules/schema';
+
+import { ApiApplication } from '@/shared/api';
+import type { Response } from '@/shared/libs/api-client/rules/types';
 import {
   couple,
   guardedSelects,
@@ -17,10 +23,19 @@ import { ServerListState } from '../_presentation/ServerListState';
 
 import ServerCard from './ServerCard';
 
+type ServersData = {
+  servers: ServerCardModel[];
+};
+
 const [guard, useServers] = guardedSelects({
   fallbackLoading: ServerListState.Loading,
   fallbackError: ServerListState.Error,
-})(couple(useServersModel, (s) => s));
+})(
+  couple(
+    useServersModel,
+    (source): Response<ServersData> => source as Response<ServersData>,
+  ),
+);
 
 export default guard(function ServerList() {
   const navigate = useNavigate();
@@ -31,6 +46,33 @@ export default guard(function ServerList() {
 
   const [servers] = useServers((s) => [s.servers]);
   const { viewMode } = useFilterModel();
+
+  const [applicationsResponse] = ApiApplication.Find.useGet({
+    page: 1,
+    limit: 100,
+    options: {
+      skip: servers.length < 1,
+    },
+  });
+
+  const applicationsData = responseData(applicationsResponse);
+  const applicationCountByServerId = useMemo(() => {
+    const counts = new Map<string, number>();
+
+    for (const application of applicationsData?.applications ?? []) {
+      const serverIds = new Set(
+        application.deploys
+          ?.map((deployment) => String(deployment.machine_id))
+          .filter(Boolean),
+      );
+
+      for (const serverId of serverIds) {
+        counts.set(serverId, (counts.get(serverId) ?? 0) + 1);
+      }
+    }
+
+    return counts;
+  }, [applicationsData]);
 
   const derivedViewMode: 'grid' | 'list' =
     viewMode === 'auto' ? (isDesktop ? 'list' : 'grid') : viewMode;
@@ -52,7 +94,7 @@ export default guard(function ServerList() {
 
   return (
     <LayoutAutoGridList viewMode={viewMode}>
-      {servers.map((server: any) => {
+      {servers.map((server: ServerCardModel) => {
         const handleClickEdit = () => {
           emit('@resources::servers/server-edit-sidepanel', server);
         };
@@ -70,7 +112,7 @@ export default guard(function ServerList() {
             emit('@resources::servers/server-migrate-ownership', {
               serverId: server.id,
               serverName: server.host.name,
-              serverTeam: server.ownership?.team,
+              serverTeam: server.ownership.team,
             });
           };
         };
@@ -91,6 +133,7 @@ export default guard(function ServerList() {
             key={server.id}
             variant={derivedViewMode === 'list' ? 'full' : 'compact'}
             data={server}
+            applicationCount={applicationCountByServerId.get(server.id) ?? 0}
             onClickEdit={handleClickEdit}
             onClickReinstall={handleClickReinstall}
             onClickMigrateOwnership={handleClickMigrateOwnership()}
@@ -102,3 +145,11 @@ export default guard(function ServerList() {
     </LayoutAutoGridList>
   );
 });
+
+function responseData<T>(
+  response: { $status: string; prevData?: T } & Partial<T>,
+) {
+  if (response.$status === 'success') return response as T;
+  if (response.$status === 'loading') return response.prevData;
+  return undefined;
+}
