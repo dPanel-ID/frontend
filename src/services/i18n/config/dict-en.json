@@ -874,17 +874,11 @@
     "dashboard": "Dashboard",
     "applications": "Applications",
     "servers": "Servers",
-    "serversSubmenu": {
-      "filterHasDb": "has database...",
-      "filterHasMemstore": "has cache (Redis)..."
-    },
     "backend": "Backend",
     "database": "Database",
     "loadBalancers": "Load Balancers",
     "dDns": "Domain & DNS",
     "cloudProject": "Cloud Projects",
-    "secretMgr": "Secret Managers",
-    "explore": "Discover",
-    "serverModules": "Server Modules"
+    "secretMgr": "Secret Managers"
   }
 }

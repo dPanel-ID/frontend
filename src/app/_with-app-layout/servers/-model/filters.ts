@@ -18,21 +18,6 @@ export const [FilterModelProvider, useFilterModel] = buildQsFilterContext(
           return null;
       }
     },
-    hasModules: {
-      qs: 'has_modules',
-      init: (value) => {
-        switch (value) {
-          case 'db':
-            return 'db' as const;
-
-          case 'memstore':
-            return 'memstore' as const;
-
-          default:
-            return null;
-        }
-      },
-    },
     searchQuery: {
       qs: 'q',
       init: (value) => value || '',

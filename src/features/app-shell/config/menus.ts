@@ -5,8 +5,6 @@ import {
   IconCloudActive,
   // IconDatabase,
   // IconDatabaseActive,
-  IconDiscover,
-  IconDiscoverActive,
   IconGlobe,
   IconGlobeActive,
   IconHome,
@@ -45,23 +43,6 @@ export const MENUS: MenuGroup[] = [
         iconActive: IconServerActive,
         i18nKey: 'sidebar.servers',
         url: '/servers',
-        submenu: {
-          type: 'filter',
-          filters: [
-            {
-              i18nKey: 'sidebar.serversSubmenu.filterHasDb',
-              queryParam: {
-                has_modules: 'db',
-              },
-            },
-            {
-              i18nKey: 'sidebar.serversSubmenu.filterHasMemstore',
-              queryParam: {
-                has_modules: 'memstore',
-              },
-            },
-          ],
-        },
       },
     ],
   },
@@ -102,18 +83,6 @@ export const MENUS: MenuGroup[] = [
         iconActive: IconLockActive,
         i18nKey: 'sidebar.secretMgr',
         url: '/backend/secret-managers/ssh-key',
-      },
-    ],
-  },
-  {
-    i18nKey: 'sidebar.explore',
-    children: [
-      {
-        id: 'disco-servermod',
-        icon: IconDiscover,
-        iconActive: IconDiscoverActive,
-        i18nKey: 'sidebar.serverModules',
-        url: '/discover/modules',
       },
     ],
   },

@@ -864,17 +864,11 @@
     "dashboard": "Dasbor",
     "applications": "Aplikasi",
     "servers": "Server",
-    "serversSubmenu": {
-      "filterHasDb": "punya database...",
-      "filterHasMemstore": "punya cache (Redis)..."
-    },
     "backend": "Backend",
     "database": "Database",
     "loadBalancers": "Load Balancer",
     "dDns": "Domain & DNS",
     "cloudProject": "Proyek Cloud",
-    "secretMgr": "Manajemen Kunci",
-    "explore": "Jelajah",
-    "serverModules": "Modul Server"
+    "secretMgr": "Manajemen Kunci"
   }
 }
