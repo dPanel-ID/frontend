@@ -37,11 +37,7 @@ export default function SubmitButton() {
 
     openToaster({
       variant: 'success',
-      message: (
-        <>
-          Successfully created price with name <code>{values.user_id}</code>
-        </>
-      ),
+      message: <>Successfully added user <code>{values.user_id}</code></>,
     });
 
     props.onSubmitSuccess?.();
