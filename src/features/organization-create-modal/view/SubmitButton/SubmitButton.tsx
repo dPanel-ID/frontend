@@ -1,12 +1,12 @@
 import { LoaderCircleIcon } from 'lucide-react';
 
 import { useAuthEmit } from '@/services/auth/model/events';
+import { useDevetekTranslations } from '@/services/i18n';
 import { useModalEmit } from '@/services/modal/model/event';
 import { useToaster } from '@/services/toaster';
-import { useDevetekTranslations } from '@/services/i18n';
 
-import { organizationToWorkspaceId } from '@/shared/api/-dtos';
 import { ApiOrganization } from '@/shared/api';
+import { organizationToWorkspaceId } from '@/shared/api/-dtos';
 import { LS_ORGANIZATION_ID } from '@/shared/libs/api-client/config';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 
@@ -61,7 +61,7 @@ export default function SubmitButton() {
   const isSubmitting = form.formState.isSubmitting;
 
   return (
-    <Button className="w-full" onClick={handleClick} disabled={isSubmitting}>
+    <Button onClick={handleClick} disabled={isSubmitting}>
       {isSubmitting ? (
         <LoaderCircleIcon className="animate-spin" />
       ) : (

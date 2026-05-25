@@ -23,7 +23,7 @@ export default function ResourceCombo() {
   const [response] = ApiServer.Find.useGet({
     userId,
     filter: 'shared-with-me',
-    pageSize: 100,
+    pageSize: 12,
   });
 
   let items: Array<ComboboxItem<number>> = [];

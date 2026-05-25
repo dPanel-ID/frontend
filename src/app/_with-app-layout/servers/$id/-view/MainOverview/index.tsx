@@ -86,7 +86,7 @@ export default function MainOverview() {
   const [applicationsResponse, refreshApplications] =
     ApiApplication.Find.useGet({
       page: 1,
-      limit: 100,
+      limit: 12,
       options: {
         skip: shouldSkip,
       },
@@ -96,7 +96,7 @@ export default function MainOverview() {
     ApiLoadBalancer.Find.useGet({
       machineId: serverId,
       page: 1,
-      limit: 100,
+      limit: 1,
       options: {
         skip: shouldSkip,
       },
@@ -106,7 +106,7 @@ export default function MainOverview() {
     ApiService.Origin.$ServerId.useGet({
       serverId,
       page: 1,
-      pageSize: 120,
+      pageSize: 12,
       options: {
         skip: shouldSkip,
       },
@@ -132,7 +132,6 @@ export default function MainOverview() {
 
   const overview = useMemo(() => {
     const applications = applicationsData?.applications ?? [];
-    const loadBalancers = loadBalancersData?.routers ?? [];
     const modules = modulesData?.modules ?? [];
     const services = servicesData?.services ?? [];
 
@@ -177,7 +176,10 @@ export default function MainOverview() {
     return {
       applications: deployedApplications,
       runningApplications,
-      loadBalancers,
+      loadBalancerCount:
+        loadBalancersData?.pagination.total_item ??
+        loadBalancersData?.routers?.length ??
+        0,
       moduleInventory: modules,
       installedModules,
       databaseModules,
@@ -274,7 +276,7 @@ export default function MainOverview() {
             <MetricCard
               icon={NetworkIcon}
               label="Load Balancers"
-              value={overview.loadBalancers.length}
+              value={overview.loadBalancerCount}
               detail="Bound to this machine"
               tone="green"
             />

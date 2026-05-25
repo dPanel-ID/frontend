@@ -2,12 +2,13 @@ import { cn } from '@/shared/libs/tailwind/cn';
 
 interface ErrorInlineProps {
   className?: string;
+  id?: string;
   message?: string | null;
   t?: (key: string) => string;
 }
 
 export default function ErrorInline(props: ErrorInlineProps) {
-  const { className, message, t } = props;
+  const { className, id, message, t } = props;
 
   if (!message) return null;
 
@@ -17,7 +18,7 @@ export default function ErrorInline(props: ErrorInlineProps) {
   );
 
   return (
-    <p role="alert" className={cnRoot}>
+    <p id={id} role="alert" className={cnRoot}>
       {t ? t(message) : message}
     </p>
   );

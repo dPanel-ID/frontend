@@ -13,7 +13,7 @@ export const [ResourcesModelProvider, useResourcesModel] = buildSelector(
 
   const [responseTeams, refreshTeams] = ApiOrganizationPeople.Find.useGet({
     page: 1,
-    pageSize: 100,
+    pageSize: 12,
     userId: userProfile.id,
   });
 

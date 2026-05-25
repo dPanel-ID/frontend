@@ -28,19 +28,19 @@ export const [ResourcesModelProvider, useResourcesModel] = buildSelector(
     userId: userProfile.id,
     searchQuery: qServer,
     page: 1,
-    pageSize: 50,
+    pageSize: 12,
   });
 
   const [responseApplications, refreshApplications] =
     ApiApplication.Find.useGet({
       name: '',
       page: 1,
-      limit: 50,
+      limit: 12,
     });
 
   const [responseDomains, refreshDomains] = ApiDomain.Find.useGet({
     page: 1,
-    perPage: 50,
+    perPage: 12,
   });
 
   useSubscribe(

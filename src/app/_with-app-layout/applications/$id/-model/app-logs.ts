@@ -8,6 +8,8 @@ import buildSelector from '@/shared/libs/react-factories/buildSelector';
 import { useAppDataModel } from './app-data';
 import { useArtifactHistoryModel } from './artifact-history';
 
+const APPLICATION_LOG_LINE_COUNT = 80;
+
 export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
   'AppLogsModel',
 )(() => {
@@ -51,7 +53,7 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     file: logMetadata
       ? `/home/${logMetadata.userName}/logs/${logMetadata.appName}/${logFilename}`
       : undefined,
-    line: 100,
+    line: APPLICATION_LOG_LINE_COUNT,
     options: {
       skip: !logMetadata || !logFilename,
       refreshIntervalMs: 5000,

@@ -12,7 +12,7 @@ export default function Submodules() {
   const { moduleInfo, serverID } = useBaseContext();
 
   const [response, refresh] = ApiService.Find.useGet({
-    pageSize: 99,
+    pageSize: 12,
     serverId: String(serverID),
     moduleName: moduleInfo.installerName ?? moduleInfo.id,
     moduleType: moduleInfo.installerType ?? moduleInfo.category[0],

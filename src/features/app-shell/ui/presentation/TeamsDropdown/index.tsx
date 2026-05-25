@@ -1,3 +1,5 @@
+import type { KeyboardEvent } from 'react';
+
 import {
   Building2Icon,
   ChevronDownIcon,
@@ -23,17 +25,27 @@ export default function TeamsDropdown(props: TeamsDropdownProps) {
   const teamSelected = !!teamName;
 
   const Icon = teamSelected ? Building2Icon : CircleUserRoundIcon;
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+
+    event.preventDefault();
+    onClick?.();
+  };
 
   if (collapsed) {
     const tooltipMessage = teamSelected
       ? t('sidebar.teamsWidget.tooltipTeamX', { teamName })
-      : t('sidebar.teamsWidget.selectATeamHere');
+      : t('sidebar.teamsWidget.personalWorkspace');
 
     return (
       <Tooltip message={tooltipMessage} position="right" delayMs={0} gap={4}>
         <Card
-          className="p-1 cursor-default shadow-none overflow-hidden transition-all group hover:bg-accent"
+          role="button"
+          tabIndex={0}
+          aria-label={t('sidebar.teamsWidget.selectWorkspace')}
+          className="p-1 cursor-pointer shadow-none overflow-hidden transition-all group hover:bg-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           onClick={onClick}
+          onKeyDown={handleKeyDown}
         >
           <div className="p-1.5 rounded bg-background group-hover:bg-accent transition-all h-max flex justify-center">
             <Icon
@@ -48,8 +60,12 @@ export default function TeamsDropdown(props: TeamsDropdownProps) {
 
   return (
     <Card
-      className="p-1 pr-0 cursor-default shadow-none overflow-hidden grid grid-cols-[auto_1fr_auto] gap-2 transition-all group hover:bg-accent"
+      role="button"
+      tabIndex={0}
+      aria-label={t('sidebar.teamsWidget.selectWorkspace')}
+      className="p-1 pr-0 cursor-pointer shadow-none overflow-hidden grid grid-cols-[auto_1fr_auto] gap-2 transition-all group hover:bg-accent focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       onClick={onClick}
+      onKeyDown={handleKeyDown}
     >
       <div className="p-2.5 rounded-l bg-background group-hover:bg-accent transition-all w-max h-max">
         <Icon className="size-6 text-primary group-hover:text-white transition-all" />
@@ -68,10 +84,10 @@ export default function TeamsDropdown(props: TeamsDropdownProps) {
         ) : (
           <>
             <p className="text-sm text-primary group-hover:text-white font-semibold line-clamp-1">
-              {t('sidebar.teamsWidget.personalMode')}
+              {t('sidebar.teamsWidget.personalWorkspace')}
             </p>
             <p className="text-xs opacity-50 italic">
-              {t('sidebar.teamsWidget.selectATeamHere')}
+              {t('sidebar.teamsWidget.selectWorkspace')}
             </p>
           </>
         )}

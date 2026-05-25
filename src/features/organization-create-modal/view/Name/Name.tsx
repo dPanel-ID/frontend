@@ -13,26 +13,54 @@ export default function Name() {
   const t = useDevetekTranslations();
 
   return (
-    <>
+    <div className="space-y-4">
       <Input type="hidden" {...form.register('user_id')} value={userId} />
 
-      <section className="flex flex-col gap-1">
-        <p className="text-sm font-medium">
-          {t('modal.createTeam.fieldName')} <span className="text-red-500">*</span>
+      <section className="flex flex-col gap-1.5">
+        <label className="text-sm font-medium" htmlFor="workspace-name">
+          {t('modal.createTeam.fieldName')}{' '}
+          <span className="text-red-500" aria-hidden="true">
+            *
+          </span>
+        </label>
+        <Input
+          id="workspace-name"
+          variant="3d"
+          placeholder={t('modal.createTeam.namePlaceholder')}
+          aria-invalid={!!form.formState.errors.name}
+          aria-describedby="workspace-name-help workspace-name-error"
+          autoComplete="organization"
+          {...form.register('name')}
+        />
+        <p id="workspace-name-help" className="text-xs text-primary/55">
+          {t('modal.createTeam.nameHelp')}
         </p>
-        <Input placeholder={t('modal.createTeam.namePlaceholder')} {...form.register('name')} />
-        <ErrorInline message={form.formState.errors.name?.message} />
+        <ErrorInline
+          message={form.formState.errors.name?.message}
+          id="workspace-name-error"
+        />
       </section>
 
-      <section className="flex flex-col gap-1">
-        <p className="text-sm font-medium">{t('common.terms.description')}</p>
+      <section className="flex flex-col gap-1.5">
+        <label className="text-sm font-medium" htmlFor="workspace-description">
+          {t('common.terms.description')}
+        </label>
         <TextArea
+          id="workspace-description"
           placeholder={t('modal.createTeam.descPlaceholder')}
           rows={3}
+          aria-invalid={!!form.formState.errors.description}
+          aria-describedby="workspace-description-help workspace-description-error"
           {...form.register('description')}
         />
-        <ErrorInline message={form.formState.errors.description?.message} />
+        <p id="workspace-description-help" className="text-xs text-primary/55">
+          {t('modal.createTeam.descriptionHelp')}
+        </p>
+        <ErrorInline
+          message={form.formState.errors.description?.message}
+          id="workspace-description-error"
+        />
       </section>
-    </>
+    </div>
   );
 }

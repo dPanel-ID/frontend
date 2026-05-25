@@ -17,7 +17,7 @@ export interface RecipeParams {
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { machineID, page = 1, pageSize = 999 } = params;
+  const { machineID, page = 1, pageSize = 12 } = params;
 
   const queryParams = createQueryParams({
     machine_id: machineID,

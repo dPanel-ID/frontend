@@ -16,7 +16,7 @@ export default function PriceNames() {
   });
   const [response] = ApiPriceName.Find.useGet({
     page: 1,
-    pageSize: 100,
+    pageSize: 12,
   });
 
   if (response.$status === 'failed') {
