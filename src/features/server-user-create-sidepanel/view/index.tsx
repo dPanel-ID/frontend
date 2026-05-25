@@ -1,24 +1,12 @@
 import { useState } from 'react';
 
-import { ChevronsUpDown } from 'lucide-react';
-
 import { useSidepanelEmit } from '@/services/sidepanel/model/event';
 import Layout from '@/services/sidepanel/ui/presentation/Layout/General';
 import { useToaster } from '@/services/toaster';
 
-import { ApiServer, ApiUser } from '@/shared/api';
-import { useDebounceValue } from '@/shared/libs/react-hooks/useDebounce';
-import { cn } from '@/shared/libs/tailwind/cn';
-import { Button as LegacyButton } from '@/shared/presentation/atoms/Button';
+import { ApiServer } from '@/shared/api';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Input } from '@/shared/presentation/atoms/Input';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/shared/presentation/atoms/Popover';
-import { ScrollArea } from '@/shared/presentation/atoms/ScrollArea';
-import { SearchInput } from '@/shared/presentation/atoms/SearchInput';
 import {
   Select,
   SelectContent,
@@ -26,48 +14,65 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/presentation/atoms/Select';
+import { UserDirectoryPicker } from '@/shared/presentation/molecules/UserDirectoryPicker';
+import type { UserDirectoryPickerUser } from '@/shared/presentation/molecules/UserDirectoryPicker';
 
 import type { ServerUserCreateSidepanelProps as Props } from '../rules/types';
+
+const LINUX_USERNAME_MAX_LENGTH = 32;
+const LINUX_USERNAME_PATTERN = /^[a-z_][a-z0-9_-]{0,31}$/;
+const GROUP_ADMIN = 'administrator';
 
 export default function ServerUserCreateSidepanel(props: Props) {
   const { serverId, onCreated } = props;
 
   const emitSidepanel = useSidepanelEmit();
   const [pushToast] = useToaster();
-  const [isUsernamePopoverOpen, setIsUsernamePopoverOpen] = useState(false);
-  const [usernameQuery, setUsernameQuery] = useState('');
-  const [usernamePage, setUsernamePage] = useState(1);
-  const [debouncedUsernameQuery] = useDebounceValue(usernameQuery);
-
-  const [usersResponse] = ApiUser.Find.useGet({
-    username: debouncedUsernameQuery || undefined,
-    page: usernamePage,
-    pageSize: 5,
-  });
-
+  const [selectedUser, setSelectedUser] =
+    useState<UserDirectoryPickerUser | null>(null);
   const [username, setUsername] = useState('');
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [password, setPassword] = useState('');
   const [homeDirectory, setHomeDirectory] = useState('/home/');
-  const [group, setGroup] = useState('admin');
+  const [group, setGroup] = useState(GROUP_ADMIN);
   const [isCreating, setIsCreating] = useState(false);
+  const usernameError =
+    username && !isValidLinuxUsername(username)
+      ? 'Use lowercase letters, numbers, underscores, or hyphens. Start with a letter or underscore.'
+      : '';
 
-  const users = usersResponse.$status === 'success' ? usersResponse.users ?? [] : [];
-  const totalPages = usersResponse.$status === 'success'
-    ? Math.max(1, usersResponse.pagination.total_page || 1)
-    : 1;
-
-  const canGoPrevPage = usernamePage > 1;
-  const canGoNextPage = usernamePage < totalPages;
   const canSubmit =
     !isCreating &&
     Boolean(username.trim()) &&
+    !usernameError &&
     Boolean(selectedUserId) &&
     Boolean(password.trim());
 
-  const handleChangeUsernameQuery = (value: string) => {
-    setUsernameQuery(value);
-    setUsernamePage(1);
+  const handleSelectUser = (user: UserDirectoryPickerUser) => {
+    const linuxUsername = resolveDefaultLinuxUsername(user);
+
+    setSelectedUser(user);
+    setSelectedUserId(user.id);
+    setUsername(linuxUsername);
+    setHomeDirectory(`/home/${linuxUsername}`);
+  };
+
+  const handleChangeUsername = (value: string) => {
+    const previousUsername = username;
+    const linuxUsername = normalizeLinuxUsername(value, 'dpanel');
+
+    setUsername(linuxUsername);
+    setHomeDirectory((currentHomeDirectory) => {
+      if (
+        currentHomeDirectory === '' ||
+        currentHomeDirectory === '/home/' ||
+        currentHomeDirectory === `/home/${previousUsername}`
+      ) {
+        return linuxUsername ? `/home/${linuxUsername}` : '/home/';
+      }
+
+      return currentHomeDirectory;
+    });
   };
 
   const handleCreate = async () => {
@@ -80,6 +85,11 @@ export default function ServerUserCreateSidepanel(props: Props) {
 
     if (!selectedUserId) {
       pushToast('error', 'Please select a valid username.');
+      return;
+    }
+
+    if (!isValidLinuxUsername(normalizedUsername)) {
+      pushToast('error', 'Linux username is not valid.');
       return;
     }
 
@@ -124,89 +134,30 @@ export default function ServerUserCreateSidepanel(props: Props) {
       />
 
       <Layout.Content className="flex flex-col gap-y-3 pb-4">
+        <UserDirectoryPicker
+          label="dPanel User"
+          selectedUser={selectedUser}
+          placeholder="Select user"
+          searchPlaceholder="Search by username, name, or email"
+          pageSize={5}
+          onSelect={handleSelectUser}
+        />
+
         <div className="grid gap-y-1">
-          <span className="text-sm font-medium">Username</span>
-          <Popover
-            open={isUsernamePopoverOpen}
-            onOpenChange={setIsUsernamePopoverOpen}
-          >
-            <PopoverTrigger asChild>
-              <LegacyButton
-                variant="outline"
-                role="combobox"
-                aria-expanded={isUsernamePopoverOpen}
-                className={cn('w-full justify-between dark:bg-secondary dark:hover:bg-accent', {
-                  'text-foreground/50': !username,
-                })}
-              >
-                <p>{username || 'Select username'}</p>
-                <ChevronsUpDown className="opacity-50" />
-              </LegacyButton>
-            </PopoverTrigger>
-            <PopoverContent className="w-[468px] p-0">
-              <div className="p-1">
-                <SearchInput
-                  value={usernameQuery}
-                  onChange={handleChangeUsernameQuery}
-                  placeholder="Search username"
-                />
-              </div>
-
-              <ScrollArea className="p-1 max-h-[260px] flex flex-col gap-1">
-                {usersResponse.$status === 'loading' && (
-                  <p className="px-3 py-2 text-sm text-muted-foreground">Loading users...</p>
-                )}
-
-                {usersResponse.$status === 'failed' && (
-                  <p className="px-3 py-2 text-sm text-destructive">Failed to load users</p>
-                )}
-
-                {usersResponse.$status === 'success' && users.length === 0 && (
-                  <p className="px-3 py-2 text-sm text-muted-foreground">No users found</p>
-                )}
-
-                {usersResponse.$status === 'success' && users.map((user) => (
-                  <LegacyButton
-                    key={user.id}
-                    className="px-4 py-2 w-full"
-                    variant="ghost"
-                    onClick={() => {
-                      setSelectedUserId(user.id);
-                      setUsername(user.username);
-                      setHomeDirectory(`/home/${user.username}`);
-                      setIsUsernamePopoverOpen(false);
-                    }}
-                  >
-                    <p className="w-full text-left">{user.username}</p>
-                  </LegacyButton>
-                ))}
-              </ScrollArea>
-
-              <div className="border-t p-2 flex items-center justify-between gap-2">
-                <LegacyButton
-                  variant="outline"
-                  size="sm"
-                  disabled={!canGoPrevPage || usersResponse.$status !== 'success'}
-                  onClick={() => setUsernamePage((currentPage) => currentPage - 1)}
-                >
-                  Prev
-                </LegacyButton>
-
-                <p className="text-xs text-muted-foreground">
-                  Page {usernamePage} of {totalPages}
-                </p>
-
-                <LegacyButton
-                  variant="outline"
-                  size="sm"
-                  disabled={!canGoNextPage || usersResponse.$status !== 'success'}
-                  onClick={() => setUsernamePage((currentPage) => currentPage + 1)}
-                >
-                  Next
-                </LegacyButton>
-              </div>
-            </PopoverContent>
-          </Popover>
+          <span className="text-sm font-medium">Linux Username</span>
+          <Input
+            value={username}
+            placeholder="Linux username"
+            onChange={(e) => handleChangeUsername(e.target.value)}
+          />
+          <p className="text-xs text-muted-foreground">
+            Lowercase Linux account name used on the server.
+          </p>
+          {usernameError && (
+            <p className="text-xs font-medium text-destructive">
+              {usernameError}
+            </p>
+          )}
         </div>
 
         <div className="grid gap-y-1">
@@ -235,7 +186,7 @@ export default function ServerUserCreateSidepanel(props: Props) {
               <SelectValue placeholder="Select group" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="admin">admin</SelectItem>
+              <SelectItem value={GROUP_ADMIN}>admin</SelectItem>
               <SelectItem value="staff">staff</SelectItem>
               <SelectItem value="guest">guest</SelectItem>
             </SelectContent>
@@ -258,4 +209,44 @@ export default function ServerUserCreateSidepanel(props: Props) {
       </Layout.Cta>
     </Layout>
   );
+}
+
+function resolveDefaultLinuxUsername(user: UserDirectoryPickerUser) {
+  return normalizeLinuxUsername(
+    user.email || user.fullname || user.username || String(user.id),
+    `user-${user.id}`,
+  );
+}
+
+function normalizeLinuxUsername(value: string, fallback: string) {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) {
+    return '';
+  }
+
+  const sourceValue = trimmedValue.includes('@')
+    ? trimmedValue.split('@')[0]
+    : trimmedValue;
+  let username = sourceValue
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+/, '')
+    .slice(0, LINUX_USERNAME_MAX_LENGTH);
+
+  if (!username || !/^[a-z_]/.test(username)) {
+    username = `u${username}`;
+  }
+
+  username = username.slice(0, LINUX_USERNAME_MAX_LENGTH).replace(/-+$/, '');
+
+  if (!isValidLinuxUsername(username)) {
+    return normalizeLinuxUsername(fallback, 'dpanel');
+  }
+
+  return username;
+}
+
+function isValidLinuxUsername(username: string) {
+  return LINUX_USERNAME_PATTERN.test(username);
 }
