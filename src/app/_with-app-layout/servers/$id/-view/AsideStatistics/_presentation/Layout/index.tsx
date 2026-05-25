@@ -10,10 +10,7 @@ interface BaseProps {
 export default function AsideStatisticsLayout(props: BaseProps) {
   const { children, className } = props;
 
-  const cnRoot = cn(
-    'flex flex-col gap-2 xl:gap-4 sm:flex-row sm:flex-wrap xl:flex-col xl:flex-nowrap',
-    className,
-  );
+  const cnRoot = cn('grid gap-3 md:grid-cols-3', className);
 
   return <div className={cnRoot}>{children}</div>;
 }
@@ -23,10 +20,7 @@ AsideStatisticsLayout.Item = function AsideStatisticsLayoutItem(
 ) {
   const { children, className } = props;
 
-  const cnRoot = cn(
-    ' sm:basis-[calc(50%_-_0.25rem)] md:basis-[calc(33.33%_-_0.34rem)] overflow-hidden xl:basis-none',
-    className,
-  );
+  const cnRoot = cn('min-w-0 overflow-hidden', className);
 
   return <div className={cnRoot}>{children}</div>;
 };
