@@ -316,7 +316,142 @@
       "headerTitle": "Servers",
       "headerDesc": "View your deployed servers here.",
       "headerFootnote": "Supported operating systems: Ubuntu 22.04, 22.10, 24.04; Debian 11, 12. Visit our <a>YouTube channel</a> for a tutorial.",
+      "docs": "Docs",
       "createServer": "Create Server",
+      "create": {
+        "documentTitle": "Create server | dPanel",
+        "headerTitle": "Create Server",
+        "headerDesc": "Register an existing machine, connect SSH access, and let dPanel finish the setup.",
+        "progress": {
+          "title": "Setup progress",
+          "description": "Manual server creation has four short decisions."
+        },
+        "steps": {
+          "method": {
+            "eyebrow": "Step 1",
+            "title": "Creation mode",
+            "description": "Choose how this server will be registered."
+          },
+          "ssh": {
+            "eyebrow": "Step 2",
+            "title": "SSH access",
+            "description": "Select or generate the SSH key used by dPanel."
+          },
+          "server": {
+            "eyebrow": "Step 3",
+            "title": "Server details",
+            "description": "Tell dPanel how to reach the existing machine."
+          },
+          "preview": {
+            "eyebrow": "Step 4",
+            "title": "Preview",
+            "description": "Review everything before setup starts."
+          }
+        },
+        "creationMode": {
+          "title": "How do you want to create this server?",
+          "description": "Start with a machine you already own, or let dPanel create one for supported cloud providers.",
+          "manual": {
+            "title": "Manual setup",
+            "subtitle": "Existing VM, PC, or Raspberry Pi",
+            "badge": "Recommended now",
+            "description": "Use an existing machine. dPanel only needs SSH access, a reachable address, and a Linux user."
+          },
+          "instant": {
+            "title": "Instant setup",
+            "subtitle": "Supported cloud providers",
+            "badge": "Automation",
+            "description": "Create a server from a connected cloud account. This keeps the existing instant flow available."
+          }
+        },
+        "ssh": {
+          "title": "Prepare SSH access",
+          "description": "Choose the private key dPanel will use, then place the matching public key on the target Linux user.",
+          "keysTitle": "SSH keys",
+          "keysDescription": "Select an existing key or create a new one here.",
+          "searchLabel": "Search SSH keys",
+          "searchPlaceholder": "Search SSH keys",
+          "createKey": "Create SSH key",
+          "emptyKeys": "No SSH keys yet. Create one on this page to continue.",
+          "emptySearch": "No SSH keys match your search.",
+          "paginationSummary": "Page {page} of {totalPage} - {totalItem} keys",
+          "previousPage": "Previous",
+          "nextPage": "Next",
+          "fallbackKeyName": "SSH key {id}",
+          "keyId": "ID {id}",
+          "keyLengthSuffix": " - {length} bits",
+          "copyPublicKey": "Copy public key",
+          "copyPublicKeyFor": "Copy public key for {name}",
+          "publicKeyUnavailable": "Public key unavailable",
+          "publicKeyUnavailableToast": "This SSH key does not expose a public key in the list data.",
+          "publicKeyCopiedToast": "Public key copied.",
+          "manualActionTitle": "Manual action required",
+          "manualActionDescription": "Add the selected public key to the target Linux user at <code>~/.ssh/authorized_keys</code>. dPanel cannot connect until that key is trusted.",
+          "selectedPublicKey": "Selected public key",
+          "selectedPublicKeyDescription": "Paste this into the server user's authorized keys file."
+        },
+        "serverDetails": {
+          "title": "Connect to your existing machine",
+          "description": "Use the server address and Linux user that already has the SSH public key in authorized_keys.",
+          "addressLabel": "Server address",
+          "addressDescription": "Use IPv4, hostname, or domain. Local demos can still use 0.0.0.0.",
+          "addressPlaceholder": "203.0.113.10 or server.example.com",
+          "sshPortLabel": "SSH port",
+          "sshPortDescription": "Default is 22 unless your VM maps SSH to another port.",
+          "sshPortPlaceholder": "22",
+          "linuxUserLabel": "Linux user",
+          "linuxUserDescription": "The user that can connect through the selected SSH key.",
+          "linuxUserPlaceholder": "root",
+          "manualProviderTitle": "Manual provider",
+          "manualProviderDescription": "dPanel will save this server with provider <code>{provider}</code>. Cloud-specific data can be attached later when provider integrations are enabled.",
+          "sshCheckTitle": "SSH check",
+          "sshCheckDescription": "Before deploying, make sure the Linux user can log in using the selected private key. Setup will stop early when SSH is not reachable."
+        },
+        "preview": {
+          "title": "Review and deploy",
+          "description": "Confirm the connection details. You can go back to adjust anything before dPanel registers the server.",
+          "sshKeyTitle": "SSH key",
+          "connectionTitle": "Connection",
+          "linuxAccessTitle": "Linux access",
+          "name": "Name",
+          "id": "ID",
+          "address": "Address",
+          "sshPort": "SSH port",
+          "user": "User",
+          "provider": "Provider",
+          "afterDeployTitle": "What happens after deploy?",
+          "afterDeployDescription": "dPanel creates the server record, validates workspace observability credentials, and starts setup through the executor. The server detail page will show setup progress and operational data once the agent comes online."
+        },
+        "actions": {
+          "continue": "Continue",
+          "preview": "Preview",
+          "editDetails": "Edit details",
+          "deployServer": "Deploy server"
+        },
+        "toaster": {
+          "selectSshKey": "Select an SSH key or create a new one first.",
+          "fixServerDetails": "Fix the highlighted server details before continuing.",
+          "deployFailedTitle": "Unable to deploy server"
+        },
+        "dialog": {
+          "setupStartedTitle": "Server setup started",
+          "setupStartedContent": "dPanel registered the server and queued the setup workflow. You can open the server detail page to follow the installation progress.",
+          "createAnother": "Create another",
+          "openServer": "Open server"
+        },
+        "errors": {
+          "emptyServerId": "New server ID is empty."
+        },
+        "validation": {
+          "sshKeyRequired": "Select or create an SSH key before continuing.",
+          "addressRequired": "Server address is required.",
+          "addressInvalid": "Use a valid IPv4 address, hostname, or domain.",
+          "sshPortRequired": "SSH port is required.",
+          "sshPortInvalid": "Use a valid TCP port between 1 and 65535.",
+          "linuxUserRequired": "Linux user is required.",
+          "linuxUserInvalid": "Use a valid Linux username, for example root or dpanel."
+        }
+      },
       "emptyState": {
         "title": "No servers found.",
         "message": "Why not add new one to get started?",
