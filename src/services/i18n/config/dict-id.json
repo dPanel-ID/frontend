@@ -307,6 +307,7 @@
       "headerTitle": "Servers",
       "headerDesc": "Lihat server yang telah Anda deploy di sini.",
       "headerFootnote": "Sistem operasi didukung: Ubuntu 22.04, 22.10, 24.04; Debian 11, 12. Kunjungi <a>kanal YouTube kami</a> untuk panduan.",
+      "createServer": "Buat Server",
       "emptyState": {
         "title": "Tidak ada server ditemukan.",
         "message": "Mengapa tidak menambahkan yang baru untuk memulai?",

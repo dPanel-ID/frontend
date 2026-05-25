@@ -3,6 +3,7 @@ import type { ServerCard } from '@/entities/server/rules/schema';
 export interface ServerCardProps {
   variant: 'full' | 'compact';
   data: ServerCard;
+  applicationCount?: number;
 
   onClickEdit?: () => void;
   onClickStatus?: () => void;
