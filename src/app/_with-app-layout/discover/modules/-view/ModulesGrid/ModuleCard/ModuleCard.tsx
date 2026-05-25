@@ -16,7 +16,7 @@ import { InstalledVersions } from './_presentation/InstalledVersions';
 import { ModuleHero } from './_presentation/ModuleHero';
 
 export default function ModuleCard(props: Props) {
-  const { moduleInfo } = props;
+  const { moduleInfo, selectedForPlaybook, onTogglePlaybook } = props;
 
   const { serverDetail } = useServerDetailContext();
   const { id: serverId } =
@@ -72,7 +72,17 @@ export default function ModuleCard(props: Props) {
         {versions.length > 0 && <InstalledVersions versions={versions} />}
       </div>
 
-      <div className="w-full">
+      <div className="w-full flex flex-col gap-2">
+        {onTogglePlaybook && (
+          <Button
+            className="w-full"
+            variant={selectedForPlaybook ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => onTogglePlaybook(moduleInfo.id)}
+          >
+            {selectedForPlaybook ? 'Added to playbook' : 'Add to playbook'}
+          </Button>
+        )}
         <Button
           className="w-full"
           variant="secondary"
@@ -88,4 +98,6 @@ export default function ModuleCard(props: Props) {
 
 interface Props {
   moduleInfo: ServerModule;
+  selectedForPlaybook?: boolean;
+  onTogglePlaybook?: (moduleId: string) => void;
 }

@@ -13,7 +13,7 @@ export default function ServerModulesDetailModal(props: Props) {
   return (
     <BaseContext value={props}>
       <ModalLayoutGeneral maxWidth="700px">
-        <ModalLayoutGeneral.Title canClickClose title="Modules Detail" />
+        <ModalLayoutGeneral.Title canClickClose title="Server Role" />
 
         <ModalLayoutGeneral.Content className="flex flex-col gap-6">
           <ModuleHero

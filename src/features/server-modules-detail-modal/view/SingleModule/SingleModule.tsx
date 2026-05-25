@@ -58,7 +58,16 @@ export default function SingleModule() {
 
   const handleClickInstall = () => {
     if (!configuration) return;
-    installModule('', configuration);
+    installModule({
+      action: 'install',
+      actionTitle: 'Install',
+      serverID: String(serverID),
+      variables: {},
+      ref: {
+        name: moduleInfo.refName,
+        expected_commit: moduleInfo.resolvedCommit,
+      },
+    });
   };
 
   if (response.$status === 'failed') {
