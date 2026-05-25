@@ -177,7 +177,7 @@ export default function Installation() {
             </div>
           ) : input.type === 'object' ? (
             <TextArea
-              className="min-h-28 font-mono text-xs"
+              className="h-56 min-h-28 resize-y overflow-auto font-mono text-xs [field-sizing:fixed]"
               value={String(value)}
               onChange={(event) => handleChange(input.name, event.target.value)}
             />
