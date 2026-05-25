@@ -194,8 +194,8 @@ export default function Installation() {
   };
 
   return (
-    <div className="rounded-xl bg-background border w-full flex flex-col overflow-hidden">
-      <div className="flex items-start justify-between gap-4 px-4 py-3">
+    <div className="flex min-h-0 w-full flex-col overflow-hidden rounded-xl border bg-background">
+      <div className="shrink-0 flex items-start justify-between gap-4 px-4 py-3">
         <div>
           <h6 className="cursor-default text-sm font-bold text-primary">
             Install role
@@ -211,7 +211,7 @@ export default function Installation() {
         </Button>
       </div>
 
-      <div className="border-t p-4 flex flex-col gap-5">
+      <div className="flex max-h-[clamp(18rem,calc(100svh-22rem),40rem)] min-h-0 flex-col gap-5 overflow-y-auto overscroll-contain border-t p-4">
         <div className="rounded-lg border bg-card p-3">
           <h6 className="text-sm font-bold text-primary/80">Roles to run</h6>
           <div className="mt-2 flex flex-wrap gap-2">
