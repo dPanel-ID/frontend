@@ -4,14 +4,13 @@ import { useDialog } from '@/services/dialog';
 import { useToaster } from '@/services/toaster';
 
 import {
-  HARDCODED_SERVER_MODULES,
-  SERVER_MODULES_CATEGORY,
-  resolveServerModuleLogo,
-} from '@/entities/server-modules/config/registry';
+  SERVER_MODULE_CATEGORY_LABELS as CATEGORY_LABELS,
+  titleizeModuleValue,
+  toServerModuleFromCatalog,
+} from '@/entities/server-modules/lib/catalog';
 import type { ServerModule } from '@/entities/server-modules/model/types';
 
 import { ApiModule, ApiServer } from '@/shared/api';
-import type { DTOs } from '@/shared/api';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Input } from '@/shared/presentation/atoms/Input';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
@@ -21,79 +20,6 @@ import { useFiltersContext } from '../../-model/filters';
 
 import { ModulesGridLayout } from './_presentation/Layout';
 import { ModuleCard } from './ModuleCard';
-
-const CATEGORY_LABELS = new Map(
-  SERVER_MODULES_CATEGORY.map((category) => [category.id, category.name]),
-);
-
-function titleize(value: string) {
-  return value
-    .split(/[-_\s]+/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
-}
-
-function resolveInstallerName(id: string) {
-  switch (id) {
-    case 'golang':
-      return 'go';
-    case 'caddy':
-      return 'caddyserver';
-    default:
-      return id;
-  }
-}
-
-function resolveInstallerType(module: DTOs.ModuleCatalogItemV1) {
-  if (module.id === 'docker') return 'container';
-  if (module.id === 'caddy') return 'infrastructure';
-  return module.category ?? 'utilities';
-}
-
-function hasSubmodule(module: DTOs.ModuleCatalogItemV1) {
-  if (module.category === 'language') return true;
-
-  const staticModule = HARDCODED_SERVER_MODULES.find(
-    (item) =>
-      item.id === module.id || item.id === resolveInstallerName(module.id),
-  );
-
-  return staticModule?.has_submodule ?? false;
-}
-
-function toServerModule(
-  module: DTOs.ModuleCatalogItemV1,
-  refName?: string,
-  resolvedCommit?: string,
-): ServerModule {
-  const staticModule = HARDCODED_SERVER_MODULES.find(
-    (item) =>
-      item.id === module.id || item.id === resolveInstallerName(module.id),
-  );
-
-  return {
-    category: [module.category ?? 'utilities'],
-    platform: module.platforms?.length ? module.platforms : ['vm'],
-    id: module.id,
-    installerName: resolveInstallerName(module.id),
-    installerType: resolveInstallerType(module),
-    name: module.name || staticModule?.name || titleize(module.id),
-    description: module.description || staticModule?.description || '',
-    logoUrl: resolveServerModuleLogo({
-      id: module.id,
-      icon: module.icon,
-      logoUrl: module.icon_url || staticModule?.logoUrl,
-    }),
-    has_submodule: hasSubmodule(module),
-    actions: module.actions,
-    source: 'catalog',
-    refName,
-    resolvedCommit,
-    installation: module.installation,
-    installationStatus: module.installation?.status,
-  };
-}
 
 export default function ModulesGrid() {
   const { serverID } = useFiltersContext();
@@ -116,7 +42,7 @@ export default function ModulesGrid() {
   const modules = useMemo(() => {
     return (
       catalog?.modules.map((module) =>
-        toServerModule(
+        toServerModuleFromCatalog(
           module,
           catalog.repository.ref.name,
           catalog.repository.ref.resolved_commit,
@@ -139,7 +65,7 @@ export default function ModulesGrid() {
       const knownA = CATEGORY_LABELS.has(a) ? 0 : 1;
       const knownB = CATEGORY_LABELS.has(b) ? 0 : 1;
       if (knownA !== knownB) return knownA - knownB;
-      return titleize(a).localeCompare(titleize(b));
+      return titleizeModuleValue(a).localeCompare(titleizeModuleValue(b));
     });
   }, [groupedModules]);
 
@@ -312,7 +238,8 @@ export default function ModulesGrid() {
 
       {categories.map((category) => {
         const modulesInCategory = groupedModules[category] ?? [];
-        const name = CATEGORY_LABELS.get(category) ?? titleize(category);
+        const name =
+          CATEGORY_LABELS.get(category) ?? titleizeModuleValue(category);
 
         return (
           <div key={category}>
