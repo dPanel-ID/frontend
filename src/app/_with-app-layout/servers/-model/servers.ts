@@ -14,11 +14,10 @@ export const [ServersModelProvider, useServersModel] = buildSelector(
 )(() => {
   const { id: userId } = useAuthLoggedIn().userProfile;
 
-  const { pagination, ownership, hasModules, searchQuery } = useFilterModel();
+  const { pagination, ownership, searchQuery } = useFilterModel();
 
   const [responseServers, refresh] = ApiServer.Find.useGet({
     filter: ownership,
-    hasModules,
     userId,
     pageSize: 4,
     page: pagination,
