@@ -1,8 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import {
-  FileTextIcon,
-  PlusCircleIcon,
-} from 'lucide-react';
+import { FileTextIcon, PlusCircleIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
@@ -10,9 +7,7 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
-import {
-  LINK__DOCUMENTATION,
-} from '@/widgets/aside-help-support/config/links';
+import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
 export default function Header() {
   const t = useDevetekTranslations();
@@ -42,7 +37,7 @@ export default function Header() {
         <div className="flex flex-wrap items-center justify-end gap-2">
           <HeaderHelpAction
             icon={FileTextIcon}
-            label="Docs"
+            label={t('page.servers.docs')}
             href={LINK__DOCUMENTATION}
           />
           <Button variant="outline" size="sm" onClick={handleClickAddMore}>
