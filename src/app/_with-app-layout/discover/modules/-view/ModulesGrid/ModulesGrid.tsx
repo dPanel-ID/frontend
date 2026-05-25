@@ -83,7 +83,7 @@ function toServerModule(
     logoUrl: resolveServerModuleLogo({
       id: module.id,
       icon: module.icon,
-      logoUrl: staticModule?.logoUrl,
+      logoUrl: module.icon_url || staticModule?.logoUrl,
     }),
     has_submodule: hasSubmodule(module),
     actions: module.actions,

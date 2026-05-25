@@ -30,6 +30,7 @@ export interface ModuleCatalogItemV1 {
   category?: string;
   platforms?: string[];
   icon?: string;
+  icon_url?: string;
   supported: boolean;
   unsupported_reasons?: string[];
   actions?: string[];
