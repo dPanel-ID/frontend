@@ -3,6 +3,7 @@ import { useState } from 'react';
 import {
   ActivityIcon,
   RefreshCwIcon,
+  SearchIcon,
   SettingsIcon,
   ShieldAlertIcon,
 } from 'lucide-react';
@@ -16,11 +17,14 @@ import {
   ServerManagementMetric,
   ServerManagementSidepanel,
   ServerManagementState,
+  ServerManagementToolbar,
 } from '@/features/server-management-sidepanel-ui';
 import { useServiceOverviewModal } from '@/features/service-overview-modal';
 
 import { ApiService } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
+import { useDebounceValue } from '@/shared/libs/react-hooks/useDebounce';
+import { Input } from '@/shared/presentation/atoms/Input';
 import { buildPaginationV2 } from '@/widgets/ui-atomic-builder/atom-pagination-v2';
 
 import type { ServerServicesSidepanelProps as Props } from '../rules/types';
@@ -33,11 +37,15 @@ export default function ServerServicesSidepanel(props: Props) {
 
   const [openServiceOverviewModal] = useServiceOverviewModal();
   const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, isSearchDebouncing] =
+    useDebounceValue(searchQuery);
 
   const [response, refresh] = ApiService.Origin.$ServerId.useGet({
     serverId,
     page,
     pageSize: SERVICES_PAGE_SIZE,
+    searchByName: debouncedSearchQuery.trim() || undefined,
   });
 
   const services = useAdapter(response, (raw) => ({
@@ -75,6 +83,7 @@ export default function ServerServicesSidepanel(props: Props) {
   });
 
   const isLoading = services.$status === 'loading';
+  const hasSearchQuery = debouncedSearchQuery.trim().length > 0;
 
   return (
     <ServerManagementSidepanel
@@ -114,6 +123,35 @@ export default function ServerServicesSidepanel(props: Props) {
         </>
       }
     >
+      <ServerManagementToolbar>
+        <label className="relative min-w-[260px] flex-1">
+          <span className="sr-only">Search services</span>
+          <Input
+            className="pl-9"
+            inputSize="sm"
+            value={searchQuery}
+            placeholder="Search service name"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="none"
+            spellCheck={false}
+            onChange={(event) => {
+              setSearchQuery(event.target.value);
+              setPage(1);
+            }}
+          />
+          <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        </label>
+
+        <p className="text-xs text-muted-foreground">
+          {services.$status === 'success'
+            ? `${pagination?.total_item ?? serviceList.length} matched services`
+            : isSearchDebouncing
+              ? 'Filtering services'
+              : 'Waiting for service data'}
+        </p>
+      </ServerManagementToolbar>
+
       {services.$status === 'initial' || services.$status === 'loading' ? (
         <ServicesTable.PlaceholderLoading />
       ) : services.$status === 'failed' ? (
@@ -131,8 +169,16 @@ export default function ServerServicesSidepanel(props: Props) {
         />
       ) : serviceList.length === 0 && !pagination?.total_item ? (
         <ServerManagementState
-          title="No running services found"
-          description="The agent did not report any systemd services for this server."
+          title={
+            hasSearchQuery
+              ? 'No services match the filter'
+              : 'No running services found'
+          }
+          description={
+            hasSearchQuery
+              ? 'Try another systemd service name.'
+              : 'The agent did not report any systemd services for this server.'
+          }
         />
       ) : (
         <div className="grid gap-3">

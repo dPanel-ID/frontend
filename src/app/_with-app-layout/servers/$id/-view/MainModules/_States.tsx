@@ -1,4 +1,5 @@
 import { useDevetekTranslations } from '@/services/i18n';
+import { useToaster } from '@/services/toaster';
 
 import IllustProgrammingLanguages from '@/shared/assets/illust-programming-languages.jpg';
 import { Button } from '@/shared/presentation/atoms/Button';
@@ -7,15 +8,39 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { FailedState } from '@/widgets/failed-state';
 
 import { useEmit } from '../../-model/events';
+import { useServerDataModel } from '../../-model/server-data';
 
 function Empty() {
   const emit = useEmit();
+  const [refreshModuleInventory] = useServerDataModel((s) => [
+    s.refreshModuleInventory,
+  ]);
+  const [openToaster] = useToaster();
 
   const t = useDevetekTranslations();
 
   const handleClickDiscoverModules = () => {
     emit('@servers::detail/favorite-navigation', {
       to: 'modules-discover',
+    });
+  };
+
+  const handleClickRefresh = async () => {
+    const response = await refreshModuleInventory();
+    if (response.$status === 'failed') {
+      openToaster({
+        variant: 'error',
+        title: <>Refresh failed</>,
+        message:
+          'message' in response.error
+            ? response.error.message
+            : 'Unable to refresh server modules.',
+      });
+      return;
+    }
+    openToaster({
+      variant: 'success',
+      message: <>Server modules refreshed.</>,
     });
   };
 
@@ -32,9 +57,18 @@ function Empty() {
             </h3>
           </div>
 
-          <Button className="w-max" onClick={handleClickDiscoverModules}>
-            {t('common.actions.discover')}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button className="w-max" onClick={handleClickDiscoverModules}>
+              {t('common.actions.discover')}
+            </Button>
+            <Button
+              className="w-max"
+              variant="outline"
+              onClick={handleClickRefresh}
+            >
+              Refresh
+            </Button>
+          </div>
         </div>
 
         <div className="border-2 rounded-lg overflow-hidden h-[128px] w-[128px] relative">
