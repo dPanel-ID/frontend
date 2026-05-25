@@ -29,7 +29,14 @@ export interface SubmenuFilter {
   queryParam: Record<string, string>;
 }
 
-export interface TeamPopupItem {
-  name: string;
+export type WorkspacePickerItemType = 'personal' | 'team';
+
+export interface WorkspacePickerItem {
   id: string;
+  name: string;
+  type: WorkspacePickerItemType;
+  workspaceId: string | null;
+  description?: string;
+  role?: string;
+  status?: string;
 }

@@ -8,6 +8,8 @@ import type { ArtifactLogsModalProps } from '../rules/types';
 
 import LogViewer from './LogViewer';
 
+const ARTIFACT_LOG_LINE_COUNT = 80;
+
 const Content = (props: ArtifactLogsModalProps) => {
   const { serverId, appName, userName, artifactId } = props;
 
@@ -16,7 +18,7 @@ const Content = (props: ArtifactLogsModalProps) => {
   const [responseLog] = ApiServer.Origin.$Id.Log.useGet({
     serverId,
     file: `/home/${userName}/logs/${appName}/build-artifact-${artifactId}.log`,
-    line: 1000,
+    line: ARTIFACT_LOG_LINE_COUNT,
     options: {
       refreshIntervalMs: 2000,
     },

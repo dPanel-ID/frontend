@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   Dialog,
@@ -14,15 +14,37 @@ export default function ModalController() {
   const [isOpen, setIsOpen] = useState(false);
   const [allowClickOutsideClose, setAllowClickOutsideClose] = useState(true);
 
+  const closeModal = useCallback(() => {
+    setIsOpen(false);
+    setModalPayload(undefined);
+    setAllowClickOutsideClose(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen || !allowClickOutsideClose) return undefined;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      closeModal();
+    };
+
+    document.addEventListener('keydown', onKeyDown, true);
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown, true);
+    };
+  }, [allowClickOutsideClose, closeModal, isOpen]);
+
   useModalSubscribe('%%modal/open', (payload) => {
     setModalPayload(payload);
     setIsOpen(true);
   });
 
   useModalSubscribe('%%modal/close', () => {
-    setIsOpen(false);
-    setModalPayload(undefined);
-    setAllowClickOutsideClose(true);
+    closeModal();
   });
 
   useModalSubscribe('%%modal/allow-trivial-close', (value) => {
@@ -30,13 +52,25 @@ export default function ModalController() {
   });
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(nextOpen) => {
+        if (nextOpen) {
+          setIsOpen(true);
+          return;
+        }
+
+        if (!allowClickOutsideClose) return;
+
+        closeModal();
+      }}
+    >
       {modalPayload && (
         <DialogPortal>
           <DialogOverlay
             onClick={() => {
               if (!allowClickOutsideClose) return;
-              setIsOpen(false);
+              closeModal();
             }}
           />
           {modalPayload.content}

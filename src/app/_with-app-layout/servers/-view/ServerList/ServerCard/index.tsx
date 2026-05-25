@@ -93,7 +93,7 @@ export default function ServerCard(props: ServerCardProps) {
   const [loadBalancersResponse] = ApiLoadBalancer.Find.useGet({
     machineId: data.id,
     page: 1,
-    limit: 100,
+    limit: 1,
     options: {
       skip: !shouldFetchOverview,
     },
@@ -167,7 +167,10 @@ export default function ServerCard(props: ServerCardProps) {
       moduleGroups,
       installedModules,
       databaseModules,
-      loadBalancers: loadBalancerData?.routers ?? [],
+      loadBalancerCount:
+        loadBalancerData?.pagination.total_item ??
+        loadBalancerData?.routers?.length ??
+        0,
       cpuPercent: sanitizePercent(cpuUsageData?.cpu_usage),
       memoryPercent: sanitizePercent(memoryUsageData?.used_percent),
       diskPercent: sanitizePercent(
@@ -393,7 +396,7 @@ export default function ServerCard(props: ServerCardProps) {
             <OverviewMetric
               icon={NetworkIcon}
               label="Load Balancers"
-              value={overview.loadBalancers.length}
+              value={overview.loadBalancerCount}
               onClick={(event) =>
                 handleNavigate(event, '/backend/load-balancers')
               }

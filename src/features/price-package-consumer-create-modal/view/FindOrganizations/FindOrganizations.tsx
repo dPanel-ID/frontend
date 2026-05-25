@@ -11,7 +11,7 @@ import { FailedState } from '@/widgets/failed-state';
 import { useDcContext } from '../../model';
 
 export default function FindOrganizations() {
-  const [response] = ApiOrganization.Find.useGet({ pageSize: 1000 });
+  const [response] = ApiOrganization.Find.useGet({ page: 1, pageSize: 12 });
   const { form } = useDcContext();
   const [searchOrganizationID, setSearchOrganizationID] = useState<string>('');
 

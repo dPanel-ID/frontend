@@ -11,7 +11,7 @@ import { FailedState } from '@/widgets/failed-state';
 import { useDcContext } from '../../model';
 
 export default function FindPackages() {
-  const [response] = ApiPricePackage.Find.useGet({ pageSize: 1000 });
+  const [response] = ApiPricePackage.Find.useGet({ page: 1, pageSize: 12 });
   const { form } = useDcContext();
   const [searchPricePackageID, setSearchPricePackageID] = useState<string>('');
 

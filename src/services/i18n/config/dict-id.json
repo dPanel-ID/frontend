@@ -951,14 +951,17 @@
       }
     },
     "createTeam": {
-      "title": "Buat Tim",
-      "fieldName": "Nama Tim",
+      "title": "Buat ruang kerja",
+      "description": "Buat ruang kerja terisolasi untuk server, aplikasi, domain, secret, dan modul milik tim.",
+      "fieldName": "Nama ruang kerja",
       "namePlaceholder": "mis. Tim Backend",
-      "descPlaceholder": "Apa yang dikerjakan tim ini?",
-      "submit": "Buat Tim",
+      "nameHelp": "Gunakan nama yang mudah dikenali oleh tim saat memilih resource.",
+      "descPlaceholder": "Apa yang akan dikelola ruang kerja ini?",
+      "descriptionHelp": "Konteks opsional untuk anggota tim yang akan masuk ke ruang kerja ini nanti.",
+      "submit": "Buat ruang kerja",
       "toaster": {
-        "success": "Tim \"{name}\" berhasil dibuat",
-        "error": "Gagal membuat tim \"{name}\""
+        "success": "Ruang kerja \"{name}\" berhasil dibuat",
+        "error": "Gagal membuat ruang kerja \"{name}\""
       }
     },
     "addTeamMember": {
@@ -990,11 +993,49 @@
   "sidebar": {
     "teamsWidget": {
       "tooltipTeamX": "Tim: {teamName}",
-      "selectATeamHere": "Pilih tim disini",
-      "personalMode": "Mode personal",
-      "usePersonalMode": "Gunakan mode personal",
-      "usingPersonalMode": "Dalam mode personal",
-      "addNewTeams": "Tambah tim baru"
+      "personalWorkspace": "Ruang kerja personal",
+      "selectWorkspace": "Pilih ruang kerja"
+    },
+    "workspacePicker": {
+      "title": "Pilih ruang kerja",
+      "description": "Resource dipisahkan berdasarkan ruang kerja. Beralih antara resource personal dan proyek tim dari sini.",
+      "newWorkspace": "Ruang kerja baru",
+      "searchLabel": "Cari ruang kerja",
+      "searchPlaceholder": "Cari ruang kerja",
+      "personalWorkspace": "Ruang kerja personal",
+      "personalDescription": "Resource milik akun Anda",
+      "teamDescription": "Ruang kerja tim {workspaceId}",
+      "typePersonal": "Personal",
+      "typeTeam": "Tim",
+      "roleOwner": "Owner",
+      "roleMember": "Member",
+      "current": "Aktif",
+      "selectWorkspace": "Pilih {name}",
+      "selectedWorkspace": "{name} sedang aktif",
+      "isolatedResources": "Resource terisolasi",
+      "manageWorkspace": "Kelola ruang kerja",
+      "manageWorkspaceNamed": "Kelola {name}",
+      "loading": "Memuat ruang kerja...",
+      "empty": "Ruang kerja tidak ditemukan.",
+      "footer": "Mengganti ruang kerja akan memuat ulang data resource untuk batas akses yang dipilih.",
+      "tableCaption": "Daftar ruang kerja",
+      "pageInfo": "Halaman {page} dari {totalPage} - {totalItem} tim",
+      "previousPage": "Halaman ruang kerja sebelumnya",
+      "nextPage": "Halaman ruang kerja berikutnya",
+      "tabs": {
+        "recent": "Terbaru",
+        "all": "Semua",
+        "personal": "Personal",
+        "teams": "Tim"
+      },
+      "columns": {
+        "name": "Nama",
+        "type": "Tipe",
+        "id": "ID",
+        "role": "Role",
+        "resources": "Resource",
+        "actions": "Aksi"
+      }
     },
     "workspace": "Ruang kerja",
     "dashboard": "Dasbor",

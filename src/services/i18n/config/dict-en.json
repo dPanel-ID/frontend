@@ -961,14 +961,17 @@
       }
     },
     "createTeam": {
-      "title": "Create a Team",
-      "fieldName": "Team Name",
+      "title": "Create workspace",
+      "description": "Create an isolated workspace for team-owned servers, applications, domains, secrets, and modules.",
+      "fieldName": "Workspace name",
       "namePlaceholder": "e.g. Backend Squad",
-      "descPlaceholder": "What does this team do?",
-      "submit": "Create Team",
+      "nameHelp": "Use a clear name your team can recognize in resource pickers.",
+      "descPlaceholder": "What will this workspace manage?",
+      "descriptionHelp": "Optional context for teammates who switch into this workspace later.",
+      "submit": "Create workspace",
       "toaster": {
-        "success": "Team \"{name}\" created successfully",
-        "error": "Failed to create team \"{name}\""
+        "success": "Workspace \"{name}\" created successfully",
+        "error": "Failed to create workspace \"{name}\""
       }
     },
     "addTeamMember": {
@@ -1000,11 +1003,49 @@
   "sidebar": {
     "teamsWidget": {
       "tooltipTeamX": "Team: {teamName}",
-      "selectATeamHere": "Select a team here",
-      "personalMode": "Personal mode",
-      "usePersonalMode": "Use personal mode",
-      "usingPersonalMode": "Using personal mode",
-      "addNewTeams": "Add new teams"
+      "personalWorkspace": "Personal workspace",
+      "selectWorkspace": "Select workspace"
+    },
+    "workspacePicker": {
+      "title": "Select workspace",
+      "description": "Resources are isolated by workspace. Switch between personal resources and team projects from here.",
+      "newWorkspace": "New workspace",
+      "searchLabel": "Search workspaces",
+      "searchPlaceholder": "Search workspaces",
+      "personalWorkspace": "Personal workspace",
+      "personalDescription": "Resources owned by your account",
+      "teamDescription": "Team workspace {workspaceId}",
+      "typePersonal": "Personal",
+      "typeTeam": "Team",
+      "roleOwner": "Owner",
+      "roleMember": "Member",
+      "current": "Current",
+      "selectWorkspace": "Select {name}",
+      "selectedWorkspace": "{name} is selected",
+      "isolatedResources": "Isolated resources",
+      "manageWorkspace": "Manage workspace",
+      "manageWorkspaceNamed": "Manage {name}",
+      "loading": "Loading workspaces...",
+      "empty": "No workspaces found.",
+      "footer": "Switching workspace refreshes resource data for the selected boundary.",
+      "tableCaption": "Available workspaces",
+      "pageInfo": "Page {page} of {totalPage} - {totalItem} teams",
+      "previousPage": "Previous workspaces page",
+      "nextPage": "Next workspaces page",
+      "tabs": {
+        "recent": "Recent",
+        "all": "All",
+        "personal": "Personal",
+        "teams": "Teams"
+      },
+      "columns": {
+        "name": "Name",
+        "type": "Type",
+        "id": "ID",
+        "role": "Role",
+        "resources": "Resources",
+        "actions": "Actions"
+      }
     },
     "workspace": "Workspace",
     "dashboard": "Dashboard",

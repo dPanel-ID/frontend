@@ -49,7 +49,7 @@ export default guard(function ServerList() {
 
   const [applicationsResponse] = ApiApplication.Find.useGet({
     page: 1,
-    limit: 100,
+    limit: 12,
     options: {
       skip: servers.length < 1,
     },
