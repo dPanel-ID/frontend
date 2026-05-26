@@ -14,6 +14,7 @@ export interface User {
 
 export interface Github {
   provider?: string;
+  subject?: string;
   nickname?: string;
   access_token?: string;
   access_token_secret?: string;

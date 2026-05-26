@@ -1,139 +1,99 @@
-import { LoaderIcon } from 'lucide-react';
+import { CheckCircle2Icon, CircleDotIcon, ShieldCheckIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { cn } from '@/shared/libs/tailwind/cn';
 import { Card } from '@/shared/presentation/atoms/Card';
 
+import {
+  APPLICATION_CREATE_STEPS,
+  getApplicationCreateStepIndex,
+} from '../../-model/progress-steps';
 import { useFormStore } from '../../-model/store/form';
-import { useServersStore } from '../../-model/store/servers';
-
-import { ProgressItem } from './_presentation/ProgressItem';
-import type { ProgressItemStatus } from './_presentation/ProgressItem/types';
 
 export default function AsideProgress() {
-  const [
-    progress,
-    appSourceMode,
-    appSourceBundleIdent,
-    appSourceGithubRepo,
-    appName,
-    hostedServerID,
-  ] = useFormStore((s) => [
+  const [progress, setProgress] = useFormStore((s) => [
     s.progress,
-    s.appSourceMode,
-    s.appSourceBundleIdent,
-    s.appSourceGithubRepo,
-    s.appName,
-    s.hostedServerID,
+    s.setProgress,
   ]);
-
-  const [servers] = useServersStore();
-
   const t = useDevetekTranslations('page.applicationsCreate.progress');
-
-  let status1: ProgressItemStatus = 'todo';
-  let status2: ProgressItemStatus = 'todo';
-  let status3: ProgressItemStatus = 'todo';
-  let status4: ProgressItemStatus = 'todo';
-
-  switch (progress) {
-    case '1-source':
-      status1 = 'in-progress';
-      break;
-
-    case '2-details':
-      status1 = 'checked';
-      status2 = 'in-progress';
-      break;
-
-    case '3-configuration':
-      status1 = 'checked';
-      status2 = 'checked';
-      status3 = 'in-progress';
-      break;
-
-    case '4-deploy':
-      status1 = 'checked';
-      status2 = 'checked';
-      status3 = 'checked';
-      status4 = 'in-progress';
-      break;
-  }
-
-  const progressToNumber = () => {
-    return Number(progress.at(0));
-  };
-
-  const getStep1Desc = () => {
-    if (progressToNumber() < 2) {
-      return t('step1.desc');
-    }
-
-    if (appSourceMode === 'bundle' && appSourceBundleIdent) {
-      return `(Bundle) ${appSourceBundleIdent}`;
-    }
-
-    if (appSourceGithubRepo) {
-      const formattedRepo = appSourceGithubRepo
-        .replace('https://github.com/', '')
-        .replace('.git', '');
-
-      return `(GitHub) ${formattedRepo}`;
-    }
-
-    return t('step1.desc');
-  };
-
-  const getStep2Desc = () => {
-    if (
-      progressToNumber() > 2 &&
-      appName &&
-      hostedServerID &&
-      servers.$status === 'success'
-    ) {
-      const serverName = servers.servers.find(
-        (server) => server.id === hostedServerID,
-      )?.hostname;
-
-      if (serverName) {
-        return `${appName}, Server ${serverName}`;
-      }
-    }
-
-    return t('step2.desc');
-  };
+  const currentIndex = Math.max(0, getApplicationCreateStepIndex(progress));
+  const progressPercent =
+    (currentIndex / (APPLICATION_CREATE_STEPS.length - 1)) * 100;
 
   return (
-    <Card className="shadow-none rounded-2xl p-6 flex flex-col gap-4">
-      <div className="flex gap-2 items-center">
-        <LoaderIcon className="w-6 h-6" />
-        <h1 className="text-2xl font-semibold">{t('title')}</h1>
+    <Card className="overflow-hidden rounded-lg shadow-none">
+      <div className="flex flex-col gap-4 border-b p-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <p className="text-sm font-semibold">{t('title')}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t('description')}
+          </p>
+        </div>
+
+        <div className="w-full lg:w-64">
+          <div className="h-1.5 overflow-hidden rounded-full bg-border">
+            <div
+              className="h-full rounded-full bg-primary transition-all"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+        </div>
       </div>
 
-      <ProgressItem
-        step={1}
-        stepName={t('step1.title')}
-        stepDescription={getStep1Desc()}
-        status={status1}
-      />
-      <ProgressItem
-        step={2}
-        stepName={t('step2.title')}
-        stepDescription={getStep2Desc()}
-        status={status2}
-      />
-      <ProgressItem
-        step={3}
-        stepName={t('step3.title')}
-        stepDescription={t('step3.desc')}
-        status={status3}
-      />
-      <ProgressItem
-        step={4}
-        stepName={t('step4.title')}
-        stepDescription={t('step4.desc')}
-        status={status4}
-      />
+      <div className="grid gap-2 p-3 md:grid-cols-2 xl:grid-cols-5">
+        {APPLICATION_CREATE_STEPS.map((step, index) => {
+          const isActive = step.key === progress;
+          const isDone = index < currentIndex;
+          const isAccessible = index <= currentIndex;
+          const StepIcon = isDone
+            ? CheckCircle2Icon
+            : isActive
+              ? CircleDotIcon
+              : ShieldCheckIcon;
+
+          return (
+            <button
+              key={step.key}
+              type="button"
+              disabled={!isAccessible}
+              onClick={() => setProgress(step.key)}
+              className={cn(
+                'rounded-md border p-3 text-left transition-all',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35',
+                isActive
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-transparent bg-transparent hover:border-border hover:bg-background',
+                !isAccessible && 'cursor-not-allowed opacity-50',
+              )}
+            >
+              <div className="flex items-start gap-3">
+                <span
+                  className={cn(
+                    'mt-0.5 flex size-7 items-center justify-center rounded-md border bg-card',
+                    isActive &&
+                      'border-primary bg-primary text-primary-foreground',
+                    isDone && 'border-emerald-500/40 text-emerald-400',
+                  )}
+                >
+                  <StepIcon className="size-3.5" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-[0.68rem] font-semibold uppercase text-muted-foreground">
+                    {t('stepLabel', { step: index + 1 })}
+                  </span>
+                  <span className="block text-sm font-semibold">
+                    {t(step.labelKey)}
+                  </span>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
+                    {t(step.descKey)}
+                  </span>
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </Card>
   );
 }

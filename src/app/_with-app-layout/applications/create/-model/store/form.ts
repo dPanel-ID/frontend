@@ -13,9 +13,11 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
       appName: '',
       appProgLang: '',
       appProgLangVersion: '',
-      appBuildCommand: ["./scripts/build.sh"],
+      appBuildCommand: ['./scripts/build.sh'],
       appRunCommand: './scripts/start.sh',
       appPort: '',
+      buildEnvText: '',
+      runtimeEnvText: '',
       appSourceMode: 'github',
       appSourceBundleIdent: null,
       appSourceGithubRepo: null,
@@ -24,6 +26,8 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
       gitRepoConfig: null,
 
       dynamicConfig: null,
+      selectedDependencyIds: [],
+      dependencyConfigs: {},
 
       setGitRepoConfig: (gitRepoConfig) => {
         set({ gitRepoConfig });
@@ -41,13 +45,47 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
         set({ appProgLangVersion });
       },
       setAppBuildCommand: (appBuildCommand) => {
-        set({ appBuildCommand: [appBuildCommand] });
+        set({
+          appBuildCommand: appBuildCommand.length ? appBuildCommand : [''],
+        });
       },
       setAppRunCommand: (appRunCommand) => {
         set({ appRunCommand });
       },
       setAppPort: (appPort) => {
         set({ appPort });
+      },
+      setBuildEnvText: (buildEnvText) => {
+        set({ buildEnvText });
+      },
+      setRuntimeEnvText: (runtimeEnvText) => {
+        set({ runtimeEnvText });
+      },
+      toggleDependency: (dependencyId) => {
+        const { selectedDependencyIds, dependencyConfigs } = get();
+        if (selectedDependencyIds.includes(dependencyId)) {
+          const nextConfigs = { ...dependencyConfigs };
+          delete nextConfigs[dependencyId];
+          set({
+            selectedDependencyIds: selectedDependencyIds.filter(
+              (id) => id !== dependencyId,
+            ),
+            dependencyConfigs: nextConfigs,
+          });
+          return;
+        }
+
+        set({
+          selectedDependencyIds: [...selectedDependencyIds, dependencyId],
+        });
+      },
+      setDependencyConfig: (dependencyId, config) => {
+        set((state) => ({
+          dependencyConfigs: {
+            ...state.dependencyConfigs,
+            [dependencyId]: config,
+          },
+        }));
       },
       setAppSourceMode: (appSourceMode) => {
         const { appSourceMode: prevAppSourceMode } = get();
@@ -69,7 +107,14 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
         set({ appSourceGithubRepo: null });
       },
       setHostedServerID: (hostedServerID) => {
-        set({ hostedServerID });
+        const { hostedServerID: currentHostedServerID } = get();
+        if (currentHostedServerID === hostedServerID) return;
+
+        set({
+          hostedServerID,
+          selectedDependencyIds: [],
+          dependencyConfigs: {},
+        });
       },
       setDynamicConfig: (dynamicConfig) => {
         set({ dynamicConfig });

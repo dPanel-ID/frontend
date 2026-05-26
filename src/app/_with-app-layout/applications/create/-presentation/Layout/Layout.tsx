@@ -7,7 +7,7 @@ interface BaseProps {
 export default function ApplicationsCreateLayout(props: BaseProps) {
   const { children } = props;
 
-  return <div className="grid md:grid-cols-[1fr_0.4fr] gap-4">{children}</div>;
+  return <div className="grid gap-4">{children}</div>;
 }
 
 ApplicationsCreateLayout.Main = function Main(props: BaseProps) {

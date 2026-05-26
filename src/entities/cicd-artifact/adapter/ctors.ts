@@ -26,8 +26,8 @@ export function ctorPointerIds(
   raw: DTOs.ArtifactV1,
 ): KeysOnlyDeep<z.input<typeof pointerIds>> {
   return {
-    application: String(raw.application_id),
-    machine: String(raw.machine_id),
+    application: String(raw.application_id ?? 'unknown'),
+    machine: String(raw.machine_id ?? raw.machine?.id ?? 'unknown'),
   };
 }
 
@@ -35,16 +35,16 @@ export function ctorCommitMetadata(
   raw: DTOs.ArtifactV1,
 ): KeysOnlyDeep<z.input<typeof commitMetadata>> {
   return {
-    fromBranch: raw.branch,
-    head: raw.head,
-    message: raw.description,
+    fromBranch: raw.branch ?? 'unknown',
+    head: raw.head ?? 'unknown',
+    message: raw.description ?? '',
   };
 }
 
 export function ctorConfigSnapshot(
   raw: DTOs.ArtifactV1,
 ): KeysOnlyDeep<z.input<typeof configSnapshot>> {
-  const rawLcBuild = raw.app_definition?.build.target.machine;
+  const rawLcBuild = raw.app_definition?.build?.target?.machine;
   const rawLcRun = raw.app_definition?.run;
 
   const mainLanguage = iife(() => {
@@ -81,7 +81,7 @@ export function ctorTimestamp(
   raw: DTOs.ArtifactV1,
 ): KeysOnlyDeep<z.input<typeof timestamp>> {
   return {
-    created: raw.created_at,
-    updated: raw.updated_at,
+    created: raw.created_at ?? new Date(0).toISOString(),
+    updated: raw.updated_at ?? raw.created_at ?? new Date(0).toISOString(),
   };
 }

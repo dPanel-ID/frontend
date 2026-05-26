@@ -9,7 +9,62 @@ import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import { useFormStore } from '../store/form';
 
+import type { RuntimeDependency } from './config';
 import { getVarsGit, getVarsLaravel, getVarsWordpress } from './config';
+
+function parseEnvText(value: string) {
+  return value
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .reduce<Array<Record<string, string>>>((acc, line) => {
+      const separatorIndex = line.indexOf('=');
+      if (separatorIndex <= 0) return acc;
+
+      acc.push({
+        key: line.slice(0, separatorIndex).trim(),
+        value: line.slice(separatorIndex + 1).trim(),
+      });
+      return acc;
+    }, []);
+}
+
+function runtimeFromDependency(
+  dependencyId: string,
+  variables: Record<string, unknown>,
+): RuntimeDependency | null {
+  const id = dependencyId.toLowerCase();
+  const getString = (key: string) =>
+    typeof variables[key] === 'string' ? String(variables[key]) : '';
+
+  if (id === 'go' || id.includes('golang')) {
+    return { name: 'go', version: getString('golang_version') };
+  }
+  if (id === 'nodejs' || id.includes('nvm') || id.includes('node')) {
+    return { name: 'nodejs', version: getString('nodejs_version') };
+  }
+  if (id === 'php' || id.includes('php')) {
+    return { name: 'php', version: getString('php_version') };
+  }
+  if (id === 'python' || id.includes('pyenv')) {
+    const pyenvGlobal = variables.pyenv_global;
+    const version = Array.isArray(pyenvGlobal)
+      ? String(pyenvGlobal[0] ?? '')
+      : getString('python_version');
+    return { name: 'python', version };
+  }
+  if (id === 'ruby' || id.includes('rbenv')) {
+    return { name: 'ruby', version: getString('default_ruby') };
+  }
+  if (id === 'bun') {
+    return { name: 'bun', version: getString('bun_version') };
+  }
+  if (id === 'docker') {
+    return { name: 'docker', version: getString('docker_version') };
+  }
+
+  return null;
+}
 
 export default function useHandleDeploy() {
   const navigate = useNavigate();
@@ -34,10 +89,13 @@ export default function useHandleDeploy() {
       dynamicConfig,
       hostedServerID,
       gitRepoConfig,
+      buildEnvText,
+      runtimeEnvText,
+      dependencyConfigs,
+      selectedDependencyIds,
     } = formValues;
 
-    if (!appName || !appSourceBundleIdent || !dynamicConfig || !hostedServerID)
-      return null;
+    if (!appName || !appSourceBundleIdent || !hostedServerID) return null;
 
     const {
       gitProvider = '',
@@ -55,26 +113,18 @@ export default function useHandleDeploy() {
       db_name: mariadbDbName = '',
       db_user: mariadbUsername = '',
       db_password: mariadbPassword = '',
-    } = dynamicConfig['db_config'] || {};
+    } = dynamicConfig?.['db_config'] || {};
 
-    const envVariables: Array<Record<string, string>> = [];
-    const arrEnvs = (
-      (dynamicConfig['adv_config']?.['adv_envvar'] as string) || ''
-    ).split('\n');
-
-    if (arrEnvs.length > 0) {
-      arrEnvs.forEach((env) => {
-        if (env === '') return;
-
-        const [key, value] = env.split('=');
-        if (!key || !value) return;
-
-        envVariables.push({
-          key,
-          value,
-        });
-      });
-    }
+    const buildEnvVariables = parseEnvText(buildEnvText);
+    const runtimeEnvVariables = parseEnvText(runtimeEnvText);
+    const legacyEnvVariables = parseEnvText(
+      String(dynamicConfig?.['adv_config']?.['adv_envvar'] ?? ''),
+    );
+    const dependencyRuntimes = selectedDependencyIds
+      .map((id) => dependencyConfigs[id])
+      .filter((config): config is NonNullable<typeof config> => Boolean(config))
+      .map((config) => runtimeFromDependency(config.id, config.variables))
+      .filter((runtime): runtime is RuntimeDependency => Boolean(runtime));
 
     if (appSourceGithubRepo) {
       const [repoOrganization, repoName] = appSourceGithubRepo
@@ -97,7 +147,9 @@ export default function useHandleDeploy() {
         appName,
         appPort: Number(appPort),
         repoName: repoName || '',
-        appBuildCommand,
+        appBuildCommand: appBuildCommand
+          .map((command) => command.trim())
+          .filter(Boolean),
         appRunCommand,
         repoOrganization: repoOrganization || '',
         appDomain,
@@ -107,7 +159,10 @@ export default function useHandleDeploy() {
         mariadbDbName: String(mariadbDbName),
         mariadbUsername: String(mariadbUsername),
         mariadbPassword: String(mariadbPassword),
-        envVariables,
+        envVariables: legacyEnvVariables,
+        buildEnvVariables,
+        runtimeEnvVariables,
+        dependencyRuntimes,
       });
     }
 
@@ -123,7 +178,7 @@ export default function useHandleDeploy() {
           mariadbDbName: String(mariadbDbName),
           mariadbUsername: String(mariadbUsername),
           mariadbPassword: String(mariadbPassword),
-          envVariables,
+          envVariables: legacyEnvVariables,
         });
 
       case 'laravel': {
@@ -153,7 +208,7 @@ export default function useHandleDeploy() {
             value: String(mariadbPassword),
           },
         ];
-        envVariables.push(...laravelDBConnection);
+        legacyEnvVariables.push(...laravelDBConnection);
 
         return getVarsLaravel({
           appName,
@@ -163,7 +218,7 @@ export default function useHandleDeploy() {
           mariadbDbName: String(mariadbDbName),
           mariadbUsername: String(mariadbUsername),
           mariadbPassword: String(mariadbPassword),
-          envVariables,
+          envVariables: legacyEnvVariables,
         });
       }
 
