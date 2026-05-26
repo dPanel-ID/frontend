@@ -76,17 +76,21 @@ const ArtifactsTabContent = guard(() => {
     }
 
     const deploymentList = iife(() => {
-      if (deploymentHistory.$status === 'success') return deploymentHistory.list;
+      if (deploymentHistory.$status === 'success')
+        return deploymentHistory.list;
       if (deploymentHistory.$status === 'loading' && deploymentHistory.prevData)
         return deploymentHistory.prevData.list;
       return [];
     });
 
-    return <List appOwner={appOwner} list={list} deploymentList={deploymentList} />;
+    return (
+      <List appOwner={appOwner} list={list} deploymentList={deploymentList} />
+    );
   });
 
   const pag = iife(() => {
-    if (artifactHistory.$status === 'success') return artifactHistory.pagination;
+    if (artifactHistory.$status === 'success')
+      return artifactHistory.pagination;
     if (artifactHistory.$status === 'loading' && artifactHistory.prevData)
       return artifactHistory.prevData.pagination;
     return null;
@@ -113,11 +117,10 @@ const DeploymentsTabContent = guard(() => {
 
   const [appSource] = useAppDetail((s) => [s.identity.source]);
 
-  const [artifactHistory, deploymentHistory] =
-    useArtifactHistoryModel((s) => [
-      s.artifactHistory,
-      s.deploymentHistory,
-    ]);
+  const [artifactHistory, deploymentHistory] = useArtifactHistoryModel((s) => [
+    s.artifactHistory,
+    s.deploymentHistory,
+  ]);
 
   if (appSource !== 'repository') {
     return null;
@@ -169,25 +172,35 @@ const DeploymentsTabContent = guard(() => {
 
 export default function ArtifactsHistory() {
   const emit = useEmit();
-  const [gitDetail, appDetail, selectedServerId] =
-    useAppDataModel((s) => [
-      s.gitDetail,
-      s.appDetail,
-      s.selectedServerId,
-    ]);
+  const [gitDetail, appDetail, selectedServerId] = useAppDataModel((s) => [
+    s.gitDetail,
+    s.appDetail,
+    s.selectedServerId,
+  ]);
 
   const [openArtifactNewSidepanel] = useArtifactNewSidepanel();
 
   const handleClickNewArtifact = () => {
-    if (gitDetail.$status !== 'success' || appDetail.$status !== 'success')
-      return;
+    if (appDetail.$status !== 'success') return;
 
-    const { repo_org, repo_name } = gitDetail;
-    if (!repo_org || !repo_name) return;
+    const repoOrganization =
+      gitDetail.$status === 'success'
+        ? gitDetail.repo_org
+        : appDetail.identity.source === 'repository'
+          ? appDetail.identity.repoOrganization
+          : undefined;
+    const repoName =
+      gitDetail.$status === 'success'
+        ? gitDetail.repo_name
+        : appDetail.identity.source === 'repository'
+          ? appDetail.identity.repoName
+          : undefined;
+
+    if (!repoOrganization || !repoName) return;
 
     openArtifactNewSidepanel({
-      repoName: repo_name,
-      repoOrganization: repo_org,
+      repoName,
+      repoOrganization,
       applicationId: appDetail.id,
       currentServerId: selectedServerId,
       appConfig: appDetail.configDefs,
@@ -199,6 +212,11 @@ export default function ArtifactsHistory() {
   };
 
   const ctaNewState = iife(() => {
+    if (appDetail.$status === 'success') {
+      if (gitDetail.$status === 'success') return undefined;
+      if (appDetail.identity.source === 'repository') return undefined;
+    }
+
     if (gitDetail.$status === 'success') {
       return undefined;
     }
@@ -213,8 +231,12 @@ export default function ArtifactsHistory() {
   return (
     <Tabs defaultValue="artifacts">
       <TabsList className="mb-2 w-full bg-white dark:bg-muted">
-        <TabsTrigger className="flex-1" value="artifacts">Artifacts</TabsTrigger>
-        <TabsTrigger className="flex-1" value="deployments">Deployments</TabsTrigger>
+        <TabsTrigger className="flex-1" value="artifacts">
+          Artifacts
+        </TabsTrigger>
+        <TabsTrigger className="flex-1" value="deployments">
+          Deployments
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="artifacts" className="flex flex-col gap-2 mt-0">
