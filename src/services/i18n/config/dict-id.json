@@ -199,7 +199,11 @@
       },
       "githubBanner": {
         "title": "Beberapa informasi mungkin tidak tersedia",
-        "subtitle": "Anda perlu login ke akun GitHub anda untuk melihatnya."
+        "subtitle": "Anda perlu login ke akun GitHub anda untuk melihatnya.",
+        "loginCta": "Login GitHub",
+        "reloginTitle": "Sesi GitHub kedaluwarsa",
+        "reloginSubtitle": "Hubungkan ulang akun GitHub agar dPanel dapat membaca data repositori lagi.",
+        "reloginCta": "Login ulang GitHub"
       },
       "artifactsHistory": {
         "title": "Riwayat Artefak",
@@ -923,7 +927,9 @@
       "fieldBranch": {
         "title": "Branch",
         "placeholder": "Pilih branch",
-        "onError": "Gagal untuk memuat git branch, mohon <a>coba lagi.</a>"
+        "onError": "Gagal untuk memuat git branch, mohon <a>coba lagi.</a>",
+        "onGithubAuthError": "Sesi GitHub Anda kedaluwarsa. Hubungkan ulang GitHub untuk memuat branch repositori.",
+        "reloginGithub": "Login ulang GitHub"
       },
       "fieldConfig": {
         "title": "Konfigurasi",

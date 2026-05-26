@@ -14,6 +14,7 @@ import { FormStoreProvider } from './-model/store/form';
 import { GithubReposStoreProvider } from './-model/store/github-repos';
 import { ServersStoreProvider } from './-model/store/servers';
 import { ApplicationsCreateLayout as Layout } from './-presentation/Layout';
+import GithubSessionBanner from '../-view/GithubSessionBanner';
 import { AsideProgress } from './-view/AsideProgress';
 import { MainWizard } from './-view/MainWizard';
 
@@ -51,6 +52,7 @@ export default function ApplicationsPage() {
           />
         }
       />
+      <GithubSessionBanner />
       <ServersStoreProvider>
         <GithubReposStoreProvider>
           <FormStoreProvider>

@@ -208,7 +208,11 @@
       },
       "githubBanner": {
         "title": "Some information might be missing",
-        "subtitle": "You'll need to log in to your GitHub account to see them."
+        "subtitle": "You'll need to log in to your GitHub account to see them.",
+        "loginCta": "Login GitHub",
+        "reloginTitle": "GitHub session expired",
+        "reloginSubtitle": "Reconnect your GitHub account so dPanel can read repository data again.",
+        "reloginCta": "Relogin GitHub"
       },
       "artifactsHistory": {
         "title": "Artifacts History",
@@ -932,7 +936,9 @@
       "fieldBranch": {
         "title": "Branch",
         "placeholder": "Select a branch",
-        "onError": "Failed to get git branches, please <a>try again.</a>"
+        "onError": "Failed to get git branches, please <a>try again.</a>",
+        "onGithubAuthError": "Your GitHub session expired. Reconnect GitHub to load repository branches.",
+        "reloginGithub": "Relogin GitHub"
       },
       "fieldConfig": {
         "title": "Configuration",

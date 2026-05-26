@@ -1,25 +1,14 @@
 import { useNavigate } from '@tanstack/react-router';
 import { PlusCircleIcon } from 'lucide-react';
 
-import { useAuthLoggedIn } from '@/services/auth';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
 
-import { useEmit } from '../../-model/events';
-
 const Headnote = () => {
   const t = useDevetekTranslations();
-
-  const emit = useEmit();
-
-  const { gitProfile } = useAuthLoggedIn();
-
-  const handleClickLoginGithub = () => {
-    emit('@applications/github-login', null);
-  };
 
   return (
     <span className="flex items-center justify-between">
@@ -31,14 +20,6 @@ const Headnote = () => {
           },
         ]}
       />
-
-      <span className="flex items-center gap-4">
-        {!gitProfile && (
-          <a className="cursor-pointer" onClick={handleClickLoginGithub}>
-            Login Github
-          </a>
-        )}
-      </span>
     </span>
   );
 };

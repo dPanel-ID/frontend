@@ -2,6 +2,7 @@ import { Card } from '@/shared/presentation/atoms/Card';
 import { AsideHelpSupport } from '@/widgets/aside-help-support';
 
 import Layout from './-presentation/Layout';
+import GithubSessionBanner from './GithubSessionBanner';
 import Header from './Header';
 import MainAppList from './MainAppList';
 import MainBottomActions from './MainBottomActions';
@@ -14,6 +15,7 @@ export default function ApplicationsView() {
 
       <Layout>
         <Layout.Main>
+          <GithubSessionBanner />
           <MainFilter />
           <MainAppList />
           <MainBottomActions />
