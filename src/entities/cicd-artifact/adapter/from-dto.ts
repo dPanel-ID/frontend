@@ -1,6 +1,7 @@
 import type z from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
+import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
 
 import type { DTOs } from '@/shared/api';
 import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
@@ -22,7 +23,7 @@ export const toCicdArtifact = createAdapter<DTOs.ArtifactV1, CicdArtifact>(
       id: String(raw.id),
       state: ctorState(raw),
       executor: {
-        userName: raw.user?.username,
+        userName: resolveOwnershipOwner(raw),
       },
       pointerIds: ctorPointerIds(raw),
       commitMetadata: ctorCommitMetadata(raw),

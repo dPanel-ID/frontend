@@ -14,10 +14,14 @@ export interface FormStore {
   appBuildCommand: string[];
   appRunCommand: string;
   appPort: string;
+  buildEnvText: string;
+  runtimeEnvText: string;
 
   gitRepoConfig: Record<string, string> | null;
 
   dynamicConfig: Record<string, Record<string, unknown>> | null;
+  selectedDependencyIds: string[];
+  dependencyConfigs: Record<string, DependencyConfig>;
 }
 
 export interface FormActions {
@@ -34,17 +38,41 @@ export interface FormActions {
   setAppDomain: (appDomain: string) => void;
   setAppProgLang: (appProgLang: string) => void;
   setAppProgLangVersion: (appProgLangVersion: string) => void;
-  setAppBuildCommand: (appBuildCommand: string) => void;
+  setAppBuildCommand: (appBuildCommand: string[]) => void;
   setAppRunCommand: (appRunCommand: string) => void;
   setAppPort: (appPort: string) => void;
+  setBuildEnvText: (buildEnvText: string) => void;
+  setRuntimeEnvText: (runtimeEnvText: string) => void;
+  toggleDependency: (dependencyId: string) => void;
+  setDependencyConfig: (dependencyId: string, config: DependencyConfig) => void;
 
   setDynamicConfig: (dynamicConfig: FormStore['dynamicConfig']) => void;
 }
 
 export type AppSourceMode = 'bundle' | 'github';
 
+export interface DependencyConfig {
+  selectionId?: string;
+  id: string;
+  moduleId?: string;
+  name: string;
+  title: string;
+  version?: string;
+  source?: 'catalog' | 'installed';
+  installationId?: string;
+  installationKey?: string;
+  status?: string;
+  variables: Record<string, unknown>;
+  roles: string[];
+  ref: {
+    name: string;
+    expectedCommit: string;
+  };
+}
+
 export type Progress =
   | '1-source'
-  | '2-details'
-  | '3-configuration'
-  | '4-deploy';
+  | '2-server-dependencies'
+  | '3-details'
+  | '4-env'
+  | '5-preview';

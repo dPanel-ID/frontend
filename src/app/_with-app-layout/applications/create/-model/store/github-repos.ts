@@ -6,6 +6,8 @@ import { ApiGitRepository } from '@/shared/api';
 import { excludeNully } from '@/shared/libs/browser/typeguards';
 import { buildContext } from '@/shared/libs/react-factories/buildContext';
 
+export const ADD_GITHUB_ACCOUNT_VALUE = '__add_github_account__';
+
 export const [GithubReposStoreProvider, useGithubReposStore] = buildContext(
   'ApplicationsCreateGithubReposStore',
   () => {
@@ -17,7 +19,7 @@ export const [GithubReposStoreProvider, useGithubReposStore] = buildContext(
     const [githubOrg, setGithubOrg] = useState<string>();
 
     const handleOnsetGithubOrg = (value: string) => {
-      if (value === 'Add GitHub Account') {
+      if (value === ADD_GITHUB_ACCOUNT_VALUE) {
         window.open(
           `${import.meta.env.VITE_GITHUB_APP_URL}/installations/new`,
           '_blank',
@@ -55,7 +57,15 @@ export const [GithubReposStoreProvider, useGithubReposStore] = buildContext(
         nextPage: next_page || null,
         list: (repos ?? [])
           .map((repository) => {
-            const { repo_name, repo_url, repo_org } = repository;
+            const {
+              default_branch,
+              repo_description,
+              repo_framework,
+              repo_language,
+              repo_name,
+              repo_org,
+              repo_url,
+            } = repository;
 
             if (!repo_name || !repo_url || !repo_org) return null;
 
@@ -63,6 +73,10 @@ export const [GithubReposStoreProvider, useGithubReposStore] = buildContext(
               repoName: repo_name,
               repoUrl: repo_url,
               repoOrg: repo_org,
+              description: repo_description,
+              defaultBranch: default_branch,
+              framework: repo_framework,
+              language: repo_language,
             };
           })
           .filter(excludeNully),
@@ -71,6 +85,7 @@ export const [GithubReposStoreProvider, useGithubReposStore] = buildContext(
 
     return {
       githubRepos,
+      page,
       setPage,
       query,
       setQuery,

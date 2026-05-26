@@ -1,0 +1,143 @@
+import { RocketIcon, WarehouseIcon } from 'lucide-react';
+
+import { useDevetekTranslations } from '@/services/i18n';
+
+import useHandleDeploy from '../../../-model/handle-deploy';
+import useProgressCta from '../../../-model/progress-cta';
+import { useFormStore } from '../../../-model/store/form';
+import { useServersStore } from '../../../-model/store/servers';
+import { CtaBar } from '../../../-presentation/CtaBar';
+import { Sectioned } from '../../../-presentation/Sectioned';
+
+function SummaryRow(props: { label: string; value?: string | number | null }) {
+  return (
+    <div className="grid grid-cols-[180px_1fr] gap-3 border-b px-3 py-2 last:border-b-0">
+      <span className="text-sm font-semibold text-muted-foreground">
+        {props.label}
+      </span>
+      <span className="min-w-0 break-words text-sm text-primary">
+        {props.value || '-'}
+      </span>
+    </div>
+  );
+}
+
+export default function Step6Preview() {
+  const t = useDevetekTranslations(
+    'page.applicationsCreate.wizard.step6.preview',
+  );
+  const { goToPrevious, isPreviousHidden } = useProgressCta();
+  const { handleDeploy } = useHandleDeploy();
+  const [
+    appName,
+    appSourceGithubRepo,
+    hostedServerID,
+    appBuildCommand,
+    appRunCommand,
+    appPort,
+    dependencyConfigs,
+    selectedDependencyIds,
+    buildEnvText,
+    runtimeEnvText,
+  ] = useFormStore((s) => [
+    s.appName,
+    s.appSourceGithubRepo,
+    s.hostedServerID,
+    s.appBuildCommand,
+    s.appRunCommand,
+    s.appPort,
+    s.dependencyConfigs,
+    s.selectedDependencyIds,
+    s.buildEnvText,
+    s.runtimeEnvText,
+  ]);
+  const [serversStore, { knownServersById }] = useServersStore();
+  const selectedServer =
+    (hostedServerID ? knownServersById[hostedServerID] : undefined) ??
+    (serversStore.$status === 'success'
+      ? serversStore.servers.find((server) => server.id === hostedServerID)
+      : null);
+
+  const selectedDependencies = selectedDependencyIds
+    .map((id) => ({
+      selectionId: id,
+      dependency: dependencyConfigs[id],
+    }))
+    .filter(
+      (
+        item,
+      ): item is {
+        selectionId: string;
+        dependency: NonNullable<(typeof item)['dependency']>;
+      } => Boolean(item.dependency),
+    );
+
+  return (
+    <div className="flex flex-col gap-4 overflow-hidden">
+      <CtaBar
+        placement="top"
+        goToNext={handleDeploy}
+        goToPrevious={goToPrevious}
+        isPreviousHidden={isPreviousHidden}
+        labelNext={t('deploy')}
+      />
+
+      <Sectioned
+        withinCard
+        sectionTitle={t('title')}
+        sectionDescription={t('desc')}
+        sectionIcon={WarehouseIcon}
+        classNameContent="grid gap-4"
+      >
+        <div className="overflow-hidden rounded-lg border bg-background">
+          <SummaryRow label={t('application')} value={appName} />
+          <SummaryRow label={t('repository')} value={appSourceGithubRepo} />
+          <SummaryRow label={t('server')} value={selectedServer?.hostname} />
+          <SummaryRow
+            label={t('buildCommand')}
+            value={appBuildCommand
+              .filter((command) => command.trim())
+              .join(' && ')}
+          />
+          <SummaryRow label={t('runCommand')} value={appRunCommand} />
+          <SummaryRow label={t('port')} value={appPort} />
+          <SummaryRow
+            label={t('buildEnv')}
+            value={buildEnvText ? t('configured') : t('notConfigured')}
+          />
+          <SummaryRow
+            label={t('runtimeEnv')}
+            value={runtimeEnvText ? t('configured') : t('notConfigured')}
+          />
+        </div>
+
+        <div className="rounded-lg border bg-background p-3">
+          <h4 className="text-sm font-semibold">{t('dependencies')}</h4>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {selectedDependencies.map(({ dependency, selectionId }) => (
+              <span
+                key={selectionId}
+                className="rounded-full border bg-card px-2.5 py-1 text-xs font-medium"
+              >
+                {dependency.name}
+                {dependency.version ? ` ${dependency.version}` : ''}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-lg border bg-card p-3 text-xs text-muted-foreground">
+          <RocketIcon className="mb-2 size-4 text-primary" />
+          {t('deployNote')}
+        </div>
+      </Sectioned>
+
+      <CtaBar
+        goToNext={handleDeploy}
+        goToPrevious={goToPrevious}
+        isPreviousHidden={isPreviousHidden}
+        labelNext={t('deploy')}
+      />
+    </div>
+  );
+}

@@ -11,30 +11,32 @@ import { schemaCicdDeployment } from '../rules/schema';
 
 export const toCicdDeployment = createAdapter<DTOs.DeployV1, CicdDeployment>(
   (raw) => {
-    if (raw.machine == null) {
-      throw Error('raw.machine cannot be null!');
-    }
+    const machineId = String(raw.machine_id ?? raw.machine?.id ?? 'unknown');
+    const hostName =
+      raw.machine?.hostname ||
+      raw.machine?.address ||
+      (machineId !== 'unknown' ? `Server ${machineId}` : 'Unknown server');
 
     return schemaCicdDeployment.parse({
-      id: String(raw.id),
+      id: String(raw.id ?? 'unknown'),
       pointerIds: {
-        application: String(raw.application_id),
-        artifact: String(raw.artifact_id),
-        machine: String(raw.machine_id),
+        application: String(raw.application_id ?? 'unknown'),
+        artifact: String(raw.artifact_id ?? 'unknown'),
+        machine: machineId,
       },
       state: {
         status: raw.installer_status,
         message: raw.error,
       },
       timestamp: {
-        created: raw.created_at,
-        updated: raw.updated_at,
+        created: raw.created_at ?? new Date(0).toISOString(),
+        updated: raw.updated_at ?? raw.created_at ?? new Date(0).toISOString(),
       },
       serverSnapshot: {
-        id: String(raw.machine_id),
-        hostName: raw.machine.hostname,
+        id: machineId,
+        hostName,
       },
-      osService: raw.service.name
+      osService: raw.service?.name
         ? {
             serviceName: raw.service.name,
             serviceState: AdapterOsServiceFromDto.toState(

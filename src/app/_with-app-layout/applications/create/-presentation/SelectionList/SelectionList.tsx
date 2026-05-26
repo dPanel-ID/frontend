@@ -27,9 +27,14 @@ export default function SelectionList<Id extends string | number>(
           <div
             tabIndex={0}
             role="button"
-            key={index}
+            key={String(id)}
             className={cnCard}
             onClick={() => onClickItem?.(id)}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter' && event.key !== ' ') return;
+              event.preventDefault();
+              onClickItem?.(id);
+            }}
             data-active={selectedId === id}
           >
             <div className="flex flex-col">

@@ -7,9 +7,7 @@ export function useAuthBase() {
 
   if (
     resUserProfile.$status === 'initial' ||
-    resUserProfile.$status === 'loading' ||
-    resGitUser.$status === 'initial' ||
-    resGitUser.$status === 'loading'
+    resUserProfile.$status === 'loading'
   ) {
     return {
       $status: 'loading',
@@ -55,15 +53,21 @@ export function useAuthBase() {
       createAt: created_at,
     };
 
-    if (!github.access_token) {
+    if (!github?.access_token) {
       return {
         userProfile,
+        gitProfile: null,
       };
     }
 
     return {
       userProfile,
-      githubAccessToken: github.access_token,
+      gitProfile: {
+        id: Number(github.subject) || 0,
+        login: github.nickname || '',
+        organizations: [],
+        githubAccessToken: github.access_token,
+      },
     };
   });
 
@@ -79,16 +83,21 @@ export function useAuthBase() {
     isLoggedIn: true,
     userProfile: mappedResponse.userProfile,
     gitProfile: iife(() => {
-      if (resGitUser.$status !== 'success' || !mappedResponse.githubAccessToken)
-        return null;
+      if (!mappedResponse.gitProfile) return null;
+
+      if (resGitUser.$status !== 'success')
+        return mappedResponse.gitProfile;
 
       const { id, login, organizations } = resGitUser;
+
+      if (!id || !login)
+        return mappedResponse.gitProfile;
 
       return {
         id,
         login,
         organizations,
-        githubAccessToken: mappedResponse.githubAccessToken,
+        githubAccessToken: mappedResponse.gitProfile.githubAccessToken,
       };
     }),
   } as const;

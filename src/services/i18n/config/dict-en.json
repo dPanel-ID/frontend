@@ -237,23 +237,33 @@
     "applicationsCreate": {
       "headerTitle": "Create New Application",
       "headerDesc": "Deploy a new web application to your server in just a few steps.",
+      "docs": "Docs",
+      "actions": {
+        "continue": "Continue"
+      },
       "progress": {
         "title": "Progress",
+        "description": "Create the application in clear deployment steps.",
+        "stepLabel": "Step {step}",
         "step1": {
-          "title": "Source",
-          "desc": "Select Application Source"
+          "title": "Repository",
+          "desc": "Select Git repository"
         },
         "step2": {
-          "title": "Details",
-          "desc": "Configure Application & Server Details"
+          "title": "Server & modules",
+          "desc": "Choose host and dependencies"
         },
         "step3": {
-          "title": "Configuration",
-          "desc": "Set up required configuration"
+          "title": "App setup",
+          "desc": "Name, build, run, and port"
         },
         "step4": {
-          "title": "Deploy",
-          "desc": "Review and deploy application"
+          "title": "Environment",
+          "desc": "Build and runtime variables"
+        },
+        "step5": {
+          "title": "Preview",
+          "desc": "Review and deploy"
         }
       },
       "wizard": {
@@ -276,38 +286,151 @@
           "sectionGithubRepo": {
             "title": "Select GitHub Repository",
             "desc": "Pick one of your github repository to be initiated as your application source.",
-            "search": "Search"
+            "search": "Search",
+            "searchPlaceholder": "Search repositories",
+            "orgPlaceholder": "GitHub team",
+            "addGithubAccount": "Add GitHub account",
+            "emptyTitle": "No repositories found",
+            "emptyDesc": "Try another search term or switch GitHub team.",
+            "selectedRepo": "Selected repository",
+            "loadingRepoDetails": "Reading repository details...",
+            "defaultBranch": "Branch {branch}",
+            "framework": "{framework}",
+            "noDescription": "No repository description available.",
+            "previous": "Previous",
+            "next": "Next",
+            "page": "Page {page}"
           }
         },
         "step2": {
-          "sectionAppDetails": {
-            "title": "Application Details",
-            "desc": "Let's define what your app name will be and how it can be accessed.",
-            "inputAppName": "Application Name",
-            "inputAppNamePlaceholder": "Enter your application name",
-            "inputDomain": "Domain",
-            "inputDomainPlaceholder": "Enter your application domain",
-            "inputProgLang": "Programming Language",
-            "inputProgLangPlaceholder": "Enter your application programming language",
-            "inputProgLangVersion": "Programming Language Version",
-            "inputProgLangVersionPlaceholder": "Enter your application programming language version",
-            "inputBuildCommand": "Build Command",
-            "inputBuildCommandPlaceholder": "Enter your application build command",
-            "inputRunCommand": "Run Command",
-            "inputRunCommandPlaceholder": "Enter your application run command",
-            "inputPort": "Port",
-            "inputPortPlaceholder": "Enter your application port"
-          },
           "sectionSelectServer": {
             "title": "Select Server",
             "desc": "You'll need to select a server the app will be hosted in.",
-            "btnAddNewServer": "Add new server"
+            "btnAddNewServer": "Add new server",
+            "searchPlaceholder": "Search server...",
+            "pagination": "Page {page} of {totalPage}",
+            "empty": "Try another keyword or add a server before deploying this application.",
+            "emptyTitle": "No servers found",
+            "ssh": "SSH",
+            "agent": "Agent",
+            "unknown": "unknown",
+            "retry": "Retry"
+          },
+          "sectionDependencies": {
+            "title": "Select dependencies",
+            "desc": "Pick the runtime and supporting modules this application needs. Each dependency uses the same role configuration contract as Server Roles.",
+            "selectServerFirst": "Select a server before choosing dependencies.",
+            "installedTitle": "Installed on selected server",
+            "installedHint": "Select modules that are already available on this server to use them as application dependencies.",
+            "noInstalled": "No installed modules were reported yet.",
+            "useInstalled": "Use installed module",
+            "selectedInstalled": "Selected as dependency",
+            "useInstalledVersion": "Select a version to use",
+            "selectedInstalledVersion": "{count} selected",
+            "installedUnavailable": "This installed module cannot be selected",
+            "selectInstalledModuleAria": "Select installed {module} {version}",
+            "deselectInstalledModuleAria": "Deselect installed {module} {version}",
+            "unavailableInstalledModuleAria": "Installed {module} {version} cannot be selected",
+            "installedVersionGroupAria": "Installed {module} versions",
+            "selectInstalledVersionAria": "Select installed {module} {version}",
+            "deselectInstalledVersionAria": "Deselect installed {module} {version}",
+            "unavailableInstalledVersionAria": "Installed {module} {version} cannot be selected",
+            "defaultInstance": "Default",
+            "moreInstalled": "+{count} more",
+            "search": "Search modules",
+            "empty": "No modules match this search.",
+            "available": "available",
+            "add": "Add",
+            "remove": "Remove",
+            "selectHint": "Select a module to configure its installation variables.",
+            "configureHint": "Configure the variables for this dependency.",
+            "configured": "Configured",
+            "saveOptions": "Save options",
+            "rolesToRun": "Roles to run",
+            "required": "Required",
+            "advanced": "Advanced options",
+            "enabled": "Enabled",
+            "selectOption": "Select option",
+            "noOptions": "This dependency does not expose additional options.",
+            "source": "Source {ref} @ {commit}",
+            "noDescription": "No description available."
+          }
+        },
+        "step3": {
+          "sectionDetails": {
+            "title": "Application details",
+            "desc": "Name the application before defining build and runtime behavior.",
+            "inputAppName": "Application name",
+            "inputAppNamePlaceholder": "My first app"
           }
         },
         "step4": {
-          "sectionDeploySummary": {
-            "title": "Deployment Summary",
-            "desc": "Make sure everything is in order before deploying."
+          "sectionCommands": {
+            "title": "Build and runtime commands",
+            "desc": "Tell dPanel how to build the source and run the service.",
+            "buildCommand": "Build command",
+            "buildCommandDesc": "Executed inside the cloned repository before deployment.",
+            "buildCommandPlaceholder": "./scripts/build.sh",
+            "buildStepsTitle": "Build steps",
+            "buildStepsDesc": "Run one or more commands inside the cloned repository before deployment.",
+            "buildStepLabel": "Build step {step}",
+            "buildCommandAria": "Build step {step} command",
+            "addBuildStep": "Add step",
+            "removeBuildStep": "Remove step",
+            "removeBuildStepAria": "Remove build step {step}",
+            "chooseFile": "Choose file",
+            "chooseFromRepository": "Choose from repository",
+            "chooseFromRepositoryAria": "Choose a repository file for build step {step}",
+            "filePickerTitle": "Choose command file",
+            "filePickerDesc": "Select an executable file from the selected GitHub repository or enter a command manually.",
+            "repositoryUnavailable": "Repository unavailable",
+            "repositoryUnavailableDesc": "Select a GitHub repository before choosing a build file.",
+            "loadingFiles": "Loading repository files...",
+            "noFiles": "No files found in this folder.",
+            "openFolderAria": "Open folder {path}",
+            "selectFileAria": "Use file {path} as command",
+            "manualCommand": "Manual command",
+            "useCommand": "Use command",
+            "runtimeCommand": "Runtime command",
+            "runtimeCommandDesc": "The command systemd will use to start the application.",
+            "runtimeCommandPlaceholder": "./scripts/start.sh",
+            "chooseRuntimeFromRepositoryAria": "Choose a repository file for the runtime command",
+            "port": "Application port",
+            "portDesc": "dPanel defaults to a random available port between 7000 and 10000, then validates the selected server.",
+            "portPlaceholder": "7000",
+            "portUsed": "Port {port} is already used on this server.",
+            "usedPorts": "Ports already in use",
+            "noPorts": "No used ports were reported."
+          }
+        },
+        "step5": {
+          "env": {
+            "title": "Environment variables",
+            "desc": "Separate build-time variables from runtime variables so secrets and deployment behavior stay clear.",
+            "buildTitle": "Build-time variables",
+            "buildDesc": "One KEY=value pair per line. Used only while building the artifact.",
+            "runtimeTitle": "Runtime variables",
+            "runtimeDesc": "One KEY=value pair per line. Used by the running service."
+          }
+        },
+        "step6": {
+          "preview": {
+            "title": "Preview deployment",
+            "desc": "Review the source, server, dependencies, commands, and environment before creating the application.",
+            "application": "Application",
+            "repository": "Repository",
+            "server": "Server",
+            "domain": "Domain",
+            "buildCommand": "Build command",
+            "runCommand": "Run command",
+            "port": "Port",
+            "buildEnv": "Build environment",
+            "runtimeEnv": "Runtime environment",
+            "configured": "Configured",
+            "notConfigured": "Not configured",
+            "dependencies": "Dependencies",
+            "deployNote": "dPanel will create an application-specific playbook, ensure dependency playbooks exist, then queue the deployment.",
+            "deploy": "Deploy"
           }
         }
       }

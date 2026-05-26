@@ -25,7 +25,7 @@ export interface Dto {
   agent?: string;
   router?: string;
   user?: DTOs.User;
-  github: DTOs.Github;
+  github?: DTOs.Github;
   active_workspace?: string;
   workspaces?: Array<{
     id: string;

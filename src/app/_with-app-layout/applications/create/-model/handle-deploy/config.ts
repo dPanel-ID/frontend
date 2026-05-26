@@ -464,6 +464,14 @@ interface GitVars {
   mariadbUsername: string;
   mariadbPassword: string;
   envVariables?: Array<Record<string, string>>;
+  buildEnvVariables?: Array<Record<string, string>>;
+  runtimeEnvVariables?: Array<Record<string, string>>;
+  dependencyRuntimes?: RuntimeDependency[];
+}
+
+export interface RuntimeDependency {
+  name: string;
+  version?: string;
 }
 
 export const getVarsGitLaravel = (vars: GitVars) => {
@@ -658,7 +666,20 @@ export const getVarsGit = (vars: GitVars) => {
     gitHead,
     gitHeadDescription,
     envVariables,
+    buildEnvVariables,
+    runtimeEnvVariables,
+    dependencyRuntimes,
   } = vars;
+
+  const normalizedRuntimes =
+    dependencyRuntimes?.filter((runtime) => runtime.name) ?? [];
+  const primaryRuntime = normalizedRuntimes[0] ?? {
+    name: appProgLang,
+    version: appProgLangVersion,
+  };
+  const extraRuntimes = normalizedRuntimes.slice(1);
+  const buildEnvironment = buildEnvVariables ?? envVariables;
+  const runtimeEnvironment = runtimeEnvVariables ?? envVariables;
 
   const useDomain = {
     name: 'dpanel-router',
@@ -795,7 +816,7 @@ export const getVarsGit = (vars: GitVars) => {
 
   return {
     playbook: {
-      name: `playbooks/git-${appProgLang}.yml`,
+      name: 'playbooks/pipeline.yml',
       tag: 'all',
       roles: [
         {
@@ -831,9 +852,13 @@ export const getVarsGit = (vars: GitVars) => {
               version: 'v0.0.1-alpha.0',
               setup: {
                 language: {
-                  name: appProgLang,
-                  version: appProgLangVersion,
+                  name: primaryRuntime.name,
+                  version: primaryRuntime.version || appProgLangVersion,
                 },
+                languages: extraRuntimes.map((runtime) => ({
+                  name: runtime.name,
+                  version: runtime.version || '',
+                })),
               },
               build: {
                 target: {
@@ -845,7 +870,7 @@ export const getVarsGit = (vars: GitVars) => {
                         command: appBuildCommand,
                       },
                     ],
-                    environment: envVariables,
+                    environment: buildEnvironment,
                   },
                 },
               },
@@ -855,7 +880,7 @@ export const getVarsGit = (vars: GitVars) => {
                 config: null,
                 command: appRunCommand,
                 no_service: false,
-                environment: envVariables,
+                environment: runtimeEnvironment,
               },
             },
           },
@@ -867,16 +892,17 @@ export const getVarsGit = (vars: GitVars) => {
             deploy_logdir: '/home/{{ username }}/logs/{{ build_appname }}',
             deploy_service_name: 'devetek-{{ build_appname }}-{{ username }}',
             deploy_service_description: gitHeadDescription,
-            deploy_service_language_name: appProgLang,
-            deploy_service_language_version: appProgLangVersion,
+            deploy_service_language_name: primaryRuntime.name,
+            deploy_service_language_version:
+              primaryRuntime.version || appProgLangVersion,
             deploy_user: '{{ username }}',
             deploy_group: '{{ username }}',
             deploy_start_command: appRunCommand,
             deploy_reload_command: '/bin/kill -USR2 $MAINPID',
-            deploy_environment_variables: envVariables,
+            deploy_environment_variables: runtimeEnvironment,
           },
         },
-        appDomain !== '' ? useDomain : null,
+        ...(appDomain !== '' ? [useDomain] : []),
       ],
     },
     artifact: {

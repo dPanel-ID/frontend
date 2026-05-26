@@ -228,23 +228,33 @@
     "applicationsCreate": {
       "headerTitle": "Buat aplikasi baru",
       "headerDesc": "Deploy aplikasi web baru ke server Anda hanya dalam beberapa langkah.",
+      "docs": "Docs",
+      "actions": {
+        "continue": "Lanjutkan"
+      },
       "progress": {
         "title": "Kemajuan",
+        "description": "Buat aplikasi dalam langkah deployment yang jelas.",
+        "stepLabel": "Langkah {step}",
         "step1": {
-          "title": "Sumber",
-          "desc": "Pilih sumber aplikasi"
+          "title": "Repositori",
+          "desc": "Pilih repositori Git"
         },
         "step2": {
-          "title": "Detil",
-          "desc": "Konfigurasikan Detil Aplikasi & Server"
+          "title": "Server & modul",
+          "desc": "Pilih host dan dependency"
         },
         "step3": {
-          "title": "Konfigurasi",
-          "desc": "Atur konfigurasi yang diperlukan"
+          "title": "Setup aplikasi",
+          "desc": "Nama, build, run, dan port"
         },
         "step4": {
-          "title": "Deploy",
-          "desc": "Review dan deploy aplikasi"
+          "title": "Environment",
+          "desc": "Variabel build dan runtime"
+        },
+        "step5": {
+          "title": "Pratinjau",
+          "desc": "Tinjau dan deploy"
         }
       },
       "wizard": {
@@ -267,38 +277,151 @@
           "sectionGithubRepo": {
             "title": "Pilih Repo Github",
             "desc": "Pilih salah satu repositori GitHub Anda untuk dijadikan sumber aplikasi Anda.",
-            "search": "Cari"
+            "search": "Cari",
+            "searchPlaceholder": "Cari repositori",
+            "orgPlaceholder": "Tim GitHub",
+            "addGithubAccount": "Tambah akun GitHub",
+            "emptyTitle": "Repositori tidak ditemukan",
+            "emptyDesc": "Coba kata kunci lain atau ganti tim GitHub.",
+            "selectedRepo": "Repositori terpilih",
+            "loadingRepoDetails": "Membaca detail repositori...",
+            "defaultBranch": "Branch {branch}",
+            "framework": "{framework}",
+            "noDescription": "Tidak ada deskripsi repositori.",
+            "previous": "Sebelumnya",
+            "next": "Berikutnya",
+            "page": "Halaman {page}"
           }
         },
         "step2": {
-          "sectionAppDetails": {
-            "title": "Detil Aplikasi",
-            "desc": "Mari tentukan nama aplikasi Anda dan bagaimana aplikasi tersebut dapat diakses.",
-            "inputAppName": "Nama Aplikasi",
-            "inputAppNamePlaceholder": "Masukkan nama aplikasimu",
-            "inputDomain": "Domain",
-            "inputDomainPlaceholder": "Masukkan nama domain aplikasimu",
-            "inputProgLang": "Bahasa Pemrograman",
-            "inputProgLangPlaceholder": "Masukkan bahasa pemrograman aplikasimu",
-            "inputProgLangVersion": "Versi Bahasa Pemrograman",
-            "inputProgLangVersionPlaceholder": "Masukkan versi bahasa pemrograman aplikasimu",
-            "inputBuildCommand": "Perintah Build",
-            "inputBuildCommandPlaceholder": "Masukkan perintah build aplikasimu",
-            "inputRunCommand": "Perintah Run",
-            "inputRunCommandPlaceholder": "Masukkan perintah run aplikasimu",
-            "inputPort": "Port",
-            "inputPortPlaceholder": "Masukkan port aplikasimu"
-          },
           "sectionSelectServer": {
             "title": "Pilih Server",
             "desc": "Anda perlu memilih server tempat aplikasi akan dihosting.",
-            "btnAddNewServer": "Tambah server baru"
+            "btnAddNewServer": "Tambah server baru",
+            "searchPlaceholder": "Cari server...",
+            "pagination": "Halaman {page} dari {totalPage}",
+            "empty": "Coba kata kunci lain atau tambah server sebelum deploy aplikasi ini.",
+            "emptyTitle": "Server tidak ditemukan",
+            "ssh": "SSH",
+            "agent": "Agent",
+            "unknown": "unknown",
+            "retry": "Coba lagi"
+          },
+          "sectionDependencies": {
+            "title": "Pilih dependency",
+            "desc": "Pilih runtime dan modul pendukung yang dibutuhkan aplikasi. Setiap dependency memakai kontrak konfigurasi role yang sama dengan Server Role.",
+            "selectServerFirst": "Pilih server sebelum memilih dependency.",
+            "installedTitle": "Terinstal di server terpilih",
+            "installedHint": "Pilih modul yang sudah tersedia di server ini untuk digunakan sebagai dependency aplikasi.",
+            "noInstalled": "Belum ada modul terinstal yang dilaporkan.",
+            "useInstalled": "Gunakan modul terinstal",
+            "selectedInstalled": "Dipilih sebagai dependency",
+            "useInstalledVersion": "Pilih versi untuk digunakan",
+            "selectedInstalledVersion": "{count} dipilih",
+            "installedUnavailable": "Modul terinstal ini tidak bisa dipilih",
+            "selectInstalledModuleAria": "Pilih {module} {version} yang sudah terinstal",
+            "deselectInstalledModuleAria": "Batalkan pilihan {module} {version} yang sudah terinstal",
+            "unavailableInstalledModuleAria": "{module} {version} yang sudah terinstal tidak bisa dipilih",
+            "installedVersionGroupAria": "Versi {module} yang sudah terinstal",
+            "selectInstalledVersionAria": "Pilih {module} {version} yang sudah terinstal",
+            "deselectInstalledVersionAria": "Batalkan pilihan {module} {version} yang sudah terinstal",
+            "unavailableInstalledVersionAria": "{module} {version} yang sudah terinstal tidak bisa dipilih",
+            "defaultInstance": "Default",
+            "moreInstalled": "+{count} lagi",
+            "search": "Cari modul",
+            "empty": "Tidak ada modul yang cocok dengan pencarian ini.",
+            "available": "tersedia",
+            "add": "Tambah",
+            "remove": "Hapus",
+            "selectHint": "Pilih modul untuk mengatur variabel instalasinya.",
+            "configureHint": "Atur variabel untuk dependency ini.",
+            "configured": "Sudah dikonfigurasi",
+            "saveOptions": "Simpan opsi",
+            "rolesToRun": "Role yang dijalankan",
+            "required": "Wajib",
+            "advanced": "Opsi lanjutan",
+            "enabled": "Aktif",
+            "selectOption": "Pilih opsi",
+            "noOptions": "Dependency ini tidak menyediakan opsi tambahan.",
+            "source": "Sumber {ref} @ {commit}",
+            "noDescription": "Tidak ada deskripsi."
+          }
+        },
+        "step3": {
+          "sectionDetails": {
+            "title": "Detail aplikasi",
+            "desc": "Beri nama aplikasi sebelum mengatur build dan runtime.",
+            "inputAppName": "Nama aplikasi",
+            "inputAppNamePlaceholder": "Aplikasi pertama saya"
           }
         },
         "step4": {
-          "sectionDeploySummary": {
-            "title": "Ringkasan Deployment",
-            "desc": "Pastikan semuanya sudah sesuai sebelum melakukan deployment."
+          "sectionCommands": {
+            "title": "Perintah build dan runtime",
+            "desc": "Beri tahu dPanel cara membuild source dan menjalankan service.",
+            "buildCommand": "Perintah build",
+            "buildCommandDesc": "Dijalankan di dalam repositori hasil clone sebelum deployment.",
+            "buildCommandPlaceholder": "./scripts/build.sh",
+            "buildStepsTitle": "Langkah build",
+            "buildStepsDesc": "Jalankan satu atau beberapa perintah di dalam repositori hasil clone sebelum deployment.",
+            "buildStepLabel": "Langkah build {step}",
+            "buildCommandAria": "Perintah langkah build {step}",
+            "addBuildStep": "Tambah langkah",
+            "removeBuildStep": "Hapus langkah",
+            "removeBuildStepAria": "Hapus langkah build {step}",
+            "chooseFile": "Pilih file",
+            "chooseFromRepository": "Pilih dari repositori",
+            "chooseFromRepositoryAria": "Pilih file repositori untuk langkah build {step}",
+            "filePickerTitle": "Pilih file perintah",
+            "filePickerDesc": "Pilih file executable dari repositori GitHub terpilih atau masukkan perintah manual.",
+            "repositoryUnavailable": "Repositori tidak tersedia",
+            "repositoryUnavailableDesc": "Pilih repositori GitHub sebelum memilih file build.",
+            "loadingFiles": "Memuat file repositori...",
+            "noFiles": "Tidak ada file di folder ini.",
+            "openFolderAria": "Buka folder {path}",
+            "selectFileAria": "Gunakan file {path} sebagai perintah",
+            "manualCommand": "Perintah manual",
+            "useCommand": "Gunakan perintah",
+            "runtimeCommand": "Perintah runtime",
+            "runtimeCommandDesc": "Perintah yang digunakan systemd untuk menjalankan aplikasi.",
+            "runtimeCommandPlaceholder": "./scripts/start.sh",
+            "chooseRuntimeFromRepositoryAria": "Pilih file repositori untuk perintah runtime",
+            "port": "Port aplikasi",
+            "portDesc": "dPanel otomatis memilih port tersedia secara acak antara 7000 sampai 10000, lalu memvalidasi server terpilih.",
+            "portPlaceholder": "7000",
+            "portUsed": "Port {port} sudah digunakan di server ini.",
+            "usedPorts": "Port yang sudah digunakan",
+            "noPorts": "Tidak ada port terpakai yang dilaporkan."
+          }
+        },
+        "step5": {
+          "env": {
+            "title": "Variabel environment",
+            "desc": "Pisahkan variabel build-time dan runtime agar secret dan perilaku deployment tetap jelas.",
+            "buildTitle": "Variabel build-time",
+            "buildDesc": "Satu pasangan KEY=value per baris. Hanya digunakan saat build artifact.",
+            "runtimeTitle": "Variabel runtime",
+            "runtimeDesc": "Satu pasangan KEY=value per baris. Digunakan oleh service yang berjalan."
+          }
+        },
+        "step6": {
+          "preview": {
+            "title": "Pratinjau deployment",
+            "desc": "Tinjau source, server, dependency, perintah, dan environment sebelum membuat aplikasi.",
+            "application": "Aplikasi",
+            "repository": "Repositori",
+            "server": "Server",
+            "domain": "Domain",
+            "buildCommand": "Perintah build",
+            "runCommand": "Perintah run",
+            "port": "Port",
+            "buildEnv": "Environment build",
+            "runtimeEnv": "Environment runtime",
+            "configured": "Diatur",
+            "notConfigured": "Belum diatur",
+            "dependencies": "Dependency",
+            "deployNote": "dPanel akan membuat playbook khusus aplikasi, memastikan playbook dependency tersedia, lalu memasukkan deployment ke antrean.",
+            "deploy": "Deploy"
           }
         }
       }
