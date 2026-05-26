@@ -28,6 +28,8 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
       dynamicConfig: null,
       selectedDependencyIds: [],
       dependencyConfigs: {},
+      selectedRequiredBinaryIds: [],
+      requiredBinaryConfigs: {},
 
       setGitRepoConfig: (gitRepoConfig) => {
         set({ gitRepoConfig });
@@ -87,6 +89,32 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
           },
         }));
       },
+      toggleRequiredBinary: (binaryId) => {
+        const { selectedRequiredBinaryIds, requiredBinaryConfigs } = get();
+        if (selectedRequiredBinaryIds.includes(binaryId)) {
+          const nextConfigs = { ...requiredBinaryConfigs };
+          delete nextConfigs[binaryId];
+          set({
+            selectedRequiredBinaryIds: selectedRequiredBinaryIds.filter(
+              (id) => id !== binaryId,
+            ),
+            requiredBinaryConfigs: nextConfigs,
+          });
+          return;
+        }
+
+        set({
+          selectedRequiredBinaryIds: [...selectedRequiredBinaryIds, binaryId],
+        });
+      },
+      setRequiredBinaryConfig: (binaryId, config) => {
+        set((state) => ({
+          requiredBinaryConfigs: {
+            ...state.requiredBinaryConfigs,
+            [binaryId]: config,
+          },
+        }));
+      },
       setAppSourceMode: (appSourceMode) => {
         const { appSourceMode: prevAppSourceMode } = get();
         if (prevAppSourceMode === appSourceMode) return;
@@ -114,6 +142,8 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
           hostedServerID,
           selectedDependencyIds: [],
           dependencyConfigs: {},
+          selectedRequiredBinaryIds: [],
+          requiredBinaryConfigs: {},
         });
       },
       setDynamicConfig: (dynamicConfig) => {

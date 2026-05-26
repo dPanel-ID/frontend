@@ -8,8 +8,12 @@ import { ApiBundle } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import { useFormStore } from '../store/form';
+import type {
+  DependencyConfig,
+  RequiredBinaryConfig,
+} from '../store/form.types';
 
-import type { RuntimeDependency } from './config';
+import type { RuntimeDependency, RuntimeItem } from './config';
 import { getVarsGit, getVarsLaravel, getVarsWordpress } from './config';
 
 function parseEnvText(value: string) {
@@ -29,41 +33,30 @@ function parseEnvText(value: string) {
     }, []);
 }
 
-function runtimeFromDependency(
-  dependencyId: string,
-  variables: Record<string, unknown>,
-): RuntimeDependency | null {
-  const id = dependencyId.toLowerCase();
-  const getString = (key: string) =>
-    typeof variables[key] === 'string' ? String(variables[key]) : '';
+function runtimeFromRequiredBinary(
+  binary: RequiredBinaryConfig,
+): RuntimeDependency {
+  return {
+    name: binary.moduleId || binary.id,
+    version: binary.version || '',
+  };
+}
 
-  if (id === 'go' || id.includes('golang')) {
-    return { name: 'go', version: getString('golang_version') };
-  }
-  if (id === 'nodejs' || id.includes('nvm') || id.includes('node')) {
-    return { name: 'nodejs', version: getString('nodejs_version') };
-  }
-  if (id === 'php' || id.includes('php')) {
-    return { name: 'php', version: getString('php_version') };
-  }
-  if (id === 'python' || id.includes('pyenv')) {
-    const pyenvGlobal = variables.pyenv_global;
-    const version = Array.isArray(pyenvGlobal)
-      ? String(pyenvGlobal[0] ?? '')
-      : getString('python_version');
-    return { name: 'python', version };
-  }
-  if (id === 'ruby' || id.includes('rbenv')) {
-    return { name: 'ruby', version: getString('default_ruby') };
-  }
-  if (id === 'bun') {
-    return { name: 'bun', version: getString('bun_version') };
-  }
-  if (id === 'docker') {
-    return { name: 'docker', version: getString('docker_version') };
-  }
-
-  return null;
+function runtimeItemFromDependency(config: DependencyConfig): RuntimeItem {
+  return {
+    name: config.moduleId || config.id,
+    title: config.title || config.name,
+    version: config.version || '',
+    category: 'application-dependency',
+    roles: config.roles,
+    installation_key:
+      config.installationKey ||
+      `${config.moduleId || config.id}@${config.version || 'default'}:application`,
+    variables: config.variables,
+    source: config.source === 'installed' ? 'server.installed' : 'catalog',
+    module_ref: config.ref.name,
+    module_source_commit: config.ref.expectedCommit,
+  };
 }
 
 export default function useHandleDeploy() {
@@ -93,6 +86,8 @@ export default function useHandleDeploy() {
       runtimeEnvText,
       dependencyConfigs,
       selectedDependencyIds,
+      requiredBinaryConfigs,
+      selectedRequiredBinaryIds,
     } = formValues;
 
     if (!appName || !appSourceBundleIdent || !hostedServerID) return null;
@@ -120,11 +115,14 @@ export default function useHandleDeploy() {
     const legacyEnvVariables = parseEnvText(
       String(dynamicConfig?.['adv_config']?.['adv_envvar'] ?? ''),
     );
-    const dependencyRuntimes = selectedDependencyIds
+    const dependencyRuntimeItems = selectedDependencyIds
       .map((id) => dependencyConfigs[id])
       .filter((config): config is NonNullable<typeof config> => Boolean(config))
-      .map((config) => runtimeFromDependency(config.id, config.variables))
-      .filter((runtime): runtime is RuntimeDependency => Boolean(runtime));
+      .map((config) => runtimeItemFromDependency(config));
+    const requiredBinaries = selectedRequiredBinaryIds
+      .map((id) => requiredBinaryConfigs[id])
+      .filter((config): config is NonNullable<typeof config> => Boolean(config))
+      .map(runtimeFromRequiredBinary);
 
     if (appSourceGithubRepo) {
       const [repoOrganization, repoName] = appSourceGithubRepo
@@ -162,7 +160,8 @@ export default function useHandleDeploy() {
         envVariables: legacyEnvVariables,
         buildEnvVariables,
         runtimeEnvVariables,
-        dependencyRuntimes,
+        dependencyRuntimeItems,
+        requiredBinaries,
       });
     }
 

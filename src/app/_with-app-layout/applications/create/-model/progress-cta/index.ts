@@ -14,6 +14,8 @@ export default function useProgressCta() {
     appPort,
     selectedDependencyIds,
     dependencyConfigs,
+    selectedRequiredBinaryIds,
+    requiredBinaryConfigs,
     appBuildCommand,
     appRunCommand,
   ] = useFormStore((s) => [
@@ -27,6 +29,8 @@ export default function useProgressCta() {
     s.appPort,
     s.selectedDependencyIds,
     s.dependencyConfigs,
+    s.selectedRequiredBinaryIds,
+    s.requiredBinaryConfigs,
     s.appBuildCommand,
     s.appRunCommand,
   ]);
@@ -53,6 +57,10 @@ export default function useProgressCta() {
       case '3-details':
         return Boolean(
           appName &&
+          selectedRequiredBinaryIds.length > 0 &&
+          selectedRequiredBinaryIds.every((id) =>
+            Boolean(requiredBinaryConfigs[id]),
+          ) &&
           appBuildCommand.some((command) => command.trim()) &&
           appRunCommand &&
           appPort,

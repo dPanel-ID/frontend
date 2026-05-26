@@ -356,7 +356,17 @@
             "title": "Detail aplikasi",
             "desc": "Beri nama aplikasi sebelum mengatur build dan runtime.",
             "inputAppName": "Nama aplikasi",
-            "inputAppNamePlaceholder": "Aplikasi pertama saya"
+            "inputAppNamePlaceholder": "Aplikasi pertama saya",
+            "requiredBinariesTitle": "Binary yang dibutuhkan",
+            "requiredBinariesDesc": "Pilih runtime bahasa yang sudah terinstal di server terpilih. Nilai ini disimpan di definisi aplikasi dan tidak bisa diubah dari sini.",
+            "requiredBinariesSelectServer": "Pilih server sebelum memilih binary yang dibutuhkan.",
+            "requiredBinariesEmpty": "Belum ada modul bahasa pemrograman terinstal yang dilaporkan untuk server ini.",
+            "requiredBinariesSelected": "Dipilih untuk aplikasi ini",
+            "useRequiredBinary": "Gunakan runtime terinstal",
+            "useRequiredBinaryVersion": "Pilih versi untuk digunakan",
+            "selectRequiredBinaryAria": "Gunakan {module} {version} sebagai runtime aplikasi",
+            "deselectRequiredBinaryAria": "Hapus {module} {version} dari runtime aplikasi",
+            "defaultInstance": "Default"
           }
         },
         "step4": {
