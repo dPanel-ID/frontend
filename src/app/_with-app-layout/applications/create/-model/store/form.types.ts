@@ -22,6 +22,8 @@ export interface FormStore {
   dynamicConfig: Record<string, Record<string, unknown>> | null;
   selectedDependencyIds: string[];
   dependencyConfigs: Record<string, DependencyConfig>;
+  selectedRequiredBinaryIds: string[];
+  requiredBinaryConfigs: Record<string, RequiredBinaryConfig>;
 }
 
 export interface FormActions {
@@ -45,6 +47,11 @@ export interface FormActions {
   setRuntimeEnvText: (runtimeEnvText: string) => void;
   toggleDependency: (dependencyId: string) => void;
   setDependencyConfig: (dependencyId: string, config: DependencyConfig) => void;
+  toggleRequiredBinary: (binaryId: string) => void;
+  setRequiredBinaryConfig: (
+    binaryId: string,
+    config: RequiredBinaryConfig,
+  ) => void;
 
   setDynamicConfig: (dynamicConfig: FormStore['dynamicConfig']) => void;
 }
@@ -68,6 +75,18 @@ export interface DependencyConfig {
     name: string;
     expectedCommit: string;
   };
+}
+
+export interface RequiredBinaryConfig {
+  selectionId: string;
+  id: string;
+  moduleId?: string;
+  name: string;
+  title: string;
+  version?: string;
+  installationId?: string;
+  installationKey?: string;
+  status?: string;
 }
 
 export type Progress =

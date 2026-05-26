@@ -466,12 +466,26 @@ interface GitVars {
   envVariables?: Array<Record<string, string>>;
   buildEnvVariables?: Array<Record<string, string>>;
   runtimeEnvVariables?: Array<Record<string, string>>;
-  dependencyRuntimes?: RuntimeDependency[];
+  dependencyRuntimeItems?: RuntimeItem[];
+  requiredBinaries?: RuntimeDependency[];
 }
 
 export interface RuntimeDependency {
   name: string;
   version?: string;
+}
+
+export interface RuntimeItem {
+  name: string;
+  title?: string;
+  version?: string;
+  category?: string;
+  roles: string[];
+  installation_key?: string;
+  variables: Record<string, unknown>;
+  source?: string;
+  module_ref?: string;
+  module_source_commit?: string;
 }
 
 export const getVarsGitLaravel = (vars: GitVars) => {
@@ -668,11 +682,12 @@ export const getVarsGit = (vars: GitVars) => {
     envVariables,
     buildEnvVariables,
     runtimeEnvVariables,
-    dependencyRuntimes,
+    dependencyRuntimeItems,
+    requiredBinaries,
   } = vars;
 
   const normalizedRuntimes =
-    dependencyRuntimes?.filter((runtime) => runtime.name) ?? [];
+    requiredBinaries?.filter((runtime) => runtime.name) ?? [];
   const primaryRuntime = normalizedRuntimes[0] ?? {
     name: appProgLang,
     version: appProgLangVersion,
@@ -690,130 +705,6 @@ export const getVarsGit = (vars: GitVars) => {
     },
   };
 
-  let useRole: unknown[] = [];
-  const phpPackagesExtra: string[] = [];
-  switch (appProgLang) {
-    case 'go':
-      useRole = [
-        {
-          name: 'gantsign.golang',
-          tag: `language,${appProgLang},${appProgLang}-${appProgLangVersion}`,
-          variable: {
-            golang_version: appProgLangVersion,
-          },
-        },
-      ];
-      break;
-    case 'python':
-      useRole = [
-        {
-          name: 'staticdev.pyenv',
-          tag: `language,${appProgLang},${appProgLang}-${appProgLangVersion}`,
-          variable: {
-            pyenv_python_versions: [appProgLangVersion],
-            pyenv_global: [appProgLangVersion],
-            pyenv_env: 'system',
-          },
-        },
-      ];
-      break;
-    case 'php':
-      if (appProgLangVersion?.includes('8.')) {
-        phpPackagesExtra.push(`php${appProgLangVersion}-swoole`);
-      }
-
-      useRole = [
-        {
-          name: 'geerlingguy.php-versions',
-        },
-        {
-          name: 'geerlingguy.php',
-          tag: `language,${appProgLang},${appProgLang}-${appProgLangVersion}`,
-          variable: {
-            php_version: appProgLangVersion,
-            php_enable_webserver: false,
-            php_enable_php_fpm: false,
-            php_fpm_state: 'stopped',
-            php_fpm_enabled_on_boot: false,
-            php_packages_extra: phpPackagesExtra,
-          },
-        },
-        {
-          name: 'geerlingguy.composer',
-        },
-      ];
-      break;
-    case 'ruby':
-      useRole = [
-        {
-          name: 'zzet.rbenv',
-          tag: `language,${appProgLang},${appProgLang}-${appProgLangVersion}`,
-          variable: {
-            default_ruby: appProgLangVersion,
-            rubies: [
-              {
-                version: appProgLangVersion,
-              },
-            ],
-            version: 'v1.3.0',
-            env: 'system',
-          },
-        },
-      ];
-      break;
-    case 'nodejs':
-      useRole = [
-        {
-          name: 'morgangraphics.ansible-role-nvm',
-          tag: `language,${appProgLang},${appProgLang}-${appProgLangVersion}`,
-          variable: {
-            nvm_install: 'curl',
-            nvm_profile: '/etc/bash.bashrc',
-            nvm_dir: '/usr/local/nvm',
-            nodejs_version: appProgLangVersion,
-            nvm_commands: ['npm install -g pnpm', 'npm install -g yarn'],
-            default: true,
-          },
-        },
-      ];
-      break;
-    case 'bun':
-      useRole = [
-        {
-          name: 'devetek.bun',
-          tag: `language,${appProgLang},${appProgLang}-${appProgLangVersion}`,
-          variable: {
-            bun_version: appProgLangVersion,
-            bun_multi_version: true,
-            bun_multi_set_default: true,
-          },
-        },
-      ];
-      break;
-    case 'docker':
-      useRole = [
-        {
-          name: 'githubixx.docker',
-          tag: `container,${appProgLang},${appProgLang}`,
-          variable: {
-            docker_version: appProgLangVersion || '28.3.2',
-            dockerd_settings: {
-              host: 'unix:///run/docker.sock',
-              'log-level': 'info',
-              'storage-driver':
-                import.meta.env.VITE_ENVIRONMENT === 'development'
-                  ? 'vfs'
-                  : 'overlay2',
-              iptables: 'true',
-              'ip-masq': 'true',
-              mtu: '1500',
-            },
-          },
-        },
-      ];
-      break;
-  }
-
   return {
     playbook: {
       name: 'playbooks/pipeline.yml',
@@ -826,7 +717,6 @@ export const getVarsGit = (vars: GitVars) => {
             user_id: userID,
           },
         },
-        ...useRole,
         {
           name: 'dpanel-git',
           variable: {
@@ -920,6 +810,7 @@ export const getVarsGit = (vars: GitVars) => {
     default_branch: gitDefaultBranch,
     domain: appDomain,
     name: appName,
+    runtime_items: dependencyRuntimeItems ?? [],
     repo_name: repoName,
     repo_org: repoOrganization,
     repo_url: repoURL,

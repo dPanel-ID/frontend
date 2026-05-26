@@ -365,7 +365,17 @@
             "title": "Application details",
             "desc": "Name the application before defining build and runtime behavior.",
             "inputAppName": "Application name",
-            "inputAppNamePlaceholder": "My first app"
+            "inputAppNamePlaceholder": "My first app",
+            "requiredBinariesTitle": "Required binaries",
+            "requiredBinariesDesc": "Select installed language runtimes from the selected server. These values are stored in the application definition and cannot be edited here.",
+            "requiredBinariesSelectServer": "Select a server before choosing required binaries.",
+            "requiredBinariesEmpty": "No installed programming language modules were reported for this server.",
+            "requiredBinariesSelected": "Selected for this app",
+            "useRequiredBinary": "Use installed runtime",
+            "useRequiredBinaryVersion": "Select a version to use",
+            "selectRequiredBinaryAria": "Use {module} {version} as an application runtime",
+            "deselectRequiredBinaryAria": "Remove {module} {version} from application runtimes",
+            "defaultInstance": "Default"
           }
         },
         "step4": {
