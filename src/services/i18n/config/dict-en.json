@@ -185,7 +185,151 @@
     "dashboard": {
       "headerTitle": "Dashboard",
       "headerDesc": "View your deployed applications and registered servers here.",
-      "headerFootnote": "You can use your own resources or a public resource to create application. Visit our <a>YouTube channel</a> for a tutorial."
+      "headerFootnote": "You can use your own resources or a public resource to create application. Visit our <a>YouTube channel</a> for a tutorial.",
+      "headerWelcome": "Welcome back,",
+      "headerOverview": "Here is your active workspace operations overview.",
+      "viewAll": "View all",
+      "workspace": {
+        "personal": "Personal workspace",
+        "team": "Team workspace",
+        "unknownTeam": "Workspace {workspaceId}",
+        "description": "Workspace context and configuration signals for the selected boundary.",
+        "configTitle": "Workspace configuration",
+        "iacRepository": "IaC repository",
+        "iacRepositoryHelp": "{visibility}, default ref {ref}",
+        "workerUsed": "Worker used",
+        "notReported": "Not reported",
+        "visibility": {
+          "private": "Private"
+        }
+      },
+      "cloudProjects": {
+        "title": "Cloud Projects",
+        "description": "Provider projects sit above servers and hostgroups in the dPanel resource hierarchy.",
+        "viewAll": "Open cloud projects",
+        "total": "Total cloud projects",
+        "totalHelp": "Connected provider accounts",
+        "servers": "{count} servers",
+        "unknown": "Unnamed cloud project",
+        "unknownProvider": "Unknown provider",
+        "unknownOwner": "No owner",
+        "updated": "Updated {date}",
+        "notUpdated": "No update timestamp",
+        "empty": "No cloud projects connected yet."
+      },
+      "summary": {
+        "ariaLabel": "Workspace resource summary",
+        "servers": "Servers",
+        "applications": "Applications",
+        "loadBalancers": "Load Balancers",
+        "domains": "Domains",
+        "databases": "Databases",
+        "secrets": "Secrets",
+        "readyServers": "{count} ready",
+        "attention": "{count} need attention",
+        "trafficEntry": "Traffic entry points",
+        "dnsZones": "DNS zones",
+        "statefulData": "Stateful data",
+        "sshKeys": "SSH keys"
+      },
+      "serverHealth": {
+        "title": "Server Health",
+        "description": "Readiness, rollout state, and provider coverage for the active workspace.",
+        "viewServers": "Open servers",
+        "ready": "Ready servers",
+        "readyHelp": "Healthy and available for workloads",
+        "progress": "Provisioning",
+        "progressHelp": "Setup, reinstall, or deletion is running",
+        "attention": "Needs attention",
+        "attentionHelp": "Failed, cancelled, or unknown health",
+        "withTelemetry": "Telemetry online",
+        "telemetryHelp": "Ready servers reporting live usage",
+        "providerMix": "Provider mix",
+        "insightTitle": "Operational insight",
+        "insightHealthy": "{percent}% of servers are ready.",
+        "insightAttention": "{count} servers need attention before new workload placement.",
+        "insightNoServers": "No servers are available in this workspace yet.",
+        "insightProgress": "{count} server operations are still running.",
+        "insightNoProgress": "No server rollout operation is currently running.",
+        "insightTelemetry": "{sampled} of {total} ready servers are reporting live telemetry.",
+        "insightNoTelemetry": "No ready servers are available for live telemetry yet.",
+        "insightProvider": "{provider} hosts {count} of {total} servers.",
+        "insightNoProvider": "Provider distribution is not available yet.",
+        "emptyProviders": "No providers reported yet.",
+        "unknownProvider": "Unknown provider"
+      },
+      "telemetry": {
+        "title": "Live Server Utilization",
+        "description": "Rolling CPU, memory, and disk averages from ready servers in the active workspace.",
+        "coverage": "{sampled} of {total} ready servers sampled",
+        "coverageLimited": "{sampled} of {total} ready servers sampled",
+        "backendNote": "This chart uses live dashboard polling. Persisted workspace-wide history requires a backend aggregate timeseries endpoint.",
+        "chartTitle": "Workspace average",
+        "chartAria": "Line chart of averaged CPU, memory, and disk utilization",
+        "waiting": "Waiting for telemetry samples...",
+        "cpu": "CPU",
+        "memory": "Memory",
+        "disk": "Disk"
+      },
+      "applicationLogs": {
+        "title": "Latest Application Logs",
+        "description": "Recent build and runtime output from the newest application activity.",
+        "buildTitle": "Build log",
+        "runTitle": "Run log",
+        "updated": "Updated {date}",
+        "noApplication": "No application selected",
+        "noLogFile": "No log file",
+        "runFilePending": "Detecting latest runtime log...",
+        "emptyBuild": "No build log lines are available yet.",
+        "emptyRun": "No runtime log lines are available yet.",
+        "emptyRunFile": "No runtime log file was found for the latest deployment."
+      },
+      "resourceMix": {
+        "title": "Business Resource Mix",
+        "description": "Application delivery, traffic, DNS, and data resources at a glance.",
+        "applicationsReady": "Applications ready",
+        "loadBalancersReady": "Load balancers ready",
+        "domains": "Domains",
+        "databases": "Databases"
+      },
+      "members": {
+        "title": "Workspace Members",
+        "teamDescription": "People with access to this team workspace.",
+        "personalDescription": "Personal workspace resources are owned by your account.",
+        "manage": "Manage",
+        "unknown": "Unknown member",
+        "noEmail": "No email",
+        "member": "Member",
+        "emptyTeam": "No team members were returned.",
+        "personalOnly": "No team member list is needed for a personal workspace.",
+        "moreMembers": "+{count} more members"
+      },
+      "lists": {
+        "servers": {
+          "title": "Recent Servers",
+          "description": "Machines available in this workspace.",
+          "unknown": "Unknown server",
+          "noAddress": "No address",
+          "unknownStatus": "unknown",
+          "empty": "No servers found."
+        },
+        "applications": {
+          "title": "Recent Applications",
+          "description": "Latest application records and deployment status.",
+          "unknown": "Unknown application",
+          "noSource": "No source",
+          "unknownStatus": "unknown",
+          "empty": "No applications found."
+        },
+        "loadBalancers": {
+          "title": "Load Balancers",
+          "description": "Traffic entry points and routing status.",
+          "unknown": "Unknown load balancer",
+          "noDomain": "No domain",
+          "unknownStatus": "unknown",
+          "empty": "No load balancers found."
+        }
+      }
     },
     "database": {
       "headerTitle": "Database",
@@ -386,6 +530,10 @@
             "requiredBinaryGroupAria": "Selected {module} runtime versions",
             "selectRequiredBinaryAria": "Use selected {module} {version} as an application runtime",
             "deselectRequiredBinaryAria": "Remove selected {module} {version} from application runtimes",
+            "otherDependenciesTitle": "Other dependencies",
+            "otherDependenciesDesc": "Selected non-runtime modules are included with this application and do not require a binary selection.",
+            "otherDependencyIncluded": "Included with the selected modules",
+            "otherDependencyItemAria": "{module} dependency in {categories}",
             "defaultInstance": "Default"
           }
         },

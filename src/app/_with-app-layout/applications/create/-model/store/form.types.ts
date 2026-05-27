@@ -48,6 +48,8 @@ export interface FormActions {
   toggleDependency: (dependencyId: string) => void;
   setDependencyConfig: (dependencyId: string, config: DependencyConfig) => void;
   toggleRequiredBinary: (binaryId: string) => void;
+  selectRequiredBinary: (binaryId: string) => void;
+  removeRequiredBinary: (binaryId: string) => void;
   setRequiredBinaryConfig: (
     binaryId: string,
     config: RequiredBinaryConfig,

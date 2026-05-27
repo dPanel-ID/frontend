@@ -7,16 +7,16 @@ export default function Header() {
   const t = useDevetekTranslations();
   const { userProfile } = useAuthLoggedIn();
 
-  const displayName = userProfile.fullname ?? userProfile.username ?? 'there';
+  const displayName = userProfile.fullname || userProfile.username || 'there';
 
   return (
     <PageHeader
       title={t('page.dashboard.headerTitle')}
       description={
         <span>
-          Welcome back,{' '}
+          {t('page.dashboard.headerWelcome')}{' '}
           <span className="text-primary font-semibold">{displayName}</span>!
-          Here is an overview of your infrastructure.
+          {` ${t('page.dashboard.headerOverview')}`}
         </span>
       }
     />

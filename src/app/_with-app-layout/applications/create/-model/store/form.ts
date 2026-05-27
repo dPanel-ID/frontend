@@ -156,6 +156,32 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
           selectedRequiredBinaryIds: [...selectedRequiredBinaryIds, binaryId],
         });
       },
+      selectRequiredBinary: (binaryId) => {
+        const { selectedRequiredBinaryIds } = get();
+        if (selectedRequiredBinaryIds.includes(binaryId)) return;
+
+        set({
+          selectedRequiredBinaryIds: [...selectedRequiredBinaryIds, binaryId],
+        });
+      },
+      removeRequiredBinary: (binaryId) => {
+        const { selectedRequiredBinaryIds, requiredBinaryConfigs } = get();
+        if (
+          !selectedRequiredBinaryIds.includes(binaryId) &&
+          !requiredBinaryConfigs[binaryId]
+        ) {
+          return;
+        }
+
+        const nextConfigs = { ...requiredBinaryConfigs };
+        delete nextConfigs[binaryId];
+        set({
+          selectedRequiredBinaryIds: selectedRequiredBinaryIds.filter(
+            (id) => id !== binaryId,
+          ),
+          requiredBinaryConfigs: nextConfigs,
+        });
+      },
       setRequiredBinaryConfig: (binaryId, config) => {
         set((state) => ({
           requiredBinaryConfigs: {

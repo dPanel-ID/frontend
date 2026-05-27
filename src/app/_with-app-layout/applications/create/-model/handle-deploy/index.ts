@@ -59,6 +59,17 @@ function runtimeItemFromDependency(config: DependencyConfig): RuntimeItem {
   };
 }
 
+function isLanguageDependency(config?: DependencyConfig) {
+  return config?.category?.some((category) => category === 'language') === true;
+}
+
+function requiredBinaryIdForDependency(
+  dependencyId: string,
+  dependency?: DependencyConfig,
+) {
+  return `binary:${dependency?.selectionId || dependencyId}`;
+}
+
 export default function useHandleDeploy() {
   const navigate = useNavigate();
   const { userProfile } = useAuthLoggedIn();
@@ -119,7 +130,13 @@ export default function useHandleDeploy() {
       .map((id) => dependencyConfigs[id])
       .filter((config): config is NonNullable<typeof config> => Boolean(config))
       .map((config) => runtimeItemFromDependency(config));
+    const languageRequiredBinaryIds = new Set(
+      selectedDependencyIds
+        .filter((id) => isLanguageDependency(dependencyConfigs[id]))
+        .map((id) => requiredBinaryIdForDependency(id, dependencyConfigs[id])),
+    );
     const requiredBinaries = selectedRequiredBinaryIds
+      .filter((id) => languageRequiredBinaryIds.has(id))
       .map((id) => requiredBinaryConfigs[id])
       .filter((config): config is NonNullable<typeof config> => Boolean(config))
       .map(runtimeFromRequiredBinary);
