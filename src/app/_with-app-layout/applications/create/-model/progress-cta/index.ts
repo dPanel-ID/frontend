@@ -10,6 +10,7 @@ export default function useProgressCta() {
     appSourceBundleIdent,
     appSourceGithubRepo,
     hostedServerID,
+    gitRepoConfig,
     appName,
     appPort,
     selectedDependencyIds,
@@ -25,6 +26,7 @@ export default function useProgressCta() {
     s.appSourceBundleIdent,
     s.appSourceGithubRepo,
     s.hostedServerID,
+    s.gitRepoConfig,
     s.appName,
     s.appPort,
     s.selectedDependencyIds,
@@ -42,7 +44,11 @@ export default function useProgressCta() {
       case '1-source': {
         return (
           (appSourceMode === 'bundle' && appSourceBundleIdent) ||
-          (appSourceMode === 'github' && appSourceGithubRepo)
+          (appSourceMode === 'github' &&
+            appSourceGithubRepo &&
+            gitRepoConfig &&
+            gitRepoConfig.gitBranch &&
+            gitRepoConfig.gitHead)
         );
       }
 

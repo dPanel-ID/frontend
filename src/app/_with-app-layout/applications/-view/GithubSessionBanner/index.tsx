@@ -11,15 +11,17 @@ import {
   buildFrontendReturnUrl,
   buildGithubAuthUrl,
 } from '@/shared/libs/browser/oauth';
+import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Card } from '@/shared/presentation/atoms/Card';
 
 interface GithubSessionBannerProps {
-  extraResponses?: Response<unknown>[];
+  className?: string;
+  extraResponses?: Array<Response<unknown>>;
 }
 
 export default function GithubSessionBanner(props: GithubSessionBannerProps) {
-  const { extraResponses = [] } = props;
+  const { className, extraResponses = [] } = props;
 
   const { gitProfile } = useAuthLoggedIn();
   const { resGitUser } = useAuthModel();
@@ -41,7 +43,12 @@ export default function GithubSessionBanner(props: GithubSessionBannerProps) {
   };
 
   return (
-    <Card className="rounded-2xl border-2 border-dashed border-yellow-500/80 bg-yellow-50/60 dark:bg-yellow-950/20">
+    <Card
+      className={cn(
+        'rounded-2xl border-2 border-dashed border-yellow-500/80 bg-yellow-50/60 dark:bg-yellow-950/20',
+        className,
+      )}
+    >
       <div className="grid grid-cols-[auto_1fr] gap-x-4 p-4">
         <div className="relative">
           <SiGithub className="size-10" />
