@@ -1,6 +1,7 @@
 {
   "common": {
     "terms": {
+      "application": "Application",
       "applications": "Applications",
       "loadBalancer": "Load Balancer",
       "machines": "Machines",
@@ -93,7 +94,14 @@
       "auto": "Auto",
       "off": "Off",
       "source": "Source",
-      "deploy": "Deploy"
+      "deploy": "Deploy",
+      "infrastructure": "Infrastructure",
+      "configuration": "Configuration",
+      "sourceAndDeploy": "Source and deploy",
+      "port": "Port",
+      "path": "Path",
+      "branch": "Branch",
+      "command": "Command"
     },
     "actions": {
       "refresh": "Refresh",
@@ -188,10 +196,12 @@
       "headerTitle": "Applications",
       "headerDesc": "View your deployed applications here.",
       "headerFootnote": "You can use your own resources or a public resource to create application. Visit our <a>YouTube channel</a> for a tutorial.",
+      "docs": "Docs",
+      "createApplication": "Create Application",
       "emptyState": {
         "title": "No applications found.",
         "message": "Why not add new one to get started?",
-        "cta": "Add new application"
+        "cta": "Create Application"
       },
       "appCard": {
         "loadBalancers": {
@@ -367,14 +377,15 @@
             "inputAppName": "Application name",
             "inputAppNamePlaceholder": "My first app",
             "requiredBinariesTitle": "Required binaries",
-            "requiredBinariesDesc": "Select installed language runtimes from the selected server. These values are stored in the application definition and cannot be edited here.",
-            "requiredBinariesSelectServer": "Select a server before choosing required binaries.",
-            "requiredBinariesEmpty": "No installed programming language modules were reported for this server.",
+            "requiredBinariesDesc": "Select runtime binaries from the modules chosen for this application. These values are stored in the application definition and cannot be edited here.",
+            "requiredBinariesSelectServer": "Select application modules before choosing required binaries.",
+            "requiredBinariesEmpty": "No selected language runtime modules are available. Go back and select a language module for this application.",
             "requiredBinariesSelected": "Selected for this app",
-            "useRequiredBinary": "Use installed runtime",
-            "useRequiredBinaryVersion": "Select a version to use",
-            "selectRequiredBinaryAria": "Use {module} {version} as an application runtime",
-            "deselectRequiredBinaryAria": "Remove {module} {version} from application runtimes",
+            "useRequiredBinary": "Use selected runtime",
+            "useRequiredBinaryVersion": "Select a chosen module version",
+            "requiredBinaryGroupAria": "Selected {module} runtime versions",
+            "selectRequiredBinaryAria": "Use selected {module} {version} as an application runtime",
+            "deselectRequiredBinaryAria": "Remove selected {module} {version} from application runtimes",
             "defaultInstance": "Default"
           }
         },

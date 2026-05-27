@@ -1,7 +1,3 @@
-import { Card } from '@/shared/presentation/atoms/Card';
-import { AsideHelpSupport } from '@/widgets/aside-help-support';
-
-import Layout from './-presentation/Layout';
 import GithubSessionBanner from './GithubSessionBanner';
 import Header from './Header';
 import MainAppList from './MainAppList';
@@ -13,20 +9,12 @@ export default function ApplicationsView() {
     <>
       <Header />
 
-      <Layout>
-        <Layout.Main>
-          <GithubSessionBanner />
-          <MainFilter />
-          <MainAppList />
-          <MainBottomActions />
-        </Layout.Main>
-
-        <Layout.Aside>
-          <Card className="rounded-2xl">
-            <AsideHelpSupport.Complete topic="application" />
-          </Card>
-        </Layout.Aside>
-      </Layout>
+      <div className="flex flex-col gap-4">
+        <GithubSessionBanner />
+        <MainFilter />
+        <MainAppList />
+        <MainBottomActions />
+      </div>
     </>
   );
 }

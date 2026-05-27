@@ -225,6 +225,8 @@ function buildInstalledDependencyConfig(
     name: moduleGroup.name,
     title: moduleGroup.name,
     version,
+    category: options.catalogModule?.category,
+    logoUrl: options.catalogModule?.logoUrl,
     source: 'installed',
     installationId: installation.id,
     installationKey: installation.installation_key,
@@ -254,8 +256,10 @@ const SectionServer = () => {
     'page.applicationsCreate.wizard.step2.sectionSelectServer',
   );
 
-  const [serversStore, { page, refresh, setPage, searchQuery, setSearchQuery }] =
-    useServersStore();
+  const [
+    serversStore,
+    { page, refresh, setPage, searchQuery, setSearchQuery },
+  ] = useServersStore();
 
   const [hostedServerID, setHostedServerID] = useFormStore((s) => [
     s.hostedServerID,
@@ -495,7 +499,8 @@ function ServerPicker(props: {
               <span
                 className={cn(
                   'mt-1 flex size-6 shrink-0 items-center justify-center rounded-full border bg-background text-transparent',
-                  selected && 'border-primary bg-primary text-primary-foreground',
+                  selected &&
+                    'border-primary bg-primary text-primary-foreground',
                 )}
               >
                 <CheckCircle2Icon className="size-4" />
@@ -653,6 +658,8 @@ function DependencyConfigurator(props: {
         name: moduleInfo.name,
         title: moduleInfo.name,
         version: getDependencyVersion(moduleInfo.id, variables),
+        category: moduleInfo.category,
+        logoUrl: moduleInfo.logoUrl,
         source: 'catalog',
         variables,
         roles: action.roles?.length
@@ -883,9 +890,7 @@ const SectionDependencies = () => {
           <>
             <div className="rounded-lg border bg-background p-3">
               <div className="flex flex-col gap-1">
-                <h4 className="text-sm font-semibold">
-                  {t('installedTitle')}
-                </h4>
+                <h4 className="text-sm font-semibold">{t('installedTitle')}</h4>
                 <p className="text-xs text-muted-foreground">
                   {t('installedHint')}
                 </p>
@@ -921,8 +926,8 @@ const SectionDependencies = () => {
                             !selectable
                               ? 'unavailableInstalledModuleAria'
                               : selected
-                              ? 'deselectInstalledModuleAria'
-                              : 'selectInstalledModuleAria',
+                                ? 'deselectInstalledModuleAria'
+                                : 'selectInstalledModuleAria',
                             {
                               module: moduleGroup.name,
                               version: versionLabel,
@@ -974,10 +979,10 @@ const SectionDependencies = () => {
                             {!selectable
                               ? t('installedUnavailable')
                               : selected
-                              ? t('selectedInstalledVersion', {
-                                  count: selectedInstallations.length,
-                                })
-                              : t('useInstalled')}
+                                ? t('selectedInstalledVersion', {
+                                    count: selectedInstallations.length,
+                                  })
+                                : t('useInstalled')}
                           </p>
                         </button>
                       );
@@ -1029,8 +1034,8 @@ const SectionDependencies = () => {
                                   !selectable
                                     ? 'unavailableInstalledVersionAria'
                                     : versionSelected
-                                    ? 'deselectInstalledVersionAria'
-                                    : 'selectInstalledVersionAria',
+                                      ? 'deselectInstalledVersionAria'
+                                      : 'selectInstalledVersionAria',
                                   {
                                     module: moduleGroup.name,
                                     version: versionLabel,
@@ -1140,8 +1145,7 @@ const SectionDependencies = () => {
                                       )}
                                     </div>
                                     <p className="line-clamp-2 text-xs text-muted-foreground">
-                                      {module.description ||
-                                        t('noDescription')}
+                                      {module.description || t('noDescription')}
                                     </p>
                                   </div>
                                 </div>

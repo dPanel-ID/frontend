@@ -1,6 +1,7 @@
 {
   "common": {
     "terms": {
+      "application": "Aplikasi",
       "applications": "Aplikasi",
       "loadBalancer": "Load Balancer",
       "machines": "Mesin",
@@ -93,7 +94,14 @@
       "auto": "Auto",
       "off": "Mati",
       "source": "Sumber",
-      "deploy": "Deploy"
+      "deploy": "Deploy",
+      "infrastructure": "Infrastruktur",
+      "configuration": "Konfigurasi",
+      "sourceAndDeploy": "Sumber dan deploy",
+      "port": "Port",
+      "path": "Path",
+      "branch": "Branch",
+      "command": "Command"
     },
     "actions": {
       "refresh": "Segarkan",
@@ -179,10 +187,12 @@
       "headerTitle": "Aplikasi",
       "headerDesc": "Lihat aplikasi yang telah Anda deploy di sini.",
       "headerFootnote": "Anda dapat menggunakan <i>resource</i> sendiri atau <i>resource</i> publik untuk membuat aplikasi. Kunjungi <a>kanal YouTube</a> kami untuk panduannya.",
+      "docs": "Docs",
+      "createApplication": "Buat Aplikasi",
       "emptyState": {
         "title": "Tidak ada aplikasi ditemukan.",
         "message": "Mengapa tidak menambahkan yang baru untuk memulai?",
-        "cta": "Tambah aplikasi baru"
+        "cta": "Buat Aplikasi"
       },
       "appCard": {
         "loadBalancers": {
@@ -358,14 +368,15 @@
             "inputAppName": "Nama aplikasi",
             "inputAppNamePlaceholder": "Aplikasi pertama saya",
             "requiredBinariesTitle": "Binary yang dibutuhkan",
-            "requiredBinariesDesc": "Pilih runtime bahasa yang sudah terinstal di server terpilih. Nilai ini disimpan di definisi aplikasi dan tidak bisa diubah dari sini.",
-            "requiredBinariesSelectServer": "Pilih server sebelum memilih binary yang dibutuhkan.",
-            "requiredBinariesEmpty": "Belum ada modul bahasa pemrograman terinstal yang dilaporkan untuk server ini.",
+            "requiredBinariesDesc": "Pilih binary runtime dari modul yang dipilih untuk aplikasi ini. Nilai ini disimpan di definisi aplikasi dan tidak bisa diubah dari sini.",
+            "requiredBinariesSelectServer": "Pilih modul aplikasi sebelum memilih binary yang dibutuhkan.",
+            "requiredBinariesEmpty": "Belum ada modul runtime bahasa yang dipilih. Kembali dan pilih modul bahasa untuk aplikasi ini.",
             "requiredBinariesSelected": "Dipilih untuk aplikasi ini",
-            "useRequiredBinary": "Gunakan runtime terinstal",
-            "useRequiredBinaryVersion": "Pilih versi untuk digunakan",
-            "selectRequiredBinaryAria": "Gunakan {module} {version} sebagai runtime aplikasi",
-            "deselectRequiredBinaryAria": "Hapus {module} {version} dari runtime aplikasi",
+            "useRequiredBinary": "Gunakan runtime terpilih",
+            "useRequiredBinaryVersion": "Pilih versi modul terpilih",
+            "requiredBinaryGroupAria": "Versi runtime {module} terpilih",
+            "selectRequiredBinaryAria": "Gunakan {module} {version} terpilih sebagai runtime aplikasi",
+            "deselectRequiredBinaryAria": "Hapus {module} {version} terpilih dari runtime aplikasi",
             "defaultInstance": "Default"
           }
         },

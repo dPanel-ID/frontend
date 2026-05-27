@@ -38,6 +38,9 @@ export default function useProgressCta() {
   ]);
 
   const isPreviousHidden = progress === '1-source';
+  const selectedDependencyBinaryIds = selectedDependencyIds.map((id) => {
+    return `binary:${dependencyConfigs[id]?.selectionId || id}`;
+  });
 
   const canClickNext = () => {
     switch (progress) {
@@ -64,8 +67,10 @@ export default function useProgressCta() {
         return Boolean(
           appName &&
           selectedRequiredBinaryIds.length > 0 &&
-          selectedRequiredBinaryIds.every((id) =>
-            Boolean(requiredBinaryConfigs[id]),
+          selectedRequiredBinaryIds.every(
+            (id) =>
+              Boolean(requiredBinaryConfigs[id]) &&
+              selectedDependencyBinaryIds.includes(id),
           ) &&
           appBuildCommand.some((command) => command.trim()) &&
           appRunCommand &&

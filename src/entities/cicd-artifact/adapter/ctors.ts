@@ -48,9 +48,9 @@ export function ctorConfigSnapshot(
   const rawLcRun = raw.app_definition?.run;
 
   const mainLanguage = iife(() => {
-    const { name, version } = raw.app_definition?.setup.language ?? {};
+    const { name, version } = raw.app_definition?.setup?.language ?? {};
 
-    if (!name || !version) return null;
+    if (!name || version == null) return null;
 
     return {
       name,
@@ -61,17 +61,31 @@ export function ctorConfigSnapshot(
   return {
     lifecycle: {
       build: {
-        steps: rawLcBuild?.steps,
+        steps: (rawLcBuild?.steps ?? []).map((step, index) => ({
+          name: step.name || `Step ${index + 1}`,
+          command: step.command,
+          archive: step.archive,
+        })),
         envs: rawLcBuild?.environment ?? [],
       },
       run: {
         envs: rawLcRun?.environment ?? [],
-        command: rawLcRun?.command,
-        name: rawLcRun?.name,
-        port: rawLcRun?.port,
+        command: rawLcRun?.command ?? '',
+        name: rawLcRun?.name ?? '',
+        port: rawLcRun?.port ?? 0,
       },
       setup: {
-        languages: [mainLanguage].filter(excludeNully),
+        languages: [
+          mainLanguage,
+          ...(raw.app_definition?.setup?.languages ?? []).map((language) => {
+            if (!language.name || language.version == null) return null;
+
+            return {
+              name: language.name,
+              version: String(language.version),
+            };
+          }),
+        ].filter(excludeNully),
       },
     },
   };

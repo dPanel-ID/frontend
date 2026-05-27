@@ -36,23 +36,23 @@ export interface ApplicationV1 {
 
 export interface AppDefinition {
   version: string;
-  setup: {
-    language: {
-      name: string;
-      version: string | number;
+  setup?: {
+    language?: {
+      name?: string;
+      version?: string | number;
     };
     languages?: Array<{
-      name: string;
-      version: string;
+      name?: string;
+      version?: string | number;
     }>;
     router: unknown;
   };
-  build: {
-    target: {
-      machine: {
-        workdir: string;
-        steps: Array<{
-          name: string;
+  build?: {
+    target?: {
+      machine?: {
+        workdir?: string;
+        steps?: Array<{
+          name?: string;
           command?: string[];
           archive?: string[];
         }>;
@@ -63,12 +63,12 @@ export interface AppDefinition {
       };
     };
   };
-  run: {
-    name: string;
-    description: string;
-    command: string;
-    port: number;
-    no_service: boolean;
+  run?: {
+    name?: string;
+    description?: string;
+    command?: string;
+    port?: number;
+    no_service?: boolean;
     environment?: Array<{
       key: string;
       value: string;
@@ -78,7 +78,7 @@ export interface AppDefinition {
 }
 
 interface AppConfig {
-  auto_deploy: AutoDeploy;
+  auto_deploy?: AutoDeploy;
 }
 
 interface AutoDeploy {
