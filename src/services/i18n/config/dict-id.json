@@ -176,7 +176,151 @@
     "dashboard": {
       "headerTitle": "Dashboard",
       "headerDesc": "Lihat aplikasi yang telah Anda deploy dan server yang terdaftar di sini.",
-      "headerFootnote": "Anda dapat menggunakan <i>resource</i> sendiri atau <i>resource</i> publik untuk membuat aplikasi. Kunjungi <a>kanal YouTube</a> kami untuk panduannya."
+      "headerFootnote": "Anda dapat menggunakan <i>resource</i> sendiri atau <i>resource</i> publik untuk membuat aplikasi. Kunjungi <a>kanal YouTube</a> kami untuk panduannya.",
+      "headerWelcome": "Selamat datang kembali,",
+      "headerOverview": "Berikut ringkasan operasi ruang kerja aktif Anda.",
+      "viewAll": "Lihat semua",
+      "workspace": {
+        "personal": "Ruang kerja personal",
+        "team": "Ruang kerja tim",
+        "unknownTeam": "Ruang kerja {workspaceId}",
+        "description": "Konteks ruang kerja dan sinyal konfigurasi untuk batas ruang kerja terpilih.",
+        "configTitle": "Konfigurasi ruang kerja",
+        "iacRepository": "Repositori IaC",
+        "iacRepositoryHelp": "{visibility}, default ref {ref}",
+        "workerUsed": "Worker yang digunakan",
+        "notReported": "Belum dilaporkan",
+        "visibility": {
+          "private": "Privat"
+        }
+      },
+      "cloudProjects": {
+        "title": "Proyek Cloud",
+        "description": "Proyek provider berada di atas server dan hostgroup dalam hierarki resource dPanel.",
+        "viewAll": "Buka proyek cloud",
+        "total": "Total proyek cloud",
+        "totalHelp": "Akun provider terhubung",
+        "servers": "{count} server",
+        "unknown": "Proyek cloud tanpa nama",
+        "unknownProvider": "Provider tidak dikenal",
+        "unknownOwner": "Tidak ada pemilik",
+        "updated": "Diperbarui {date}",
+        "notUpdated": "Tidak ada timestamp pembaruan",
+        "empty": "Belum ada proyek cloud yang terhubung."
+      },
+      "summary": {
+        "ariaLabel": "Ringkasan resource ruang kerja",
+        "servers": "Server",
+        "applications": "Aplikasi",
+        "loadBalancers": "Load Balancer",
+        "domains": "Domain",
+        "databases": "Database",
+        "secrets": "Secret",
+        "readyServers": "{count} siap",
+        "attention": "{count} perlu perhatian",
+        "trafficEntry": "Titik masuk trafik",
+        "dnsZones": "Zona DNS",
+        "statefulData": "Data stateful",
+        "sshKeys": "SSH key"
+      },
+      "serverHealth": {
+        "title": "Kesehatan Server",
+        "description": "Kesiapan, status rollout, dan cakupan provider untuk ruang kerja aktif.",
+        "viewServers": "Buka server",
+        "ready": "Server siap",
+        "readyHelp": "Sehat dan tersedia untuk workload",
+        "progress": "Provisioning",
+        "progressHelp": "Setup, reinstall, atau penghapusan sedang berjalan",
+        "attention": "Perlu perhatian",
+        "attentionHelp": "Gagal, dibatalkan, atau kesehatan tidak diketahui",
+        "withTelemetry": "Telemetry online",
+        "telemetryHelp": "Server siap yang mengirim penggunaan live",
+        "providerMix": "Komposisi provider",
+        "insightTitle": "Insight operasional",
+        "insightHealthy": "{percent}% server dalam keadaan siap.",
+        "insightAttention": "{count} server perlu perhatian sebelum penempatan workload baru.",
+        "insightNoServers": "Belum ada server tersedia di ruang kerja ini.",
+        "insightProgress": "{count} operasi server masih berjalan.",
+        "insightNoProgress": "Tidak ada operasi rollout server yang sedang berjalan.",
+        "insightTelemetry": "{sampled} dari {total} server siap mengirim telemetry live.",
+        "insightNoTelemetry": "Belum ada server siap untuk telemetry live.",
+        "insightProvider": "{provider} menampung {count} dari {total} server.",
+        "insightNoProvider": "Distribusi provider belum tersedia.",
+        "emptyProviders": "Belum ada provider yang dilaporkan.",
+        "unknownProvider": "Provider tidak dikenal"
+      },
+      "telemetry": {
+        "title": "Utilisasi Server Live",
+        "description": "Rata-rata CPU, memori, dan disk berjalan dari server siap di ruang kerja aktif.",
+        "coverage": "{sampled} dari {total} server siap disampel",
+        "coverageLimited": "{sampled} dari {total} server siap disampel",
+        "backendNote": "Chart ini memakai polling live dari dashboard. Riwayat lintas workspace yang persisten membutuhkan endpoint timeseries agregat dari backend.",
+        "chartTitle": "Rata-rata ruang kerja",
+        "chartAria": "Line chart rata-rata utilisasi CPU, memori, dan disk",
+        "waiting": "Menunggu sampel telemetry...",
+        "cpu": "CPU",
+        "memory": "Memori",
+        "disk": "Disk"
+      },
+      "applicationLogs": {
+        "title": "Log Aplikasi Terbaru",
+        "description": "Output build dan runtime terbaru dari aktivitas aplikasi terakhir.",
+        "buildTitle": "Log build",
+        "runTitle": "Log run",
+        "updated": "Diperbarui {date}",
+        "noApplication": "Tidak ada aplikasi dipilih",
+        "noLogFile": "Tidak ada file log",
+        "runFilePending": "Mendeteksi log runtime terbaru...",
+        "emptyBuild": "Belum ada baris log build.",
+        "emptyRun": "Belum ada baris log runtime.",
+        "emptyRunFile": "File log runtime untuk deployment terbaru tidak ditemukan."
+      },
+      "resourceMix": {
+        "title": "Komposisi Resource Bisnis",
+        "description": "Ringkasan delivery aplikasi, trafik, DNS, dan resource data.",
+        "applicationsReady": "Aplikasi siap",
+        "loadBalancersReady": "Load balancer siap",
+        "domains": "Domain",
+        "databases": "Database"
+      },
+      "members": {
+        "title": "Anggota Ruang Kerja",
+        "teamDescription": "Pengguna yang memiliki akses ke ruang kerja tim ini.",
+        "personalDescription": "Resource ruang kerja personal dimiliki oleh akun Anda.",
+        "manage": "Kelola",
+        "unknown": "Anggota tidak dikenal",
+        "noEmail": "Tidak ada email",
+        "member": "Anggota",
+        "emptyTeam": "Belum ada anggota tim yang dikembalikan.",
+        "personalOnly": "Daftar anggota tim tidak diperlukan untuk ruang kerja personal.",
+        "moreMembers": "+{count} anggota lainnya"
+      },
+      "lists": {
+        "servers": {
+          "title": "Server Terbaru",
+          "description": "Machine yang tersedia di ruang kerja ini.",
+          "unknown": "Server tidak dikenal",
+          "noAddress": "Tidak ada alamat",
+          "unknownStatus": "unknown",
+          "empty": "Server tidak ditemukan."
+        },
+        "applications": {
+          "title": "Aplikasi Terbaru",
+          "description": "Record aplikasi terbaru dan status deployment.",
+          "unknown": "Aplikasi tidak dikenal",
+          "noSource": "Tidak ada sumber",
+          "unknownStatus": "unknown",
+          "empty": "Aplikasi tidak ditemukan."
+        },
+        "loadBalancers": {
+          "title": "Load Balancer",
+          "description": "Titik masuk trafik dan status routing.",
+          "unknown": "Load balancer tidak dikenal",
+          "noDomain": "Tidak ada domain",
+          "unknownStatus": "unknown",
+          "empty": "Load balancer tidak ditemukan."
+        }
+      }
     },
     "database": {
       "headerTitle": "Database",
@@ -377,6 +521,10 @@
             "requiredBinaryGroupAria": "Versi runtime {module} terpilih",
             "selectRequiredBinaryAria": "Gunakan {module} {version} terpilih sebagai runtime aplikasi",
             "deselectRequiredBinaryAria": "Hapus {module} {version} terpilih dari runtime aplikasi",
+            "otherDependenciesTitle": "Dependency lainnya",
+            "otherDependenciesDesc": "Modul non-runtime yang dipilih tetap disertakan di aplikasi ini dan tidak memerlukan pilihan binary.",
+            "otherDependencyIncluded": "Disertakan bersama modul terpilih",
+            "otherDependencyItemAria": "Dependency {module} dalam {categories}",
             "defaultInstance": "Default"
           }
         },

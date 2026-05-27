@@ -1,6 +1,11 @@
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import { useFormStore } from '../store/form';
+import type { DependencyConfig } from '../store/form.types';
+
+function isLanguageDependency(config?: DependencyConfig) {
+  return config?.category?.some((category) => category === 'language') === true;
+}
 
 export default function useProgressCta() {
   const [
@@ -38,9 +43,11 @@ export default function useProgressCta() {
   ]);
 
   const isPreviousHidden = progress === '1-source';
-  const selectedDependencyBinaryIds = selectedDependencyIds.map((id) => {
-    return `binary:${dependencyConfigs[id]?.selectionId || id}`;
-  });
+  const selectedDependencyBinaryIds = selectedDependencyIds
+    .filter((id) => isLanguageDependency(dependencyConfigs[id]))
+    .map((id) => {
+      return `binary:${dependencyConfigs[id]?.selectionId || id}`;
+    });
 
   const canClickNext = () => {
     switch (progress) {
