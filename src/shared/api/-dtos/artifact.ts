@@ -21,5 +21,5 @@ export interface ArtifactV1 {
   application_id?: number;
   created_at?: string;
   updated_at?: string;
-  machine: MachineV1;
+  machine?: MachineV1;
 }

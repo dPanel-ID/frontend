@@ -17,10 +17,18 @@ export const schemaApplicationCard = z.object({
   timestamp: SchemaCommon.timestamp,
   additionalInfo: z.object({
     domain: z.string().optional(),
+    workdir: z.string().optional(),
+    defaultBranch: z.string().optional(),
+    repoUrl: z.string().optional(),
+    latestArtifactBranch: z.string().optional(),
     servers: z.array(
       z.object({
         id: z.number(),
-        name: z.string(),
+        name: z.string().optional(),
+        address: z.string().optional(),
+        deployStatus: z.string().optional(),
+        serviceName: z.string().optional(),
+        serviceState: z.string().optional(),
       }),
     ),
   }),

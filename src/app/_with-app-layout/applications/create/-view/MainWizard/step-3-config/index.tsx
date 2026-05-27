@@ -4,149 +4,126 @@ import { CheckCircle2Icon, Code2Icon, PencilLineIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import {
-  titleizeModuleValue,
-  toServerModuleFromCatalog,
-} from '@/entities/server-modules/lib/catalog';
-import type { ServerModule } from '@/entities/server-modules/model/types';
+import { resolveServerModuleLogo } from '@/entities/server-modules/config/registry';
 
-import { ApiModule, ApiServer } from '@/shared/api';
-import type { DTOs } from '@/shared/api';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Input } from '@/shared/presentation/atoms/Input';
 
 import useProgressCta from '../../../-model/progress-cta';
 import { useFormStore } from '../../../-model/store/form';
-import type { RequiredBinaryConfig } from '../../../-model/store/form.types';
+import type {
+  DependencyConfig,
+  RequiredBinaryConfig,
+} from '../../../-model/store/form.types';
 import { CtaBar } from '../../../-presentation/CtaBar';
 import { Sectioned } from '../../../-presentation/Sectioned';
 import { CommandSettingsSection, useCommandPortState } from '../step-4-deploy';
 
-const LANGUAGE_MODULE_IDS = new Set([
-  'bun',
-  'go',
-  'nodejs',
-  'php',
-  'python',
-  'ruby',
-]);
-
-function moduleVersion(installation: DTOs.ModuleInstallationV1) {
-  const variables = installation.variables ?? {};
-  const moduleName = installation.module_name;
-  const preferredKeys = [
-    `${moduleName}_version`,
-    moduleName === 'go' ? 'golang_version' : '',
-    moduleName === 'nodejs' ? 'nodejs_version' : '',
-    moduleName === 'python' ? 'python_version' : '',
-    moduleName === 'ruby' ? 'ruby_version' : '',
-    moduleName === 'bun' ? 'bun_version' : '',
-    moduleName === 'php' ? 'php_version' : '',
-  ].filter(Boolean);
-
-  for (const key of preferredKeys) {
-    const value = variables[key];
-    if (value != null && String(value).trim() !== '') {
-      return String(value);
-    }
-  }
-
-  for (const [key, value] of Object.entries(variables)) {
-    if (key.endsWith('_version') && value != null && String(value).trim()) {
-      return String(value);
-    }
-  }
-
-  const keyVersion = installation.installation_key?.match(/@([^:]+)(?::|$)/);
-  return keyVersion?.[1] ?? '';
+interface LanguageDependencyItem {
+  dependencyId: string;
+  selectionId: string;
+  dependency: DependencyConfig;
 }
 
-function moduleInstanceLabel(installation: DTOs.ModuleInstallationV1) {
-  const version = moduleVersion(installation);
-  if (version) return version;
-
-  const key = installation.installation_key || installation.module_name;
-  if (key && key !== installation.module_name) return key;
-
-  return installation.status || '';
+function dependencyModuleId(dependency: DependencyConfig) {
+  return (dependency.moduleId || dependency.id).toLowerCase();
 }
 
-function requiredBinarySelectionId(installation: DTOs.ModuleInstallationV1) {
-  return `binary:${installation.id || installation.installation_key || installation.module_name}`;
-}
-
-function isInstalledBinarySelectable(installation: DTOs.ModuleInstallationV1) {
-  return !['failed', 'cancelled', 'deleted'].includes(
-    String(installation.status || '').toLowerCase(),
+function isLanguageDependency(dependency: DependencyConfig) {
+  return (
+    dependency.category?.some((category) => category === 'language') === true
   );
 }
 
-function groupLanguageModules(
-  modules: DTOs.ModuleInstallationV1[],
-  catalogById: Map<string, ServerModule>,
+function requiredBinarySelectionId(
+  dependencyId: string,
+  dependency: DependencyConfig,
+) {
+  return `binary:${dependency.selectionId || dependencyId}`;
+}
+
+function dependencyVersionLabel(dependency: DependencyConfig) {
+  if (dependency.version && dependency.version.trim()) {
+    return dependency.version;
+  }
+
+  return dependency.status || '';
+}
+
+function groupLanguageDependencies(
+  selectedDependencyIds: string[],
+  dependencyConfigs: Record<string, DependencyConfig>,
 ) {
   const groups = new Map<
     string,
     {
       id: string;
       name: string;
-      logoUrl?: string;
-      installations: DTOs.ModuleInstallationV1[];
+      logoUrl: string;
+      dependencies: LanguageDependencyItem[];
     }
   >();
 
-  for (const installation of modules) {
-    const moduleName = installation.module_name || installation.name;
-    if (!moduleName) continue;
+  for (const dependencyId of selectedDependencyIds) {
+    const dependency = dependencyConfigs[dependencyId];
+    if (!dependency || !isLanguageDependency(dependency)) continue;
 
-    const catalogModule = catalogById.get(moduleName);
-    const isLanguage =
-      catalogModule?.category.includes('language') ||
-      LANGUAGE_MODULE_IDS.has(moduleName);
-    if (!isLanguage) continue;
+    const moduleId = dependencyModuleId(dependency);
+    const current = groups.get(moduleId);
+    const selectionId = requiredBinarySelectionId(dependencyId, dependency);
+    const item = {
+      dependencyId,
+      selectionId,
+      dependency,
+    };
 
-    const current = groups.get(moduleName);
     if (current) {
-      current.installations.push(installation);
+      current.dependencies.push(item);
       continue;
     }
 
-    groups.set(moduleName, {
-      id: moduleName,
-      name:
-        catalogModule?.name ||
-        installation.display_name ||
-        installation.name ||
-        titleizeModuleValue(moduleName),
-      logoUrl: catalogModule?.logoUrl,
-      installations: [installation],
+    groups.set(moduleId, {
+      id: moduleId,
+      name: dependency.title || dependency.name,
+      logoUrl:
+        dependency.logoUrl ||
+        resolveServerModuleLogo({
+          id: moduleId,
+        }),
+      dependencies: [item],
     });
   }
 
   return Array.from(groups.values())
     .map((group) => ({
       ...group,
-      installations: group.installations.sort((left, right) =>
-        moduleInstanceLabel(left).localeCompare(moduleInstanceLabel(right)),
+      dependencies: group.dependencies.sort((left, right) =>
+        dependencyVersionLabel(left.dependency).localeCompare(
+          dependencyVersionLabel(right.dependency),
+        ),
       ),
     }))
     .sort((left, right) => left.name.localeCompare(right.name));
 }
 
 function buildRequiredBinaryConfig(
-  moduleGroup: ReturnType<typeof groupLanguageModules>[number],
-  installation: DTOs.ModuleInstallationV1,
+  item: LanguageDependencyItem,
 ): RequiredBinaryConfig {
+  const { dependency } = item;
+
   return {
-    selectionId: requiredBinarySelectionId(installation),
-    id: moduleGroup.id,
-    moduleId: moduleGroup.id,
-    name: moduleGroup.name,
-    title: moduleGroup.name,
-    version: moduleVersion(installation),
-    installationId: installation.id,
-    installationKey: installation.installation_key,
-    status: installation.status,
+    selectionId: item.selectionId,
+    id: dependency.id,
+    moduleId: dependency.moduleId || dependency.id,
+    name: dependency.name,
+    title: dependency.title,
+    version: dependency.version || '',
+    dependencySelectionId: dependency.selectionId || item.dependencyId,
+    logoUrl: dependency.logoUrl,
+    source: dependency.source,
+    installationId: dependency.installationId,
+    installationKey: dependency.installationKey,
+    status: dependency.status,
   };
 }
 
@@ -155,72 +132,28 @@ function RequiredBinariesPicker() {
     'page.applicationsCreate.wizard.step3.sectionDetails',
   );
   const [
-    hostedServerID,
+    selectedDependencyIds,
+    dependencyConfigs,
     selectedRequiredBinaryIds,
     toggleRequiredBinary,
     setRequiredBinaryConfig,
   ] = useFormStore((s) => [
-    s.hostedServerID,
+    s.selectedDependencyIds,
+    s.dependencyConfigs,
     s.selectedRequiredBinaryIds,
     s.toggleRequiredBinary,
     s.setRequiredBinaryConfig,
   ]);
 
-  const [inventoryResponse] = ApiServer.Modules.$Id.useGet({
-    serverId: hostedServerID ? String(hostedServerID) : '',
-    options: {
-      skip: !hostedServerID,
-    },
-  });
-  const [catalogResponse] = ApiModule.Find.useGet({
-    serverId: hostedServerID ? String(hostedServerID) : undefined,
-    options: {
-      skip: !hostedServerID,
-    },
-  });
-
-  const catalogById = useMemo(() => {
-    const catalog =
-      catalogResponse.$status === 'success'
-        ? catalogResponse
-        : catalogResponse.$status === 'loading'
-          ? catalogResponse.prevData
-          : undefined;
-
-    return new Map(
-      (catalog?.modules ?? []).map((module) => [
-        module.id,
-        toServerModuleFromCatalog(
-          module,
-          catalog?.repository.ref.name,
-          catalog?.repository.ref.resolved_commit,
-        ),
-      ]),
-    );
-  }, [catalogResponse]);
-
   const languageGroups = useMemo(() => {
-    const inventory =
-      inventoryResponse.$status === 'success'
-        ? (inventoryResponse.modules ?? [])
-        : inventoryResponse.$status === 'loading'
-          ? (inventoryResponse.prevData?.modules ?? [])
-          : [];
+    return groupLanguageDependencies(selectedDependencyIds, dependencyConfigs);
+  }, [dependencyConfigs, selectedDependencyIds]);
 
-    return groupLanguageModules(inventory, catalogById);
-  }, [catalogById, inventoryResponse]);
-
-  const toggleInstallation = (
-    moduleGroup: (typeof languageGroups)[number],
-    installation: DTOs.ModuleInstallationV1,
-  ) => {
-    const selectionId = requiredBinarySelectionId(installation);
+  const toggleDependencyRuntime = (item: LanguageDependencyItem) => {
+    const { selectionId } = item;
 
     if (!selectedRequiredBinaryIds.includes(selectionId)) {
-      setRequiredBinaryConfig(
-        selectionId,
-        buildRequiredBinaryConfig(moduleGroup, installation),
-      );
+      setRequiredBinaryConfig(selectionId, buildRequiredBinaryConfig(item));
     }
 
     toggleRequiredBinary(selectionId);
@@ -243,29 +176,21 @@ function RequiredBinariesPicker() {
       </div>
 
       <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
-        {!hostedServerID ? (
-          <span className="text-sm text-muted-foreground md:col-span-2 xl:col-span-3">
-            {t('requiredBinariesSelectServer')}
-          </span>
-        ) : languageGroups.length ? (
+        {languageGroups.length ? (
           languageGroups.map((moduleGroup) => {
-            const selectedInstallations = moduleGroup.installations.filter(
-              (installation) =>
-                selectedRequiredBinaryIds.includes(
-                  requiredBinarySelectionId(installation),
-                ),
+            const selectedRuntimes = moduleGroup.dependencies.filter((item) =>
+              selectedRequiredBinaryIds.includes(item.selectionId),
             );
-            const selected = selectedInstallations.length > 0;
-            const singleInstallation =
-              moduleGroup.installations.length === 1
-                ? moduleGroup.installations[0]
+            const selected = selectedRuntimes.length > 0;
+            const singleRuntime =
+              moduleGroup.dependencies.length === 1
+                ? moduleGroup.dependencies[0]
                 : null;
 
-            if (singleInstallation) {
+            if (singleRuntime) {
               const versionLabel =
-                moduleInstanceLabel(singleInstallation) || t('defaultInstance');
-              const selectable =
-                isInstalledBinarySelectable(singleInstallation);
+                dependencyVersionLabel(singleRuntime.dependency) ||
+                t('defaultInstance');
 
               return (
                 <button
@@ -281,26 +206,20 @@ function RequiredBinariesPicker() {
                       version: versionLabel,
                     },
                   )}
-                  disabled={!selectable}
-                  onClick={() =>
-                    toggleInstallation(moduleGroup, singleInstallation)
-                  }
+                  onClick={() => toggleDependencyRuntime(singleRuntime)}
                   className={cn(
                     'rounded-lg border bg-card p-3 text-left transition hover:bg-border/30',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30',
                     selected && 'border-primary/70 bg-primary/10',
-                    !selectable && 'cursor-not-allowed opacity-60',
                   )}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex min-w-0 items-center gap-2">
-                      {moduleGroup.logoUrl && (
-                        <img
-                          src={moduleGroup.logoUrl}
-                          alt=""
-                          className="size-6 rounded object-contain"
-                        />
-                      )}
+                      <img
+                        src={moduleGroup.logoUrl}
+                        alt=""
+                        className="size-6 rounded object-contain"
+                      />
                       <span className="truncate text-sm font-semibold">
                         {moduleGroup.name}
                       </span>
@@ -331,7 +250,9 @@ function RequiredBinariesPicker() {
               <div
                 key={moduleGroup.id}
                 role="group"
-                aria-label={moduleGroup.name}
+                aria-label={t('requiredBinaryGroupAria', {
+                  module: moduleGroup.name,
+                })}
                 className={cn(
                   'rounded-lg border bg-card p-3 transition',
                   selected && 'border-primary/70 bg-primary/10',
@@ -339,30 +260,27 @@ function RequiredBinariesPicker() {
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex min-w-0 items-center gap-2">
-                    {moduleGroup.logoUrl && (
-                      <img
-                        src={moduleGroup.logoUrl}
-                        alt=""
-                        className="size-6 rounded object-contain"
-                      />
-                    )}
+                    <img
+                      src={moduleGroup.logoUrl}
+                      alt=""
+                      className="size-6 rounded object-contain"
+                    />
                     <span className="truncate text-sm font-semibold">
                       {moduleGroup.name}
                     </span>
                   </div>
                   <span className="text-xs text-muted-foreground">
-                    {moduleGroup.installations.length}x
+                    {moduleGroup.dependencies.length}x
                   </span>
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
-                  {moduleGroup.installations.map((installation) => {
-                    const selectionId = requiredBinarySelectionId(installation);
+                  {moduleGroup.dependencies.map((item) => {
+                    const { selectionId } = item;
                     const versionSelected =
                       selectedRequiredBinaryIds.includes(selectionId);
-                    const selectable =
-                      isInstalledBinarySelectable(installation);
                     const versionLabel =
-                      moduleInstanceLabel(installation) || t('defaultInstance');
+                      dependencyVersionLabel(item.dependency) ||
+                      t('defaultInstance');
 
                     return (
                       <button
@@ -378,16 +296,12 @@ function RequiredBinariesPicker() {
                             version: versionLabel,
                           },
                         )}
-                        disabled={!selectable}
-                        onClick={() =>
-                          toggleInstallation(moduleGroup, installation)
-                        }
+                        onClick={() => toggleDependencyRuntime(item)}
                         className={cn(
                           'inline-flex items-center gap-1 rounded-full border bg-background px-2 py-0.5 text-xs font-medium text-muted-foreground transition',
                           'hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30',
                           versionSelected &&
                             'border-primary/40 bg-primary/10 text-primary',
-                          !selectable && 'cursor-not-allowed opacity-60',
                         )}
                       >
                         {versionSelected && (

@@ -4,6 +4,11 @@ import buildZustandStore from '@/shared/libs/react-factories/buildZustandStore';
 
 import type { FormActions as Actions, FormStore as Store } from './form.types';
 
+const requiredBinaryIdForDependency = (
+  dependencyId: string,
+  dependencySelectionId?: string,
+) => `binary:${dependencySelectionId || dependencyId}`;
+
 export const [FormStoreProvider, useFormStore] = buildZustandStore(
   'ApplicationCreateForm',
   () => {
@@ -64,15 +69,31 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
         set({ runtimeEnvText });
       },
       toggleDependency: (dependencyId) => {
-        const { selectedDependencyIds, dependencyConfigs } = get();
+        const {
+          selectedDependencyIds,
+          dependencyConfigs,
+          selectedRequiredBinaryIds,
+          requiredBinaryConfigs,
+        } = get();
         if (selectedDependencyIds.includes(dependencyId)) {
           const nextConfigs = { ...dependencyConfigs };
+          const nextRequiredBinaryConfigs = { ...requiredBinaryConfigs };
+          const requiredBinaryId = requiredBinaryIdForDependency(
+            dependencyId,
+            dependencyConfigs[dependencyId]?.selectionId,
+          );
+
           delete nextConfigs[dependencyId];
+          delete nextRequiredBinaryConfigs[requiredBinaryId];
           set({
             selectedDependencyIds: selectedDependencyIds.filter(
               (id) => id !== dependencyId,
             ),
             dependencyConfigs: nextConfigs,
+            selectedRequiredBinaryIds: selectedRequiredBinaryIds.filter(
+              (id) => id !== requiredBinaryId,
+            ),
+            requiredBinaryConfigs: nextRequiredBinaryConfigs,
           });
           return;
         }
@@ -82,12 +103,40 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
         });
       },
       setDependencyConfig: (dependencyId, config) => {
-        set((state) => ({
-          dependencyConfigs: {
-            ...state.dependencyConfigs,
-            [dependencyId]: config,
-          },
-        }));
+        set((state) => {
+          const requiredBinaryId = requiredBinaryIdForDependency(
+            dependencyId,
+            config.selectionId,
+          );
+          const currentRequiredBinary =
+            state.requiredBinaryConfigs[requiredBinaryId];
+
+          return {
+            dependencyConfigs: {
+              ...state.dependencyConfigs,
+              [dependencyId]: config,
+            },
+            requiredBinaryConfigs: currentRequiredBinary
+              ? {
+                  ...state.requiredBinaryConfigs,
+                  [requiredBinaryId]: {
+                    ...currentRequiredBinary,
+                    id: config.id,
+                    moduleId: config.moduleId,
+                    name: config.name,
+                    title: config.title,
+                    version: config.version,
+                    dependencySelectionId: config.selectionId || dependencyId,
+                    logoUrl: config.logoUrl,
+                    source: config.source,
+                    installationId: config.installationId,
+                    installationKey: config.installationKey,
+                    status: config.status,
+                  },
+                }
+              : state.requiredBinaryConfigs,
+          };
+        });
       },
       toggleRequiredBinary: (binaryId) => {
         const { selectedRequiredBinaryIds, requiredBinaryConfigs } = get();

@@ -13,15 +13,15 @@ export function ctorIdentity(
   raw: DTOs.ApplicationV1,
 ): KeysOnlyDeep<z.input<typeof identity>> {
   return {
-    name: raw.name,
+    name: raw.name || `Application ${raw.id ?? ''}`.trim(),
     bundleType: raw.bundle_type || undefined,
     ...iife(() => {
       if (raw.source_type === 'github') {
         return {
           source: 'repository',
           sourceKind: 'github',
-          repoName: raw.repo_name,
-          repoOrganization: raw.repo_org,
+          repoName: raw.repo_name || '',
+          repoOrganization: raw.repo_org || '',
         };
       }
 
@@ -37,7 +37,7 @@ export function ctorConfigDefs(
 ): KeysOnlyDeep<z.input<typeof configDefs>> {
   const autoDeploy = iife(
     (): KeysOnlyDeep<z.input<typeof configDefs>['cicd']['autoDeploy']> => {
-      if (raw.app_config?.auto_deploy.enabled) {
+      if (raw.app_config?.auto_deploy?.enabled) {
         return {
           enabled: true,
           fromBranch: raw.app_config.auto_deploy.branch,
@@ -55,13 +55,15 @@ export function ctorConfigDefs(
   const lifecycle = iife((): KeysOnlyDeep<LifecycleInput> | undefined => {
     if (raw.app_definition == null) return undefined;
 
-    const rawBuild = raw.app_definition.build.target.machine;
+    const rawBuild = raw.app_definition.build?.target?.machine;
     const rawRun = raw.app_definition.run;
 
-    const mainLanguage = iife(() => {
-      const { name, version } = raw.app_definition?.setup.language ?? {};
+    if (!rawBuild || !rawRun) return undefined;
 
-      if (!name || !version) return null;
+    const mainLanguage = iife(() => {
+      const { name, version } = raw.app_definition?.setup?.language ?? {};
+
+      if (!name || version == null) return null;
 
       return {
         name,
@@ -71,16 +73,30 @@ export function ctorConfigDefs(
 
     return {
       setup: {
-        languages: [mainLanguage].filter(excludeNully),
+        languages: [
+          mainLanguage,
+          ...(raw.app_definition.setup?.languages ?? []).map((language) => {
+            if (!language.name || language.version == null) return null;
+
+            return {
+              name: language.name,
+              version: String(language.version),
+            };
+          }),
+        ].filter(excludeNully),
       },
       build: {
         envs: rawBuild.environment ?? [],
-        steps: rawBuild.steps,
+        steps: (rawBuild.steps ?? []).map((step, index) => ({
+          name: step.name || `Step ${index + 1}`,
+          command: step.command,
+          archive: step.archive,
+        })),
       },
       run: {
-        name: rawRun.name,
-        command: rawRun.command,
-        port: rawRun.port,
+        name: rawRun.name || '',
+        command: rawRun.command || '',
+        port: rawRun.port || 0,
         envs: rawRun.environment ?? [],
       },
     };

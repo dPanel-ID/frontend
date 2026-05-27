@@ -65,6 +65,8 @@ export interface DependencyConfig {
   name: string;
   title: string;
   version?: string;
+  category?: string[];
+  logoUrl?: string;
   source?: 'catalog' | 'installed';
   installationId?: string;
   installationKey?: string;
@@ -84,6 +86,9 @@ export interface RequiredBinaryConfig {
   name: string;
   title: string;
   version?: string;
+  dependencySelectionId?: string;
+  logoUrl?: string;
+  source?: DependencyConfig['source'];
   installationId?: string;
   installationKey?: string;
   status?: string;
