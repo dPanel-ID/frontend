@@ -48,9 +48,10 @@ import type { ApplicationCreateServerOption } from '../../../-model/store/server
 import { useServersStore } from '../../../-model/store/servers';
 import { CtaBar } from '../../../-presentation/CtaBar';
 
-type FieldValue = string | boolean;
+type FieldValue = unknown;
 
 function defaultFieldValue(input: DTOs.ModuleInputV1): FieldValue {
+  if (input.type === 'hidden') return input.default ?? '';
   if (input.type === 'boolean') return Boolean(input.default);
   if (input.default == null) return '';
   if (input.type === 'object') return JSON.stringify(input.default, null, 2);
@@ -58,6 +59,7 @@ function defaultFieldValue(input: DTOs.ModuleInputV1): FieldValue {
 }
 
 function parseFieldValue(input: DTOs.ModuleInputV1, value: FieldValue) {
+  if (input.type === 'hidden') return value === '' ? undefined : value;
   if (input.type === 'boolean') return Boolean(value);
   if (input.type === 'number') {
     if (value === '') return undefined;
@@ -80,6 +82,10 @@ function buildVariables(
     if (parsed !== undefined) acc[input.name] = parsed;
     return acc;
   }, {});
+}
+
+function isHiddenInput(input: DTOs.ModuleInputV1) {
+  return input.type === 'hidden';
 }
 
 function getDependencyVersion(
@@ -562,6 +568,8 @@ function DependencyConfigurator(props: {
   }
 
   const renderInput = (input: DTOs.ModuleInputV1) => {
+    if (isHiddenInput(input)) return null;
+
     const value = values[input.name] ?? defaultFieldValue(input);
 
     return (
@@ -660,8 +668,11 @@ function DependencyConfigurator(props: {
     }
   };
 
-  const requiredInputs = moduleDetail.inputs.filter((input) => input.required);
-  const optionalInputs = moduleDetail.inputs.filter((input) => !input.required);
+  const visibleInputs = moduleDetail.inputs.filter(
+    (input) => !isHiddenInput(input),
+  );
+  const requiredInputs = visibleInputs.filter((input) => input.required);
+  const optionalInputs = visibleInputs.filter((input) => !input.required);
 
   return (
     <div className="rounded-lg border bg-background">

@@ -10,11 +10,12 @@ import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
 import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
+import GithubSessionBanner from '../-view/GithubSessionBanner';
+
 import { FormStoreProvider } from './-model/store/form';
 import { GithubReposStoreProvider } from './-model/store/github-repos';
 import { ServersStoreProvider } from './-model/store/servers';
 import { ApplicationsCreateLayout as Layout } from './-presentation/Layout';
-import GithubSessionBanner from '../-view/GithubSessionBanner';
 import { AsideProgress } from './-view/AsideProgress';
 import { MainWizard } from './-view/MainWizard';
 
@@ -52,7 +53,7 @@ export default function ApplicationsPage() {
           />
         }
       />
-      <GithubSessionBanner />
+      <GithubSessionBanner className="mb-6 mt-6" />
       <ServersStoreProvider>
         <GithubReposStoreProvider>
           <FormStoreProvider>

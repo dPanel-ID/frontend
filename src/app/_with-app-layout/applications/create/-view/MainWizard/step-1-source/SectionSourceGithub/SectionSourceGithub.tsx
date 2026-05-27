@@ -40,6 +40,8 @@ type RepoItem = {
   defaultBranch?: string;
   framework?: string;
   language?: string;
+  commitId?: string;
+  commitMessage?: string;
 };
 
 type RepoChip = {
@@ -58,18 +60,22 @@ export default function SectionSourceGithub() {
 
   const { gitProfile } = useAuthLoggedIn();
 
-  const [
-    setAppSourceGithubRepo,
-    setAppSourceBundleIdent,
-    setGitRepoConfig,
-  ] = useFormStore((s) => [
-    s.setAppSourceGithubRepo,
-    s.setAppSourceBundleIdent,
-    s.setGitRepoConfig,
-  ]);
+  const [setAppSourceGithubRepo, setAppSourceBundleIdent, setGitRepoConfig] =
+    useFormStore((s) => [
+      s.setAppSourceGithubRepo,
+      s.setAppSourceBundleIdent,
+      s.setGitRepoConfig,
+    ]);
 
-  const { githubRepos, page, setPage, query, setQuery, githubOrg, setGithubOrg } =
-    useGithubReposStore();
+  const {
+    githubRepos,
+    page,
+    setPage,
+    query,
+    setQuery,
+    githubOrg,
+    setGithubOrg,
+  } = useGithubReposStore();
 
   const [githubRepoUrl, setGithubRepoUrl] = useState<string>();
   const [repoOrganization = '', repoName = ''] =
@@ -178,7 +184,8 @@ export default function SectionSourceGithub() {
             repositories={githubRepos.list}
             selectedUrl={githubRepoUrl}
             onSelect={(repo) => {
-              const repoFramework = repo.framework || repo.language || 'unknown';
+              const repoFramework =
+                repo.framework || repo.language || 'unknown';
               const defaultBranch = repo.defaultBranch ?? '';
 
               setGithubRepoUrl(repo.repoUrl);
@@ -192,8 +199,8 @@ export default function SectionSourceGithub() {
                 gitNickname,
                 gitToken,
                 gitBranch: defaultBranch,
-                gitHead: '',
-                gitHeadDescription: '',
+                gitHead: repo.commitId || '',
+                gitHeadDescription: repo.commitMessage || '',
               });
             }}
           />
@@ -342,7 +349,8 @@ function RepositoryPicker(props: {
               <span
                 className={cn(
                   'mt-1 flex size-6 shrink-0 items-center justify-center rounded-full border bg-background text-transparent',
-                  selected && 'border-primary bg-primary text-primary-foreground',
+                  selected &&
+                    'border-primary bg-primary text-primary-foreground',
                 )}
               >
                 <CheckCircle2Icon className="size-4" />

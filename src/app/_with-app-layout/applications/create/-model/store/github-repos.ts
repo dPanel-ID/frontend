@@ -65,6 +65,8 @@ export const [GithubReposStoreProvider, useGithubReposStore] = buildContext(
               repo_name,
               repo_org,
               repo_url,
+              commit_id,
+              commit_message,
             } = repository;
 
             if (!repo_name || !repo_url || !repo_org) return null;
@@ -77,6 +79,8 @@ export const [GithubReposStoreProvider, useGithubReposStore] = buildContext(
               defaultBranch: default_branch,
               framework: repo_framework,
               language: repo_language,
+              commitId: commit_id,
+              commitMessage: commit_message,
             };
           })
           .filter(excludeNully),

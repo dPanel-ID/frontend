@@ -20,9 +20,10 @@ import { FailedState } from '@/widgets/failed-state';
 import { useBaseContext } from '../../config/base-context';
 import useHandleInstallModule from '../../model/handle-install-module';
 
-type FieldValue = string | boolean;
+type FieldValue = unknown;
 
 function defaultFieldValue(input: DTOs.ModuleInputV1): FieldValue {
+  if (input.type === 'hidden') return input.default ?? '';
   if (input.type === 'boolean') return Boolean(input.default);
   if (input.default == null) return '';
   if (input.type === 'object') {
@@ -32,6 +33,7 @@ function defaultFieldValue(input: DTOs.ModuleInputV1): FieldValue {
 }
 
 function parseFieldValue(input: DTOs.ModuleInputV1, value: FieldValue) {
+  if (input.type === 'hidden') return value === '' ? undefined : value;
   if (input.type === 'boolean') return Boolean(value);
   if (input.type === 'number') {
     if (value === '') return undefined;
@@ -56,6 +58,10 @@ function buildVariables(
     }
     return acc;
   }, {});
+}
+
+function isHiddenInput(input: DTOs.ModuleInputV1) {
+  return input.type === 'hidden';
 }
 
 export default function Installation() {
@@ -86,10 +92,10 @@ export default function Installation() {
     );
   }, [moduleDetail]);
 
-  const requiredInputs =
-    moduleDetail?.inputs.filter((input) => input.required) ?? [];
-  const advancedInputs =
-    moduleDetail?.inputs.filter((input) => !input.required) ?? [];
+  const visibleInputs =
+    moduleDetail?.inputs.filter((input) => !isHiddenInput(input)) ?? [];
+  const requiredInputs = visibleInputs.filter((input) => input.required);
+  const advancedInputs = visibleInputs.filter((input) => !input.required);
 
   const handleChange = (name: string, value: FieldValue) => {
     setValues((current) => ({
@@ -152,7 +158,9 @@ export default function Installation() {
   }
 
   const renderInputs = (inputs: DTOs.ModuleInputV1[]) => {
-    if (inputs.length === 0) {
+    const visible = inputs.filter((input) => !isHiddenInput(input));
+
+    if (visible.length === 0) {
       return (
         <p className="text-sm text-primary/60">
           This role does not require additional options.
@@ -160,7 +168,7 @@ export default function Installation() {
       );
     }
 
-    return inputs.map((input) => {
+    return visible.map((input) => {
       const value = values[input.name] ?? defaultFieldValue(input);
 
       return (
