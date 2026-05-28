@@ -32,7 +32,6 @@ import {
   ApiCloud,
   ApiDatabase,
   ApiDomain,
-  ApiFolder,
   ApiLoadBalancer,
   ApiOrganization,
   ApiSecret,
@@ -51,19 +50,26 @@ import { cn } from '@/shared/libs/tailwind/cn';
 import { Badge } from '@/shared/presentation/atoms/Badge';
 import Shimmer from '@/shared/presentation/atoms/Shimmer';
 
+import {
+  DASHBOARD_AGENT_EVENT_LINE_COUNT,
+  DASHBOARD_AGENT_EVENT_LOG_FILE,
+  dedupeAgentEvents,
+  formatEventTimestamp,
+  formatEventType,
+  formatJson,
+  parseAgentEventsFromLines,
+} from '../-lib/agent-events';
+import type { DashboardAgentEvent } from '../-lib/agent-events';
+
 import Header from './Header';
 
 const TELEMETRY_LIMIT = 8;
 const TELEMETRY_POLL_MS = 15_000;
 const MAX_HISTORY_POINTS = 24;
 const RECENT_LIST_LIMIT = 3;
-const DASHBOARD_LOG_LINE_COUNT = 24;
+const AGENT_EVENT_LIMIT = 3;
 const DPANEL_IAC_OWNER = 'dPanel-ID';
 const WORKSPACE_IAC_REF = 'main';
-const ANSI_ESCAPE_PATTERN = new RegExp(
-  `${String.fromCharCode(27)}\\[[0-?]*[ -/]*[@-~]`,
-  'g',
-);
 
 interface WorkspaceIacRepository {
   owner: string;
@@ -86,24 +92,6 @@ interface AggregatedTelemetryPoint {
   cpu?: number;
   memory?: number;
   disk?: number;
-}
-
-interface ApplicationLogTarget {
-  applicationName: string;
-  serverId: string;
-  file: string;
-  filename: string;
-  status?: string;
-  updatedAt?: string;
-  commit?: string;
-}
-
-interface ApplicationRunLogTarget {
-  applicationName: string;
-  serverId: string;
-  basePath: string;
-  status?: string;
-  updatedAt?: string;
 }
 
 type Tone = 'blue' | 'green' | 'amber' | 'red' | 'violet' | 'slate';
@@ -330,7 +318,7 @@ export default function DashboardView() {
               totalReadyServers={serverStats.ready}
             />
 
-            <ApplicationLogsPanel applications={applications} />
+            <AgentEventsPanel servers={servers} />
           </div>
 
           <div className="flex min-w-0 flex-col gap-4">
@@ -1074,168 +1062,257 @@ function TelemetryLegend(props: {
   );
 }
 
-function ApplicationLogsPanel(props: { applications: DTOs.ApplicationV1[] }) {
-  const { applications } = props;
-  const t = useDevetekTranslations('page.dashboard.applicationLogs');
-  const buildTarget = useMemo(
-    () => findLatestBuildLogTarget(applications),
-    [applications],
-  );
-  const runTarget = useMemo(
-    () => findLatestRunLogTarget(applications),
-    [applications],
-  );
-
-  return (
-    <DashboardSection title={t('title')} description={t('description')}>
-      <div className="grid gap-3 lg:grid-cols-2">
-        <ApplicationBuildLogPreview target={buildTarget} />
-        <ApplicationRunLogPreview target={runTarget} />
-      </div>
-    </DashboardSection>
-  );
+interface AgentEventProbeState {
+  events?: DashboardAgentEvent[];
+  status: ApiResponse<string[]>['$status'];
 }
 
-function ApplicationBuildLogPreview(props: { target?: ApplicationLogTarget }) {
-  const { target } = props;
-  const t = useDevetekTranslations('page.dashboard.applicationLogs');
+function AgentEventsPanel(props: { servers: DTOs.MachineV1[] }) {
+  const { servers } = props;
+  const t = useDevetekTranslations('page.dashboard.agentEvents');
+  const [refreshToken, setRefreshToken] = useState(0);
+  const [probeStates, setProbeStates] = useState<
+    Record<string, AgentEventProbeState>
+  >({});
 
-  const [response] = ApiServer.Detail.$Id.Log.useGet({
-    serverId: target?.serverId,
-    file: target?.file,
-    line: DASHBOARD_LOG_LINE_COUNT,
-    options: {
-      skip: !target,
-      refreshIntervalMs: 5000,
-    },
+  const eventServers = useMemo(
+    () => servers.filter((server) => server.id != null),
+    [servers],
+  );
+  const activeServerIds = useMemo(
+    () => new Set(eventServers.map((server) => String(server.id))),
+    [eventServers],
+  );
+  const events = useMemo(
+    () =>
+      dedupeAgentEvents(
+        Object.values(probeStates)
+          .flatMap((state) => state.events ?? [])
+          .filter((event) => activeServerIds.has(event.serverId)),
+      )
+        .sort((left, right) => right.sortTime - left.sortTime)
+        .slice(0, AGENT_EVENT_LIMIT),
+    [activeServerIds, probeStates],
+  );
+  const hasPendingProbe = eventServers.some((server) => {
+    const state = probeStates[String(server.id)];
+    return !state || state.status === 'initial' || state.status === 'loading';
   });
+  const failedProbeCount = eventServers.filter((server) => {
+    return probeStates[String(server.id)]?.status === 'failed';
+  }).length;
+
+  const handleProbeUpdate = useCallback(
+    (serverId: string, nextState: AgentEventProbeState) => {
+      setProbeStates((current) => {
+        const currentState = current[serverId];
+
+        return {
+          ...current,
+          [serverId]: {
+            status: nextState.status,
+            events: nextState.events ?? currentState?.events ?? [],
+          },
+        };
+      });
+    },
+    [],
+  );
+  const handleRefresh = useCallback(() => {
+    setRefreshToken((current) => current + 1);
+  }, []);
 
   return (
-    <ApplicationLogPreviewCard
-      title={t('buildTitle')}
-      target={target}
-      response={response}
-      emptyMessage={t('emptyBuild')}
-    />
-  );
-}
-
-function ApplicationRunLogPreview(props: { target?: ApplicationRunLogTarget }) {
-  const { target } = props;
-  const t = useDevetekTranslations('page.dashboard.applicationLogs');
-
-  const [folderResponse] = ApiFolder.Origin.$ServerId.useGet({
-    serverId: target?.serverId ?? '',
-    basePath: target?.basePath ?? '',
-    options: {
-      skip: !target,
-      refreshIntervalMs: 10_000,
-    },
-  });
-  const runLogFile = useMemo(
-    () => findLatestRunLogFile(responseData(folderResponse)),
-    [folderResponse],
-  );
-  const runLogFileName = runLogFile?.name;
-  const [logResponse] = ApiServer.Detail.$Id.Log.useGet({
-    serverId: target?.serverId,
-    file:
-      target && runLogFileName
-        ? `${target.basePath}/${runLogFileName}`
-        : undefined,
-    line: DASHBOARD_LOG_LINE_COUNT,
-    options: {
-      skip: !target || !runLogFileName,
-      refreshIntervalMs: 5000,
-    },
-  });
-  const previewTarget =
-    target && runLogFileName
-      ? {
-          ...target,
-          file: `${target.basePath}/${runLogFileName}`,
-          filename: runLogFileName,
-        }
-      : target
-        ? {
-            ...target,
-            file: target.basePath,
-            filename: t('runFilePending'),
-          }
-        : undefined;
-
-  return (
-    <ApplicationLogPreviewCard
-      title={t('runTitle')}
-      target={previewTarget}
-      response={logResponse}
-      emptyMessage={target && !runLogFile ? t('emptyRunFile') : t('emptyRun')}
-    />
-  );
-}
-
-function ApplicationLogPreviewCard(props: {
-  title: string;
-  target?: ApplicationLogTarget;
-  response: ApiResponse<string[]>;
-  emptyMessage: string;
-}) {
-  const { emptyMessage, response, target, title } = props;
-  const t = useDevetekTranslations('page.dashboard.applicationLogs');
-  const logs = responseData(response);
-  const logText = logs?.length ? logs.map(redactLogLine).join('\n') : undefined;
-
-  return (
-    <div className="min-h-80 rounded-lg border bg-background p-3">
-      <div className="flex min-w-0 items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-            {title}
-          </p>
-          <p className="mt-1 truncate text-sm font-bold text-primary">
-            {target?.applicationName ?? t('noApplication')}
-          </p>
-          <p className="mt-0.5 truncate text-xs text-muted-foreground">
-            {target?.filename ?? t('noLogFile')}
-          </p>
-        </div>
-        {target?.status && (
-          <span
-            className={cn(
-              'max-w-28 shrink-0 truncate rounded-full border px-2 py-0.5 text-xs font-semibold',
-              toneClass(statusTone(target.status)),
-            )}
-          >
-            {target.status}
+    <DashboardSection
+      title={t('title')}
+      description={t('description')}
+      action={
+        <button
+          type="button"
+          className="inline-flex h-9 items-center gap-2 rounded-lg border bg-background px-3 text-xs font-semibold text-primary transition hover:border-primary/40 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+          disabled={!eventServers.length}
+          onClick={handleRefresh}
+          title={t('refresh')}
+          aria-label={t('refreshAria')}
+        >
+          <RefreshCwIcon
+            className={cn('size-3.5', hasPendingProbe && 'animate-spin')}
+          />
+          {t('refresh')}
+        </button>
+      }
+    >
+      <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+        <Badge variant="outline" className="font-semibold">
+          {t('showing', {
+            count: events.length,
+            limit: AGENT_EVENT_LIMIT,
+          })}
+        </Badge>
+        {failedProbeCount > 0 && (
+          <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/25 bg-amber-500/10 px-2 py-0.5 font-medium text-amber-600 dark:text-amber-400">
+            <AlertTriangleIcon className="size-3" />
+            {t('partialFailure', {
+              count: failedProbeCount,
+            })}
           </span>
         )}
       </div>
 
-      {target?.updatedAt && (
-        <p className="mt-2 text-xs text-muted-foreground">
-          {t('updated', {
-            date: dayjs(target.updatedAt).format('YYYY-MM-DD HH:mm'),
-          })}
-          {target.commit ? ` / ${target.commit}` : ''}
-        </p>
+      {hasPendingProbe && !events.length ? (
+        <div className="grid gap-2">
+          <AgentEventSkeleton />
+          <AgentEventSkeleton />
+          <AgentEventSkeleton />
+        </div>
+      ) : events.length ? (
+        <div className="grid gap-2">
+          {events.map((event) => (
+            <AgentEventRow key={event.id} event={event} />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-lg border bg-background p-6 text-center text-sm text-muted-foreground">
+          {eventServers.length ? t('empty') : t('emptyServers')}
+        </div>
       )}
 
-      <div className="mt-3 min-h-56 overflow-hidden rounded-md border bg-card">
-        {response.$status === 'loading' && !logs ? (
-          <div className="grid gap-2 p-3">
-            <Shimmer className="h-3 w-full" />
-            <Shimmer className="h-3 w-5/6" />
-            <Shimmer className="h-3 w-2/3" />
+      {eventServers.map((server) => (
+        <AgentEventsProbe
+          key={server.id}
+          refreshToken={refreshToken}
+          server={server}
+          onUpdate={handleProbeUpdate}
+        />
+      ))}
+    </DashboardSection>
+  );
+}
+
+function AgentEventsProbe(props: {
+  onUpdate: (serverId: string, state: AgentEventProbeState) => void;
+  refreshToken: number;
+  server: DTOs.MachineV1;
+}) {
+  const { onUpdate, refreshToken, server } = props;
+  const serverId = String(server.id ?? '');
+  const [response, refresh] = ApiServer.Detail.$Id.Log.useGet({
+    serverId,
+    file: DASHBOARD_AGENT_EVENT_LOG_FILE,
+    line: DASHBOARD_AGENT_EVENT_LINE_COUNT,
+    options: {
+      skip: !serverId,
+    },
+  });
+
+  const lines = responseData(response);
+  const events = useMemo(
+    () => parseAgentEventsFromLines(lines ?? [], server),
+    [lines, server],
+  );
+
+  useEffect(() => {
+    if (refreshToken <= 0) return;
+    refresh();
+  }, [refresh, refreshToken]);
+
+  useEffect(() => {
+    onUpdate(serverId, {
+      status: response.$status,
+      events: response.$status === 'failed' ? undefined : events,
+    });
+  }, [events, onUpdate, response.$status, serverId]);
+
+  return null;
+}
+
+function AgentEventRow(props: { event: DashboardAgentEvent }) {
+  const { event } = props;
+  const t = useDevetekTranslations('page.dashboard.agentEvents');
+  const tone = agentEventTone(event.level, event.status);
+
+  return (
+    <article className="rounded-lg border bg-background p-3">
+      <div className="flex min-w-0 items-start gap-3">
+        <span
+          className={cn(
+            'mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-md border',
+            toneClass(tone),
+          )}
+          aria-hidden
+        >
+          {event.level === 'error' ? (
+            <AlertTriangleIcon className="size-4" />
+          ) : (
+            <ActivityIcon className="size-4" />
+          )}
+        </span>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <h3 className="truncate text-sm font-bold text-primary">
+              {formatEventType(event.eventType) || t('unknownEvent')}
+            </h3>
+            <span
+              className={cn(
+                'rounded-full border px-2 py-0.5 text-xs font-semibold',
+                toneClass(tone),
+              )}
+            >
+              {event.status || event.level}
+            </span>
           </div>
-        ) : logText ? (
-          <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-words p-3 font-mono text-xs leading-5 text-primary">
-            {logText}
-          </pre>
-        ) : (
-          <div className="flex min-h-56 items-center justify-center px-3 text-center text-sm text-muted-foreground">
-            {emptyMessage}
+
+          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+            {event.message}
+          </p>
+
+          <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
+            <AgentEventMeta label={t('server')} value={event.serverName} />
+            <AgentEventMeta label={t('eventId')} value={event.eventId} />
+            <AgentEventMeta label={t('sequence')} value={event.sequence} />
+            <AgentEventMeta
+              label={t('time')}
+              value={formatEventTimestamp(event.timestamp)}
+            />
           </div>
-        )}
+
+          <details className="mt-2 rounded-md border bg-card px-3 py-2">
+            <summary className="cursor-pointer text-xs font-semibold text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35">
+              {t('details')}
+            </summary>
+            <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words font-mono text-xs leading-5 text-primary">
+              {formatJson(event.details)}
+            </pre>
+          </details>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function AgentEventMeta(props: { label: string; value?: string }) {
+  const { label, value } = props;
+  if (!value) return null;
+
+  return (
+    <span className="inline-flex min-w-0 items-center gap-1 rounded-full border bg-card px-2 py-0.5">
+      <span className="shrink-0 font-medium">{label}</span>
+      <span className="min-w-0 truncate text-primary">{value}</span>
+    </span>
+  );
+}
+
+function AgentEventSkeleton() {
+  return (
+    <div className="rounded-lg border bg-background p-3">
+      <div className="flex gap-3">
+        <Shimmer className="size-9 shrink-0 rounded-md" />
+        <div className="grid flex-1 gap-2">
+          <Shimmer className="h-4 w-1/3" />
+          <Shimmer className="h-3 w-full" />
+          <Shimmer className="h-3 w-2/3" />
+        </div>
       </div>
     </div>
   );
@@ -1835,139 +1912,18 @@ function buildWorkspaceIacRepository(params: {
   };
 }
 
-function findLatestBuildLogTarget(
-  applications: DTOs.ApplicationV1[],
-): ApplicationLogTarget | undefined {
-  return applications
-    .flatMap((application) => {
-      const userName = resolveApplicationLogUser(application);
+function agentEventTone(
+  level: DashboardAgentEvent['level'],
+  status?: string,
+): Tone {
+  const normalizedStatus = String(status ?? '').toLowerCase();
+  if (normalizedStatus) return statusTone(normalizedStatus);
 
-      return (application.artifacts ?? []).flatMap((artifact) => {
-        const artifactId = artifact.id;
-        const appName = resolveApplicationRuntimeName(application, artifact);
-        const relatedDeployment = findRelatedDeployment(
-          application.deploys ?? [],
-          artifact,
-        );
-        const serverId = String(
-          artifact.machine_id ??
-            artifact.machine?.id ??
-            relatedDeployment?.machine_id ??
-            relatedDeployment?.machine?.id ??
-            '',
-        );
-
-        if (!artifactId || !appName || !userName || !serverId) return [];
-
-        return {
-          applicationName: application.name || appName,
-          serverId,
-          file: `/home/${userName}/logs/${appName}/build-artifact-${artifactId}.log`,
-          filename: `build-artifact-${artifactId}.log`,
-          status: artifact.installer_status,
-          updatedAt: artifact.updated_at ?? artifact.created_at,
-          commit: artifact.head ? artifact.head.slice(0, 7) : undefined,
-        } satisfies ApplicationLogTarget;
-      });
-    })
-    .sort((left, right) => {
-      return timestampMs(right.updatedAt) - timestampMs(left.updatedAt);
-    })[0];
-}
-
-function findLatestRunLogTarget(
-  applications: DTOs.ApplicationV1[],
-): ApplicationRunLogTarget | undefined {
-  return applications
-    .flatMap((application) => {
-      const userName = resolveApplicationLogUser(application);
-      const appName = resolveApplicationRuntimeName(application);
-
-      return (application.deploys ?? []).flatMap((deploy) => {
-        const serverId = String(deploy.machine_id ?? deploy.machine?.id ?? '');
-
-        if (!appName || !userName || !serverId) return [];
-
-        return {
-          applicationName: application.name || appName,
-          serverId,
-          basePath: `/home/${userName}/logs/${appName}`,
-          status: deploy.installer_status,
-          updatedAt: deploy.updated_at ?? deploy.created_at,
-        } satisfies ApplicationRunLogTarget;
-      });
-    })
-    .sort((left, right) => {
-      return timestampMs(right.updatedAt) - timestampMs(left.updatedAt);
-    })[0];
-}
-
-function findRelatedDeployment(
-  deployments: DTOs.DeployV1[],
-  artifact: DTOs.ArtifactV1,
-) {
-  const related = deployments.filter((deployment) => {
-    return (
-      deployment.artifact_id != null && deployment.artifact_id === artifact.id
-    );
-  });
-  const candidates = related.length ? related : deployments;
-
-  return [...candidates].sort((left, right) => {
-    return (
-      timestampMs(right.updated_at ?? right.created_at) -
-      timestampMs(left.updated_at ?? left.created_at)
-    );
-  })[0];
-}
-
-function findLatestRunLogFile(files?: DTOs.FolderOrigin[]) {
-  return [...(files ?? [])]
-    .filter((file) => {
-      return file.name && !file.is_dir && !file.name.includes('build-artifact');
-    })
-    .sort((left, right) => {
-      return timestampMs(right.last_modified) - timestampMs(left.last_modified);
-    })[0];
-}
-
-function resolveApplicationRuntimeName(
-  application: DTOs.ApplicationV1,
-  artifact?: DTOs.ArtifactV1,
-) {
-  return (
-    artifact?.app_definition?.run?.name ||
-    application.app_definition?.run?.name ||
-    application.name
-  );
-}
-
-function resolveApplicationLogUser(application: DTOs.ApplicationV1) {
-  return (
-    application.user?.username ||
-    (application.owner != null ? String(application.owner) : undefined) ||
-    (application.user_id != null ? String(application.user_id) : undefined) ||
-    application.user?.fullname
-  );
-}
-
-function timestampMs(value?: string) {
-  if (!value) return 0;
-  const parsed = Date.parse(value);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function redactLogLine(line: string) {
-  return stripAnsi(line)
-    .replace(
-      /\b(password|passwd|token|secret|api[_-]?key|authorization|credential)(\s*[:=]\s*)([^\s'"`]+)/gi,
-      '$1$2[redacted]',
-    )
-    .replace(/\b(bearer|basic)\s+[a-z0-9._~+/=-]+/gi, '$1 [redacted]');
-}
-
-function stripAnsi(value: string) {
-  return value.replace(ANSI_ESCAPE_PATTERN, '');
+  if (level === 'error') return 'red';
+  if (level === 'warn') return 'amber';
+  if (level === 'notice') return 'violet';
+  if (level === 'debug') return 'slate';
+  return 'green';
 }
 
 function responseData<T>(response: ApiResponse<T>): T | undefined {

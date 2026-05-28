@@ -184,6 +184,8 @@
     },
     "dashboard": {
       "headerTitle": "Dashboard",
+      "homeBreadcrumb": "Home",
+      "docs": "Docs",
       "headerDesc": "View your deployed applications and registered servers here.",
       "headerFootnote": "You can use your own resources or a public resource to create application. Visit our <a>YouTube channel</a> for a tutorial.",
       "headerWelcome": "Welcome back,",
@@ -283,6 +285,22 @@
         "emptyBuild": "No build log lines are available yet.",
         "emptyRun": "No runtime log lines are available yet.",
         "emptyRunFile": "No runtime log file was found for the latest deployment."
+      },
+      "agentEvents": {
+        "title": "Latest Agent Events",
+        "description": "Recent dPanel agent events reported by servers in the active workspace.",
+        "refresh": "Refresh",
+        "refreshAria": "Refresh latest agent events",
+        "showing": "Showing {count} of {limit} latest events",
+        "partialFailure": "{count} servers could not load events",
+        "empty": "No dPanel agent events were found for this workspace yet.",
+        "emptyServers": "No servers are available in this workspace yet.",
+        "unknownEvent": "Agent event",
+        "server": "Server",
+        "eventId": "Event",
+        "sequence": "Sequence",
+        "time": "Time",
+        "details": "Event details"
       },
       "resourceMix": {
         "title": "Business Resource Mix",
