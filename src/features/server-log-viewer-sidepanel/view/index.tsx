@@ -36,6 +36,7 @@ const CUSTOM_SOURCE_ID = 'custom';
 
 const LINE_OPTIONS = [50, 100, 200, 500];
 const JSON_MESSAGE_KEYS = ['message', 'msg', 'log', 'body', 'event'] as const;
+const JSON_KEY_VALUE_KEYS = ['event', 'payload', 'data', 'attributes'] as const;
 const JSON_TIME_KEYS = [
   'timestamp',
   'time',
@@ -55,8 +56,18 @@ interface ParsedLogLine {
   timestamp?: string;
   level: LogLevel;
   jsonPayload?: unknown;
+  jsonLabel?: string;
+  jsonPrefix?: string;
+  jsonSuffix?: string;
   sourceLabel: string;
   searchText: string;
+}
+
+interface JsonSegment {
+  value: unknown;
+  label?: string;
+  prefix?: string;
+  suffix?: string;
 }
 
 const LEVEL_STYLE: Record<LogLevel, string> = {
@@ -102,38 +113,254 @@ function safeJsonStringify(value: unknown) {
   }
 }
 
-function tryParseJson(raw: string): unknown | undefined {
-  const trimmed = raw.trim();
+function formatJson(value: unknown) {
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return String(value);
+  }
+}
 
-  if (!trimmed) return undefined;
+function repairMalformedJsonCandidate(candidate: string) {
+  return candidate.replace(/:\s*(?=,|}|\])/g, ': null');
+}
 
-  if (
-    (trimmed.startsWith('{') && trimmed.endsWith('}')) ||
-    (trimmed.startsWith('[') && trimmed.endsWith(']'))
-  ) {
-    try {
-      return JSON.parse(trimmed);
-    } catch {
-      return undefined;
-    }
+function parseJsonCandidate(candidate: string): unknown | undefined {
+  const variants = [candidate];
+
+  if (candidate.includes('\\"')) {
+    variants.push(candidate.replaceAll('\\"', '"'));
   }
 
-  const firstBrace = trimmed.indexOf('{');
-  const lastBrace = trimmed.lastIndexOf('}');
-
-  if (firstBrace >= 0 && lastBrace > firstBrace) {
+  for (const variant of variants) {
     try {
-      return JSON.parse(trimmed.slice(firstBrace, lastBrace + 1));
+      return JSON.parse(variant);
     } catch {
-      return undefined;
+      // Some agent payloads temporarily report empty values such as
+      // `"capabilities": ,` while the surrounding event is still useful.
+    }
+
+    const repaired = repairMalformedJsonCandidate(variant);
+    if (repaired === variant) continue;
+
+    try {
+      return JSON.parse(repaired);
+    } catch {
+      // Fall through to the next representation.
     }
   }
 
   return undefined;
 }
 
+function getMatchingJsonEnd(raw: string, startIndex: number) {
+  const first = raw[startIndex];
+  const opening = first === '{' ? '{' : '[';
+  const closing = first === '{' ? '}' : ']';
+  const stack = [opening];
+  let escaped = false;
+  let inString = false;
+
+  for (let index = startIndex + 1; index < raw.length; index += 1) {
+    const char = raw[index];
+
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+      } else if (char === '\\') {
+        escaped = true;
+      } else if (char === '"') {
+        inString = false;
+      }
+
+      continue;
+    }
+
+    if (char === '"') {
+      inString = true;
+      continue;
+    }
+
+    if (char === '{' || char === '[') {
+      stack.push(char);
+      continue;
+    }
+
+    if (char === '}' || char === ']') {
+      const expected = stack.at(-1) === '{' ? '}' : ']';
+      if (char !== expected) return undefined;
+
+      stack.pop();
+      if (stack.length === 0 && char === closing) return index;
+    }
+  }
+
+  return undefined;
+}
+
+function getJsonLabelAndPrefix(rawPrefix: string) {
+  const match = rawPrefix.match(/([A-Za-z0-9_.-]+)=["']?$/);
+
+  if (!match) {
+    return {
+      prefix: rawPrefix.trim(),
+    };
+  }
+
+  return {
+    label: match[1],
+    prefix: rawPrefix.slice(0, match.index).trim(),
+  };
+}
+
+function buildJsonSegmentFromTail(params: {
+  label?: string;
+  prefix?: string;
+  tail: string;
+}): JsonSegment | undefined {
+  const { label, prefix, tail } = params;
+  const variants = [tail];
+
+  if (tail.includes('\\"')) {
+    variants.push(tail.replaceAll('\\"', '"'));
+  }
+
+  for (const variant of variants) {
+    const firstChar = variant[0];
+    if (firstChar !== '{' && firstChar !== '[') continue;
+
+    const endIndex = getMatchingJsonEnd(variant, 0);
+    if (endIndex == null) continue;
+
+    const candidate = variant.slice(0, endIndex + 1);
+    const value = parseJsonCandidate(candidate);
+    if (value === undefined) continue;
+
+    return {
+      value,
+      label,
+      prefix,
+      suffix: cleanJsonSuffix(variant.slice(endIndex + 1)),
+    };
+  }
+
+  return undefined;
+}
+
+function findKeyValueJsonSegment(
+  raw: string,
+  keys: readonly string[],
+): JsonSegment | undefined {
+  for (const key of keys) {
+    const pattern = new RegExp(`(?:^|\\s)${key}=(["'])?`, 'g');
+    let match: RegExpExecArray | null = pattern.exec(raw);
+
+    while (match) {
+      const valueStart = match.index + match[0].length;
+      const valueTail = raw.slice(valueStart);
+      const objectIndex = valueTail.indexOf('{');
+      const arrayIndex = valueTail.indexOf('[');
+      const firstJsonIndex =
+        objectIndex >= 0 && arrayIndex >= 0
+          ? Math.min(objectIndex, arrayIndex)
+          : Math.max(objectIndex, arrayIndex);
+
+      if (firstJsonIndex >= 0) {
+        const jsonStart = valueStart + firstJsonIndex;
+        const segment = buildJsonSegmentFromTail({
+          label: key,
+          prefix: raw.slice(0, match.index).trim(),
+          tail: raw.slice(jsonStart),
+        });
+
+        if (segment) return segment;
+      }
+
+      match = pattern.exec(raw);
+    }
+  }
+
+  return undefined;
+}
+
+function cleanJsonSuffix(rawSuffix: string) {
+  return rawSuffix.replace(/^["']/, '').trim();
+}
+
+function buildJsonSegment(
+  raw: string,
+  startIndex: number,
+  endIndex: number,
+): JsonSegment | undefined {
+  const candidate = raw.slice(startIndex, endIndex + 1);
+  const value = parseJsonCandidate(candidate);
+  if (value === undefined) return undefined;
+
+  const { label, prefix } = getJsonLabelAndPrefix(raw.slice(0, startIndex));
+  const suffix = cleanJsonSuffix(raw.slice(endIndex + 1));
+
+  return {
+    value,
+    label,
+    prefix,
+    suffix,
+  };
+}
+
+function findJsonSegment(raw: string): JsonSegment | undefined {
+  const trimmed = raw.trim();
+  if (!trimmed) return undefined;
+
+  const keyValueSegment = findKeyValueJsonSegment(raw, JSON_KEY_VALUE_KEYS);
+  if (keyValueSegment) return keyValueSegment;
+
+  for (let index = 0; index < raw.length; index += 1) {
+    const char = raw[index];
+    if (char !== '{' && char !== '[') continue;
+
+    const endIndex = getMatchingJsonEnd(raw, index);
+
+    if (endIndex != null) {
+      const segment = buildJsonSegment(raw, index, endIndex);
+      if (segment) return segment;
+    }
+  }
+
+  const objectStart = raw.indexOf('{');
+  const objectEnd = raw.lastIndexOf('}');
+
+  if (objectStart >= 0 && objectEnd > objectStart) {
+    const segment = buildJsonSegment(raw, objectStart, objectEnd);
+    if (segment) return segment;
+  }
+
+  const arrayStart = raw.indexOf('[');
+  const arrayEnd = raw.lastIndexOf(']');
+
+  if (arrayStart >= 0 && arrayEnd > arrayStart) {
+    return buildJsonSegment(raw, arrayStart, arrayEnd);
+  }
+
+  return undefined;
+}
+
 function normalizeLevel(value: unknown, raw: string): LogLevel {
-  const normalized = `${coerceText(value) ?? ''} ${raw}`.toLowerCase();
+  const explicit = coerceText(value)?.toLowerCase();
+
+  if (explicit) {
+    if (/\b(fatal|panic|critical|crit)\b/.test(explicit)) return 'fatal';
+    if (/\b(error|err|failed|failure|denied|exception)\b/.test(explicit)) {
+      return 'error';
+    }
+    if (/\b(warn|warning)\b/.test(explicit)) return 'warn';
+    if (/\b(notice|success|succeeded|started|stopped)\b/.test(explicit)) {
+      return 'notice';
+    }
+    if (/\b(debug|trace|verbose)\b/.test(explicit)) return 'debug';
+    if (/\b(info|running|ok|healthy|ready)\b/.test(explicit)) return 'info';
+  }
+
+  const normalized = raw.toLowerCase();
 
   if (/\b(fatal|panic|critical|crit)\b/.test(normalized)) return 'fatal';
   if (/\b(error|err|failed|failure|denied|exception)\b/.test(normalized)) {
@@ -177,21 +404,119 @@ function parsePlainLogLine(raw: string) {
   };
 }
 
+function parseDpanelAgentMessage(rawMessage: string) {
+  const match = rawMessage.match(
+    /^(\d{4}\/\d{2}\/\d{2}\s+\d{2}:\d{2}:\d{2})\s+(.*)$/,
+  );
+
+  if (!match) {
+    return {
+      body: rawMessage,
+    };
+  }
+
+  return {
+    timestamp: match[1],
+    body: match[2] || rawMessage,
+  };
+}
+
+function isDpanelAgentSyslogLine(params: {
+  plain: ReturnType<typeof parsePlainLogLine>;
+  raw: string;
+  source: ServerLogSource | undefined;
+}) {
+  const { plain, raw, source } = params;
+  if (source?.path !== '/var/log/syslog') return false;
+
+  const normalized =
+    `${plain.source ?? ''} ${plain.message} ${raw}`.toLowerCase();
+
+  return normalized.includes('dpanel-agent') || normalized.includes(' event=');
+}
+
+function getDpanelEventSummary(eventPayload: unknown) {
+  if (!isRecord(eventPayload)) return safeJsonStringify(eventPayload);
+
+  return (
+    extractTextField(eventPayload, ['event_id']) ??
+    extractTextField(eventPayload, ['event_type']) ??
+    extractTextField(eventPayload, JSON_MESSAGE_KEYS) ??
+    safeJsonStringify(eventPayload)
+  );
+}
+
+function parseDpanelAgentSyslogLine(params: {
+  lineIndex: number;
+  plain: ReturnType<typeof parsePlainLogLine>;
+  raw: string;
+  source: ServerLogSource | undefined;
+}): ParsedLogLine | undefined {
+  const { lineIndex, plain, raw, source } = params;
+  if (!isDpanelAgentSyslogLine({ plain, raw, source })) return undefined;
+
+  const agentMessage = parseDpanelAgentMessage(plain.message);
+  const eventSegment =
+    findKeyValueJsonSegment(agentMessage.body, ['event']) ??
+    findKeyValueJsonSegment(raw, ['event']);
+
+  if (!isRecord(eventSegment?.value) && !Array.isArray(eventSegment?.value)) {
+    return undefined;
+  }
+
+  const eventPayload = eventSegment.value;
+  const message = getDpanelEventSummary(eventPayload);
+  const timestamp = isRecord(eventPayload)
+    ? (extractTextField(eventPayload, JSON_TIME_KEYS) ??
+      agentMessage.timestamp ??
+      plain.timestamp)
+    : (agentMessage.timestamp ?? plain.timestamp);
+  const levelValue = isRecord(eventPayload)
+    ? extractTextField(eventPayload, JSON_LEVEL_KEYS)
+    : undefined;
+  const level = normalizeLevel(levelValue, message);
+
+  return {
+    id: `${lineIndex}-${raw}`,
+    lineNumber: lineIndex + 1,
+    raw,
+    message,
+    timestamp,
+    level,
+    jsonPayload: eventPayload,
+    jsonLabel: eventSegment.label,
+    sourceLabel: plain.source ?? 'dPanel Agent',
+    searchText: `${raw} ${message} ${timestamp ?? ''} ${level} ${safeJsonStringify(eventPayload)}`,
+  };
+}
+
 function parseLogLine(
   raw: string,
   lineIndex: number,
   source: ServerLogSource | undefined,
 ): ParsedLogLine {
-  const jsonPayload = tryParseJson(raw);
+  const plain = parsePlainLogLine(raw);
+  const dpanelAgentLine = parseDpanelAgentSyslogLine({
+    lineIndex,
+    plain,
+    raw,
+    source,
+  });
+
+  if (dpanelAgentLine) return dpanelAgentLine;
+
+  const jsonSegment = findJsonSegment(plain.message) ?? findJsonSegment(raw);
   const sourceLabel = source?.label ?? 'Log';
 
-  if (isRecord(jsonPayload)) {
+  if (isRecord(jsonSegment?.value)) {
     const message =
-      extractTextField(jsonPayload, JSON_MESSAGE_KEYS) ??
-      safeJsonStringify(jsonPayload);
-    const timestamp = extractTextField(jsonPayload, JSON_TIME_KEYS);
-    const levelValue = extractTextField(jsonPayload, JSON_LEVEL_KEYS);
-    const level = normalizeLevel(levelValue, message);
+      extractTextField(jsonSegment.value, JSON_MESSAGE_KEYS) ??
+      jsonSegment.label ??
+      safeJsonStringify(jsonSegment.value);
+    const timestamp =
+      extractTextField(jsonSegment.value, JSON_TIME_KEYS) ?? plain.timestamp;
+    const levelValue = extractTextField(jsonSegment.value, JSON_LEVEL_KEYS);
+    const level = normalizeLevel(levelValue, `${message} ${raw}`);
 
     return {
       id: `${lineIndex}-${raw}`,
@@ -200,14 +525,17 @@ function parseLogLine(
       message,
       timestamp,
       level,
-      jsonPayload,
-      sourceLabel,
-      searchText: `${raw} ${message} ${timestamp ?? ''} ${level}`,
+      jsonPayload: jsonSegment.value,
+      jsonLabel: jsonSegment.label,
+      jsonPrefix: jsonSegment.prefix,
+      jsonSuffix: jsonSegment.suffix,
+      sourceLabel: plain.source ?? sourceLabel,
+      searchText: `${raw} ${message} ${timestamp ?? ''} ${level} ${safeJsonStringify(jsonSegment.value)}`,
     };
   }
 
-  if (Array.isArray(jsonPayload)) {
-    const message = safeJsonStringify(jsonPayload);
+  if (Array.isArray(jsonSegment?.value)) {
+    const message = jsonSegment.label ?? safeJsonStringify(jsonSegment.value);
 
     return {
       id: `${lineIndex}-${raw}`,
@@ -215,13 +543,15 @@ function parseLogLine(
       raw,
       message,
       level: normalizeLevel(undefined, raw),
-      jsonPayload,
-      sourceLabel,
-      searchText: `${raw} ${message}`,
+      jsonPayload: jsonSegment.value,
+      jsonLabel: jsonSegment.label,
+      jsonPrefix: jsonSegment.prefix,
+      jsonSuffix: jsonSegment.suffix,
+      sourceLabel: plain.source ?? sourceLabel,
+      searchText: `${raw} ${message} ${safeJsonStringify(jsonSegment.value)}`,
     };
   }
 
-  const plain = parsePlainLogLine(raw);
   const level = normalizeLevel(undefined, plain.message);
 
   return {
@@ -236,91 +566,48 @@ function parseLogLine(
   };
 }
 
-function StructuredValue(props: {
-  label?: string;
-  value: unknown;
-  depth?: number;
-}) {
-  const { label, value, depth = 0 } = props;
+function StructuredJsonPreview(props: { value: unknown }) {
+  const { value } = props;
+  if (!isRecord(value)) return null;
 
-  const labelNode =
-    label != null ? (
-      <span className="mr-2 text-muted-foreground">{label}:</span>
-    ) : null;
+  const previewKeys = [
+    'event_id',
+    'event_type',
+    'status',
+    'severity',
+    'source',
+    'machine_id',
+    'agent_id',
+  ];
+  const items = previewKeys
+    .map((key) => {
+      const valueText = coerceText(value[key]);
+      if (!valueText) return null;
 
-  if (Array.isArray(value)) {
-    return (
-      <div className="space-y-1" style={{ marginLeft: depth ? 16 : 0 }}>
-        {labelNode}
-        <span className="text-muted-foreground">Array[{value.length}]</span>
-        <div className="space-y-1 border-l pl-3">
-          {value.map((item, index) => (
-            <StructuredValue
-              key={index}
-              label={String(index)}
-              value={item}
-              depth={depth + 1}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  }
+      return {
+        key,
+        value: valueText,
+      };
+    })
+    .filter((item): item is { key: string; value: string } => item != null)
+    .slice(0, 4);
 
-  if (isRecord(value)) {
-    const entries = Object.entries(value);
-
-    return (
-      <div className="space-y-1" style={{ marginLeft: depth ? 16 : 0 }}>
-        {labelNode}
-        <span className="text-muted-foreground">Object</span>
-        <div className="space-y-1 border-l pl-3">
-          {entries.map(([key, item]) => (
-            <StructuredValue
-              key={key}
-              label={key}
-              value={item}
-              depth={depth + 1}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  const valueNode = (() => {
-    if (value == null) {
-      return <span className="text-muted-foreground">null</span>;
-    }
-
-    if (typeof value === 'string') {
-      return (
-        <span className="text-emerald-600 dark:text-emerald-300">
-          "{value}"
-        </span>
-      );
-    }
-
-    if (typeof value === 'number') {
-      return <span className="text-sky-600 dark:text-sky-300">{value}</span>;
-    }
-
-    if (typeof value === 'boolean') {
-      return (
-        <span className="text-violet-600 dark:text-violet-300">
-          {String(value)}
-        </span>
-      );
-    }
-
-    return <span>{String(value)}</span>;
-  })();
+  if (items.length === 0) return null;
 
   return (
-    <div style={{ marginLeft: depth ? 16 : 0 }}>
-      {labelNode}
-      {valueNode}
-    </div>
+    <span className="mt-1 flex flex-wrap gap-1.5">
+      {items.map((item) => (
+        <span
+          key={item.key}
+          className="inline-flex max-w-full items-center gap-1 rounded border bg-background px-1.5 py-0.5 text-[11px] text-muted-foreground"
+        >
+          <span>{item.key}</span>
+          <span className="max-w-36 truncate font-semibold text-primary">
+            {item.value}
+          </span>
+        </span>
+      ))}
+    </span>
   );
 }
 
@@ -335,6 +622,7 @@ function ToolbarIconButton(props: {
   return (
     <button
       type="button"
+      aria-label={title}
       className="flex size-8 cursor-pointer items-center justify-center rounded-md border bg-card text-primary/70 transition-colors hover:bg-border/60 disabled:cursor-default disabled:opacity-40"
       disabled={disabled}
       onClick={onClick}
@@ -390,8 +678,23 @@ function LogRow(props: {
       <span className="truncate text-xs text-muted-foreground">
         {entry.sourceLabel}
       </span>
-      <span className="min-w-0 break-words font-mono text-xs leading-5 text-primary">
-        {entry.message || ' '}
+      <span className="grid min-w-0 gap-1 font-mono text-xs leading-5 text-primary">
+        <span className="flex min-w-0 flex-wrap items-center gap-1.5">
+          {entry.jsonLabel ? (
+            <span className="rounded border bg-background px-1.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
+              {entry.jsonLabel}
+            </span>
+          ) : null}
+          <span className="min-w-0 break-words">{entry.message || ' '}</span>
+        </span>
+        {entry.jsonPrefix || entry.jsonSuffix ? (
+          <span className="break-words text-[11px] leading-4 text-muted-foreground">
+            {[entry.jsonPrefix, entry.jsonSuffix].filter(Boolean).join(' ')}
+          </span>
+        ) : null}
+        {entry.jsonPayload !== undefined ? (
+          <StructuredJsonPreview value={entry.jsonPayload} />
+        ) : null}
       </span>
     </>
   );
@@ -420,9 +723,9 @@ function LogRow(props: {
                 <BracesIcon className="size-4 text-muted-foreground" />
                 Structured payload
               </div>
-              <div className="max-h-80 overflow-auto rounded-md border bg-card p-3 font-mono text-xs leading-5">
-                <StructuredValue value={entry.jsonPayload} />
-              </div>
+              <pre className="max-h-96 overflow-auto rounded-md border bg-card p-3 font-mono text-xs leading-5 text-primary">
+                {formatJson(entry.jsonPayload)}
+              </pre>
             </div>
           </div>
         </div>
@@ -588,6 +891,7 @@ export default function ServerLogViewerSidepanel(props: Props) {
                 size="icon-sm"
                 onClick={handleApplyCustomPath}
                 title="Open custom source"
+                aria-label="Open custom source"
               >
                 <SearchIcon className="size-4" />
               </Button>

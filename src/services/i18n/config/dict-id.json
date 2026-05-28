@@ -773,6 +773,21 @@
     },
     "serverDetail": {
       "sectionModules": {
+        "detailDescription": "Tinjau metadata instalasi yang tercatat. Data duplikat atau usang dapat dihapus dari inventori dPanel.",
+        "uninstallPanel": {
+          "title": "Uninstall dari inventori",
+          "description": "Hapus metadata instalasi modul ini dari dPanel. Paket di server tidak ikut dihapus.",
+          "button": "Uninstall",
+          "uninstalling": "Menghapus...",
+          "buttonTitle": "Uninstall instalasi modul",
+          "buttonAria": "Uninstall {module} {version}"
+        },
+        "uninstallDialog": {
+          "title": "Uninstall instalasi modul?",
+          "message": "Ini akan menghapus {module} {version} dari inventori dPanel dan menghapus folder metadata modulnya. Paket di server tidak ikut dihapus.",
+          "success": "{module} {version} dihapus dari inventori dPanel.",
+          "errorTitle": "Gagal uninstall {module} {version}"
+        },
         "emptyState": {
           "title": "Anda belum memasang modul apapun saat ini.",
           "subtitle": "Alat jelajah modul kami memiliki banyak modul yang bisa anda tambahkan ke server anda."

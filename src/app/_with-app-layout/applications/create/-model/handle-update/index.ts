@@ -84,24 +84,42 @@ function parseGithubRepository(repoUrl?: string | null) {
   };
 }
 
+const VALID_RUNTIME_APP_NAME = /^[A-Za-z0-9][A-Za-z0-9_-]*$/;
+
+function normalizeRuntimeAppName(name: string, fallback?: string) {
+  const normalized = name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^[-_]+|[-_]+$/g, '');
+
+  if (VALID_RUNTIME_APP_NAME.test(normalized)) return normalized;
+
+  const fallbackName = String(fallback || '').trim();
+  if (VALID_RUNTIME_APP_NAME.test(fallbackName)) return fallbackName;
+
+  return 'application';
+}
+
 function buildUpdatedAppDefinition(params: {
   appBuildCommand: string[];
-  appName: string;
   appPort: string;
   appRunCommand: string;
   buildEnvText: string;
   rawAppDefinition: DTOs.AppDefinition | null | undefined;
   requiredBinaries: RuntimeDependency[];
+  runtimeAppName: string;
   runtimeEnvText: string;
 }) {
   const {
     appBuildCommand,
-    appName,
     appPort,
     appRunCommand,
     buildEnvText,
     rawAppDefinition,
     requiredBinaries,
+    runtimeAppName,
     runtimeEnvText,
   } = params;
   const rawBuild = rawAppDefinition?.build?.target?.machine;
@@ -156,7 +174,7 @@ function buildUpdatedAppDefinition(params: {
     },
     run: {
       ...rawRun,
-      name: appName,
+      name: runtimeAppName,
       port: Number(appPort),
       config: null,
       command: appRunCommand,
@@ -197,6 +215,10 @@ export default function useHandleUpdateApplication() {
 
     if (!updateApplicationId || !hostedServerID || !appSourceGithubRepo) return;
 
+    const runtimeAppName = normalizeRuntimeAppName(
+      appName,
+      updateRawAppDefinition?.run?.name,
+    );
     const dependencyRuntimeItems = selectedDependencyIds
       .map((id) => dependencyConfigs[id])
       .filter((config): config is NonNullable<typeof config> => Boolean(config))
@@ -213,12 +235,12 @@ export default function useHandleUpdateApplication() {
       .map(runtimeFromRequiredBinary);
     const appDefinition = buildUpdatedAppDefinition({
       appBuildCommand,
-      appName,
       appPort,
       appRunCommand,
       buildEnvText,
       rawAppDefinition: updateRawAppDefinition,
       requiredBinaries,
+      runtimeAppName,
       runtimeEnvText,
     });
     const buildEnvVariables = buildEnvText.trim()
@@ -247,7 +269,7 @@ export default function useHandleUpdateApplication() {
         .map((command) => command.trim())
         .filter(Boolean),
       appDomain,
-      appName,
+      appName: runtimeAppName,
       appPort: Number(appPort),
       appRunCommand,
       dependencyRuntimeItems,
@@ -276,6 +298,12 @@ export default function useHandleUpdateApplication() {
     const payload = {
       app_config: updateApplicationConfig || undefined,
       app_definition: appDefinition,
+      artifact: {
+        ...compiledConfig.artifact,
+        app_definition: appDefinition,
+        is_primary: true,
+        machine_id: hostedServerID,
+      },
       bootstrap: updateTriggerBootstrap || undefined,
       default_branch: gitDefaultBranch || undefined,
       deploy: compiledConfig.deploy,

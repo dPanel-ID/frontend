@@ -4,6 +4,7 @@ import * as Detail$Id from './server.detail.$id';
 import * as Detail$IdLog from './server.detail.$id.log';
 import * as Find from './server.find';
 import * as Modules$Id from './server.modules.$id';
+import * as Modules$Id$InstallationId from './server.modules.$id.$installationId';
 import * as Modules$IdRefresh from './server.modules.$id.refresh';
 import * as Origin$IdCpu from './server.origin.$id.cpu';
 import * as Origin$IdCpuUsage from './server.origin.$id.cpu.usage';
@@ -33,6 +34,7 @@ const Root = {
   Modules: {
     $Id: {
       ...Modules$Id,
+      $InstallationId: Modules$Id$InstallationId,
       Refresh: Modules$IdRefresh,
     },
   },
