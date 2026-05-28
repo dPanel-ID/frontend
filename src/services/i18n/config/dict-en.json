@@ -1016,7 +1016,7 @@
     },
     "machineDelete": {
       "title": "Delete Machine",
-      "message": "Are you sure you want to delete machine <code>{machineName}</code> (<code>{machineID}</code>)?"
+      "message": "Are you sure you want to delete machine <code>{machineName}</code> (<code>{machineID}</code>)? dPanel will uninstall the agent first, then mark the server as deleting."
     },
     "osServicePushActivity": {
       "title": "Push Activity",
@@ -1076,6 +1076,9 @@
     },
     "machineDelete": {
       "success": "Successfully deleted machine <code>{machineName}</code> (<code>{machineID}</code>).",
+      "deleteQueued": "Delete started for machine <code>{machineName}</code> (<code>{machineID}</code>). The server will stay visible as Deleting while dPanel uninstalls the agent.",
+      "permanentSuccess": "Permanently deleted machine <code>{machineName}</code> (<code>{machineID}</code>).",
+      "blockingResources": "Linked resources: {deployments} deployments, {artifacts} artifacts, {loadBalancers} load balancers.",
       "error": "Failed to delete machine <code>{machineName}</code> (<code>{machineID}</code>)!"
     },
     "osServicePushActivity": {
