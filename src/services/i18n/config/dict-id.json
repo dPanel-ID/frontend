@@ -1007,7 +1007,7 @@
     },
     "machineDelete": {
       "title": "Hapus Mesin",
-      "message": "Apa anda yakin anda ingin menghapus mesin <code>{machineName}</code> (<code>{machineID}</code>)?"
+      "message": "Apa anda yakin anda ingin menghapus mesin <code>{machineName}</code> (<code>{machineID}</code>)? dPanel akan menghapus agent terlebih dahulu, lalu menandai server sebagai sedang dihapus."
     },
     "osServicePushActivity": {
       "title": "Kirim Aktivitas",
@@ -1067,6 +1067,9 @@
     },
     "machineDelete": {
       "success": "Berhasil menghapus mesin <code>{machineName}</code> (<code>{machineID}</code>).",
+      "deleteQueued": "Penghapusan dimulai untuk mesin <code>{machineName}</code> (<code>{machineID}</code>). Server tetap tampil sebagai Menghapus saat dPanel menghapus agent.",
+      "permanentSuccess": "Berhasil menghapus permanen mesin <code>{machineName}</code> (<code>{machineID}</code>).",
+      "blockingResources": "Resource terhubung: {deployments} deployment, {artifacts} artefak, {loadBalancers} load balancer.",
       "error": "Gagal menghapus mesin <code>{machineName}</code> (<code>{machineID}</code>)"
     },
     "osServicePushActivity": {

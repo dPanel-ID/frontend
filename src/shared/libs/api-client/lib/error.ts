@@ -4,6 +4,7 @@ export class BaseResponseError extends Error {
   public errorMessage: string;
   public code: number;
   public status: string;
+  public data?: unknown;
 
   constructor(option: BaseResponse<unknown>) {
     const fallbackErrorMessage =
@@ -14,6 +15,7 @@ export class BaseResponseError extends Error {
 
     this.code = option.code;
     this.status = option.status;
+    this.data = option.data;
     this.errorMessage = option.error;
   }
 }

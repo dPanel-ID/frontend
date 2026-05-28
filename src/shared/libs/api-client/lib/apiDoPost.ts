@@ -17,19 +17,29 @@ export async function apiDoPost<D>(
       ...config,
     });
 
-    if (axiosResponse.data.code !== 200) {
-      throw new BaseResponseError(axiosResponse.data);
+    const baseData = axiosResponse.data as unknown;
+
+    if (baseData == null || typeof baseData !== 'object') {
+      return {
+        $status: 'success',
+      } as PureResponse<D>;
     }
 
-    // TODO: Temporary monkey patching during migration
-    // Please use keyword "DPANEL-MIGRATION" to find all related code and remove them after migration is done
-    let data: PureResponse<D> = {} as PureResponse<D>;
-    if (typeof axiosResponse.data.data === 'string') {
-      data.$status = 'success';
-      return data;
+    const baseResponse = baseData as BaseResponse<D>;
+
+    if (baseResponse.code !== 200) {
+      throw new BaseResponseError(baseResponse);
     }
 
-    data = axiosResponse.data.data as PureResponse<D>;
+    const responseData = baseResponse.data;
+
+    if (responseData == null || typeof responseData === 'string') {
+      return {
+        $status: 'success',
+      } as PureResponse<D>;
+    }
+
+    const data = responseData as PureResponse<D>;
     data.$status = 'success';
 
     return data;

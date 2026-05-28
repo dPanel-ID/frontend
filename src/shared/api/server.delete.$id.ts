@@ -10,6 +10,15 @@ export interface RecipeParams {
   id: string;
 }
 
+export interface Dto {
+  machine_id: string;
+  status: string;
+  deletion_phase: 'agent_uninstall' | 'permanent' | string;
+  execution_id?: string;
+  permanent_deleted: boolean;
+  agent_uninstalling: boolean;
+}
+
 export function recipe(params: RecipeParams): DoRequestRecipe {
   const { id } = params;
 
@@ -24,7 +33,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
 // =============================================================================
 
 export function doDelete(params: RecipeParams) {
-  return apiDoPost({
+  return apiDoPost<Dto>({
     ...recipe(params),
   });
 }
