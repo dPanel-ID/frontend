@@ -339,6 +339,7 @@
         "cta": "Buat Aplikasi"
       },
       "appCard": {
+        "noDeployments": "Belum ada deployment",
         "loadBalancers": {
           "title": "Load Balancer",
           "emptyMessage": "Tidak ada load balancer yang terhubung ke aplikasi ini.",

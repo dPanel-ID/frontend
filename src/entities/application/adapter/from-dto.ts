@@ -43,6 +43,7 @@ export const toApplicationCard = createAdapter<
       defaultBranch: raw.default_branch,
       repoUrl: raw.repo_url,
       latestArtifactBranch: raw.artifacts?.[0]?.branch,
+      deploymentCount: raw.deploys?.length ?? 0,
       servers: (raw.deploys ?? [])
         .filter((d) => d.machine?.id != null)
         .map((d) => ({

@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import {
   BuildingIcon,
   CalendarIcon,
+  CircleDashedIcon,
   Code2Icon,
   ExternalLinkIcon,
   EyeIcon,
@@ -201,10 +202,22 @@ export default function AppCard(props: AppCardProps) {
       : capitalizeFirstLetter(data.identity.bundleType);
   const sourceValue = getSourceValue(data);
   const branchValue = getBranchValue(data);
-  const deploymentStatus = normalizeDeploymentStatus(
-    primaryServer?.deployStatus || lastArtifactStatus,
-  );
+  const hasDeployments = data.additionalInfo.deploymentCount > 0;
+  const deploymentStatus = hasDeployments
+    ? normalizeDeploymentStatus(
+        primaryServer?.deployStatus || lastArtifactStatus,
+      )
+    : 'unknown';
   const deploymentStatusMeta = CICD_ARTIFACT_STATUS_METADATA[deploymentStatus];
+  const deploymentStatusIcon = hasDeployments
+    ? deploymentStatusMeta.icon
+    : CircleDashedIcon;
+  const deploymentStatusLabel = hasDeployments
+    ? t(deploymentStatusMeta.i18n.statusLabel)
+    : t('page.applications.appCard.noDeployments');
+  const deploymentStatusColor = hasDeployments
+    ? `var(${deploymentStatusMeta.color})`
+    : 'var(--color-orange-500)';
   const serviceState = normalizeServiceState(primaryServer?.serviceState);
   const serviceStateMeta = OS_SERVICE_STATE_METADATA[serviceState];
   const autoDeployLabel = data.configDefs.cicd.autoDeploy.enabled
@@ -263,21 +276,19 @@ export default function AppCard(props: AppCardProps) {
 
         <div className="flex min-w-0 flex-col items-start gap-1.5">
           <StatusPill
-            icon={deploymentStatusMeta.icon}
-            label={t(deploymentStatusMeta.i18n.statusLabel)}
-            color={`var(${deploymentStatusMeta.color})`}
+            icon={deploymentStatusIcon}
+            label={deploymentStatusLabel}
+            color={deploymentStatusColor}
           />
           <div className="flex min-w-0 flex-wrap gap-1">
-            <StatusPill
-              icon={RocketIcon}
-              label={autoDeployLabel}
-              color={
-                data.configDefs.cicd.autoDeploy.enabled
-                  ? 'var(--color-green-500)'
-                  : 'var(--color-gray-500)'
-              }
-              compact
-            />
+            {data.configDefs.cicd.autoDeploy.enabled && (
+              <StatusPill
+                icon={RocketIcon}
+                label={autoDeployLabel}
+                color="var(--color-green-500)"
+                compact
+              />
+            )}
             {primaryServer?.serviceState && (
               <StatusPill
                 icon={serviceStateMeta.icon}

@@ -348,6 +348,7 @@
         "cta": "Create Application"
       },
       "appCard": {
+        "noDeployments": "No deployments",
         "loadBalancers": {
           "title": "Load Balancers",
           "emptyMessage": "No load balancers linked to this application.",

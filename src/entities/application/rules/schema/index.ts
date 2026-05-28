@@ -21,6 +21,7 @@ export const schemaApplicationCard = z.object({
     defaultBranch: z.string().optional(),
     repoUrl: z.string().optional(),
     latestArtifactBranch: z.string().optional(),
+    deploymentCount: z.number().int().nonnegative(),
     servers: z.array(
       z.object({
         id: z.number(),
