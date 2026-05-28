@@ -1,4 +1,11 @@
-import { BuildingIcon, CalendarIcon, PencilIcon, RefreshCwIcon, UserIcon } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import {
+  BuildingIcon,
+  CalendarIcon,
+  PencilIcon,
+  RefreshCwIcon,
+  UserIcon,
+} from 'lucide-react';
 import { useMetaTags } from 'react-metatags-hook';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
@@ -121,44 +128,37 @@ const HeaderFootnote = () => {
 
 const RefreshButton = () => {
   const emit = useEmit();
+  const t = useDevetekTranslations();
 
   const handleRefresh = () => {
     emit('@applications::detail/app-detail-refresh', null);
   };
 
   return (
-    <Button variant="outline" size="sm" onClick={handleRefresh}>
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={handleRefresh}
+      aria-label={t('common.actions.refresh')}
+      title={t('common.actions.refresh')}
+    >
       <RefreshCwIcon />
     </Button>
   );
 };
 
 const EditButton = () => {
-  const emit = useEmit();
-  const [appId, appName, appIdentity, appConfigDefs] = useAppDetail((s) => [
-    s.id,
-    s.identity.name,
-    s.identity,
-    s.configDefs,
-  ]);
-  const appData = useAppDataModel();
+  const navigate = useNavigate();
+  const t = useDevetekTranslations();
+  const [appId, appIdentity] = useAppDetail((s) => [s.id, s.identity]);
 
   const handleEdit = () => {
     if (appIdentity.source !== 'repository') return;
 
-    emit('@applications::detail/application-edit', {
-      applicationId: appId,
-      applicationName: appName,
-      repoName: appIdentity.repoName ?? '',
-      repoOrganization: appIdentity.repoOrganization ?? '',
-      rawAppDefinition: appData.rawAppDefinition,
-      workdir: appData.rawWorkdir,
-      port: appData.rawAppDefinition?.run.port,
-      autoDeploy: {
-        fromBranch: appConfigDefs.cicd.autoDeploy.enabled
-          ? appConfigDefs.cicd.autoDeploy.fromBranch
-          : undefined,
-        isEnabled: appConfigDefs.cicd.autoDeploy.enabled,
+    navigate({
+      to: '/applications/$id/update',
+      params: {
+        id: appId,
       },
     });
   };
@@ -166,9 +166,9 @@ const EditButton = () => {
   if (appIdentity.source !== 'repository') return null;
 
   return (
-    <Button variant="outline" size="sm" onClick={handleEdit}>
+    <Button size="sm" onClick={handleEdit} title={t('common.actions.edit')}>
       <PencilIcon />
-      Edit
+      {t('common.actions.edit')}
     </Button>
   );
 };

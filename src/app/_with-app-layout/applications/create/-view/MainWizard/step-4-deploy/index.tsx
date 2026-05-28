@@ -79,9 +79,19 @@ function normalizeCommandPath(path: string) {
 }
 
 export function useCommandPortState() {
-  const [hostedServerID, appPort, setAppPort] = useFormStore((s) => [
+  const [
+    hostedServerID,
+    appPort,
+    flowMode,
+    updateOriginalPort,
+    updateOriginalServerID,
+    setAppPort,
+  ] = useFormStore((s) => [
     s.hostedServerID,
     s.appPort,
+    s.flowMode,
+    s.updateOriginalPort,
+    s.updateOriginalServerID,
     s.setAppPort,
   ]);
   const [isPortTouched, setIsPortTouched] = useState(false);
@@ -102,7 +112,15 @@ export function useCommandPortState() {
     );
   }, [portsResponse]);
   const normalizedPort = appPort.trim();
-  const isPortUsed = Boolean(normalizedPort && usedPorts.has(normalizedPort));
+  const isOriginalApplicationPort =
+    flowMode === 'update' &&
+    hostedServerID === updateOriginalServerID &&
+    normalizedPort === updateOriginalPort.trim();
+  const isPortUsed = Boolean(
+    normalizedPort &&
+    usedPorts.has(normalizedPort) &&
+    !isOriginalApplicationPort,
+  );
 
   useEffect(() => {
     if (

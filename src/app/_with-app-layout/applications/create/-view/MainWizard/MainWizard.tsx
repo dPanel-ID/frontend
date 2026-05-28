@@ -1,8 +1,8 @@
 import { useDevetekTranslations } from '@/services/i18n';
 
 import {
-  APPLICATION_CREATE_STEPS,
-  getApplicationCreateStepIndex,
+  getApplicationFlowStepIndex,
+  getApplicationFlowSteps,
 } from '../../-model/progress-steps';
 import { useFormStore } from '../../-model/store/form';
 import { StepSurface } from '../../-presentation/StepSurface';
@@ -14,11 +14,14 @@ import Step5Env from './step-5-env';
 import Step6Preview from './step-6-preview';
 
 export default function MainWizard() {
-  const [progress] = useFormStore((s) => [s.progress]);
+  const [flowMode, progress] = useFormStore((s) => [s.flowMode, s.progress]);
   const t = useDevetekTranslations('page.applicationsCreate.progress');
-  const stepIndex = Math.max(0, getApplicationCreateStepIndex(progress));
-  const step =
-    APPLICATION_CREATE_STEPS[stepIndex] ?? APPLICATION_CREATE_STEPS[0]!;
+  const visibleSteps = getApplicationFlowSteps(flowMode);
+  const stepIndex = Math.max(
+    0,
+    getApplicationFlowStepIndex(progress, flowMode),
+  );
+  const step = visibleSteps[stepIndex] ?? visibleSteps[0]!;
   let content = null;
 
   switch (progress) {

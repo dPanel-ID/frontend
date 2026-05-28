@@ -42,10 +42,7 @@ export const [AppDataModelProvider, useAppDataModel] = buildSelector(
     paramsGitRepositoryDetail.repoName = appDetailResponse.repo_name!;
     paramsGitRepositoryDetail.repoOrganization = appDetailResponse.repo_org!;
 
-    if (
-      appDetailResponse.deploys?.[0]?.machine_id &&
-      appDetailResponse.deploys[0].machine != null
-    ) {
+    if (appDetailResponse.deploys?.[0]?.machine_id) {
       latestServerId = String(appDetailResponse.deploys[0].machine_id);
     }
   }

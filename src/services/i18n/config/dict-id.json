@@ -364,7 +364,11 @@
         "subtitle": "Artefak terkini dan opsi rollback",
         "emptyMessage": "Belum ada artefak tersedia.",
         "unsupportedMessage": "Artefak tidak didukung untuk jenis aplikasi ini.",
-        "distributedStorageWarning": "Aplikasi ini tidak menggunakan distributed storage untuk menyimpan hasil build. Build dan deployment dijalankan secara terpisah di setiap mesin tempat aplikasi berjalan."
+        "distributedStorageWarning": "Aplikasi ini tidak menggunakan distributed storage untuk menyimpan hasil build. Build dan deployment dijalankan secara terpisah di setiap mesin tempat aplikasi berjalan.",
+        "logs": "Log",
+        "artifactLogsTitle": "Log Artefak",
+        "artifactLogsDescription": "Commit {commit}",
+        "artifactLogOutput": "Output log artefak"
       },
       "usageStats": {
         "title": "Statistik Penggunaan",
@@ -375,7 +379,13 @@
       },
       "appLogs": {
         "title": "Log Aplikasi",
-        "subtitle": "Log aplikasi dan error terkini"
+        "subtitle": "Log aplikasi dan error terkini",
+        "placeholder": "Log runtime",
+        "loadLog": "Muat log runtime",
+        "refreshLog": "Muat ulang log runtime",
+        "selectLog": "Pilih log aplikasi",
+        "downloadLog": "Download log terpilih",
+        "runtimeLogOutput": "Output log runtime"
       },
       "dangerZone": {
         "title": "Danger Zone",
@@ -593,10 +603,26 @@
             "configured": "Diatur",
             "notConfigured": "Belum diatur",
             "dependencies": "Dependency",
+            "bootstrapTitle": "Jalankan playbook bootstrap",
+            "bootstrapDesc": "Jalankan seluruh rangkaian playbook bootstrap sebelum update diterapkan. Gunakan saat modul terpilih atau dependency server perlu diterapkan ulang.",
+            "bootstrapAriaLabel": "Jalankan playbook bootstrap saat update aplikasi",
             "deployNote": "dPanel akan membuat playbook khusus aplikasi, memastikan playbook dependency tersedia, lalu memasukkan deployment ke antrean.",
-            "deploy": "Deploy"
+            "updateNote": "dPanel akan mengupdate definisi aplikasi dan mengirim input playbook terpilih untuk aplikasi ini.",
+            "deploy": "Deploy",
+            "update": "Update aplikasi"
           }
         }
+      }
+    },
+    "applicationsUpdate": {
+      "headerTitle": "Update Aplikasi",
+      "headerDesc": "Update playbook aplikasi, server, modul, build, runtime, dan pengaturan environment.",
+      "detailBreadcrumb": "Detail aplikasi",
+      "repositoryOnly": "Hanya aplikasi berbasis repositori yang dapat memakai flow update ini.",
+      "iacConfigError": "Gagal memuat konfigurasi IaC aplikasi: {message}",
+      "toaster": {
+        "success": "{name} berhasil diupdate.",
+        "errorTitle": "Gagal mengupdate aplikasi"
       }
     },
     "servers": {
@@ -1107,9 +1133,27 @@
         "onError": "Gagal untuk memuat daftar konfigurasi, mohon <a>coba lagi.</a>"
       },
       "fieldWorker": {
-        "title": "Worker",
-        "placeholder": "Pilih worker",
-        "onError": "Gagal untuk memuat daftar worker, mohon <a>coba lagi.</a>"
+        "title": "Target deployment",
+        "placeholder": "Pilih target deployment",
+        "onError": "Gagal memuat target deployment, mohon <a>coba lagi.</a>"
+      },
+      "deploymentTarget": {
+        "title": "Target deployment",
+        "description": "Pilih server yang akan membuat artefak ini. Mesin deployment pertama dipilih secara default.",
+        "searchLabel": "Cari target deployment",
+        "searchPlaceholder": "Cari server...",
+        "empty": "Server tidak ditemukan.",
+        "onError": "Gagal memuat target deployment, mohon <a>coba lagi.</a>",
+        "pagination": "Halaman {page} dari {totalPage}",
+        "sshPort": "SSH {port}",
+        "unknown": "unknown"
+      },
+      "toaster": {
+        "missingWorker": "Pilih target deployment sebelum membuat artefak.",
+        "branchDetailsFailed": "Gagal memuat detail branch {branch}, silakan coba lagi nanti.",
+        "createFailedTitle": "Gagal membuat artefak",
+        "deployCreateWarning": "Artefak berhasil dibuat, tetapi pembuatan deployment gagal.",
+        "success": "Artefak berhasil dibuat."
       }
     },
     "loadBalancerDetails": {

@@ -1,52 +1,51 @@
-import { useState } from 'react';
-
+import { useDevetekTranslations } from '@/services/i18n';
 import { ModalLayoutGeneral } from '@/services/modal/ui/presentation';
 
-import { ApiServer } from '@/shared/api';
+import { ApiApplication } from '@/shared/api';
 
 import type { ArtifactLogsModalProps } from '../rules/types';
 
 import LogViewer from './LogViewer';
 
-const ARTIFACT_LOG_LINE_COUNT = 80;
+const ARTIFACT_LOG_LINE_COUNT = 1000;
 
 const Content = (props: ArtifactLogsModalProps) => {
-  const { serverId, appName, userName, artifactId } = props;
+  const { applicationId, artifactId, serverId } = props;
+  const t = useDevetekTranslations('page.applicationDetail.artifactsHistory');
 
-  const [buffer, setBuffer] = useState<string>('');
-
-  const [responseLog] = ApiServer.Origin.$Id.Log.useGet({
-    serverId,
-    file: `/home/${userName}/logs/${appName}/build-artifact-${artifactId}.log`,
+  const [responseLog] = ApiApplication.Logs.$Id.useGet({
+    applicationId,
+    artifactId,
+    machineId: serverId,
     line: ARTIFACT_LOG_LINE_COUNT,
     options: {
       refreshIntervalMs: 2000,
     },
   });
 
-  if (responseLog.$status === 'success') {
-    const newBuffer = responseLog.join('\n');
+  const buffer =
+    responseLog.$status === 'success'
+      ? responseLog.join('\n')
+      : responseLog.$status === 'loading' && responseLog.prevData
+        ? responseLog.prevData.join('\n')
+        : '';
 
-    if (newBuffer !== buffer) {
-      setBuffer(newBuffer);
-    }
-  }
-
-  return <LogViewer log={buffer} />;
+  return <LogViewer ariaLabel={t('artifactLogOutput')} log={buffer} />;
 };
 
 export default function ArtifactLogsModal(props: ArtifactLogsModalProps) {
   const { commitHead } = props;
+  const t = useDevetekTranslations('page.applicationDetail.artifactsHistory');
 
   return (
     <ModalLayoutGeneral maxWidth="1280px">
       <ModalLayoutGeneral.Title
         canClickClose
-        title="Artifact Logs"
-        description={`Commit ${commitHead}`}
+        title={t('artifactLogsTitle')}
+        description={t('artifactLogsDescription', { commit: commitHead })}
       />
 
-      <ModalLayoutGeneral.Content>
+      <ModalLayoutGeneral.Content className="min-h-0 overflow-hidden">
         <Content {...props} />
       </ModalLayoutGeneral.Content>
     </ModalLayoutGeneral>

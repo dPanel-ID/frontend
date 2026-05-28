@@ -10,6 +10,7 @@ function isLanguageDependency(config?: DependencyConfig) {
 export default function useProgressCta() {
   const [
     progress,
+    flowMode,
     setProgress,
     appSourceMode,
     appSourceBundleIdent,
@@ -26,6 +27,7 @@ export default function useProgressCta() {
     appRunCommand,
   ] = useFormStore((s) => [
     s.progress,
+    s.flowMode,
     s.setProgress,
     s.appSourceMode,
     s.appSourceBundleIdent,
@@ -42,7 +44,9 @@ export default function useProgressCta() {
     s.appRunCommand,
   ]);
 
-  const isPreviousHidden = progress === '1-source';
+  const isPreviousHidden =
+    progress === '1-source' ||
+    (flowMode === 'update' && progress === '2-server-dependencies');
   const selectedDependencyBinaryIds = selectedDependencyIds
     .filter((id) => isLanguageDependency(dependencyConfigs[id]))
     .map((id) => {
@@ -96,6 +100,7 @@ export default function useProgressCta() {
   const goToPrevious = useHandler(() => {
     switch (progress) {
       case '2-server-dependencies':
+        if (flowMode === 'update') return false;
         setProgress('1-source');
         return true;
 
@@ -119,6 +124,7 @@ export default function useProgressCta() {
   const goToNext = useHandler(() => {
     switch (progress) {
       case '1-source':
+        if (flowMode === 'update') return false;
         setProgress('2-server-dependencies');
         return true;
 

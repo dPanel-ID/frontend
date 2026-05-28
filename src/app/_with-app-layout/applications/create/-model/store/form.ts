@@ -2,7 +2,11 @@ import { createStore } from 'zustand';
 
 import buildZustandStore from '@/shared/libs/react-factories/buildZustandStore';
 
-import type { FormActions as Actions, FormStore as Store } from './form.types';
+import type {
+  FormActions as Actions,
+  FormInitialState,
+  FormStore as Store,
+} from './form.types';
 
 const requiredBinaryIdForDependency = (
   dependencyId: string,
@@ -11,8 +15,16 @@ const requiredBinaryIdForDependency = (
 
 export const [FormStoreProvider, useFormStore] = buildZustandStore(
   'ApplicationCreateForm',
-  () => {
+  (initialState: FormInitialState = {}) => {
     return createStore<Store & Actions>()((set, get) => ({
+      flowMode: 'create',
+      updateApplicationId: null,
+      updateApplicationConfig: null,
+      updateRawAppDefinition: null,
+      updateOriginalServerID: null,
+      updateOriginalPort: '',
+      updateTriggerBootstrap: false,
+      updateWorkdir: '',
       progress: '1-source',
       appDomain: '',
       appName: '',
@@ -35,7 +47,11 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
       dependencyConfigs: {},
       selectedRequiredBinaryIds: [],
       requiredBinaryConfigs: {},
+      ...initialState,
 
+      setFlowMode: (flowMode) => {
+        set({ flowMode });
+      },
       setGitRepoConfig: (gitRepoConfig) => {
         set({ gitRepoConfig });
       },
@@ -67,6 +83,9 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
       },
       setRuntimeEnvText: (runtimeEnvText) => {
         set({ runtimeEnvText });
+      },
+      setUpdateTriggerBootstrap: (updateTriggerBootstrap) => {
+        set({ updateTriggerBootstrap });
       },
       toggleDependency: (dependencyId) => {
         const {
@@ -100,6 +119,77 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
 
         set({
           selectedDependencyIds: [...selectedDependencyIds, dependencyId],
+        });
+      },
+      replaceDependencySelection: (
+        fromDependencyId,
+        toDependencyId,
+        config,
+      ) => {
+        set((state) => {
+          const fromConfig = state.dependencyConfigs[fromDependencyId];
+          const fromRequiredBinaryId = requiredBinaryIdForDependency(
+            fromDependencyId,
+            fromConfig?.selectionId,
+          );
+          const toRequiredBinaryId = requiredBinaryIdForDependency(
+            toDependencyId,
+            config.selectionId,
+          );
+          const fromRequiredBinary =
+            state.requiredBinaryConfigs[fromRequiredBinaryId];
+          const shouldCarryRequiredBinary =
+            Boolean(fromRequiredBinary) ||
+            state.selectedRequiredBinaryIds.includes(fromRequiredBinaryId) ||
+            state.selectedRequiredBinaryIds.includes(toRequiredBinaryId);
+          const nextDependencyConfigs = {
+            ...state.dependencyConfigs,
+            [toDependencyId]: config,
+          };
+          const nextRequiredBinaryConfigs = {
+            ...state.requiredBinaryConfigs,
+          };
+
+          delete nextDependencyConfigs[fromDependencyId];
+          delete nextRequiredBinaryConfigs[fromRequiredBinaryId];
+
+          if (shouldCarryRequiredBinary) {
+            nextRequiredBinaryConfigs[toRequiredBinaryId] = {
+              ...fromRequiredBinary,
+              selectionId: toRequiredBinaryId,
+              id: config.id,
+              moduleId: config.moduleId,
+              name: config.name,
+              title: config.title,
+              version: config.version,
+              dependencySelectionId: config.selectionId || toDependencyId,
+              logoUrl: config.logoUrl,
+              source: config.source,
+              installationId: config.installationId,
+              installationKey: config.installationKey,
+              status: config.status,
+            };
+          }
+
+          return {
+            dependencyConfigs: nextDependencyConfigs,
+            selectedDependencyIds: [
+              ...state.selectedDependencyIds.filter(
+                (id) => id !== fromDependencyId && id !== toDependencyId,
+              ),
+              toDependencyId,
+            ],
+            requiredBinaryConfigs: nextRequiredBinaryConfigs,
+            selectedRequiredBinaryIds: shouldCarryRequiredBinary
+              ? [
+                  ...state.selectedRequiredBinaryIds.filter(
+                    (id) =>
+                      id !== fromRequiredBinaryId && id !== toRequiredBinaryId,
+                  ),
+                  toRequiredBinaryId,
+                ]
+              : state.selectedRequiredBinaryIds,
+          };
         });
       },
       setDependencyConfig: (dependencyId, config) => {
@@ -210,8 +300,13 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
         set({ appSourceGithubRepo: null });
       },
       setHostedServerID: (hostedServerID) => {
-        const { hostedServerID: currentHostedServerID } = get();
+        const { flowMode, hostedServerID: currentHostedServerID } = get();
         if (currentHostedServerID === hostedServerID) return;
+
+        if (flowMode === 'update') {
+          set({ hostedServerID });
+          return;
+        }
 
         set({
           hostedServerID,

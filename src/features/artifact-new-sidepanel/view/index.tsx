@@ -34,18 +34,19 @@ export default function ArtifactNewSidepanel(props: Props) {
         <WorkersModelProvider>
           <Controller />
 
-          <Layout>
+          <Layout classNameFrame="w-[calc(100svw_-_16px)] max-w-[560px]">
             <Layout.Title
+              className="border-b bg-background"
               title={t('sidepanel.artifactNew.title')}
               subtitle={t('sidepanel.artifactNew.subtitle')}
               hasCloseButton
             />
 
-            <Layout.Content>
+            <Layout.Content className="bg-background px-4 py-4">
               <Forms />
             </Layout.Content>
 
-            <Layout.Cta className="gap-y-2">
+            <Layout.Cta className="gap-y-2 border-t bg-background">
               <DisclaimersLabel.ImmediatelyCommitOnSave />
 
               <Actions />

@@ -23,14 +23,25 @@ export interface ApplicationCreateServerOption {
   status?: string;
 }
 
+interface ServersStoreProviderProps {
+  initialServers?: ApplicationCreateServerOption[];
+}
+
 export const [ServersStoreProvider, useServersStore] = buildContext(
   'ApplicationsCreateServersStore',
-  () => {
+  (props: ServersStoreProviderProps = {}) => {
     const [page, setPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const [knownServersById, setKnownServersById] = useState<
       Record<number, ApplicationCreateServerOption>
-    >({});
+    >(() => {
+      return (props.initialServers ?? []).reduce<
+        Record<number, ApplicationCreateServerOption>
+      >((acc, server) => {
+        acc[server.id] = server;
+        return acc;
+      }, {});
+    });
 
     const [responseServers, refresh] = ApiServer.Find.useGet({
       pageSize: PAGE_SIZE,

@@ -29,6 +29,7 @@ import { Route as WithAppLayoutApplicationsIdIndexRouteImport } from './app/_wit
 import { Route as WithAppLayoutServersCreateVmManualIndexRouteImport } from './app/_with-app-layout/servers/create/vm-manual/index'
 import { Route as WithAppLayoutServersCreateVmInstantIndexRouteImport } from './app/_with-app-layout/servers/create/vm-instant/index'
 import { Route as WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/index'
+import { Route as WithAppLayoutApplicationsIdUpdateIndexRouteImport } from './app/_with-app-layout/applications/$id/update/index'
 import { Route as WithAppLayoutBackendSecretManagersSshKeyIdIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/$id/index'
 
 const SplatRoute = SplatRouteImport.update({
@@ -146,6 +147,12 @@ const WithAppLayoutBackendSecretManagersSshKeyIndexRoute =
     path: '/backend/secret-managers/ssh-key/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
+const WithAppLayoutApplicationsIdUpdateIndexRoute =
+  WithAppLayoutApplicationsIdUpdateIndexRouteImport.update({
+    id: '/applications/$id/update/',
+    path: '/applications/$id/update/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
 const WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute =
   WithAppLayoutBackendSecretManagersSshKeyIdIndexRouteImport.update({
     id: '/backend/secret-managers/ssh-key/$id/',
@@ -170,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/servers/$id': typeof WithAppLayoutServersIdIndexRoute
   '/servers/create': typeof WithAppLayoutServersCreateIndexRoute
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
+  '/applications/$id/update': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/backend/secret-managers/ssh-key': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   '/servers/create/vm-instant': typeof WithAppLayoutServersCreateVmInstantIndexRoute
   '/servers/create/vm-manual': typeof WithAppLayoutServersCreateVmManualIndexRoute
@@ -192,6 +200,7 @@ export interface FileRoutesByTo {
   '/servers/$id': typeof WithAppLayoutServersIdIndexRoute
   '/servers/create': typeof WithAppLayoutServersCreateIndexRoute
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
+  '/applications/$id/update': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/backend/secret-managers/ssh-key': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   '/servers/create/vm-instant': typeof WithAppLayoutServersCreateVmInstantIndexRoute
   '/servers/create/vm-manual': typeof WithAppLayoutServersCreateVmManualIndexRoute
@@ -216,6 +225,7 @@ export interface FileRoutesById {
   '/_with-app-layout/servers/$id/': typeof WithAppLayoutServersIdIndexRoute
   '/_with-app-layout/servers/create/': typeof WithAppLayoutServersCreateIndexRoute
   '/_with-app-layout/teams/$id/': typeof WithAppLayoutTeamsIdIndexRoute
+  '/_with-app-layout/applications/$id/update/': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/_with-app-layout/backend/secret-managers/ssh-key/': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   '/_with-app-layout/servers/create/vm-instant/': typeof WithAppLayoutServersCreateVmInstantIndexRoute
   '/_with-app-layout/servers/create/vm-manual/': typeof WithAppLayoutServersCreateVmManualIndexRoute
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/servers/$id'
     | '/servers/create'
     | '/teams/$id'
+    | '/applications/$id/update'
     | '/backend/secret-managers/ssh-key'
     | '/servers/create/vm-instant'
     | '/servers/create/vm-manual'
@@ -262,6 +273,7 @@ export interface FileRouteTypes {
     | '/servers/$id'
     | '/servers/create'
     | '/teams/$id'
+    | '/applications/$id/update'
     | '/backend/secret-managers/ssh-key'
     | '/servers/create/vm-instant'
     | '/servers/create/vm-manual'
@@ -285,6 +297,7 @@ export interface FileRouteTypes {
     | '/_with-app-layout/servers/$id/'
     | '/_with-app-layout/servers/create/'
     | '/_with-app-layout/teams/$id/'
+    | '/_with-app-layout/applications/$id/update/'
     | '/_with-app-layout/backend/secret-managers/ssh-key/'
     | '/_with-app-layout/servers/create/vm-instant/'
     | '/_with-app-layout/servers/create/vm-manual/'
@@ -439,6 +452,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
+    '/_with-app-layout/applications/$id/update/': {
+      id: '/_with-app-layout/applications/$id/update/'
+      path: '/applications/$id/update'
+      fullPath: '/applications/$id/update'
+      preLoaderRoute: typeof WithAppLayoutApplicationsIdUpdateIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
     '/_with-app-layout/backend/secret-managers/ssh-key/$id/': {
       id: '/_with-app-layout/backend/secret-managers/ssh-key/$id/'
       path: '/backend/secret-managers/ssh-key/$id'
@@ -464,6 +484,7 @@ interface WithAppLayoutRouteRouteChildren {
   WithAppLayoutServersIdIndexRoute: typeof WithAppLayoutServersIdIndexRoute
   WithAppLayoutServersCreateIndexRoute: typeof WithAppLayoutServersCreateIndexRoute
   WithAppLayoutTeamsIdIndexRoute: typeof WithAppLayoutTeamsIdIndexRoute
+  WithAppLayoutApplicationsIdUpdateIndexRoute: typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   WithAppLayoutBackendSecretManagersSshKeyIndexRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   WithAppLayoutServersCreateVmInstantIndexRoute: typeof WithAppLayoutServersCreateVmInstantIndexRoute
   WithAppLayoutServersCreateVmManualIndexRoute: typeof WithAppLayoutServersCreateVmManualIndexRoute
@@ -489,6 +510,8 @@ const WithAppLayoutRouteRouteChildren: WithAppLayoutRouteRouteChildren = {
   WithAppLayoutServersIdIndexRoute: WithAppLayoutServersIdIndexRoute,
   WithAppLayoutServersCreateIndexRoute: WithAppLayoutServersCreateIndexRoute,
   WithAppLayoutTeamsIdIndexRoute: WithAppLayoutTeamsIdIndexRoute,
+  WithAppLayoutApplicationsIdUpdateIndexRoute:
+    WithAppLayoutApplicationsIdUpdateIndexRoute,
   WithAppLayoutBackendSecretManagersSshKeyIndexRoute:
     WithAppLayoutBackendSecretManagersSshKeyIndexRoute,
   WithAppLayoutServersCreateVmInstantIndexRoute:

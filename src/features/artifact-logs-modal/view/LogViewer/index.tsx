@@ -1,14 +1,23 @@
 interface LogViewerProps {
+  ariaLabel: string;
   log: string;
 }
 
+const LOG_OUTPUT_CLASS_NAME =
+  'min-w-max whitespace-pre font-mono text-sm leading-relaxed text-white';
+
 export default function LogViewer(props: LogViewerProps) {
-  const { log } = props;
+  const { ariaLabel, log } = props;
 
   return (
-    <div className="rounded-lg bg-gray-900 overflow-hidden">
-      <div className="p-2 h-[600px] overflow-y-auto">
-        <pre className="text-sm text-white">{log}</pre>
+    <div className="overflow-hidden rounded-lg bg-gray-900">
+      <div
+        aria-label={ariaLabel}
+        className="h-[calc(100svh-14rem)] max-h-[48rem] min-h-[18rem] overflow-auto overscroll-contain p-3"
+        role="region"
+        tabIndex={0}
+      >
+        <pre className={LOG_OUTPUT_CLASS_NAME}>{log}</pre>
       </div>
     </div>
   );

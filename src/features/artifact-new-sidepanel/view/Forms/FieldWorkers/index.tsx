@@ -1,19 +1,30 @@
+import type { ChangeEvent } from 'react';
 import { useEffect, useState } from 'react';
 
+import {
+  CheckCircle2Icon,
+  CloudIcon,
+  Globe2Icon,
+  SearchIcon,
+  ServerIcon,
+  TerminalIcon,
+  UserRoundIcon,
+} from 'lucide-react';
 import { useController } from 'react-hook-form';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { useDebounceValue } from '@/shared/libs/react-hooks/useDebounce';
-
 import { useEmit } from '@/features/artifact-new-sidepanel/model/events';
 import { useArtifactNewGeneralModel } from '@/features/artifact-new-sidepanel/model/general';
+import type { DeploymentTargetsData } from '@/features/artifact-new-sidepanel/model/workers';
 import { useWorkersModel } from '@/features/artifact-new-sidepanel/model/workers';
 
+import type { Response } from '@/shared/libs/api-client/rules/types';
 import {
   couple,
   guardedSelects,
 } from '@/shared/libs/react-factories/guardedSelect';
+import { useDebounceValue } from '@/shared/libs/react-hooks/useDebounce';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
@@ -25,22 +36,25 @@ import {
 } from '../../_presentation/FieldStates';
 import FieldWrapper from '../../_presentation/FieldWrapper';
 
-const [guard, useWorkers] =
-  guardedSelects({
-    fallbackLoading: FieldLoading,
-    fallbackError: createFieldError({
-      i18nKey: 'sidepanel.artifactNew.fieldWorker.onError',
-      useTryAgain: () => {
-        const emit = useEmit();
-        return () => emit('#artifact-new-sidepanel/workers-refresh', null);
-      },
-    }),
-  })(
-    couple(useWorkersModel, (s) => s.workers),
-  );
+const [guard, useWorkers] = guardedSelects({
+  fallbackLoading: FieldLoading,
+  fallbackError: createFieldError({
+    i18nKey: 'sidepanel.artifactNew.deploymentTarget.onError',
+    useTryAgain: () => {
+      const emit = useEmit();
+      return () => emit('#artifact-new-sidepanel/workers-refresh', null);
+    },
+  }),
+})(
+  couple(
+    useWorkersModel,
+    (s: any): Response<DeploymentTargetsData> => s.workers,
+  ),
+);
 
 const WorkersList = guard(() => {
   const { form } = useArtifactNewGeneralModel();
+  const t = useDevetekTranslations('sidepanel.artifactNew.deploymentTarget');
 
   const servers = useWorkers((s) => s.servers);
   const pagination = useWorkers((s) => s.pagination);
@@ -59,42 +73,140 @@ const WorkersList = guard(() => {
 
   useEffect(() => {
     setSearchQuery(debouncedSearch);
-  }, [debouncedSearch]);
+  }, [debouncedSearch, setSearchQuery]);
 
-  const totalPage = Math.max(1, pagination?.total_page ?? 1);
+  const totalPage = Math.max(1, pagination.total_page);
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <Input
-        placeholder="Search server..."
-        value={search}
-        onChange={handleSearch}
-        className="h-8 text-sm"
-      />
+    <div className="grid gap-3">
+      <label className="relative">
+        <span className="sr-only">{t('searchLabel')}</span>
+        <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          placeholder={t('searchPlaceholder')}
+          value={search}
+          onChange={handleSearch}
+          className="h-10 pl-9 text-sm"
+        />
+      </label>
 
-      <div className="flex flex-col gap-1">
+      <div
+        className="grid max-h-80 gap-2 overflow-y-auto rounded-lg border bg-background p-2"
+        role="radiogroup"
+        aria-label={t('title')}
+      >
         {servers.length === 0 ? (
-          <p className="text-xs text-muted-foreground italic py-2 text-center">No servers found</p>
+          <p className="rounded-md border border-dashed bg-card px-3 py-5 text-center text-sm text-muted-foreground">
+            {t('empty')}
+          </p>
         ) : (
           servers.map((server) => {
             const isSelected = field.value === server.id;
+            const status = server.status || t('unknown');
+            const statusKey = String(server.status || '').toLowerCase();
+            const metadata = [
+              {
+                icon: Globe2Icon,
+                label: server.address,
+              },
+              {
+                icon: TerminalIcon,
+                label: server.sshPort
+                  ? t('sshPort', { port: server.sshPort })
+                  : undefined,
+              },
+              {
+                icon: UserRoundIcon,
+                label: server.defaultUser,
+              },
+              {
+                icon: CloudIcon,
+                label: [server.provider, server.region]
+                  .filter(Boolean)
+                  .join(' / '),
+              },
+            ].filter((item) => item.label);
+
             return (
               <button
                 key={server.id}
                 type="button"
+                role="radio"
+                aria-checked={isSelected}
                 onClick={() => field.onChange(server.id)}
                 className={cn(
-                  'w-full text-left px-3 py-2 rounded-md border text-sm transition-colors',
-                  isSelected
-                    ? 'border-primary bg-primary/5 font-medium'
-                    : 'border-border hover:bg-muted/50',
+                  'group rounded-lg border bg-card p-3 text-left transition-all',
+                  'hover:border-primary/50 hover:bg-primary/5',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35',
+                  isSelected && 'border-primary bg-primary/10',
                 )}
               >
-                {server.hostname}
+                <div className="flex min-w-0 items-start gap-3">
+                  <span
+                    className={cn(
+                      'flex size-10 shrink-0 items-center justify-center rounded-lg border bg-background text-muted-foreground',
+                      isSelected && 'border-primary/50 text-primary',
+                    )}
+                  >
+                    <ServerIcon className="size-5" />
+                  </span>
+
+                  <span className="grid min-w-0 flex-1 gap-2">
+                    <span className="flex min-w-0 flex-wrap items-center gap-2">
+                      <span className="truncate text-sm font-semibold text-primary">
+                        {server.hostname}
+                      </span>
+                      <span
+                        className={cn(
+                          'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold',
+                          statusKey === 'ready'
+                            ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                            : statusKey === 'failed'
+                              ? 'border-destructive/30 bg-destructive/10 text-destructive'
+                              : 'bg-background text-muted-foreground',
+                        )}
+                      >
+                        <CheckCircle2Icon className="size-3" />
+                        {status}
+                      </span>
+                    </span>
+
+                    <span className="flex min-w-0 flex-wrap gap-1.5">
+                      {metadata.map((item) => {
+                        const Icon = item.icon;
+
+                        return (
+                          <span
+                            key={`${server.id}-${item.label}`}
+                            className="inline-flex min-w-0 items-center gap-1.5 rounded-full border bg-background px-2 py-0.5 text-xs font-medium text-muted-foreground"
+                          >
+                            <Icon className="size-3.5 shrink-0" />
+                            <span className="truncate">{item.label}</span>
+                          </span>
+                        );
+                      })}
+                      {server.system ? (
+                        <span className="rounded-full border bg-background px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                          {server.system}
+                        </span>
+                      ) : null}
+                    </span>
+                  </span>
+
+                  <span
+                    className={cn(
+                      'mt-1 flex size-6 shrink-0 items-center justify-center rounded-full border bg-background text-transparent',
+                      isSelected &&
+                        'border-primary bg-primary text-primary-foreground',
+                    )}
+                  >
+                    <CheckCircle2Icon className="size-4" />
+                  </span>
+                </div>
               </button>
             );
           })
@@ -102,7 +214,10 @@ const WorkersList = guard(() => {
       </div>
 
       {totalPage > 1 && (
-        <div className="flex justify-end scale-75 origin-right">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-xs text-muted-foreground">
+            {t('pagination', { page, totalPage })}
+          </span>
           <Pagination
             currentPage={page}
             maxPage={totalPage}
@@ -118,10 +233,13 @@ export default function FieldWorkers() {
   const { form } = useArtifactNewGeneralModel();
 
   const tAll = useDevetekTranslations();
-  const t = useDevetekTranslations('sidepanel.artifactNew.fieldWorker');
+  const t = useDevetekTranslations('sidepanel.artifactNew.deploymentTarget');
 
   return (
     <FieldWrapper fieldTitle={t('title')}>
+      <p className="-mt-1 text-xs leading-5 text-muted-foreground">
+        {t('description')}
+      </p>
       <WorkersList />
 
       <ErrorInline t={tAll} message={form.formState.errors.workerId?.message} />

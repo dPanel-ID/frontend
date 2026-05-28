@@ -373,7 +373,11 @@
         "subtitle": "Recent artifacts and rollback options",
         "emptyMessage": "No artifacts available.",
         "unsupportedMessage": "Artifacts are not supported for this app.",
-        "distributedStorageWarning": "This application does not use distributed storage for build artifacts. Builds and deployments are executed individually on each machine where the application is running."
+        "distributedStorageWarning": "This application does not use distributed storage for build artifacts. Builds and deployments are executed individually on each machine where the application is running.",
+        "logs": "Logs",
+        "artifactLogsTitle": "Artifact Logs",
+        "artifactLogsDescription": "Commit {commit}",
+        "artifactLogOutput": "Artifact log output"
       },
       "usageStats": {
         "title": "Usage Stats",
@@ -384,7 +388,13 @@
       },
       "appLogs": {
         "title": "Application Logs",
-        "subtitle": "Real-time application logs and errors"
+        "subtitle": "Real-time application logs and errors",
+        "placeholder": "Runtime log",
+        "loadLog": "Load runtime logs",
+        "refreshLog": "Refresh runtime logs",
+        "selectLog": "Select application log",
+        "downloadLog": "Download selected log",
+        "runtimeLogOutput": "Runtime log output"
       },
       "dangerZone": {
         "title": "Danger Zone",
@@ -602,10 +612,26 @@
             "configured": "Configured",
             "notConfigured": "Not configured",
             "dependencies": "Dependencies",
+            "bootstrapTitle": "Run bootstrap playbooks",
+            "bootstrapDesc": "Run the full bootstrap playbook set before applying this update. Use when selected modules or server dependencies must be re-applied.",
+            "bootstrapAriaLabel": "Run bootstrap playbooks during application update",
             "deployNote": "dPanel will create an application-specific playbook, ensure dependency playbooks exist, then queue the deployment.",
-            "deploy": "Deploy"
+            "updateNote": "dPanel will update the application definition and submit the selected playbook inputs for this application.",
+            "deploy": "Deploy",
+            "update": "Update application"
           }
         }
+      }
+    },
+    "applicationsUpdate": {
+      "headerTitle": "Update Application",
+      "headerDesc": "Update the application playbook, server, modules, build, runtime, and environment settings.",
+      "detailBreadcrumb": "Application detail",
+      "repositoryOnly": "Only repository-based applications can use this update flow.",
+      "iacConfigError": "Failed to load application IaC config: {message}",
+      "toaster": {
+        "success": "{name} updated.",
+        "errorTitle": "Failed to update application"
       }
     },
     "servers": {
@@ -1116,9 +1142,27 @@
         "onError": "Failed to get configuration files, please <a>try again.</a>"
       },
       "fieldWorker": {
-        "title": "Worker",
-        "placeholder": "Select a worker",
-        "onError": "Failed to get workers, please <a>try again.</a>"
+        "title": "Deployment target",
+        "placeholder": "Select a deployment target",
+        "onError": "Failed to get deployment targets, please <a>try again.</a>"
+      },
+      "deploymentTarget": {
+        "title": "Deployment target",
+        "description": "Select the server that will build this artifact. The first deployment machine is selected by default.",
+        "searchLabel": "Search deployment targets",
+        "searchPlaceholder": "Search server...",
+        "empty": "No servers found.",
+        "onError": "Failed to get deployment targets, please <a>try again.</a>",
+        "pagination": "Page {page} of {totalPage}",
+        "sshPort": "SSH {port}",
+        "unknown": "unknown"
+      },
+      "toaster": {
+        "missingWorker": "Select a deployment target before creating an artifact.",
+        "branchDetailsFailed": "Failed to load branch details for {branch}, please try again later.",
+        "createFailedTitle": "Failed to create artifact",
+        "deployCreateWarning": "Artifact created successfully, however deploy creation failed.",
+        "success": "Successfully created artifact."
       }
     },
     "loadBalancerDetails": {

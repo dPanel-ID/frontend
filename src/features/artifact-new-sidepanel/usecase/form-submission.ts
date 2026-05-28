@@ -1,3 +1,4 @@
+import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import { ApiArtifact, ApiDeploy, ApiGitBranch } from '@/shared/api';
@@ -8,89 +9,108 @@ import { useArtifactNewGeneralModel } from '../model/general';
 
 export default function useFormSubmissionUsecase() {
   const { form, props } = useArtifactNewGeneralModel();
+  const t = useDevetekTranslations('sidepanel.artifactNew.toaster');
 
   const [openToaster] = useToaster();
   const sidepanelEmit = useEmit();
 
-  const handleSubmit = form.handleSubmit(async (values) => {
-    const { fromBranch, workerId } = values;
+  const handleSubmit = form.handleSubmit(
+    async (values) => {
+      const { fromBranch, workerId } = values;
 
-    const currentBranchResponse =
-      await ApiGitBranch.Detail.$RepoOrg.$RepoName.fetchGet({
-        branch: fromBranch,
-        repoName: props.repoName,
-        repoOrganization: props.repoOrganization,
-      });
+      if (!workerId) {
+        openToaster({
+          message: t('missingWorker'),
+          variant: 'error',
+        });
+        return;
+      }
 
-    if (
-      currentBranchResponse.$status === 'failed' ||
-      !currentBranchResponse.commit?.sha ||
-      !currentBranchResponse.commit.message
-    ) {
-      openToaster({
-        message: `Failed to load branch details for ${fromBranch}, please try again later.`,
-        variant: 'error',
-      });
-      return;
-    }
+      const currentBranchResponse =
+        await ApiGitBranch.Detail.$RepoOrg.$RepoName.fetchGet({
+          branch: fromBranch,
+          repoName: props.repoName,
+          repoOrganization: props.repoOrganization,
+        });
 
-    const responseArtifactCreation = await ApiArtifact.Create.doPost({
-      appDefinition: undefined,
-      applicationId: props.applicationId,
-      workerId,
-      appConfigFile: 'default',
-      fromBranch,
-      commit: {
-        message: currentBranchResponse.commit.message,
-        sha: currentBranchResponse.commit.sha,
-      },
-    });
+      if (
+        currentBranchResponse.$status === 'failed' ||
+        !currentBranchResponse.commit?.sha ||
+        !currentBranchResponse.commit.message
+      ) {
+        openToaster({
+          message: t('branchDetailsFailed', { branch: fromBranch }),
+          variant: 'error',
+        });
+        return;
+      }
 
-    if (responseArtifactCreation.$status === 'failed') {
-      openToaster({
-        variant: 'error',
-        title: `Failed to create artifact!`,
-        message: responseArtifactCreation.error.message,
-      });
-      return;
-    }
-
-    const responseDeployCreation = await iife(() => {
-      if (workerId === props.currentServerId) return Promise.resolve(null);
-
-      // Create deployment with artifact ID, on worker is not the same as selected worker
-      // It expect to create new deployment with status pending
-      // status will "pending" when no_deploy set true
-      return ApiDeploy.Create.doPost({
+      const responseArtifactCreation = await ApiArtifact.Create.doPost({
+        appDefinition: undefined,
         applicationId: props.applicationId,
         workerId,
-        artifactId: responseArtifactCreation.id,
-        isPrimary: true,
-        noDeploy: true,
+        appConfigFile: 'default',
+        fromBranch,
+        commit: {
+          message: currentBranchResponse.commit.message,
+          sha: currentBranchResponse.commit.sha,
+        },
       });
-    });
 
-    if (
-      responseDeployCreation != null &&
-      responseDeployCreation.$status !== 'success'
-    ) {
-      openToaster({
-        variant: 'warning',
-        message: `Artifact created successfully, however deploy failed.`,
+      if (responseArtifactCreation.$status === 'failed') {
+        openToaster({
+          variant: 'error',
+          title: t('createFailedTitle'),
+          message: responseArtifactCreation.error.message,
+        });
+        return;
+      }
+
+      const responseDeployCreation = await iife(() => {
+        if (workerId === props.currentServerId) return Promise.resolve(null);
+
+        // Create deployment with artifact ID, on worker is not the same as selected worker
+        // It expect to create new deployment with status pending
+        // status will "pending" when no_deploy set true
+        return ApiDeploy.Create.doPost({
+          applicationId: props.applicationId,
+          workerId,
+          artifactId: responseArtifactCreation.id,
+          isPrimary: true,
+          noDeploy: true,
+        });
       });
-    } else {
-      openToaster({
-        variant: 'success',
-        message: `Successfully created artifact.`,
+
+      if (
+        responseDeployCreation != null &&
+        responseDeployCreation.$status !== 'success'
+      ) {
+        openToaster({
+          variant: 'warning',
+          message: t('deployCreateWarning'),
+        });
+      } else {
+        openToaster({
+          variant: 'success',
+          message: t('success'),
+        });
+      }
+
+      sidepanelEmit('#artifact-new-sidepanel/sidepanel-close', {
+        bypass: true,
       });
-    }
 
-    sidepanelEmit('#artifact-new-sidepanel/sidepanel-close', {
-      bypass: true,
-    });
-
-    props.onSuccess?.(workerId);
-  });
+      props.onSuccess?.(workerId);
+    },
+    (errors) => {
+      if (errors.workerId) {
+        openToaster({
+          message: t('missingWorker'),
+          variant: 'error',
+        });
+      }
+    },
+  );
 
   useSubscribe('#artifact-new-sidepanel/form-submit', () => handleSubmit());
 }

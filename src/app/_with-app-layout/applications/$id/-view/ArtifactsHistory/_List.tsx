@@ -8,7 +8,7 @@ import { ArtifactCard } from './_presentation';
 import type { ArtifactsHistoryListProps } from './types';
 
 export function ArtifactsHistoryList(props: ArtifactsHistoryListProps) {
-  const { appOwner, list, deploymentList } = props;
+  const { list, deploymentList } = props;
 
   const emit = useEmit();
   const selectedServerId = useAppDataModel((s) => s.selectedServerId);
@@ -19,11 +19,10 @@ export function ArtifactsHistoryList(props: ArtifactsHistoryListProps) {
   return list.map((artifact) => {
     const openLogsForMachine = (machineId: string) => {
       openArtifactLogsModal({
+        applicationId: artifact.pointerIds.application,
         artifactId: artifact.id,
         serverId: machineId,
         commitHead: artifact.commitMetadata.head,
-        appName: artifact.configSnapshot.lifecycle.run.name,
-        userName: appOwner,
       });
     };
 
@@ -40,9 +39,18 @@ export function ArtifactsHistoryList(props: ArtifactsHistoryListProps) {
           }))
         : undefined;
 
+    const artifactMachineId =
+      artifact.pointerIds.machine !== 'unknown'
+        ? artifact.pointerIds.machine
+        : undefined;
+    const fallbackMachineId = selectedServerId || artifactMachineId;
+    const canOpenLogs = Boolean(
+      related[0]?.pointerIds.machine || fallbackMachineId,
+    );
+
     const handleClickLogs = () => {
       if (related.length === 0) {
-        if (selectedServerId) openLogsForMachine(selectedServerId);
+        if (fallbackMachineId) openLogsForMachine(fallbackMachineId);
         return;
       }
       const machine = related[0]?.pointerIds.machine;
@@ -82,6 +90,7 @@ export function ArtifactsHistoryList(props: ArtifactsHistoryListProps) {
         isUsed={isUsed}
         isDeploying={isDeploying}
         onClickLogs={handleClickLogs}
+        logsDisabled={!canOpenLogs}
         logsOptions={logsOptions}
         onClickStatus={handleClickStatus}
         onClickDelete={handleClickDelete}

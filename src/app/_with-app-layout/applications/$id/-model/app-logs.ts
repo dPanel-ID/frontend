@@ -1,61 +1,38 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import type { SchemaCommon } from '@/entities/shared/rules/schema';
 
-import { ApiServer } from '@/shared/api';
+import { ApiApplication } from '@/shared/api';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
 
-import { useAppDataModel } from './app-data';
-import { useArtifactHistoryModel } from './artifact-history';
+const APPLICATION_LOG_LINE_COUNT = 1000;
 
-const APPLICATION_LOG_LINE_COUNT = 80;
+interface AppLogsModelProps {
+  applicationId: SchemaCommon.UnitId;
+}
+
+interface LogSelection {
+  filename: string;
+  serverId: SchemaCommon.UnitId;
+}
 
 export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
   'AppLogsModel',
-)(() => {
-  const appDetail = useAppDataModel((s) => s.appDetail);
-  const [lastDeployment, artifactHistory] = useArtifactHistoryModel((s) => [
-    s.lastDeployment,
-    s.artifactHistory,
-  ]);
+)((props: AppLogsModelProps) => {
+  const { applicationId } = props;
+  const [logSelection, setLogSelection] = useState<LogSelection>();
+  const logMetadata = logSelection
+    ? {
+        serverId: logSelection.serverId,
+      }
+    : undefined;
 
-  const [logFilename, setLogFilename] = useState<string>();
-  const [logMetadata, setLogMetadata] = useState<{
-    serverId: SchemaCommon.UnitId;
-    userName: string;
-    appName: string;
-  }>();
-
-  useEffect(() => {
-    if (
-      appDetail.$status !== 'success' ||
-      artifactHistory.$status !== 'success'
-    )
-      return;
-
-    const serverId = lastDeployment?.pointerIds.machine;
-    const userName = appDetail.ownership.owner;
-    const appName =
-      artifactHistory.list[0]?.configSnapshot.lifecycle.run.name;
-
-    if (!logFilename) {
-      setLogMetadata(undefined);
-      return;
-    }
-
-    if (appName && serverId && userName) {
-      setLogMetadata({ serverId, userName, appName });
-    }
-  }, [logFilename, appDetail, lastDeployment, artifactHistory]);
-
-  const [responseLog, refreshLog] = ApiServer.Detail.$Id.Log.useGet({
-    serverId: logMetadata?.serverId,
-    file: logMetadata
-      ? `/home/${logMetadata.userName}/logs/${logMetadata.appName}/${logFilename}`
-      : undefined,
+  const [responseLog, refreshLog] = ApiApplication.Logs.$Id.useGet({
+    applicationId,
+    machineId: logMetadata?.serverId,
     line: APPLICATION_LOG_LINE_COUNT,
     options: {
-      skip: !logMetadata || !logFilename,
+      skip: !logMetadata || !logSelection.filename,
       refreshIntervalMs: 5000,
     },
   });
@@ -64,7 +41,13 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     log: responseLog,
     refreshLog,
     logMetadata,
-    logFilename,
-    setLogFilename,
+    logFilename: logSelection?.filename,
+    logLines:
+      responseLog.$status === 'success'
+        ? responseLog
+        : responseLog.$status === 'loading' && responseLog.prevData
+          ? responseLog.prevData
+          : [],
+    setLogSelection,
   };
 });

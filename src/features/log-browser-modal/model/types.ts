@@ -6,5 +6,5 @@ export interface LogBrowserModalProps {
   machineID: number;
   deploymentTargets?: ServerMinimal[];
 
-  onClickLogFile?: (logFilename: string) => void;
+  onClickLogFile?: (logFilename: string, machineID: number) => void;
 }
