@@ -16,9 +16,11 @@ import {
   ServerCogIcon,
   ShieldCheckIcon,
   TerminalIcon,
+  Trash2Icon,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
+import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import {
@@ -46,6 +48,7 @@ import {
 
 import { useEmit, useSubscribe } from '../../-model/events';
 import { useServerDataModel } from '../../-model/server-data';
+import useModuleInstallationDelete from '../../-usecase/module-installation-delete';
 import AsideStatistics from '../AsideStatistics';
 
 const DATABASE_MODULE_IDS = new Set([
@@ -80,6 +83,7 @@ export default function MainOverview() {
   const [refreshModuleInventory] = useServerDataModel((s) => [
     s.refreshModuleInventory,
   ]);
+  const [refreshModules] = useServerDataModel((s) => [s.refreshModules]);
 
   const shouldSkip = detail.$status !== 'success';
 
@@ -377,7 +381,12 @@ export default function MainOverview() {
       </Card>
 
       <InstalledModuleDialog
+        serverId={serverId}
         selected={selectedInstallation}
+        onDeleted={() => {
+          refreshModules();
+          setSelectedInstallation(null);
+        }}
         onOpenChange={(open) => {
           if (!open) setSelectedInstallation(null);
         }}
@@ -809,10 +818,33 @@ function moduleInstanceLabel(module: DTOs.ModuleInstallationV1) {
 }
 
 function InstalledModuleDialog(props: {
+  serverId: string;
   selected: SelectedInstallation | null;
+  onDeleted: () => void;
   onOpenChange: (open: boolean) => void;
 }) {
-  const { selected, onOpenChange } = props;
+  const { onDeleted, onOpenChange, selected, serverId } = props;
+  const t = useDevetekTranslations('page.serverDetail.sectionModules');
+  const { deleteInstallation, deletingInstallationId } =
+    useModuleInstallationDelete();
+  const isDeleting =
+    deletingInstallationId != null &&
+    deletingInstallationId === selected?.installation.id;
+  const installationLabel = selected
+    ? moduleInstanceLabel(selected.installation)
+    : '';
+
+  const handleClickUninstall = () => {
+    if (!selected) return;
+
+    deleteInstallation({
+      installationId: selected.installation.id,
+      moduleName: selected.group.name,
+      onSuccess: onDeleted,
+      serverId,
+      versionLabel: installationLabel,
+    });
+  };
 
   return (
     <Dialog open={selected != null} onOpenChange={onOpenChange}>
@@ -835,10 +867,7 @@ function InstalledModuleDialog(props: {
                   </span>
                 </span>
               </DialogTitle>
-              <DialogDescription>
-                Installed module inventory is immutable. Reinstall another
-                version from Discover when a new configuration is needed.
-              </DialogDescription>
+              <DialogDescription>{t('detailDescription')}</DialogDescription>
             </DialogHeader>
 
             <div className="min-h-0 overflow-y-auto px-5 py-4">
@@ -893,6 +922,36 @@ function InstalledModuleDialog(props: {
                   </p>
                 </div>
                 <VariableList variables={selected.installation.variables} />
+              </div>
+            </div>
+
+            <div className="shrink-0 border-t px-5 py-4">
+              <div className="flex flex-col gap-3 rounded-lg border border-destructive/25 bg-destructive/5 p-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-primary">
+                    {t('uninstallPanel.title')}
+                  </p>
+                  <p className="mt-1 text-xs text-primary/55">
+                    {t('uninstallPanel.description')}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  disabled={!selected.installation.id || isDeleting}
+                  title={t('uninstallPanel.buttonTitle')}
+                  aria-label={t('uninstallPanel.buttonAria', {
+                    module: selected.group.name,
+                    version: installationLabel,
+                  })}
+                  onClick={handleClickUninstall}
+                >
+                  <Trash2Icon className="size-4" />
+                  {isDeleting
+                    ? t('uninstallPanel.uninstalling')
+                    : t('uninstallPanel.button')}
+                </Button>
               </div>
             </div>
           </div>

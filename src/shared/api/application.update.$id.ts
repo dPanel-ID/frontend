@@ -10,7 +10,7 @@ import type { DTOs } from '.';
 
 export interface RecipeParams {
   applicationId: string;
-  payload: DTOs.ApplicationV1;
+  payload: DTOs.ApplicationV1 & Record<string, unknown>;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {

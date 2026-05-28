@@ -782,6 +782,21 @@
     },
     "serverDetail": {
       "sectionModules": {
+        "detailDescription": "Review the recorded installation metadata. Duplicate or stale records can be removed from dPanel inventory.",
+        "uninstallPanel": {
+          "title": "Uninstall from inventory",
+          "description": "Remove this module installation metadata from dPanel. The server package itself is not removed.",
+          "button": "Uninstall",
+          "uninstalling": "Uninstalling...",
+          "buttonTitle": "Uninstall module installation",
+          "buttonAria": "Uninstall {module} {version}"
+        },
+        "uninstallDialog": {
+          "title": "Uninstall module installation?",
+          "message": "This removes {module} {version} from dPanel inventory and deletes its module metadata folder. It does not remove the server package.",
+          "success": "{module} {version} was removed from dPanel inventory.",
+          "errorTitle": "Failed to uninstall {module} {version}"
+        },
         "emptyState": {
           "title": "You haven't installed any modules yet.",
           "subtitle": "Our modules discovery has tons of modules you can add for your server."

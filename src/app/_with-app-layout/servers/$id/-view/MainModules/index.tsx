@@ -28,9 +28,9 @@ export default guard(function MainModules() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const emit = useEmit();
   const [modules] = useServerModules((s) => [s.modules]);
-  const [refreshModuleInventory] = useServerDataModel((s) => [
-    s.refreshModuleInventory,
-  ]);
+  const [serverId, refreshModuleInventory, refreshModules] = useServerDataModel(
+    (s) => [String(s.serverId), s.refreshModuleInventory, s.refreshModules],
+  );
   const [openToaster] = useToaster();
 
   const t = useDevetekTranslations();
@@ -92,7 +92,11 @@ export default guard(function MainModules() {
         </div>
       }
     >
-      <ModulesList modules={modules} />
+      <ModulesList
+        modules={modules}
+        serverId={serverId}
+        onDeleted={refreshModules}
+      />
     </CardSectionTitled>
   );
 });
