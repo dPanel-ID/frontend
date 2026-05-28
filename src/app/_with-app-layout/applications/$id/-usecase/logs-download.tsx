@@ -1,31 +1,25 @@
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
-import {
-  LS_ORGANIZATION_ID,
-  normalizeWorkspaceOrganizationId,
-} from '@/shared/libs/api-client/config';
-
 import { useAppLogsModel } from '../-model/app-logs';
 
 export default function useLogsDownloadUsecase() {
-  const [logMetadata, logFilename] = useAppLogsModel((s) => [
-    s.logMetadata,
+  const [logFilename, logLines] = useAppLogsModel((s) => [
     s.logFilename,
+    s.logLines,
   ]);
 
   const handleUsecase = useHandler(() => {
-    const orgId = normalizeWorkspaceOrganizationId(
-      window.localStorage.getItem(LS_ORGANIZATION_ID),
-    );
-    if (!logFilename || !logMetadata || !orgId) return;
+    if (!logFilename || logLines.length === 0) return;
 
-    const { appName, serverId, userName } = logMetadata;
-
-    const workdir = `/home/${userName}/logs/${appName}`;
-
-    window.open(
-      `${import.meta.env.VITE_BACKEND}/v1/folder/origin/${serverId}/download?workdir=${encodeURIComponent(workdir)}&file=${encodeURIComponent(logFilename)}&organization_id=${encodeURIComponent(orgId)}`,
-    );
+    const blob = new Blob([logLines.join('\n')], {
+      type: 'text/plain;charset=utf-8',
+    });
+    const objectUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = objectUrl;
+    anchor.download = `${logFilename}.log`;
+    anchor.click();
+    URL.revokeObjectURL(objectUrl);
   });
 
   return [handleUsecase] as const;

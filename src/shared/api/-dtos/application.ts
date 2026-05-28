@@ -34,6 +34,73 @@ export interface ApplicationV1 {
   app_config?: AppConfig;
 }
 
+export interface ApplicationIACConfigV1 {
+  application_id: string;
+  workspace: ApplicationIACWorkspaceV1;
+  repository: ApplicationIACRepositoryV1;
+  generated_playbook: ApplicationIACGeneratedPlaybookV1;
+  pipeline: ApplicationIACPipelineV1;
+  runtime_items: ApplicationIACRuntimeItemV1[];
+  warnings?: string[];
+}
+
+export interface ApplicationIACWorkspaceV1 {
+  id: string;
+  type: string;
+  user_id?: string;
+  group_id?: string;
+}
+
+export interface ApplicationIACRepositoryV1 {
+  owner: string;
+  repo: string;
+  ref: string;
+  resolved_commit?: string;
+}
+
+export interface ApplicationIACGeneratedPlaybookV1 {
+  path: string;
+  exists: boolean;
+  content?: string;
+  sha?: string;
+}
+
+export interface ApplicationIACPipelineV1 {
+  bootstrap?: ApplicationIACBootstrapPlaybookV1[];
+  deploy?: ApplicationIACDeployPlaybookV1;
+}
+
+export interface ApplicationIACBootstrapPlaybookV1 {
+  module: string;
+  title?: string;
+  version?: string;
+  import_playbook: string;
+  when?: string;
+  roles?: string[];
+  variables?: Record<string, unknown>;
+  installation_key?: string;
+  source?: string;
+  module_ref?: string;
+  module_source_commit?: string;
+}
+
+export interface ApplicationIACDeployPlaybookV1 {
+  import_playbook?: string;
+}
+
+export interface ApplicationIACRuntimeItemV1 {
+  name: string;
+  title?: string;
+  version?: string;
+  category?: string;
+  roles?: string[];
+  variables?: Record<string, unknown>;
+  installation_key?: string;
+  source?: string;
+  module_ref?: string;
+  module_source_commit?: string;
+}
+
 export interface AppDefinition {
   version: string;
   setup?: {

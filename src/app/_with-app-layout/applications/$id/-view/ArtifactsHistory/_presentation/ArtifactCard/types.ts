@@ -17,6 +17,7 @@ export interface ArtifactCardProps {
   isDeploying?: boolean;
 
   onClickLogs?: () => void;
+  logsDisabled?: boolean;
   logsOptions?: LogsOption[];
   onClickRollback?: () => void;
   onClickDelete?: () => void;

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { ChevronsUpDownIcon, DownloadIcon } from 'lucide-react';
+import { DownloadIcon, RefreshCwIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -18,25 +18,33 @@ interface AppLogsSectionProps {
 }
 
 export default function AppLogsSection(props: AppLogsSectionProps) {
-  const { children, selectedLogs, ctaLogsDisabled, onClickDownloadLog, onClickLogs } = props;
+  const {
+    children,
+    selectedLogs,
+    ctaLogsDisabled,
+    onClickDownloadLog,
+    onClickLogs,
+  } = props;
 
-  const t = useDevetekTranslations();
+  const t = useDevetekTranslations('page.applicationDetail.appLogs');
+  const logActionLabel = selectedLogs ? t('refreshLog') : t('loadLog');
 
   return (
     <Card className="rounded-2xl">
-      <div className="px-4 py-3 flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 px-4 py-3">
         <div className="flex flex-col">
-          <h3 className="text-xl font-bold">
-            {t('page.applicationDetail.appLogs.title')}
-          </h3>
-          <h6 className="text-sm text-primary/70">
-            {t('page.applicationDetail.appLogs.subtitle')}
-          </h6>
+          <h3 className="text-xl font-bold">{t('title')}</h3>
+          <h6 className="text-sm text-primary/70">{t('subtitle')}</h6>
         </div>
 
         <div className="flex items-center gap-1">
           {selectedLogs && (
-            <Button variant="outline" onClick={onClickDownloadLog}>
+            <Button
+              variant="outline"
+              onClick={onClickDownloadLog}
+              aria-label={t('downloadLog')}
+              title={t('downloadLog')}
+            >
               <DownloadIcon />
             </Button>
           )}
@@ -44,8 +52,10 @@ export default function AppLogsSection(props: AppLogsSectionProps) {
           <Button
             variant="outline"
             disabled={ctaLogsDisabled}
-            className="min-w-30 max-w-40 flex overflow-hidden items-center justify-between gap-2"
+            className="flex min-w-30 max-w-40 items-center justify-between gap-2 overflow-hidden"
             onClick={onClickLogs}
+            aria-label={logActionLabel}
+            title={logActionLabel}
           >
             <p
               className={cn(
@@ -53,10 +63,10 @@ export default function AppLogsSection(props: AppLogsSectionProps) {
                 !selectedLogs && 'opacity-50',
               )}
             >
-              {selectedLogs || 'Log'}
+              {selectedLogs || t('placeholder')}
             </p>
 
-            <ChevronsUpDownIcon />
+            <RefreshCwIcon />
           </Button>
         </div>
       </div>

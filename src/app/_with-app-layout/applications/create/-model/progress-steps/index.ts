@@ -6,7 +6,7 @@ import {
   RocketIcon,
 } from 'lucide-react';
 
-import type { Progress } from '../store/form.types';
+import type { FlowMode, Progress } from '../store/form.types';
 
 export const APPLICATION_CREATE_STEPS: Array<{
   key: Progress;
@@ -48,4 +48,18 @@ export const APPLICATION_CREATE_STEPS: Array<{
 
 export function getApplicationCreateStepIndex(progress: Progress) {
   return APPLICATION_CREATE_STEPS.findIndex((step) => step.key === progress);
+}
+
+export function getApplicationFlowSteps(flowMode: FlowMode) {
+  if (flowMode === 'update') return APPLICATION_CREATE_STEPS.slice(1);
+  return APPLICATION_CREATE_STEPS;
+}
+
+export function getApplicationFlowStepIndex(
+  progress: Progress,
+  flowMode: FlowMode,
+) {
+  return getApplicationFlowSteps(flowMode).findIndex(
+    (step) => step.key === progress,
+  );
 }

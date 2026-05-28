@@ -24,12 +24,12 @@ export default function Actions() {
   };
 
   const cnCancel = cn(hasChanges && 'border-yellow-500 border-dashed');
-
   return (
     <>
       <Button
+        className="w-full"
         onClick={handleClickSubmit}
-        disabled={isSubmitting || !hasChanges}
+        disabled={isSubmitting}
       >
         {isSubmitting ? (
           <LoaderCircleIcon className="animate-spin" />
@@ -38,7 +38,7 @@ export default function Actions() {
         )}
       </Button>
       <Button
-        className={cnCancel}
+        className={cn('w-full', cnCancel)}
         variant="outline"
         onClick={handleClickCancel}
       >

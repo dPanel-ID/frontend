@@ -2,7 +2,10 @@ import { RocketIcon, WarehouseIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
+
 import useHandleDeploy from '../../../-model/handle-deploy';
+import useHandleUpdateApplication from '../../../-model/handle-update';
 import useProgressCta from '../../../-model/progress-cta';
 import { useFormStore } from '../../../-model/store/form';
 import { useServersStore } from '../../../-model/store/servers';
@@ -27,7 +30,10 @@ export default function Step6Preview() {
     'page.applicationsCreate.wizard.step6.preview',
   );
   const { goToPrevious, isPreviousHidden } = useProgressCta();
+  const [flowMode] = useFormStore((s) => [s.flowMode]);
   const { handleDeploy } = useHandleDeploy();
+  const { handleUpdate } = useHandleUpdateApplication();
+  const handleSubmit = flowMode === 'update' ? handleUpdate : handleDeploy;
   const [
     appName,
     appSourceGithubRepo,
@@ -39,6 +45,8 @@ export default function Step6Preview() {
     selectedDependencyIds,
     buildEnvText,
     runtimeEnvText,
+    updateTriggerBootstrap,
+    setUpdateTriggerBootstrap,
   ] = useFormStore((s) => [
     s.appName,
     s.appSourceGithubRepo,
@@ -50,6 +58,8 @@ export default function Step6Preview() {
     s.selectedDependencyIds,
     s.buildEnvText,
     s.runtimeEnvText,
+    s.updateTriggerBootstrap,
+    s.setUpdateTriggerBootstrap,
   ]);
   const [serversStore, { knownServersById }] = useServersStore();
   const selectedServer =
@@ -76,10 +86,10 @@ export default function Step6Preview() {
     <div className="flex flex-col gap-4 overflow-hidden">
       <CtaBar
         placement="top"
-        goToNext={handleDeploy}
+        goToNext={handleSubmit}
         goToPrevious={goToPrevious}
         isPreviousHidden={isPreviousHidden}
-        labelNext={t('deploy')}
+        labelNext={flowMode === 'update' ? t('update') : t('deploy')}
       />
 
       <Sectioned
@@ -126,17 +136,47 @@ export default function Step6Preview() {
           </div>
         </div>
 
+        {flowMode === 'update' ? (
+          <div className="flex items-start gap-3 rounded-lg border bg-background p-3">
+            <Checkbox
+              id="application-update-bootstrap"
+              checked={updateTriggerBootstrap}
+              onCheckedChange={(checked) =>
+                setUpdateTriggerBootstrap(checked === true)
+              }
+              aria-label={t('bootstrapAriaLabel')}
+              aria-labelledby="application-update-bootstrap-title"
+              aria-describedby="application-update-bootstrap-desc"
+            />
+            <span className="grid gap-1">
+              <label
+                id="application-update-bootstrap-title"
+                htmlFor="application-update-bootstrap"
+                className="cursor-pointer text-sm font-semibold text-primary"
+              >
+                {t('bootstrapTitle')}
+              </label>
+              <span
+                id="application-update-bootstrap-desc"
+                className="text-xs leading-relaxed text-muted-foreground"
+              >
+                {t('bootstrapDesc')}
+              </span>
+            </span>
+          </div>
+        ) : null}
+
         <div className="rounded-lg border bg-card p-3 text-xs text-muted-foreground">
           <RocketIcon className="mb-2 size-4 text-primary" />
-          {t('deployNote')}
+          {flowMode === 'update' ? t('updateNote') : t('deployNote')}
         </div>
       </Sectioned>
 
       <CtaBar
-        goToNext={handleDeploy}
+        goToNext={handleSubmit}
         goToPrevious={goToPrevious}
         isPreviousHidden={isPreviousHidden}
-        labelNext={t('deploy')}
+        labelNext={flowMode === 'update' ? t('update') : t('deploy')}
       />
     </div>
   );

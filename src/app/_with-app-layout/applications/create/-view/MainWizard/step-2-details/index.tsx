@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   CheckCircle2Icon,
@@ -93,9 +93,15 @@ function getDependencyVersion(
   variables: Record<string, unknown>,
 ) {
   const id = moduleId.toLowerCase();
-  const get = (key: string) =>
-    typeof variables[key] === 'string' ? String(variables[key]) : '';
+  const get = (key: string) => {
+    const value = variables[key];
+    if (value == null) return '';
+    if (Array.isArray(value)) return String(value[0] ?? '').trim();
+    return String(value).trim();
+  };
 
+  const directVersion = get(`${id}_version`);
+  if (directVersion) return directVersion;
   if (id === 'go' || id.includes('golang')) return get('golang_version');
   if (id === 'nodejs' || id.includes('node') || id.includes('nvm')) {
     return get('nodejs_version');
@@ -107,6 +113,15 @@ function getDependencyVersion(
 
   const pyenvGlobal = variables.pyenv_global;
   if (Array.isArray(pyenvGlobal)) return String(pyenvGlobal[0] ?? '');
+
+  for (const [key, value] of Object.entries(variables)) {
+    if (!key.endsWith('_version') || value == null) continue;
+    const version = Array.isArray(value)
+      ? String(value[0] ?? '').trim()
+      : String(value).trim();
+    if (version) return version;
+  }
+
   return '';
 }
 
@@ -195,7 +210,7 @@ function moduleInstanceLabel(installation: DTOs.ModuleInstallationV1) {
 function installedDependencySelectionId(
   installation: DTOs.ModuleInstallationV1,
 ) {
-  return `installed:${installation.id || installation.installation_key || installation.module_name}`;
+  return `installed:${installation.installation_key || installation.id || installation.module_name}`;
 }
 
 function isInstalledDependencySelectable(
@@ -249,6 +264,66 @@ function buildInstalledDependencyConfig(
   };
 }
 
+function dependencyModuleId(dependency: DependencyConfig) {
+  return (dependency.moduleId || dependency.id).toLowerCase();
+}
+
+function moduleIdAliases(moduleId: string) {
+  switch (moduleId) {
+    case 'golang':
+      return ['go'];
+    case 'node':
+      return ['nodejs'];
+    default:
+      return [];
+  }
+}
+
+function findCatalogModuleForDependency(
+  dependency: DependencyConfig,
+  moduleById: Map<string, ServerModule>,
+) {
+  const moduleId = dependencyModuleId(dependency);
+  const candidates = [moduleId, ...moduleIdAliases(moduleId)];
+
+  for (const candidate of candidates) {
+    const module = moduleById.get(candidate);
+    if (module) return module;
+  }
+
+  return null;
+}
+
+function buildCatalogFallbackDependencyConfig(
+  dependency: DependencyConfig,
+  moduleInfo: ServerModule,
+): DependencyConfig {
+  return {
+    ...dependency,
+    category: moduleInfo.category.length
+      ? moduleInfo.category
+      : dependency.category,
+    id: moduleInfo.id,
+    installationId: undefined,
+    installationKey: undefined,
+    logoUrl: moduleInfo.logoUrl || dependency.logoUrl,
+    moduleId: moduleInfo.id,
+    name: moduleInfo.name || dependency.name,
+    ref: {
+      expectedCommit:
+        moduleInfo.resolvedCommit || dependency.ref.expectedCommit || '',
+      name: moduleInfo.refName || dependency.ref.name || '',
+    },
+    selectionId: moduleInfo.id,
+    source: 'catalog',
+    status: undefined,
+    title: moduleInfo.name || dependency.title,
+    version:
+      dependency.version ||
+      getDependencyVersion(moduleInfo.id, dependency.variables),
+  };
+}
+
 type SelectableServer = ApplicationCreateServerOption;
 
 const SectionServer = () => {
@@ -265,6 +340,7 @@ const SectionServer = () => {
     s.hostedServerID,
     s.setHostedServerID,
   ]);
+  const [, { knownServersById }] = useServersStore();
 
   const handleClickAddNewServer = () => {
     window.open(`${import.meta.env.BASE_URL}servers/create`, '_blank')?.focus();
@@ -276,10 +352,22 @@ const SectionServer = () => {
   let serverList = <ServerPickerLoading />;
 
   if (serversStore.$status === 'success') {
+    const selectedKnownServer = hostedServerID
+      ? knownServersById[hostedServerID]
+      : undefined;
+    const pickerServers = selectedKnownServer
+      ? [
+          selectedKnownServer,
+          ...serversStore.servers.filter(
+            (server) => server.id !== selectedKnownServer.id,
+          ),
+        ]
+      : serversStore.servers;
+
     serverList =
-      serversStore.servers.length > 0 ? (
+      pickerServers.length > 0 ? (
         <ServerPicker
-          servers={serversStore.servers}
+          servers={pickerServers}
           selectedId={hostedServerID}
           onSelect={setHostedServerID}
         />
@@ -756,16 +844,19 @@ const SectionDependencies = () => {
   );
   const [query, setQuery] = useState('');
   const [activeModuleId, setActiveModuleId] = useState<string>();
-  const [hostedServerID, selectedDependencyIds, dependencyConfigs] =
+  const [flowMode, hostedServerID, selectedDependencyIds, dependencyConfigs] =
     useFormStore((s) => [
+      s.flowMode,
       s.hostedServerID,
       s.selectedDependencyIds,
       s.dependencyConfigs,
     ]);
-  const [toggleDependency, setDependencyConfig] = useFormStore((s) => [
-    s.toggleDependency,
-    s.setDependencyConfig,
-  ]);
+  const [toggleDependency, setDependencyConfig, replaceDependencySelection] =
+    useFormStore((s) => [
+      s.toggleDependency,
+      s.setDependencyConfig,
+      s.replaceDependencySelection,
+    ]);
 
   const [catalogResponse] = ApiModule.Find.useGet({
     serverId: hostedServerID ? String(hostedServerID) : undefined,
@@ -844,6 +935,54 @@ const SectionDependencies = () => {
       ),
     [inventoryResponse],
   );
+  const installedSelectionIds = useMemo(() => {
+    return new Set(
+      installedModuleGroups.flatMap((moduleGroup) =>
+        moduleGroup.installations.map(installedDependencySelectionId),
+      ),
+    );
+  }, [installedModuleGroups]);
+
+  useEffect(() => {
+    if (
+      flowMode !== 'update' ||
+      !hostedServerID ||
+      !catalog ||
+      inventoryResponse.$status !== 'success'
+    ) {
+      return;
+    }
+
+    for (const dependencyId of selectedDependencyIds) {
+      if (!dependencyId.startsWith('installed:')) continue;
+      if (installedSelectionIds.has(dependencyId)) continue;
+
+      const dependency = dependencyConfigs[dependencyId];
+      if (!dependency) continue;
+
+      const catalogModule = findCatalogModuleForDependency(
+        dependency,
+        moduleById,
+      );
+      if (!catalogModule) continue;
+
+      replaceDependencySelection(
+        dependencyId,
+        catalogModule.id,
+        buildCatalogFallbackDependencyConfig(dependency, catalogModule),
+      );
+    }
+  }, [
+    catalog,
+    dependencyConfigs,
+    flowMode,
+    hostedServerID,
+    installedSelectionIds,
+    inventoryResponse.$status,
+    moduleById,
+    replaceDependencySelection,
+    selectedDependencyIds,
+  ]);
 
   const handleToggleInstalledVersion = (
     moduleGroup: (typeof installedModuleGroups)[number],

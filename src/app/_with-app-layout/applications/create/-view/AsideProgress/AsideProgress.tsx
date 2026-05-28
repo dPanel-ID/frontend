@@ -6,20 +6,27 @@ import { cn } from '@/shared/libs/tailwind/cn';
 import { Card } from '@/shared/presentation/atoms/Card';
 
 import {
-  APPLICATION_CREATE_STEPS,
-  getApplicationCreateStepIndex,
+  getApplicationFlowStepIndex,
+  getApplicationFlowSteps,
 } from '../../-model/progress-steps';
 import { useFormStore } from '../../-model/store/form';
 
 export default function AsideProgress() {
-  const [progress, setProgress] = useFormStore((s) => [
+  const [flowMode, progress, setProgress] = useFormStore((s) => [
+    s.flowMode,
     s.progress,
     s.setProgress,
   ]);
   const t = useDevetekTranslations('page.applicationsCreate.progress');
-  const currentIndex = Math.max(0, getApplicationCreateStepIndex(progress));
+  const visibleSteps = getApplicationFlowSteps(flowMode);
+  const currentIndex = Math.max(
+    0,
+    getApplicationFlowStepIndex(progress, flowMode),
+  );
   const progressPercent =
-    (currentIndex / (APPLICATION_CREATE_STEPS.length - 1)) * 100;
+    visibleSteps.length > 1
+      ? (currentIndex / (visibleSteps.length - 1)) * 100
+      : 100;
 
   return (
     <Card className="overflow-hidden rounded-lg shadow-none">
@@ -41,8 +48,8 @@ export default function AsideProgress() {
         </div>
       </div>
 
-      <div className="grid gap-2 p-3 md:grid-cols-2 xl:grid-cols-5">
-        {APPLICATION_CREATE_STEPS.map((step, index) => {
+      <div className="grid gap-2 p-3 md:grid-cols-2 xl:grid-cols-4">
+        {visibleSteps.map((step, index) => {
           const isActive = step.key === progress;
           const isDone = index < currentIndex;
           const isAccessible = index <= currentIndex;

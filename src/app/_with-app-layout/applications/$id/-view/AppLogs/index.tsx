@@ -1,4 +1,4 @@
-import { useLogBrowserModal } from '@/features/log-browser-modal';
+import { useDevetekTranslations } from '@/services/i18n';
 
 import {
   couple,
@@ -29,10 +29,14 @@ const [guardLogs, useLogs] = guardedSelects({
 
 const LogView = guardLogs(() => {
   const logBuffer = useLogs((s) => s);
+  const t = useDevetekTranslations('page.applicationDetail.appLogs');
 
   return (
     <div className="p-4 pt-0">
-      <LogViewer logs={logBuffer.join('\n')} />
+      <LogViewer
+        ariaLabel={t('runtimeLogOutput')}
+        logs={logBuffer.join('\n')}
+      />
     </div>
   );
 });
@@ -44,30 +48,31 @@ const [guardAppDetail, useAppDetail] = guardedSelects({
 })(couple(useAppDataModel, (s) => s.appDetail));
 
 export default guardAppDetail(function AppLogs() {
-  const [logFilename, setLogFilename] = useAppLogsModel((s) => [
+  const [logFilename, setLogSelection] = useAppLogsModel((s) => [
     s.logFilename,
-    s.setLogFilename,
+    s.setLogSelection,
   ]);
 
   const appDetail = useAppDetail((s) => s);
 
   const [selectedServerId] = useAppDataModel((s) => [s.selectedServerId]);
 
-  const [openLogBrowserModal] = useLogBrowserModal();
-
   const emit = useEmit();
+  const lifecycle = appDetail.configDefs.lifecycle;
+  const initialServerId =
+    selectedServerId || appDetail.deploymentTargets[0]?.id;
+  const initialMachineID = initialServerId ? Number(initialServerId) : NaN;
+  const canSelectLogs = Boolean(
+    lifecycle?.run.name && Number.isFinite(initialMachineID),
+  );
 
   const handleClickLogs = () => {
-    if (!selectedServerId || !appDetail.configDefs.lifecycle) return;
+    if (!lifecycle?.run.name) return;
+    if (!Number.isFinite(initialMachineID)) return;
 
-    openLogBrowserModal({
-      appName: appDetail.configDefs.lifecycle.run.name,
-      userName: appDetail.ownership.owner,
-      machineID: Number(selectedServerId),
-      deploymentTargets: appDetail.deploymentTargets,
-      onClickLogFile: (newLogFilename) => {
-        setLogFilename(newLogFilename);
-      },
+    setLogSelection({
+      filename: lifecycle.run.name,
+      serverId: String(initialMachineID),
     });
   };
 
@@ -78,7 +83,7 @@ export default guardAppDetail(function AppLogs() {
   return (
     <AppLogsSection
       selectedLogs={logFilename}
-      ctaLogsDisabled={!appDetail.configDefs.lifecycle}
+      ctaLogsDisabled={!canSelectLogs}
       onClickLogs={handleClickLogs}
       onClickDownloadLog={handleClickDownloadLog}
     >

@@ -32,7 +32,7 @@ const Content = (props: LogBrowserModalProps) => {
   const handleClickLogFile = (logFilename: string) => {
     return () => {
       emitModal('%%modal/close', null);
-      onClickLogFile?.(logFilename);
+      onClickLogFile?.(logFilename, selectedMachineID);
     };
   };
 

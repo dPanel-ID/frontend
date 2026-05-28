@@ -16,7 +16,7 @@ function ApplicationDetailPage() {
   return (
     <AppDataModelProvider applicationId={id}>
       <ArtifactHistoryModelProvider applicationId={id}>
-        <AppLogsModelProvider>
+        <AppLogsModelProvider applicationId={id}>
           <EventController />
           <View />
         </AppLogsModelProvider>

@@ -5,8 +5,8 @@ import {
   couple,
   guardedSelects,
 } from '@/shared/libs/react-factories/guardedSelect';
-import { Pagination } from '@/shared/presentation/atoms/Pagination';
 import { Card } from '@/shared/presentation/atoms/Card';
+import { Pagination } from '@/shared/presentation/atoms/Pagination';
 import {
   Tabs,
   TabsContent,
@@ -31,10 +31,7 @@ const [guard, useAppDetail] = guardedSelects({
 const ArtifactsTabContent = guard(() => {
   const emit = useEmit();
 
-  const [appSource, appOwner] = useAppDetail((s) => [
-    s.identity.source,
-    s.ownership.owner,
-  ]);
+  const [appSource] = useAppDetail((s) => [s.identity.source]);
 
   const [artifactHistory, deploymentHistory, artifactPage, setArtifactPage] =
     useArtifactHistoryModel((s) => [
@@ -83,9 +80,7 @@ const ArtifactsTabContent = guard(() => {
       return [];
     });
 
-    return (
-      <List appOwner={appOwner} list={list} deploymentList={deploymentList} />
-    );
+    return <List list={list} deploymentList={deploymentList} />;
   });
 
   const pag = iife(() => {
@@ -198,11 +193,14 @@ export default function ArtifactsHistory() {
 
     if (!repoOrganization || !repoName) return;
 
+    const firstDeploymentMachineId =
+      selectedServerId || appDetail.deploymentTargets[0]?.id;
+
     openArtifactNewSidepanel({
       repoName,
       repoOrganization,
       applicationId: appDetail.id,
-      currentServerId: selectedServerId,
+      currentServerId: firstDeploymentMachineId,
       appConfig: appDetail.configDefs,
       onSuccess: () => {
         emit('@applications::detail/deployment-history-refresh', null);

@@ -9,8 +9,8 @@ import {
   CodeIcon,
   GitBranchIcon,
   GlobeIcon,
-  HashIcon,
   HammerIcon,
+  HashIcon,
   LoaderCircle,
   TerminalIcon,
   UserCogIcon,
@@ -45,11 +45,13 @@ export default function ArtifactCard(props: ArtifactCardProps) {
     isUsed,
     isDeploying,
     onClickLogs,
+    logsDisabled,
     logsOptions,
     onClickDelete,
     onClickRollback,
     onClickStatus,
   } = props;
+  const logsLabel = t('page.applicationDetail.artifactsHistory.logs');
 
   const artifactBuildFormattedDate = getDistanceFromNow(
     data.timestamp.updated,
@@ -61,24 +63,29 @@ export default function ArtifactCard(props: ArtifactCardProps) {
       <DropdownMenu key="logs">
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm">
-            Logs
+            {logsLabel}
             <ChevronDownIcon className="size-3 ml-1" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {logsOptions.map((opt) => (
-            <DropdownMenuItem
-              key={opt.machineId}
-              onClick={opt.onClick}
-            >
+            <DropdownMenuItem key={opt.machineId} onClick={opt.onClick}>
               {opt.label}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
     ) : (
-      <Button key="logs" variant="outline" size="sm" onClick={onClickLogs}>
-        Logs
+      <Button
+        key="logs"
+        variant="outline"
+        size="sm"
+        disabled={logsDisabled}
+        onClick={onClickLogs}
+        aria-label={logsLabel}
+        title={logsLabel}
+      >
+        {logsLabel}
       </Button>
     ),
     <Button
@@ -178,24 +185,32 @@ export default function ArtifactCard(props: ArtifactCardProps) {
               {data.configSnapshot.lifecycle.setup.languages.length > 0 && (
                 <div className="flex items-center gap-1">
                   <CodeIcon className="size-3 text-muted-foreground shrink-0" />
-                  {data.configSnapshot.lifecycle.setup.languages.map((lang, i) => (
-                    <span key={i} className="text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono leading-none">
-                      {lang.name} {lang.version}
-                    </span>
-                  ))}
+                  {data.configSnapshot.lifecycle.setup.languages.map(
+                    (lang, i) => (
+                      <span
+                        key={i}
+                        className="text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono leading-none"
+                      >
+                        {lang.name} {lang.version}
+                      </span>
+                    ),
+                  )}
                 </div>
               )}
 
               {data.configSnapshot.lifecycle.build.steps.length > 0 && (
                 <p className="text-xs text-primary/70 flex items-center gap-0.5">
                   <HammerIcon className="size-3 shrink-0" />
-                  {data.configSnapshot.lifecycle.build.steps.length} step{data.configSnapshot.lifecycle.build.steps.length !== 1 ? 's' : ''}
+                  {data.configSnapshot.lifecycle.build.steps.length} step
+                  {data.configSnapshot.lifecycle.build.steps.length !== 1
+                    ? 's'
+                    : ''}
                 </p>
               )}
 
               <p className="text-xs text-primary/70 flex items-center gap-0.5">
-                <GlobeIcon className="size-3 shrink-0" />
-                :{data.configSnapshot.lifecycle.run.port}
+                <GlobeIcon className="size-3 shrink-0" />:
+                {data.configSnapshot.lifecycle.run.port}
               </p>
 
               {data.configSnapshot.lifecycle.run.command && (

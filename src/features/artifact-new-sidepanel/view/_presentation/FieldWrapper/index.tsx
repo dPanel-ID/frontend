@@ -12,8 +12,8 @@ export default function FieldWrapper(props: FieldWrapperProps) {
   const { children, fieldTitle, notImportant } = props;
 
   return (
-    <div className="flex flex-col gap-1 overflow-hidden">
-      <p className="font-bold text-xs text-primary/70">
+    <div className="grid gap-2 overflow-hidden rounded-lg border bg-card p-3">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         {fieldTitle}
         {!notImportant && <ImportantMarker />}
       </p>

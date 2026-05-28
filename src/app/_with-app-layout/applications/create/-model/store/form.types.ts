@@ -1,4 +1,15 @@
+import type { DTOs } from '@/shared/api';
+
 export interface FormStore {
+  flowMode: FlowMode;
+  updateApplicationId: string | null;
+  updateApplicationConfig: DTOs.ApplicationV1['app_config'] | null;
+  updateRawAppDefinition: DTOs.ApplicationV1['app_definition'] | null;
+  updateOriginalServerID: number | null;
+  updateOriginalPort: string;
+  updateTriggerBootstrap: boolean;
+  updateWorkdir: string;
+
   progress: Progress;
 
   appSourceMode: AppSourceMode;
@@ -28,6 +39,7 @@ export interface FormStore {
 
 export interface FormActions {
   setProgress: (progress: Progress) => void;
+  setFlowMode: (flowMode: FlowMode) => void;
   setAppSourceMode: (appSourceMode: AppSourceMode) => void;
   setAppSourceBundleIdent: (appSourceBundleIdent: string) => void;
   setAppSourceGithubRepo: (appSourceGithubRepo: string) => void;
@@ -45,7 +57,13 @@ export interface FormActions {
   setAppPort: (appPort: string) => void;
   setBuildEnvText: (buildEnvText: string) => void;
   setRuntimeEnvText: (runtimeEnvText: string) => void;
+  setUpdateTriggerBootstrap: (updateTriggerBootstrap: boolean) => void;
   toggleDependency: (dependencyId: string) => void;
+  replaceDependencySelection: (
+    fromDependencyId: string,
+    toDependencyId: string,
+    config: DependencyConfig,
+  ) => void;
   setDependencyConfig: (dependencyId: string, config: DependencyConfig) => void;
   toggleRequiredBinary: (binaryId: string) => void;
   selectRequiredBinary: (binaryId: string) => void;
@@ -59,6 +77,41 @@ export interface FormActions {
 }
 
 export type AppSourceMode = 'bundle' | 'github';
+export type FlowMode = 'create' | 'update';
+
+export type FormInitialState = Partial<
+  Pick<
+    FormStore,
+    | 'flowMode'
+    | 'updateApplicationId'
+    | 'updateApplicationConfig'
+    | 'updateRawAppDefinition'
+    | 'updateOriginalServerID'
+    | 'updateOriginalPort'
+    | 'updateTriggerBootstrap'
+    | 'updateWorkdir'
+    | 'progress'
+    | 'appSourceMode'
+    | 'appSourceBundleIdent'
+    | 'appSourceGithubRepo'
+    | 'hostedServerID'
+    | 'appName'
+    | 'appDomain'
+    | 'appProgLang'
+    | 'appProgLangVersion'
+    | 'appBuildCommand'
+    | 'appRunCommand'
+    | 'appPort'
+    | 'buildEnvText'
+    | 'runtimeEnvText'
+    | 'gitRepoConfig'
+    | 'dynamicConfig'
+    | 'selectedDependencyIds'
+    | 'dependencyConfigs'
+    | 'selectedRequiredBinaryIds'
+    | 'requiredBinaryConfigs'
+  >
+>;
 
 export interface DependencyConfig {
   selectionId?: string;
