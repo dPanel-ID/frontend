@@ -175,6 +175,8 @@
     },
     "dashboard": {
       "headerTitle": "Dashboard",
+      "homeBreadcrumb": "Beranda",
+      "docs": "Docs",
       "headerDesc": "Lihat aplikasi yang telah Anda deploy dan server yang terdaftar di sini.",
       "headerFootnote": "Anda dapat menggunakan <i>resource</i> sendiri atau <i>resource</i> publik untuk membuat aplikasi. Kunjungi <a>kanal YouTube</a> kami untuk panduannya.",
       "headerWelcome": "Selamat datang kembali,",
@@ -274,6 +276,22 @@
         "emptyBuild": "Belum ada baris log build.",
         "emptyRun": "Belum ada baris log runtime.",
         "emptyRunFile": "File log runtime untuk deployment terbaru tidak ditemukan."
+      },
+      "agentEvents": {
+        "title": "Event Agent Terbaru",
+        "description": "Event dPanel agent terbaru yang dilaporkan server di ruang kerja aktif.",
+        "refresh": "Refresh",
+        "refreshAria": "Refresh event agent terbaru",
+        "showing": "Menampilkan {count} dari {limit} event terbaru",
+        "partialFailure": "{count} server tidak dapat memuat event",
+        "empty": "Belum ada event dPanel agent untuk ruang kerja ini.",
+        "emptyServers": "Belum ada server di ruang kerja ini.",
+        "unknownEvent": "Event agent",
+        "server": "Server",
+        "eventId": "Event",
+        "sequence": "Sequence",
+        "time": "Waktu",
+        "details": "Detail event"
       },
       "resourceMix": {
         "title": "Komposisi Resource Bisnis",
