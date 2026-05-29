@@ -2,35 +2,52 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { ModalLayoutGeneral } from '@/services/modal/ui/presentation';
 
 import { ApiApplication } from '@/shared/api';
+import { useAdapter } from '@/shared/libs/api-client';
+import { FailedState } from '@/widgets/failed-state';
 
 import type { ArtifactLogsModalProps } from '../rules/types';
 
 import LogViewer from './LogViewer';
 
-const ARTIFACT_LOG_LINE_COUNT = 1000;
+const BUILD_LOG_LINE_LIMIT = 100;
 
 const Content = (props: ArtifactLogsModalProps) => {
   const { applicationId, artifactId, serverId } = props;
   const t = useDevetekTranslations('page.applicationDetail.artifactsHistory');
 
-  const [responseLog] = ApiApplication.Logs.$Id.useGet({
+  const [responseLog, refreshLog] = ApiApplication.Logs.$Id.useGet({
     applicationId,
     artifactId,
+    limit: BUILD_LOG_LINE_LIMIT,
     machineId: serverId,
-    line: ARTIFACT_LOG_LINE_COUNT,
     options: {
       refreshIntervalMs: 2000,
     },
   });
+  const responseLogLines = useAdapter(
+    responseLog,
+    ApiApplication.Logs.$Id.normalizeLogLines,
+  );
 
   const buffer =
-    responseLog.$status === 'success'
-      ? responseLog.join('\n')
-      : responseLog.$status === 'loading' && responseLog.prevData
-        ? responseLog.prevData.join('\n')
-        : '';
+    responseLogLines.$status === 'success'
+      ? responseLogLines
+      : responseLogLines.$status === 'loading' && responseLogLines.prevData
+        ? responseLogLines.prevData
+        : [];
 
-  return <LogViewer ariaLabel={t('artifactLogOutput')} log={buffer} />;
+  if (responseLogLines.$status === 'failed') {
+    return <FailedState.BannerRetryable onClickRetry={refreshLog} />;
+  }
+
+  return (
+    <LogViewer
+      ariaLabel={t('artifactLogOutput')}
+      emptyLabel={t('artifactLogEmpty')}
+      lineLimit={BUILD_LOG_LINE_LIMIT}
+      lines={buffer}
+    />
+  );
 };
 
 export default function ArtifactLogsModal(props: ArtifactLogsModalProps) {

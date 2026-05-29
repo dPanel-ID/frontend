@@ -15,7 +15,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
 
   return {
     method: 'DELETE',
-    url: `/v1/router/delete/${routerId}`,
+    url: `/v2/load-balancer/delete/${routerId}`,
   };
 }
 

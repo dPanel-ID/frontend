@@ -76,6 +76,7 @@ export function toServerModuleFromCatalog(
     refName,
     resolvedCommit,
     installation: module.installation,
+    installations: module.installations,
     installationStatus: module.installation?.status,
   };
 }

@@ -29,7 +29,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
   });
 
   return {
-    url: `/v1/router/find?${queryParams.toString()}`,
+    url: `/v2/load-balancer/find?${queryParams.toString()}`,
   };
 }
 

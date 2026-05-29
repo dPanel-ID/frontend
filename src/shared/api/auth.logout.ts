@@ -6,7 +6,10 @@ import type {
   PureResponse,
 } from '@/shared/libs/api-client/rules/types';
 
-import { BaseResponseError } from '../libs/api-client/lib/error';
+import {
+  BaseResponseError,
+  normalizeApiError,
+} from '../libs/api-client/lib/error';
 
 import type { DTOs } from '.';
 
@@ -38,18 +41,26 @@ export async function doLogout(): Promise<PureResponse<{}>> {
       $status: 'success',
     };
   } catch (error) {
-    if (error instanceof AxiosError || error instanceof BaseResponseError) {
+    const normalizedError = normalizeApiError(error);
+
+    if (
+      normalizedError instanceof AxiosError ||
+      normalizedError instanceof BaseResponseError
+    ) {
       return {
         $status: 'failed',
         kind: 'api',
-        error,
+        error: normalizedError,
       };
     }
 
     return {
       $status: 'failed',
       kind: 'general',
-      error: error instanceof Error ? error : Error(String(error)),
+      error:
+        normalizedError instanceof Error
+          ? normalizedError
+          : Error(String(normalizedError)),
     };
   }
 }

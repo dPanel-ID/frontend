@@ -1,18 +1,14 @@
-import { useLoadBalancerCreationSidepanel } from '@/features/load-balancer-creation-sidepanel';
+import { useNavigate } from '@tanstack/react-router';
 
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
-import { useEmit } from '../-models/events';
-
 export default function useLbOpenCreateUsecase() {
-  const [openSidepanel] = useLoadBalancerCreationSidepanel();
-  const emit = useEmit();
+  const navigate = useNavigate();
 
   const handleUsecase = useHandler(() => {
-    openSidepanel({
-      onSuccess: () => {
-        emit('@load-balancers/data--refresh', null);
-      },
+    navigate({
+      to: '/backend/load-balancers/create',
+      search: {},
     });
   });
 

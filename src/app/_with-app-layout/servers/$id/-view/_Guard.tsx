@@ -5,7 +5,10 @@ import { isAxiosError } from 'axios';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { BaseResponseError } from '@/shared/libs/api-client/lib/error';
+import {
+  BaseResponseError,
+  getApiErrorDetail,
+} from '@/shared/libs/api-client/lib/error';
 import CoverIfError from '@/shared/presentation/atoms/CoverIfError';
 import { FailedState } from '@/widgets/failed-state';
 import { FallbackState } from '@/widgets/fallback-state';
@@ -55,7 +58,7 @@ export default function ServerDetailGuard(props: ServerDetailGuardProps) {
         return (
           <FailedState.WallCentered.Retryable
             withCard
-            errorPayload={payload.error.message}
+            errorPayload={getApiErrorDetail(payload.error)}
             onClickRetry={() => {
               emit('@servers::detail/server-detail-refresh', null);
             }}

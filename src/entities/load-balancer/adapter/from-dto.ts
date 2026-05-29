@@ -20,8 +20,10 @@ import {
   ctorWebserver,
 } from './ctors';
 
+type LoadBalancerDto = DTOs.RouterV1 | DTOs.LoadBalancerV2;
+
 export const toLoadBalancerCard = createAdapter<
-  DTOs.RouterV1,
+  LoadBalancerDto,
   LoadBalancerCard
 >((raw) => {
   return schemaLoadBalancerCard.parse({
@@ -45,13 +47,14 @@ export const toLoadBalancerCard = createAdapter<
 });
 
 export const toLoadBalancerDetails = createAdapter<
-  DTOs.RouterV1,
+  LoadBalancerDto,
   LoadBalancerDetails
 >((raw) => {
   return schemaLoadBalancerDetails.parse({
     id: String(raw.id),
     state: ctorState(raw),
     domain: raw.domain,
+    description: raw.name,
     ownership: {
       owner: resolveOwnershipOwner(raw),
       team: raw.organization?.name,

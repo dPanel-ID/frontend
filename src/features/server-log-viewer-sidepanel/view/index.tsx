@@ -1,19 +1,25 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 
 import {
+  AlertCircleIcon,
   BracesIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  FileSearchIcon,
   FileTextIcon,
+  InboxIcon,
   RefreshCwIcon,
   ScrollTextIcon,
   SearchIcon,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 import Layout from '@/services/sidepanel/ui/presentation/Layout/General';
 
 import { ApiFolder } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
+import type { ResponseError } from '@/shared/libs/api-client/rules/types';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Input } from '@/shared/presentation/atoms/Input';
@@ -26,13 +32,20 @@ import {
 } from '@/shared/presentation/atoms/Select';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 
-import { VM_LOG_SOURCES, VM_LOG_SOURCE_CATEGORIES } from '../rules/log-sources';
+import {
+  SERVER_LOG_DISCOVERY_DIRECTORIES,
+  SERVER_LOG_DISCOVERY_PATHS,
+  VM_LOG_SOURCES,
+  VM_LOG_SOURCE_CATEGORIES,
+  buildServerLogSourcesFromDiscovery,
+} from '../rules/log-sources';
 import type { ServerLogSource } from '../rules/log-sources';
 import type { ServerLogViewerSidepanelProps as Props } from '../rules/types';
 
 const DEFAULT_LINE_COUNT = 100;
 const DEFAULT_SOURCE_ID = 'auth';
-const CUSTOM_SOURCE_ID = 'custom';
+const LOG_ROW_MESSAGE_PREVIEW_LIMIT = 180;
+const LOG_ROW_CONTEXT_PREVIEW_LIMIT = 120;
 
 const LINE_OPTIONS = [50, 100, 200, 500];
 const JSON_MESSAGE_KEYS = ['message', 'msg', 'log', 'body', 'event'] as const;
@@ -111,6 +124,35 @@ function safeJsonStringify(value: unknown) {
   } catch {
     return String(value);
   }
+}
+
+function compactLogText(value: string) {
+  return value.replace(/\s+/g, ' ').trim();
+}
+
+function truncateLogText(value: string, limit: number) {
+  const compacted = compactLogText(value);
+  if (compacted.length <= limit) {
+    return {
+      isTruncated: false,
+      text: compacted,
+    };
+  }
+
+  return {
+    isTruncated: true,
+    text: `${compacted.slice(0, limit).trimEnd()}...`,
+  };
+}
+
+function isJsonLikeLogText(value: string) {
+  const trimmed = value.trim();
+
+  return (
+    trimmed.startsWith('{') ||
+    trimmed.startsWith('[') ||
+    /(?:^|\s)(event|payload|data|attributes)=["']?[{[]/.test(trimmed)
+  );
 }
 
 function formatJson(value: unknown) {
@@ -613,17 +655,21 @@ function StructuredJsonPreview(props: { value: unknown }) {
 
 function ToolbarIconButton(props: {
   children: ReactNode;
+  className?: string;
   disabled?: boolean;
   title: string;
   onClick: () => void;
 }) {
-  const { children, disabled, title, onClick } = props;
+  const { children, className, disabled, title, onClick } = props;
 
   return (
     <button
       type="button"
       aria-label={title}
-      className="flex size-8 cursor-pointer items-center justify-center rounded-md border bg-card text-primary/70 transition-colors hover:bg-border/60 disabled:cursor-default disabled:opacity-40"
+      className={cn(
+        'flex size-8 cursor-pointer items-center justify-center rounded-md border bg-card text-primary/70 transition-colors hover:bg-border/60 disabled:cursor-default disabled:opacity-40',
+        className,
+      )}
       disabled={disabled}
       onClick={onClick}
       title={title}
@@ -648,6 +694,16 @@ function LogLevelBadge(props: { level: LogLevel }) {
   );
 }
 
+function LogPreviewBadge(props: { children: ReactNode }) {
+  const { children } = props;
+
+  return (
+    <span className="shrink-0 rounded border bg-background px-1.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
+      {children}
+    </span>
+  );
+}
+
 function LogRow(props: {
   entry: ParsedLogLine;
   expanded: boolean;
@@ -655,6 +711,17 @@ function LogRow(props: {
 }) {
   const { entry, expanded, onToggle } = props;
   const canExpand = entry.jsonPayload !== undefined;
+  const messagePreview = truncateLogText(
+    entry.message || ' ',
+    LOG_ROW_MESSAGE_PREVIEW_LIMIT,
+  );
+  const contextPreview = truncateLogText(
+    [entry.jsonPrefix, entry.jsonSuffix].filter(Boolean).join(' '),
+    LOG_ROW_CONTEXT_PREVIEW_LIMIT,
+  );
+  const showJsonLikeBadge =
+    !canExpand &&
+    isJsonLikeLogText(`${entry.message} ${entry.jsonPrefix ?? ''}`);
   const rowClassName =
     'grid w-full grid-cols-[44px_160px_72px_120px_minmax(0,1fr)] items-start gap-3 px-3 py-2 text-left transition-colors';
   const rowContent = (
@@ -678,18 +745,29 @@ function LogRow(props: {
       <span className="truncate text-xs text-muted-foreground">
         {entry.sourceLabel}
       </span>
-      <span className="grid min-w-0 gap-1 font-mono text-xs leading-5 text-primary">
-        <span className="flex min-w-0 flex-wrap items-center gap-1.5">
+      <span className="grid min-w-0 max-w-full gap-1 overflow-hidden font-mono text-xs leading-5 text-primary">
+        <span className="flex min-w-0 max-w-full items-start gap-1.5 overflow-hidden">
           {entry.jsonLabel ? (
-            <span className="rounded border bg-background px-1.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
-              {entry.jsonLabel}
-            </span>
+            <LogPreviewBadge>{entry.jsonLabel}</LogPreviewBadge>
           ) : null}
-          <span className="min-w-0 break-words">{entry.message || ' '}</span>
+          {showJsonLikeBadge ? (
+            <LogPreviewBadge>raw json</LogPreviewBadge>
+          ) : null}
+          <span className="max-h-10 min-w-0 max-w-full overflow-hidden break-all">
+            {messagePreview.text || ' '}
+          </span>
+          {messagePreview.isTruncated ? (
+            <LogPreviewBadge>truncated</LogPreviewBadge>
+          ) : null}
         </span>
-        {entry.jsonPrefix || entry.jsonSuffix ? (
-          <span className="break-words text-[11px] leading-4 text-muted-foreground">
-            {[entry.jsonPrefix, entry.jsonSuffix].filter(Boolean).join(' ')}
+        {contextPreview.text ? (
+          <span className="min-w-0 max-w-full break-all text-[11px] leading-4 text-muted-foreground">
+            {contextPreview.text}
+            {contextPreview.isTruncated ? (
+              <span className="ml-1 font-semibold text-primary/60">
+                truncated
+              </span>
+            ) : null}
           </span>
         ) : null}
         {entry.jsonPayload !== undefined ? (
@@ -734,13 +812,154 @@ function LogRow(props: {
   );
 }
 
+function getResponseErrorMessage(error: ResponseError) {
+  return getApiErrorDetail(error.error);
+}
+
+function isEmptyLogResponse(error: ResponseError) {
+  return /data is empty/i.test(getResponseErrorMessage(error));
+}
+
+function LogViewerState(props: {
+  action?: ReactNode;
+  description: string;
+  icon: LucideIcon;
+  title: string;
+  tone?: 'danger' | 'muted';
+}) {
+  const { action, description, icon: Icon, title, tone = 'muted' } = props;
+
+  return (
+    <div className="flex min-h-[360px] items-center justify-center px-6 py-12">
+      <div className="flex max-w-md flex-col items-center gap-4 text-center">
+        <div
+          className={cn(
+            'flex size-12 items-center justify-center rounded-lg border bg-background',
+            tone === 'danger'
+              ? 'border-red-500/25 text-red-500'
+              : 'text-muted-foreground',
+          )}
+        >
+          <Icon className="size-5" />
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm font-semibold text-primary">{title}</p>
+          <p className="text-sm leading-5 text-muted-foreground">
+            {description}
+          </p>
+        </div>
+        {action ? (
+          <div className="flex items-center gap-2">{action}</div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function useServerLogSourceDiscovery(serverId: string) {
+  const [rootLogsResponse, refreshRootLogs] = ApiFolder.Origin.$ServerId.useGet(
+    {
+      serverId,
+      basePath: SERVER_LOG_DISCOVERY_PATHS.root,
+    },
+  );
+  const [aptLogsResponse, refreshAptLogs] = ApiFolder.Origin.$ServerId.useGet({
+    serverId,
+    basePath: SERVER_LOG_DISCOVERY_PATHS.apt,
+  });
+  const [caddyLogsResponse, refreshCaddyLogs] =
+    ApiFolder.Origin.$ServerId.useGet({
+      serverId,
+      basePath: SERVER_LOG_DISCOVERY_PATHS.caddy,
+    });
+  const [dpanelAgentLogsResponse, refreshDpanelAgentLogs] =
+    ApiFolder.Origin.$ServerId.useGet({
+      serverId,
+      basePath: SERVER_LOG_DISCOVERY_PATHS.dpanelAgent,
+    });
+
+  const responses = useMemo(
+    () => [
+      rootLogsResponse,
+      aptLogsResponse,
+      caddyLogsResponse,
+      dpanelAgentLogsResponse,
+    ],
+    [
+      aptLogsResponse,
+      caddyLogsResponse,
+      dpanelAgentLogsResponse,
+      rootLogsResponse,
+    ],
+  );
+
+  const sources = useMemo(
+    () =>
+      buildServerLogSourcesFromDiscovery([
+        {
+          ...SERVER_LOG_DISCOVERY_DIRECTORIES[0],
+          entries:
+            rootLogsResponse.$status === 'success'
+              ? rootLogsResponse
+              : undefined,
+        },
+        {
+          ...SERVER_LOG_DISCOVERY_DIRECTORIES[1],
+          entries:
+            aptLogsResponse.$status === 'success' ? aptLogsResponse : undefined,
+        },
+        {
+          ...SERVER_LOG_DISCOVERY_DIRECTORIES[2],
+          entries:
+            caddyLogsResponse.$status === 'success'
+              ? caddyLogsResponse
+              : undefined,
+        },
+        {
+          ...SERVER_LOG_DISCOVERY_DIRECTORIES[3],
+          entries:
+            dpanelAgentLogsResponse.$status === 'success'
+              ? dpanelAgentLogsResponse
+              : undefined,
+        },
+      ]),
+    [
+      aptLogsResponse,
+      caddyLogsResponse,
+      dpanelAgentLogsResponse,
+      rootLogsResponse,
+    ],
+  );
+
+  const refresh = useCallback(() => {
+    refreshRootLogs();
+    refreshAptLogs();
+    refreshCaddyLogs();
+    refreshDpanelAgentLogs();
+  }, [
+    refreshAptLogs,
+    refreshCaddyLogs,
+    refreshDpanelAgentLogs,
+    refreshRootLogs,
+  ]);
+
+  return {
+    hasFailed: responses.some((response) => response.$status === 'failed'),
+    isLoading: responses.some(
+      (response) =>
+        response.$status === 'initial' || response.$status === 'loading',
+    ),
+    refresh,
+    sources,
+  };
+}
+
 export default function ServerLogViewerSidepanel(props: Props) {
   const { serverId, serverName } = props;
 
   const [selectedSourceId, setSelectedSourceId] = useState(DEFAULT_SOURCE_ID);
   const [lineCount, setLineCount] = useState(DEFAULT_LINE_COUNT);
-  const [customFilePath, setCustomFilePath] = useState('');
-  const [activeCustomFilePath, setActiveCustomFilePath] = useState('');
+  const [sourceSearchQuery, setSourceSearchQuery] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const logViewportRef = useRef<HTMLDivElement>(null);
@@ -748,28 +967,77 @@ export default function ServerLogViewerSidepanel(props: Props) {
   const [watchResponse, fetchWatch] =
     ApiFolder.Origin.$ServerId.Watch.useGetLazy();
 
-  const selectedSource = useMemo<ServerLogSource | undefined>(() => {
-    if (selectedSourceId === CUSTOM_SOURCE_ID && activeCustomFilePath) {
-      return {
-        id: CUSTOM_SOURCE_ID,
-        label: 'Custom',
-        path: activeCustomFilePath,
-        category: 'overview',
-      };
-    }
+  const sourceDiscovery = useServerLogSourceDiscovery(serverId);
+  const isUsingDiscoveredSources = sourceDiscovery.sources.length > 0;
+  const sourceCatalog = useMemo(() => {
+    if (!isUsingDiscoveredSources) return VM_LOG_SOURCES;
 
-    return VM_LOG_SOURCES.find((source) => source.id === selectedSourceId);
-  }, [activeCustomFilePath, selectedSourceId]);
+    const overviewSources = VM_LOG_SOURCES.filter((source) => !source.path);
+    return [...overviewSources, ...sourceDiscovery.sources];
+  }, [isUsingDiscoveredSources, sourceDiscovery.sources]);
+
+  const sourceFileCount = useMemo(
+    () => sourceCatalog.filter((source) => source.path).length,
+    [sourceCatalog],
+  );
+
+  const filteredSourceCatalog = useMemo(() => {
+    const normalizedQuery = sourceSearchQuery.trim().toLowerCase();
+    if (!normalizedQuery) return sourceCatalog;
+
+    return sourceCatalog.filter((source) =>
+      `${source.label} ${source.path ?? ''}`
+        .toLowerCase()
+        .includes(normalizedQuery),
+    );
+  }, [sourceCatalog, sourceSearchQuery]);
+
+  const filteredSourceFileCount = useMemo(
+    () => filteredSourceCatalog.filter((source) => source.path).length,
+    [filteredSourceCatalog],
+  );
+
+  const sourceStatusText = sourceDiscovery.isLoading
+    ? 'Discovering...'
+    : sourceDiscovery.hasFailed && !isUsingDiscoveredSources
+      ? 'Default sources'
+      : `${sourceFileCount} log files`;
+
+  const resolvedSelectedSourceId = useMemo(() => {
+    const matchingSource = sourceCatalog.find(
+      (source) => source.id === selectedSourceId,
+    );
+    if (matchingSource) return matchingSource.id;
+
+    return (
+      sourceCatalog.find((source) => source.id === DEFAULT_SOURCE_ID)?.id ??
+      sourceCatalog.find((source) => source.path)?.id ??
+      sourceCatalog[0]?.id ??
+      selectedSourceId
+    );
+  }, [selectedSourceId, sourceCatalog]);
+
+  const selectedSource = useMemo<ServerLogSource | undefined>(() => {
+    return sourceCatalog.find(
+      (source) => source.id === resolvedSelectedSourceId,
+    );
+  }, [resolvedSelectedSourceId, sourceCatalog]);
 
   useEffect(() => {
-    if (!selectedSource || selectedSourceId === CUSTOM_SOURCE_ID) return;
+    if (!selectedSource) return;
 
     fetchWatch({
       serverId,
       filePath: selectedSource.path,
       line: lineCount,
     });
-  }, [fetchWatch, lineCount, selectedSource, selectedSourceId, serverId]);
+  }, [
+    fetchWatch,
+    lineCount,
+    resolvedSelectedSourceId,
+    selectedSource,
+    serverId,
+  ]);
 
   const logLines = useMemo(
     () => (watchResponse.$status === 'success' ? [...watchResponse] : []),
@@ -794,6 +1062,8 @@ export default function ServerLogViewerSidepanel(props: Props) {
   const activePath = selectedSource?.path ?? 'All VM logs';
   const latestLogLine =
     logLines.length > 0 ? logLines[logLines.length - 1] : '';
+  const isEmptyLogFile =
+    watchResponse.$status === 'failed' && isEmptyLogResponse(watchResponse);
 
   useEffect(() => {
     if (watchResponse.$status !== 'success') return;
@@ -814,22 +1084,7 @@ export default function ServerLogViewerSidepanel(props: Props) {
 
   const handleClickSource = (source: ServerLogSource) => {
     setSelectedSourceId(source.id);
-    setActiveCustomFilePath('');
     setExpandedRows(new Set());
-  };
-
-  const handleApplyCustomPath = () => {
-    const nextPath = customFilePath.trim();
-    if (!nextPath) return;
-
-    setSelectedSourceId(CUSTOM_SOURCE_ID);
-    setActiveCustomFilePath(nextPath);
-    setExpandedRows(new Set());
-    fetchWatch({
-      serverId,
-      filePath: nextPath,
-      line: lineCount,
-    });
   };
 
   const handleRefresh = () => {
@@ -867,40 +1122,58 @@ export default function ServerLogViewerSidepanel(props: Props) {
 
       <div className="grid h-full min-h-0 flex-1 grid-cols-[300px_1fr] overflow-hidden border-t bg-background">
         <aside className="grid min-h-0 grid-rows-[auto_1fr] overflow-hidden border-r">
-          <div className="space-y-3 border-b p-3">
-            <div className="flex items-center gap-2">
-              <FileTextIcon className="size-4 text-muted-foreground" />
-              <p className="text-sm font-semibold text-primary">Sources</p>
+          <div className="space-y-3 border-b bg-card/30 p-3">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-2.5">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground">
+                  <FileTextIcon className="size-4" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold text-primary">
+                    Sources
+                  </span>
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {sourceStatusText}
+                  </span>
+                </span>
+              </div>
+
+              <ToolbarIconButton
+                className="shrink-0 bg-background"
+                disabled={sourceDiscovery.isLoading}
+                onClick={sourceDiscovery.refresh}
+                title="Refresh log sources"
+              >
+                <RefreshCwIcon
+                  className={cn(
+                    'size-4',
+                    sourceDiscovery.isLoading && 'animate-spin',
+                  )}
+                />
+              </ToolbarIconButton>
             </div>
 
-            <div className="grid grid-cols-[1fr_auto] gap-2">
+            <div className="relative">
+              <SearchIcon className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
+                className="h-9 pl-8"
                 inputSize="sm"
-                value={customFilePath}
-                placeholder="/var/log/..."
-                onChange={(event) => setCustomFilePath(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    handleApplyCustomPath();
-                  }
-                }}
+                value={sourceSearchQuery}
+                placeholder="Search log files"
+                onChange={(event) => setSourceSearchQuery(event.target.value)}
               />
-              <Button
-                className="h-8 px-2"
-                buttonColor="secondary"
-                size="icon-sm"
-                onClick={handleApplyCustomPath}
-                title="Open custom source"
-                aria-label="Open custom source"
-              >
-                <SearchIcon className="size-4" />
-              </Button>
             </div>
+
+            {sourceSearchQuery.trim() ? (
+              <p className="px-1 text-xs text-muted-foreground">
+                Showing {filteredSourceFileCount} of {sourceFileCount} log files
+              </p>
+            ) : null}
           </div>
 
           <div className="min-h-0 space-y-4 overflow-y-auto p-2">
             {VM_LOG_SOURCE_CATEGORIES.map((category) => {
-              const sources = VM_LOG_SOURCES.filter(
+              const sources = filteredSourceCatalog.filter(
                 (source) => source.category === category.id,
               );
               if (sources.length === 0) return null;
@@ -911,9 +1184,7 @@ export default function ServerLogViewerSidepanel(props: Props) {
                     {category.label}
                   </p>
                   {sources.map((source) => {
-                    const isSelected =
-                      selectedSourceId === source.id &&
-                      selectedSourceId !== CUSTOM_SOURCE_ID;
+                    const isSelected = resolvedSelectedSourceId === source.id;
 
                     return (
                       <button
@@ -960,31 +1231,10 @@ export default function ServerLogViewerSidepanel(props: Props) {
               );
             })}
 
-            {activeCustomFilePath ? (
-              <section className="space-y-1">
-                <p className="px-2 text-[11px] font-medium uppercase text-muted-foreground">
-                  Custom
-                </p>
-                <button
-                  type="button"
-                  title={activeCustomFilePath}
-                  onClick={() => setSelectedSourceId(CUSTOM_SOURCE_ID)}
-                  className={cn(
-                    'flex w-full cursor-pointer items-center gap-2 rounded-md border px-2 py-2 text-left transition-colors',
-                    selectedSourceId === CUSTOM_SOURCE_ID
-                      ? 'border-border bg-card text-primary shadow-sm'
-                      : 'border-transparent text-primary hover:bg-border/60',
-                  )}
-                >
-                  <ScrollTextIcon className="size-3.5 shrink-0" />
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm">Custom</span>
-                    <span className="block truncate text-[11px] opacity-75">
-                      {activeCustomFilePath}
-                    </span>
-                  </span>
-                </button>
-              </section>
+            {filteredSourceCatalog.length === 0 ? (
+              <p className="px-2 py-4 text-sm text-muted-foreground">
+                No log files match the search.
+              </p>
             ) : null}
           </div>
         </aside>
@@ -1054,21 +1304,80 @@ export default function ServerLogViewerSidepanel(props: Props) {
           <div ref={logViewportRef} className="min-h-0 overflow-y-auto">
             {watchResponse.$status === 'initial' ||
             watchResponse.$status === 'loading' ? (
-              <div className="flex justify-center pt-8">
-                <Spinner />
-              </div>
+              <LogViewerState
+                description="Fetching the latest lines from the selected source."
+                icon={ScrollTextIcon}
+                title="Loading log entries"
+                action={<Spinner size="sm" />}
+              />
+            ) : watchResponse.$status === 'failed' && isEmptyLogFile ? (
+              <LogViewerState
+                description="This log file exists, but no entries were returned for the selected range."
+                icon={InboxIcon}
+                title="No log entries yet"
+                action={
+                  <Button
+                    buttonColor="secondary"
+                    buttonStyle="outline"
+                    size="sm"
+                    onClick={handleRefresh}
+                  >
+                    <RefreshCwIcon className="size-4" />
+                    Refresh
+                  </Button>
+                }
+              />
             ) : watchResponse.$status === 'failed' ? (
-              <p className="p-4 text-sm text-red-500">
-                Failed to load logs: {watchResponse.error.message}
-              </p>
+              <LogViewerState
+                description={getResponseErrorMessage(watchResponse)}
+                icon={AlertCircleIcon}
+                title="Unable to load logs"
+                tone="danger"
+                action={
+                  <Button
+                    buttonColor="secondary"
+                    buttonStyle="outline"
+                    size="sm"
+                    onClick={handleRefresh}
+                  >
+                    <RefreshCwIcon className="size-4" />
+                    Retry
+                  </Button>
+                }
+              />
             ) : parsedLogLines.length === 0 ? (
-              <p className="p-4 text-sm text-muted-foreground">
-                No log lines found.
-              </p>
+              <LogViewerState
+                description="The selected source returned an empty log for the current line limit."
+                icon={InboxIcon}
+                title="No log entries yet"
+                action={
+                  <Button
+                    buttonColor="secondary"
+                    buttonStyle="outline"
+                    size="sm"
+                    onClick={handleRefresh}
+                  >
+                    <RefreshCwIcon className="size-4" />
+                    Refresh
+                  </Button>
+                }
+              />
             ) : filteredLogLines.length === 0 ? (
-              <p className="p-4 text-sm text-muted-foreground">
-                No log lines match the filter.
-              </p>
+              <LogViewerState
+                description="Try a different keyword or clear the filter to see all returned log lines."
+                icon={FileSearchIcon}
+                title="No matching log lines"
+                action={
+                  <Button
+                    buttonColor="secondary"
+                    buttonStyle="outline"
+                    size="sm"
+                    onClick={() => setSearchQuery('')}
+                  >
+                    Clear filter
+                  </Button>
+                }
+              />
             ) : (
               <div className="min-w-[780px]">
                 <div className="sticky top-0 z-10 grid grid-cols-[44px_160px_72px_120px_minmax(0,1fr)] gap-3 border-b bg-card px-3 py-2 text-[11px] font-semibold uppercase text-muted-foreground">

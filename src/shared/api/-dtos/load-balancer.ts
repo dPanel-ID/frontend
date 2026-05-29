@@ -4,6 +4,7 @@
 //
 // =============================================================================
 
+import type { ExecutionErrorDetailV1 } from './execution-error-detail';
 import type { MachineV1 } from './machine';
 import type { OrganizationV1 } from './organization';
 
@@ -55,7 +56,30 @@ export interface LoadBalancerV2 {
   };
   installer_status?: string;
   error?: string;
+  error_detail?: ExecutionErrorDetailV1 | null;
   created_at?: string;
   updated_at?: string;
   machine?: MachineV1;
+}
+
+export interface LoadBalancerLogEntryV2 {
+  time?: string | number;
+  line?: string | null;
+  severity?: string;
+  attributes?: Record<string, unknown> | null;
+}
+
+export interface LoadBalancerLogsV2 {
+  load_balancer_id: string;
+  machine_id: string;
+  engine: string;
+  domain: string;
+  file_path: string;
+  time_gte: string;
+  time_lt: string;
+  limit: number;
+  lines?: Array<string | null> | null;
+  entries?: LoadBalancerLogEntryV2[] | null;
+  query?: string;
+  query_errors?: string[] | null;
 }

@@ -1,5 +1,7 @@
 import type z from 'zod';
 
+import { resolveExecutionErrorMessage } from '@/entities/shared/lib/resolveExecutionErrorMessage';
+
 import type { DTOs } from '@/shared/api';
 import { iife } from '@/shared/libs/browser/fn';
 import { excludeNully } from '@/shared/libs/browser/typeguards';
@@ -17,7 +19,7 @@ export function ctorState(
   raw: DTOs.ArtifactV1,
 ): KeysOnlyDeep<z.input<typeof state>> {
   return {
-    message: raw.error,
+    message: resolveExecutionErrorMessage(raw),
     status: raw.installer_status,
   };
 }

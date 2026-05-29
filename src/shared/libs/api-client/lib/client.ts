@@ -10,7 +10,7 @@ import {
 } from '../config';
 import type { ApiClientResponse, BaseResponse } from '../rules/types';
 
-import { BaseResponseError } from './error';
+import { BaseResponseError, normalizeApiError } from './error';
 
 export const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_BACKEND,
@@ -67,19 +67,30 @@ export async function apiClient<D>(
 
     return data;
   } catch (error) {
-    if (error instanceof AxiosError) {
+    const normalizedError = normalizeApiError(error);
+
+    if (
+      normalizedError instanceof AxiosError ||
+      normalizedError instanceof BaseResponseError
+    ) {
       return {
         $status: 'failed',
         kind: 'api',
-        $statusCode: error.status,
-        error,
+        $statusCode:
+          normalizedError instanceof AxiosError
+            ? normalizedError.status
+            : normalizedError.code,
+        error: normalizedError,
       };
     }
 
     return {
       $status: 'failed',
       kind: 'general',
-      error: error instanceof Error ? error : Error(String(error)),
+      error:
+        normalizedError instanceof Error
+          ? normalizedError
+          : Error(String(normalizedError)),
     };
   }
 }

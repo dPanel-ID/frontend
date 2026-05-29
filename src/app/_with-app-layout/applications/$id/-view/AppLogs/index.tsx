@@ -1,9 +1,5 @@
 import { useDevetekTranslations } from '@/services/i18n';
 
-import {
-  couple,
-  guardedSelects,
-} from '@/shared/libs/react-factories/guardedSelect';
 import { FailedState } from '@/widgets/failed-state';
 
 import { useAppDataModel } from '../../-model/app-data';
@@ -13,51 +9,67 @@ import { useEmit } from '../../-model/events';
 import AppLogsSection from './_presentation/AppLogsSection';
 import LogViewer from './_presentation/LogViewer';
 
-const LogError = () => {
-  const [refreshLog] = useAppLogsModel((s) => [s.refreshLog]);
-
-  return (
-    <div className="p-4 pt-0">
-      <FailedState.BannerRetryable onClickRetry={refreshLog} />
-    </div>
-  );
-};
-
-const [guardLogs, useLogs] = guardedSelects({
-  fallbackError: LogError,
-})(couple(useAppLogsModel, (s) => s.log));
-
-const LogView = guardLogs(() => {
-  const logBuffer = useLogs((s) => s);
+const LogView = () => {
+  const [log, refreshLog, timeFilter] = useAppLogsModel((s) => [
+    s.log,
+    s.refreshLog,
+    s.timeFilter,
+  ]);
   const t = useDevetekTranslations('page.applicationDetail.appLogs');
+  const logBuffer =
+    log.$status === 'success'
+      ? log
+      : log.$status === 'loading' && log.prevData
+        ? log.prevData
+        : [];
+
+  if (log.$status === 'failed') {
+    return (
+      <div className="p-4 pt-0">
+        <FailedState.BannerRetryable onClickRetry={refreshLog} />
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 pt-0">
       <LogViewer
         ariaLabel={t('runtimeLogOutput')}
-        logs={logBuffer.join('\n')}
+        emptyLabel={t('emptyLog')}
+        lines={logBuffer}
+        scrollResetKey={`${timeFilter}:${logBuffer.length}:${logBuffer[0] ?? ''}`}
       />
     </div>
   );
-});
+};
 
-const [guardAppDetail, useAppDetail] = guardedSelects({
-  initialIsLoading: true,
-  fallbackLoading: () => null,
-  fallbackError: () => null,
-})(couple(useAppDataModel, (s) => s.appDetail));
-
-export default guardAppDetail(function AppLogs() {
-  const [logFilename, setLogSelection] = useAppLogsModel((s) => [
+export default function AppLogs() {
+  const [
+    lineLimit,
+    logFilename,
+    logLines,
+    refreshLog,
+    selectTimeFilter,
+    setLogSelection,
+    timeFilter,
+  ] = useAppLogsModel((s) => [
+    s.lineLimit,
     s.logFilename,
+    s.logLines,
+    s.refreshLog,
+    s.selectTimeFilter,
     s.setLogSelection,
+    s.timeFilter,
   ]);
 
-  const appDetail = useAppDetail((s) => s);
+  const [appDetailResponse] = useAppDataModel((s) => [s.appDetail]);
 
   const [selectedServerId] = useAppDataModel((s) => [s.selectedServerId]);
-
   const emit = useEmit();
+
+  if (appDetailResponse.$status !== 'success') return null;
+
+  const appDetail = appDetailResponse;
   const lifecycle = appDetail.configDefs.lifecycle;
   const initialServerId =
     selectedServerId || appDetail.deploymentTargets[0]?.id;
@@ -69,6 +81,11 @@ export default guardAppDetail(function AppLogs() {
   const handleClickLogs = () => {
     if (!lifecycle?.run.name) return;
     if (!Number.isFinite(initialMachineID)) return;
+
+    if (logFilename) {
+      refreshLog();
+      return;
+    }
 
     setLogSelection({
       filename: lifecycle.run.name,
@@ -82,12 +99,16 @@ export default guardAppDetail(function AppLogs() {
 
   return (
     <AppLogsSection
+      activeTimeFilter={timeFilter}
       selectedLogs={logFilename}
       ctaLogsDisabled={!canSelectLogs}
+      lineCount={logLines.length}
+      lineLimit={lineLimit}
       onClickLogs={handleClickLogs}
       onClickDownloadLog={handleClickDownloadLog}
+      onSelectTimeFilter={selectTimeFilter}
     >
       <LogView />
     </AppLogsSection>
   );
-});
+}

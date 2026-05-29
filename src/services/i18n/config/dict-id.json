@@ -387,7 +387,10 @@
         "logs": "Log",
         "artifactLogsTitle": "Log Artefak",
         "artifactLogsDescription": "Commit {commit}",
-        "artifactLogOutput": "Output log artefak"
+        "artifactLogOutput": "Output log artefak",
+        "artifactLogLatestLines": "Output build terbaru",
+        "artifactLogLineWindow": "{count}/{limit} baris",
+        "artifactLogEmpty": "Belum ada log build."
       },
       "usageStats": {
         "title": "Statistik Penggunaan",
@@ -404,7 +407,14 @@
         "refreshLog": "Muat ulang log runtime",
         "selectLog": "Pilih log aplikasi",
         "downloadLog": "Download log terpilih",
-        "runtimeLogOutput": "Output log runtime"
+        "runtimeLogOutput": "Output log runtime",
+        "timeRangeLabel": "Rentang waktu log runtime",
+        "tenMinutes": "10m",
+        "oneHour": "1j",
+        "last10Minutes": "10 menit terakhir",
+        "lastHour": "1 jam terakhir",
+        "lineWindow": "{count}/{limit} baris",
+        "emptyLog": "Tidak ada log runtime pada rentang ini."
       },
       "dangerZone": {
         "title": "Danger Zone",
@@ -817,33 +827,410 @@
       "headerTitle": "Load Balancer",
       "headerDesc": "Lihat load balancer anda di sini.",
       "headerFootnote": "Kunjungi <a>kanal YouTube</a> kami untuk panduannya.",
+      "docs": "Docs",
+      "createLoadBalancer": "Buat Load Balancer",
       "gatewayServer": "Server Gerbang",
       "gatewayAddress": "Alamat Gerbang",
       "gatewayServerAndAddress": "Server & Alamat Gerbang",
       "enabledFeatures": "Fitur",
+      "features": "Fitur",
       "xUpstream": "{length} Upstream(s)",
+      "xRules": "{length} Aturan",
       "xPorts": "{length} Port(s)",
+      "lbKind": "Tipe LB",
+      "destination": "Tujuan",
+      "targetApplication": "Aplikasi #{id}",
+      "staticFiles": "File statis",
+      "noRules": "Belum ada aturan routing tercatat.",
+      "noFeatures": "Belum ada metadata fitur tercatat.",
+      "noGateway": "Belum ada server gateway",
+      "noAddress": "Tidak ada alamat",
+      "noDescription": "Tidak ada deskripsi",
+      "personalScope": "Lingkup personal",
+      "statusMessage": "Pesan status",
+      "moreRoutes": "+{count} route lainnya",
+      "openDetails": "Buka detail untuk {domain}",
+      "openDomain": "Buka {domain}",
+      "table": {
+        "loadBalancer": "Load Balancer",
+        "gateway": "Gateway",
+        "routing": "Routing"
+      },
+      "sections": {
+        "routingRules": "Aturan routing"
+      },
       "emptyState": {
         "title": "Belum ada load balancer terdaftar.",
         "message": "Kenapa tidak tambah baru untuk memulai?",
         "cta": "Tambah load balancer"
       }
     },
+    "loadBalancersCreate": {
+      "headerTitle": "Buat Load Balancer",
+      "headerDesc": "Tentukan gateway, aturan routing, dan perilaku protokol sebelum membuat load balancer.",
+      "loading": "Memuat...",
+      "progress": {
+        "title": "Progres pembuatan",
+        "description": "Lengkapi pengecekan gateway, routing, dan preview.",
+        "stepLabel": "Langkah {step}",
+        "gateway": {
+          "label": "Gateway",
+          "description": "Pilih titik masuk dan identitas DNS."
+        },
+        "routing": {
+          "label": "Routing",
+          "description": "Atur path L7 atau tujuan L4."
+        },
+        "preview": {
+          "label": "Preview",
+          "description": "Tinjau payload sebelum dibuat."
+        }
+      },
+      "gateway": {
+        "title": "Identitas gateway",
+        "description": "Beri nama load balancer, pilih domain yang akan diakses pengguna, dan pilih server yang menjalankan layanan gateway.",
+        "nameHint": "Gunakan nama operasional yang jelas agar mudah dipindai di daftar.",
+        "namePlaceholder": "Gateway API produksi",
+        "domainHint": "Gunakan hostname eksternal atau pilih record domain terkelola.",
+        "domainMode": "Mode domain",
+        "externalDomain": "Eksternal",
+        "internalDomain": "Terkelola",
+        "subdomain": "Subdomain",
+        "selectDomain": "Pilih domain",
+        "engineHint": "Pilih modul infrastruktur dari katalog server terpilih. dPanel akan memakai metadata modul ini untuk playbook load balancer yang dibuat.",
+        "engineRuntime": "Runtime gateway",
+        "searchEngine": "Cari modul infrastruktur...",
+        "selectServerFirst": "Pilih server gateway sebelum memilih modul engine.",
+        "loadingEngines": "Memuat modul infrastruktur...",
+        "engineLoadFailed": "Tidak dapat memuat modul infrastruktur untuk server ini.",
+        "engineDetailFailed": "Tidak dapat membaca kontrak modul infrastruktur terpilih.",
+        "noInfrastructureEngines": "Tidak ada modul infrastruktur dari katalog IaC workspace untuk server ini.",
+        "noEnginesForSearch": "Tidak ada modul infrastruktur yang cocok dengan pencarian ini.",
+        "installedInfrastructureTitle": "Dilaporkan di gateway terpilih",
+        "installedInfrastructureDescription": "Pilih modul infrastruktur terpasang yang sudah dilaporkan oleh mesin terpilih. Modul yang masih diinstal tetap ditampilkan dan bisa dipilih setelah siap.",
+        "availableInfrastructureTitle": "Instal modul infrastruktur",
+        "availableInfrastructureDescription": "Cari katalog IaC workspace dan buka modal instalasi yang sama seperti detail server.",
+        "noInstalledInfrastructure": "Belum ada modul infrastruktur terpasang atau sedang diinstal yang dilaporkan untuk server gateway ini.",
+        "noAvailableInfrastructure": "Semua modul infrastruktur dari katalog ini sudah dilaporkan pada gateway terpilih.",
+        "infrastructureCategory": "Infrastruktur",
+        "installedBadge": "Terpasang",
+        "installingBadge": "Sedang diinstal",
+        "loadingMetadata": "Memuat metadata",
+        "playbookReady": "Playbook siap",
+        "serverHint": "Pilih server yang akan menerima dan menjalankan load balancer ini.",
+        "searchServer": "Cari server...",
+        "openInstallModal": "Instal",
+        "noServers": "Tidak ada server yang cocok.",
+        "selectedServer": "Gateway dipilih: {server}",
+        "noSelectedServer": "Belum ada server gateway dipilih.",
+        "pageOf": "Halaman {page} dari {total}"
+      },
+      "routing": {
+        "title": "Routing trafik",
+        "description": "Pilih layer trafik dan arahkan request masuk ke aplikasi atau alamat upstream langsung.",
+        "kindHint": "L7 cocok untuk routing path HTTP. L4 cocok untuk TCP, UDP, atau port database.",
+        "featuresHint": "Protokol dan SSL disimpan di konfigurasi load balancer.",
+        "sslHint": "Aktifkan TLS jika gateway ini harus melayani trafik aman.",
+        "l7Hint": "Setiap aturan mencocokkan path masuk dan meneruskannya ke aplikasi atau upstream.",
+        "l4Hint": "L4 meneruskan trafik ke satu atau beberapa alamat upstream tanpa inspeksi path HTTP.",
+        "wildcard": "Wildcard"
+      },
+      "preview": {
+        "title": "Preview deployment",
+        "description": "Konfirmasi server gateway, engine, mode routing, dan tujuan sebelum membuat load balancer.",
+        "routesTitle": "Ringkasan route",
+        "routesDescription": "Aturan ini akan dikirim ke API create load balancer.",
+        "submitNote": "dPanel akan membuat load balancer dan mengirim input routing terpilih untuk provisioning.",
+        "enabled": "Aktif",
+        "disabled": "Nonaktif"
+      },
+      "actions": {
+        "continue": "Lanjutkan",
+        "create": "Buat Load Balancer"
+      },
+      "toaster": {
+        "fixGateway": "Lengkapi detail gateway sebelum melanjutkan.",
+        "fixRouting": "Lengkapi aturan routing sebelum melanjutkan.",
+        "engineLoading": "Tunggu hingga metadata modul engine terpilih selesai dimuat.",
+        "engineRequired": "Pilih modul engine infrastruktur dengan kontrak install yang dapat dibaca."
+      }
+    },
+    "loadBalancersDetail": {
+      "headerTitle": "Detail Load Balancer",
+      "headerDesc": "Periksa routing, konfigurasi gateway, kepemilikan, dan log untuk load balancer ini.",
+      "state": {
+        "loading": "Memuat detail load balancer...",
+        "failedTitle": "Gagal memuat load balancer"
+      },
+      "metrics": {
+        "routes": "Route",
+        "gateway": "Gateway"
+      },
+      "backendUpdateRequired": "Simpan perubahan",
+      "tabs": {
+        "graph": "Graf",
+        "graphDesc": "Peta topologi",
+        "upstreams": "Upstream",
+        "upstreamsDesc": "Backend dan urutan",
+        "logs": "Log",
+        "logsDesc": "Bukti trafik",
+        "config": "Konfigurasi",
+        "configDesc": "Pengaturan global"
+      },
+      "sections": {
+        "routing": "Aturan routing",
+        "routingDesc": "Tinjau bagaimana trafik masuk dicocokkan dan diteruskan.",
+        "logs": "Log request gateway",
+        "logsDesc": "Periksa request gateway terstruktur dengan rentang waktu terbatas dan hasil yang bisa digulir.",
+        "gateway": "Gateway",
+        "gatewayDesc": "Server, alamat, dan entry point publik yang digunakan load balancer ini.",
+        "configuration": "Konfigurasi",
+        "configurationDesc": "Perilaku runtime global dan toggle provider untuk load balancer ini.",
+        "ownershipDesc": "Pemilik, lingkup workspace, dan timestamp siklus hidup."
+      },
+      "graph": {
+        "title": "Graf trafik",
+        "description": "Ikuti jalur request dari domain ke load balancer, mesin gateway, aturan route, dan target akhir.",
+        "requestPath": "Topologi jalur request",
+        "domain": "Domain",
+        "gateway": "Mesin gateway",
+        "targets": "Target",
+        "entryPoint": "Entry point publik",
+        "edgeRuntime": "Runtime edge",
+        "gatewayLinked": "Server tertaut",
+        "routeFanout": "Route",
+        "activeRoutes": "Route aktif",
+        "targetSummary": "Fan-out backend",
+        "emptyTargets": "Belum ada preview target.",
+        "targetCount": "{count} target",
+        "routeCount": "{count} route",
+        "routeMap": "Peta route",
+        "routeMapDesc": "Semua route dan target backend yang ada di definisi load balancer saat ini."
+      },
+      "upstreams": {
+        "title": "Upstream dan urutan backend",
+        "description": "Tinjau target backend sebagai record routing read-only. Ganti aturan dengan menghapusnya lalu menambahkan backend baru.",
+        "backendRequired": "Penyimpanan akan memperbarui definisi routing load balancer dan menjalankan playbook gateway.",
+        "resetDraft": "Reset draft",
+        "saveTitle": "Simpan perubahan routing upstream",
+        "saveSuccess": "Update routing load balancer sudah dikirim.",
+        "saveFailed": "Gagal memperbarui routing load balancer",
+        "addBackend": "Tambah backend",
+        "addBackendTitle": "Tambah target backend",
+        "addBackendDesc": "Buat draft backend dari aplikasi yang ada atau alamat dan port manual, sama seperti konfigurasi routing saat membuat load balancer.",
+        "backendType": "Tipe backend",
+        "addToDraft": "Tambahkan ke draft",
+        "removeBackend": "Hapus backend",
+        "empty": "Belum ada target upstream atau backend yang dikonfigurasi.",
+        "match": "Match",
+        "matchPlaceholder": "/*",
+        "searchApplications": "Cari aplikasi...",
+        "applicationLoadFailed": "Tidak dapat memuat aplikasi.",
+        "noApplications": "Tidak ada aplikasi yang cocok dengan pencarian ini.",
+        "addressPlaceholder": "localhost",
+        "portPlaceholder": "80",
+        "destination": "Tujuan",
+        "moveUp": "Pindahkan upstream ke atas",
+        "moveDown": "Pindahkan upstream ke bawah",
+        "kind": {
+          "application": "Aplikasi",
+          "address": "Alamat",
+          "static": "Statis"
+        }
+      },
+      "config": {
+        "backendRequired": "Pengaturan global ini ditampilkan sebagai draft yang bisa diedit. Penyimpanan SSL, proxy Cloudflare, dan perubahan protokol membutuhkan endpoint update backend.",
+        "ssl": "Aktifkan SSL",
+        "sslDesc": "Layani load balancer dengan perilaku HTTPS/TLS saat engine gateway mendukungnya.",
+        "cloudflare": "Aktifkan proxy Cloudflare",
+        "cloudflareDesc": "Tandai record domain terkelola sebagai proxied melalui Cloudflare saat provider domain mendukungnya.",
+        "protocol": "Protokol"
+      },
+      "logs": {
+        "accessTitle": "Log akses",
+        "errorTitle": "Log error",
+        "errorSource": "Filter baris access log 4xx/5xx",
+        "telemetrySource": "Telemetri dPanel",
+        "requestsTitle": "Request gateway",
+        "requestsCount": "{count} request",
+        "errorCount": "{count} error",
+        "modeLabel": "Mode tampilan log",
+        "allRequests": "Semua request",
+        "errorsOnly": "Error saja",
+        "filterTitle": "Rentang log",
+        "filterDesc": "Rentang default adalah 10 menit terakhir. Perluas rentang untuk memeriksa request gateway yang lebih lama; hasil tetap dibatasi untuk performa.",
+        "limitLabel": "Hingga {count} entri",
+        "fromLabel": "Dari",
+        "toLabel": "Sampai",
+        "clearRange": "Bersihkan rentang",
+        "resetRange": "10 menit terakhir",
+        "table": {
+          "time": "Waktu",
+          "method": "Metode",
+          "status": "Status",
+          "request": "Request",
+          "remote": "IP remote",
+          "duration": "Durasi",
+          "size": "Ukuran"
+        },
+        "loading": "Memuat baris log...",
+        "emptyAccess": "Belum ada request gateway.",
+        "emptyError": "Tidak ada request gateway 4xx atau 5xx di access log.",
+        "unavailableTitle": "Log tidak tersedia",
+        "unavailableDesc": "Load balancer ini belum memiliki metadata gateway yang cukup untuk menemukan file log."
+      }
+    },
     "domain": {
       "headerTitle": "Domain & DNS",
       "headerDesc": "Lihat domain dan DNS anda yang telah teregistrasi di sini.",
       "headerFootnote": "Kunjungi <a>kanal YouTube</a> kami untuk panduannya.",
+      "docs": "Docs",
+      "createDomain": "Tambah domain",
       "emptyState": {
         "title": "Belum ada domain terdaftar.",
         "message": "Kenapa tidak tambah baru untuk memulai?",
         "cta": "Tambah domain"
       },
+      "managedDns": "Zona DNS terkelola",
+      "noDescription": "Tidak ada deskripsi",
+      "personalScope": "Lingkup personal",
+      "providerUnknown": "Provider tidak diketahui",
+      "openDetails": "Buka detail untuk {domain}",
+      "credentials": "Kredensial",
+      "credentialsRedacted": "Disimpan aman",
+      "zoneApex": "Apex zona",
+      "wildcardRecord": "Wildcard",
       "table": {
         "headers": {
           "domain": "Domain",
+          "provider": "Provider",
           "owner": "Pemilik",
           "lastModified": "Terakhir Diubah"
         }
+      },
+      "sections": {
+        "provider": "Provider",
+        "dns": "Zona DNS",
+        "ownership": "Kepemilikan"
+      }
+    },
+    "domainCreate": {
+      "documentTitle": "Tambah Domain",
+      "headerTitle": "Tambah Domain",
+      "headerDesc": "Hubungkan provider DNS dan daftarkan zona terkelola untuk routing aplikasi.",
+      "backToDomains": "Kembali ke domain",
+      "docs": "Docs",
+      "progress": {
+        "title": "Kesiapan registrasi",
+        "description": "Lengkapi detail wajib sebelum dPanel menyimpan koneksi provider."
+      },
+      "steps": {
+        "domain": {
+          "eyebrow": "Langkah 1",
+          "title": "Domain",
+          "description": "Gunakan zona DNS yang akan dikelola dPanel."
+        },
+        "provider": {
+          "eyebrow": "Langkah 2",
+          "title": "Provider",
+          "description": "Pilih tempat zona DNS di-host."
+        },
+        "credentials": {
+          "eyebrow": "Langkah 3",
+          "title": "Kredensial",
+          "description": "Tambahkan token provider dan referensi zona."
+        },
+        "review": {
+          "eyebrow": "Langkah 4",
+          "title": "Review",
+          "description": "Periksa ringkasan aman sebelum membuat."
+        }
+      },
+      "sections": {
+        "identity": {
+          "title": "Identitas domain",
+          "description": "Beri nama zona DNS dan catatan internal singkat untuk workspace Anda."
+        },
+        "provider": {
+          "title": "Provider DNS",
+          "description": "Pilih kontrak provider yang akan digunakan dPanel untuk mengelola record."
+        },
+        "credentials": {
+          "title": "Kredensial provider",
+          "description": "Kredensial dikirim ke backend dan tidak ditampilkan di panel review."
+        }
+      },
+      "fields": {
+        "domain": {
+          "label": "Domain",
+          "description": "Zona apex atau subdomain, misalnya example.com.",
+          "placeholder": "example.com"
+        },
+        "description": {
+          "label": "Deskripsi",
+          "description": "Catatan opsional agar rekan tim mudah mengenali zona ini.",
+          "placeholder": "Domain marketing produksi"
+        },
+        "token": {
+          "label": "Token API",
+          "description": "Gunakan token terbatas dengan izin membaca dan mengubah record DNS.",
+          "placeholder": "Tempel token provider"
+        },
+        "zoneId": {
+          "label": "Zone ID",
+          "description": "Identifier zona Cloudflare untuk domain terpilih.",
+          "placeholder": "Zone ID Cloudflare"
+        }
+      },
+      "providers": {
+        "cloudflare": {
+          "name": "Cloudflare",
+          "badge": "Wajib Zone ID",
+          "description": "Cocok untuk zona Cloudflare dengan token DNS edit terbatas."
+        },
+        "digitalOcean": {
+          "name": "DigitalOcean",
+          "badge": "Domain sebagai zona",
+          "description": "Gunakan token DigitalOcean; dPanel mengambil referensi zona dari nama domain."
+        }
+      },
+      "credentialHelp": {
+        "title": "Panduan kredensial",
+        "cloudflare": "Buat token dengan akses edit DNS zona dan salin zone ID dari overview domain Cloudflare.",
+        "digitalOcean": "Buat token API DigitalOcean dengan akses record domain. Nama domain digunakan sebagai referensi zona."
+      },
+      "review": {
+        "title": "Review aman",
+        "description": "Nilai sensitif sengaja disamarkan dari ringkasan ini.",
+        "domain": "Domain",
+        "provider": "Provider",
+        "zone": "Referensi zona",
+        "credentials": "Kredensial",
+        "credentialsReady": "Token tersedia",
+        "zoneReady": "Zone ID tersedia",
+        "zoneDerived": "Diambil dari domain",
+        "pending": "Belum lengkap",
+        "ready": "Siap"
+      },
+      "checklist": {
+        "title": "Sebelum membuat",
+        "description": "Aksi buat lebih andal ketika pemeriksaan ini terpenuhi.",
+        "domain": "Domain dapat diparse",
+        "provider": "Provider dipilih",
+        "credentials": "Kredensial wajib tersedia",
+        "redaction": "Nilai token tidak ditampilkan"
+      },
+      "security": {
+        "title": "Secret tidak tampil di halaman",
+        "description": "Token hanya dikirim saat submit. Nilainya tidak dimunculkan di kartu review, toast, atau state halaman."
+      },
+      "actions": {
+        "create": "Daftarkan domain",
+        "creating": "Mendaftarkan..."
+      },
+      "toaster": {
+        "success": "Domain berhasil didaftarkan.",
+        "errorTitle": "Gagal mendaftarkan domain."
       }
     },
     "cloudProjects": {

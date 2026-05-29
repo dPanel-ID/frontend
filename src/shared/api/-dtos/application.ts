@@ -101,6 +101,32 @@ export interface ApplicationIACRuntimeItemV1 {
   module_source_commit?: string;
 }
 
+export interface ApplicationLogEntryV1 {
+  time?: string | number;
+  line?: string | null;
+  severity?: string;
+  attributes?: Record<string, unknown> | null;
+}
+
+export interface ApplicationLogsV1 {
+  source?: string;
+  application_id?: string;
+  artifact_id?: string;
+  deployment_id?: string;
+  machine_id?: string;
+  file_path?: string;
+  event_type?: string;
+  time_gte?: string;
+  time_lt?: string;
+  limit?: number;
+  lines?: Array<string | null> | null;
+  entries?: Array<ApplicationLogEntryV1 | null> | null;
+  query?: string;
+  query_errors?: string[] | null;
+}
+
+export type ApplicationLogsResponseV1 = ApplicationLogsV1 | string[];
+
 export interface AppDefinition {
   version: string;
   setup?: {

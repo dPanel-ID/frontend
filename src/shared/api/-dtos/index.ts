@@ -4,6 +4,7 @@ export * from './database';
 export * from './domain';
 export * from './artifact';
 export * from './deploy';
+export * from './execution-error-detail';
 export * from './machine';
 export * from './service';
 export * from './folder';

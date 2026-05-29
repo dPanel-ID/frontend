@@ -12,8 +12,6 @@ const protocols = [
   'redis',
 ] as const;
 
-const engine = ['nginx', 'caddy', 'haproxy', 'envoy', 'traefik'] as const;
-
 const upstream = z.object({
   address: z.string().min(1, 'formErrors.required'),
   port: z.number().int().positive('formErrors.portPositive'),
@@ -56,9 +54,11 @@ export const schemaCreationForm = z
     domain: z.string().min(1, 'formErrors.required'),
     internalDomainMetadata: z
       .object({
-        cloudflare: z.object({
-          proxied: z.boolean().default(true).optional(),
-        }).optional(),
+        cloudflare: z
+          .object({
+            proxied: z.boolean().default(true).optional(),
+          })
+          .optional(),
         id: SchemaCommon.unitId,
         subdomain: z.string(),
         ttl: z.number().int().positive().optional(),
@@ -67,7 +67,7 @@ export const schemaCreationForm = z
     description: z.string(),
     serverId: SchemaCommon.unitId.min(1, 'formErrors.required'),
     lbKind: z.enum(['l7', 'l4']),
-    engine: z.enum(engine),
+    engine: z.string().min(1, 'formErrors.required'),
     features: z.object({
       protocol: z.enum(protocols).optional(),
       sslEnabled: z.boolean().default(true),

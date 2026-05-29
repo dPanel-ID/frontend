@@ -48,7 +48,12 @@ export default function AsideProgress() {
         </div>
       </div>
 
-      <div className="grid gap-2 p-3 md:grid-cols-2 xl:grid-cols-4">
+      <div
+        className={cn(
+          'grid gap-2 p-3 md:grid-cols-2',
+          visibleSteps.length === 5 ? 'xl:grid-cols-5' : 'xl:grid-cols-4',
+        )}
+      >
         {visibleSteps.map((step, index) => {
           const isActive = step.key === progress;
           const isDone = index < currentIndex;
@@ -77,7 +82,7 @@ export default function AsideProgress() {
               <div className="flex items-start gap-3">
                 <span
                   className={cn(
-                    'mt-0.5 flex size-7 items-center justify-center rounded-md border bg-card',
+                    'mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md border bg-card',
                     isActive &&
                       'border-primary bg-primary text-primary-foreground',
                     isDone && 'border-emerald-500/40 text-emerald-400',

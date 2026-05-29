@@ -1,3 +1,4 @@
+import type { ExecutionErrorDetailV1 } from './execution-error-detail';
 import type { MachineV1 } from './machine';
 import type { OrganizationV1 } from './organization';
 
@@ -11,6 +12,7 @@ export interface InputRouterV1 {
   advance_mode?: boolean;
   installer_status?: string;
   error?: string;
+  error_detail?: ExecutionErrorDetailV1 | null;
   owner?: number;
   machine_id?: number;
 }
@@ -33,7 +35,17 @@ export interface RouterRuleV1 {
 }
 
 export interface RouterConfigV1 {
+  domain?: {
+    cloudflare?: {
+      proxied?: boolean;
+    };
+    id?: string;
+    subdomain?: string;
+    ttl?: number;
+  };
   lb_kind?: 'l4' | 'l7';
+  protocol?: string;
+  ssl_enabled?: boolean;
 }
 
 export interface RouterV1 {
@@ -54,6 +66,7 @@ export interface RouterV1 {
   machine_id?: number;
   installer_status?: string;
   error?: string;
+  error_detail?: ExecutionErrorDetailV1 | null;
   created_at?: string;
   updated_at?: string;
   machine?: MachineV1;

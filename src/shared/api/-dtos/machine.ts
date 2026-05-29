@@ -4,7 +4,7 @@
 //
 // =============================================================================
 
-import type { OrganizationV1, User } from '.';
+import type { ExecutionErrorDetailV1, OrganizationV1, User } from '.';
 
 export interface MachineV1 {
   id?: number;
@@ -37,6 +37,7 @@ export interface MachineV1 {
   domain?: string;
   status?: string;
   error?: string;
+  error_detail?: ExecutionErrorDetailV1 | null;
   created_at?: string;
   updated_at?: string;
 }

@@ -5,7 +5,7 @@ import { AxiosError, isCancel } from 'axios';
 import { iife } from '../../browser/fn';
 import useHandler from '../../react-hooks/useHandler';
 import { axiosClient } from '../lib/client';
-import { BaseResponseError } from '../lib/error';
+import { BaseResponseError, normalizeApiError } from '../lib/error';
 import type {
   BaseResponse,
   GetRequestRecipe,
@@ -68,22 +68,27 @@ export default function useApiGetLazy<D, P>(
             return;
           }
 
+          const normalizedError = normalizeApiError(error);
+
           setResponse({
             $status: 'failed',
             ...iife((): ResponseError => {
               if (
-                error instanceof AxiosError ||
-                error instanceof BaseResponseError
+                normalizedError instanceof AxiosError ||
+                normalizedError instanceof BaseResponseError
               ) {
                 return {
                   kind: 'api',
-                  error,
+                  error: normalizedError,
                 };
               }
 
               return {
                 kind: 'general',
-                error,
+                error:
+                  normalizedError instanceof Error
+                    ? normalizedError
+                    : Error(String(normalizedError)),
               };
             }),
           });
