@@ -19,6 +19,9 @@ export function resolveExecutionErrorMessage(
       detail.summary,
       detail.message,
       detail.detail,
+      detail.stderr,
+      detail.stdout,
+      detail.command,
     ]);
 
     if (structuredMessage) return structuredMessage;

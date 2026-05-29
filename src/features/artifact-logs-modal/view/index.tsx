@@ -18,7 +18,7 @@ const Content = (props: ArtifactLogsModalProps) => {
   const [responseLog, refreshLog] = ApiApplication.Logs.$Id.useGet({
     applicationId,
     artifactId,
-    limit: BUILD_LOG_LINE_LIMIT,
+    line: BUILD_LOG_LINE_LIMIT,
     machineId: serverId,
     options: {
       refreshIntervalMs: 2000,

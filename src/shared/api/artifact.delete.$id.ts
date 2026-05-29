@@ -24,7 +24,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
 // =============================================================================
 
 export function doDelete(params: RecipeParams) {
-  return apiDoPost({
+  return apiDoPost<boolean>({
     ...recipe(params),
   });
 }

@@ -79,7 +79,7 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
 
   const [responseLog] = ApiApplication.Logs.$Id.useGet({
     applicationId,
-    limit: timeFilterConfig.limit,
+    line: timeFilterConfig.limit,
     machineId: logMetadata?.serverId,
     timeGte,
     options: {

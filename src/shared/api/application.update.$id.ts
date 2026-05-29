@@ -28,7 +28,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
 // =============================================================================
 
 export function doPost(params: RecipeParams) {
-  return apiDoPost({
+  return apiDoPost<DTOs.ApplicationV1>({
     ...recipe(params),
   });
 }

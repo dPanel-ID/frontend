@@ -66,6 +66,17 @@ export default function useFormSubmissionUsecase() {
         return;
       }
 
+      const createdArtifactId = responseArtifactCreation.id;
+
+      if (createdArtifactId == null) {
+        openToaster({
+          variant: 'error',
+          title: t('createFailedTitle'),
+          message: t('missingArtifactId'),
+        });
+        return;
+      }
+
       const responseDeployCreation = await iife(() => {
         if (workerId === props.currentServerId) return Promise.resolve(null);
 
@@ -75,7 +86,7 @@ export default function useFormSubmissionUsecase() {
         return ApiDeploy.Create.doPost({
           applicationId: props.applicationId,
           workerId,
-          artifactId: responseArtifactCreation.id,
+          artifactId: String(createdArtifactId),
           isPrimary: true,
           noDeploy: true,
         });

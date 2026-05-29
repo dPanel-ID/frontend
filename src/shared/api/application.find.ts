@@ -14,6 +14,9 @@ import type { DTOs } from '.';
 export interface RecipeParams {
   page: number;
   limit?: number;
+  id?: string;
+  order?: string;
+  by?: string;
   forceMine?: string;
   userId?: string;
   source?: string;
@@ -26,6 +29,9 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
   const {
     page = 1,
     limit = 11,
+    id,
+    order,
+    by,
     userId,
     forceMine = '',
     source,
@@ -35,6 +41,9 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
   } = params;
 
   const queryParams = createQueryParams({
+    id,
+    order,
+    by,
     force_mine: forceMine,
     user_id: userId,
     source,

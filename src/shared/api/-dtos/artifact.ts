@@ -8,20 +8,26 @@ export interface ArtifactV1 {
   description?: string;
   head?: string;
   meta_file?: string;
+  git_host?: string;
   build_artifact?: boolean;
   installer_status?: string;
+  is_primary?: boolean;
   error?: string;
   error_detail?: ExecutionErrorDetailV1 | null;
-  // file_url?: ApplicationArtifactFileURLV1;
+  file_url?: ApplicationArtifactFileURLV1 | null;
   app_definition?: AppDefinition;
   machine_id?: number;
-  user_id: number;
+  user_id?: number;
   user?: {
-    id: number;
-    username: string;
+    id?: number;
+    username?: string;
+    fullname?: string;
+    email?: string;
   };
   application_id?: number;
   created_at?: string;
   updated_at?: string;
   machine?: MachineV1;
 }
+
+export type ApplicationArtifactFileURLV1 = Record<string, unknown>;

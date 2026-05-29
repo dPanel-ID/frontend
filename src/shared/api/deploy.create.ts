@@ -2,6 +2,8 @@ import type { DoRequestRecipe } from '@/shared/libs/api-client/rules/types';
 
 import { apiDoPost } from '../libs/api-client';
 
+import type { DTOs } from '.';
+
 // =============================================================================
 //   Recipe
 // =============================================================================
@@ -12,10 +14,20 @@ export interface RecipeParams {
   workerId: string;
   noDeploy?: boolean;
   isPrimary?: boolean;
+  bootstrap?: boolean;
+  applicationPhase?: string;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
-  const { applicationId, artifactId, workerId, isPrimary, noDeploy } = params;
+  const {
+    applicationId,
+    artifactId,
+    workerId,
+    isPrimary,
+    noDeploy,
+    bootstrap,
+    applicationPhase,
+  } = params;
 
   return {
     method: 'POST',
@@ -24,6 +36,8 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
       application_id: Number(applicationId),
       machine_id: Number(workerId),
       artifact_id: Number(artifactId),
+      application_phase: applicationPhase,
+      bootstrap,
       no_deploy: noDeploy,
       is_primary: isPrimary,
     },
@@ -35,7 +49,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
 // =============================================================================
 
 export function doPost(params: RecipeParams) {
-  return apiDoPost({
+  return apiDoPost<DTOs.DeployV1>({
     ...recipe(params),
   });
 }
