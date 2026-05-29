@@ -2,6 +2,8 @@ import type { DoRequestRecipe } from '@/shared/libs/api-client/rules/types';
 
 import { apiDoPost } from '../libs/api-client';
 
+import type { DTOs } from '.';
+
 // =============================================================================
 //   Recipe
 // =============================================================================
@@ -42,6 +44,7 @@ export interface RecipeRuntimeItem {
 }
 
 export interface RecipeParams {
+  advanceMode?: boolean;
   name: string;
   domain: string;
   internalDomainMetadata?: RecipeInternalDomainMetadata;
@@ -81,7 +84,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
       type: 'proxy_pass',
       upstream: defaultUpstream,
       machine_id: serverId,
-      advance_mode: true,
+      advance_mode: params.advanceMode ?? true,
       config: {
         domain: {
           cloudflare: internalDomainMetadata?.cloudflare
@@ -97,15 +100,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
         protocol,
         ssl_enabled: sslEnabled,
       },
-      rules: rules?.map((rule) => ({
-        path_match: rule.pathMatch,
-        type: rule.type,
-        wildcard: rule.wildcard,
-        target: {
-          application_id: rule.applicationId,
-          upstreams: rule.upstreams,
-        },
-      })),
+      rules: rules?.map(toRulePayload),
       runtime_items: runtimeItems?.map((item) => ({
         name: item.name,
         title: item.title,
@@ -122,16 +117,24 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
   };
 }
 
+export function toRulePayload(rule: RecipeRule) {
+  return {
+    path_match: rule.pathMatch,
+    type: rule.type,
+    wildcard: rule.wildcard,
+    target: {
+      application_id: rule.applicationId,
+      upstreams: rule.upstreams,
+    },
+  };
+}
+
 // =============================================================================
 //   Method
 // =============================================================================
 
-export interface Dto {
-  id: string;
-}
-
 export function doPost(params: RecipeParams) {
-  return apiDoPost<Dto>({
+  return apiDoPost<DTOs.LoadBalancerV2>({
     ...recipe(params),
   });
 }

@@ -1,4 +1,8 @@
-import { createQueryParams, useApiGet } from '@/shared/libs/api-client';
+import {
+  createQueryParams,
+  useAdapter,
+  useApiGet,
+} from '@/shared/libs/api-client';
 import type {
   GetRequestRecipe,
   WithApiGetOptions,
@@ -40,6 +44,32 @@ export interface Dto {
   pagination: DTOs.Pagination;
 }
 
+type ContractDto = Dto | Dto[];
+
+const EMPTY_PAGINATION: DTOs.Pagination = {
+  page: 1,
+  size: 0,
+  total_item: 0,
+  total_page: 1,
+};
+
+export function normalizeServiceOriginResponse(raw: ContractDto): Dto {
+  const response = Array.isArray(raw) ? raw[0] : raw;
+
+  return {
+    services: response?.services ?? [],
+    pagination: response?.pagination ?? EMPTY_PAGINATION,
+  };
+}
+
 export function useGet(params: WithApiGetOptions<RecipeParams>) {
-  return useApiGet<Dto>(recipe(params), params.options);
+  const [response, refresh] = useApiGet<ContractDto>(
+    recipe(params),
+    params.options,
+  );
+
+  return [
+    useAdapter(response, normalizeServiceOriginResponse),
+    refresh,
+  ] as const;
 }

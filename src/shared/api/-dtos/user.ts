@@ -12,7 +12,7 @@ export interface User {
   updated_at?: string;
 }
 
-export interface Github {
+export interface ProviderData {
   provider?: string;
   subject?: string;
   nickname?: string;
@@ -21,4 +21,9 @@ export interface Github {
   refresh_token?: string;
   expires_at?: string;
   id_token?: string;
+  groups?: string[];
+  permissions?: string[];
+  roles?: string[];
 }
+
+export type Github = ProviderData;

@@ -2,6 +2,7 @@ import { useDialog } from '@/services/dialog';
 import { useToaster } from '@/services/toaster';
 
 import { ApiService } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import { useBaseContext } from '../../config/base-context';
@@ -32,7 +33,7 @@ export default function useHandleDeleteModule(onSuccess: () => void) {
                   Failed to delete module {moduleInfo.name} version {version}
                 </>
               ),
-              message: response.error.message,
+              message: getApiErrorDetail(response.error),
             });
             return;
           }

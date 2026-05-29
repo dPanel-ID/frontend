@@ -1039,7 +1039,10 @@
         }
       },
       "config": {
-        "backendRequired": "Pengaturan global ini ditampilkan sebagai draft yang bisa diedit. Penyimpanan SSL, proxy Cloudflare, dan perubahan protokol membutuhkan endpoint update backend.",
+        "backendRequired": "Penyimpanan akan memperbarui konfigurasi load balancer dan menjalankan playbook gateway.",
+        "saveTitle": "Simpan perubahan konfigurasi load balancer",
+        "saveSuccess": "Update konfigurasi load balancer sudah dikirim.",
+        "saveFailed": "Gagal memperbarui konfigurasi load balancer",
         "ssl": "Aktifkan SSL",
         "sslDesc": "Layani load balancer dengan perilaku HTTPS/TLS saat engine gateway mendukungnya.",
         "cloudflare": "Aktifkan proxy Cloudflare",

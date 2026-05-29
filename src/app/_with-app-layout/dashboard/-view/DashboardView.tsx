@@ -153,15 +153,14 @@ export default function DashboardView() {
     );
   }, []);
 
-  const activeWorkspace = useMemo(() => {
-    const activeWorkspaceId = selectedWorkspaceId || profile?.active_workspace;
-    return profile?.workspaces?.find((workspace) => {
-      return workspace.id === activeWorkspaceId;
-    });
-  }, [profile, selectedWorkspaceId]);
+  const profileActiveWorkspaceId = normalizeWorkspaceOrganizationId(
+    profile?.active_workspace,
+  );
+  const activeWorkspaceId = selectedWorkspaceId || profileActiveWorkspaceId;
+  const activeWorkspace = profile?.workspaces?.find((workspace) => {
+    return workspaceToOrganizationId(workspace.id) === activeWorkspaceId;
+  });
 
-  const activeWorkspaceId =
-    selectedWorkspaceId || profile?.active_workspace || activeWorkspace?.id;
   const activeWorkspaceName =
     activeWorkspace?.name ||
     (activeWorkspaceId
@@ -171,11 +170,12 @@ export default function DashboardView() {
       : t('sidebar.workspacePicker.personalWorkspace'));
   const isTeamWorkspace = Boolean(
     activeWorkspace?.type === 'team' ||
-    (activeWorkspaceId && activeWorkspaceId.startsWith('org-')),
+    (activeWorkspaceId && activeWorkspaceId !== 'personal'),
   );
   const activeOrganizationId = isTeamWorkspace
-    ? activeWorkspace?.local_organization_id ||
-      workspaceToOrganizationId(activeWorkspaceId)
+    ? workspaceToOrganizationId(
+        activeWorkspace?.local_organization_id || activeWorkspaceId,
+      )
     : '';
 
   const [membersResponse] = ApiOrganization.Detail.$Id.Members.useGet({
@@ -272,7 +272,7 @@ export default function DashboardView() {
       <div className="flex flex-col gap-4">
         <WorkspaceOverview
           workspaceName={activeWorkspaceName}
-          workspaceId={activeWorkspaceId}
+          workspaceId={activeWorkspaceId ?? undefined}
           workspaceType={
             isTeamWorkspace
               ? t('page.dashboard.workspace.team')
@@ -1205,9 +1205,10 @@ function AgentEventsProbe(props: {
     },
   });
 
-  const lines = responseData(response);
+  const logData = responseData(response);
+  const lines = logViewerLines(logData);
   const events = useMemo(
-    () => parseAgentEventsFromLines(lines ?? [], server),
+    () => parseAgentEventsFromLines(lines, server),
     [lines, server],
   );
 
@@ -1930,6 +1931,19 @@ function responseData<T>(response: ApiResponse<T>): T | undefined {
   if (response.$status === 'success') return response;
   if (response.$status === 'loading') return response.prevData;
   return undefined;
+}
+
+function logViewerLines(data?: DTOs.ServerLogViewerV1 | string[]) {
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+
+  if (data.lines?.length) return data.lines;
+
+  return (
+    data.entries
+      ?.map((entry) => entry.line)
+      .filter((line): line is string => Boolean(line)) ?? []
+  );
 }
 
 function countFromPagination(

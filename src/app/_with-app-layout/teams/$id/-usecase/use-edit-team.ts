@@ -8,12 +8,20 @@ import { useMembersDataModel } from '../-model/members-data';
 export default function useEditTeamUsecase() {
   const [openSidepanel] = useOrganizationEditSidepanel();
   const emit = useEmit();
-  const { members, orgId } = useMembersDataModel();
+  const { members, organization, orgId } = useMembersDataModel();
 
   const orgName =
-    members.$status === 'success' ? (members.orgName ?? orgId) : orgId;
+    organization.$status === 'success'
+      ? (organization.name ?? orgId)
+      : members.$status === 'success'
+        ? (members.orgName ?? orgId)
+        : orgId;
   const orgDescription =
-    members.$status === 'success' ? (members.orgDescription ?? undefined) : undefined;
+    organization.$status === 'success'
+      ? (organization.description ?? undefined)
+      : members.$status === 'success'
+        ? (members.orgDescription ?? undefined)
+        : undefined;
 
   const handleUsecase = useHandler(() => {
     openSidepanel({

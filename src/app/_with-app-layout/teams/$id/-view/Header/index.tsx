@@ -1,6 +1,7 @@
 import { PencilIcon, PlusCircleIcon, UsersIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
+
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
@@ -26,13 +27,21 @@ const Headnote = () => {
 export default function Header() {
   const emit = useEmit();
   const t = useDevetekTranslations();
-  const { members, orgId } = useMembersDataModel();
+  const { members, organization, orgId } = useMembersDataModel();
 
   const orgName =
-    members.$status === 'success' ? (members.orgName ?? orgId) : orgId;
+    organization.$status === 'success'
+      ? (organization.name ?? orgId)
+      : members.$status === 'success'
+        ? (members.orgName ?? orgId)
+        : orgId;
 
   const orgDescription =
-    members.$status === 'success' ? (members.orgDescription ?? null) : null;
+    organization.$status === 'success'
+      ? (organization.description ?? null)
+      : members.$status === 'success'
+        ? (members.orgDescription ?? null)
+        : null;
 
   const memberCount =
     members.$status === 'success'

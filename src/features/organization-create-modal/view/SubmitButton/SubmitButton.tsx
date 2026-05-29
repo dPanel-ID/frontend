@@ -41,8 +41,9 @@ export default function SubmitButton() {
       return;
     }
 
-    const workspaceId =
-      response.workspace_id || organizationToWorkspaceId(response.id);
+    const workspaceId = organizationToWorkspaceId(
+      response.workspace_id || response.id,
+    );
     if (workspaceId) {
       localStorage.setItem(LS_ORGANIZATION_ID, workspaceId);
     }

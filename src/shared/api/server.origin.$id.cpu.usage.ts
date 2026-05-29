@@ -25,6 +25,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
 // =============================================================================
 
 export interface Dto {
+  cpu_core?: number;
   cpu_usage: number;
 }
 

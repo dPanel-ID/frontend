@@ -2,6 +2,8 @@ import type { DoRequestRecipe } from '@/shared/libs/api-client/rules/types';
 
 import { apiDoPost } from '../libs/api-client';
 
+import type { DTOs } from '.';
+
 // =============================================================================
 //   Recipe
 // =============================================================================
@@ -33,9 +35,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
 //   Method
 // =============================================================================
 
-export interface Dto {
-  id: string;
-}
+export type Dto = DTOs.DomainV1;
 
 export function doPost(params: RecipeParams) {
   return apiDoPost<Dto>({

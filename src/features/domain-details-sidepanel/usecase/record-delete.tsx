@@ -41,8 +41,8 @@ export default function useRecordDeleteUsecase() {
       });
 
       while (dialog.isUnresolved && dialog.response === 'yes') {
-        const response = await ApiDomain.Delete.$Id.$RecordId.doDelete({
-          id: domainId,
+        const response = await ApiDomain.Origin.$Id.$RecordId.doDelete({
+          domainId,
           recordId,
         });
 

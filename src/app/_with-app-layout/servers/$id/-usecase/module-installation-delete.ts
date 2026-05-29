@@ -5,6 +5,7 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import { ApiServer } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 interface ModuleInstallationDeletePayload {
@@ -55,7 +56,7 @@ export default function useModuleInstallationDelete() {
                   module: moduleName,
                   version: versionLabel,
                 }),
-                message: response.error.message,
+                message: getApiErrorDetail(response.error),
               });
               return;
             }

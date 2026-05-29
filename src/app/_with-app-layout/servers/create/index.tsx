@@ -31,6 +31,7 @@ import { useSSHKeyCreateModal } from '@/features/ssh-create-modal';
 
 import type { DTOs } from '@/shared/api';
 import { ApiSecret, ApiServer } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { useDebounceValue } from '@/shared/libs/react-hooks/useDebounce';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button as HeaderButton } from '@/shared/presentation/atoms/Button';
@@ -647,7 +648,7 @@ function SshAccessStep(props: {
 
             {response.$status === 'failed' && (
               <div className="m-3 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-                {response.error.message}
+                {getApiErrorDetail(response.error)}
               </div>
             )}
 

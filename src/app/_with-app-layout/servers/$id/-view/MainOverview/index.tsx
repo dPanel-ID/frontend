@@ -35,6 +35,7 @@ import { getModuleInfoByFind } from '@/entities/server-modules/model/getModuleIn
 
 import { ApiApplication, ApiLoadBalancer, ApiService } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Card } from '@/shared/presentation/atoms/Card';
@@ -218,10 +219,7 @@ export default function MainOverview() {
       openToaster({
         variant: 'error',
         title: <>Refresh failed</>,
-        message:
-          'message' in response.error
-            ? response.error.message
-            : 'Unable to refresh server modules.',
+        message: getApiErrorDetail(response.error),
       });
       return;
     }

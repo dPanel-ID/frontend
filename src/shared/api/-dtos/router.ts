@@ -3,7 +3,7 @@ import type { MachineV1 } from './machine';
 import type { OrganizationV1 } from './organization';
 
 export interface InputRouterV1 {
-  id?: number;
+  id?: string | number;
   engine?: string;
   type?: string;
   name?: string;
@@ -13,8 +13,8 @@ export interface InputRouterV1 {
   installer_status?: string;
   error?: string;
   error_detail?: ExecutionErrorDetailV1 | null;
-  owner?: number;
-  machine_id?: number;
+  owner?: string | number;
+  machine_id?: string | number;
 }
 
 export interface RouterRuleUpstreamV1 {
@@ -49,21 +49,34 @@ export interface RouterConfigV1 {
 }
 
 export interface RouterV1 {
-  id?: number;
+  id?: string | number;
   engine?: string;
   type?: string;
   name?: string;
   domain?: string;
+  domain_l4?: string;
   upstream?: string;
+  default_upstream?: string;
+  port_l4?: string;
   advance_mode?: boolean;
   organization_id?: string;
   organization?: OrganizationV1;
-  user_id?: number;
+  workspace_id?: string;
+  workspace_type?: string;
+  owner_provider?: string;
+  owner_subject?: string;
+  iac_owner?: string;
+  iac_provider?: string;
+  iac_ref_commit?: string;
+  iac_ref_name?: string;
+  iac_repo?: string;
+  playbook_path?: string;
+  user_id?: string | number;
   user?: {
-    username: string;
-    fullname: string;
+    username?: string;
+    fullname?: string;
   };
-  machine_id?: number;
+  machine_id?: string | number;
   installer_status?: string;
   error?: string;
   error_detail?: ExecutionErrorDetailV1 | null;

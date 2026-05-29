@@ -1047,7 +1047,10 @@
         }
       },
       "config": {
-        "backendRequired": "These global settings are shown as an editable draft. Persisting SSL, Cloudflare proxy, and protocol changes requires a backend update endpoint.",
+        "backendRequired": "Saving updates the load balancer configuration and submits the gateway playbook run.",
+        "saveTitle": "Save load balancer configuration changes",
+        "saveSuccess": "Load balancer configuration update was submitted.",
+        "saveFailed": "Failed to update load balancer configuration",
         "ssl": "Enable SSL",
         "sslDesc": "Serve the load balancer with HTTPS/TLS behavior when the gateway engine supports it.",
         "cloudflare": "Enable Cloudflare proxy",

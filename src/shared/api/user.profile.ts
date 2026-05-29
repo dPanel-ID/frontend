@@ -26,6 +26,8 @@ export interface Dto {
   router?: string;
   user?: DTOs.User;
   github?: DTOs.Github;
+  casdoor?: DTOs.ProviderData;
+  organization?: DTOs.OrganizationV1;
   active_workspace?: string;
   workspaces?: Array<{
     id: string;

@@ -23,6 +23,7 @@ import { useServiceOverviewModal } from '@/features/service-overview-modal';
 
 import { ApiService } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { useDebounceValue } from '@/shared/libs/react-hooks/useDebounce';
 import { Input } from '@/shared/presentation/atoms/Input';
 import { buildPaginationV2 } from '@/widgets/ui-atomic-builder/atom-pagination-v2';
@@ -158,7 +159,7 @@ export default function ServerServicesSidepanel(props: Props) {
         <ServerManagementState
           state="failed"
           title="Failed to load services"
-          description={services.error.message}
+          description={getApiErrorDetail(services.error)}
           action={
             <ServerManagementIconButton
               label="Retry"

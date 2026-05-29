@@ -14,6 +14,7 @@ import {
 
 import { ApiServer } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { cn } from '@/shared/libs/tailwind/cn';
 import {
   Table,
@@ -176,7 +177,7 @@ export default function ServerNetworksSidepanel(props: Props) {
             <ServerManagementState
               state="failed"
               title="Failed to load active ports"
-              description={ports.error.message}
+              description={getApiErrorDetail(ports.error)}
               action={
                 <ServerManagementIconButton
                   label="Retry"
@@ -267,7 +268,7 @@ export default function ServerNetworksSidepanel(props: Props) {
             <ServerManagementState
               state="failed"
               title="Failed to load interfaces"
-              description={interfaces.error.message}
+              description={getApiErrorDetail(interfaces.error)}
               action={
                 <ServerManagementIconButton
                   label="Retry"

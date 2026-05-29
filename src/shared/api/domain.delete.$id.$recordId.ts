@@ -16,7 +16,7 @@ export function recipeDelete(params: RecipeParams): DoRequestRecipe {
 
   return {
     method: 'DELETE',
-    url: `/v1/domain/delete/${id}/${recordId}`,
+    url: `/v1/domain/origin/${id}/${recordId}`,
   };
 }
 
