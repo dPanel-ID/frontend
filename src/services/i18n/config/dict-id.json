@@ -1138,7 +1138,7 @@
         "credentials": {
           "eyebrow": "Langkah 3",
           "title": "Kredensial",
-          "description": "Tambahkan token provider dan referensi zona."
+          "description": "Tambahkan token API provider."
         },
         "review": {
           "eyebrow": "Langkah 4",
@@ -1157,7 +1157,7 @@
         },
         "credentials": {
           "title": "Kredensial provider",
-          "description": "Kredensial dikirim ke backend dan tidak ditampilkan di panel review."
+          "description": "Gunakan input kredensial token saja untuk semua provider DNS yang didukung."
         }
       },
       "fields": {
@@ -1171,44 +1171,52 @@
           "description": "Catatan opsional agar rekan tim mudah mengenali zona ini.",
           "placeholder": "Domain marketing produksi"
         },
+        "provider": {
+          "label": "Provider",
+          "description": "Pilih kontrak provider DNS untuk zona ini."
+        },
         "token": {
           "label": "Token API",
           "description": "Gunakan token terbatas dengan izin membaca dan mengubah record DNS.",
           "placeholder": "Tempel token provider"
-        },
-        "zoneId": {
-          "label": "Zone ID",
-          "description": "Identifier zona Cloudflare untuk domain terpilih.",
-          "placeholder": "Zone ID Cloudflare"
         }
       },
       "providers": {
         "cloudflare": {
           "name": "Cloudflare",
-          "badge": "Wajib Zone ID",
+          "badge": "Token API",
           "description": "Cocok untuk zona Cloudflare dengan token DNS edit terbatas."
         },
         "digitalOcean": {
           "name": "DigitalOcean",
-          "badge": "Domain sebagai zona",
+          "badge": "Token API",
           "description": "Gunakan token DigitalOcean; dPanel mengambil referensi zona dari nama domain."
         }
       },
       "credentialHelp": {
         "title": "Panduan kredensial",
-        "cloudflare": "Buat token dengan akses edit DNS zona dan salin zone ID dari overview domain Cloudflare.",
-        "digitalOcean": "Buat token API DigitalOcean dengan akses record domain. Nama domain digunakan sebagai referensi zona."
+        "description": "Input kredensial dimuat dari kontrak provider dan dikirim dengan key field yang diminta backend.",
+        "rules": "Aturan"
+      },
+      "providerMetadata": {
+        "loading": "Memuat kontrak provider...",
+        "placeholder": "Pilih provider DNS",
+        "emptyTitle": "Tidak ada provider DNS tersedia",
+        "emptyDesc": "dPanel tidak menemukan kontrak provider DNS yang tersedia untuk registrasi domain.",
+        "requiredCount": "{count} field wajib",
+        "noRequired": "Tidak ada field wajib",
+        "contractBacked": "Kebutuhan kredensial disediakan oleh kontrak backend.",
+        "capabilityCount": "{count} kapabilitas provider tersedia.",
+        "noCredentialTitle": "Tidak ada field kredensial wajib",
+        "noCredentialDesc": "Kontrak provider ini tidak membutuhkan input kredensial untuk registrasi."
       },
       "review": {
         "title": "Review aman",
         "description": "Nilai sensitif sengaja disamarkan dari ringkasan ini.",
         "domain": "Domain",
         "provider": "Provider",
-        "zone": "Referensi zona",
         "credentials": "Kredensial",
         "credentialsReady": "Token tersedia",
-        "zoneReady": "Zone ID tersedia",
-        "zoneDerived": "Diambil dari domain",
         "pending": "Belum lengkap",
         "ready": "Siap"
       },
@@ -1217,7 +1225,7 @@
         "description": "Aksi buat lebih andal ketika pemeriksaan ini terpenuhi.",
         "domain": "Domain dapat diparse",
         "provider": "Provider dipilih",
-        "credentials": "Kredensial wajib tersedia",
+        "credentials": "Token API tersedia",
         "redaction": "Nilai token tidak ditampilkan"
       },
       "security": {
@@ -1230,7 +1238,8 @@
       },
       "toaster": {
         "success": "Domain berhasil didaftarkan.",
-        "errorTitle": "Gagal mendaftarkan domain."
+        "errorTitle": "Gagal mendaftarkan domain.",
+        "fixCredentials": "Lengkapi field kredensial provider yang wajib sebelum mendaftarkan domain."
       }
     },
     "cloudProjects": {
@@ -1612,9 +1621,6 @@
       },
       "fieldToken": {
         "title": "Token"
-      },
-      "fieldZone": {
-        "title": "Zone ID"
       },
       "toaster": {
         "success": "Domain berhasil didaftarkan.",

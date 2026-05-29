@@ -4,6 +4,7 @@ import * as Delete$Id$RecordId from './domain.delete.$id.$recordId';
 import * as Detail$Id from './domain.detail.$id';
 import * as Find from './domain.find';
 import * as Origin$Id from './domain.origin.$id';
+import * as Providers from './domain.providers';
 import * as Update$IdCaseMigrateOwnership from './domain.update.$id[migrate-ownership]';
 
 const Root = {
@@ -21,6 +22,7 @@ const Root = {
   Origin: {
     $Id: Origin$Id,
   },
+  Providers,
   Update: {
     $Id: {
       $: {

@@ -10,10 +10,7 @@ export interface RecipeParams {
   domain: string;
   description?: string;
   provider: string;
-  credential: {
-    api_token: string;
-    zone_id: string;
-  };
+  credential: Record<string, string>;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
@@ -26,10 +23,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
       domain,
       name: description,
       provider,
-      credential: {
-        token: credential.api_token,
-        zone_id: credential.zone_id,
-      },
+      credential,
       is_public: false,
     },
   };

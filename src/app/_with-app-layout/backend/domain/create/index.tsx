@@ -1,5 +1,5 @@
 import type { ComponentType, ReactNode } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
@@ -19,21 +19,29 @@ import { z } from 'zod';
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
-import { SchemaDomainParts } from '@/entities/domain/rules/schema';
-
 import { ApiDomain } from '@/shared/api';
+import type {
+  ProviderContract,
+  ProviderField,
+} from '@/shared/api/domain.providers';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Badge } from '@/shared/presentation/atoms/Badge';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Card } from '@/shared/presentation/atoms/Card';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from '@/shared/presentation/atoms/Select';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { TextArea } from '@/shared/presentation/atoms/TextArea';
-import IconBrandCloudflare from '@/shared/presentation/icons/BrandCloudflare';
-import IconBrandDigitalOcean from '@/shared/presentation/icons/BrandDigitalOcean';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
+import { Combobox } from '@/shared/presentation/molecules/Combobox';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
+import { FailedState } from '@/widgets/failed-state';
 
 export const Route = createFileRoute(
   '/_with-app-layout/backend/domain/create/',
@@ -41,76 +49,31 @@ export const Route = createFileRoute(
   component: DomainCreatePage,
 });
 
-const PROVIDER_VALUES = [
-  SchemaDomainParts.ProviderIdent.cloudflare,
-  SchemaDomainParts.ProviderIdent.digitalOcean,
-] as const;
 const DOMAIN_CREATE_FORM_ID = 'domain-create-form';
 
-const schemaDomainCreateForm = z
-  .object({
-    domain: z
-      .string()
-      .transform(normalizeDomainInput)
-      .pipe(
-        z
-          .string()
-          .min(1, 'formErrors.required')
-          .refine(isValidDomain, 'formErrors.parseDomain.invalidDomain'),
-      ),
-    description: z.string().trim().optional(),
-    provider: z.enum(PROVIDER_VALUES),
-    apiToken: z.string().trim().min(1, 'formErrors.required'),
-    zoneId: z.string().trim().optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (
-      data.provider === SchemaDomainParts.ProviderIdent.cloudflare &&
-      !data.zoneId
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['zoneId'],
-        message: 'formErrors.required',
-      });
-    }
-  });
+const schemaDomainCreateForm = z.object({
+  domain: z
+    .string()
+    .transform(normalizeDomainInput)
+    .pipe(
+      z
+        .string()
+        .min(1, 'formErrors.required')
+        .refine(isValidDomain, 'formErrors.parseDomain.invalidDomain'),
+    ),
+  description: z.string().trim().optional(),
+  provider: z.string().trim().min(1, 'formErrors.required'),
+  credentials: z.record(z.string(), z.string().optional()),
+});
 
 type DomainCreateForm = z.output<typeof schemaDomainCreateForm>;
-type ProviderValue = (typeof PROVIDER_VALUES)[number];
-type ProviderOption = {
-  value: ProviderValue;
-  icon: ComponentType<LucideProps>;
-  name: string;
-  badge: string;
-  description: string;
-};
 
 function DomainCreatePage() {
   const t = useDevetekTranslations();
   const navigate = useNavigate();
   const [openToaster] = useToaster();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const providerOptions = useMemo<ProviderOption[]>(
-    () => [
-      {
-        value: SchemaDomainParts.ProviderIdent.cloudflare,
-        icon: IconBrandCloudflare,
-        name: t('page.domainCreate.providers.cloudflare.name'),
-        badge: t('page.domainCreate.providers.cloudflare.badge'),
-        description: t('page.domainCreate.providers.cloudflare.description'),
-      },
-      {
-        value: SchemaDomainParts.ProviderIdent.digitalOcean,
-        icon: IconBrandDigitalOcean,
-        name: t('page.domainCreate.providers.digitalOcean.name'),
-        badge: t('page.domainCreate.providers.digitalOcean.badge'),
-        description: t('page.domainCreate.providers.digitalOcean.description'),
-      },
-    ],
-    [t],
-  );
+  const [providersResponse, refreshProviders] = ApiDomain.Providers.useGet();
 
   const form = useForm<DomainCreateForm>({
     resolver: zodResolver(schemaDomainCreateForm),
@@ -118,16 +81,48 @@ function DomainCreatePage() {
     defaultValues: {
       domain: '',
       description: '',
-      provider: SchemaDomainParts.ProviderIdent.cloudflare,
-      apiToken: '',
-      zoneId: '',
+      provider: '',
+      credentials: {},
     },
   });
 
   const values = useWatch({ control: form.control });
+  const providerContracts = useMemo(
+    () => getProviderContracts(providersResponse),
+    [providersResponse],
+  );
   const selectedProvider =
-    providerOptions.find((option) => option.value === values.provider) ??
-    providerOptions[0]!;
+    providerContracts.find((option) => option.provider === values.provider) ??
+    providerContracts[0];
+  const canSubmit =
+    providersResponse.$status !== 'failed' && !!selectedProvider;
+
+  useEffect(() => {
+    const firstProvider = providerContracts[0]?.provider;
+
+    if (!firstProvider) return;
+    if (
+      providerContracts.some(
+        (provider) => provider.provider === values.provider,
+      )
+    ) {
+      return;
+    }
+
+    form.setValue('provider', firstProvider, {
+      shouldDirty: false,
+      shouldValidate: true,
+    });
+    form.setValue(
+      'credentials',
+      {},
+      {
+        shouldDirty: false,
+        shouldValidate: false,
+      },
+    );
+    form.clearErrors('credentials');
+  }, [form, providerContracts, values.provider]);
 
   const handleBackToDomains = () => {
     navigate({
@@ -139,37 +134,53 @@ function DomainCreatePage() {
     });
   };
 
-  const handleSelectProvider = (provider: ProviderValue) => {
+  const handleSelectProvider = (provider: string) => {
+    const currentProvider = form.getValues('provider');
+    if (currentProvider === provider) return;
+
     form.setValue('provider', provider, {
       shouldDirty: true,
       shouldValidate: true,
     });
-
-    if (provider === SchemaDomainParts.ProviderIdent.digitalOcean) {
-      form.setValue('zoneId', '', {
+    form.setValue(
+      'credentials',
+      {},
+      {
         shouldDirty: true,
         shouldValidate: true,
-      });
-    }
+      },
+    );
+    form.clearErrors('credentials');
   };
 
   const handleSubmit = form.handleSubmit(async (formValues) => {
+    if (!selectedProvider) {
+      openToaster({
+        variant: 'error',
+        title: t('page.domainCreate.toaster.errorTitle'),
+        message: t('page.domainCreate.providerMetadata.emptyDesc'),
+      });
+      return;
+    }
+
+    if (!validateCredentialRequirements(selectedProvider, formValues, form)) {
+      openToaster({
+        variant: 'error',
+        title: t('page.domainCreate.toaster.errorTitle'),
+        message: t('page.domainCreate.toaster.fixCredentials'),
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const resolvedZoneId =
-        formValues.provider === SchemaDomainParts.ProviderIdent.digitalOcean
-          ? formValues.domain
-          : formValues.zoneId!;
-
+      const credential = buildCredentialPayload(selectedProvider, formValues);
       const response = await ApiDomain.Create.doPost({
         domain: formValues.domain,
         description: formValues.description?.trim() || undefined,
         provider: formValues.provider,
-        credential: {
-          api_token: formValues.apiToken,
-          zone_id: resolvedZoneId,
-        },
+        credential,
       });
 
       if (response.$status === 'failed') {
@@ -221,6 +232,7 @@ function DomainCreatePage() {
           <DomainCreateActions
             formId={DOMAIN_CREATE_FORM_ID}
             isSubmitting={isSubmitting}
+            disabled={!canSubmit}
             onCancel={handleBackToDomains}
           />
         }
@@ -231,21 +243,23 @@ function DomainCreatePage() {
         className="mt-6 flex flex-col gap-4"
         onSubmit={handleSubmit}
       >
-        <SetupProgress values={values} />
+        <SetupProgress values={values} provider={selectedProvider} />
 
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
           <main className="flex min-w-0 flex-col gap-4">
             <DomainIdentitySection form={form} isSubmitting={isSubmitting} />
             <ProviderSection
               isSubmitting={isSubmitting}
-              options={providerOptions}
-              selectedProvider={selectedProvider.value}
+              providers={providerContracts}
+              response={providersResponse}
+              selectedProvider={selectedProvider?.provider ?? ''}
+              onRetry={refreshProviders}
               onSelectProvider={handleSelectProvider}
             />
             <CredentialSection
               form={form}
               isSubmitting={isSubmitting}
-              provider={selectedProvider.value}
+              provider={selectedProvider}
             />
           </main>
 
@@ -255,7 +269,7 @@ function DomainCreatePage() {
               provider={selectedProvider}
               hasValidDomain={isValidDomain(values.domain ?? '')}
             />
-            <ReadinessCard values={values} />
+            <ReadinessCard values={values} provider={selectedProvider} />
             <SecurityCard />
           </aside>
         </div>
@@ -264,6 +278,7 @@ function DomainCreatePage() {
           <DomainCreateActions
             formId={DOMAIN_CREATE_FORM_ID}
             isSubmitting={isSubmitting}
+            disabled={!canSubmit}
             onCancel={handleBackToDomains}
           />
         </div>
@@ -275,9 +290,10 @@ function DomainCreatePage() {
 function DomainCreateActions(props: {
   formId: string;
   isSubmitting: boolean;
+  disabled?: boolean;
   onCancel: () => void;
 }) {
-  const { formId, isSubmitting, onCancel } = props;
+  const { disabled, formId, isSubmitting, onCancel } = props;
   const t = useDevetekTranslations();
 
   return (
@@ -288,7 +304,7 @@ function DomainCreateActions(props: {
         </button>
       </Button>
       <Button asChild>
-        <button type="submit" form={formId} disabled={isSubmitting}>
+        <button type="submit" form={formId} disabled={isSubmitting || disabled}>
           {isSubmitting && <Spinner size="sm" className="text-current" />}
           <span>
             {isSubmitting
@@ -301,8 +317,11 @@ function DomainCreateActions(props: {
   );
 }
 
-function SetupProgress(props: { values: Partial<DomainCreateForm> }) {
-  const { values } = props;
+function SetupProgress(props: {
+  values: Partial<DomainCreateForm>;
+  provider?: ProviderContract;
+}) {
+  const { provider, values } = props;
   const t = useDevetekTranslations();
 
   const steps = [
@@ -318,7 +337,7 @@ function SetupProgress(props: { values: Partial<DomainCreateForm> }) {
     },
     {
       key: 'credentials',
-      complete: hasUsableCredential(values),
+      complete: hasUsableCredential(values, provider),
       icon: KeyRoundIcon,
     },
     {
@@ -326,7 +345,7 @@ function SetupProgress(props: { values: Partial<DomainCreateForm> }) {
       complete:
         isValidDomain(values.domain ?? '') &&
         Boolean(values.provider) &&
-        hasUsableCredential(values),
+        hasUsableCredential(values, provider),
       icon: CheckCircle2Icon,
     },
   ] as const;
@@ -464,13 +483,25 @@ function DomainIdentitySection(props: {
 }
 
 function ProviderSection(props: {
-  options: ProviderOption[];
-  selectedProvider: ProviderValue;
+  providers: ProviderContract[];
+  response: ReturnType<typeof ApiDomain.Providers.useGet>[0];
+  selectedProvider: string;
   isSubmitting: boolean;
-  onSelectProvider: (provider: ProviderValue) => void;
+  onRetry: () => void;
+  onSelectProvider: (provider: string) => void;
 }) {
-  const { isSubmitting, onSelectProvider, options, selectedProvider } = props;
+  const {
+    isSubmitting,
+    onRetry,
+    onSelectProvider,
+    providers,
+    response,
+    selectedProvider,
+  } = props;
   const t = useDevetekTranslations();
+  const selectedProviderContract = providers.find(
+    (provider) => provider.provider === selectedProvider,
+  );
 
   return (
     <SectionCard
@@ -478,65 +509,120 @@ function ProviderSection(props: {
       title={t('page.domainCreate.sections.provider.title')}
       description={t('page.domainCreate.sections.provider.description')}
     >
-      <div className="grid gap-3 md:grid-cols-2">
-        {options.map((option) => {
-          const Icon = option.icon;
-          const isSelected = option.value === selectedProvider;
+      {response.$status === 'loading' && providers.length < 1 && (
+        <ProviderMetadataLoading />
+      )}
 
-          return (
-            <button
-              key={option.value}
-              type="button"
-              disabled={isSubmitting}
-              aria-pressed={isSelected}
-              onClick={() => onSelectProvider(option.value)}
-              className={cn(
-                'rounded-lg border bg-background p-4 text-left transition-all',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35',
-                isSelected
-                  ? 'border-primary bg-primary/10'
-                  : 'hover:border-primary/45 hover:bg-primary/5',
-                isSubmitting && 'cursor-not-allowed opacity-60',
-              )}
+      {response.$status === 'failed' && providers.length < 1 && (
+        <FailedState.BannerRetryable
+          classNameWrapper="mb-3"
+          onClickRetry={onRetry}
+        />
+      )}
+
+      {response.$status === 'success' && providers.length < 1 && (
+        <div className="rounded-lg border bg-background p-4">
+          <p className="text-sm font-semibold">
+            {t('page.domainCreate.providerMetadata.emptyTitle')}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t('page.domainCreate.providerMetadata.emptyDesc')}
+          </p>
+        </div>
+      )}
+
+      {providers.length > 0 && (
+        <div>
+          <FieldLabel
+            htmlFor="domain-create-provider"
+            label={t('page.domainCreate.fields.provider.label')}
+            description={t('page.domainCreate.fields.provider.description')}
+            required
+          />
+          <Select
+            value={selectedProvider || undefined}
+            disabled={isSubmitting}
+            onValueChange={onSelectProvider}
+          >
+            <SelectTrigger
+              id="domain-create-provider"
+              className="h-auto min-h-14 bg-background px-3 py-2"
             >
-              <span className="flex items-start justify-between gap-3">
-                <span className="flex min-w-0 items-center gap-3">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-card">
-                    <Icon className="size-6" />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-semibold">
-                      {option.name}
-                    </span>
-                    <span className="mt-0.5 block text-xs text-muted-foreground">
-                      {option.badge}
-                    </span>
-                  </span>
+              {selectedProviderContract ? (
+                <ProviderSelectOption provider={selectedProviderContract} />
+              ) : (
+                <span className="text-sm text-muted-foreground">
+                  {t('page.domainCreate.providerMetadata.placeholder')}
                 </span>
-                {isSelected && (
-                  <CheckCircle2Icon className="mt-1 size-4 shrink-0 text-primary" />
-                )}
-              </span>
-              <span className="mt-4 block text-sm leading-relaxed text-muted-foreground">
-                {option.description}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+              )}
+            </SelectTrigger>
+            <SelectContent className="max-h-80">
+              {providers.map((provider) => {
+                const providerValue = provider.provider ?? '';
+
+                return (
+                  <SelectItem
+                    key={providerValue}
+                    value={providerValue}
+                    className="py-2"
+                  >
+                    <ProviderSelectOption provider={provider} />
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+
+          {selectedProviderContract && (
+            <div className="mt-3 rounded-lg border bg-background p-4">
+              <div className="flex items-start gap-3">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-card">
+                  <ProviderIconMark provider={selectedProviderContract} />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold">
+                    {getProviderLabel(selectedProviderContract)}
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    {renderProviderDescription(selectedProviderContract, t)}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Badge variant="outline">
+                      {renderCredentialRequirement(selectedProviderContract, t)}
+                    </Badge>
+                    {(selectedProviderContract.capabilities?.length ?? 0) >
+                      0 && (
+                      <Badge variant="outline">
+                        {t(
+                          'page.domainCreate.providerMetadata.capabilityCount',
+                          {
+                            count:
+                              selectedProviderContract.capabilities?.length ??
+                              0,
+                          },
+                        )}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </SectionCard>
   );
 }
 
 function CredentialSection(props: {
   form: ReturnType<typeof useForm<DomainCreateForm>>;
-  provider: ProviderValue;
   isSubmitting: boolean;
+  provider?: ProviderContract;
 }) {
   const { form, isSubmitting, provider } = props;
   const t = useDevetekTranslations();
-  const tAll = useDevetekTranslations();
-  const isCloudflare = provider === SchemaDomainParts.ProviderIdent.cloudflare;
+  const credentialFields = getCredentialFields(provider);
+  const credentialRules = provider?.credential_rules ?? [];
 
   return (
     <SectionCard
@@ -546,51 +632,31 @@ function CredentialSection(props: {
     >
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
         <div className="flex min-w-0 flex-col gap-4">
-          <div>
-            <FieldLabel
-              htmlFor="domain-create-token"
-              label={t('page.domainCreate.fields.token.label')}
-              description={t('page.domainCreate.fields.token.description')}
-              required
-            />
-            <TextArea
-              id="domain-create-token"
-              className="min-h-28 resize-y font-mono text-xs"
-              placeholder={t('page.domainCreate.fields.token.placeholder')}
-              autoComplete="off"
-              spellCheck={false}
-              disabled={isSubmitting}
-              aria-invalid={Boolean(form.formState.errors.apiToken)}
-              {...form.register('apiToken')}
-            />
-            <ErrorInline
-              t={tAll}
-              message={form.formState.errors.apiToken?.message}
-            />
-          </div>
-
-          {isCloudflare && (
-            <div>
-              <FieldLabel
-                htmlFor="domain-create-zone"
-                label={t('page.domainCreate.fields.zoneId.label')}
-                description={t('page.domainCreate.fields.zoneId.description')}
-                required
-              />
-              <Input
-                id="domain-create-zone"
-                placeholder={t('page.domainCreate.fields.zoneId.placeholder')}
-                autoComplete="off"
-                disabled={isSubmitting}
-                aria-invalid={Boolean(form.formState.errors.zoneId)}
-                {...form.register('zoneId')}
-              />
-              <ErrorInline
-                t={tAll}
-                message={form.formState.errors.zoneId?.message}
-              />
+          {!provider && (
+            <div className="rounded-lg border bg-background p-4 text-sm text-muted-foreground">
+              {t('page.domainCreate.providerMetadata.emptyDesc')}
             </div>
           )}
+
+          {provider && credentialFields.length < 1 && (
+            <div className="rounded-lg border bg-background p-4">
+              <p className="text-sm font-semibold">
+                {t('page.domainCreate.providerMetadata.noCredentialTitle')}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {t('page.domainCreate.providerMetadata.noCredentialDesc')}
+              </p>
+            </div>
+          )}
+
+          {credentialFields.map((field) => (
+            <CredentialInput
+              key={field.key}
+              field={field}
+              form={form}
+              isSubmitting={isSubmitting}
+            />
+          ))}
         </div>
 
         <div className="rounded-lg border bg-background p-4">
@@ -603,10 +669,23 @@ function CredentialSection(props: {
                 {t('page.domainCreate.credentialHelp.title')}
               </p>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                {isCloudflare
-                  ? t('page.domainCreate.credentialHelp.cloudflare')
-                  : t('page.domainCreate.credentialHelp.digitalOcean')}
+                {t('page.domainCreate.credentialHelp.description')}
               </p>
+              {credentialRules.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  <p className="text-xs font-semibold uppercase text-muted-foreground">
+                    {t('page.domainCreate.credentialHelp.rules')}
+                  </p>
+                  {credentialRules.map((rule, index) => (
+                    <p
+                      key={`${rule.type}-${index}`}
+                      className="rounded-md border bg-card px-2.5 py-2 text-xs leading-relaxed text-muted-foreground"
+                    >
+                      {rule.message || renderCredentialRule(rule)}
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -615,28 +694,90 @@ function CredentialSection(props: {
   );
 }
 
+function CredentialInput(props: {
+  field: ProviderField;
+  form: ReturnType<typeof useForm<DomainCreateForm>>;
+  isSubmitting: boolean;
+}) {
+  const { field, form, isSubmitting } = props;
+  const t = useDevetekTranslations();
+  const fieldKey = field.key ?? '';
+  const fieldName = `credentials.${fieldKey}` as const;
+  const fieldError = form.formState.errors.credentials?.[fieldKey]?.message;
+  const inputId = `domain-create-credential-${fieldKey}`;
+  const options = field.options ?? [];
+
+  if (!fieldKey) return null;
+
+  return (
+    <div>
+      <FieldLabel
+        htmlFor={inputId}
+        label={field.label || fieldKey}
+        description={field.help}
+        required={field.required}
+      />
+
+      {options.length > 0 ? (
+        <Combobox
+          classNameButton="w-full"
+          items={options.map((option) => ({
+            label: option.label || option.value || '',
+            value: option.value || '',
+          }))}
+          value={form.watch(fieldName)}
+          onChange={(value) => {
+            form.setValue(fieldName, value, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+          }}
+          placeholder={field.placeholder || field.label || fieldKey}
+        />
+      ) : shouldRenderTextarea(field) ? (
+        <TextArea
+          id={inputId}
+          className={cn(
+            'min-h-28 resize-y',
+            field.secret && 'font-mono text-xs',
+          )}
+          placeholder={field.placeholder}
+          autoComplete="off"
+          spellCheck={false}
+          disabled={isSubmitting}
+          aria-invalid={Boolean(fieldError)}
+          {...form.register(fieldName)}
+        />
+      ) : (
+        <Input
+          id={inputId}
+          type={field.secret || field.type === 'password' ? 'password' : 'text'}
+          placeholder={field.placeholder}
+          autoComplete="off"
+          disabled={isSubmitting}
+          aria-invalid={Boolean(fieldError)}
+          {...form.register(fieldName)}
+        />
+      )}
+
+      <ErrorInline
+        message={fieldError}
+        t={(key) => (key.startsWith('formErrors.') ? t(key) : key)}
+      />
+    </div>
+  );
+}
+
 function ReviewCard(props: {
   values: Partial<DomainCreateForm>;
-  provider: ProviderOption;
+  provider?: ProviderContract;
   hasValidDomain: boolean;
 }) {
   const { hasValidDomain, provider, values } = props;
   const t = useDevetekTranslations();
-  const isCloudflare =
-    values.provider === SchemaDomainParts.ProviderIdent.cloudflare;
   const displayDomain = values.domain
     ? normalizeDomainInput(values.domain)
     : t('page.domainCreate.review.pending');
-  const zoneValue = isCloudflare
-    ? values.zoneId
-      ? t('page.domainCreate.review.zoneReady')
-      : t('page.domainCreate.review.pending')
-    : isValidDomain(values.domain ?? '')
-      ? t('page.domainCreate.review.zoneDerived')
-      : t('page.domainCreate.review.pending');
-  const zoneStatus = isCloudflare
-    ? Boolean(values.zoneId)
-    : isValidDomain(values.domain ?? '');
 
   return (
     <Card className="rounded-lg">
@@ -663,30 +804,32 @@ function ReviewCard(props: {
         />
         <ReviewRow
           label={t('page.domainCreate.review.provider')}
-          value={provider.name}
-          status="ready"
-        />
-        <ReviewRow
-          label={t('page.domainCreate.review.zone')}
-          value={zoneValue}
-          status={zoneStatus ? 'ready' : 'pending'}
+          value={
+            provider
+              ? getProviderLabel(provider)
+              : t('page.domainCreate.review.pending')
+          }
+          status={provider ? 'ready' : 'pending'}
         />
         <ReviewRow
           label={t('page.domainCreate.review.credentials')}
           value={
-            values.apiToken
+            hasUsableCredential(values, provider)
               ? t('page.domainCreate.review.credentialsReady')
               : t('page.domainCreate.review.pending')
           }
-          status={values.apiToken ? 'ready' : 'pending'}
+          status={hasUsableCredential(values, provider) ? 'ready' : 'pending'}
         />
       </div>
     </Card>
   );
 }
 
-function ReadinessCard(props: { values: Partial<DomainCreateForm> }) {
-  const { values } = props;
+function ReadinessCard(props: {
+  values: Partial<DomainCreateForm>;
+  provider?: ProviderContract;
+}) {
+  const { provider, values } = props;
   const t = useDevetekTranslations();
 
   const items = [
@@ -700,7 +843,7 @@ function ReadinessCard(props: { values: Partial<DomainCreateForm> }) {
     },
     {
       label: t('page.domainCreate.checklist.credentials'),
-      complete: hasUsableCredential(values),
+      complete: hasUsableCredential(values, provider),
     },
     {
       label: t('page.domainCreate.checklist.redaction'),
@@ -849,16 +992,228 @@ function ReviewRow(props: {
   );
 }
 
-function hasUsableCredential(values: Partial<DomainCreateForm>) {
-  const hasToken = Boolean(values.apiToken?.trim());
+function hasUsableCredential(
+  values: Partial<DomainCreateForm>,
+  provider?: ProviderContract,
+) {
+  if (!provider) return false;
 
-  if (!hasToken) return false;
+  const credentials = values.credentials ?? {};
 
-  if (values.provider === SchemaDomainParts.ProviderIdent.digitalOcean) {
-    return isValidDomain(values.domain ?? '');
+  const requiredFieldsSatisfied = getCredentialFields(provider)
+    .filter((field) => field.required)
+    .every((field) => isCredentialFieldFilled(credentials, field.key));
+
+  if (!requiredFieldsSatisfied) return false;
+
+  return (provider.credential_rules ?? []).every((rule) =>
+    isCredentialRuleSatisfied(rule, credentials),
+  );
+}
+
+function getProviderContracts(
+  response: ReturnType<typeof ApiDomain.Providers.useGet>[0],
+) {
+  if (response.$status === 'success') {
+    return normalizeProviderContracts(response.providers);
   }
 
-  return Boolean(values.zoneId?.trim());
+  if (response.$status === 'loading') {
+    return normalizeProviderContracts(response.prevData?.providers);
+  }
+
+  return [];
+}
+
+function normalizeProviderContracts(providers?: ProviderContract[]) {
+  return (providers ?? []).filter((provider) => !!provider.provider);
+}
+
+function getCredentialFields(provider?: ProviderContract) {
+  return (provider?.credential_fields ?? []).filter((field) => !!field.key);
+}
+
+function getProviderLabel(provider: ProviderContract) {
+  return provider.label || provider.provider || 'Unknown provider';
+}
+
+function renderProviderDescription(
+  provider: ProviderContract,
+  t: ReturnType<typeof useDevetekTranslations>,
+) {
+  const notes = provider.notes?.filter(Boolean) ?? [];
+  if (notes[0]) return notes[0];
+
+  const capabilities = provider.capabilities?.filter(Boolean) ?? [];
+  if (capabilities.length > 0) {
+    return t('page.domainCreate.providerMetadata.capabilityCount', {
+      count: capabilities.length,
+    });
+  }
+
+  return t('page.domainCreate.providerMetadata.contractBacked');
+}
+
+function renderCredentialRequirement(
+  provider: ProviderContract,
+  t: ReturnType<typeof useDevetekTranslations>,
+) {
+  const requiredFields = getCredentialFields(provider).filter(
+    (field) => field.required,
+  );
+
+  if (requiredFields.length < 1) {
+    return t('page.domainCreate.providerMetadata.noRequired');
+  }
+
+  return t('page.domainCreate.providerMetadata.requiredCount', {
+    count: requiredFields.length,
+  });
+}
+
+function ProviderSelectOption(props: { provider: ProviderContract }) {
+  const { provider } = props;
+  const t = useDevetekTranslations();
+
+  return (
+    <span className="flex min-w-0 items-center gap-3 text-left">
+      <span className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-card">
+        <ProviderIconMark provider={provider} />
+      </span>
+      <span className="min-w-0">
+        <span className="block truncate text-sm font-semibold">
+          {getProviderLabel(provider)}
+        </span>
+        <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+          {renderCredentialRequirement(provider, t)}
+        </span>
+      </span>
+    </span>
+  );
+}
+
+function ProviderIconMark(props: { provider: ProviderContract }) {
+  const { provider } = props;
+  const fallback =
+    provider.icon?.fallback || provider.label?.slice(0, 2) || '?';
+
+  if (provider.icon?.url) {
+    return (
+      <img
+        alt=""
+        src={provider.icon.url}
+        className="size-6 object-contain"
+        loading="lazy"
+      />
+    );
+  }
+
+  return <span className="text-xs font-bold uppercase">{fallback}</span>;
+}
+
+function ProviderMetadataLoading() {
+  return (
+    <div className="space-y-3">
+      <div className="h-14 animate-pulse rounded-lg border bg-background" />
+      <div className="h-24 animate-pulse rounded-lg border bg-background" />
+    </div>
+  );
+}
+
+function shouldRenderTextarea(field: ProviderField) {
+  const type = field.type?.toLowerCase();
+  return type === 'textarea' || type === 'multiline';
+}
+
+function buildCredentialPayload(
+  provider: ProviderContract,
+  values: DomainCreateForm,
+) {
+  const credentials = values.credentials;
+  const payload: Record<string, string> = {};
+
+  for (const field of getCredentialFields(provider)) {
+    const fieldKey = field.key;
+    if (!fieldKey) continue;
+
+    const value = credentials[fieldKey]?.trim();
+    if (value) payload[fieldKey] = value;
+  }
+
+  return payload;
+}
+
+function validateCredentialRequirements(
+  provider: ProviderContract,
+  values: DomainCreateForm,
+  form: ReturnType<typeof useForm<DomainCreateForm>>,
+) {
+  const credentials = values.credentials;
+  let isValid = true;
+
+  for (const field of getCredentialFields(provider)) {
+    if (!field.required || isCredentialFieldFilled(credentials, field.key)) {
+      continue;
+    }
+
+    form.setError(`credentials.${field.key}` as const, {
+      type: 'required',
+      message: 'formErrors.required',
+    });
+    isValid = false;
+  }
+
+  for (const rule of provider.credential_rules ?? []) {
+    if (isCredentialRuleSatisfied(rule, credentials)) continue;
+
+    for (const fieldKey of getCredentialRuleFieldKeys(rule)) {
+      form.setError(`credentials.${fieldKey}` as const, {
+        type: 'required',
+        message: rule.message || 'Required',
+      });
+    }
+    isValid = false;
+  }
+
+  return isValid;
+}
+
+function isCredentialFieldFilled(
+  credentials: Partial<Record<string, string | undefined>>,
+  fieldKey?: string,
+) {
+  if (!fieldKey) return false;
+  return Boolean(credentials[fieldKey]?.trim());
+}
+
+function isCredentialRuleSatisfied(
+  rule: NonNullable<ProviderContract['credential_rules']>[number],
+  credentials: Partial<Record<string, string | undefined>>,
+) {
+  if (rule.type !== 'one_of') return true;
+
+  return (rule.fields ?? []).some((fieldGroup) =>
+    fieldGroup
+      .split('+')
+      .map((field) => field.trim())
+      .filter(Boolean)
+      .every((field) => isCredentialFieldFilled(credentials, field)),
+  );
+}
+
+function getCredentialRuleFieldKeys(
+  rule: NonNullable<ProviderContract['credential_rules']>[number],
+) {
+  return (rule.fields ?? [])
+    .flatMap((fieldGroup) => fieldGroup.split('+'))
+    .map((field) => field.trim())
+    .filter(Boolean);
+}
+
+function renderCredentialRule(
+  rule: NonNullable<ProviderContract['credential_rules']>[number],
+) {
+  return [rule.type, ...(rule.fields ?? [])].filter(Boolean).join(': ');
 }
 
 function normalizeDomainInput(value: string) {

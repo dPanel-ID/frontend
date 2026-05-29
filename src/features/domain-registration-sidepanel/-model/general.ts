@@ -15,7 +15,6 @@ export const [DomainRegistrationModelProvider, useDomainRegistrationModel] =
         description: '',
         provider: undefined,
         apiToken: '',
-        zoneId: '',
       },
     });
 
