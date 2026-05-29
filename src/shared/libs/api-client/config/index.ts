@@ -4,7 +4,7 @@ export const LS_ORGANIZATION_ID = 'organization_id';
 
 export function normalizeWorkspaceOrganizationId(value?: string | null) {
   if (!value) return null;
-  if (value.startsWith('org-')) return value;
-  if (value.startsWith('org:')) return `org-${value.slice(4)}`;
-  return `org-${value}`;
+  if (value.startsWith('org-')) return value.slice(4);
+  if (value.startsWith('org:')) return value.slice(4);
+  return value;
 }

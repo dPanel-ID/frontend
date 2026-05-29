@@ -12,32 +12,50 @@ import type { DTOs } from '.';
 
 export interface RecipeParams {
   applicationId?: string;
+  by?: string;
+  domain?: string;
+  engine?: string;
   forceMine?: boolean;
+  id?: string;
   machineId?: string;
+  order?: string;
   page?: number;
   pageSize?: number;
   limit?: number;
   searchQuery?: string | null;
+  type?: string;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
   const {
     applicationId,
+    by,
+    domain,
+    engine,
     forceMine,
+    id,
     machineId,
+    order,
     page,
     pageSize,
     limit,
     searchQuery,
+    type,
   } = params;
 
   const queryParams = createQueryParams({
     application_id: applicationId,
+    by,
+    domain,
+    engine,
     force_mine: forceMine,
+    id,
     machine_id: machineId,
     name: searchQuery,
+    order,
     page,
     limit: limit ?? pageSize,
+    type,
   });
 
   return {

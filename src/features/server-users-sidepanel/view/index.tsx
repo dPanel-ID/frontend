@@ -22,6 +22,7 @@ import { useServerUserCreateSidepanel } from '@/features/server-user-create-side
 
 import { ApiServer } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Input } from '@/shared/presentation/atoms/Input';
@@ -70,7 +71,7 @@ export default function ServerUsersSidepanel(props: Props) {
         username: item.username ?? '-',
         uid: String(item.uid ?? '-'),
         gid: String(item.gid ?? '-'),
-        home: item.home ?? '-',
+        home: item.home_dir ?? item.home ?? '-',
         shell: item.shell ?? '-',
       };
     });
@@ -204,7 +205,7 @@ export default function ServerUsersSidepanel(props: Props) {
         <ServerManagementState
           state="failed"
           title="Failed to load users"
-          description={users.error.message}
+          description={getApiErrorDetail(users.error)}
           action={
             <ServerManagementIconButton
               label="Retry"

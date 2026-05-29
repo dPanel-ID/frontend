@@ -2,6 +2,7 @@ import * as Create from './load-balancer.create';
 import * as Delete$Id from './load-balancer.delete.$id';
 import * as Detail$Id from './load-balancer.detail.$id';
 import * as Find from './load-balancer.find';
+import * as IAC$Id from './load-balancer.iac.$id';
 import * as Logs$Id from './load-balancer.logs.$id';
 import * as Update$Id from './load-balancer.update.$id';
 import * as Update$IdCaseMigrateOwnership from './load-balancer.update.$id[migrate-ownership]';
@@ -16,6 +17,9 @@ const Root = {
     $Id: Detail$Id,
   },
   Find,
+  IAC: {
+    $Id: IAC$Id,
+  },
   Logs: {
     $Id: Logs$Id,
   },

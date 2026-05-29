@@ -4,9 +4,18 @@
 //
 // =============================================================================
 
+import type {
+  ApplicationIACGeneratedPlaybookV1,
+  ApplicationIACPipelineV1,
+  ApplicationIACRepositoryV1,
+  ApplicationIACRuntimeItemV1,
+  ApplicationIACWorkspaceV1,
+} from './application';
 import type { ExecutionErrorDetailV1 } from './execution-error-detail';
 import type { MachineV1 } from './machine';
 import type { OrganizationV1 } from './organization';
+
+export type LoadBalancerIdV2 = string | number;
 
 export interface LoadBalancerRuleUpstreamV2 {
   address?: string;
@@ -30,6 +39,7 @@ export interface LoadBalancerConfigV2 {
     };
     id?: string;
     subdomain?: string;
+    ttl?: number;
   };
   lb_kind?: string;
   protocol?: string;
@@ -37,22 +47,35 @@ export interface LoadBalancerConfigV2 {
 }
 
 export interface LoadBalancerV2 {
-  id?: number;
+  id?: LoadBalancerIdV2;
   name?: string;
   domain?: string;
+  domain_l4?: string;
   engine?: string;
   type?: string;
   upstream?: string;
-  machine_id?: number;
+  default_upstream?: string;
+  port_l4?: string;
+  machine_id?: string | number;
+  workspace_id?: string;
+  workspace_type?: string;
+  owner_provider?: string;
+  owner_subject?: string;
   advance_mode?: boolean;
   config?: LoadBalancerConfigV2;
   rules?: LoadBalancerRuleV2[];
   organization_id?: string;
   organization?: OrganizationV1;
-  user_id?: number;
+  iac_owner?: string;
+  iac_provider?: string;
+  iac_ref_commit?: string;
+  iac_ref_name?: string;
+  iac_repo?: string;
+  playbook_path?: string;
+  user_id?: string | number;
   user?: {
-    username: string;
-    fullname: string;
+    username?: string;
+    fullname?: string;
   };
   installer_status?: string;
   error?: string;
@@ -82,4 +105,14 @@ export interface LoadBalancerLogsV2 {
   entries?: LoadBalancerLogEntryV2[] | null;
   query?: string;
   query_errors?: string[] | null;
+}
+
+export interface LoadBalancerIACConfigV2 {
+  load_balancer_id: string;
+  workspace: ApplicationIACWorkspaceV1;
+  repository: ApplicationIACRepositoryV1;
+  generated_playbook: ApplicationIACGeneratedPlaybookV1;
+  pipeline: ApplicationIACPipelineV1;
+  runtime_items: ApplicationIACRuntimeItemV1[];
+  warnings?: string[];
 }

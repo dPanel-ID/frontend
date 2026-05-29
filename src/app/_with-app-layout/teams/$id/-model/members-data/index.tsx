@@ -16,12 +16,21 @@ export const [MembersDataModelProvider, useMembersDataModel] = buildSelector(
     page: currentPage,
     pageSize: 10,
   });
+  const [responseOrganization, refreshOrganization] =
+    ApiOrganization.Detail.$Id.useGet({
+      id: orgId,
+    });
 
   useSubscribe('@team-members/data--refresh', () => {
     refresh();
+    refreshOrganization();
   });
 
   return {
+    organization: useAdapter(responseOrganization, (raw) => ({
+      name: raw.name ?? null,
+      description: raw.description ?? null,
+    })),
     members: useAdapter(response, (raw) => ({
       list: raw.org_peoples ?? [],
       pagination: raw.pagination,

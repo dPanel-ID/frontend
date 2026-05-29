@@ -17,7 +17,8 @@ import type { LucideIcon } from 'lucide-react';
 
 import Layout from '@/services/sidepanel/ui/presentation/Layout/General';
 
-import { ApiFolder } from '@/shared/api';
+import { ApiFolder, ApiServer } from '@/shared/api';
+import type { DTOs } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import type { ResponseError } from '@/shared/libs/api-client/rules/types';
 import { cn } from '@/shared/libs/tailwind/cn';
@@ -820,6 +821,24 @@ function isEmptyLogResponse(error: ResponseError) {
   return /data is empty/i.test(getResponseErrorMessage(error));
 }
 
+function getLogViewerLines(response: DTOs.ServerLogViewerV1) {
+  const rawResponse = response as unknown;
+
+  if (Array.isArray(rawResponse)) {
+    return rawResponse.filter(
+      (line): line is string => typeof line === 'string',
+    );
+  }
+
+  if (response.lines?.length) return response.lines;
+
+  return (
+    response.entries
+      ?.map((entry) => entry.line ?? safeJsonStringify(entry))
+      .filter((line): line is string => Boolean(line)) ?? []
+  );
+}
+
 function LogViewerState(props: {
   action?: ReactNode;
   description: string;
@@ -964,8 +983,7 @@ export default function ServerLogViewerSidepanel(props: Props) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
   const logViewportRef = useRef<HTMLDivElement>(null);
 
-  const [watchResponse, fetchWatch] =
-    ApiFolder.Origin.$ServerId.Watch.useGetLazy();
+  const [logResponse, fetchLog] = ApiServer.Origin.$Id.Log.useGetLazy();
 
   const sourceDiscovery = useServerLogSourceDiscovery(serverId);
   const isUsingDiscoveredSources = sourceDiscovery.sources.length > 0;
@@ -1026,22 +1044,17 @@ export default function ServerLogViewerSidepanel(props: Props) {
   useEffect(() => {
     if (!selectedSource) return;
 
-    fetchWatch({
+    fetchLog({
       serverId,
-      filePath: selectedSource.path,
+      file: selectedSource.path,
       line: lineCount,
     });
-  }, [
-    fetchWatch,
-    lineCount,
-    resolvedSelectedSourceId,
-    selectedSource,
-    serverId,
-  ]);
+  }, [fetchLog, lineCount, resolvedSelectedSourceId, selectedSource, serverId]);
 
   const logLines = useMemo(
-    () => (watchResponse.$status === 'success' ? [...watchResponse] : []),
-    [watchResponse],
+    () =>
+      logResponse.$status === 'success' ? getLogViewerLines(logResponse) : [],
+    [logResponse],
   );
 
   const parsedLogLines = useMemo(
@@ -1063,10 +1076,10 @@ export default function ServerLogViewerSidepanel(props: Props) {
   const latestLogLine =
     logLines.length > 0 ? logLines[logLines.length - 1] : '';
   const isEmptyLogFile =
-    watchResponse.$status === 'failed' && isEmptyLogResponse(watchResponse);
+    logResponse.$status === 'failed' && isEmptyLogResponse(logResponse);
 
   useEffect(() => {
-    if (watchResponse.$status !== 'success') return;
+    if (logResponse.$status !== 'success') return;
 
     const viewport = logViewportRef.current;
     if (!viewport) return;
@@ -1079,7 +1092,7 @@ export default function ServerLogViewerSidepanel(props: Props) {
     latestLogLine,
     lineCount,
     logLines.length,
-    watchResponse.$status,
+    logResponse.$status,
   ]);
 
   const handleClickSource = (source: ServerLogSource) => {
@@ -1090,9 +1103,9 @@ export default function ServerLogViewerSidepanel(props: Props) {
   const handleRefresh = () => {
     if (!selectedSource) return;
 
-    fetchWatch({
+    fetchLog({
       serverId,
-      filePath: selectedSource.path,
+      file: selectedSource.path,
       line: lineCount,
     });
   };
@@ -1273,7 +1286,7 @@ export default function ServerLogViewerSidepanel(props: Props) {
 
                 <ToolbarIconButton
                   disabled={
-                    !selectedSource || watchResponse.$status === 'loading'
+                    !selectedSource || logResponse.$status === 'loading'
                   }
                   onClick={handleRefresh}
                   title="Refresh"
@@ -1281,7 +1294,7 @@ export default function ServerLogViewerSidepanel(props: Props) {
                   <RefreshCwIcon
                     className={cn(
                       'size-4',
-                      watchResponse.$status === 'loading' && 'animate-spin',
+                      logResponse.$status === 'loading' && 'animate-spin',
                     )}
                   />
                 </ToolbarIconButton>
@@ -1302,15 +1315,15 @@ export default function ServerLogViewerSidepanel(props: Props) {
           </div>
 
           <div ref={logViewportRef} className="min-h-0 overflow-y-auto">
-            {watchResponse.$status === 'initial' ||
-            watchResponse.$status === 'loading' ? (
+            {logResponse.$status === 'initial' ||
+            logResponse.$status === 'loading' ? (
               <LogViewerState
                 description="Fetching the latest lines from the selected source."
                 icon={ScrollTextIcon}
                 title="Loading log entries"
                 action={<Spinner size="sm" />}
               />
-            ) : watchResponse.$status === 'failed' && isEmptyLogFile ? (
+            ) : logResponse.$status === 'failed' && isEmptyLogFile ? (
               <LogViewerState
                 description="This log file exists, but no entries were returned for the selected range."
                 icon={InboxIcon}
@@ -1327,9 +1340,9 @@ export default function ServerLogViewerSidepanel(props: Props) {
                   </Button>
                 }
               />
-            ) : watchResponse.$status === 'failed' ? (
+            ) : logResponse.$status === 'failed' ? (
               <LogViewerState
-                description={getResponseErrorMessage(watchResponse)}
+                description={getResponseErrorMessage(logResponse)}
                 icon={AlertCircleIcon}
                 title="Unable to load logs"
                 tone="danger"

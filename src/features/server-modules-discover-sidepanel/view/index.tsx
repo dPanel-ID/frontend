@@ -26,6 +26,7 @@ import {
 import { useServerModulesDetailModal } from '@/features/server-modules-detail-modal';
 
 import { ApiModule, ApiServer } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Input } from '@/shared/presentation/atoms/Input';
@@ -116,10 +117,7 @@ export default function ServerModulesDiscoverSidepanel(props: Props) {
       openToaster({
         variant: 'error',
         title: <>Refresh failed</>,
-        message:
-          'message' in refreshResponse.error
-            ? refreshResponse.error.message
-            : 'Unable to refresh server modules.',
+        message: getApiErrorDetail(refreshResponse.error),
       });
       return;
     }
@@ -207,7 +205,7 @@ export default function ServerModulesDiscoverSidepanel(props: Props) {
         <ServerManagementState
           state="failed"
           title="Failed to load modules"
-          description={response.error.message}
+          description={getApiErrorDetail(response.error)}
           action={
             <ServerManagementIconButton
               label="Retry"

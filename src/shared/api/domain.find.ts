@@ -12,21 +12,33 @@ import type { DTOs } from '.';
 
 export interface RecipeParams {
   filterQuery?: {
+    id?: string;
     providerName?: string;
+    type?: string;
+    name?: string;
     domain?: string;
+    isPublic?: boolean;
   };
+  order?: string;
+  by?: string;
   page?: number;
   perPage?: number;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { filterQuery, page = 1, perPage = 5 } = params;
+  const { by, filterQuery, order, page = 1, perPage = 5 } = params;
 
   const queryParams = createQueryParams({
-    provider: filterQuery?.providerName,
-    domain: filterQuery?.domain,
     page,
     limit: perPage,
+    order,
+    by,
+    id: filterQuery?.id,
+    provider: filterQuery?.providerName,
+    type: filterQuery?.type,
+    name: filterQuery?.name,
+    domain: filterQuery?.domain,
+    is_public: filterQuery?.isPublic,
   });
 
   return {

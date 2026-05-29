@@ -12,22 +12,42 @@ import type { DTOs } from '.';
 // =============================================================================
 
 export interface RecipeParams {
+  id?: string;
   name?: string;
-  userId?: string;
-  organizationId?: string;
+  userId?: number | string;
+  organizationId?: number | string;
+  roleId?: number | string;
+  order?: string;
+  by?: string;
   page?: number;
   pageSize?: number;
+  limit?: number;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { name, userId, organizationId, page, pageSize } = params;
+  const {
+    id,
+    name,
+    userId,
+    organizationId,
+    roleId,
+    order,
+    by,
+    page,
+    pageSize,
+    limit,
+  } = params;
 
   const queryParams = createQueryParams({
+    id,
     name,
     user_id: userId,
     organization_id: organizationId,
+    role_id: roleId,
+    order,
+    by,
     page,
-    limit: pageSize,
+    limit: limit ?? pageSize,
   });
 
   return {

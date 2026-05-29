@@ -1,31 +1,36 @@
-import { useApiGet } from '@/shared/libs/api-client';
+import { useAdapter, useApiGet } from '@/shared/libs/api-client';
 import type {
-	GetRequestRecipe,
-	WithApiGetOptions,
+  GetRequestRecipe,
+  WithApiGetOptions,
 } from '@/shared/libs/api-client/rules/types';
 
+import type { DTOs } from '.';
+
 export interface RecipeParams {
-	serverId?: string;
+  serverId?: string;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-	const { serverId } = params;
+  const { serverId } = params;
 
-	return {
-		url: `v1/server/origin/${serverId}/user`,
-	};
+  return {
+    url: `/v1/server/origin/${serverId}/user`,
+  };
 }
 
-export interface Dto {
-	username?: string;
-	uid?: number;
-	gid?: number;
-	home?: string;
-	shell?: string;
-}
+export type UserDto = DTOs.MachineUserV1 | string;
 
-export type UserDto = Dto | string;
+type ContractDto = UserDto[] | UserDto[][];
+
+export function normalizeServerUsers(raw: ContractDto): UserDto[] {
+  return raw.flatMap((item) => (Array.isArray(item) ? item : [item]));
+}
 
 export function useGet(params: WithApiGetOptions<RecipeParams>) {
-	return useApiGet<UserDto[]>(recipe(params), params.options);
+  const [response, refresh] = useApiGet<ContractDto>(
+    recipe(params),
+    params.options,
+  );
+
+  return [useAdapter(response, normalizeServerUsers), refresh] as const;
 }

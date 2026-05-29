@@ -5,6 +5,7 @@ import { PuzzleIcon, RefreshCwIcon } from 'lucide-react';
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import {
   couple,
   guardedSelects,
@@ -43,10 +44,7 @@ export default guard(function MainModules() {
       openToaster({
         variant: 'error',
         title: <>Refresh failed</>,
-        message:
-          'message' in response.error
-            ? response.error.message
-            : 'Unable to refresh server modules.',
+        message: getApiErrorDetail(response.error),
       });
       return;
     }

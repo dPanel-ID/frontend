@@ -6,7 +6,7 @@ export interface BaseResponse<D> {
   code: number;
   data?: D;
   status: string;
-  error?: string;
+  error?: unknown;
   error_detail?: ExecutionErrorDetail | null;
 }
 

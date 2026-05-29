@@ -48,7 +48,7 @@ export default function Teams(props: TeamsProps) {
   const selectedTeamId = iife(() => {
     const stored = localStorage.getItem(LS_ORGANIZATION_ID) || null;
     if (!stored) return null;
-    return organizationToWorkspaceId(stored);
+    return workspaceToOrganizationId(stored);
   });
 
   const handleClickSelectWorkspace = (workspace: WorkspacePickerItem) => {
@@ -108,10 +108,12 @@ export default function Teams(props: TeamsProps) {
         : undefined;
 
   const profileWorkspaces =
-    resUserProfile.$status === 'success' ? (resUserProfile.workspaces ?? []) : [];
+    resUserProfile.$status === 'success'
+      ? (resUserProfile.workspaces ?? [])
+      : [];
 
   const selectedProfileWorkspace = profileWorkspaces.find(
-    (workspace) => workspace.id === selectedTeamId,
+    (workspace) => workspaceToOrganizationId(workspace.id) === selectedTeamId,
   );
 
   const workspaces = useMemo<WorkspacePickerItem[]>(() => {
@@ -146,20 +148,24 @@ export default function Teams(props: TeamsProps) {
       },
     );
 
+    const selectedProfileWorkspaceId = selectedProfileWorkspace?.id
+      ? workspaceToOrganizationId(selectedProfileWorkspace.id)
+      : '';
+
     if (
       !debouncedWorkspaceSearchQuery.trim() &&
       selectedProfileWorkspace &&
       selectedProfileWorkspace.type !== 'personal' &&
-      selectedProfileWorkspace.id &&
+      selectedProfileWorkspaceId &&
       !teamWorkspaces.some(
-        (workspace) => workspace.workspaceId === selectedProfileWorkspace.id,
+        (workspace) => workspace.workspaceId === selectedProfileWorkspaceId,
       )
     ) {
       teamWorkspaces.unshift({
-        id: selectedProfileWorkspace.id,
-        name: selectedProfileWorkspace.name || selectedProfileWorkspace.id,
+        id: selectedProfileWorkspaceId,
+        name: selectedProfileWorkspace.name || selectedProfileWorkspaceId,
         type: 'team',
-        workspaceId: selectedProfileWorkspace.id,
+        workspaceId: selectedProfileWorkspaceId,
         role: selectedProfileWorkspace.roles?.some((role) =>
           role.includes('owner'),
         )
@@ -167,7 +173,7 @@ export default function Teams(props: TeamsProps) {
           : t('sidebar.workspacePicker.roleMember'),
         status: t('sidebar.workspacePicker.isolatedResources'),
         description: t('sidebar.workspacePicker.teamDescription', {
-          workspaceId: selectedProfileWorkspace.id,
+          workspaceId: selectedProfileWorkspaceId,
         }),
       });
     }

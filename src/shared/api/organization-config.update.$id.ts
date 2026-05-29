@@ -1,0 +1,41 @@
+import type { DoRequestRecipe } from '@/shared/libs/api-client/rules/types';
+
+import { apiDoPost } from '../libs/api-client';
+
+import type { DTOs } from '.';
+
+// =============================================================================
+//   Recipe
+// =============================================================================
+
+export interface RecipeParams {
+  id: string;
+  payload: {
+    organization_id: string;
+    key: string;
+    value: string;
+    is_public?: boolean;
+  };
+}
+
+export function recipe(params: RecipeParams): DoRequestRecipe {
+  const { id, payload } = params;
+
+  return {
+    method: 'POST',
+    url: `/v1/organization-config/update/${id}`,
+    data: payload,
+  };
+}
+
+// =============================================================================
+//   Method
+// =============================================================================
+
+export type Dto = DTOs.OrganizationConfigV1;
+
+export function doPost(params: RecipeParams) {
+  return apiDoPost<Dto>({
+    ...recipe(params),
+  });
+}

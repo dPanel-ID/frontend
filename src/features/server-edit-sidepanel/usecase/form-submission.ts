@@ -2,6 +2,7 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import { ApiServer } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 
 import { useServerEditModel } from '../model';
 import { useEmit, useSubscribe } from '../model/events';
@@ -31,7 +32,7 @@ export default function useFormSubmissionUsecase() {
       openToaster({
         variant: 'error',
         title: t('error', { id: serverId }),
-        message: response.error.message,
+        message: getApiErrorDetail(response.error),
       });
       return;
     }

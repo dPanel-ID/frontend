@@ -2,6 +2,7 @@ import { useDialog } from '@/services/dialog';
 import { useToaster } from '@/services/toaster';
 
 import { ApiModule } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import { useBaseContext } from '../../config/base-context';
@@ -50,10 +51,7 @@ export default function useHandleInstallModule() {
             openToaster({
               variant: 'error',
               title: <>Failed to install {moduleInfo.name}</>,
-              message:
-                'message' in response.error
-                  ? response.error.message
-                  : 'Unable to start the installation.',
+              message: getApiErrorDetail(response.error),
             });
             return;
           }

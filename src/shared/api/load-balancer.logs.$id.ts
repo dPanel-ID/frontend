@@ -8,14 +8,16 @@ import type { DTOs } from '.';
 
 export interface RecipeParams {
   loadBalancerId: string;
+  line?: number;
   limit?: number;
   timeGte?: string;
   timeLt?: string;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { limit, loadBalancerId, timeGte, timeLt } = params;
+  const { line, limit, loadBalancerId, timeGte, timeLt } = params;
   const queryParams = createQueryParams({
+    line,
     limit,
     time_gte: timeGte,
     time_lt: timeLt,

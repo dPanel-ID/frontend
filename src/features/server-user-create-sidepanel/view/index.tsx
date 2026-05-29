@@ -5,6 +5,7 @@ import Layout from '@/services/sidepanel/ui/presentation/Layout/General';
 import { useToaster } from '@/services/toaster';
 
 import { ApiServer } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Input } from '@/shared/presentation/atoms/Input';
 import {
@@ -112,7 +113,7 @@ export default function ServerUserCreateSidepanel(props: Props) {
     });
 
     if (response.$status === 'failed') {
-      pushToast('error', response.error.message);
+      pushToast('error', getApiErrorDetail(response.error));
       setIsCreating(false);
       return;
     }
@@ -225,7 +226,7 @@ function normalizeLinuxUsername(value: string, fallback: string) {
   }
 
   const sourceValue = trimmedValue.includes('@')
-    ? trimmedValue.split('@')[0]
+    ? (trimmedValue.split('@')[0] ?? '')
     : trimmedValue;
   let username = sourceValue
     .toLowerCase()

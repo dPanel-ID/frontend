@@ -115,7 +115,10 @@ export class BaseResponseError extends Error {
   constructor(option: BaseResponse<unknown>) {
     const errorDetail = option.error_detail;
     const formattedErrorDetail = formatErrorDetailValue(errorDetail) ?? '';
-    const rawError = option.error?.trim() ?? '';
+    const rawError =
+      typeof option.error === 'string'
+        ? option.error.trim()
+        : (formatErrorDetailValue(option.error) ?? '');
     const displayError = formattedErrorDetail || rawError || 'Unknown error';
     const fallbackErrorMessage =
       `<< Response Error - HTTP ${option.code} >>\n` +

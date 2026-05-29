@@ -55,12 +55,21 @@ export interface DomainPayloadExample {
   provider?: string;
 }
 
+export interface RecordPayloadExample {
+  comment?: string;
+  content?: string;
+  name?: string;
+  proxied?: boolean;
+  ttl?: number;
+  type?: string;
+}
+
 export interface Dto {
   domain_fields?: ProviderField[];
   domain_payload_example?: DomainPayloadExample;
   providers?: ProviderContract[];
   record_fields?: ProviderField[];
-  record_payload_example?: Record<string, unknown>;
+  record_payload_example?: RecordPayloadExample;
 }
 
 export interface RecipeParams {}

@@ -441,7 +441,11 @@ function DetailTabs(props: {
         />
       </TabsContent>
       <TabsContent value="config" className="mt-0">
-        <ConfigTab details={details} rawDetails={rawDetails} />
+        <ConfigTab
+          details={details}
+          rawDetails={rawDetails}
+          onSaved={onDetailsRefresh}
+        />
       </TabsContent>
     </Tabs>
   );
@@ -1681,21 +1685,58 @@ function LogTable(props: { logs: AccessLogEntry[] }) {
 
 function ConfigTab(props: {
   details: LoadBalancerDetails;
+  onSaved: () => void;
   rawDetails?: RawLoadBalancerDetailsDto;
 }) {
-  const { details, rawDetails } = props;
+  const { details, onSaved, rawDetails } = props;
   const t = useDevetekTranslations();
+  const [openToaster] = useToaster();
   const sourceConfig = useMemo(
     () => getRuntimeConfigDraft(rawDetails, details),
     [details, rawDetails],
   );
   const [draft, setDraft] = useState(sourceConfig);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     setDraft(sourceConfig);
   }, [sourceConfig]);
 
   const webserver = LOAD_BALANCER_WEBSERVER_ENGINE[details.webserver.engine];
+  const hasDraftChanges =
+    serializeRuntimeConfigDraft(draft) !==
+    serializeRuntimeConfigDraft(sourceConfig);
+
+  const saveConfig = async () => {
+    if (!hasDraftChanges || isSaving) return;
+
+    setIsSaving(true);
+
+    try {
+      const response = await ApiLoadBalancer.Update.$Id.doPost({
+        loadBalancerId: details.id,
+        name: details.description,
+        config: toLoadBalancerConfigPayload(rawDetails, details, draft),
+      });
+
+      if (response.$status === 'success') {
+        openToaster({
+          variant: 'success',
+          message: t('page.loadBalancersDetail.config.saveSuccess'),
+        });
+        onSaved();
+        return;
+      }
+
+      openToaster({
+        variant: 'error',
+        title: t('page.loadBalancersDetail.config.saveFailed'),
+        message: response.error.message,
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <DetailSurface
@@ -1704,10 +1745,11 @@ function ConfigTab(props: {
       description={t('page.loadBalancersDetail.sections.configurationDesc')}
       action={
         <Button
-          disabled
-          title={t('page.loadBalancersDetail.backendUpdateRequired')}
+          disabled={!hasDraftChanges || isSaving}
+          onClick={saveConfig}
+          title={t('page.loadBalancersDetail.config.saveTitle')}
         >
-          <SaveIcon />
+          {isSaving ? <Spinner /> : <SaveIcon />}
           {t('common.actions.save')}
         </Button>
       }
@@ -2359,6 +2401,34 @@ function getRuntimeConfigDraft(
     sslEnabled:
       rawDetails?.config?.ssl_enabled ??
       (details.features.has('ssl/tls') || details.domain.protocol === 'https'),
+  };
+}
+
+function serializeRuntimeConfigDraft(draft: RuntimeConfigDraft) {
+  return JSON.stringify({
+    cloudflareProxied: draft.cloudflareProxied,
+    protocol: draft.protocol,
+    sslEnabled: draft.sslEnabled,
+  });
+}
+
+function toLoadBalancerConfigPayload(
+  rawDetails: RawLoadBalancerDetailsDto | undefined,
+  details: LoadBalancerDetails,
+  draft: RuntimeConfigDraft,
+): DTOs.LoadBalancerConfigV2 {
+  return {
+    ...rawDetails?.config,
+    domain: {
+      ...rawDetails?.config?.domain,
+      cloudflare: {
+        ...rawDetails?.config?.domain?.cloudflare,
+        proxied: draft.cloudflareProxied,
+      },
+    },
+    lb_kind: rawDetails?.config?.lb_kind ?? details.configuration.lbKind,
+    protocol: draft.protocol,
+    ssl_enabled: draft.sslEnabled,
   };
 }
 

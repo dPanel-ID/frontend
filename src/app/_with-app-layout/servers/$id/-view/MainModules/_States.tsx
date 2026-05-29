@@ -2,6 +2,7 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import IllustProgrammingLanguages from '@/shared/assets/illust-programming-languages.jpg';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Card } from '@/shared/presentation/atoms/Card';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
@@ -31,10 +32,7 @@ function Empty() {
       openToaster({
         variant: 'error',
         title: <>Refresh failed</>,
-        message:
-          'message' in response.error
-            ? response.error.message
-            : 'Unable to refresh server modules.',
+        message: getApiErrorDetail(response.error),
       });
       return;
     }

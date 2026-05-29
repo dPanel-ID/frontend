@@ -26,11 +26,17 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
 
 export interface Dto {
   active: number;
+  active_humanize?: string;
   available: number;
+  available_humanize?: string;
   free: number;
+  free_humanize?: string;
   inactive: number;
+  inactive_humanize?: string;
   total: number;
+  total_humanize?: string;
   used: number;
+  used_humanize?: string;
   used_percent: number;
 }
 
