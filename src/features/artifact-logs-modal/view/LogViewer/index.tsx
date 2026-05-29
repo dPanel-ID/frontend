@@ -13,6 +13,7 @@ interface LogViewerProps {
 }
 
 const DEFAULT_MAX_VISIBLE_LINES = 10;
+const SCROLL_EDGE_THRESHOLD_PX = 8;
 
 export default function LogViewer(props: LogViewerProps) {
   const {
@@ -24,12 +25,26 @@ export default function LogViewer(props: LogViewerProps) {
   } = props;
   const t = useDevetekTranslations('page.applicationDetail.artifactsHistory');
   const viewportRef = useRef<HTMLDivElement>(null);
+  const hasAutoScrolledRef = useRef(false);
+  const shouldStickToEndRef = useRef(true);
   const viewportMaxHeight = `calc(${maxVisibleLines} * 1.5rem + 1rem)`;
 
+  const handleScroll = () => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    const distanceToEnd =
+      viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight;
+    shouldStickToEndRef.current = distanceToEnd <= SCROLL_EDGE_THRESHOLD_PX;
+  };
+
   useEffect(() => {
+    if (!shouldStickToEndRef.current && hasAutoScrolledRef.current) return;
+
     viewportRef.current?.scrollTo({
       top: viewportRef.current.scrollHeight,
     });
+    hasAutoScrolledRef.current = true;
   }, [lines]);
 
   return (
@@ -51,6 +66,7 @@ export default function LogViewer(props: LogViewerProps) {
         ref={viewportRef}
         aria-label={ariaLabel}
         className="overflow-auto overscroll-contain"
+        onScroll={handleScroll}
         role="region"
         style={{ maxHeight: viewportMaxHeight }}
         tabIndex={0}
