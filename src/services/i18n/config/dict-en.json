@@ -1146,7 +1146,7 @@
         "credentials": {
           "eyebrow": "Step 3",
           "title": "Credentials",
-          "description": "Add the provider token and zone reference."
+          "description": "Add the provider API token."
         },
         "review": {
           "eyebrow": "Step 4",
@@ -1165,7 +1165,7 @@
         },
         "credentials": {
           "title": "Provider credentials",
-          "description": "Credentials are submitted to the backend and never shown in the review panel."
+          "description": "Use the same token-only credential input for every supported DNS provider."
         }
       },
       "fields": {
@@ -1179,44 +1179,52 @@
           "description": "Optional note to help teammates recognize this zone.",
           "placeholder": "Production marketing domain"
         },
+        "provider": {
+          "label": "Provider",
+          "description": "Choose the DNS provider contract for this zone."
+        },
         "token": {
           "label": "API token",
           "description": "Use a scoped token with permission to read and edit DNS records.",
           "placeholder": "Paste provider token"
-        },
-        "zoneId": {
-          "label": "Zone ID",
-          "description": "Cloudflare zone identifier for the selected domain.",
-          "placeholder": "Cloudflare zone ID"
         }
       },
       "providers": {
         "cloudflare": {
           "name": "Cloudflare",
-          "badge": "Zone ID required",
+          "badge": "API token",
           "description": "Best for Cloudflare-managed zones with scoped DNS edit tokens."
         },
         "digitalOcean": {
           "name": "DigitalOcean",
-          "badge": "Domain as zone",
+          "badge": "API token",
           "description": "Use a DigitalOcean token; dPanel derives the zone from the domain name."
         }
       },
       "credentialHelp": {
         "title": "Credential guidance",
-        "cloudflare": "Create a token with zone DNS edit access and copy the zone ID from the Cloudflare domain overview.",
-        "digitalOcean": "Create a DigitalOcean API token with domain record access. The domain name is used as the zone reference."
+        "description": "Credential inputs are loaded from the provider contract and submitted with the exact field keys required by the backend.",
+        "rules": "Rules"
+      },
+      "providerMetadata": {
+        "loading": "Loading provider contracts...",
+        "placeholder": "Select DNS provider",
+        "emptyTitle": "No DNS providers available",
+        "emptyDesc": "dPanel could not find an available DNS provider contract for domain registration.",
+        "requiredCount": "{count} required field(s)",
+        "noRequired": "No required fields",
+        "contractBacked": "Credential requirements are provided by the backend contract.",
+        "capabilityCount": "{count} provider capabilities available.",
+        "noCredentialTitle": "No credential fields required",
+        "noCredentialDesc": "This provider contract does not require credential inputs for registration."
       },
       "review": {
         "title": "Safe review",
         "description": "Sensitive values are intentionally redacted from this summary.",
         "domain": "Domain",
         "provider": "Provider",
-        "zone": "Zone reference",
         "credentials": "Credentials",
         "credentialsReady": "Token provided",
-        "zoneReady": "Zone ID provided",
-        "zoneDerived": "Derived from domain",
         "pending": "Pending",
         "ready": "Ready"
       },
@@ -1225,7 +1233,7 @@
         "description": "The create action becomes reliable when these checks are satisfied.",
         "domain": "Domain can be parsed",
         "provider": "Provider is selected",
-        "credentials": "Required credentials are present",
+        "credentials": "API token is provided",
         "redaction": "Token value is not displayed"
       },
       "security": {
@@ -1238,7 +1246,8 @@
       },
       "toaster": {
         "success": "Domain registered successfully.",
-        "errorTitle": "Failed to register domain."
+        "errorTitle": "Failed to register domain.",
+        "fixCredentials": "Complete the required provider credential fields before registering the domain."
       }
     },
     "cloudProjects": {
@@ -1620,9 +1629,6 @@
       },
       "fieldToken": {
         "title": "Token"
-      },
-      "fieldZone": {
-        "title": "Zone ID"
       },
       "toaster": {
         "success": "Domain registered successfully.",

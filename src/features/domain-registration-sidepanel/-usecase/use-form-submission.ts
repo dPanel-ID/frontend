@@ -1,13 +1,11 @@
-import { SchemaDomainParts } from '@/entities/domain/rules/schema';
-
 import { useDevetekTranslations } from '@/services/i18n';
 import { useSidepanelEmit } from '@/services/sidepanel/model/event';
 import { useToaster } from '@/services/toaster';
 
 import { ApiDomain } from '@/shared/api';
 
-import { useDomainRegistrationModel } from '../-model/general';
 import { useSubscribe } from '../-model/events';
+import { useDomainRegistrationModel } from '../-model/general';
 
 export default function useFormSubmissionUsecase() {
   const { form, props } = useDomainRegistrationModel();
@@ -16,20 +14,14 @@ export default function useFormSubmissionUsecase() {
   const t = useDevetekTranslations('sidepanel.domainRegistration.toaster');
 
   const handleSubmit = form.handleSubmit(async (values) => {
-    const { domain, description, provider, apiToken, zoneId } = values;
-
-    const resolvedZoneId =
-      provider === SchemaDomainParts.ProviderIdent.digitalOcean
-        ? domain
-        : zoneId!;
+    const { domain, description, provider, apiToken } = values;
 
     const response = await ApiDomain.Create.doPost({
       domain,
       description,
       provider,
       credential: {
-        api_token: apiToken,
-        zone_id: resolvedZoneId,
+        token: apiToken,
       },
     });
 
