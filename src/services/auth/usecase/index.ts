@@ -1,6 +1,23 @@
+import type { ResponseError } from '@/shared/libs/api-client/rules/types';
 import { iife } from '@/shared/libs/browser/fn';
 
 import { useAuthModel } from '../model';
+
+type ApiResponseError = Extract<ResponseError, { kind: 'api' }>;
+
+function getApiErrorStatusCode(error: ApiResponseError['error']) {
+  if ('code' in error && typeof error.code === 'number') return error.code;
+
+  if ('response' in error) return error.response?.status ?? error.status;
+
+  return undefined;
+}
+
+function isProfileUnauthorizedError(response: ResponseError) {
+  if (response.kind !== 'api') return false;
+
+  return getApiErrorStatusCode(response.error) === 401;
+}
 
 export function useAuthBase() {
   const { resUserProfile, resGitUser } = useAuthModel();
@@ -15,12 +32,11 @@ export function useAuthBase() {
   }
 
   // Check if failed because OTHER THAN NOT logged in
-  const axiosNotLoggedIn =
+  const isNotLoggedIn =
     resUserProfile.$status === 'failed' &&
-    resUserProfile.kind === 'api' &&
-    Number(resUserProfile.error.status) === 401;
+    isProfileUnauthorizedError(resUserProfile);
 
-  if (resUserProfile.$status === 'failed' && !axiosNotLoggedIn) {
+  if (resUserProfile.$status === 'failed' && !isNotLoggedIn) {
     return {
       $status: 'failed',
       error: resUserProfile.error,
@@ -85,13 +101,11 @@ export function useAuthBase() {
     gitProfile: iife(() => {
       if (!mappedResponse.gitProfile) return null;
 
-      if (resGitUser.$status !== 'success')
-        return mappedResponse.gitProfile;
+      if (resGitUser.$status !== 'success') return mappedResponse.gitProfile;
 
       const { id, login, organizations } = resGitUser;
 
-      if (!id || !login)
-        return mappedResponse.gitProfile;
+      if (!id || !login) return mappedResponse.gitProfile;
 
       return {
         id,
