@@ -1585,6 +1585,7 @@
         "missingWorker": "Pilih target deployment sebelum membuat artefak.",
         "branchDetailsFailed": "Gagal memuat detail branch {branch}, silakan coba lagi nanti.",
         "createFailedTitle": "Gagal membuat artefak",
+        "missingArtifactId": "Artefak berhasil dibuat, tetapi respons API tidak menyertakan ID artefak.",
         "deployCreateWarning": "Artefak berhasil dibuat, tetapi pembuatan deployment gagal.",
         "success": "Artefak berhasil dibuat."
       }

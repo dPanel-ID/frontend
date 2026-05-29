@@ -13,25 +13,38 @@ export interface ApplicationV1 {
   domain?: string;
   source?: string;
   source_type?: string;
+  type?: string;
+  framework?: string;
   bundle_type?: string;
   default_branch?: string;
   repo_org?: string;
   repo_name?: string;
   repo_url?: string;
   owner?: number;
+  owner_provider?: string;
+  owner_subject?: string;
+  workspace_id?: string;
+  workspace_type?: string;
   organization_id?: string;
   organization?: OrganizationV1;
   user_id?: number;
   user?: {
-    username: string;
-    fullname: string;
+    id?: number;
+    username?: string;
+    fullname?: string;
+    email?: string;
   };
+  meta_file?: string;
   created_at?: string;
   updated_at?: string;
   deploys?: DeployV1[];
   artifacts?: ArtifactV1[];
+  deploy?: DeployV1;
+  artifact?: ArtifactV1;
   app_definition?: AppDefinition;
   app_config?: AppConfig;
+  playbook?: ApplicationPlaybookPayloadV1;
+  runtime_items?: ApplicationIACRuntimeItemV1[];
 }
 
 export interface ApplicationIACConfigV1 {
@@ -101,6 +114,22 @@ export interface ApplicationIACRuntimeItemV1 {
   module_source_commit?: string;
 }
 
+export interface ApplicationPlaybookPayloadV1 {
+  id?: number;
+  machine_id?: number;
+  name?: string;
+  tag?: string;
+  roles?: ApplicationPlaybookRolePayloadV1[];
+}
+
+export interface ApplicationPlaybookRolePayloadV1 {
+  id?: number;
+  name?: string;
+  tag?: string;
+  variable?: Record<string, unknown>;
+  save_not_allowed_var?: string[];
+}
+
 export interface ApplicationLogEntryV1 {
   time?: string | number;
   line?: string | null;
@@ -125,11 +154,14 @@ export interface ApplicationLogsV1 {
   query_errors?: string[] | null;
 }
 
+export type ApplicationLogViewerResponseV1 = ApplicationLogsV1;
+
 export type ApplicationLogsResponseV1 = ApplicationLogsV1 | string[];
 
 export interface AppDefinition {
-  version: string;
+  version?: string;
   setup?: {
+    framework?: string;
     language?: {
       name?: string;
       version?: string | number;
@@ -138,14 +170,16 @@ export interface AppDefinition {
       name?: string;
       version?: string | number;
     }>;
-    router: unknown;
+    router?: unknown;
   };
   build?: {
     target?: {
       machine?: {
         workdir?: string;
+        workir?: string;
         steps?: Array<{
           name?: string;
+          cmd?: unknown;
           command?: string[];
           archive?: string[];
         }>;
@@ -162,11 +196,15 @@ export interface AppDefinition {
     command?: string;
     port?: number;
     no_service?: boolean;
+    reload?: string;
     environment?: Array<{
       key: string;
       value: string;
     }>;
-    config: null;
+    config?: Array<{
+      key: string;
+      value: string;
+    }> | null;
   };
 }
 

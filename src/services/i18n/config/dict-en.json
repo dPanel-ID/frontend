@@ -1593,6 +1593,7 @@
         "missingWorker": "Select a deployment target before creating an artifact.",
         "branchDetailsFailed": "Failed to load branch details for {branch}, please try again later.",
         "createFailedTitle": "Failed to create artifact",
+        "missingArtifactId": "The artifact was created, but the API response did not include an artifact ID.",
         "deployCreateWarning": "Artifact created successfully, however deploy creation failed.",
         "success": "Successfully created artifact."
       }
