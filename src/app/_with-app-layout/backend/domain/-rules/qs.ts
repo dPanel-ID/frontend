@@ -6,10 +6,12 @@ export const schemaQueryString = z.object({
   q: FilterRules.schemaSearchQuery,
   page: FilterRules.schemaCurrentPage,
   viewMode: z
-    .preprocess(
-      (val) => val ?? 'auto',
-      FilterRules.schemaViewMode.default('auto'),
-    )
+    .preprocess((val) => {
+      if (!val) return 'auto';
+      if (val === 'table') return 'list';
+
+      return val;
+    }, FilterRules.schemaViewMode.default('auto'))
     .optional(),
 });
 

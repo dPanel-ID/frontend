@@ -3,7 +3,10 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import { ApiServer } from '@/shared/api';
-import { BaseResponseError } from '@/shared/libs/api-client/lib/error';
+import {
+  BaseResponseError,
+  getApiErrorDetail,
+} from '@/shared/libs/api-client/lib/error';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import type { MachineDeletePayload } from './types';
@@ -87,11 +90,7 @@ export default function useMachineDeleteUsecase(params: Params) {
 }
 
 function getMachineDeleteErrorMessage(error: Error) {
-  if (error instanceof BaseResponseError) {
-    return error.errorMessage || error.message;
-  }
-
-  return error.message;
+  return getApiErrorDetail(error);
 }
 
 function getBlockingResourceCounts(error: Error) {

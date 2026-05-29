@@ -7,7 +7,7 @@ import type {
 } from '../rules/types';
 
 import { axiosClient } from './client';
-import { BaseResponseError } from './error';
+import { BaseResponseError, normalizeApiError } from './error';
 
 export async function apiDoPost<D>(
   config: DoRequestRecipe,
@@ -44,18 +44,26 @@ export async function apiDoPost<D>(
 
     return data;
   } catch (error) {
-    if (error instanceof AxiosError || error instanceof BaseResponseError) {
+    const normalizedError = normalizeApiError(error);
+
+    if (
+      normalizedError instanceof AxiosError ||
+      normalizedError instanceof BaseResponseError
+    ) {
       return {
         $status: 'failed',
         kind: 'api',
-        error,
+        error: normalizedError,
       };
     }
 
     return {
       $status: 'failed',
       kind: 'general',
-      error: error instanceof Error ? error : Error(String(error)),
+      error:
+        normalizedError instanceof Error
+          ? normalizedError
+          : Error(String(normalizedError)),
     };
   }
 }

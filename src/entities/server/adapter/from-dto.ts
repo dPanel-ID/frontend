@@ -1,6 +1,7 @@
 import type z from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
+import { resolveExecutionErrorMessage } from '@/entities/shared/lib/resolveExecutionErrorMessage';
 import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
 
 import type { DTOs } from '@/shared/api';
@@ -44,7 +45,7 @@ export const toServerCard = createAdapter<DTOs.MachineV1, ServerCard>((raw) =>
       defaultUser: raw.default_user,
     },
     state: {
-      message: raw.error,
+      message: resolveExecutionErrorMessage(raw),
       status: raw.status,
     },
     system: {
@@ -84,7 +85,7 @@ export const toServerDetail = createAdapter<DTOs.MachineV1, ServerDetail>(
         defaultUser: raw.default_user,
       },
       state: {
-        message: raw.error,
+        message: resolveExecutionErrorMessage(raw),
         status: raw.status,
       },
       system: {

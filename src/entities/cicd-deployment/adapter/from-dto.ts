@@ -2,6 +2,7 @@ import type z from 'zod';
 
 import { AdapterOsServiceFromDto } from '@/entities/os-service/adapter';
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
+import { resolveExecutionErrorMessage } from '@/entities/shared/lib/resolveExecutionErrorMessage';
 
 import type { DTOs } from '@/shared/api';
 import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
@@ -26,7 +27,7 @@ export const toCicdDeployment = createAdapter<DTOs.DeployV1, CicdDeployment>(
       },
       state: {
         status: raw.installer_status,
-        message: raw.error,
+        message: resolveExecutionErrorMessage(raw),
       },
       timestamp: {
         created: raw.created_at ?? new Date(0).toISOString(),

@@ -1,4 +1,5 @@
 import type { AppDefinition } from './application';
+import type { ExecutionErrorDetailV1 } from './execution-error-detail';
 import type { MachineV1 } from './machine';
 
 export interface ArtifactV1 {
@@ -10,6 +11,7 @@ export interface ArtifactV1 {
   build_artifact?: boolean;
   installer_status?: string;
   error?: string;
+  error_detail?: ExecutionErrorDetailV1 | null;
   // file_url?: ApplicationArtifactFileURLV1;
   app_definition?: AppDefinition;
   machine_id?: number;

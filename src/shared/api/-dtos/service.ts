@@ -1,9 +1,12 @@
+import type { ExecutionErrorDetailV1 } from './execution-error-detail';
+
 export interface ServiceV1 {
   id?: number;
   installer_name?: string;
   installer_type?: string;
   installer_attributes?: Record<string, unknown>;
   installer_status?: string;
+  error_detail?: ExecutionErrorDetailV1 | null;
   module?: ServiceModuleV1;
 }
 

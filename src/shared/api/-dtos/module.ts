@@ -1,3 +1,5 @@
+import type { ExecutionErrorDetailV1 } from './execution-error-detail';
+
 export interface IACRepositoryRefV1 {
   type: string;
   name: string;
@@ -53,6 +55,7 @@ export interface ModuleInstallationSummaryV1 {
   module_source_commit?: string;
   variables_hash?: string;
   last_error?: string;
+  last_error_detail?: ExecutionErrorDetailV1 | null;
   installed_at?: string;
   last_observed_at?: string;
   outdated?: boolean;

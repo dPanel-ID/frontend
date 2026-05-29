@@ -396,7 +396,10 @@
         "logs": "Logs",
         "artifactLogsTitle": "Artifact Logs",
         "artifactLogsDescription": "Commit {commit}",
-        "artifactLogOutput": "Artifact log output"
+        "artifactLogOutput": "Artifact log output",
+        "artifactLogLatestLines": "Latest build output",
+        "artifactLogLineWindow": "{count}/{limit} lines",
+        "artifactLogEmpty": "No build logs yet."
       },
       "usageStats": {
         "title": "Usage Stats",
@@ -413,7 +416,14 @@
         "refreshLog": "Refresh runtime logs",
         "selectLog": "Select application log",
         "downloadLog": "Download selected log",
-        "runtimeLogOutput": "Runtime log output"
+        "runtimeLogOutput": "Runtime log output",
+        "timeRangeLabel": "Runtime log time range",
+        "tenMinutes": "10m",
+        "oneHour": "1h",
+        "last10Minutes": "Last 10 minutes",
+        "lastHour": "Last hour",
+        "lineWindow": "{count}/{limit} lines",
+        "emptyLog": "No runtime logs in this window."
       },
       "dangerZone": {
         "title": "Danger Zone",
@@ -826,33 +836,409 @@
       "headerTitle": "Load Balancers",
       "headerDesc": "View your load balancers here.",
       "headerFootnote": "Visit our <a>YouTube channel</a> for a tutorial.",
+      "docs": "Docs",
+      "createLoadBalancer": "Create Load Balancer",
       "gatewayServer": "Gateway Server",
       "gatewayAddress": "Gateway Address",
       "gatewayServerAndAddress": "Gateway Server & Address",
       "features": "Features",
       "xUpstream": "{length} Upstream(s)",
+      "xRules": "{length} Rule(s)",
       "xPorts": "{length} Port(s)",
+      "lbKind": "LB type",
+      "destination": "Destination",
+      "targetApplication": "Application #{id}",
+      "staticFiles": "Static files",
+      "noRules": "No routing rules recorded.",
+      "noFeatures": "No feature metadata recorded.",
+      "noGateway": "No gateway server",
+      "noAddress": "No address",
+      "noDescription": "No description available",
+      "personalScope": "Personal scope",
+      "statusMessage": "Status message",
+      "moreRoutes": "+{count} more routes",
+      "openDetails": "Open details for {domain}",
+      "openDomain": "Open {domain}",
+      "table": {
+        "loadBalancer": "Load Balancer",
+        "gateway": "Gateway",
+        "routing": "Routing"
+      },
+      "sections": {
+        "routingRules": "Routing rules"
+      },
       "emptyState": {
         "title": "No load balancers found.",
         "message": "Why not add new one to get started?",
         "cta": "Add new load balancer"
       }
     },
+    "loadBalancersCreate": {
+      "headerTitle": "Create Load Balancer",
+      "headerDesc": "Define the gateway, routing rules, and protocol behavior before deploying a load balancer.",
+      "loading": "Loading...",
+      "progress": {
+        "title": "Creation progress",
+        "description": "Move through the required gateway, routing, and preview checks.",
+        "stepLabel": "Step {step}",
+        "gateway": {
+          "label": "Gateway",
+          "description": "Choose the entry point and DNS identity."
+        },
+        "routing": {
+          "label": "Routing",
+          "description": "Configure L7 paths or L4 destinations."
+        },
+        "preview": {
+          "label": "Preview",
+          "description": "Review the payload before creation."
+        }
+      },
+      "gateway": {
+        "title": "Gateway identity",
+        "description": "Name the load balancer, choose the domain users will reach, and select the server that will host the gateway service.",
+        "nameHint": "Use a clear operational name so the list view is easy to scan.",
+        "namePlaceholder": "Production API gateway",
+        "domainHint": "Use an external hostname or select a managed domain record.",
+        "domainMode": "Domain mode",
+        "externalDomain": "External",
+        "internalDomain": "Managed",
+        "subdomain": "Subdomain",
+        "selectDomain": "Select domain",
+        "engineHint": "Pick an infrastructure module from the selected server catalog. dPanel will use this module metadata for the generated load balancer playbook.",
+        "engineRuntime": "Gateway runtime",
+        "searchEngine": "Search infrastructure modules...",
+        "selectServerFirst": "Select a gateway server before choosing the engine module.",
+        "loadingEngines": "Loading infrastructure modules...",
+        "engineLoadFailed": "Unable to load infrastructure modules for this server.",
+        "engineDetailFailed": "Unable to read the selected infrastructure module contract.",
+        "noInfrastructureEngines": "No infrastructure modules are available from the workspace IaC catalog for this server.",
+        "noEnginesForSearch": "No infrastructure modules match this search.",
+        "installedInfrastructureTitle": "Reported on selected gateway",
+        "installedInfrastructureDescription": "Choose an installed infrastructure module already reported by the selected machine. Modules still installing are shown for visibility and become selectable when ready.",
+        "availableInfrastructureTitle": "Install infrastructure modules",
+        "availableInfrastructureDescription": "Search the workspace IaC catalog and open the same installation modal used in server detail.",
+        "noInstalledInfrastructure": "No installed or installing infrastructure modules were reported for this gateway server.",
+        "noAvailableInfrastructure": "All infrastructure modules from this catalog are already reported on the selected gateway.",
+        "infrastructureCategory": "Infrastructure",
+        "installedBadge": "Installed",
+        "installingBadge": "Installing",
+        "loadingMetadata": "Loading metadata",
+        "playbookReady": "Playbook ready",
+        "serverHint": "Select the server that should receive and run this load balancer.",
+        "searchServer": "Search server...",
+        "openInstallModal": "Install",
+        "noServers": "No servers match this search.",
+        "selectedServer": "Selected gateway: {server}",
+        "noSelectedServer": "No gateway server selected.",
+        "pageOf": "Page {page} of {total}"
+      },
+      "routing": {
+        "title": "Traffic routing",
+        "description": "Choose the traffic layer and map incoming requests to applications or direct upstream addresses.",
+        "kindHint": "L7 is best for HTTP path routing. L4 is best for raw TCP, UDP, or database ports.",
+        "featuresHint": "Protocol and SSL flags are stored with the load balancer configuration.",
+        "sslHint": "Enable TLS handling when this gateway should serve secure traffic.",
+        "l7Hint": "Each rule matches an incoming path and sends it to an application or upstream pool.",
+        "l4Hint": "L4 forwards traffic to one or more upstream addresses without HTTP path inspection.",
+        "wildcard": "Wildcard"
+      },
+      "preview": {
+        "title": "Preview deployment",
+        "description": "Confirm the gateway server, engine, routing mode, and destinations before creating the load balancer.",
+        "routesTitle": "Route summary",
+        "routesDescription": "These rules will be sent to the load balancer create API.",
+        "submitNote": "dPanel will create the load balancer and submit the selected routing inputs for provisioning.",
+        "enabled": "Enabled",
+        "disabled": "Disabled"
+      },
+      "actions": {
+        "continue": "Continue",
+        "create": "Create Load Balancer"
+      },
+      "toaster": {
+        "fixGateway": "Complete the gateway details before continuing.",
+        "fixRouting": "Complete the routing rules before continuing.",
+        "engineLoading": "Wait until the selected engine module metadata finishes loading.",
+        "engineRequired": "Select an infrastructure engine module with a readable install contract."
+      }
+    },
+    "loadBalancersDetail": {
+      "headerTitle": "Load Balancer Detail",
+      "headerDesc": "Inspect routing, gateway configuration, ownership, and logs for this load balancer.",
+      "state": {
+        "loading": "Loading load balancer details...",
+        "failedTitle": "Failed to load load balancer"
+      },
+      "metrics": {
+        "routes": "Routes",
+        "gateway": "Gateway"
+      },
+      "backendUpdateRequired": "Save changes",
+      "tabs": {
+        "graph": "Graph",
+        "graphDesc": "Topology map",
+        "upstreams": "Upstreams",
+        "upstreamsDesc": "Backends and order",
+        "logs": "Logs",
+        "logsDesc": "Traffic evidence",
+        "config": "Config",
+        "configDesc": "Global settings"
+      },
+      "sections": {
+        "routing": "Routing rules",
+        "routingDesc": "Review how inbound traffic is matched and forwarded.",
+        "logs": "Gateway request logs",
+        "logsDesc": "Inspect structured gateway requests with a bounded time range and scrollable result set.",
+        "gateway": "Gateway",
+        "gatewayDesc": "Server, address, and public entry point used by this load balancer.",
+        "configuration": "Configuration",
+        "configurationDesc": "Global runtime behavior and provider-facing toggles for this load balancer.",
+        "ownershipDesc": "Owner, workspace scope, and lifecycle timestamps."
+      },
+      "graph": {
+        "title": "Traffic graph",
+        "description": "Follow the request path from domain to load balancer, gateway machine, route rules, and final targets.",
+        "requestPath": "Request path topology",
+        "domain": "Domain",
+        "gateway": "Gateway machine",
+        "targets": "Targets",
+        "entryPoint": "Public entry point",
+        "edgeRuntime": "Edge runtime",
+        "gatewayLinked": "Linked server",
+        "routeFanout": "Routes",
+        "activeRoutes": "Active routes",
+        "targetSummary": "Backend fan-out",
+        "emptyTargets": "No target preview available yet.",
+        "targetCount": "{count} targets",
+        "routeCount": "{count} routes",
+        "routeMap": "Route map",
+        "routeMapDesc": "Every configured route and backend target in the current load balancer definition."
+      },
+      "upstreams": {
+        "title": "Upstreams and backend order",
+        "description": "Review backend targets as read-only routing records. Replace a rule by deleting it and adding a new backend.",
+        "backendRequired": "Saving updates the load balancer routing definition and submits the gateway playbook run.",
+        "resetDraft": "Reset draft",
+        "saveTitle": "Save upstream routing changes",
+        "saveSuccess": "Load balancer routing update was submitted.",
+        "saveFailed": "Failed to update load balancer routing",
+        "addBackend": "Add backend",
+        "addBackendTitle": "Add backend target",
+        "addBackendDesc": "Create a draft backend from an existing application or a manual address and port, the same way routing is configured during load balancer creation.",
+        "backendType": "Backend type",
+        "addToDraft": "Add to draft",
+        "removeBackend": "Remove backend",
+        "empty": "No upstream or backend targets are configured yet.",
+        "match": "Match",
+        "matchPlaceholder": "/*",
+        "searchApplications": "Search applications...",
+        "applicationLoadFailed": "Unable to load applications.",
+        "noApplications": "No applications match this search.",
+        "addressPlaceholder": "localhost",
+        "portPlaceholder": "80",
+        "destination": "Destination",
+        "moveUp": "Move upstream up",
+        "moveDown": "Move upstream down",
+        "kind": {
+          "application": "Application",
+          "address": "Address",
+          "static": "Static"
+        }
+      },
+      "config": {
+        "backendRequired": "These global settings are shown as an editable draft. Persisting SSL, Cloudflare proxy, and protocol changes requires a backend update endpoint.",
+        "ssl": "Enable SSL",
+        "sslDesc": "Serve the load balancer with HTTPS/TLS behavior when the gateway engine supports it.",
+        "cloudflare": "Enable Cloudflare proxy",
+        "cloudflareDesc": "Mark the managed domain record as proxied through Cloudflare when the domain provider supports it.",
+        "protocol": "Protocol"
+      },
+      "logs": {
+        "accessTitle": "Access log",
+        "errorTitle": "Error log",
+        "errorSource": "Filtered 4xx/5xx access log rows",
+        "telemetrySource": "dPanel telemetry",
+        "requestsTitle": "Gateway requests",
+        "requestsCount": "{count} requests",
+        "errorCount": "{count} errors",
+        "modeLabel": "Log view mode",
+        "allRequests": "All requests",
+        "errorsOnly": "Errors only",
+        "filterTitle": "Log range",
+        "filterDesc": "Default range is the last 10 minutes. Expand the range to inspect older gateway requests; results stay bounded for performance.",
+        "limitLabel": "Up to {count} entries",
+        "fromLabel": "From",
+        "toLabel": "To",
+        "clearRange": "Clear range",
+        "resetRange": "Last 10 minutes",
+        "table": {
+          "time": "Time",
+          "method": "Method",
+          "status": "Status",
+          "request": "Request",
+          "remote": "Remote IP",
+          "duration": "Duration",
+          "size": "Size"
+        },
+        "loading": "Loading log lines...",
+        "emptyAccess": "No gateway requests are available yet.",
+        "emptyError": "No 4xx or 5xx gateway requests were found in the access log.",
+        "unavailableTitle": "Logs unavailable",
+        "unavailableDesc": "This load balancer does not have enough gateway metadata to resolve log files."
+      }
+    },
     "domain": {
       "headerTitle": "Domain & DNS",
       "headerDesc": "View your registered domain and DNS here.",
       "headerFootnote": "Visit our <a>YouTube channel</a> for a tutorial.",
+      "docs": "Docs",
+      "createDomain": "Add new domain",
       "emptyState": {
         "title": "No domains found.",
         "message": "Why not add new one to get started?",
         "cta": "Add new domain"
       },
+      "managedDns": "Managed DNS zone",
+      "noDescription": "No description available",
+      "personalScope": "Personal scope",
+      "providerUnknown": "Unknown provider",
+      "openDetails": "Open details for {domain}",
+      "credentials": "Credentials",
+      "credentialsRedacted": "Stored securely",
+      "zoneApex": "Zone apex",
+      "wildcardRecord": "Wildcard",
       "table": {
         "headers": {
           "domain": "Domain",
+          "provider": "Provider",
           "owner": "Owner",
           "lastModified": "Last Modified"
         }
+      },
+      "sections": {
+        "provider": "Provider",
+        "dns": "DNS zone",
+        "ownership": "Ownership"
+      }
+    },
+    "domainCreate": {
+      "documentTitle": "Add Domain",
+      "headerTitle": "Add Domain",
+      "headerDesc": "Connect a DNS provider and register a managed zone for application routing.",
+      "backToDomains": "Back to domains",
+      "docs": "Docs",
+      "progress": {
+        "title": "Registration readiness",
+        "description": "Complete the required details before dPanel stores the provider connection."
+      },
+      "steps": {
+        "domain": {
+          "eyebrow": "Step 1",
+          "title": "Domain",
+          "description": "Use the DNS zone you want dPanel to manage."
+        },
+        "provider": {
+          "eyebrow": "Step 2",
+          "title": "Provider",
+          "description": "Choose where the DNS zone is hosted."
+        },
+        "credentials": {
+          "eyebrow": "Step 3",
+          "title": "Credentials",
+          "description": "Add the provider token and zone reference."
+        },
+        "review": {
+          "eyebrow": "Step 4",
+          "title": "Review",
+          "description": "Check the safe summary before creating."
+        }
+      },
+      "sections": {
+        "identity": {
+          "title": "Domain identity",
+          "description": "Name the DNS zone and add a short internal note for your workspace."
+        },
+        "provider": {
+          "title": "DNS provider",
+          "description": "Select the provider contract dPanel should use when managing records."
+        },
+        "credentials": {
+          "title": "Provider credentials",
+          "description": "Credentials are submitted to the backend and never shown in the review panel."
+        }
+      },
+      "fields": {
+        "domain": {
+          "label": "Domain",
+          "description": "Apex zone or subdomain, for example example.com.",
+          "placeholder": "example.com"
+        },
+        "description": {
+          "label": "Description",
+          "description": "Optional note to help teammates recognize this zone.",
+          "placeholder": "Production marketing domain"
+        },
+        "token": {
+          "label": "API token",
+          "description": "Use a scoped token with permission to read and edit DNS records.",
+          "placeholder": "Paste provider token"
+        },
+        "zoneId": {
+          "label": "Zone ID",
+          "description": "Cloudflare zone identifier for the selected domain.",
+          "placeholder": "Cloudflare zone ID"
+        }
+      },
+      "providers": {
+        "cloudflare": {
+          "name": "Cloudflare",
+          "badge": "Zone ID required",
+          "description": "Best for Cloudflare-managed zones with scoped DNS edit tokens."
+        },
+        "digitalOcean": {
+          "name": "DigitalOcean",
+          "badge": "Domain as zone",
+          "description": "Use a DigitalOcean token; dPanel derives the zone from the domain name."
+        }
+      },
+      "credentialHelp": {
+        "title": "Credential guidance",
+        "cloudflare": "Create a token with zone DNS edit access and copy the zone ID from the Cloudflare domain overview.",
+        "digitalOcean": "Create a DigitalOcean API token with domain record access. The domain name is used as the zone reference."
+      },
+      "review": {
+        "title": "Safe review",
+        "description": "Sensitive values are intentionally redacted from this summary.",
+        "domain": "Domain",
+        "provider": "Provider",
+        "zone": "Zone reference",
+        "credentials": "Credentials",
+        "credentialsReady": "Token provided",
+        "zoneReady": "Zone ID provided",
+        "zoneDerived": "Derived from domain",
+        "pending": "Pending",
+        "ready": "Ready"
+      },
+      "checklist": {
+        "title": "Before creating",
+        "description": "The create action becomes reliable when these checks are satisfied.",
+        "domain": "Domain can be parsed",
+        "provider": "Provider is selected",
+        "credentials": "Required credentials are present",
+        "redaction": "Token value is not displayed"
+      },
+      "security": {
+        "title": "Secrets stay out of the page",
+        "description": "The token is only sent during submission. It is not echoed in the review card, toast, or page state."
+      },
+      "actions": {
+        "create": "Register domain",
+        "creating": "Registering..."
+      },
+      "toaster": {
+        "success": "Domain registered successfully.",
+        "errorTitle": "Failed to register domain."
       }
     },
     "cloudProjects": {

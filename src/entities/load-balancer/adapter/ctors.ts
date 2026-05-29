@@ -1,26 +1,31 @@
 import type { z } from 'zod';
 
+import { resolveExecutionErrorMessage } from '@/entities/shared/lib/resolveExecutionErrorMessage';
+
 import type { DTOs } from '@/shared/api';
 import { iife } from '@/shared/libs/browser/fn';
 import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
 
+import { formatLoadBalancerPathMatchForDisplay } from '../lib/path-match';
 import type {
-  L7Rule,
   configuration,
   feature,
   gateway,
+  l7Rule,
   state,
   webserver,
 } from '../rules/schema/parts';
 
-export function ctorState(raw: DTOs.RouterV1) {
+type LoadBalancerDto = DTOs.RouterV1 | DTOs.LoadBalancerV2;
+
+export function ctorState(raw: LoadBalancerDto) {
   return {
-    message: raw.error,
+    message: resolveExecutionErrorMessage(raw),
     status: raw.installer_status,
   } as KeysOnlyDeep<z.input<typeof state>>;
 }
 
-export function ctorConfiguration(raw: DTOs.RouterV1) {
+export function ctorConfiguration(raw: LoadBalancerDto) {
   const lbKind = raw.config?.lb_kind ?? 'l7';
 
   if (lbKind === 'l4') {
@@ -41,31 +46,39 @@ export function ctorConfiguration(raw: DTOs.RouterV1) {
   }
 
   // L7 — map raw.rules if available, fall back to legacy raw.upstream
-  const rulesFromApi = (raw.rules ?? []).map((rule): KeysOnlyDeep<L7Rule> => {
-    if (rule.target?.application_id) {
+  const rulesFromApi = (raw.rules ?? []).map(
+    (rule): KeysOnlyDeep<z.input<typeof l7Rule>> => {
+      if (rule.target?.application_id) {
+        return {
+          upstream: {
+            type: 'proxy-pass-app',
+            matchingPath: formatLoadBalancerPathMatchForDisplay(
+              rule.path_match ?? '/',
+              rule.wildcard,
+            ),
+            target: {
+              applicationId: rule.target.application_id,
+              port: -1,
+            },
+          },
+        };
+      }
+
       return {
         upstream: {
-          type: 'proxy-pass-app',
-          matchingPath: rule.path_match ?? '/',
-          target: {
-            applicationId: rule.target.application_id,
-            port: -1,
-          },
+          type: 'proxy-pass',
+          matchingPath: formatLoadBalancerPathMatchForDisplay(
+            rule.path_match ?? '/',
+            rule.wildcard,
+          ),
+          backendTarget: (rule.target?.upstreams ?? []).map((u) => ({
+            address: u.address ?? '',
+            port: parseInt(u.port ?? '0') || 0,
+          })),
         },
       };
-    }
-
-    return {
-      upstream: {
-        type: 'proxy-pass',
-        matchingPath: rule.path_match ?? '/',
-        backendTarget: (rule.target?.upstreams ?? []).map((u) => ({
-          address: u.address ?? '',
-          port: parseInt(u.port ?? '0') || 0,
-        })),
-      },
-    };
-  });
+    },
+  );
 
   const rules = iife(() => {
     if (rulesFromApi.length > 0) return rulesFromApi;
@@ -83,7 +96,7 @@ export function ctorConfiguration(raw: DTOs.RouterV1) {
             },
           },
         },
-      ] as KeysOnlyDeep<L7Rule[]>;
+      ] as KeysOnlyDeep<Array<z.input<typeof l7Rule>>>;
     }
 
     const [backendAddress, backendPort = ''] = raw.upstream?.split(':') ?? [];
@@ -101,7 +114,7 @@ export function ctorConfiguration(raw: DTOs.RouterV1) {
           matchingPath: '/*',
         },
       },
-    ] as KeysOnlyDeep<L7Rule[]>;
+    ] as KeysOnlyDeep<Array<z.input<typeof l7Rule>>>;
   });
 
   return {
@@ -110,7 +123,7 @@ export function ctorConfiguration(raw: DTOs.RouterV1) {
   } as KeysOnlyDeep<z.input<typeof configuration>>;
 }
 
-export function ctorFeatures(_: DTOs.RouterV1) {
+export function ctorFeatures(_: LoadBalancerDto) {
   return new Set<z.input<typeof feature>>([
     'http',
     'http/2',
@@ -120,13 +133,13 @@ export function ctorFeatures(_: DTOs.RouterV1) {
   ]);
 }
 
-export function ctorWebserver(raw: DTOs.RouterV1) {
+export function ctorWebserver(raw: LoadBalancerDto) {
   return {
     engine: raw.engine,
   } as KeysOnlyDeep<z.input<typeof webserver>>;
 }
 
-export function ctorGateway(raw: DTOs.RouterV1) {
+export function ctorGateway(raw: LoadBalancerDto) {
   if (raw.machine == null) return undefined;
 
   return {

@@ -20,6 +20,7 @@ export interface ServerModule {
   refName?: string;
   resolvedCommit?: string;
   installation?: DTOs.ModuleInstallationV1 | DTOs.ModuleInstallationSummaryV1;
+  installations?: DTOs.ModuleInstallationSummaryV1[];
   installationStatus?: string;
 }
 

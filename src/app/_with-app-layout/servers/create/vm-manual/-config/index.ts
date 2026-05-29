@@ -6,7 +6,7 @@ import IDCloudHostIco from '@/shared/assets/ico-idcloudhost.svg';
 import ServerIco from '@/shared/assets/ico-server.webp';
 import VultrIco from '@/shared/assets/ico-vultr.svg';
 
-export const LINK_DOCUMENTATION = 'https://cloud.terpusat.com/docs/id/intro';
+export const LINK_DOCUMENTATION = '/docs/intro';
 export const LINK_MAILTO_PRAKASA = 'mailto: prakasa@devetek.com';
 export const LINK_START_CHAT =
   '//wa.me/6282113468822/?text=Hello%2C%20I%27d%20like%20to%20inquire%20about%20dPanel%20VM%20Creation';

@@ -3,7 +3,7 @@ import { Fragment } from 'react/jsx-runtime';
 const LINKS = [
   {
     text: 'Documentation',
-    url: 'https://cloud.terpusat.com/docs/id/intro',
+    url: '/docs/intro',
   },
   {
     text: 'GitHub',

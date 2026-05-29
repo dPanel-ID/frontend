@@ -66,6 +66,18 @@ Use the dPanel documents at `https://github.com/devetek/d-panel/tree/main/docs` 
 
 For frontend implementation, also follow `RULES.md` in this repository. The frontend stack is React, Vite, `@tanstack/router`, `zod`, and the custom API client under `src/shared/libs/api-client`. Follow FSD dependency direction and the local slice anatomy.
 
+## Mandatory Frontend Execution Preflight
+
+Before any frontend task that can change a visible route, panel, modal, table, card, toolbar, or workflow, every agent MUST complete this preflight in order:
+
+1. Read this `AGENTS.md` file and the repository `RULES.md` file before making implementation decisions.
+2. Identify the product surface, route, slice owner, API contracts, existing design-system primitives, and canonical comparison pages.
+3. Inspect the closest existing production-quality examples in the repo before creating or modifying UI. For operational pages, the canonical references are the server list/detail pages and application list/detail pages. For load balancers, the list and detail experiences MUST feel consistent with those references.
+4. Confirm the implementation plan covers i18n, accessibility, keyboard navigation, focus states, responsive behavior, loading, empty, failed, retryable, stale/degraded, unauthorized, and config-disabled states.
+5. If the implementation cannot meet the existing dPanel design standard with available primitives, stop and call out the blocker instead of shipping a visually inconsistent or one-off experience.
+
+This preflight is not optional and must happen before file edits. A frontend task is not complete until the final implementation is compared against the canonical pages and any mismatch is either fixed or explicitly reported.
+
 ## Product Manager Role For dPanel
 
 The Product Manager optimizes for product clarity, rollout safety, and parallel coordination. Do not invent scope beyond the documented dPanel product direction.
@@ -119,9 +131,11 @@ Deliverables:
 
 These rules apply to every agent working in this frontend repository. They are mandatory for all new pages, server-detail panels, sidepanels, modals, drawers, tables, toolbars, and management surfaces.
 
+- Agents MUST treat the server detail page, application detail page, server list page, and application list page as the visual and interaction baseline for operational UX. New detail pages, including load-balancer detail pages, must use the same product language: breadcrumb page header, dense first-screen summary, right-side or secondary information grouping where appropriate, clear action placement, meaningful status and health indicators, and useful operational logs/events.
 - New pages and sidepanels MUST follow the established dPanel design system before any feature-specific styling is added. For server-management surfaces, use the shared pattern from `src/features/server-management-sidepanel-ui` or match its structure: `Layout.Title`, constrained sidepanel width, compact header, optional metrics, toolbar, standard state block, and bordered `bg-card`/`bg-background` content surfaces.
 - The server detail overview and server list overview are the canonical dPanel operational page patterns. New list and detail pages MUST use dense first-screen summaries, compact icon-only actions with `aria-label`/`title`, grouped status sections, real resource counts, health bars where useful, and direct navigation to related resources instead of sparse decorative cards.
 - New custom page shells, sidepanel shells, card systems, title bars, toolbar systems, or table treatments are forbidden unless the user explicitly asks for a new design direction or an existing surface cannot support the workflow. If a custom shell is unavoidable, document the reason in the implementation summary.
+- Load-balancer pages MUST not be treated as a secondary or simplified module. The load-balancer list, create flow, and detail route must expose operationally useful information comparable to applications and servers: gateway machine, public address/domain, routing rules, upstream targets, engine/runtime, ownership, lifecycle timestamps, provisioning status, access/error signals, and recovery context.
 - Server detail management panels MUST feel like one product. Networks, Services, Linux Users, File Manager, Log Viewer, and future server tools must share spacing, typography, border radius, icon-button style, loading/empty/error treatment, and mobile behavior. Do not create one-off visual languages for each tool.
 - Prefer existing shared primitives over bespoke controls: `ButtonV2`, shared inputs, shared tables, shared tabs, shared dropdown/popover patterns, `ServerManagementToolbar`, `ServerManagementIconButton`, `ServerManagementSurface`, `ServerManagementMetric`, and `ServerManagementState`. Do not mix legacy atoms with current atoms in newly created management surfaces unless preserving an untouched legacy component.
 - Cards and framed surfaces should use `rounded-lg` or smaller and standard `border`, `bg-card`, `bg-background`, `text-primary`, and `text-muted-foreground` tokens. Avoid oversized rounding, decorative shadows, nested cards, gradient/orb backgrounds, and marketing-style page composition in operational tools.

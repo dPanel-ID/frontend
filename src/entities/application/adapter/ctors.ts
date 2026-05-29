@@ -1,6 +1,7 @@
 import type z from 'zod';
 
 import type { schemaServerMinimal } from '@/entities/server/rules/schema';
+import { resolveExecutionErrorMessage } from '@/entities/shared/lib/resolveExecutionErrorMessage';
 
 import type { DTOs } from '@/shared/api';
 import { iife } from '@/shared/libs/browser/fn';
@@ -115,7 +116,9 @@ export function ctorState(
 ): KeysOnlyDeep<z.input<typeof state>> {
   return {
     lastArtifact: {
-      message: raw.artifacts?.[0]?.error,
+      message: raw.artifacts?.[0]
+        ? resolveExecutionErrorMessage(raw.artifacts[0])
+        : undefined,
       status: raw.artifacts?.[0]?.installer_status,
     },
     service: raw.deploys?.[0]?.service?.state,

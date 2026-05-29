@@ -1,6 +1,6 @@
 import { AdapterLoadBalancerFromDto } from '@/entities/load-balancer/adapter';
 
-import { ApiRouter } from '@/shared/api';
+import { ApiLoadBalancer } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
 
@@ -12,9 +12,9 @@ export const [LbDataModelProvider, useLbDataModel] = buildSelector(
 )(() => {
   const { currentPage, searchQuery } = useFilterModel();
 
-  const [response, refresh] = ApiRouter.Find.useGet({
+  const [response, refresh] = ApiLoadBalancer.Find.useGet({
     page: currentPage,
-    pageSize: 4,
+    pageSize: 10,
     searchQuery,
     forceMine: localStorage.getItem('organization_id') == null,
   });

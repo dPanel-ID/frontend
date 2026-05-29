@@ -1,7 +1,7 @@
 import { AdapterLoadBalancerFromDto } from '@/entities/load-balancer/adapter';
 import { AdapterLoggingRichCaddyLbFromJsonStr } from '@/entities/logging-rich/caddy-lb/adapter';
 
-import { ApiRouter, ApiServer } from '@/shared/api';
+import { ApiLoadBalancer } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import { excludeFalsy } from '@/shared/libs/browser/typeguards';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
@@ -15,22 +15,16 @@ export const [LbDetailsModelProvider, useLbDetailsModel] = buildSelector(
 )((props: SidepanelProps) => {
   const { loadBalancerId } = props;
 
-  const [responseDetails, refreshDetails] = ApiRouter.Detail.$Id.useGet({
-    routerId: loadBalancerId,
+  const [responseDetails, refreshDetails] = ApiLoadBalancer.Detail.$Id.useGet({
+    loadBalancerId,
   });
 
-  const [responseLog, refreshLog] = ApiServer.Detail.$Id.Log.useGetWhen(() => {
-    if (
-      responseDetails.$status === 'success' &&
-      responseDetails.machine_id &&
-      responseDetails.domain
-    ) {
-      return {
-        serverId: String(responseDetails.machine_id),
-        file: `/var/log/caddy/${responseDetails.domain}.access.log`,
-        line: 30,
-      };
-    }
+  const [responseLog, refreshLog] = ApiLoadBalancer.Logs.$Id.useGet({
+    loadBalancerId,
+    limit: 10,
+    options: {
+      skip: responseDetails.$status !== 'success',
+    },
   });
 
   useSubscribe(
@@ -53,7 +47,13 @@ export const [LbDetailsModelProvider, useLbDetailsModel] = buildSelector(
       AdapterLoadBalancerFromDto.toLoadBalancerDetails(raw).unwrap(),
     ),
     activityTimeline: useAdapter(responseLog, (raw) => {
-      return raw
+      const entries = Array.isArray(raw.entries) ? raw.entries : [];
+      const lines = Array.isArray(raw.lines) ? raw.lines : [];
+      const activityLines = entries.length
+        ? entries.map((entry) => entry.line)
+        : lines;
+
+      return activityLines
         .filter(excludeFalsy)
         .toReversed()
         .map((log) =>

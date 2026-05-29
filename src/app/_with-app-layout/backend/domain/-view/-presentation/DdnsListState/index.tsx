@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import type { ResponseErrors } from '@/shared/libs/api-client/rules/types';
 import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
 import { FailedState } from '@/widgets/failed-state';
@@ -34,12 +35,10 @@ function Loading() {
 function Error(props: ResponseErrors) {
   const errorPayload = useMemo(() => {
     if (props.kind === 'aggregate') {
-      return props.errors
-        .map((it) => it.error.stack || it.error.message)
-        .join('\n');
+      return props.errors.map((it) => getApiErrorDetail(it.error)).join('\n');
     }
 
-    return props.error.stack || props.error.message;
+    return getApiErrorDetail(props.error);
   }, [props]);
 
   return (

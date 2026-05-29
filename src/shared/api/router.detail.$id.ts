@@ -19,7 +19,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
   const { routerId } = params;
 
   return {
-    url: `/v1/router/detail/${routerId}`,
+    url: `/v2/load-balancer/detail/${routerId}`,
   };
 }
 

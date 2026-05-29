@@ -2,6 +2,8 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { useSidepanelEmit } from '@/services/sidepanel/model/event';
 import { useToaster } from '@/services/toaster';
 
+import { normalizeLoadBalancerPathMatchForPayload } from '@/entities/load-balancer/lib/path-match';
+
 import { ApiLoadBalancer } from '@/shared/api';
 import { iife } from '@/shared/libs/browser/fn';
 
@@ -32,21 +34,16 @@ export default function useFormSubmissionUsecase() {
     const rules = iife(() => {
       if (lbKind === 'l7' && l7rules) {
         return l7rules.map((l7rule) => {
-          const hasWildcard = /\/\*$/.test(l7rule.pathMatch);
-          const pathMatch = iife(() => {
-            if (l7rule.pathMatch === '/*') return '/';
-
-            return hasWildcard
-              ? l7rule.pathMatch.slice(0, -2)
-              : l7rule.pathMatch;
-          });
-          if (pathMatch === '/') {
+          const route = normalizeLoadBalancerPathMatchForPayload(
+            l7rule.pathMatch,
+          );
+          if (route.pathMatch === '/') {
             defaultUpstream = `${l7rule.upstreamsIfProxyPass?.[0]?.address ?? 'localhost'}:${l7rule.upstreamsIfProxyPass?.[0]?.port ?? '80'}`;
           }
 
           return {
-            wildcard: hasWildcard,
-            pathMatch,
+            wildcard: route.wildcard,
+            pathMatch: route.pathMatch,
             type: 'proxy_pass',
             applicationId: l7rule.applicationIdIfProxyPassApp,
             upstreams: l7rule.upstreamsIfProxyPass?.map((u) => ({

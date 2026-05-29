@@ -3,7 +3,7 @@ import z from 'zod';
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
-import { ApiRouter } from '@/shared/api';
+import { ApiLoadBalancer } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 import buildDialog from '@/widgets/dialog-builder';
 
@@ -43,8 +43,8 @@ export default function useLbDeleteUsecase(params: Params) {
     });
 
     while (dialog.isUnresolved && dialog.response === 'yes') {
-      const apiResponse = await ApiRouter.Delete.$Id.doDelete({
-        routerId: id,
+      const apiResponse = await ApiLoadBalancer.Delete.$Id.doDelete({
+        loadBalancerId: id,
       });
 
       if (apiResponse.$status === 'success') {

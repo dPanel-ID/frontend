@@ -2,7 +2,10 @@ import { useNavigate } from '@tanstack/react-router';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { BaseResponseError } from '@/shared/libs/api-client/lib/error';
+import {
+  BaseResponseError,
+  getApiErrorDetail,
+} from '@/shared/libs/api-client/lib/error';
 import CoverIfError from '@/shared/presentation/atoms/CoverIfError';
 import { FailedState } from '@/widgets/failed-state';
 import { FallbackState } from '@/widgets/fallback-state';
@@ -44,7 +47,7 @@ export default function ApplicationsDetailGuard({ children = <></> }) {
         return (
           <FailedState.WallCentered.Retryable
             withCard
-            errorPayload={payload.error.message}
+            errorPayload={getApiErrorDetail(payload.error)}
             onClickRetry={() => {
               emit('@applications::detail/app-detail-refresh', null);
             }}

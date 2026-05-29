@@ -1,7 +1,10 @@
+import { getApiErrorDetail, getBackendErrorDetail } from './lib/error';
 import type { Response } from './rules/types';
 
 function collectErrorText(error: unknown) {
   const messages: string[] = [];
+
+  messages.push(getApiErrorDetail(error));
 
   if (error instanceof Error) {
     messages.push(error.message);
@@ -21,6 +24,9 @@ function collectErrorText(error: unknown) {
         if (typeof data === 'string') {
           messages.push(data);
         } else if (data && typeof data === 'object') {
+          const backendDetail = getBackendErrorDetail(data);
+          if (backendDetail) messages.push(backendDetail);
+
           if ('error' in data && typeof data.error === 'string') {
             messages.push(data.error);
           }

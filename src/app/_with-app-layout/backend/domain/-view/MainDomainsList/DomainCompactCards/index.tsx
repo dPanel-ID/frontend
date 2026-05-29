@@ -1,129 +1,233 @@
-import type { ComponentProps } from 'react';
+import type {
+  ComponentProps,
+  ComponentType,
+  KeyboardEvent,
+  MouseEvent,
+} from 'react';
 
 import {
   BuildingIcon,
-  CheckCircleIcon,
-  ShieldCheckIcon,
+  Clock3Icon,
+  CloudIcon,
+  EyeIcon,
+  GlobeIcon,
+  MoreHorizontalIcon,
+  SignpostIcon,
+  Trash2Icon,
   UserIcon,
 } from 'lucide-react';
+import type { LucideIcon, LucideProps } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
-import type { DomainEssentials } from '@/entities/domain/rules/schema';
-import '@/shared/libs/browser/fn-extensions';
+import type { DomainCard } from '@/entities/domain/rules/schema';
 import { DOMAIN_PROVIDER_BRANDS } from '@/entities/domain/ui/constants/provider';
-import type { SchemaCommon } from '@/entities/shared/rules/schema';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
+import { Badge } from '@/shared/presentation/atoms/Badge';
+import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import LayoutAutoGridList from '@/shared/presentation/atoms/LayoutAutoGridList';
-import IconEye from '@/shared/presentation/icons/Eye';
-import IconEyeActive from '@/shared/presentation/icons/EyeActive';
-import IconLastDateActive from '@/shared/presentation/icons/LastDateActive';
-import { ResourceCard } from '@/widgets/resource-card';
+import ActionPopover from '@/shared/presentation/molecules/ActionPopover';
 
 import { useEmit } from '../../../-models/events';
 
-import type { CardProps, DomainCompactCardsProps as Props } from './types';
+import type { DomainCompactCardsProps as Props } from './types';
 
-const Card = (props: CardProps) => {
-  const { actions, data } = props;
-
-  const t = useDevetekTranslations();
-  const locale = useDevetekLocale();
-
-  const providerBrands = DOMAIN_PROVIDER_BRANDS[data.provider];
-
-  const lastUpdated = getDistanceFromNow(data.timestamp.updated, locale);
-
-  return (
-    <ResourceCard.Compact>
-      <ResourceCard.Compact.Main>
-        <ResourceCard.Compact.Main.Hero
-          image={providerBrands.icon}
-          tooltipMessage={t(providerBrands.i18n.brandName)}
-        />
-        <ResourceCard.Compact.Main.Content
-          title={`*.${data.domain.hostname}`}
-          status={[
-            !!data.ownership.team && {
-              icon: BuildingIcon,
-              text: data.ownership.team,
-            },
-            {
-              icon: UserIcon,
-              text: data.ownership.owner,
-            },
-          ]}
-        />
-      </ResourceCard.Compact.Main>
-      <ResourceCard.Compact.Actions
-        visibleActionOnlyIcon
-        actions={actions}
-        labelMore={t('common.actions.more')}
-      />
-      <ResourceCard.Compact.Footnote>
-        <ResourceCard.Compact.Footnote.StatusIcons
-          icons={[
-            ({ className }) => <CheckCircleIcon className={className} />,
-            ({ className }) => <ShieldCheckIcon className={className} />,
-          ]}
-        />
-        <ResourceCard.Compact.Footnote.Spacer />
-        <ResourceCard.Compact.Footnote.Item
-          icon={IconLastDateActive}
-          label={t('common.terms.lastUpdated')}
-          value={lastUpdated}
-        />
-      </ResourceCard.Compact.Footnote>
-    </ResourceCard.Compact>
-  );
-};
+type IconComponent = ComponentType<LucideProps>;
 
 export default function DomainCompactCards(props: Props) {
   const { list } = props;
 
-  const t = useDevetekTranslations();
+  return (
+    <LayoutAutoGridList viewMode="grid">
+      {list.map((item) => (
+        <DomainCompactCard key={item.id} data={item} />
+      ))}
+    </LayoutAutoGridList>
+  );
+}
+
+function DomainCompactCard(props: { data: DomainCard }) {
+  const { data } = props;
 
   const emit = useEmit();
+  const t = useDevetekTranslations();
+  const locale = useDevetekLocale();
 
-  const handleClickDetails = (id: SchemaCommon.UnitId) => {
-    emit('@domain-dns/open--details', id);
+  const ProviderIcon = DOMAIN_PROVIDER_BRANDS[data.provider].icon;
+  const providerLabel = getProviderLabel(
+    data.provider,
+    t('page.domain.providerUnknown'),
+  );
+  const domainName = data.domain.hostname;
+  const wildcardName = `*.${domainName}`;
+  const lastUpdated = getDistanceFromNow(data.timestamp.updated, locale);
+  const detailLabel = t('page.domain.openDetails', {
+    domain: domainName,
+  });
+
+  type Actions = ComponentProps<typeof ActionPopover>['actions'];
+  const actions: Actions = [
+    {
+      label: t('common.actions.migrateOwnership'),
+      icon: BuildingIcon,
+      onClick: () => emit('@domain-dns/open--migrate-ownership', data),
+    },
+    {
+      variant: 'danger',
+      label: t('common.actions.delete'),
+      icon: Trash2Icon,
+      onClick: () => emit('@domain-dns/domain--delete', data),
+    },
+  ];
+
+  const handleOpenDetails = () => {
+    emit('@domain-dns/open--details', data.id);
   };
 
-  const handleClickMigrateOwnership = (payload: DomainEssentials) => {
-    emit('@domain-dns/open--migrate-ownership', payload);
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+
+    event.preventDefault();
+    handleOpenDetails();
   };
 
-  const handleClickDelete = (payload: DomainEssentials) => {
-    emit('@domain-dns/domain--delete', payload);
+  const stopInteractivePropagation = (
+    event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>,
+  ) => {
+    event.stopPropagation();
   };
 
   return (
-    <LayoutAutoGridList viewMode="grid">
-      {list.map((item) => {
-        type Actions = ComponentProps<
-          typeof ResourceCard.Full.Actions
-        >['actions'];
-        const actions: Actions = [
-          {
-            label: t('common.actions.details'),
-            icon: IconEye,
-            iconActive: IconEyeActive,
-            onClick: handleClickDetails.intoEvent(item.id),
-          },
-          {
-            label: t('common.actions.migrateOwnership'),
-            onClick: handleClickMigrateOwnership.intoEvent(item),
-          },
-          {
-            variant: 'destructive',
-            label: t('common.actions.delete'),
-            onClick: handleClickDelete.intoEvent(item),
-          },
-        ];
+    <article
+      role="link"
+      tabIndex={0}
+      aria-label={detailLabel}
+      className="rounded-lg border bg-card/45 p-4 transition-colors hover:border-primary/25 hover:bg-card/65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      onClick={handleOpenDetails}
+      onKeyDown={handleKeyDown}
+    >
+      <div className="flex items-start gap-3">
+        <ProviderMark icon={ProviderIcon} badge={GlobeIcon} />
 
-        return <Card key={item.id} data={item} actions={actions} />;
-      })}
-    </LayoutAutoGridList>
+        <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 items-center gap-2">
+            <h3 className="truncate text-base font-bold text-primary">
+              {domainName}
+            </h3>
+          </div>
+          <p className="mt-1 line-clamp-2 text-sm font-medium text-primary/55">
+            {data.description || t('page.domain.noDescription')}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-2">
+        <InlineInfo icon={SignpostIcon} value={wildcardName} />
+        <InlineInfo
+          icon={UserIcon}
+          value={data.ownership.team || data.ownership.owner}
+        />
+        <InlineInfo icon={Clock3Icon} value={lastUpdated} />
+      </div>
+
+      <div className="mt-4 flex items-center justify-between gap-2 border-t pt-3">
+        <div className="min-w-0 flex-1">
+          <Badge
+            variant="outline"
+            className="max-w-full justify-start font-mono"
+          >
+            <CloudIcon className="size-3" />
+            <span className="truncate">{providerLabel}</span>
+          </Badge>
+        </div>
+
+        <div
+          className="flex shrink-0 items-center gap-1"
+          onClick={stopInteractivePropagation}
+          onKeyDown={stopInteractivePropagation}
+        >
+          <ActionButton
+            icon={EyeIcon}
+            label={t('common.actions.details')}
+            onClick={handleOpenDetails}
+          />
+          <ActionPopover actions={actions}>
+            <Button
+              size="icon-sm"
+              buttonColor="secondary"
+              buttonStyle="ghost"
+              aria-label={t('common.actions.more')}
+              title={t('common.actions.more')}
+            >
+              <MoreHorizontalIcon />
+            </Button>
+          </ActionPopover>
+        </div>
+      </div>
+    </article>
   );
+}
+
+function ProviderMark(props: { icon: IconComponent; badge: LucideIcon }) {
+  const { icon: Icon, badge: BadgeIcon } = props;
+
+  return (
+    <div className="relative flex size-11 shrink-0 items-center justify-center rounded-lg border bg-background/75">
+      <Icon className="size-7" />
+      <span className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-md border bg-card">
+        <BadgeIcon className="size-3 text-primary/55" />
+      </span>
+    </div>
+  );
+}
+
+function ActionButton(props: {
+  icon: LucideIcon;
+  label: string;
+  onClick: () => void;
+}) {
+  const { icon: Icon, label, onClick } = props;
+
+  return (
+    <Button
+      size="icon-sm"
+      buttonColor="secondary"
+      buttonStyle="ghost"
+      aria-label={label}
+      title={label}
+      onClick={onClick}
+    >
+      <Icon />
+    </Button>
+  );
+}
+
+function InlineInfo(props: { icon: LucideIcon; value?: string }) {
+  const { icon: Icon, value } = props;
+
+  if (!value) return null;
+
+  return (
+    <span className="inline-flex min-w-0 items-center gap-1.5 text-sm font-medium text-primary/55">
+      <Icon className="size-3.5 shrink-0" />
+      <span className="truncate">{value}</span>
+    </span>
+  );
+}
+
+function getProviderLabel(
+  provider: DomainCard['provider'],
+  unknownLabel: string,
+) {
+  switch (provider) {
+    case 'CloudFlare':
+      return 'Cloudflare';
+
+    case 'DigitalOcean':
+      return 'DigitalOcean';
+
+    default:
+      return unknownLabel;
+  }
 }

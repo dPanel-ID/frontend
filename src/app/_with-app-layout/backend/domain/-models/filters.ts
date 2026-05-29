@@ -58,7 +58,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
     const derivedViewMode = iife((): Exclude<FilterRules.ViewMode, 'auto'> => {
       if (viewMode !== 'auto') return viewMode;
 
-      return isDesktop ? 'table' : 'grid';
+      return isDesktop ? 'list' : 'grid';
     });
 
     return {

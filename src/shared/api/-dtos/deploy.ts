@@ -1,4 +1,8 @@
-import type { MachineV1, ServiceOriginDetailV1 } from '.';
+import type {
+  ExecutionErrorDetailV1,
+  MachineV1,
+  ServiceOriginDetailV1,
+} from '.';
 
 export interface DeployV1 {
   id?: number;
@@ -6,6 +10,7 @@ export interface DeployV1 {
   application_id?: number;
   installer_status?: string;
   error?: string;
+  error_detail?: ExecutionErrorDetailV1 | null;
   user_id?: number;
   artifact_id?: number;
   created_at?: string;

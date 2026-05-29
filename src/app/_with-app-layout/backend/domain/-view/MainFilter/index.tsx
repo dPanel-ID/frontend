@@ -1,4 +1,9 @@
-import { ArrowLeftRightIcon, Grid2X2Icon, RefreshCwIcon, TableIcon } from 'lucide-react';
+import {
+  ArrowLeftRightIcon,
+  Grid2X2Icon,
+  RefreshCwIcon,
+  Rows3Icon,
+} from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -20,9 +25,9 @@ const ViewModeSO = buildSegmentedControl<FilterRules.ViewMode>({
       tooltipI18n: 'common.terms.automaticView',
     },
     {
-      id: 'table',
-      icon: TableIcon,
-      tooltipI18n: 'common.terms.tableView',
+      id: 'list',
+      icon: Rows3Icon,
+      tooltipI18n: 'common.terms.cardListView',
     },
     {
       id: 'grid',
@@ -101,11 +106,11 @@ export default function MainFilter() {
   return (
     <>
       <Card className="bg-card/30 rounded-xl p-1.5 grid grid-cols-[1fr_auto] gap-x-2">
-        <div className="flex items-center">
+        <div className="flex items-center gap-2 flex-wrap">
           <SlotSearchCollapsible />
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center gap-x-1">
           <SlotRefresh />
           <SlotViewMode />
         </div>

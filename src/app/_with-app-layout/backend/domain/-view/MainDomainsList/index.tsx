@@ -1,3 +1,5 @@
+import { useNavigate } from '@tanstack/react-router';
+
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { EmptyState } from '@/shared/presentation/organisms/EmptyState';
@@ -18,6 +20,7 @@ export default buildResponseView({
     const { list } = props;
 
     const t = useDevetekTranslations();
+    const navigate = useNavigate();
 
     const [derivedViewMode] = useFilterModel((s) => [s.derivedViewMode]);
 
@@ -27,11 +30,12 @@ export default buildResponseView({
           title={t('page.domain.emptyState.title')}
           message={t('page.domain.emptyState.message')}
           ctaText={t('page.domain.emptyState.cta')}
+          ctaOnClick={() => navigate({ to: '/backend/domain/create' })}
         />
       );
     }
 
-    if (derivedViewMode === 'table') {
+    if (derivedViewMode === 'list') {
       return <DomainTable data={list} />;
     }
 
