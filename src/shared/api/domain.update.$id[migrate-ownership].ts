@@ -4,6 +4,8 @@ import { apiDoPost } from '../libs/api-client';
 
 import type { PayloadUpdateOwnership } from './-dtos';
 
+import type { DTOs } from '.';
+
 // =============================================================================
 //   Recipe
 // =============================================================================
@@ -19,9 +21,15 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
   return {
     method: 'POST',
     url: `/v1/domain/update/${domainId}`,
-    data: {
-      organization_id: payload.into === 'team' ? payload.teamId : '0',
-    },
+    data:
+      payload.into === 'team'
+        ? {
+            workspace_id: payload.teamId,
+            workspace_type: 'group',
+          }
+        : {
+            workspace_type: 'personal',
+          },
   };
 }
 
@@ -29,9 +37,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
 //   Method
 // =============================================================================
 
-export interface Dto {
-  id: string;
-}
+export type Dto = DTOs.DomainV1;
 
 export function doPost(params: RecipeParams) {
   return apiDoPost<Dto>({
