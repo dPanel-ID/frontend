@@ -56,6 +56,27 @@ function formatErrorDetailValue(value: unknown) {
   return formattedDetail || undefined;
 }
 
+function hasEnvelopeError(value: unknown) {
+  if (typeof value === 'string') return value.trim().length > 0;
+  if (value == null) return false;
+  if (Array.isArray(value)) return value.length > 0;
+  if (isRecord(value)) return Object.keys(value).length > 0;
+  return Boolean(value);
+}
+
+export function isBaseResponseFailure(response: BaseResponse<unknown>) {
+  const code = Number(response.code);
+  if (!Number.isFinite(code) || code < 200 || code >= 300) return true;
+
+  const status =
+    typeof response.status === 'string'
+      ? response.status.trim().toLowerCase()
+      : '';
+  if (status && status !== 'success') return true;
+
+  return hasEnvelopeError(response.error);
+}
+
 export function getBackendErrorDetail(payload: unknown) {
   if (typeof payload === 'string' && payload.trim()) return payload;
   if (!isRecord(payload)) return undefined;

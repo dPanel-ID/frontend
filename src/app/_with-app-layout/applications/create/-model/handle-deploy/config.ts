@@ -223,7 +223,6 @@ export const getVarsWordpress = (vars: BundleVars) => {
     repo_url: '',
     source: 'wordpress',
     type: 'bundle',
-    user_id: userID,
   };
 };
 
@@ -435,7 +434,6 @@ export const getVarsLaravel = (vars: BundleVars) => {
     repo_url: '',
     source: 'laravel',
     type: 'bundle',
-    user_id: userID,
   };
 };
 interface GitVars {
@@ -652,7 +650,6 @@ export const getVarsGitLaravel = (vars: GitVars) => {
     repo_url: repoURL,
     source: gitProvider,
     type: 'git',
-    user_id: userID,
   };
 };
 
@@ -816,6 +813,5 @@ export const getVarsGit = (vars: GitVars) => {
     repo_url: repoURL,
     source: gitProvider,
     type: 'git',
-    user_id: userID,
   };
 };

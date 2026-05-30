@@ -1,7 +1,6 @@
 export type SupportedModule =
   | 'application'
   | 'server'
-  | 'load-balancer'
   | 'domain'
   | 'secret-ssh'
   | 'cloud-project';

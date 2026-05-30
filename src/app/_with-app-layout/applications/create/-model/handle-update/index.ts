@@ -43,20 +43,44 @@ function runtimeFromRequiredBinary(
 }
 
 function runtimeItemFromDependency(config: DependencyConfig): RuntimeItem {
+  const moduleId = config.moduleId || config.id;
+
   return {
-    name: config.moduleId || config.id,
+    name: moduleId,
     title: config.title || config.name,
     version: config.version || '',
     category: 'application-dependency',
     roles: config.roles,
-    installation_key:
-      config.installationKey ||
-      `${config.moduleId || config.id}@${config.version || 'default'}:application`,
+    installation_key: runtimeItemInstallationKey(config),
     variables: config.variables,
     source: config.source === 'installed' ? 'server.installed' : 'catalog',
     module_ref: config.ref.name,
     module_source_commit: config.ref.expectedCommit,
   };
+}
+
+function runtimeItemInstallationKey(config: DependencyConfig) {
+  if (config.installationKey) return config.installationKey;
+
+  const moduleId = config.moduleId || config.id;
+  if (!config.version) return moduleId;
+
+  return `${moduleId}@${config.version}:system`;
+}
+
+function hasRuntimeItemContractMetadata(config: DependencyConfig) {
+  const moduleId = String(config.moduleId || config.id)
+    .trim()
+    .toLowerCase();
+  const roles = config.roles
+    .map((role) => role.trim())
+    .filter(Boolean)
+    .map((role) => role.toLowerCase());
+
+  if (roles.length === 0) return false;
+  if (roles.some((role) => role === moduleId)) return false;
+
+  return true;
 }
 
 function isLanguageDependency(config?: DependencyConfig) {
@@ -131,12 +155,8 @@ function buildUpdatedAppDefinition(params: {
   const primaryRuntimeVersion =
     primaryRuntime.version == null ? '' : String(primaryRuntime.version);
   const extraRuntimes = normalizedRuntimes.slice(1);
-  const buildEnvironment = buildEnvText.trim()
-    ? parseEnvText(buildEnvText)
-    : (rawBuild?.environment ?? []);
-  const runtimeEnvironment = runtimeEnvText.trim()
-    ? parseEnvText(runtimeEnvText)
-    : (rawRun?.environment ?? []);
+  const buildEnvironment = parseEnvText(buildEnvText);
+  const runtimeEnvironment = parseEnvText(runtimeEnvText);
 
   return {
     version: rawAppDefinition?.version ?? 'v0.0.1-alpha.0',
@@ -222,6 +242,7 @@ export default function useHandleUpdateApplication() {
     const dependencyRuntimeItems = selectedDependencyIds
       .map((id) => dependencyConfigs[id])
       .filter((config): config is NonNullable<typeof config> => Boolean(config))
+      .filter(hasRuntimeItemContractMetadata)
       .map((config) => runtimeItemFromDependency(config));
     const languageRequiredBinaryIds = new Set(
       selectedDependencyIds
@@ -243,12 +264,8 @@ export default function useHandleUpdateApplication() {
       runtimeAppName,
       runtimeEnvText,
     });
-    const buildEnvVariables = buildEnvText.trim()
-      ? parseEnvText(buildEnvText)
-      : (updateRawAppDefinition?.build?.target?.machine?.environment ?? []);
-    const runtimeEnvVariables = runtimeEnvText.trim()
-      ? parseEnvText(runtimeEnvText)
-      : (updateRawAppDefinition?.run?.environment ?? []);
+    const buildEnvVariables = parseEnvText(buildEnvText);
+    const runtimeEnvVariables = parseEnvText(runtimeEnvText);
     const {
       repoName: fallbackRepoName,
       repoOrganization: fallbackRepoOrganization,
@@ -298,18 +315,9 @@ export default function useHandleUpdateApplication() {
     const payload = {
       app_config: updateApplicationConfig || undefined,
       app_definition: appDefinition,
-      artifact: {
-        ...compiledConfig.artifact,
-        app_definition: appDefinition,
-        is_primary: true,
-        machine_id: hostedServerID,
-      },
-      bootstrap: updateTriggerBootstrap || undefined,
       default_branch: gitDefaultBranch || undefined,
-      deploy: compiledConfig.deploy,
       domain: appDomain || undefined,
       name: appName,
-      playbook: compiledConfig.playbook,
       repo_name: fallbackRepoName || undefined,
       repo_org: fallbackRepoOrganization || undefined,
       repo_url: appSourceGithubRepo,
@@ -320,6 +328,18 @@ export default function useHandleUpdateApplication() {
         updateWorkdir ||
         updateRawAppDefinition?.build?.target?.machine?.workdir ||
         undefined,
+      ...(updateTriggerBootstrap
+        ? {
+            artifact: {
+              ...compiledConfig.artifact,
+              app_definition: appDefinition,
+              is_primary: true,
+              machine_id: hostedServerID,
+            },
+            bootstrap: true,
+            deploy: compiledConfig.deploy,
+          }
+        : {}),
     } satisfies DTOs.ApplicationV1 & Record<string, unknown>;
 
     const response = await ApiApplication.Update.$Id.doPost({

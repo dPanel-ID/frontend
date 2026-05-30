@@ -5,7 +5,11 @@ import { AxiosError, isCancel } from 'axios';
 import { iife } from '../../browser/fn';
 import useHandler from '../../react-hooks/useHandler';
 import { axiosClient } from '../lib/client';
-import { BaseResponseError, normalizeApiError } from '../lib/error';
+import {
+  BaseResponseError,
+  isBaseResponseFailure,
+  normalizeApiError,
+} from '../lib/error';
 import type {
   BaseResponse,
   GetRequestRecipe,
@@ -50,7 +54,7 @@ export default function useApiGetLazy<D, P>(
         .then((axiosResponse) => {
           const baseData = axiosResponse.data;
 
-          if (baseData.code !== 200) {
+          if (isBaseResponseFailure(baseData)) {
             throw new BaseResponseError(baseData);
           }
 

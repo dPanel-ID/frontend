@@ -221,6 +221,7 @@ function buildInitialFormState(
       rawBuild?.steps
         ?.flatMap((step) => step.command ?? [])
         .filter((command) => command.trim()) ?? [],
+    buildEnvText: envTextFromDefinition(rawBuild?.environment),
     appDomain: application.domain || '',
     appName: application.name || '',
     appPort: originalPort,
@@ -248,6 +249,7 @@ function buildInitialFormState(
     hostedServerID: originalServerID,
     progress: '2-server-dependencies',
     requiredBinaryConfigs,
+    runtimeEnvText: envTextFromDefinition(rawRun?.environment),
     selectedDependencyIds,
     selectedRequiredBinaryIds,
     updateApplicationConfig: application.app_config ?? null,
@@ -260,6 +262,20 @@ function buildInitialFormState(
       appDefinition?.build?.target?.machine?.workdir ||
       '',
   };
+}
+
+function envTextFromDefinition(
+  environment?: Array<{ key?: string; value?: string | null }> | null,
+) {
+  return (environment ?? [])
+    .map((item) => {
+      const key = String(item.key || '').trim();
+      if (!key) return null;
+
+      return `${key}=${item.value ?? ''}`;
+    })
+    .filter((line): line is string => Boolean(line))
+    .join('\n');
 }
 
 function buildInitialServers(
