@@ -1,24 +1,44 @@
-import { Card } from '@/shared/presentation/atoms/Card';
-import { AsideHelpSupport } from '@/widgets/aside-help-support';
+import { useAuthLoggedIn } from '@/services/auth';
+import { useAuthEmit } from '@/services/auth/model/events';
+
+import { useUserFormModal } from '@/features/user-form-modal';
 
 import Layout from './-presentation/Layout';
 import { Header } from './Header';
-import { Personal } from './Personal';
+import { Personal, ProfileSidebar } from './Personal';
 
 export default function ProfileView() {
+  const { userProfile } = useAuthLoggedIn();
+  const authEmit = useAuthEmit();
+  const [userForm] = useUserFormModal();
+
+  const handleEditProfile = () => {
+    userForm({
+      action: 'update',
+      user: {
+        id: Number(userProfile.id),
+        fullname: userProfile.fullname,
+        email: userProfile.email,
+        username: userProfile.username,
+        avatar_url: userProfile.avatarSrc,
+      },
+      onSubmitSuccess: () => {
+        authEmit('%%auth/refresh', null);
+      },
+    });
+  };
+
   return (
     <>
-      <Header />
+      <Header onEditProfile={handleEditProfile} />
 
       <Layout>
         <Layout.Main>
-          <Personal />
+          <Personal onEditProfile={handleEditProfile} />
         </Layout.Main>
 
         <Layout.Aside>
-          <Card className="rounded-2xl">
-            <AsideHelpSupport.Complete topic="application" />
-          </Card>
+          <ProfileSidebar />
         </Layout.Aside>
       </Layout>
     </>

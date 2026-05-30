@@ -31,15 +31,15 @@ export interface RegionItem {
 }
 
 export interface Dto {
-  items: RegionItem[];
+  items?: RegionItem[];
 }
 
 export function useGet(params: WithApiGetOptions<RecipeParams>) {
-  return useApiGet<Dto[]>(recipe(params), params.options);
+  return useApiGet<Dto>(recipe(params), params.options);
 }
 
 export function fetchGet(params: RecipeParams) {
-  return apiClient<Dto[]>({
+  return apiClient<Dto>({
     ...recipe(params),
     method: 'GET',
   });

@@ -1,13 +1,17 @@
 import * as Find from './user.find';
 import * as Login from './user.login';
 import * as Profile from './user.profile';
+import * as ProfileUpdate from './user.profile.update';
 import * as Register from './user.register';
 import * as Update$Id from './user.update.$id';
 
 const Root = {
   Find,
   Login,
-  Profile,
+  Profile: {
+    ...Profile,
+    Update: ProfileUpdate,
+  },
   Register,
   Update: {
     $Id: Update$Id,

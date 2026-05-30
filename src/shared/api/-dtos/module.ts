@@ -13,16 +13,30 @@ export interface IACRepositorySummaryV1 {
   ref: IACRepositoryRefV1;
 }
 
+export interface IACRepositoryActiveRefV1 {
+  type?: string;
+  name?: string;
+  resolved_commit?: string;
+}
+
 export interface IACRepositoryV1 {
-  provider: string;
-  owner: string;
-  repo: string;
-  default_ref: string;
-  ref_type: string;
-  ref_name: string;
-  resolved_commit: string;
-  source: string;
-  status: string;
+  id?: string;
+  provider?: string;
+  owner?: string;
+  repo?: string;
+  mode?: string;
+  default_branch?: string;
+  active_ref?: IACRepositoryActiveRefV1;
+  workspace_id?: string;
+  workspace_type?: string;
+  status?: string;
+  error?: string;
+
+  default_ref?: string;
+  ref_type?: string;
+  ref_name?: string;
+  resolved_commit?: string;
+  source?: string;
 }
 
 export interface ModuleCatalogItemV1 {

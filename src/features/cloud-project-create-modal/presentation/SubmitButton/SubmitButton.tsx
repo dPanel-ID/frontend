@@ -1,23 +1,18 @@
 import { cn } from '@/shared/libs/tailwind/cn';
-import { Button } from '@/shared/presentation/atoms/Button';
-import { Spinner } from '@/shared/presentation/atoms/Spinner';
+import { Button } from '@/shared/presentation/atoms/ButtonV2';
 
 export default function SubmitButton(props: Props) {
   const { className, classNameWrapper, isSubmitting, onClick } = props;
 
   return (
     <section className={classNameWrapper}>
-      <Button
+      <Button.Action
         className={cn('w-full', className)}
-        disabled={isSubmitting}
+        buttonState={isSubmitting ? 'loading' : 'initial'}
         onClick={onClick}
       >
-        {isSubmitting ? (
-          <Spinner className="text-white dark:text-black" />
-        ) : (
-          'Submit'
-        )}
-      </Button>
+        Connect cloud account
+      </Button.Action>
     </section>
   );
 }

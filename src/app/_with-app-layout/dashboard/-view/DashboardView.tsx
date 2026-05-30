@@ -33,6 +33,7 @@ import {
   ApiDatabase,
   ApiDomain,
   ApiLoadBalancer,
+  ApiModule,
   ApiOrganization,
   ApiSecret,
   ApiServer,
@@ -68,14 +69,19 @@ const TELEMETRY_POLL_MS = 15_000;
 const MAX_HISTORY_POINTS = 24;
 const RECENT_LIST_LIMIT = 3;
 const AGENT_EVENT_LIMIT = 3;
-const DPANEL_IAC_OWNER = 'dPanel-ID';
-const WORKSPACE_IAC_REF = 'main';
+const DEFAULT_WORKSPACE_IAC_REPOSITORY = {
+  owner: 'dPanel-ID',
+  repo: 'dpanel-iac-ansible-shared',
+  ref: 'main',
+  mode: 'shared',
+} satisfies WorkspaceIacRepository;
 
 interface WorkspaceIacRepository {
   owner: string;
   repo: string;
   ref: string;
-  visibility: string;
+  mode: string;
+  status?: string;
 }
 
 interface TelemetryPoint {
@@ -136,6 +142,9 @@ export default function DashboardView() {
     page: 1,
     pageSize: 6,
   });
+  const [iacRepositoryResponse] = ApiModule.Repository.useGet({
+    ref: DEFAULT_WORKSPACE_IAC_REPOSITORY.ref,
+  });
 
   const profile = responseData(profileResponse);
   const serversData = responseData(serversResponse);
@@ -145,6 +154,7 @@ export default function DashboardView() {
   const databasesData = responseData(databasesResponse);
   const sshKeysData = responseData(sshKeysResponse);
   const cloudProjectsData = responseData(cloudProjectsResponse);
+  const iacRepositoryData = responseData(iacRepositoryResponse);
 
   const selectedWorkspaceId = useMemo(() => {
     if (!isBrowser()) return null;
@@ -259,11 +269,7 @@ export default function DashboardView() {
     cloudProjectsData,
     cloudProjectsData?.clouds.length,
   );
-  const workspaceIacRepository = buildWorkspaceIacRepository({
-    isTeamWorkspace,
-    organizationId: activeOrganizationId,
-    userId: userProfile.id,
-  });
+  const workspaceIacRepository = buildWorkspaceIacRepository(iacRepositoryData);
 
   return (
     <>
@@ -374,7 +380,7 @@ function WorkspaceOverview(props: {
   const iacRepositoryName = `${iacRepository.owner}/${iacRepository.repo}`;
   const iacRepositoryRef = t('workspace.iacRepositoryHelp', {
     ref: iacRepository.ref,
-    visibility: t(`workspace.visibility.${iacRepository.visibility}`),
+    mode: formatWorkspaceIacMode(iacRepository.mode, t),
   });
 
   return (
@@ -1895,22 +1901,39 @@ function buildLatestTelemetry(history: Record<string, TelemetryPoint[]>) {
   );
 }
 
-function buildWorkspaceIacRepository(params: {
-  isTeamWorkspace: boolean;
-  organizationId: string;
-  userId: number | string;
-}): WorkspaceIacRepository {
-  const { isTeamWorkspace, organizationId, userId } = params;
-  const suffix = isTeamWorkspace
-    ? `organization-${organizationId}`
-    : `personal-${userId}`;
-
+function buildWorkspaceIacRepository(
+  repository?: DTOs.IACRepositoryV1,
+): WorkspaceIacRepository {
   return {
-    owner: DPANEL_IAC_OWNER,
-    repo: `dpanel-iac-${suffix}`,
-    ref: WORKSPACE_IAC_REF,
-    visibility: 'private',
+    owner: repository?.owner || DEFAULT_WORKSPACE_IAC_REPOSITORY.owner,
+    repo: repository?.repo || DEFAULT_WORKSPACE_IAC_REPOSITORY.repo,
+    ref:
+      repository?.active_ref?.name ||
+      repository?.default_branch ||
+      repository?.ref_name ||
+      DEFAULT_WORKSPACE_IAC_REPOSITORY.ref,
+    mode:
+      repository?.repo === DEFAULT_WORKSPACE_IAC_REPOSITORY.repo
+        ? DEFAULT_WORKSPACE_IAC_REPOSITORY.mode
+        : repository?.mode || DEFAULT_WORKSPACE_IAC_REPOSITORY.mode,
+    status: repository?.status,
   };
+}
+
+function formatWorkspaceIacMode(
+  mode: string,
+  t: ReturnType<typeof useDevetekTranslations>,
+) {
+  switch (mode) {
+    case 'custom':
+      return t('workspace.iacRepositoryMode.custom');
+    case 'managed':
+      return t('workspace.iacRepositoryMode.managed');
+    case 'shared':
+      return t('workspace.iacRepositoryMode.shared');
+    default:
+      return t('workspace.iacRepositoryMode.unknown');
+  }
 }
 
 function agentEventTone(

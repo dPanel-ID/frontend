@@ -27,13 +27,13 @@ export const toServerCard = createAdapter<DTOs.MachineV1, ServerCard>((raw) =>
   schemaServerCard.parse({
     id: String(raw.id),
     agent: {
-      version: raw.agent_version,
+      version: raw.agent_version ?? raw.agent?.version,
       domain: raw.domain,
       httpPort: raw.http_port ? Number(raw.http_port) : undefined,
     },
     cloud: ctorCloud(raw),
     host: {
-      address: raw.address,
+      address: raw.address ?? raw.domain,
       name: raw.hostname,
     },
     ownership: {
@@ -45,6 +45,7 @@ export const toServerCard = createAdapter<DTOs.MachineV1, ServerCard>((raw) =>
       defaultUser: raw.default_user,
     },
     state: {
+      errorDetail: raw.error_detail,
       message: resolveExecutionErrorMessage(raw),
       status: raw.status,
     },
@@ -64,13 +65,13 @@ export const toServerDetail = createAdapter<DTOs.MachineV1, ServerDetail>(
     schemaServerDetail.parse({
       id: String(raw.id),
       agent: {
-        version: raw.agent_version,
+        version: raw.agent_version ?? raw.agent?.version,
         domain: raw.domain,
         httpPort: raw.http_port ? Number(raw.http_port) : undefined,
       },
       cloud: ctorCloud(raw),
       host: {
-        address: raw.address,
+        address: raw.address ?? raw.domain,
         name: raw.hostname,
       },
       ownership: {
@@ -85,6 +86,7 @@ export const toServerDetail = createAdapter<DTOs.MachineV1, ServerDetail>(
         defaultUser: raw.default_user,
       },
       state: {
+        errorDetail: raw.error_detail,
         message: resolveExecutionErrorMessage(raw),
         status: raw.status,
       },

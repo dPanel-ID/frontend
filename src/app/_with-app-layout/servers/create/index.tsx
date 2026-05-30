@@ -170,7 +170,7 @@ function CreateNewServerPage() {
       }
 
       const setupResponse = await ApiServer.Setup.$Id.doPost({
-        id: newServerID,
+        id: String(newServerID),
       });
 
       if (setupResponse.$status !== 'success') {

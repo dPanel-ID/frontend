@@ -20,7 +20,7 @@ export const schemaServerCard = z.object({
   cloud: cloud.optional(),
   host: z.object({
     name: z.string().optional(),
-    address: z.string(),
+    address: z.string().catch(''),
   }),
   state,
   ssh,
@@ -35,8 +35,8 @@ export const schemaServerDetail = z.object({
   ownership: SchemaCommon.ownership,
   cloud: cloud.optional(),
   host: z.object({
-    name: z.string(),
-    address: z.string(),
+    name: z.string().catch(''),
+    address: z.string().catch(''),
   }),
   state,
   ssh,

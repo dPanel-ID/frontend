@@ -1,30 +1,26 @@
-import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
-import { Input } from '@/shared/presentation/atoms/Input';
-
-import { useDcContext } from '../../model';
+import { useDevetekTranslations } from '@/services/i18n';
 
 export interface UsernameProps {
   value: string;
 }
 
 export default function Username(props: UsernameProps) {
-  const { form } = useDcContext();
+  const t = useDevetekTranslations();
 
   return (
     <section className="flex flex-col gap-1.5">
-      <label htmlFor="username" className="text-sm font-medium">
-        Username
-      </label>
-      <Input
-        id="username"
-        placeholder="Username"
-        {...form.register('username')}
-        defaultValue={props.value}
-        disabled
-        className="opacity-60"
-      />
-      <p className="text-xs text-muted-foreground">Username cannot be changed.</p>
-      <ErrorInline message={form.formState.errors.username?.message} />
+      <span className="text-sm font-medium">
+        {t('page.profile.modal.username')}
+      </span>
+      <p
+        id="profile-username"
+        className="rounded-md border bg-muted px-3 py-2 text-sm text-muted-foreground"
+      >
+        @{props.value}
+      </p>
+      <p className="text-xs text-muted-foreground">
+        {t('page.profile.modal.usernameReadonly')}
+      </p>
     </section>
   );
 }

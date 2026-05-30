@@ -3,7 +3,13 @@ import { useForm } from 'react-hook-form';
 
 import { buildContext } from '@/shared/libs/react-factories/buildContext';
 
-import { schemaBaseForm, schemaGcpForm, schemaIDCloudHostForm, schemaProxmoxForm } from './schema';
+import {
+  schemaBaseForm,
+  schemaDynamicCredentialForm,
+  schemaGcpForm,
+  schemaIDCloudHostForm,
+  schemaProxmoxForm,
+} from './schema';
 
 export const [CpcFormContext, useCpcFormContext] = buildContext(
   'CloudProjectCreationForm',
@@ -24,8 +30,16 @@ export const [CpcFormContext, useCpcFormContext] = buildContext(
       resolver: zodResolver(schemaProxmoxForm),
     });
 
+    const formDynamicCredential = useForm({
+      resolver: zodResolver(schemaDynamicCredentialForm),
+      defaultValues: {
+        credential: {},
+      },
+    });
+
     return {
       formBase,
+      formDynamicCredential,
       formIDCloudHost,
       formGCP,
       formProxmox,
