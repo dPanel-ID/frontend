@@ -10,7 +10,11 @@ import {
 } from '../config';
 import type { ApiClientResponse, BaseResponse } from '../rules/types';
 
-import { BaseResponseError, normalizeApiError } from './error';
+import {
+  BaseResponseError,
+  isBaseResponseFailure,
+  normalizeApiError,
+} from './error';
 
 export const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_BACKEND,
@@ -52,7 +56,7 @@ export async function apiClient<D>(
   try {
     const { data: baseData } = await axiosClient<BaseResponse<D>>(config);
 
-    if (baseData.code !== 200) {
+    if (isBaseResponseFailure(baseData)) {
       throw new BaseResponseError(baseData);
     }
 

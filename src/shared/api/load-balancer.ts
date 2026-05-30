@@ -5,7 +5,6 @@ import * as Find from './load-balancer.find';
 import * as IAC$Id from './load-balancer.iac.$id';
 import * as Logs$Id from './load-balancer.logs.$id';
 import * as Update$Id from './load-balancer.update.$id';
-import * as Update$IdCaseMigrateOwnership from './load-balancer.update.$id[migrate-ownership]';
 import * as Update$IdCaseRestore from './load-balancer.update.$id[restore]';
 
 const Root = {
@@ -27,7 +26,6 @@ const Root = {
     $Id: {
       ...Update$Id,
       $: {
-        MigrateOwnership: Update$IdCaseMigrateOwnership,
         Restore: Update$IdCaseRestore,
       },
     },

@@ -9,7 +9,6 @@ import {
   IconApp,
   IconCloud,
   IconGlobe,
-  IconLoadBalancer,
   IconLock,
   IconServer,
 } from '@/shared/presentation/icons';
@@ -17,7 +16,6 @@ import {
 import type { Module } from '../../../-rules/types';
 
 const MODULE_LOGO: Record<Module['type'], ComponentType<LucideProps>> = {
-  'load-balancer': IconLoadBalancer,
   application: IconApp,
   server: IconServer,
   domain: IconGlobe,
@@ -38,9 +36,6 @@ export default function InfoCard(props: InfoCardProps) {
 
   const renderedResourceType = iife(() => {
     switch (mod.type) {
-      case 'load-balancer':
-        return t('modal.migrateOwnership.resourceType.loadBalancer');
-
       case 'application':
         return t('modal.migrateOwnership.resourceType.application');
 

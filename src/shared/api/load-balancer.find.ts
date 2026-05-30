@@ -15,7 +15,6 @@ export interface RecipeParams {
   by?: string;
   domain?: string;
   engine?: string;
-  forceMine?: boolean;
   id?: string;
   machineId?: string;
   order?: string;
@@ -32,7 +31,6 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     by,
     domain,
     engine,
-    forceMine,
     id,
     machineId,
     order,
@@ -48,7 +46,6 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     by,
     domain,
     engine,
-    force_mine: forceMine,
     id,
     machine_id: machineId,
     name: searchQuery,

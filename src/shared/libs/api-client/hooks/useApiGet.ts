@@ -6,7 +6,11 @@ import { iife } from '../../browser/fn';
 import { isOnline } from '../../browser/is-online';
 import useHandler from '../../react-hooks/useHandler';
 import { axiosClient } from '../lib/client';
-import { BaseResponseError, normalizeApiError } from '../lib/error';
+import {
+  BaseResponseError,
+  isBaseResponseFailure,
+  normalizeApiError,
+} from '../lib/error';
 import type {
   BaseResponse,
   GetRequestRecipe,
@@ -92,7 +96,7 @@ export default function useApiGet<D>(
 
           const baseData = axiosResponse.data;
 
-          if (baseData.code !== 200) {
+          if (isBaseResponseFailure(baseData)) {
             throw new BaseResponseError(baseData);
           }
 

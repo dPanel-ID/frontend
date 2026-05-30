@@ -7,7 +7,11 @@ import type {
 } from '../rules/types';
 
 import { axiosClient } from './client';
-import { BaseResponseError, normalizeApiError } from './error';
+import {
+  BaseResponseError,
+  isBaseResponseFailure,
+  normalizeApiError,
+} from './error';
 
 export async function apiDoPost<D>(
   config: DoRequestRecipe,
@@ -27,16 +31,23 @@ export async function apiDoPost<D>(
 
     const baseResponse = baseData as BaseResponse<D>;
 
-    if (baseResponse.code !== 200) {
+    if (isBaseResponseFailure(baseResponse)) {
       throw new BaseResponseError(baseResponse);
     }
 
     const responseData = baseResponse.data;
 
-    if (responseData == null || typeof responseData === 'string') {
+    if (responseData == null) {
       return {
         $status: 'success',
       } as PureResponse<D>;
+    }
+
+    if (typeof responseData !== 'object') {
+      return {
+        $status: 'success',
+        value: responseData,
+      } as unknown as PureResponse<D>;
     }
 
     const data = responseData as PureResponse<D>;

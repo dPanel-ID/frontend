@@ -16,7 +16,6 @@ export const [LbDataModelProvider, useLbDataModel] = buildSelector(
     page: currentPage,
     pageSize: 10,
     searchQuery,
-    forceMine: localStorage.getItem('organization_id') == null,
   });
 
   useSubscribe('@load-balancers/data--refresh', () => {

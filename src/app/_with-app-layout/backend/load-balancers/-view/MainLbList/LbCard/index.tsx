@@ -48,14 +48,8 @@ type LbConfiguration = LbCardProps['data']['configuration'];
 type IconComponent = ComponentType<LucideProps>;
 
 export default function LbCard(props: LbCardProps) {
-  const {
-    data,
-    variant,
-    onClickDetails,
-    onClickMigrateOwnership,
-    onClickDelete,
-    onClickRestore,
-  } = props;
+  const { data, variant, onClickDetails, onClickDelete, onClickRestore } =
+    props;
 
   const t = useDevetekTranslations();
   const locale = useDevetekLocale();
@@ -84,11 +78,6 @@ export default function LbCard(props: LbCardProps) {
       icon: IconEye,
       iconActive: IconEyeActive,
       onClick: onClickDetails,
-    },
-    !!onClickMigrateOwnership && {
-      label: t('common.actions.migrateOwnership'),
-      icon: BuildingIcon,
-      onClick: onClickMigrateOwnership,
     },
     data.state.status === 'deleted' &&
       !!onClickRestore && {

@@ -1,12 +1,11 @@
-import { useToaster } from '@/services/toaster';
 import { useDevetekTranslations } from '@/services/i18n';
+import { useToaster } from '@/services/toaster';
 
 import type { DTOs } from '@/shared/api';
 import {
   ApiApplication,
   ApiCloud,
   ApiDomain,
-  ApiLoadBalancer,
   ApiSecret,
   ApiServer,
 } from '@/shared/api';
@@ -44,12 +43,6 @@ export default function useFormSubmissionUsecase() {
           case 'application':
             return ApiApplication.Update.$Id.$.MigrateOwnership.doPost({
               applicationId: mod.moduleId,
-              payload,
-            });
-
-          case 'load-balancer':
-            return ApiLoadBalancer.Update.$Id.$.MigrateOwnership.doPost({
-              loadBalancerId: mod.moduleId,
               payload,
             });
 

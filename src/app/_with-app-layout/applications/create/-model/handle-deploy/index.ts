@@ -43,20 +43,44 @@ function runtimeFromRequiredBinary(
 }
 
 function runtimeItemFromDependency(config: DependencyConfig): RuntimeItem {
+  const moduleId = config.moduleId || config.id;
+
   return {
-    name: config.moduleId || config.id,
+    name: moduleId,
     title: config.title || config.name,
     version: config.version || '',
     category: 'application-dependency',
     roles: config.roles,
-    installation_key:
-      config.installationKey ||
-      `${config.moduleId || config.id}@${config.version || 'default'}:application`,
+    installation_key: runtimeItemInstallationKey(config),
     variables: config.variables,
     source: config.source === 'installed' ? 'server.installed' : 'catalog',
     module_ref: config.ref.name,
     module_source_commit: config.ref.expectedCommit,
   };
+}
+
+function runtimeItemInstallationKey(config: DependencyConfig) {
+  if (config.installationKey) return config.installationKey;
+
+  const moduleId = config.moduleId || config.id;
+  if (!config.version) return moduleId;
+
+  return `${moduleId}@${config.version}:system`;
+}
+
+function hasRuntimeItemContractMetadata(config: DependencyConfig) {
+  const moduleId = String(config.moduleId || config.id)
+    .trim()
+    .toLowerCase();
+  const roles = config.roles
+    .map((role) => role.trim())
+    .filter(Boolean)
+    .map((role) => role.toLowerCase());
+
+  if (roles.length === 0) return false;
+  if (roles.some((role) => role === moduleId)) return false;
+
+  return true;
 }
 
 function isLanguageDependency(config?: DependencyConfig) {
@@ -129,6 +153,7 @@ export default function useHandleDeploy() {
     const dependencyRuntimeItems = selectedDependencyIds
       .map((id) => dependencyConfigs[id])
       .filter((config): config is NonNullable<typeof config> => Boolean(config))
+      .filter(hasRuntimeItemContractMetadata)
       .map((config) => runtimeItemFromDependency(config));
     const languageRequiredBinaryIds = new Set(
       selectedDependencyIds
