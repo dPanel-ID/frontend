@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { isBiznetGioProvider } from './provider';
+
 const bootstrapPasswordSchema = z
   .string()
   .min(1, 'Bootstrap password is required for cloud VM creation.')
@@ -12,75 +14,200 @@ const bootstrapPasswordSchema = z
     'Include uppercase, lowercase, and a number.',
   );
 
-export const formSchema = z.object({
-  provider: z //
-    .string()
-    .min(1, 'Please select a provider!'),
-  cloud: z.object({
-    projectID: z //
-      .number({ message: 'Please select a cloud project!' }),
-    billingAccountID: z //
-      .number()
-      .optional(),
-    sshKeyID: z //
-      .number({ message: 'Please select a SSH key!' }),
-  }),
-  regionSlug: z //
-    .string()
-    .min(1, 'Please select a region!'),
-  vpcBulk: z.object(
-    {
-      subnet: z //
-        .string()
-        .min(1),
-      id: z //
-        .string()
-        .min(1),
-    },
-    {
-      message: 'Please select a VPC!',
-    },
-  ),
-  spec: z.object({
-    vmName: z //
+const vmNameSchema = z
+  .string()
+  .min(1, 'VM name is required!')
+  .regex(
+    /^[a-zA-Z0-9][a-zA-Z0-9_.-]{1,62}$/,
+    'Use 2-63 letters, numbers, dashes, underscores, or dots.',
+  );
+
+const biznetGioVmNameSchema = z
+  .string()
+  .min(1, 'VM name is required!')
+  .regex(
+    /^[a-zA-Z0-9][a-zA-Z0-9.-]{5,15}$/,
+    'Use 6-16 letters, numbers, dashes, or dots.',
+  );
+
+const linuxUsernameSchema = z
+  .string()
+  .min(1, 'Username is required')
+  .regex(
+    /^[a-z_][a-z0-9_-]{0,31}$/,
+    'Use a valid Linux username: lowercase letters, numbers, underscore, or hyphen.',
+  );
+
+const biznetGioUsernameSchema = z
+  .string()
+  .min(1, 'Username is required')
+  .regex(
+    /^[a-zA-Z0-9][a-zA-Z0-9.-]{5,31}$/,
+    'Use 6-32 letters, numbers, dashes, or dots.',
+  );
+
+export const formSchema = z
+  .object({
+    provider: z //
       .string()
-      .min(1, 'VM name is required!')
-      .regex(
-        /^[a-zA-Z0-9][a-zA-Z0-9_.-]{1,62}$/,
-        'Use 2-63 letters, numbers, dashes, underscores, or dots.',
-      ),
-    osTemplate: z //
-      .string({ message: 'Please select an OS template!' })
-      .min(1, 'Please select an OS template!'),
-    osName: z //
-      .string()
-      .min(1, 'Selected OS template is missing os_name.'),
-    osVersion: z //
-      .string()
-      .min(1, 'Selected OS template is missing os_version.'),
-    cpuCore: z //
-      .number({ message: 'Please select a CPU core!' })
-      .min(2)
-      .max(8),
-    ramSizeGB: z //
-      .number({ message: 'Please select a RAM size!' })
-      .min(2)
-      .max(16),
-    diskSizeGB: z //
-      .number({ message: 'Please select a disk size!' })
-      .min(20)
-      .max(160),
-  }),
-  login: z.object({
-    username: z //
-      .string()
-      .min(1, 'Username is required')
-      .regex(
-        /^[a-z_][a-z0-9_-]{0,31}$/,
-        'Use a valid Linux username: lowercase letters, numbers, underscore, or hyphen.',
-      ),
-    password: bootstrapPasswordSchema,
-  }),
-});
+      .min(1, 'Please select a provider!'),
+    cloud: z.object({
+      projectID: z //
+        .number({ message: 'Please select a cloud project!' }),
+      billingAccountID: z //
+        .number()
+        .optional(),
+      sshKeyID: z //
+        .number({ message: 'Please select a SSH key!' }),
+    }),
+    regionSlug: z.string().optional(),
+    vpcBulk: z.object({
+      subnet: z.string().optional(),
+      id: z.string().optional(),
+    }),
+    spec: z.object({
+      vmName: z.string().min(1, 'VM name is required!'),
+      osTemplate: z.string().optional(),
+      osName: z.string().optional(),
+      osVersion: z.string().optional(),
+      cpuCore: z //
+        .number({ message: 'Please select a CPU core!' }),
+      ramSizeGB: z //
+        .number({ message: 'Please select a RAM size!' }),
+      diskSizeGB: z //
+        .number({ message: 'Please select a disk size!' }),
+      productID: z.number().optional(),
+      billingCycle: z.string().optional(),
+      keypairName: z.string().optional(),
+      description: z.string().optional(),
+      promocode: z.string().optional(),
+      payInvoiceWithCC: z.enum(['no', 'yes']).optional(),
+      reservePublicIP: z.boolean().optional(),
+    }),
+    login: z.object({
+      username: z.string().min(1, 'Username is required'),
+      password: bootstrapPasswordSchema,
+    }),
+  })
+  .superRefine((values, ctx) => {
+    const usesBiznetGio = isBiznetGioProvider(values.provider);
+
+    const vmNameResult = (
+      usesBiznetGio ? biznetGioVmNameSchema : vmNameSchema
+    ).safeParse(values.spec.vmName);
+
+    if (!vmNameResult.success) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: vmNameResult.error.issues[0]?.message ?? 'Invalid VM name.',
+        path: ['spec', 'vmName'],
+      });
+    }
+
+    const usernameResult = (
+      usesBiznetGio ? biznetGioUsernameSchema : linuxUsernameSchema
+    ).safeParse(values.login.username);
+
+    if (!usernameResult.success) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          usernameResult.error.issues[0]?.message ?? 'Invalid username.',
+        path: ['login', 'username'],
+      });
+    }
+
+    if (usesBiznetGio) {
+      if (values.spec.productID == null) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select a Biznet Gio NEO Lite product.',
+          path: ['spec', 'productID'],
+        });
+      }
+
+      if (!values.spec.billingCycle) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select a billing cycle.',
+          path: ['spec', 'billingCycle'],
+        });
+      }
+
+      if (!values.spec.osTemplate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select an OS template.',
+          path: ['spec', 'osTemplate'],
+        });
+      }
+
+      return;
+    }
+
+    if (!values.regionSlug) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Please select a region!',
+        path: ['regionSlug'],
+      });
+    }
+
+    if (!values.vpcBulk.id || !values.vpcBulk.subnet) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Please select a VPC!',
+        path: ['vpcBulk'],
+      });
+    }
+
+    if (!values.spec.osTemplate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Please select an OS template!',
+        path: ['spec', 'osTemplate'],
+      });
+    }
+
+    if (!values.spec.osName) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Selected OS template is missing os_name.',
+        path: ['spec', 'osName'],
+      });
+    }
+
+    if (!values.spec.osVersion) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Selected OS template is missing os_version.',
+        path: ['spec', 'osVersion'],
+      });
+    }
+
+    if (values.spec.cpuCore < 2 || values.spec.cpuCore > 8) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Please select a CPU core!',
+        path: ['spec', 'cpuCore'],
+      });
+    }
+
+    if (values.spec.ramSizeGB < 2 || values.spec.ramSizeGB > 16) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Please select a RAM size!',
+        path: ['spec', 'ramSizeGB'],
+      });
+    }
+
+    if (values.spec.diskSizeGB < 20 || values.spec.diskSizeGB > 160) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Please select a disk size!',
+        path: ['spec', 'diskSizeGB'],
+      });
+    }
+  });
 
 export type FormSchema = z.infer<typeof formSchema>;

@@ -15,6 +15,7 @@ import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
 
 import { FormProvider, useForm } from './-model';
+import { isBiznetGioProvider } from './-model/provider';
 import { SectionCloud } from './-view/SectionCloud';
 import { SectionLogin } from './-view/SectionLogin';
 import { SectionRegionVPC } from './-view/SectionRegionVPC';
@@ -94,12 +95,17 @@ function ProvisioningSummary() {
     control: form.control,
     name: 'cloud.billingAccountID',
   });
+  const billingCycle = useWatch({
+    control: form.control,
+    name: 'spec.billingCycle',
+  });
   const regionSlug = useWatch({ control: form.control, name: 'regionSlug' });
   const vpcBulk = useWatch({ control: form.control, name: 'vpcBulk' });
   const osTemplate = useWatch({
     control: form.control,
     name: 'spec.osTemplate',
   });
+  const productID = useWatch({ control: form.control, name: 'spec.productID' });
   const vmName = useWatch({ control: form.control, name: 'spec.vmName' });
   const cpuCore = useWatch({ control: form.control, name: 'spec.cpuCore' });
   const ramSizeGB = useWatch({ control: form.control, name: 'spec.ramSizeGB' });
@@ -113,18 +119,33 @@ function ProvisioningSummary() {
     cpuCore && ramSizeGB && diskSizeGB
       ? `${cpuCore} CPU / ${ramSizeGB} GB RAM / ${diskSizeGB} GB disk`
       : undefined;
-  const readyCount = [
-    provider,
-    projectID,
-    sshKeyID,
-    vmName,
-    regionSlug,
-    billingAccountID || 'auto',
-    vpcBulk.id && vpcBulk.subnet,
-    osTemplate,
-    specSummary,
-    username,
-  ].filter(Boolean).length;
+  const usesBiznetGio = isBiznetGioProvider(provider);
+  const readyFields = usesBiznetGio
+    ? [
+        provider,
+        projectID,
+        sshKeyID,
+        vmName,
+        productID,
+        billingCycle,
+        osTemplate,
+        specSummary,
+        username,
+      ]
+    : [
+        provider,
+        projectID,
+        sshKeyID,
+        vmName,
+        regionSlug,
+        billingAccountID || 'auto',
+        vpcBulk.id && vpcBulk.subnet,
+        osTemplate,
+        specSummary,
+        username,
+      ];
+  const readyCount = readyFields.filter(Boolean).length;
+  const totalFields = readyFields.length;
 
   return (
     <aside className="rounded-lg border bg-card xl:sticky xl:top-20 xl:h-max">
@@ -136,7 +157,7 @@ function ProvisioningSummary() {
           <div className="min-w-0">
             <h2 className="text-base font-semibold">Provisioning Review</h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              {readyCount}/10 fields ready
+              {readyCount}/{totalFields} fields ready
             </p>
           </div>
         </div>
@@ -167,24 +188,47 @@ function ProvisioningSummary() {
           value={vmName}
           ready={Boolean(vmName)}
         />
-        <SummaryRow
-          icon={NetworkIcon}
-          label="Region"
-          value={regionSlug}
-          ready={Boolean(regionSlug)}
-        />
-        <SummaryRow
-          icon={CloudIcon}
-          label="Billing"
-          value={billingAccountID ? `Billing #${billingAccountID}` : 'Auto'}
-          ready
-        />
-        <SummaryRow
-          icon={NetworkIcon}
-          label="VPC"
-          value={vpcBulk.subnet || vpcBulk.id}
-          ready={Boolean(vpcBulk.id && vpcBulk.subnet)}
-        />
+        {!usesBiznetGio && (
+          <SummaryRow
+            icon={NetworkIcon}
+            label="Region"
+            value={regionSlug}
+            ready={Boolean(regionSlug)}
+          />
+        )}
+        {usesBiznetGio ? (
+          <>
+            <SummaryRow
+              icon={ServerIcon}
+              label="Product"
+              value={productID ? `Product #${productID}` : undefined}
+              ready={Boolean(productID)}
+            />
+            <SummaryRow
+              icon={CloudIcon}
+              label="Billing Cycle"
+              value={billingCycle}
+              ready={Boolean(billingCycle)}
+            />
+          </>
+        ) : (
+          <>
+            <SummaryRow
+              icon={CloudIcon}
+              label="Billing"
+              value={
+                billingAccountID ? `Billing #${billingAccountID}` : 'Auto'
+              }
+              ready
+            />
+            <SummaryRow
+              icon={NetworkIcon}
+              label="VPC"
+              value={vpcBulk.subnet || vpcBulk.id}
+              ready={Boolean(vpcBulk.id && vpcBulk.subnet)}
+            />
+          </>
+        )}
         <SummaryRow
           icon={ServerIcon}
           label="Image"
@@ -199,7 +243,7 @@ function ProvisioningSummary() {
         />
         <SummaryRow
           icon={KeyRoundIcon}
-          label="Default User"
+          label={usesBiznetGio ? 'Console User' : 'Default User'}
           value={username}
           ready={Boolean(username)}
         />

@@ -3,6 +3,7 @@ import * as ProjectCreate from './cloud.project.create';
 import * as ProjectDelete$Id from './cloud.project.delete.$id';
 import * as ProjectFind from './cloud.project.find';
 import * as ProjectOstemplates$Id from './cloud.project.ostemplates.$id';
+import * as ProjectProducts$Id from './cloud.project.products.$id';
 import * as ProjectProviders from './cloud.project.providers';
 import * as ProjectProviders$Provider from './cloud.project.providers.$provider';
 import * as ProjectUpdate$IdCaseMigrateOwnership from './cloud.project.update.$id[migrate-ownership]';
@@ -21,6 +22,9 @@ const Root = {
     },
     Ostemplates: {
       $Id: ProjectOstemplates$Id,
+    },
+    Products: {
+      $Id: ProjectProducts$Id,
     },
     Providers: {
       ...ProjectProviders,

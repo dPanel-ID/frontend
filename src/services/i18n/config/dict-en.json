@@ -407,6 +407,8 @@
         "sessionDescription": "The resource boundary and role applied to requests from this browser.",
         "activeWorkspace": "Workspace",
         "workspaceRole": "Role",
+        "moreRoles": "+{count} more",
+        "viewRoleDetails": "View active workspace roles",
         "profileUpdated": "Profile updated",
         "securityTitle": "Account controls",
         "securityDescription": "Update profile credentials without exposing secrets.",
@@ -1449,11 +1451,25 @@
       "loadingData": "Loading team data\u2026",
       "memberCount": "{count, plural, one {# member} other {# members}} in this team",
       "memberColumn": "Member",
+      "roleColumn": "Role",
+      "roleOwner": "Owner",
+      "roleAdmin": "Admin",
+      "roleMember": "Member",
+      "roleOwnerDescription": "Full ownership",
+      "roleAdminDescription": "Can manage members",
+      "roleMemberDescription": "Standard access",
+      "roleOwnerHint": "Full control over this workspace.",
+      "roleAdminHint": "Can manage team members and workspace settings.",
+      "roleMemberHint": "Can access team resources without member management.",
       "joinedColumn": "Joined",
       "joinedLabel": "Joined",
       "joinedDateLabel": "Join date",
+      "makeAdmin": "Make admin",
+      "manageRoles": "Manage roles",
+      "moreRoles": "+{count} more",
       "remove": "Remove",
       "removeFromTeam": "Remove from team",
+      "refreshMembers": "Refresh members",
       "emptyState": {
         "title": "No members yet",
         "message": "Add members to this team to get started.",
@@ -1571,6 +1587,10 @@
     "teamMemberRemove": {
       "title": "Remove Member",
       "message": "Are you sure you want to remove \"{name}\" from this team?"
+    },
+    "teamMemberPromoteAdmin": {
+      "title": "Make Admin",
+      "message": "Allow \"{name}\" to manage members and workspace settings?"
     }
   },
   "toaster": {
@@ -1638,6 +1658,10 @@
     "teamMemberRemove": {
       "success": "Successfully removed \"{name}\" from the team",
       "error": "Failed to remove \"{name}\" from the team"
+    },
+    "teamMemberPromoteAdmin": {
+      "success": "\"{name}\" is now an admin",
+      "error": "Failed to make \"{name}\" an admin"
     }
   },
   "sidepanel": {
@@ -1858,6 +1882,34 @@
       "loading": "Loading\u2026",
       "noUsersFound": "No users found",
       "pageInfo": "Page {page} / {totalPage}"
+    },
+    "manageMemberRoles": {
+      "title": "Manage roles",
+      "description": "Update access for {name}",
+      "loading": "Loading role catalog\u2026",
+      "errorTitle": "Failed to load roles",
+      "errorMessage": "Role options are unavailable right now. Retry before saving changes.",
+      "empty": "No assignable roles are available.",
+      "selectedCount": "{count, plural, one {# role selected} other {# roles selected}}",
+      "selectedHint": "Saved changes replace the member's workspace role set.",
+      "selectAll": "Select all",
+      "clearAll": "Clear",
+      "save": "Save roles",
+      "selectGroup": "Select roles for {group}",
+      "selectGroupAction": "Select group",
+      "groupSelectedCount": "{selected}/{total}",
+      "protected": "Protected",
+      "toaster": {
+        "success": "Updated roles for \"{name}\"",
+        "error": "Failed to update roles for \"{name}\""
+      }
+    },
+    "workspaceRoles": {
+      "title": "Active workspace roles",
+      "description": "Roles currently applied in {workspace}.",
+      "activeWorkspace": "Active workspace",
+      "roleCount": "{count, plural, one {# role} other {# roles}}",
+      "empty": "No roles reported for this workspace."
     }
   },
   "formErrors": {

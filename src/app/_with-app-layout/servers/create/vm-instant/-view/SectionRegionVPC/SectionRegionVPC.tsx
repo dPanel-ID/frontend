@@ -13,6 +13,7 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { Combobox } from '@/shared/presentation/molecules/Combobox';
 
 import { useForm } from '../../-model';
+import { isBiznetGioProvider } from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
 import { Sectioned } from '../../../-presentation/Sectioned';
 
@@ -169,7 +170,7 @@ const SubVPCCbo = () => {
   const regionSlug = useWatch({
     control: form.control,
     name: 'regionSlug',
-  }) as string | undefined;
+  });
 
   const [response, refreshVpcs] = ApiCloud.Vpcs.$Id.useGet({
     cloudProjectId: String(cloudProjectID),
@@ -456,6 +457,13 @@ const SubBillingAccountCbo = () => {
 };
 
 export default function SectionRegionVPC() {
+  const { form } = useForm();
+  const provider = useWatch({ control: form.control, name: 'provider' }) as
+    | string
+    | undefined;
+
+  if (isBiznetGioProvider(provider)) return null;
+
   return (
     <Sectioned
       withinCard

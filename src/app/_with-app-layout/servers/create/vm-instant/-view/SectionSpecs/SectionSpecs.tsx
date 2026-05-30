@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { HardDriveIcon, RefreshCwIcon } from 'lucide-react';
 import { useController, useWatch } from 'react-hook-form';
 
 import { ApiCloud } from '@/shared/api';
 import type { OsTemplateItem } from '@/shared/api/cloud.project.ostemplates.$id';
+import type { ProductItem } from '@/shared/api/cloud.project.products.$id';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
@@ -14,6 +16,7 @@ import { Combobox } from '@/shared/presentation/molecules/Combobox';
 
 import { OPTS_CPU_CORE, OPTS_DISK_GB, OPTS_RAM_GB } from '../../-config';
 import { useForm } from '../../-model';
+import { isBiznetGioProvider } from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
 import { Sectioned } from '../../../-presentation/Sectioned';
 
@@ -50,16 +53,303 @@ function InlineState(props: {
   );
 }
 
+function formatRam(ramMb?: number) {
+  if (!ramMb) return undefined;
+
+  if (ramMb >= 1024) {
+    return `${Math.round((ramMb / 1024) * 10) / 10} GB RAM`;
+  }
+
+  return `${ramMb} MB RAM`;
+}
+
+function getProductSizeLabel(product?: ProductItem) {
+  const specs = [
+    product?.vcpu ? `${product.vcpu} CPU` : undefined,
+    formatRam(product?.ram_mb),
+    product?.disk_gb ? `${product.disk_gb} GB disk` : undefined,
+  ].filter(Boolean);
+
+  return specs.join(' / ');
+}
+
+function getProductLabel(product: ProductItem) {
+  const sizeLabel = getProductSizeLabel(product);
+
+  if (!sizeLabel) return product.name || `Product #${product.id}`;
+
+  return `${product.name || `Product #${product.id}`} (${sizeLabel})`;
+}
+
+function getProductCycleItems(product?: ProductItem) {
+  const cycles = product?.billing_cycles ?? [];
+
+  if (cycles.length > 0) {
+    return cycles
+      .filter((cycle) => cycle.cycle)
+      .map((cycle) => ({
+        label: cycle.price
+          ? `${cycle.label || cycle.cycle} - ${cycle.price}`
+          : cycle.label || cycle.cycle || 'Cycle',
+        value: cycle.cycle || '',
+      }));
+  }
+
+  if (!product?.default_cycle) return [];
+
+  return [
+    {
+      label: product.default_cycle,
+      value: product.default_cycle,
+    },
+  ];
+}
+
+function getPreferredCycle(product?: ProductItem) {
+  return product?.default_cycle || product?.billing_cycles?.[0]?.cycle || '';
+}
+
+const SubBiznetProductFields = () => {
+  const { form, formErrors } = useForm();
+  const cloudProjectID = useWatch({
+    control: form.control,
+    name: 'cloud.projectID',
+  }) as number | undefined;
+  const productID = useWatch({
+    control: form.control,
+    name: 'spec.productID',
+  });
+  const billingCycle = useWatch({
+    control: form.control,
+    name: 'spec.billingCycle',
+  });
+
+  const [response, refreshProducts] = ApiCloud.Project.Products.$Id.useGet({
+    cloudProjectId: String(cloudProjectID),
+    options: { skip: !cloudProjectID },
+  });
+
+  const productControl = useController({
+    control: form.control,
+    name: 'spec.productID',
+  });
+  const cycleControl = useController({
+    control: form.control,
+    name: 'spec.billingCycle',
+  });
+
+  const responseData =
+    response.$status === 'success'
+      ? response
+      : response.$status === 'loading'
+        ? response.prevData
+        : undefined;
+  const products = useMemo(() => responseData?.items ?? [], [responseData]);
+  const productIDs = products.map((product) => product.id).join(',');
+  const selectedProduct = products.find((product) => product.id === productID);
+  const cycleItems = useMemo(
+    () => getProductCycleItems(selectedProduct),
+    [selectedProduct],
+  );
+
+  useEffect(() => {
+    if (!cloudProjectID) {
+      form.setValue('spec.productID', undefined);
+      form.setValue('spec.billingCycle', '');
+      return;
+    }
+
+    if (!responseData) return;
+
+    if (!selectedProduct) {
+      if (productID != null) {
+        form.setValue('spec.productID', undefined);
+        form.setValue('spec.billingCycle', '');
+      }
+      return;
+    }
+
+    if (selectedProduct.vcpu) {
+      form.setValue('spec.cpuCore', selectedProduct.vcpu);
+    }
+
+    if (selectedProduct.ram_mb) {
+      form.setValue('spec.ramSizeGB', selectedProduct.ram_mb / 1024);
+    }
+
+    if (selectedProduct.disk_gb) {
+      form.setValue('spec.diskSizeGB', selectedProduct.disk_gb);
+    }
+
+    const selectedCycleStillExists = cycleItems.some(
+      (cycle) => cycle.value === billingCycle,
+    );
+
+    if (!selectedCycleStillExists) {
+      form.setValue('spec.billingCycle', getPreferredCycle(selectedProduct));
+    }
+  }, [
+    billingCycle,
+    cloudProjectID,
+    cycleItems,
+    form,
+    productID,
+    productIDs,
+    responseData,
+    selectedProduct,
+  ]);
+
+  if (!cloudProjectID || response.$status === 'initial') {
+    return (
+      <InlineState
+        title="Select a cloud project first"
+        description="Biznet Gio products are returned by the selected cloud project."
+      />
+    );
+  }
+
+  if (response.$status === 'loading' && response.prevData == null) {
+    return (
+      <div className="flex min-h-24 items-center justify-center rounded-lg border bg-background">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (response.$status === 'failed') {
+    return (
+      <InlineState
+        title="Could not load products"
+        description={getApiErrorDetail(response.error)}
+        variant="danger"
+        action={
+          <Button
+            buttonStyle="outline"
+            buttonColor="secondary"
+            size="sm"
+            onClick={() => refreshProducts()}
+          >
+            <RefreshCwIcon className="size-4" />
+            Refresh
+          </Button>
+        }
+      />
+    );
+  }
+
+  const productItems = products
+    .filter((product) => product.id != null)
+    .map((product) => ({
+      label: getProductLabel(product),
+      value: product.id as number,
+    }));
+
+  return (
+    <div className="space-y-4">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="space-y-2">
+          <h6 className="text-sm font-semibold">Product</h6>
+          <div className="flex items-center gap-2">
+            <Combobox
+              classNameButton="w-full flex-1 bg-background"
+              placeholder="Select a NEO Lite product"
+              onChange={(value) => {
+                const product = products.find((item) => item.id === value);
+
+                form.setValue('spec.osTemplate', '');
+                form.setValue('spec.osName', '');
+                form.setValue('spec.osVersion', '');
+                form.setValue('spec.billingCycle', getPreferredCycle(product));
+                if (product?.vcpu) form.setValue('spec.cpuCore', product.vcpu);
+                if (product?.ram_mb) {
+                  form.setValue('spec.ramSizeGB', product.ram_mb / 1024);
+                }
+                if (product?.disk_gb) {
+                  form.setValue('spec.diskSizeGB', product.disk_gb);
+                }
+                productControl.field.onChange(value);
+              }}
+              value={productControl.field.value}
+              items={productItems}
+            />
+            <Button
+              aria-label="Refresh products"
+              title="Refresh products"
+              buttonStyle="outline"
+              buttonColor="secondary"
+              size="icon"
+              onClick={() => refreshProducts()}
+            >
+              <RefreshCwIcon className="size-4" />
+            </Button>
+          </div>
+          {productItems.length === 0 && (
+            <InlineState
+              title="No products found"
+              description="The selected Biznet Gio cloud project did not return deployable NEO Lite products."
+            />
+          )}
+          <ErrorInline message={formErrors.spec?.productID?.message} />
+        </div>
+
+        <div className="space-y-2">
+          <h6 className="text-sm font-semibold">Billing Cycle</h6>
+          <Combobox
+            classNameButton="w-full bg-background"
+            placeholder="Select a billing cycle"
+            onChange={cycleControl.field.onChange}
+            value={cycleControl.field.value}
+            items={cycleItems}
+          />
+          <ErrorInline message={formErrors.spec?.billingCycle?.message} />
+        </div>
+      </div>
+
+      {selectedProduct && (
+        <div className="grid gap-2 rounded-lg border bg-background p-3 text-sm sm:grid-cols-3">
+          <div>
+            <p className="text-xs text-muted-foreground">CPU</p>
+            <p className="mt-1 font-semibold">
+              {selectedProduct.vcpu ?? '-'} cores
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">RAM</p>
+            <p className="mt-1 font-semibold">
+              {formatRam(selectedProduct.ram_mb) ?? '-'}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground">Disk</p>
+            <p className="mt-1 font-semibold">
+              {selectedProduct.disk_gb ? `${selectedProduct.disk_gb} GB` : '-'}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const SubOsTemplateCbo = () => {
   const { form, formErrors } = useForm();
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
   }) as number | undefined;
+  const provider = useWatch({ control: form.control, name: 'provider' }) as
+    | string
+    | undefined;
+  const productID = useWatch({
+    control: form.control,
+    name: 'spec.productID',
+  });
+  const usesBiznetGio = isBiznetGioProvider(provider);
 
   const [response, refreshTemplates] = ApiCloud.Project.Ostemplates.$Id.useGet({
     cloudProjectId: String(cloudProjectID),
-    options: { skip: !cloudProjectID },
+    productId: productID,
+    options: { skip: !cloudProjectID || (usesBiznetGio && !productID) },
   });
 
   const control = useController({
@@ -70,8 +360,16 @@ const SubOsTemplateCbo = () => {
   if (!cloudProjectID || response.$status === 'initial') {
     return (
       <InlineState
-        title="Select a cloud project first"
-        description="OS templates are returned by the selected cloud project."
+        title={
+          usesBiznetGio
+            ? 'Select a product first'
+            : 'Select a cloud project first'
+        }
+        description={
+          usesBiznetGio
+            ? 'Biznet Gio OS templates are scoped to the selected NEO Lite product.'
+            : 'OS templates are returned by the selected cloud project.'
+        }
       />
     );
   }
@@ -168,14 +466,22 @@ const SubOsTemplateCbo = () => {
       )}
 
       <ErrorInline message={formErrors.spec?.osTemplate?.message} />
-      <ErrorInline message={formErrors.spec?.osName?.message} />
-      <ErrorInline message={formErrors.spec?.osVersion?.message} />
+      {!usesBiznetGio && (
+        <>
+          <ErrorInline message={formErrors.spec?.osName?.message} />
+          <ErrorInline message={formErrors.spec?.osVersion?.message} />
+        </>
+      )}
     </div>
   );
 };
 
 export default function SectionSpecs() {
   const { form, formErrors } = useForm();
+  const provider = useWatch({ control: form.control, name: 'provider' }) as
+    | string
+    | undefined;
+  const usesBiznetGio = isBiznetGioProvider(provider);
 
   const ctrlSpecCPUCore = useController({
     control: form.control,
@@ -199,60 +505,75 @@ export default function SectionSpecs() {
       sectionTitle="Specification"
       sectionDescription="Choose the image and sizing for the provisioning request."
     >
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="space-y-2">
-          <h6 className="text-sm font-semibold">VM Name</h6>
-          <Input
-            className="w-full bg-background"
-            placeholder="dpanel-idcloudhost-01"
-            {...form.register('spec.vmName')}
-          />
-          <ErrorInline message={formErrors.spec?.vmName?.message} />
-        </div>
-
-        <div className="space-y-2">
-          <h6 className="text-sm font-semibold">OS Template</h6>
-          <SubOsTemplateCbo />
-        </div>
+      <div className="space-y-2">
+        <h6 className="text-sm font-semibold">VM Name</h6>
+        <Input
+          className="w-full bg-background"
+          placeholder={usesBiznetGio ? 'dpanel-bg01' : 'dpanel-idcloudhost-01'}
+          {...form.register('spec.vmName')}
+        />
+        <ErrorInline message={formErrors.spec?.vmName?.message} />
       </div>
 
-      <div className="mt-5 grid gap-4 sm:grid-cols-3">
-        <div className="space-y-2">
-          <h6 className="text-sm font-semibold">CPU Cores</h6>
-          <Combobox
-            classNameButton="w-full bg-background"
-            placeholder="Select cores"
-            onChange={ctrlSpecCPUCore.field.onChange}
-            value={ctrlSpecCPUCore.field.value}
-            items={OPTS_CPU_CORE}
-          />
-          <ErrorInline message={formErrors.spec?.cpuCore?.message} />
-        </div>
+      {usesBiznetGio && (
+        <>
+          <div className="mt-5">
+            <SubBiznetProductFields />
+          </div>
 
-        <div className="space-y-2">
-          <h6 className="text-sm font-semibold">RAM</h6>
-          <Combobox
-            classNameButton="w-full bg-background"
-            placeholder="Select RAM"
-            onChange={ctrlSpecRAMSizeGB.field.onChange}
-            value={ctrlSpecRAMSizeGB.field.value}
-            items={OPTS_RAM_GB}
-          />
-          <ErrorInline message={formErrors.spec?.ramSizeGB?.message} />
-        </div>
+          <div className="mt-5 space-y-2">
+            <h6 className="text-sm font-semibold">OS Template</h6>
+            <SubOsTemplateCbo />
+          </div>
+        </>
+      )}
 
-        <div className="space-y-2">
-          <h6 className="text-sm font-semibold">Disk</h6>
-          <Combobox
-            classNameButton="w-full bg-background"
-            placeholder="Select disk"
-            onChange={ctrlSpecDiskSizeGB.field.onChange}
-            value={ctrlSpecDiskSizeGB.field.value}
-            items={OPTS_DISK_GB}
-          />
-          <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
-        </div>
-      </div>
+      {!usesBiznetGio && (
+        <>
+          <div className="mt-5 space-y-2">
+            <h6 className="text-sm font-semibold">OS Template</h6>
+            <SubOsTemplateCbo />
+          </div>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-3">
+            <div className="space-y-2">
+              <h6 className="text-sm font-semibold">CPU Cores</h6>
+              <Combobox
+                classNameButton="w-full bg-background"
+                placeholder="Select cores"
+                onChange={ctrlSpecCPUCore.field.onChange}
+                value={ctrlSpecCPUCore.field.value}
+                items={OPTS_CPU_CORE}
+              />
+              <ErrorInline message={formErrors.spec?.cpuCore?.message} />
+            </div>
+
+            <div className="space-y-2">
+              <h6 className="text-sm font-semibold">RAM</h6>
+              <Combobox
+                classNameButton="w-full bg-background"
+                placeholder="Select RAM"
+                onChange={ctrlSpecRAMSizeGB.field.onChange}
+                value={ctrlSpecRAMSizeGB.field.value}
+                items={OPTS_RAM_GB}
+              />
+              <ErrorInline message={formErrors.spec?.ramSizeGB?.message} />
+            </div>
+
+            <div className="space-y-2">
+              <h6 className="text-sm font-semibold">Disk</h6>
+              <Combobox
+                classNameButton="w-full bg-background"
+                placeholder="Select disk"
+                onChange={ctrlSpecDiskSizeGB.field.onChange}
+                value={ctrlSpecDiskSizeGB.field.value}
+                items={OPTS_DISK_GB}
+              />
+              <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
+            </div>
+          </div>
+        </>
+      )}
     </Sectioned>
   );
 }

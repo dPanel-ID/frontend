@@ -7,6 +7,7 @@ import {
   ExternalLinkIcon,
   GithubIcon,
   KeyRoundIcon,
+  ListChecksIcon,
   MailIcon,
   PencilIcon,
   ShieldCheckIcon,
@@ -18,6 +19,8 @@ import type { Locale } from 'use-intl';
 import { useAuthLoggedIn } from '@/services/auth';
 import { useAuthModel } from '@/services/auth/model';
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+
+import { useWorkspaceRolesDetailModal } from '@/features/workspace-roles-detail-modal';
 
 import { workspaceToOrganizationId } from '@/shared/api/-dtos';
 import type { Dto as UserProfileDto } from '@/shared/api/user.profile';
@@ -79,26 +82,43 @@ function formatRelativeDate(value: string | undefined, locale: Locale) {
 }
 
 function formatRole(role: string) {
-  return role.replace(/[_-]/g, ' ');
+  const [, scopedRole = role] = role.match(/^[^:]+:(.+)$/) ?? [];
+
+  return scopedRole.replace(/[_-]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 function getWorkspaceId(workspace: Workspace) {
   return workspaceToOrganizationId(workspace.id);
 }
 
-function getWorkspaceRoleLabel(
+function getWorkspaceRoleSummary(
   workspace: Workspace | undefined,
   t: ReturnType<typeof useDevetekTranslations>,
 ) {
-  const roles = workspace?.roles ?? [];
+  const roles = (workspace?.roles ?? []).reduce<string[]>((acc, role) => {
+    const formattedRole = formatRole(role);
+    const roleKey = formattedRole.toLowerCase();
 
-  if (roles.some((role) => role.toLowerCase().includes('owner'))) {
-    return t('page.profile.workspaces.owner');
+    if (!formattedRole || acc.some((item) => item.toLowerCase() === roleKey)) {
+      return acc;
+    }
+
+    return [...acc, formattedRole];
+  }, []);
+
+  if (roles.length > 0) {
+    return {
+      hiddenCount: Math.max(roles.length - 1, 0),
+      primaryRole: roles[0] ?? t('page.profile.workspaces.member'),
+      roles,
+    };
   }
 
-  if (roles.length > 0) return roles.map(formatRole).join(', ');
-
-  return t('page.profile.workspaces.member');
+  return {
+    hiddenCount: 0,
+    primaryRole: t('page.profile.workspaces.member'),
+    roles,
+  };
 }
 
 function DetailRow(props: {
@@ -125,6 +145,51 @@ function DetailRow(props: {
         >
           {value}
         </p>
+      </div>
+    </div>
+  );
+}
+
+function WorkspaceRoleDetailRow(props: {
+  hiddenCount: number;
+  label: string;
+  onOpenRoles: () => void;
+  primaryRole: string;
+  roles: string[];
+}) {
+  const { hiddenCount, label, onOpenRoles, primaryRole, roles } = props;
+  const t = useDevetekTranslations();
+  const canOpenRoles = roles.length > 1;
+
+  return (
+    <div className="flex min-w-0 items-start gap-3 rounded-md border bg-background p-3">
+      <UsersIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+      <div className="min-w-0 flex-1">
+        <p className="text-xs font-medium uppercase tracking-normal text-muted-foreground">
+          {label}
+        </p>
+        <div className="mt-2 flex min-w-0 flex-wrap items-center gap-2">
+          <Badge
+            variant="secondary"
+            className="max-w-full shrink truncate capitalize"
+            title={primaryRole}
+          >
+            {primaryRole}
+          </Badge>
+          {canOpenRoles && (
+            <Button
+              size="xs"
+              buttonStyle="outline"
+              buttonColor="secondary"
+              onClick={onOpenRoles}
+              aria-label={t('page.profile.sidebar.viewRoleDetails')}
+              title={t('page.profile.sidebar.viewRoleDetails')}
+            >
+              <ListChecksIcon />
+              {t('page.profile.sidebar.moreRoles', { count: hiddenCount })}
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -181,7 +246,7 @@ function WorkspaceRow(props: {
   const isActive = isPersonal
     ? !activeWorkspaceId || workspaceId === activeWorkspaceId
     : Boolean(workspaceId && workspaceId === activeWorkspaceId);
-  const roleLabel = getWorkspaceRoleLabel(workspace, t);
+  const roleSummary = getWorkspaceRoleSummary(workspace, t);
 
   return (
     <div className="grid gap-3 rounded-md border bg-background p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
@@ -226,8 +291,13 @@ function WorkspaceRow(props: {
 
       <div className="flex items-center justify-between gap-2 sm:justify-end">
         <Badge variant="outline" className="max-w-[14rem] truncate capitalize">
-          {roleLabel}
+          {roleSummary.primaryRole}
         </Badge>
+        {roleSummary.hiddenCount > 0 && (
+          <Badge variant="secondary" className="shrink-0">
+            +{roleSummary.hiddenCount}
+          </Badge>
+        )}
         {!isPersonal && workspaceId && (
           <Button
             asChild
@@ -470,6 +540,7 @@ export default function Personal(props: PersonalProps) {
 
 export function ProfileSidebar() {
   const { resUserProfile } = useAuthModel();
+  const [openWorkspaceRolesDetailModal] = useWorkspaceRolesDetailModal();
   const t = useDevetekTranslations();
   const locale = useDevetekLocale();
   const profile = resUserProfile.$status === 'success' ? resUserProfile : null;
@@ -487,9 +558,19 @@ export function ProfileSidebar() {
         (workspace) => getWorkspaceId(workspace) === activeWorkspaceId,
       )
     : workspaces.find((workspace) => workspace.type === 'personal');
-  const activeWorkspaceRole = getWorkspaceRoleLabel(activeWorkspace, t);
+  const activeWorkspaceName =
+    activeWorkspace?.name ||
+    activeWorkspaceId ||
+    t('page.profile.workspaces.personal');
+  const activeWorkspaceRole = getWorkspaceRoleSummary(activeWorkspace, t);
   const updatedAt = formatRelativeDate(user?.updated_at, locale);
   const notProvided = t('page.profile.notProvided');
+  const handleOpenActiveWorkspaceRoles = () => {
+    openWorkspaceRolesDetailModal({
+      roles: activeWorkspaceRole.roles,
+      workspaceName: activeWorkspaceName,
+    });
+  };
 
   return (
     <div className="grid gap-4">
@@ -506,16 +587,14 @@ export function ProfileSidebar() {
           <DetailRow
             icon={ShieldCheckIcon}
             label={t('page.profile.sidebar.activeWorkspace')}
-            value={
-              activeWorkspace?.name ||
-              activeWorkspaceId ||
-              t('page.profile.workspaces.personal')
-            }
+            value={activeWorkspaceName}
           />
-          <DetailRow
-            icon={UsersIcon}
+          <WorkspaceRoleDetailRow
+            hiddenCount={activeWorkspaceRole.hiddenCount}
             label={t('page.profile.sidebar.workspaceRole')}
-            value={activeWorkspaceRole}
+            onOpenRoles={handleOpenActiveWorkspaceRoles}
+            primaryRole={activeWorkspaceRole.primaryRole}
+            roles={activeWorkspaceRole.roles}
           />
           <DetailRow
             icon={Clock3Icon}
