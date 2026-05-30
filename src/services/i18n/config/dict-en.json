@@ -198,7 +198,13 @@
         "description": "Workspace context and configuration signals for the selected boundary.",
         "configTitle": "Workspace configuration",
         "iacRepository": "IaC repository",
-        "iacRepositoryHelp": "{visibility}, default ref {ref}",
+        "iacRepositoryHelp": "{mode}, default ref {ref}",
+        "iacRepositoryMode": {
+          "shared": "Shared",
+          "managed": "Managed",
+          "custom": "Custom",
+          "unknown": "Configured"
+        },
         "workerUsed": "Worker used",
         "notReported": "Not reported",
         "visibility": {
@@ -346,6 +352,102 @@
           "noDomain": "No domain",
           "unknownStatus": "unknown",
           "empty": "No load balancers found."
+        }
+      }
+    },
+    "profile": {
+      "breadcrumb": "Profile",
+      "metaTitle": "Profile: {name}",
+      "headerTitle": "Profile: {name}",
+      "headerDesc": "Manage your account identity, password, and workspace access.",
+      "editProfile": "Edit profile",
+      "notProvided": "Not provided",
+      "identity": {
+        "title": "Personal information",
+        "description": "Account identity used across dashboard workflows.",
+        "active": "Active",
+        "email": "Email",
+        "joined": "Joined",
+        "lastUpdated": "Last updated",
+        "activeWorkspace": "Active workspace"
+      },
+      "connections": {
+        "title": "Account security",
+        "description": "Password and external account access for this profile.",
+        "password": "Password",
+        "passwordHelp": "Use Edit profile to update your password.",
+        "github": "GitHub account",
+        "githubFallback": "Repository access is not connected",
+        "editable": "Editable",
+        "connected": "Connected",
+        "notConnected": "Not connected"
+      },
+      "access": {
+        "title": "Access summary",
+        "description": "Workspace boundaries currently visible to your account.",
+        "teamWorkspaces": "Team workspaces",
+        "totalWorkspaces": "Total workspaces"
+      },
+      "workspaces": {
+        "title": "Workspace access",
+        "description": "Switching workspace scope changes which resources are visible in dPanel.",
+        "owner": "Owner",
+        "member": "Member",
+        "personal": "Personal workspace",
+        "unknown": "Unnamed workspace",
+        "current": "Current",
+        "personalType": "Personal",
+        "teamType": "Team",
+        "openTeam": "Open team details",
+        "empty": "No workspace data available.",
+        "emptyDesc": "Your personal workspace is still available, but the backend did not include workspace records in this session."
+      },
+      "sidebar": {
+        "sessionTitle": "Current session",
+        "sessionDescription": "The resource boundary and role applied to requests from this browser.",
+        "activeWorkspace": "Workspace",
+        "workspaceRole": "Role",
+        "profileUpdated": "Profile updated",
+        "securityTitle": "Account controls",
+        "securityDescription": "Update profile credentials without exposing secrets.",
+        "passwordUpdate": "Password update",
+        "available": "Available",
+        "githubAccess": "GitHub access"
+      },
+      "modal": {
+        "title": "Update profile",
+        "description": "Change your display name, avatar, and password used across dPanel.",
+        "email": "Email",
+        "emailReadonly": "Email cannot be changed from this page.",
+        "fullName": "Full name",
+        "fullNamePlaceholder": "Enter your full name",
+        "username": "Username",
+        "usernameReadonly": "Username cannot be changed from this page.",
+        "avatarUrl": "Avatar URL",
+        "avatarUrlPlaceholder": "https://example.com/avatar.png",
+        "avatarUrlHelp": "Use a public http(s) image URL. Leave blank to remove the custom avatar.",
+        "passwordSectionTitle": "Password",
+        "passwordSectionDescription": "Leave password fields blank to keep the current password.",
+        "newPassword": "New password",
+        "newPasswordPlaceholder": "Enter a new password",
+        "confirmPassword": "Retype password",
+        "confirmPasswordPlaceholder": "Retype the new password",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password",
+        "showConfirmPassword": "Show retyped password",
+        "hideConfirmPassword": "Hide retyped password",
+        "failedTitle": "Failed to update profile",
+        "successMessage": "Profile updated successfully.",
+        "submit": "Save changes",
+        "validation": {
+          "fullNameRequired": "Full name is required.",
+          "fullNameTooLong": "Full name is too long.",
+          "avatarUrlTooLong": "Avatar URL is too long.",
+          "avatarUrlInvalid": "Enter a valid http(s) URL.",
+          "passwordRequired": "Enter a new password or leave both password fields blank.",
+          "passwordTooShort": "Password must be at least 8 characters.",
+          "confirmPasswordRequired": "Retype the new password.",
+          "confirmPasswordMismatch": "Passwords do not match."
         }
       }
     },

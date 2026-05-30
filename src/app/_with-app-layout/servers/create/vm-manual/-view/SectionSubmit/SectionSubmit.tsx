@@ -42,7 +42,7 @@ export default function SectionSubmit() {
       if (!newServerID) throw Error('New server ID is empty!');
 
       const setupResponse = await ApiServer.Setup.$Id.doPost({
-        id: newServerID,
+        id: String(newServerID),
       });
       if (setupResponse.$status !== 'success') throw setupResponse;
 

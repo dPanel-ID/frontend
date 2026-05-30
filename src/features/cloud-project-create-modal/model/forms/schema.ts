@@ -8,7 +8,8 @@ export const schemaBaseForm = z.object({
     .min(1, 'Title is required'),
 
   cloudProvider: z //
-    .enum(['IDCloudHost', 'gcp', 'proxmox']),
+    .string()
+    .min(1, 'Cloud provider is required'),
 });
 
 export type SchemaBaseForm = z.infer<typeof schemaBaseForm>;
@@ -133,5 +134,17 @@ export const schemaProxmoxForm = z.object({
 });
 
 export type SchemaProxmoxForm = z.infer<typeof schemaProxmoxForm>;
+
+// #endregion
+
+// #region Schema Dynamic Credential Form
+
+export const schemaDynamicCredentialForm = z.object({
+  credential: z.record(z.string(), z.string().optional()),
+});
+
+export type SchemaDynamicCredentialForm = z.infer<
+  typeof schemaDynamicCredentialForm
+>;
 
 // #endregion

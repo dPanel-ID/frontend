@@ -1,40 +1,47 @@
+import { useDevetekTranslations } from '@/services/i18n';
 import { ModalLayoutGeneral } from '@/services/modal/ui/presentation';
-
-import { capitalizeEveryFirstLetter } from '@/shared/libs/browser/string';
 
 import { DcProvider } from '../model';
 import type { UserFormModalProps as Props } from '../model/types';
 
+import { AvatarUrl } from './AvatarUrl';
 import { Fullname } from './Fullname';
-import { Password } from './Password';
+import { PasswordFields } from './PasswordFields';
 import { SubmitButton } from './SubmitButton';
 import { Username } from './Username';
 
 export default function UserFormModal(props: Props) {
-  const { action, user } = props;
+  const { user } = props;
+  const t = useDevetekTranslations();
 
   return (
     <DcProvider {...props}>
       <ModalLayoutGeneral>
         <ModalLayoutGeneral.Title
           canClickClose
-          title={`${capitalizeEveryFirstLetter(action)} User`}
+          title={t('page.profile.modal.title')}
+          description={t('page.profile.modal.description')}
         />
 
         <ModalLayoutGeneral.Content className="flex flex-col gap-4">
           {user.email && (
             <section className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium">Email</label>
+              <span className="text-sm font-medium">
+                {t('page.profile.modal.email')}
+              </span>
               <p className="text-sm px-3 py-2 rounded-md border bg-muted text-muted-foreground">
                 {user.email}
               </p>
-              <p className="text-xs text-muted-foreground">Email cannot be changed.</p>
+              <p className="text-xs text-muted-foreground">
+                {t('page.profile.modal.emailReadonly')}
+              </p>
             </section>
           )}
 
-          <Fullname value={user.fullname} />
+          <Fullname />
           <Username value={user.username} />
-          <Password />
+          <AvatarUrl />
+          <PasswordFields />
           <SubmitButton />
         </ModalLayoutGeneral.Content>
       </ModalLayoutGeneral>

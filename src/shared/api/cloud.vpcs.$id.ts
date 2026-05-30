@@ -1,4 +1,4 @@
-import { useApiGet } from '@/shared/libs/api-client';
+import { useAdapter, useApiGet } from '@/shared/libs/api-client';
 import { apiClient } from '@/shared/libs/api-client/lib/client';
 import type {
   GetRequestRecipe,
@@ -33,15 +33,34 @@ export interface NetworkItem {
 }
 
 export interface Dto {
-  items: NetworkItem[];
+  items?: NetworkItem[];
+}
+
+type ContractDto = Dto | Dto[];
+
+function normalizeVpcs(raw: ContractDto): Dto {
+  if (!Array.isArray(raw)) {
+    return {
+      items: raw.items ?? [],
+    };
+  }
+
+  return {
+    items: raw.flatMap((group) => group.items ?? []),
+  };
 }
 
 export function useGet(params: WithApiGetOptions<RecipeParams>) {
-  return useApiGet<Dto[]>(recipe(params), params.options);
+  const [response, refresh] = useApiGet<ContractDto>(
+    recipe(params),
+    params.options,
+  );
+
+  return [useAdapter(response, normalizeVpcs), refresh] as const;
 }
 
 export function fetchGet(params: RecipeParams) {
-  return apiClient<Dto[]>({
+  return apiClient<ContractDto>({
     ...recipe(params),
     method: 'GET',
   });

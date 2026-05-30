@@ -1,10 +1,15 @@
 import { useState } from 'react';
 
-import { Button } from '@/shared/presentation/atoms/Button';
+import type { DTOs } from '@/shared/api';
+import { Button } from '@/shared/presentation/atoms/ButtonV2';
 
 import { useCpcFormContext } from '../../model/forms/context';
-import type { SchemaProxmoxForm, SchemaProxmoxUpload } from '../../model/forms/schema';
+import type {
+  SchemaProxmoxForm,
+  SchemaProxmoxUpload,
+} from '../../model/forms/schema';
 import { schemaProxmoxUpload } from '../../model/forms/schema';
+import { getProviderLabel } from '../../model/provider-contract';
 import useModelSubmission from '../../model/submission';
 import { SubmitButton } from '../../presentation/SubmitButton';
 import { UploadArea } from '../../presentation/UploadArea';
@@ -13,22 +18,29 @@ import { UploadArea } from '../../presentation/UploadArea';
 // Credential summary after upload
 // ---------------------------------------------------------------------------
 
-const SummaryRow = ({ label, value, hidden }: { label: string; value?: string | number; hidden?: boolean }) => {
-  const [visible, setVisible] = useState(!hidden);
-  const display = value !== undefined && value !== '' ? String(value) : <em className="opacity-40">—</em>;
+const SummaryRow = ({
+  label,
+  value,
+  hidden,
+}: {
+  label: string;
+  value?: string | number;
+  hidden?: boolean;
+}) => {
+  const display =
+    value !== undefined && value !== '' ? (
+      String(value)
+    ) : (
+      <em className="opacity-40">-</em>
+    );
 
   return (
     <div className="flex flex-col gap-0.5">
-      <p className="text-xs font-medium text-primary/60">{label}</p>
+      <p className="text-xs font-medium text-muted-foreground">{label}</p>
       <div className="flex items-center gap-2">
-        <pre className="flex-1 border bg-background px-3 py-1.5 rounded-lg text-sm whitespace-pre-wrap break-all">
-          {visible ? display : <em className="opacity-30">Hidden</em>}
+        <pre className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm whitespace-pre-wrap break-all">
+          {hidden ? <em className="opacity-50">Stored securely</em> : display}
         </pre>
-        {hidden && (
-          <Button variant="ghost" size="xs" onClick={() => setVisible((v) => !v)}>
-            {visible ? '🙈' : '👁'}
-          </Button>
-        )}
       </div>
     </div>
   );
@@ -39,17 +51,25 @@ const CredentialSummary = ({ values }: { values: SchemaProxmoxUpload }) => {
   const ostemplates = values.credential.config.ostemplates;
 
   return (
-    <div className="flex flex-col gap-4 mb-4 p-3 border rounded-lg bg-muted/30">
+    <div className="mb-4 flex flex-col gap-4 rounded-lg border bg-background p-3">
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-semibold text-primary/50 uppercase tracking-wide">Auth</p>
+        <p className="text-xs font-semibold uppercase text-muted-foreground">
+          Auth
+        </p>
         <SummaryRow label="api_host" value={auth.api_host} />
         <SummaryRow label="api_user" value={auth.api_user} />
         <SummaryRow label="api_token_id" value={auth.api_token_id} />
-        <SummaryRow label="api_token_secret" value={auth.api_token_secret} hidden />
+        <SummaryRow
+          label="api_token_secret"
+          value={auth.api_token_secret}
+          hidden
+        />
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-semibold text-primary/50 uppercase tracking-wide">OS Templates</p>
+        <p className="text-xs font-semibold uppercase text-muted-foreground">
+          OS Templates
+        </p>
         {ostemplates.map((t) => (
           <SummaryRow key={t.id} label={t.name} value={t.id} />
         ))}
@@ -62,11 +82,16 @@ const CredentialSummary = ({ values }: { values: SchemaProxmoxUpload }) => {
 // FormProxmox
 // ---------------------------------------------------------------------------
 
-export default function FormProxmox() {
+export default function FormProxmox(props: {
+  provider?: DTOs.CloudProviderContractV1;
+}) {
+  const { provider } = props;
   const { formProxmox: form } = useCpcFormContext();
-  const { isSubmitting, handleSubmit } = useModelSubmission();
+  const { isSubmitting, handleSubmit } = useModelSubmission(provider);
 
-  const [uploadedData, setUploadedData] = useState<SchemaProxmoxUpload | null>(null);
+  const [uploadedData, setUploadedData] = useState<SchemaProxmoxUpload | null>(
+    null,
+  );
 
   const handleUploadData = (data: SchemaProxmoxUpload) => {
     form.reset(data as SchemaProxmoxForm);
@@ -79,20 +104,39 @@ export default function FormProxmox() {
   };
 
   return (
-    <section className="flex flex-col mt-6">
-      {!uploadedData ? (
-        <UploadArea schema={schemaProxmoxUpload} onUploadData={handleUploadData} />
-      ) : (
-        <div className="flex flex-col gap-2">
-          <CredentialSummary values={uploadedData} />
+    <section className="rounded-lg border bg-card">
+      <div className="border-b p-4">
+        <h2 className="text-base font-semibold">
+          {getProviderLabel(provider)} credentials
+        </h2>
+        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+          Upload the Proxmox credential JSON. Token secrets stay masked in the
+          local preview.
+        </p>
+      </div>
 
-          <Button variant="secondary" onClick={handleClickClear}>
-            Clear
-          </Button>
+      <div className="p-4">
+        {!uploadedData ? (
+          <UploadArea
+            schema={schemaProxmoxUpload}
+            onUploadData={handleUploadData}
+          />
+        ) : (
+          <div className="flex flex-col gap-3">
+            <CredentialSummary values={uploadedData} />
 
-          <SubmitButton isSubmitting={isSubmitting} onClick={handleSubmit} />
-        </div>
-      )}
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              onClick={handleClickClear}
+            >
+              Clear
+            </Button>
+
+            <SubmitButton isSubmitting={isSubmitting} onClick={handleSubmit} />
+          </div>
+        )}
+      </div>
     </section>
   );
 }

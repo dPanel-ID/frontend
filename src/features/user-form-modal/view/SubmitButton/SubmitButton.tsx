@@ -1,34 +1,40 @@
+import { useDevetekTranslations } from '@/services/i18n';
 import { useModalEmit } from '@/services/modal/model/event';
 import { useToaster } from '@/services/toaster';
 
 import { ApiUser } from '@/shared/api';
-import { Button } from '@/shared/presentation/atoms/Button';
+import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 
 import { useDcContext } from '../../model';
 
 export default function SubmitButton() {
   const { props, form } = useDcContext();
-  const userId = String(props.user.id);
 
   const [openToaster] = useToaster();
   const emitModal = useModalEmit();
+  const t = useDevetekTranslations();
 
   const handleClick = form.handleSubmit(async (values) => {
     emitModal('%%modal/allow-trivial-close', false);
 
-    const response = await ApiUser.Update.$Id.doPost({
-      userId,
+    const fullname = values.fullname.trim();
+    const avatarUrl = values.avatar_url?.trim() ?? '';
+    const password = values.password?.trim() ? values.password : '';
+
+    const response = await ApiUser.Profile.Update.doPost({
       payload: {
-        fullname: values.fullname,
-        username: values.username,
-        password: values.password ?? '',
+        avatar: avatarUrl,
+        avatar_url: avatarUrl,
+        displayName: fullname,
+        fullname,
+        ...(password ? { password } : {}),
       },
     });
 
     if (response.$status === 'failed') {
       openToaster({
-        title: <>Failed to update profile</>,
+        title: <>{t('page.profile.modal.failedTitle')}</>,
         message: response.error.message,
         variant: 'error',
         duration: 5000,
@@ -42,22 +48,18 @@ export default function SubmitButton() {
 
     openToaster({
       variant: 'success',
-      message: (
-        <>
-          Profile updated successfully.
-        </>
-      ),
+      message: <>{t('page.profile.modal.successMessage')}</>,
     });
 
     props.onSubmitSuccess?.();
   });
 
   return (
-    <Button onClick={handleClick}>
+    <Button onClick={handleClick} disabled={form.formState.isSubmitting}>
       {form.formState.isSubmitting ? (
         <Spinner className="text-white" />
       ) : (
-        'Submit'
+        t('page.profile.modal.submit')
       )}
     </Button>
   );

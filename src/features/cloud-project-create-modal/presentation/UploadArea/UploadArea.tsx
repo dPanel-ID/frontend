@@ -1,11 +1,13 @@
 import { useRef, useState } from 'react';
 
-import { AlertCircleIcon, UploadIcon } from 'lucide-react';
+import { AlertCircleIcon, FileJsonIcon, UploadIcon } from 'lucide-react';
 import type { ZodType } from 'zod';
 
 import { cn } from '@/shared/libs/tailwind/cn';
 
-export default function UploadArea<T extends Record<string, unknown>>(props: Props<T>) {
+export default function UploadArea<T extends Record<string, unknown>>(
+  props: Props<T>,
+) {
   const { maxSizeInMiB = 5, onUploadData, schema } = props;
 
   const [isDragging, setIsDragging] = useState(false);
@@ -77,7 +79,7 @@ export default function UploadArea<T extends Record<string, unknown>>(props: Pro
       return;
     }
 
-    onUploadData?.(parsedResult.data as T);
+    onUploadData?.(parsedResult.data);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -100,21 +102,28 @@ export default function UploadArea<T extends Record<string, unknown>>(props: Pro
     refFileInput.current?.click();
   };
   const cnRoot = cn(
-    'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors',
+    'cursor-pointer rounded-lg border border-dashed p-6 text-center transition-colors',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
     isDragging
       ? 'border-primary bg-primary/5'
-      : 'border-muted-foreground/25 hover:border-primary/50',
+      : 'border-muted-foreground/30 bg-background hover:border-primary/50',
   );
 
   return (
     <div className="flex flex-col">
       <div
+        role="button"
+        tabIndex={0}
         className={cnRoot}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={handleClick}
+        onKeyDown={(event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          handleClick();
+        }}
       >
         <input
           type="file"
@@ -123,7 +132,7 @@ export default function UploadArea<T extends Record<string, unknown>>(props: Pro
           className="hidden"
         />
         <div className="flex flex-col items-center justify-center gap-2">
-          <div className="bg-primary/10 p-3 rounded-full">
+          <div className="rounded-md border bg-card p-3 text-primary">
             <UploadIcon className="h-6 w-6 text-primary" />
           </div>
           <div className="flex flex-col space-y-1">
@@ -131,7 +140,11 @@ export default function UploadArea<T extends Record<string, unknown>>(props: Pro
               <span className="text-primary font-semibold">
                 Click to upload
               </span>{' '}
-              or drag and drop the JSON file here.
+              or drag and drop a JSON file.
+            </p>
+            <p className="inline-flex items-center justify-center gap-1 text-xs text-muted-foreground">
+              <FileJsonIcon className="size-3" />
+              Maximum {maxSizeInMiB} MiB
             </p>
           </div>
         </div>

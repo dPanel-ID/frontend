@@ -1,173 +1,297 @@
+import {
+  AlertCircleIcon,
+  CheckCircle2Icon,
+  CloudIcon,
+  RefreshCwIcon,
+} from 'lucide-react';
 import { useController } from 'react-hook-form';
 
-import { ErrorInline } from '@/features/db-create-modal/presentation/ErrorInline';
-
-import LogoGoogleCloud from '@/shared/assets/ico-gcloud.png';
-import LogoIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
-import IconAWS from '@/shared/assets/ico-aws.svg';
-import IconDO from '@/shared/assets/ico-do.svg';
-import IconHetzner from '@/shared/assets/ico-hetzner.svg';
-import IconProxmox from '@/shared/assets/ico-proxmox.png';
-import IconVultr from '@/shared/assets/ico-vultr.svg';
+import type { DTOs } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { cn } from '@/shared/libs/tailwind/cn';
+import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
 
 import { useCpcFormContext } from '../../model/forms/context';
-import type { SchemaBaseForm } from '../../model/forms/schema';
+import {
+  getCredentialFields,
+  getProviderIconFallback,
+  getProviderLabel,
+  getProviderValue,
+} from '../../model/provider-contract';
 
-// ---------------------------------------------------------------------------
-// Provider card definitions
-// ---------------------------------------------------------------------------
-
-interface ProviderOption {
-  value: SchemaBaseForm['cloudProvider'];
-  label: string;
-  imgSrc: string;
-  comingSoon?: false;
+interface FormBaseProps {
+  error?: unknown;
+  isLoadingProviders: boolean;
+  onRetryProviders: () => void;
+  providers: DTOs.CloudProviderContractV1[];
 }
 
-interface ProviderOptionComingSoon {
-  value: string;
-  label: string;
-  imgSrc: string;
-  comingSoon: true;
-}
+export default function FormBase(props: FormBaseProps) {
+  const { error, isLoadingProviders, onRetryProviders, providers } = props;
+  const {
+    formBase,
+    formDynamicCredential,
+    formGCP,
+    formIDCloudHost,
+    formProxmox,
+  } = useCpcFormContext();
 
-type AnyProviderOption = ProviderOption | ProviderOptionComingSoon;
-
-const AVAILABLE_PROVIDERS: AnyProviderOption[] = [
-  {
-    value: 'IDCloudHost',
-    label: 'IDCloudHost',
-    imgSrc: LogoIDCloudHost,
-  },
-  {
-    value: 'gcp',
-    label: 'Google Cloud',
-    imgSrc: LogoGoogleCloud,
-  },
-  {
-    value: 'proxmox',
-    label: 'Proxmox VE',
-    imgSrc: IconProxmox,
-  },
-  {
-    value: 'digitalocean',
-    label: 'DigitalOcean',
-    imgSrc: IconDO,
-    comingSoon: true,
-  },
-  {
-    value: 'hetzner',
-    label: 'Hetzner',
-    imgSrc: IconHetzner,
-    comingSoon: true,
-  },
-  {
-    value: 'vultr',
-    label: 'Vultr',
-    imgSrc: IconVultr,
-    comingSoon: true,
-  },
-  {
-    value: 'aws',
-    label: 'AWS',
-    imgSrc: IconAWS,
-    comingSoon: true,
-  },
-];
-
-// ---------------------------------------------------------------------------
-// Provider selector
-// ---------------------------------------------------------------------------
-
-const ProviderSelector = () => {
-  const { formBase } = useCpcFormContext();
-  const { field, fieldState } = useController({
+  const nameControl = useController({
+    control: formBase.control,
+    name: 'metaTitle',
+  });
+  const providerControl = useController({
     control: formBase.control,
     name: 'cloudProvider',
   });
 
-  return (
-    <>
-      <div className="grid grid-cols-3 gap-2">
-        {AVAILABLE_PROVIDERS.map((provider) => {
-          const isSelected = field.value === provider.value;
-          const isComingSoon = provider.comingSoon === true;
+  const resetProviderForms = () => {
+    formDynamicCredential.reset({ credential: {} });
+    formGCP.reset();
+    formIDCloudHost.reset();
+    formProxmox.reset();
+  };
 
-          return (
-            <button
-              key={provider.value}
-              type="button"
-              disabled={isComingSoon}
-              onClick={() =>
-                !isComingSoon && field.onChange(provider.value)
-              }
-              className={cn(
-                'relative flex flex-col items-center gap-2 rounded-lg border p-3 text-center transition-all',
-                isSelected
-                  ? 'border-primary bg-primary/10 ring-1 ring-primary'
-                  : 'border-border bg-card hover:border-primary/50',
-                isComingSoon && 'cursor-not-allowed opacity-40',
-              )}
-            >
-              <img
-                src={provider.imgSrc}
-                alt={provider.label}
-                className="h-8 w-8 object-contain"
-              />
-              <span className="text-xs font-medium leading-tight">
-                {provider.label}
+  const handleSelectProvider = (provider: DTOs.CloudProviderContractV1) => {
+    providerControl.field.onChange(getProviderValue(provider));
+    resetProviderForms();
+  };
+
+  return (
+    <div className="space-y-4">
+      <section className="rounded-lg border bg-card">
+        <div className="border-b p-4">
+          <div className="flex items-start gap-3">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-md border bg-background text-primary">
+              <CloudIcon className="size-4" />
+            </span>
+            <div className="min-w-0">
+              <h2 className="text-base font-semibold">Connection</h2>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                Name the account and choose the provider contract used for this
+                cloud connection.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4 p-4">
+          <div>
+            <label className="mb-1.5 block" htmlFor="cloud-project-name">
+              <span className="block text-sm font-semibold">
+                Connection name<span className="text-destructive">*</span>
               </span>
-              {isComingSoon && (
-                <span className="absolute -top-1.5 right-1 rounded-full bg-secondary px-1.5 py-0.5 text-[9px] font-semibold text-secondary-foreground">
-                  Soon
+              <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
+                Use a name your team can recognize later.
+              </span>
+            </label>
+            <Input
+              id="cloud-project-name"
+              placeholder="Production cloud account"
+              aria-invalid={Boolean(nameControl.fieldState.error)}
+              {...nameControl.field}
+            />
+            <ErrorInline message={nameControl.fieldState.error?.message} />
+          </div>
+
+          <div>
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+              <label className="block" htmlFor="cloud-provider-grid">
+                <span className="block text-sm font-semibold">
+                  Cloud provider<span className="text-destructive">*</span>
                 </span>
-              )}
-            </button>
-          );
-        })}
+                <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
+                  Provider cards are loaded from the backend contract.
+                </span>
+              </label>
+
+              <Button
+                size="sm"
+                buttonStyle="outline"
+                buttonColor="secondary"
+                onClick={onRetryProviders}
+              >
+                <RefreshCwIcon className="size-4" />
+                Refresh
+              </Button>
+            </div>
+
+            {isLoadingProviders && providers.length < 1 && (
+              <ProviderLoadingGrid />
+            )}
+
+            {error != null && providers.length < 1 && (
+              <ProviderFailure error={error} onRetry={onRetryProviders} />
+            )}
+
+            {!isLoadingProviders && !error && providers.length < 1 && (
+              <ProviderEmpty />
+            )}
+
+            {providers.length > 0 && (
+              <div
+                id="cloud-provider-grid"
+                className="grid gap-2 sm:grid-cols-2"
+              >
+                {providers.map((provider) => {
+                  const providerValue = getProviderValue(provider);
+                  const isSelected =
+                    providerControl.field.value === providerValue;
+
+                  return (
+                    <ProviderCard
+                      key={providerValue}
+                      provider={provider}
+                      selected={isSelected}
+                      onClick={() => handleSelectProvider(provider)}
+                    />
+                  );
+                })}
+              </div>
+            )}
+
+            <ErrorInline message={providerControl.fieldState.error?.message} />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function ProviderCard(props: {
+  onClick: () => void;
+  provider: DTOs.CloudProviderContractV1;
+  selected: boolean;
+}) {
+  const { onClick, provider, selected } = props;
+  const credentialFields = getCredentialFields(provider);
+  const requiredCredentialCount = credentialFields.filter(
+    (field) => field.required,
+  ).length;
+  const providerLabel = getProviderLabel(provider);
+
+  return (
+    <button
+      type="button"
+      aria-pressed={selected}
+      aria-label={`Select ${providerLabel}`}
+      onClick={onClick}
+      className={cn(
+        'group min-h-28 rounded-lg border bg-background p-3 text-left transition-all',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35',
+        selected
+          ? 'border-primary bg-primary/10 text-primary'
+          : 'hover:border-primary/60 hover:bg-primary/5',
+      )}
+    >
+      <div className="flex items-start gap-3">
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-md border bg-card text-xs font-bold uppercase">
+          {provider.icon?.url ? (
+            <img
+              alt=""
+              className="size-6 object-contain"
+              loading="lazy"
+              src={provider.icon.url}
+            />
+          ) : (
+            getProviderIconFallback(provider)
+          )}
+        </span>
+
+        <span className="min-w-0 flex-1">
+          <span className="flex min-w-0 items-center justify-between gap-2">
+            <span className="truncate text-sm font-semibold">
+              {providerLabel}
+            </span>
+            {selected && (
+              <CheckCircle2Icon className="size-4 shrink-0 text-primary" />
+            )}
+          </span>
+
+          <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-muted-foreground">
+            {provider.notes?.[0] ||
+              provider.category ||
+              'Cloud provider contract'}
+          </span>
+        </span>
       </div>
 
-      <ErrorInline message={fieldState.error?.message} />
-    </>
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        <ProviderBadge>
+          {requiredCredentialCount > 0
+            ? `${requiredCredentialCount} required`
+            : 'No required secret'}
+        </ProviderBadge>
+        {(provider.capabilities?.length ?? 0) > 0 && (
+          <ProviderBadge>
+            {`${provider.capabilities?.length ?? 0} capabilities`}
+          </ProviderBadge>
+        )}
+      </div>
+    </button>
   );
-};
+}
 
-// ---------------------------------------------------------------------------
-// FormBase
-// ---------------------------------------------------------------------------
+function ProviderBadge(props: { children: string }) {
+  return (
+    <span className="rounded-md border bg-card px-2 py-0.5 text-[0.68rem] font-medium text-muted-foreground">
+      {props.children}
+    </span>
+  );
+}
 
-export default function FormBase() {
-  const { formBase } = useCpcFormContext();
+function ProviderLoadingGrid() {
+  return (
+    <div className="grid gap-2 sm:grid-cols-2">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div
+          key={index}
+          className="h-28 animate-pulse rounded-lg border bg-background"
+        />
+      ))}
+    </div>
+  );
+}
+
+function ProviderFailure(props: { error: unknown; onRetry: () => void }) {
+  const { error, onRetry } = props;
 
   return (
-    <>
-      <section className="flex flex-col mb-6 gap-1">
-        <p className="text-sm font-medium">
-          Connection Name
-          <span className="text-primary/50 font-normal ml-1">
-            (e.g. "My DigitalOcean Production")
-          </span>
-        </p>
+    <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4">
+      <div className="flex items-start gap-3">
+        <AlertCircleIcon className="mt-0.5 size-4 shrink-0 text-destructive" />
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold text-destructive">
+            Failed to load provider contracts
+          </p>
+          <p className="mt-1 break-words text-xs leading-relaxed text-muted-foreground">
+            {getApiErrorDetail(error)}
+          </p>
+          <Button
+            size="sm"
+            className="mt-3"
+            buttonStyle="outline"
+            buttonColor="secondary"
+            onClick={onRetry}
+          >
+            <RefreshCwIcon className="size-4" />
+            Retry
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-        <Input
-          placeholder="e.g. My IDCloudHost Account"
-          {...formBase.register('metaTitle')}
-        />
-
-        <ErrorInline message={formBase.formState.errors.metaTitle?.message} />
-      </section>
-
-      <section className="flex flex-col gap-2">
-        <p className="text-sm font-medium">Cloud Provider</p>
-        <p className="text-xs text-primary/50">
-          Select the provider that matches your cloud account. Grayed-out
-          providers are coming soon.
-        </p>
-
-        <ProviderSelector />
-      </section>
-    </>
+function ProviderEmpty() {
+  return (
+    <div className="rounded-lg border bg-background p-4">
+      <p className="text-sm font-semibold">No cloud providers available</p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        The backend did not return any provider contracts for this workspace.
+      </p>
+    </div>
   );
 }

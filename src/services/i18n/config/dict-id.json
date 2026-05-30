@@ -189,7 +189,13 @@
         "description": "Konteks ruang kerja dan sinyal konfigurasi untuk batas ruang kerja terpilih.",
         "configTitle": "Konfigurasi ruang kerja",
         "iacRepository": "Repositori IaC",
-        "iacRepositoryHelp": "{visibility}, default ref {ref}",
+        "iacRepositoryHelp": "{mode}, default ref {ref}",
+        "iacRepositoryMode": {
+          "shared": "Shared",
+          "managed": "Managed",
+          "custom": "Custom",
+          "unknown": "Terkonfigurasi"
+        },
         "workerUsed": "Worker yang digunakan",
         "notReported": "Belum dilaporkan",
         "visibility": {
@@ -337,6 +343,102 @@
           "noDomain": "Tidak ada domain",
           "unknownStatus": "unknown",
           "empty": "Load balancer tidak ditemukan."
+        }
+      }
+    },
+    "profile": {
+      "breadcrumb": "Profil",
+      "metaTitle": "Profil: {name}",
+      "headerTitle": "Profil: {name}",
+      "headerDesc": "Kelola identitas akun, password, dan akses workspace Anda.",
+      "editProfile": "Ubah profil",
+      "notProvided": "Belum tersedia",
+      "identity": {
+        "title": "Informasi personal",
+        "description": "Identitas akun yang digunakan di seluruh workflow dashboard.",
+        "active": "Aktif",
+        "email": "Email",
+        "joined": "Bergabung",
+        "lastUpdated": "Terakhir diperbarui",
+        "activeWorkspace": "Workspace aktif"
+      },
+      "connections": {
+        "title": "Keamanan akun",
+        "description": "Password dan akses akun eksternal untuk profil ini.",
+        "password": "Password",
+        "passwordHelp": "Gunakan Ubah profil untuk memperbarui password Anda.",
+        "github": "Akun GitHub",
+        "githubFallback": "Akses repositori belum terhubung",
+        "editable": "Dapat diubah",
+        "connected": "Terhubung",
+        "notConnected": "Belum terhubung"
+      },
+      "access": {
+        "title": "Ringkasan akses",
+        "description": "Batas workspace yang saat ini terlihat oleh akun Anda.",
+        "teamWorkspaces": "Workspace tim",
+        "totalWorkspaces": "Total workspace"
+      },
+      "workspaces": {
+        "title": "Akses workspace",
+        "description": "Pergantian scope workspace mengubah resource yang terlihat di dPanel.",
+        "owner": "Pemilik",
+        "member": "Anggota",
+        "personal": "Workspace personal",
+        "unknown": "Workspace tanpa nama",
+        "current": "Aktif",
+        "personalType": "Personal",
+        "teamType": "Tim",
+        "openTeam": "Buka detail tim",
+        "empty": "Data workspace belum tersedia.",
+        "emptyDesc": "Workspace personal tetap tersedia, tetapi backend tidak menyertakan data workspace pada sesi ini."
+      },
+      "sidebar": {
+        "sessionTitle": "Sesi saat ini",
+        "sessionDescription": "Batas resource dan role yang dipakai request dari browser ini.",
+        "activeWorkspace": "Workspace",
+        "workspaceRole": "Role",
+        "profileUpdated": "Profil diperbarui",
+        "securityTitle": "Kontrol akun",
+        "securityDescription": "Perbarui kredensial profil tanpa mengekspos rahasia.",
+        "passwordUpdate": "Update password",
+        "available": "Tersedia",
+        "githubAccess": "Akses GitHub"
+      },
+      "modal": {
+        "title": "Ubah profil",
+        "description": "Ubah nama tampilan, avatar, dan password yang digunakan di dPanel.",
+        "email": "Email",
+        "emailReadonly": "Email tidak dapat diubah dari halaman ini.",
+        "fullName": "Nama lengkap",
+        "fullNamePlaceholder": "Masukkan nama lengkap Anda",
+        "username": "Username",
+        "usernameReadonly": "Username tidak dapat diubah dari halaman ini.",
+        "avatarUrl": "URL avatar",
+        "avatarUrlPlaceholder": "https://example.com/avatar.png",
+        "avatarUrlHelp": "Gunakan URL gambar http(s) publik. Kosongkan untuk menghapus avatar khusus.",
+        "passwordSectionTitle": "Password",
+        "passwordSectionDescription": "Kosongkan field password untuk tetap memakai password saat ini.",
+        "newPassword": "Password baru",
+        "newPasswordPlaceholder": "Masukkan password baru",
+        "confirmPassword": "Ulangi password",
+        "confirmPasswordPlaceholder": "Ulangi password baru",
+        "showPassword": "Tampilkan password",
+        "hidePassword": "Sembunyikan password",
+        "showConfirmPassword": "Tampilkan password ulang",
+        "hideConfirmPassword": "Sembunyikan password ulang",
+        "failedTitle": "Gagal memperbarui profil",
+        "successMessage": "Profil berhasil diperbarui.",
+        "submit": "Simpan perubahan",
+        "validation": {
+          "fullNameRequired": "Nama lengkap wajib diisi.",
+          "fullNameTooLong": "Nama lengkap terlalu panjang.",
+          "avatarUrlTooLong": "URL avatar terlalu panjang.",
+          "avatarUrlInvalid": "Masukkan URL http(s) yang valid.",
+          "passwordRequired": "Masukkan password baru atau kosongkan kedua field password.",
+          "passwordTooShort": "Password minimal 8 karakter.",
+          "confirmPasswordRequired": "Ulangi password baru.",
+          "confirmPasswordMismatch": "Password tidak sama."
         }
       }
     },

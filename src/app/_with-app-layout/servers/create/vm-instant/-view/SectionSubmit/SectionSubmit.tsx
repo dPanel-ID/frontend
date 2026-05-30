@@ -1,14 +1,11 @@
 import { useNavigate } from '@tanstack/react-router';
-import { AxiosError } from 'axios';
 
 import { useDialog } from '@/services/dialog';
-import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import { ApiServer } from '@/shared/api';
-// import usePostMachineCreate from '@/shared/api/machine/post-machine-create';
-// import usePostMachineSetup from '@/shared/api/machine/setup/post-machine-setup';
-import { Button } from '@/shared/presentation/atoms/Button';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
+import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 
 import { useForm } from '../../-model';
@@ -18,100 +15,100 @@ export default function SectionSubmit() {
   const [openDialog] = useDialog();
 
   const navigate = useNavigate();
-  const t = useDevetekTranslations();
 
   const { handleFormReset, form } = useForm();
 
-  // const [postMachineCreate] = usePostMachineCreate();
-  // const [postMachineSetup] = usePostMachineSetup();
-
   const handleSubmit = form.handleSubmit(async (values) => {
-    const constructedValues = {
-      cloud_id: String(values.cloud.projectID),
+    const payload = {
+      provider: values.provider,
+      cloud_project_id: String(values.cloud.projectID),
       secret_id: String(values.cloud.sshKeyID),
-      os_template: values.spec.osTemplate,
-      cpu_core: values.spec.cpuCore,
-      ram: values.spec.ramSizeGB,
-      disk: values.spec.diskSizeGB,
-      default_user: values.login.username,
-      default_password: values.login.password,
-      region_id: values.regionSlug,
-      vpc_id: values.vpcBulk.id,
-      private_subnet: values.vpcBulk.subnet,
+      vm: {
+        name: values.spec.vmName.trim(),
+        region: values.regionSlug,
+        os_template_id: values.spec.osTemplate,
+        os_name: values.spec.osName,
+        os_version: values.spec.osVersion,
+        disks: values.spec.diskSizeGB,
+        vcpu: values.spec.cpuCore,
+        ram: values.spec.ramSizeGB * 1024,
+        username: values.login.username.trim(),
+        password: values.login.password.trim(),
+        billing_account_id: values.cloud.billingAccountID,
+        network_uuid: values.vpcBulk.id,
+        reserve_public_ip: true,
+      },
     };
 
     try {
       const createResponse = await ApiServer.Create.doPost({
-        payload: constructedValues,
+        payload,
       });
 
-      if (createResponse.$status !== 'success') throw createResponse;
+      if (createResponse.$status !== 'success') {
+        throw createResponse.error;
+      }
 
       const newServerId = createResponse.id;
       if (!newServerId) throw Error('New server ID is empty!');
 
-      const setupResponse = await ApiServer.Setup.$Id.doPost({
-        id: newServerId,
-      });
-      if (setupResponse.$status !== 'success') throw setupResponse;
-
       openDialog({
-        title: 'Successfully created VM!',
+        title: 'VM creation queued',
         content:
-          'The VM is now being set up. In the meantime, would you like to create more machines?',
+          'The manager created the server record and queued provider VM creation. Standard setup will start automatically after the provider VM is ready.',
         variant: 'info',
         actions: [
           {
-            label: t('common.actions.yes'),
-            isPrimary: true,
+            label: 'Create another',
             onClick: () => {
               handleFormReset();
             },
           },
           {
             label: 'Go to server',
+            isPrimary: true,
             onClick: () => {
               navigate({
-                to: '/servers',
+                to: '/servers/$id',
+                params: {
+                  id: String(newServerId),
+                },
               });
             },
           },
         ],
       });
     } catch (error) {
-      let message = 'Something went wrong, please try again.';
-
-      if (error instanceof AxiosError) {
-        message = error.message;
-      }
-
-      if (error instanceof Error) {
-        message = error.message;
-      }
-
       openToaster({
-        message,
+        message: getApiErrorDetail(error),
         variant: 'error',
+        title: 'Failed to create instant VM',
       });
     }
   });
 
   return (
-    <div className="mb-8 flex gap-2 justify-end">
-      <Button variant="ghost" onClick={handleFormReset}>
-        Clear
-      </Button>
-      <Button
-        disabled={form.formState.isSubmitting}
-        className="w-[100px]"
-        onClick={handleSubmit}
-      >
-        {form.formState.isSubmitting ? (
-          <Spinner className="text-white" />
-        ) : (
-          'Submit'
-        )}
-      </Button>
+    <div className="sticky bottom-0 z-10 -mx-1 mt-2 border-t bg-background/95 px-1 py-4 backdrop-blur">
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        <Button asChild buttonStyle="ghost" buttonColor="secondary">
+          <button type="button" onClick={handleFormReset}>
+            Clear
+          </button>
+        </Button>
+        <Button
+          asChild
+          disabled={form.formState.isSubmitting}
+          className="min-w-32"
+        >
+          <button type="button" onClick={handleSubmit}>
+            {form.formState.isSubmitting ? (
+              <Spinner className="text-primary-foreground" />
+            ) : (
+              'Create VM'
+            )}
+          </button>
+        </Button>
+      </div>
     </div>
   );
 }

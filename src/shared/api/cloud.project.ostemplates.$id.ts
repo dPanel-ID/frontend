@@ -27,6 +27,8 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
 export interface OsTemplateItem {
   id: string;
   name: string;
+  os_name?: string;
+  os_version?: string;
 }
 
 export type Dto = OsTemplateItem[];

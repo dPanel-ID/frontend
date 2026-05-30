@@ -3,6 +3,7 @@ import * as Action$Name$ActionRun from './module.action.$name.$action.run';
 import * as CustomRun from './module.custom.run';
 import * as Detail$Name from './module.detail.$name';
 import * as Find from './module.find';
+import * as Repository from './module.repository';
 
 const Root = {
   Action: {
@@ -20,6 +21,7 @@ const Root = {
     $Name: Detail$Name,
   },
   Find,
+  Repository,
 };
 
 export default Root;
