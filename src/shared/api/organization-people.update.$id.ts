@@ -12,8 +12,10 @@ export interface RecipeParams {
   id: string;
   payload: {
     organization_id: string;
-    user_id: string;
+    user_id?: string;
+    role?: string;
     role_id?: string;
+    roles?: string[];
   };
 }
 

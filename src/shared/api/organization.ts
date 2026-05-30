@@ -3,6 +3,7 @@ import * as ConfigDelete$Id from './organization-config.delete.$id';
 import * as ConfigDetail$Id from './organization-config.detail.$id';
 import * as ConfigFind from './organization-config.find';
 import * as ConfigUpdate$Id from './organization-config.update.$id';
+import * as RoleAvailable from './organization-role.available';
 import * as RoleCreate from './organization-role.create';
 import * as RoleDelete$Id from './organization-role.delete.$id';
 import * as RoleDetail$Id from './organization-role.detail.$id';
@@ -41,6 +42,7 @@ const Root = {
   },
   Find,
   Role: {
+    Available: RoleAvailable,
     Create: RoleCreate,
     Delete: {
       $Id: RoleDelete$Id,

@@ -29,8 +29,34 @@ export interface OrganizationPeopleV1 {
   user?: User;
   role_id?: string;
   role?: OrganizationRoleV1;
+  role_ids?: string[];
+  roles?: OrganizationRoleV1[];
   created_at?: string;
   updated_at?: string;
+}
+
+export interface OrganizationAvailableRoleV1 {
+  slug?: string;
+  name?: string;
+  description?: string;
+  kind?: string;
+  resource?: string;
+  level?: string;
+  conflict_group?: string;
+  template_role?: string;
+  workspace_role?: string;
+  role_group_id?: string;
+  assignable?: boolean;
+  protected?: boolean;
+}
+
+export interface OrganizationAvailableRoleGroupV1 {
+  slug?: string;
+  name?: string;
+  description?: string;
+  kind?: string;
+  selection_mode?: string;
+  roles?: OrganizationAvailableRoleV1[];
 }
 
 export interface OrganizationConfigV1 {

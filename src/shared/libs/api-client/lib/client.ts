@@ -21,6 +21,66 @@ export const axiosClient = axios.create({
   withCredentials: true,
 });
 
+const STALE_WORKSPACE_ERROR =
+  'selected workspace is not assigned to the authenticated user';
+
+type WorkspaceRetryRequestConfig = AxiosRequestConfig & {
+  __retriedAfterStaleWorkspace?: boolean;
+};
+
+function isUserProfileRequest(config?: AxiosRequestConfig) {
+  if (!config?.url) return false;
+
+  const method = config.method?.toUpperCase();
+  return method === 'GET' && config.url.includes('/v1/user/profile');
+}
+
+function getEnvelopeError(payload: unknown) {
+  if (payload == null || typeof payload !== 'object') return null;
+
+  const error = (payload as { error?: unknown }).error;
+  return typeof error === 'string' ? error.trim() : null;
+}
+
+function getEnvelopeCode(payload: unknown, fallback?: number) {
+  if (payload == null || typeof payload !== 'object') return fallback;
+
+  const code = Number((payload as { code?: unknown }).code);
+  return Number.isFinite(code) ? code : fallback;
+}
+
+function shouldRecoverStaleWorkspace(
+  config: WorkspaceRetryRequestConfig | undefined,
+  payload: unknown,
+  fallbackStatus?: number,
+) {
+  if (!isBrowser()) return false;
+  if (!isUserProfileRequest(config)) return false;
+  if (config?.__retriedAfterStaleWorkspace) return false;
+
+  return (
+    getEnvelopeCode(payload, fallbackStatus) === 403 &&
+    getEnvelopeError(payload) === STALE_WORKSPACE_ERROR
+  );
+}
+
+function retryWithoutStoredWorkspace(config: WorkspaceRetryRequestConfig) {
+  localStorage.removeItem(LS_ORGANIZATION_ID);
+
+  const retryConfig: WorkspaceRetryRequestConfig = {
+    ...config,
+    __retriedAfterStaleWorkspace: true,
+  };
+
+  const headers = AxiosHeaders.from(
+    retryConfig.headers as Parameters<typeof AxiosHeaders.from>[0],
+  );
+  headers.delete(X_AUTH_ORGANIZATION_ID);
+  retryConfig.headers = headers;
+
+  return axiosClient.request(retryConfig);
+}
+
 axiosClient.interceptors.request.use((config) => {
   const organizationId = iife(() => {
     if (!isBrowser()) return null;
@@ -49,6 +109,36 @@ axiosClient.interceptors.request.use((config) => {
 
   return config;
 });
+
+axiosClient.interceptors.response.use(
+  (response) => {
+    const config = response.config as WorkspaceRetryRequestConfig;
+
+    if (shouldRecoverStaleWorkspace(config, response.data, response.status)) {
+      return retryWithoutStoredWorkspace(config);
+    }
+
+    return response;
+  },
+  (error) => {
+    if (error instanceof AxiosError) {
+      const config = error.config as WorkspaceRetryRequestConfig | undefined;
+
+      if (
+        shouldRecoverStaleWorkspace(
+          config,
+          error.response?.data,
+          error.response?.status ?? error.status,
+        ) &&
+        config
+      ) {
+        return retryWithoutStoredWorkspace(config);
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 export async function apiClient<D>(
   config: AxiosRequestConfig,

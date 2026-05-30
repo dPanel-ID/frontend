@@ -398,6 +398,8 @@
         "sessionDescription": "Batas resource dan role yang dipakai request dari browser ini.",
         "activeWorkspace": "Workspace",
         "workspaceRole": "Role",
+        "moreRoles": "+{count} lagi",
+        "viewRoleDetails": "Lihat role workspace aktif",
         "profileUpdated": "Profil diperbarui",
         "securityTitle": "Kontrol akun",
         "securityDescription": "Perbarui kredensial profil tanpa mengekspos rahasia.",
@@ -1441,11 +1443,25 @@
       "loadingData": "Memuat data tim\u2026",
       "memberCount": "{count, plural, one {# anggota} other {# anggota}} dalam tim ini",
       "memberColumn": "Anggota",
+      "roleColumn": "Peran",
+      "roleOwner": "Owner",
+      "roleAdmin": "Admin",
+      "roleMember": "Anggota",
+      "roleOwnerDescription": "Kepemilikan penuh",
+      "roleAdminDescription": "Dapat mengelola anggota",
+      "roleMemberDescription": "Akses standar",
+      "roleOwnerHint": "Kontrol penuh atas workspace ini.",
+      "roleAdminHint": "Dapat mengelola anggota tim dan pengaturan workspace.",
+      "roleMemberHint": "Dapat mengakses resource tim tanpa mengelola anggota.",
       "joinedColumn": "Bergabung",
       "joinedLabel": "Bergabung",
       "joinedDateLabel": "Tanggal bergabung",
+      "makeAdmin": "Jadikan admin",
+      "manageRoles": "Kelola peran",
+      "moreRoles": "+{count} lagi",
       "remove": "Hapus",
       "removeFromTeam": "Hapus dari tim",
+      "refreshMembers": "Segarkan anggota",
       "emptyState": {
         "title": "Belum ada anggota",
         "message": "Tambahkan anggota ke tim ini untuk memulai.",
@@ -1563,6 +1579,10 @@
     "teamMemberRemove": {
       "title": "Hapus Anggota",
       "message": "Apakah Anda yakin ingin menghapus \"{name}\" dari tim ini?"
+    },
+    "teamMemberPromoteAdmin": {
+      "title": "Jadikan Admin",
+      "message": "Izinkan \"{name}\" untuk mengelola anggota dan pengaturan workspace?"
     }
   },
   "toaster": {
@@ -1626,6 +1646,10 @@
     "teamMemberRemove": {
       "success": "Berhasil menghapus \"{name}\" dari tim",
       "error": "Gagal menghapus \"{name}\" dari tim"
+    },
+    "teamMemberPromoteAdmin": {
+      "success": "\"{name}\" sekarang menjadi admin",
+      "error": "Gagal menjadikan \"{name}\" sebagai admin"
     },
     "loadBalancerCreate": {
       "success": "Load balancer berhasil dibuat.",
@@ -1849,6 +1873,34 @@
       "loading": "Memuat\u2026",
       "noUsersFound": "Pengguna tidak ditemukan",
       "pageInfo": "Halaman {page} / {totalPage}"
+    },
+    "manageMemberRoles": {
+      "title": "Kelola peran",
+      "description": "Perbarui akses untuk {name}",
+      "loading": "Memuat katalog peran\u2026",
+      "errorTitle": "Gagal memuat peran",
+      "errorMessage": "Pilihan peran sedang tidak tersedia. Coba lagi sebelum menyimpan perubahan.",
+      "empty": "Tidak ada peran yang dapat diberikan.",
+      "selectedCount": "{count, plural, one {# peran dipilih} other {# peran dipilih}}",
+      "selectedHint": "Perubahan yang disimpan akan mengganti set peran anggota di workspace.",
+      "selectAll": "Pilih semua",
+      "clearAll": "Bersihkan",
+      "save": "Simpan peran",
+      "selectGroup": "Pilih peran untuk {group}",
+      "selectGroupAction": "Pilih grup",
+      "groupSelectedCount": "{selected}/{total}",
+      "protected": "Dilindungi",
+      "toaster": {
+        "success": "Berhasil memperbarui peran untuk \"{name}\"",
+        "error": "Gagal memperbarui peran untuk \"{name}\""
+      }
+    },
+    "workspaceRoles": {
+      "title": "Role workspace aktif",
+      "description": "Role yang saat ini diterapkan di {workspace}.",
+      "activeWorkspace": "Workspace aktif",
+      "roleCount": "{count, plural, one {# role} other {# role}}",
+      "empty": "Tidak ada role yang dilaporkan untuk workspace ini."
     }
   },
   "formErrors": {

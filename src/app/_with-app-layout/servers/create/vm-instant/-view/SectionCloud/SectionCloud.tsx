@@ -127,9 +127,11 @@ const SubCloudProviderCbo = () => {
     form.resetField('cloud.projectID');
     form.setValue('cloud.billingAccountID', undefined);
     form.setValue('regionSlug', '');
+    form.setValue('spec.billingCycle', '');
     form.setValue('spec.osTemplate', '');
     form.setValue('spec.osName', '');
     form.setValue('spec.osVersion', '');
+    form.setValue('spec.productID', undefined);
     form.setValue('vpcBulk', { id: '', subnet: '' });
   };
 
@@ -394,9 +396,11 @@ const SubCloudProjectCbo = () => {
           onChange={(value) => {
             form.setValue('regionSlug', '');
             form.setValue('cloud.billingAccountID', undefined);
+            form.setValue('spec.billingCycle', '');
             form.setValue('spec.osTemplate', '');
             form.setValue('spec.osName', '');
             form.setValue('spec.osVersion', '');
+            form.setValue('spec.productID', undefined);
             form.setValue('vpcBulk', { id: '', subnet: '' });
             control.field.onChange(value);
           }}

@@ -2,7 +2,10 @@ import { registerEvents } from '@/shared/libs/events';
 import type { Rescope } from '@/shared/libs/events/models/registerEvents';
 
 import type { FilterRules } from '../-rules';
-import type { MemberDeletePayload } from '../-rules/usecase-types';
+import type {
+  MemberDeletePayload,
+  MemberManageRolesPayload,
+} from '../-rules/usecase-types';
 
 type EventsRegistry = Rescope<
   '@team-members',
@@ -13,6 +16,7 @@ type EventsRegistry = Rescope<
     'filters/pagination--set': number;
     'data--refresh': null;
     'member--delete': MemberDeletePayload;
+    'member--manage-roles': MemberManageRolesPayload;
   }
 >;
 
