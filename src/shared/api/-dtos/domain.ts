@@ -50,6 +50,66 @@ export interface DomainContractPayloadV1 {
   provider?: string;
 }
 
+export interface DomainProviderIconV1 {
+  fallback?: string;
+  type?: string;
+  url?: string;
+  value?: string;
+}
+
+export interface DomainProviderFieldOptionV1 {
+  label?: string;
+  value?: string;
+}
+
+export interface DomainProviderFieldV1 {
+  aliases?: string[];
+  default?: string;
+  help?: string;
+  key?: string;
+  label?: string;
+  options?: DomainProviderFieldOptionV1[];
+  placeholder?: string;
+  required?: boolean;
+  secret?: boolean;
+  type?: string;
+}
+
+export interface DomainProviderRuleV1 {
+  fields?: string[];
+  message?: string;
+  type?: string;
+}
+
+export interface DomainProviderContractV1 {
+  capabilities?: string[];
+  credential_example?: Record<string, string>;
+  credential_fields?: DomainProviderFieldV1[];
+  credential_rules?: DomainProviderRuleV1[];
+  icon?: DomainProviderIconV1;
+  label?: string;
+  notes?: string[];
+  provider?: string;
+  supported_record_types?: string[];
+}
+
+export interface DomainRecordPayloadV1 {
+  comment?: string;
+  content?: string;
+  name?: string;
+  proxied?: boolean;
+  ttl?: number;
+  type?: string;
+}
+
+export interface DomainProviderContractListV1 {
+  domain_fields?: DomainProviderFieldV1[];
+  domain_payload_example?: DomainContractPayloadV1;
+  providers?: DomainProviderContractV1[];
+  record_fields?: DomainProviderFieldV1[];
+  record_payload_example?: DomainRecordPayloadV1;
+}
+
 export interface CloudFlarePagination {
   page: number;
   per_page: number;

@@ -25,7 +25,10 @@ import type { LucideIcon, LucideProps } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
-import { DOMAIN_PROVIDER_BRANDS } from '@/entities/domain/ui/constants/provider';
+import {
+  DOMAIN_PROVIDER_BRANDS,
+  getDomainProviderLabel,
+} from '@/entities/domain/ui/constants/provider';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { cn } from '@/shared/libs/tailwind/cn';
@@ -80,7 +83,7 @@ function DomainRow(props: { data: DomainTableData }) {
   const locale = useDevetekLocale();
 
   const ProviderIcon = DOMAIN_PROVIDER_BRANDS[data.provider].icon;
-  const providerLabel = getProviderLabel(
+  const providerLabel = getDomainProviderLabel(
     data.provider,
     t('page.domain.providerUnknown'),
   );
@@ -347,22 +350,6 @@ function InlineInfo(props: { icon: LucideIcon; value?: string }) {
       <span className="truncate">{value}</span>
     </span>
   );
-}
-
-function getProviderLabel(
-  provider: DomainTableData['provider'],
-  unknownLabel: string,
-) {
-  switch (provider) {
-    case 'CloudFlare':
-      return 'Cloudflare';
-
-    case 'DigitalOcean':
-      return 'DigitalOcean';
-
-    default:
-      return unknownLabel;
-  }
 }
 
 function formatDate(date: Date) {
