@@ -25,11 +25,13 @@ export default function SectionSubmit() {
     const vmName = values.spec.vmName.trim();
     const username = values.login.username.trim();
     const password = values.login.password?.trim() ?? '';
+    const cloudProjectId = String(values.cloud.projectID);
+    const sshKeyId = String(values.cloud.sshKeyID);
     const payload = usesBiznetGio
       ? {
           provider: values.provider,
-          cloud_project_id: values.cloud.projectID,
-          secret_id: values.cloud.sshKeyID,
+          cloud_project_id: cloudProjectId,
+          secret_id: sshKeyId,
           vm: {
             product_id: values.spec.productID,
             cycle: values.spec.billingCycle,
@@ -48,8 +50,8 @@ export default function SectionSubmit() {
       : usesGcp
         ? {
             provider: values.provider,
-            cloud_project_id: values.cloud.projectID,
-            secret_id: values.cloud.sshKeyID,
+            cloud_project_id: cloudProjectId,
+            secret_id: sshKeyId,
             vm: {
               name: vmName,
               region: values.regionSlug,
@@ -64,8 +66,8 @@ export default function SectionSubmit() {
           }
         : {
             provider: values.provider,
-            cloud_project_id: values.cloud.projectID,
-            secret_id: values.cloud.sshKeyID,
+            cloud_project_id: cloudProjectId,
+            secret_id: sshKeyId,
             vm: {
               name: vmName,
               region: values.regionSlug,

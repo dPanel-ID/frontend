@@ -4,6 +4,11 @@ import dayjs from 'dayjs';
 import { BuildingIcon, CloudIcon, EyeIcon, UserIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+
+import IconGoogleCloudPlatform from '@/shared/assets/ico-gcloud.png';
+import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
+import IconProxmox from '@/shared/assets/ico-proxmox.png';
+import IconDigitalOcean from '@/shared/assets/logo-digitalocean.png';
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Tooltip } from '@/shared/presentation/atoms/Tooltip';
@@ -11,14 +16,11 @@ import IconThreeDots from '@/shared/presentation/icons/ThreeDots';
 import ActionPopover from '@/shared/presentation/molecules/ActionPopover';
 import { buildResourceTable } from '@/widgets/resource-table';
 
-import IconGoogleCloudPlatform from '@/shared/assets/ico-gcloud.png';
-import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
-import IconProxmox from '@/shared/assets/ico-proxmox.png';
 
 import { useEmit } from '../../../-model/events';
 
 export interface CloudTableData {
-  id: number;
+  id: string;
   name?: string | null;
   provider?: string | null;
   ownerName?: string | null;
@@ -39,8 +41,11 @@ const PROVIDER_META: Record<
     icon?: React.ComponentType<{ className?: string }>;
   }
 > = {
+  biznetgio: { label: 'Biznet Gio' },
+  digitalocean: { src: IconDigitalOcean, label: 'DigitalOcean' },
   idcloudhost: { src: IconIDCloudHost, label: 'IDCloudHost' },
   gcp: { src: IconGoogleCloudPlatform, label: 'Google Cloud' },
+  googlecloud: { src: IconGoogleCloudPlatform, label: 'Google Cloud' },
   proxmox: { src: IconProxmox, label: 'Proxmox VE' },
 };
 

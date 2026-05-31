@@ -1,5 +1,4 @@
 import type { JSX, ReactNode } from 'react';
-import { useState } from 'react';
 
 import {
   Accordion,
@@ -13,20 +12,11 @@ export default function TemplateCardInfo(props: TemplateCardInfoProps) {
   const {
     title,
     subtitle,
-    sshPrivKey,
     sshPubKey,
     logoAreaMain,
     logoAreaMainTooltip,
     additionalInfos,
   } = props;
-  const [showHideText, setShowHideText] = useState<string>('show');
-
-  const onClickShowHideSecretKey = () => {
-    setShowHideText((prevState) => {
-      const newState = prevState === 'show' ? 'hide' : 'show';
-      return newState;
-    });
-  };
 
   return (
     <div className="flex flex-col">
@@ -81,18 +71,15 @@ export default function TemplateCardInfo(props: TemplateCardInfoProps) {
             </AccordionItem>
             <AccordionItem value="secret">
               <AccordionTrigger
+                disabled
                 className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 mb-4 mt-4"
-                onClick={onClickShowHideSecretKey}
               >
-                {showHideText.toUpperCase()} SECRET KEY
+                SECRET KEY
               </AccordionTrigger>
               <AccordionContent className="w-full">
-                <textarea
-                  className="w-full relative rounded bg-muted font-mono text-sm font-semibold text-center"
-                  rows={40}
-                  defaultValue={sshPrivKey}
-                  disabled
-                />
+                <div className="w-full rounded bg-muted border p-3 text-sm text-primary/60">
+                  Private key material is stored encrypted and is not displayed.
+                </div>
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -106,7 +93,6 @@ export interface TemplateCardInfoProps {
   title: ReactNode;
   subtitle?: ReactNode;
   sshPubKey?: string;
-  sshPrivKey?: string;
   logoAreaMain: JSX.Element;
   logoAreaMainTooltip: string;
   additionalInfos: AdditionalInfo[];

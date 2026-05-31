@@ -25,7 +25,6 @@ export default function SubmitButton() {
 
     const response = await ApiOrganization.Create.doPost({
       organizationName: values.name,
-      userId: values.user_id,
       description: values.description,
     });
 

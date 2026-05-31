@@ -5,9 +5,18 @@ export interface FormStore {
   updateApplicationId: string | null;
   updateApplicationConfig: DTOs.ApplicationV1['app_config'] | null;
   updateRawAppDefinition: DTOs.ApplicationV1['app_definition'] | null;
+  updateOriginalDefaultBranch: string;
+  updateOriginalDomain: string;
+  updateOriginalName: string;
+  updateOriginalRepoName: string;
+  updateOriginalRepoOrg: string;
+  updateOriginalRepoUrl: string;
+  updateOriginalRuntimeItems: DTOs.ApplicationIACRuntimeItemV1[];
+  updateOriginalSource: string;
   updateOriginalServerID: number | null;
   updateOriginalPort: string;
   updateTriggerBootstrap: boolean;
+  updateOriginalWorkdir: string;
   updateWorkdir: string;
 
   progress: Progress;
@@ -86,9 +95,18 @@ export type FormInitialState = Partial<
     | 'updateApplicationId'
     | 'updateApplicationConfig'
     | 'updateRawAppDefinition'
+    | 'updateOriginalDefaultBranch'
+    | 'updateOriginalDomain'
+    | 'updateOriginalName'
+    | 'updateOriginalRepoName'
+    | 'updateOriginalRepoOrg'
+    | 'updateOriginalRepoUrl'
+    | 'updateOriginalRuntimeItems'
+    | 'updateOriginalSource'
     | 'updateOriginalServerID'
     | 'updateOriginalPort'
     | 'updateTriggerBootstrap'
+    | 'updateOriginalWorkdir'
     | 'updateWorkdir'
     | 'progress'
     | 'appSourceMode'

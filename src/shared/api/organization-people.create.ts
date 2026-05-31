@@ -12,10 +12,11 @@ export interface RecipeParams {
   userId: string;
   organizationId: string;
   roleId?: string;
+  roles?: string[];
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
-  const { organizationId, userId, roleId } = params;
+  const { organizationId, userId, roleId, roles } = params;
 
   return {
     method: 'POST',
@@ -24,6 +25,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
       organization_id: organizationId,
       user_id: userId,
       ...(roleId ? { role_id: roleId } : {}),
+      ...(roles?.length ? { roles } : {}),
     },
   };
 }

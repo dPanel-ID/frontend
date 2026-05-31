@@ -15,7 +15,6 @@ import {
   GlobeIcon,
   MoreHorizontalIcon,
   NetworkIcon,
-  RotateCcwIcon,
   RouteIcon,
   ServerIcon,
   ShieldCheckIcon,
@@ -48,8 +47,7 @@ type LbConfiguration = LbCardProps['data']['configuration'];
 type IconComponent = ComponentType<LucideProps>;
 
 export default function LbCard(props: LbCardProps) {
-  const { data, variant, onClickDetails, onClickDelete, onClickRestore } =
-    props;
+  const { data, variant, onClickDetails, onClickDelete } = props;
 
   const t = useDevetekTranslations();
   const locale = useDevetekLocale();
@@ -79,12 +77,6 @@ export default function LbCard(props: LbCardProps) {
       iconActive: IconEyeActive,
       onClick: onClickDetails,
     },
-    data.state.status === 'deleted' &&
-      !!onClickRestore && {
-        label: t('common.actions.restore'),
-        icon: RotateCcwIcon,
-        onClick: onClickRestore,
-      },
     !!onClickDelete && {
       variant: 'danger' as const,
       label: t('common.actions.delete'),

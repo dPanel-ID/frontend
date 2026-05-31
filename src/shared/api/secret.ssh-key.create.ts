@@ -9,11 +9,10 @@ import { apiDoPost } from '../libs/api-client';
 export interface RecipeParams {
   keyLength: number;
   displayName: string;
-  userId: string;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
-  const { displayName, keyLength, userId } = params;
+  const { displayName, keyLength } = params;
 
   return {
     method: 'POST',
@@ -21,7 +20,6 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
     data: {
       key_size: keyLength,
       name: displayName,
-      owner: userId,
       type: 'ssh-key',
       key_prefix: '',
     },

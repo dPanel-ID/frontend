@@ -22,6 +22,12 @@ export interface UserPublicV1 {
   updated_at?: string;
 }
 
+export interface UserPublicContactV1 extends UserPublicV1 {
+  email?: string;
+  register_from?: string;
+  register_from_user_id?: string;
+}
+
 export interface ProviderData {
   provider?: string;
   subject?: string;

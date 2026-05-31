@@ -10,7 +10,7 @@ import type { DTOs } from '.';
 
 export interface RecipeParams {
   domainId: string;
-  payload: DTOs.CloudFlarePayload;
+  payload: DTOs.DomainOriginRecordPayloadV1;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
@@ -27,7 +27,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
 //   Method
 // =============================================================================
 
-export type Dto = DTOs.CloudFlareDetailResponse;
+export type Dto = DTOs.DomainRecordDetailResponseV1;
 
 export function doPost(params: RecipeParams) {
   return apiDoPost<Dto>({

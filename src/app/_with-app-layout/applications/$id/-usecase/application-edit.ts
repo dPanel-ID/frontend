@@ -23,7 +23,10 @@ export default function useApplicationEditUsecase(params: Params) {
       rawAppDefinition: payload.rawAppDefinition,
       workdir: payload.workdir,
       port: payload.port,
-      autoDeploy: payload.autoDeploy,
+      autoDeploy: {
+        fromBranch: payload.autoDeploy.fromBranch,
+        isEnabled: payload.autoDeploy.isEnabled,
+      },
     });
   });
 

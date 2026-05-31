@@ -20,7 +20,10 @@ export const [ApplicationBuildEditModelProvider, useApplicationBuildEditModel] =
             commandText: (step.command ?? []).join('\n'),
             archive: step.archive,
           })),
-          envs: props.envs,
+          envs: props.envs.map((env) => ({
+            key: env.key,
+            value: env.value ?? '',
+          })),
         },
       });
 

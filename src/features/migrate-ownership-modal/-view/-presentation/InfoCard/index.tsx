@@ -9,7 +9,6 @@ import {
   IconApp,
   IconCloud,
   IconGlobe,
-  IconLock,
   IconServer,
 } from '@/shared/presentation/icons';
 
@@ -20,7 +19,6 @@ const MODULE_LOGO: Record<Module['type'], ComponentType<LucideProps>> = {
   server: IconServer,
   domain: IconGlobe,
   'cloud-project': IconCloud,
-  'secret-ssh': IconLock,
 };
 
 interface InfoCardProps {
@@ -44,9 +42,6 @@ export default function InfoCard(props: InfoCardProps) {
 
       case 'domain':
         return t('modal.migrateOwnership.resourceType.domain');
-
-      case 'secret-ssh':
-        return t('modal.migrateOwnership.resourceType.secretSsh');
 
       case 'cloud-project':
         return t('modal.migrateOwnership.resourceType.cloudProject');

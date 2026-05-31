@@ -17,8 +17,6 @@ export interface RecipeParams {
   id?: string;
   order?: string;
   by?: string;
-  forceMine?: string;
-  userId?: string;
   source?: string;
   name?: string;
   repoOrg?: string;
@@ -32,8 +30,6 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     id,
     order,
     by,
-    userId,
-    forceMine = '',
     source,
     name,
     repoName,
@@ -44,8 +40,6 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     id,
     order,
     by,
-    force_mine: forceMine,
-    user_id: userId,
     source,
     page,
     limit,

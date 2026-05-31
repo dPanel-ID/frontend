@@ -51,9 +51,6 @@ function Title() {
     return t('common.terms.forX', {
       0: iife(() => {
         switch (mod.type) {
-          case 'secret-ssh':
-            return t('common.terms.ssh');
-
           case 'cloud-project':
             return t('common.terms.cloudProject');
 

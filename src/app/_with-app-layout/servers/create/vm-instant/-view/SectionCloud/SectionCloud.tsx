@@ -371,14 +371,14 @@ const SubCloudProjectCbo = () => {
 
   const responseData =
     response.$status === 'success' ? response : response.prevData;
-  const items: Array<{ label: string; value: number }> = [];
+  const items: Array<{ label: string; value: string }> = [];
 
   for (const cloudProject of responseData?.clouds ?? []) {
     if (!cloudProject.name || !cloudProject.id) continue;
 
     items.push({
       label: cloudProject.name,
-      value: cloudProject.id,
+      value: String(cloudProject.id),
     });
   }
 
@@ -504,14 +504,14 @@ const SubCloudSshCbo = () => {
 
   const responseData =
     response.$status === 'success' ? response : response.prevData;
-  const items: Array<{ label: string; value: number }> = [];
+  const items: Array<{ label: string; value: string }> = [];
 
   for (const secret of responseData?.secrets ?? []) {
     if (!secret.name || !secret.id) continue;
 
     items.push({
       label: secret.name,
-      value: secret.id,
+      value: String(secret.id),
     });
   }
 

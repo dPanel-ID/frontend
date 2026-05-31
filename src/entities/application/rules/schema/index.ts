@@ -24,7 +24,7 @@ export const schemaApplicationCard = z.object({
     deploymentCount: z.number().int().nonnegative(),
     servers: z.array(
       z.object({
-        id: z.number(),
+        id: SchemaCommon.unitId,
         name: z.string().optional(),
         address: z.string().optional(),
         deployStatus: z.string().optional(),

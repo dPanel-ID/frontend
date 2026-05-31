@@ -861,7 +861,7 @@ function EnginePicker(props: {
 
     openServerModulesDetailModal({
       moduleInfo: module,
-      serverID: Number(serverId),
+      serverID: serverId,
     });
   };
 

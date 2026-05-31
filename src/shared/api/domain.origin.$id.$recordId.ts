@@ -38,7 +38,7 @@ export function recipeDelete(params: RecipeParams): DoRequestRecipe {
 //   Method
 // =============================================================================
 
-export type Dto = DTOs.CloudFlareDetailResponse;
+export type Dto = DTOs.DomainRecordDetailResponseV1;
 
 export function useGet(params: WithApiGetOptions<RecipeParams>) {
   return useApiGet<Dto>(recipe(params), params.options);

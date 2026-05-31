@@ -110,7 +110,7 @@ export interface DomainProviderContractListV1 {
   record_payload_example?: DomainRecordPayloadV1;
 }
 
-export interface CloudFlarePagination {
+export interface DomainRecordPaginationV1 {
   page: number;
   per_page: number;
   count: number;
@@ -118,31 +118,31 @@ export interface CloudFlarePagination {
   total_pages: number;
 }
 
-export interface CloudFlareMetaItem {
+export interface DomainRecordMetaV1 {
   auto_added: boolean;
   managed_by_apps: boolean;
   managed_by_argo_tunnel: boolean;
 }
 
-export interface CloudFlareItem {
+export interface DomainRecordItemV1 {
   comment?: string;
   name?: string;
   proxied?: boolean;
-  settings?: {};
-  tags?: any[];
+  settings?: Record<string, unknown>;
+  tags?: unknown[];
   ttl?: number;
   content?: string;
   type?: string;
   comment_modified_on?: string;
   created_on?: string;
   id?: string;
-  meta?: CloudFlareMetaItem;
+  meta?: DomainRecordMetaV1;
   modified_on?: string;
   proxiable?: boolean;
   tags_modified_on?: string;
 }
 
-export interface CloudFlarePayload {
+export interface DomainOriginRecordPayloadV1 {
   comment?: string;
   content?: string;
   name?: string;
@@ -152,22 +152,30 @@ export interface CloudFlarePayload {
   type?: string;
 }
 
-export interface CloudFlareListResponse {
-  result: CloudFlareItem[];
+export interface DomainRecordListResponseV1 {
+  result: DomainRecordItemV1[];
   success: boolean;
   errors: unknown[];
   messages: unknown[];
-  result_info: CloudFlarePagination;
+  result_info: DomainRecordPaginationV1;
 }
 
-export interface CloudFlareDetailResponse {
-  result: CloudFlareItem;
+export interface DomainRecordDetailResponseV1 {
+  result: DomainRecordItemV1;
   success: boolean;
-  errors: CloudFlareErrorResponse[];
+  errors: DomainRecordErrorResponseV1[];
   messages: unknown[];
 }
 
-export interface CloudFlareErrorResponse {
+export interface DomainRecordErrorResponseV1 {
   code: number;
   message: string;
 }
+
+export type CloudFlarePagination = DomainRecordPaginationV1;
+export type CloudFlareMetaItem = DomainRecordMetaV1;
+export type CloudFlareItem = DomainRecordItemV1;
+export type CloudFlarePayload = DomainOriginRecordPayloadV1;
+export type CloudFlareListResponse = DomainRecordListResponseV1;
+export type CloudFlareDetailResponse = DomainRecordDetailResponseV1;
+export type CloudFlareErrorResponse = DomainRecordErrorResponseV1;

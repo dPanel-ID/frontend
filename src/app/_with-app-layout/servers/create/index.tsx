@@ -536,7 +536,7 @@ function SshAccessStep(props: {
   };
 
   const handleSelectSshKey = (sshKey: DTOs.SshKeyV1) => {
-    sshKeyControl.field.onChange(sshKey.id);
+    sshKeyControl.field.onChange(String(sshKey.id));
     onSelectedSshKeyChange(sshKey);
   };
 
@@ -665,12 +665,13 @@ function SshAccessStep(props: {
                 {sshKeys.map((sshKey) => {
                   if (!sshKey.id) return null;
 
-                  const isSelected = sshKey.id === sshKeyControl.field.value;
+                  const sshKeyID = String(sshKey.id);
+                  const isSelected = sshKeyID === sshKeyControl.field.value;
                   const publicKey = sshKey.data?.public;
 
                   return (
                     <div
-                      key={sshKey.id}
+                      key={sshKeyID}
                       className={cn(
                         'flex w-full items-center gap-3 px-4 py-3 text-left transition-all',
                         'hover:bg-primary/5',

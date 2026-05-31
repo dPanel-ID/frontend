@@ -52,7 +52,7 @@ export default function ArtifactRollbackModal(props: Props) {
 
   const totalPage = useMemo(() => {
     if (deployments.$status !== 'success') return 1;
-    return Math.max(1, deployments.pagination?.total_page ?? 1);
+    return Math.max(1, deployments.pagination.total_page);
   }, [deployments]);
 
   const toggleId = (id: string) => {
@@ -123,7 +123,9 @@ export default function ArtifactRollbackModal(props: Props) {
         )}
 
         {deployments.$status === 'success' && targets.length === 0 && (
-          <p className="text-sm text-muted-foreground italic text-center py-4">No active deployments found</p>
+          <p className="text-sm text-muted-foreground italic text-center py-4">
+            No active deployments found
+          </p>
         )}
 
         {targets.map((target) => (
@@ -152,7 +154,11 @@ export default function ArtifactRollbackModal(props: Props) {
 
         <Button
           className="mt-2 w-full"
-          disabled={selectedIds.size === 0 || isLoading || deployments.$status !== 'success'}
+          disabled={
+            selectedIds.size === 0 ||
+            isLoading ||
+            deployments.$status !== 'success'
+          }
           onClick={handleConfirm}
         >
           {isLoading ? 'Rolling back...' : 'Rollback'}

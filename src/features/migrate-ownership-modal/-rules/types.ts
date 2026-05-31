@@ -2,7 +2,6 @@ export type SupportedModule =
   | 'application'
   | 'server'
   | 'domain'
-  | 'secret-ssh'
   | 'cloud-project';
 
 export interface Module {

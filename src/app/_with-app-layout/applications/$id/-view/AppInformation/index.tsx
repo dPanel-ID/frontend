@@ -1,5 +1,4 @@
 import {
-  BookOpenIcon,
   BoxIcon,
   ExternalLinkIcon,
   GitBranchIcon,
@@ -7,7 +6,6 @@ import {
   InfoIcon,
   Pencil,
   PlayIcon,
-  TerminalIcon,
 } from 'lucide-react';
 
 import { iife } from '@/shared/libs/browser/fn';
@@ -24,7 +22,6 @@ import {
 } from '@/shared/presentation/atoms/Accordion';
 import { Badge } from '@/shared/presentation/atoms/Badge';
 import { Button } from '@/shared/presentation/atoms/Button';
-import { Card } from '@/shared/presentation/atoms/Card';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import CardSectionTitled from '@/shared/presentation/molecules/CardSectionTitled';
 
@@ -37,50 +34,86 @@ const [guard, useAppDetail] = guardedSelects({
   initialIsLoading: true,
   fallbackLoading: UIStates.Loading,
   fallbackError: UIStates.Loading,
-})(couple(useAppDataModel, (s) => s.appDetail));
+})(couple(useAppDataModel, (s: any) => s.appDetail));
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{children}</p>;
+  return (
+    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+      {children}
+    </p>
+  );
 }
 
-function InfoRow({ label, value, link }: { label: string; value: React.ReactNode; link?: string }) {
+function InfoRow({
+  label,
+  value,
+  link,
+}: {
+  label: string;
+  value: React.ReactNode;
+  link?: string;
+}) {
   return (
     <div className="flex flex-col gap-0.5">
       <SectionLabel>{label}</SectionLabel>
       {link ? (
-        <a href={link} target="_blank" rel="noreferrer" className="flex items-center gap-1 group">
-          <span className="text-sm font-medium group-hover:underline truncate">{value}</span>
+        <a
+          href={link}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-1 group"
+        >
+          <span className="text-sm font-medium group-hover:underline truncate">
+            {value}
+          </span>
           <ExternalLinkIcon className="size-3 shrink-0 text-muted-foreground" />
         </a>
       ) : (
-        <p className="text-sm font-medium">{value ?? <span className="text-muted-foreground italic">—</span>}</p>
+        <p className="text-sm font-medium">
+          {value ?? <span className="text-muted-foreground italic">—</span>}
+        </p>
       )}
     </div>
   );
 }
 
-function EnvTable({ envs }: { envs: { key: string; value?: string }[] }) {
+function EnvTable({ envs }: { envs: Array<{ key: string; value?: string }> }) {
   if (envs.length === 0) {
-    return <p className="text-xs text-muted-foreground italic">No environment variables</p>;
+    return (
+      <p className="text-xs text-muted-foreground italic">
+        No environment variables
+      </p>
+    );
   }
 
   return (
     <div className="flex flex-col gap-1">
       {envs.map((env) => (
-        <div key={env.key} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-2 text-xs font-mono bg-muted/50 rounded px-2 py-1">
+        <div
+          key={env.key}
+          className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-2 text-xs font-mono bg-muted/50 rounded px-2 py-1"
+        >
           <span className="text-primary font-semibold truncate">{env.key}</span>
-          <span className="text-muted-foreground truncate">{env.value ?? '••••••'}</span>
+          <span className="text-muted-foreground truncate">
+            {env.value ?? '••••••'}
+          </span>
         </div>
       ))}
     </div>
   );
 }
 
-function StepsList({ steps }: { steps: { name: string; command?: string[] }[] }) {
+function StepsList({
+  steps,
+}: {
+  steps: Array<{ name: string; command?: string[] }>;
+}) {
   if (steps.length === 0) {
-    return <p className="text-xs text-muted-foreground italic">No build steps</p>;
+    return (
+      <p className="text-xs text-muted-foreground italic">No build steps</p>
+    );
   }
 
   return (
@@ -88,13 +121,20 @@ function StepsList({ steps }: { steps: { name: string; command?: string[] }[] })
       {steps.map((step, i) => (
         <div key={i} className="flex flex-col gap-0.5">
           <div className="flex items-center gap-1">
-            <span className="size-4 rounded-full bg-muted text-muted-foreground text-[10px] flex items-center justify-center font-bold shrink-0">{i + 1}</span>
+            <span className="size-4 rounded-full bg-muted text-muted-foreground text-[10px] flex items-center justify-center font-bold shrink-0">
+              {i + 1}
+            </span>
             <span className="text-xs font-semibold truncate">{step.name}</span>
           </div>
           {step.command && step.command.length > 0 && (
             <div className="ml-5 flex flex-col gap-0.5">
               {step.command.map((cmd, j) => (
-                <code key={j} className="text-[11px] bg-muted rounded px-1.5 py-0.5 font-mono truncate block">{cmd}</code>
+                <code
+                  key={j}
+                  className="text-[11px] bg-muted rounded px-1.5 py-0.5 font-mono truncate block"
+                >
+                  {cmd}
+                </code>
               ))}
             </div>
           )}
@@ -107,7 +147,7 @@ function StepsList({ steps }: { steps: { name: string; command?: string[] }[] })
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default guard(function AppInformation() {
-  const [appSource, appIdentity] = useAppDetail((s) => [s.identity.source, s.identity]);
+  const [appSource] = useAppDetail((s) => [s.identity.source]);
   const configDefs = useAppDetail((s) => s.configDefs);
   const [gitDetail] = useAppDataModel((s) => [s.gitDetail]);
   const [rawAppDefinition] = useAppDataModel((s) => [s.rawAppDefinition]);
@@ -144,7 +184,10 @@ export default guard(function AppInformation() {
       applicationId: appId,
       applicationName: appName,
       rawAppDefinition,
-      language: configDefs.lifecycle.setup.languages[0] ?? { name: '', version: '' },
+      language: configDefs.lifecycle.setup.languages[0] ?? {
+        name: '',
+        version: '',
+      },
       languages: configDefs.lifecycle.setup.languages.slice(1),
     });
   };
@@ -174,8 +217,11 @@ export default guard(function AppInformation() {
   return (
     <CardSectionTitled placement="aside" title="App Details" icon={InfoIcon}>
       <div className="w-full">
-        <Accordion type="multiple" defaultValue={defaultOpenItems} className="w-full">
-
+        <Accordion
+          type="multiple"
+          defaultValue={defaultOpenItems}
+          className="w-full"
+        >
           {/* ── Git Repository ── */}
           {appSource === 'repository' && (
             <AccordionItem value="git" className="border-b-0 border-t">
@@ -201,7 +247,10 @@ export default guard(function AppInformation() {
                           <InfoRow
                             label="Language"
                             value={
-                              <Badge variant="secondary" className="text-xs w-max">
+                              <Badge
+                                variant="secondary"
+                                className="text-xs w-max"
+                              >
                                 {capitalizeFirstLetter(repoInfo.language)}
                               </Badge>
                             }
@@ -211,7 +260,10 @@ export default guard(function AppInformation() {
                           <InfoRow
                             label="Framework"
                             value={
-                              <Badge variant="secondary" className="text-xs w-max">
+                              <Badge
+                                variant="secondary"
+                                className="text-xs w-max"
+                              >
                                 {capitalizeFirstLetter(repoInfo.framework)}
                               </Badge>
                             }
@@ -220,7 +272,9 @@ export default guard(function AppInformation() {
                       </div>
                     </>
                   ) : (
-                    <p className="text-xs text-muted-foreground italic">No repository linked</p>
+                    <p className="text-xs text-muted-foreground italic">
+                      No repository linked
+                    </p>
                   )}
                 </div>
               </AccordionContent>
@@ -253,11 +307,20 @@ export default guard(function AppInformation() {
                         </Button>
                       </div>
                       <div className="flex flex-wrap gap-1">
-                        {lifecycle.setup.languages.map((lang, i) => (
-                          <Badge key={i} variant="outline" className="text-xs font-mono">
-                            {lang.name} {lang.version}
-                          </Badge>
-                        ))}
+                        {lifecycle.setup.languages.map(
+                          (
+                            lang: { name: string; version: string },
+                            index: number,
+                          ) => (
+                            <Badge
+                              key={`${lang.name}-${lang.version}-${index}`}
+                              variant="outline"
+                              className="text-xs font-mono"
+                            >
+                              {lang.name} {lang.version}
+                            </Badge>
+                          ),
+                        )}
                       </div>
                     </div>
                   )}
@@ -294,7 +357,9 @@ export default guard(function AppInformation() {
                     {lifecycle.build.envs.length > 0 ? (
                       <EnvTable envs={lifecycle.build.envs} />
                     ) : (
-                      <p className="text-xs text-muted-foreground italic">No environment variables</p>
+                      <p className="text-xs text-muted-foreground italic">
+                        No environment variables
+                      </p>
                     )}
                   </div>
                 </div>
@@ -364,13 +429,13 @@ export default guard(function AppInformation() {
           {!lifecycle && appSource !== 'repository' && (
             <div className="px-4 py-3 flex flex-col items-center gap-2 text-center">
               <BoxIcon className="size-8 text-muted-foreground/40" />
-              <p className="text-xs text-muted-foreground">No configuration available</p>
+              <p className="text-xs text-muted-foreground">
+                No configuration available
+              </p>
             </div>
           )}
-
         </Accordion>
       </div>
     </CardSectionTitled>
   );
 });
-

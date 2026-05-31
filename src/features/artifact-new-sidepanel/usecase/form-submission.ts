@@ -16,7 +16,7 @@ export default function useFormSubmissionUsecase() {
 
   const handleSubmit = form.handleSubmit(
     async (values) => {
-      const { fromBranch, workerId } = values;
+      const { appConfigFile, fromBranch, workerId } = values;
 
       if (!workerId) {
         openToaster({
@@ -49,7 +49,7 @@ export default function useFormSubmissionUsecase() {
         appDefinition: undefined,
         applicationId: props.applicationId,
         workerId,
-        appConfigFile: 'default',
+        appConfigFile,
         fromBranch,
         commit: {
           message: currentBranchResponse.commit.message,

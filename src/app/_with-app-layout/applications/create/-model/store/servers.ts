@@ -76,10 +76,13 @@ export const [ServersStoreProvider, useServersStore] = buildContext(
               version,
             } = machine;
 
-            if (!id || !hostname || !publicIP) return null;
+            const serverId = Number(id);
+            if (!Number.isFinite(serverId) || !hostname || !publicIP) {
+              return null;
+            }
 
             return {
-              id,
+              id: serverId,
               hostname,
               publicIP,
               agentVersion: agent_version,

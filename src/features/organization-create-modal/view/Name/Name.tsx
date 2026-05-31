@@ -1,4 +1,3 @@
-import { useAuthLoggedIn } from '@/services/auth';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
@@ -8,14 +7,11 @@ import { TextArea } from '@/shared/presentation/atoms/TextArea';
 import { useDcContext } from '../../model';
 
 export default function Name() {
-  const userId = useAuthLoggedIn().userProfile.id;
   const { form } = useDcContext();
   const t = useDevetekTranslations();
 
   return (
     <div className="space-y-4">
-      <Input type="hidden" {...form.register('user_id')} value={userId} />
-
       <section className="flex flex-col gap-1.5">
         <label className="text-sm font-medium" htmlFor="workspace-name">
           {t('modal.createTeam.fieldName')}{' '}

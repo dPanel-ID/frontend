@@ -1,4 +1,4 @@
-import type { User } from '.';
+import type { UserPublicContactV1 } from '.';
 
 export interface OrganizationV1 {
   id?: string;
@@ -7,7 +7,7 @@ export interface OrganizationV1 {
   status?: string;
   error?: string;
   user_id?: string;
-  user?: User;
+  user?: UserPublicContactV1;
   created_at?: string;
   updated_at?: string;
 }
@@ -26,7 +26,7 @@ export interface OrganizationPeopleV1 {
   organization_id?: string;
   organization?: OrganizationV1;
   user_id?: string;
-  user?: User;
+  user?: UserPublicContactV1;
   role_id?: string;
   role?: OrganizationRoleV1;
   role_ids?: string[];

@@ -3,13 +3,17 @@ import { ClockIcon, CloudIcon, Trash2Icon } from 'lucide-react';
 import IconGoogleCloudPlatform from '@/shared/assets/ico-gcloud.png';
 import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
 import IconProxmox from '@/shared/assets/ico-proxmox.png';
+import IconDigitalOcean from '@/shared/assets/logo-digitalocean.png';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Card } from '@/shared/presentation/atoms/Card';
 import { Tooltip } from '@/shared/presentation/atoms/Tooltip';
 
 const PROVIDER_META: Record<string, { src?: string; label: string }> = {
+  biznetgio: { label: 'Biznet Gio' },
+  digitalocean: { src: IconDigitalOcean, label: 'DigitalOcean' },
   idcloudhost: { src: IconIDCloudHost, label: 'IDCloudHost' },
   gcp: { src: IconGoogleCloudPlatform, label: 'Google Cloud' },
+  googlecloud: { src: IconGoogleCloudPlatform, label: 'Google Cloud' },
   proxmox: { src: IconProxmox, label: 'Proxmox VE' },
 };
 
@@ -17,7 +21,13 @@ const HeroIcon = ({ cloudProvider = '' }: { cloudProvider?: string }) => {
   const meta = PROVIDER_META[cloudProvider.toLocaleLowerCase()];
 
   if (meta?.src) {
-    return <img src={meta.src} alt={meta.label} className="w-full h-full object-contain" />;
+    return (
+      <img
+        src={meta.src}
+        alt={meta.label}
+        className="w-full h-full object-contain"
+      />
+    );
   }
 
   return <CloudIcon className="w-full h-full" />;
@@ -32,9 +42,9 @@ export default function CloudProjectCard(props: Props) {
     onClickDetails,
   } = props;
 
-  const providerMeta =
-    PROVIDER_META[cloudProvider?.toLocaleLowerCase() ?? ''] ??
-    { label: cloudProvider ?? 'Unknown' };
+  const providerMeta = PROVIDER_META[
+    cloudProvider?.toLocaleLowerCase() ?? ''
+  ] ?? { label: cloudProvider ?? 'Unknown' };
 
   return (
     <Card className="flex flex-col">
@@ -44,9 +54,7 @@ export default function CloudProjectCard(props: Props) {
             {providerMeta.label}
           </p>
           <h3 className="font-bold text-base break-all line-clamp-2">
-            {projectName || (
-              <em className="opacity-70">Unknown Project</em>
-            )}
+            {projectName || <em className="opacity-70">Unknown Project</em>}
           </h3>
         </div>
 
@@ -95,5 +103,3 @@ interface Props {
   onClickDelete: () => void;
   onClickDetails: () => void;
 }
-
-

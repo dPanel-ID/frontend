@@ -11,6 +11,7 @@ export const [ArtifactNewGeneralModelProvider, useArtifactNewGeneralModel] =
     const form = useForm({
       resolver: zodResolver(schemaArtifactNewForm),
       defaultValues: {
+        appConfigFile: 'default',
         fromBranch: '',
         workerId: props.currentServerId || '',
       },

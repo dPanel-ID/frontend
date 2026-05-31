@@ -30,9 +30,11 @@ function isValidPort(value: string) {
 export function createManualServerCreateSchema(t: Translate) {
   return z.object({
     cloud: z.object({
-      sshKeyID: z.number({
-        message: t('page.servers.create.validation.sshKeyRequired'),
-      }),
+      sshKeyID: z
+        .string({
+          message: t('page.servers.create.validation.sshKeyRequired'),
+        })
+        .min(1, t('page.servers.create.validation.sshKeyRequired')),
     }),
     server: z.object({
       address: z

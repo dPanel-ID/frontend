@@ -1,15 +1,13 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-
 import { KeyRoundIcon } from 'lucide-react';
 
+import { ApiSecret } from '@/shared/api';
 import { Card } from '@/shared/presentation/atoms/Card';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
 import { AsideHelpSupport } from '@/widgets/aside-help-support';
 import { FailedState } from '@/widgets/failed-state';
 import { ResourceCard } from '@/widgets/resource-card';
-
-import { ApiSecret } from '@/shared/api';
 
 import ModeSshKey from './-view/ModeSSHKey/ModeSSHKey';
 
@@ -30,7 +28,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 function SshKeyDetailPage() {
   const { id } = Route.useParams();
   const navigate = useNavigate();
-  const [responseSSHKey, refresh] = ApiSecret.SshKey.Detail.$Id.useGet({ id });
+  const [responseSSHKey] = ApiSecret.SshKey.Detail.$Id.useGet({ id });
 
   const headnote = (
     <span className="flex items-center justify-between">
@@ -56,6 +54,7 @@ function SshKeyDetailPage() {
             ctaOnClick={() =>
               navigate({
                 to: '/backend/secret-managers/ssh-key',
+                search: { page: 1 },
                 replace: true,
               })
             }
@@ -90,6 +89,12 @@ function SshKeyDetailPage() {
   const keyName = responseSSHKey.name ?? 'Untitled Key';
   const keyType = responseSSHKey.type ?? '';
   const keyLength = responseSSHKey.data?.length ?? '';
+  const keyMetadata = [
+    keyType,
+    keyLength ? `${keyLength} bits` : null,
+  ]
+    .filter(Boolean)
+    .join(' - ');
 
   return (
     <>
@@ -99,7 +104,7 @@ function SshKeyDetailPage() {
         heroIcon={KeyRoundIcon}
         headnote={headnote}
         title={keyName}
-        description={`${keyType}${keyLength ? ` · ${keyLength} bits` : ''} — Use the keys below to access your virtual machines securely.`}
+        description={`${keyMetadata ? `${keyMetadata} - ` : ''}Use the public key below for server access workflows.`}
       />
 
       <Layout>

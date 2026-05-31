@@ -30,40 +30,53 @@ export type SchemaIDCloudHostForm = z.infer<typeof schemaIDCloudHostForm>;
 
 // #region Schema GCP Form
 
-export const schemaGcpForm = z.object({
-  auth_provider_x509_cert_url: z //
-    .string(),
+export const schemaGcpForm = z
+  .object({
+    auth_provider_x509_cert_url: z //
+      .string()
+      .optional(),
 
-  auth_uri: z //
-    .string(),
+    auth_uri: z //
+      .string()
+      .optional(),
 
-  client_email: z //
-    .string(),
+    client_email: z //
+      .string()
+      .min(1, 'client_email is required'),
 
-  client_id: z //
-    .string(),
+    client_id: z //
+      .string()
+      .optional(),
 
-  client_x509_cert_url: z //
-    .string(),
+    client_x509_cert_url: z //
+      .string()
+      .optional(),
 
-  private_key: z //
-    .string(),
+    private_key: z //
+      .string()
+      .min(1, 'private_key is required'),
 
-  private_key_id: z //
-    .string(),
+    private_key_id: z //
+      .string()
+      .optional(),
 
-  project_id: z //
-    .string(),
+    project_id: z //
+      .string()
+      .min(1, 'project_id is required'),
 
-  token_uri: z //
-    .string(),
+    token_uri: z //
+      .string()
+      .optional(),
 
-  type: z //
-    .string(),
+    type: z //
+      .string()
+      .optional(),
 
-  universe_domain: z //
-    .string(),
-});
+    universe_domain: z //
+      .string()
+      .optional(),
+  })
+  .passthrough();
 
 export type SchemaGcpForm = z.infer<typeof schemaGcpForm>;
 

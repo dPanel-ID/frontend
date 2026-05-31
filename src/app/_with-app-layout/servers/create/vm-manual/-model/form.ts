@@ -5,7 +5,8 @@ export const formSchema = z.object({
     provider: z //
       .string({ message: 'Please select a cloud provider!' }),
     sshKeyID: z //
-      .number({ message: 'Please select a SSH key!' }),
+      .string({ message: 'Please select a SSH key!' })
+      .min(1, { message: 'Please select a SSH key!' }),
   }),
   server: z.object({
     address: z //

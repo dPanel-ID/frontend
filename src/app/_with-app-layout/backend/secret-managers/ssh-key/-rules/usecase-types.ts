@@ -1,15 +1,9 @@
 export interface SshKeyDeletePayload {
-  id: number;
+  id: number | string;
   name: string;
 }
 
 export interface SshKeyDetailsPayload {
-  sshKeyId: number;
+  sshKeyId: number | string;
   sshKeyName: string;
-}
-
-export interface SshKeyMigrateOwnershipPayload {
-  id: number;
-  name: string;
-  teamName?: string | null;
 }

@@ -194,6 +194,11 @@ function buildInitialFormState(
   const repoUrl = application.repo_url || githubRepositoryUrl(application);
   const repoBranch =
     application.artifacts?.[0]?.branch || application.default_branch || '';
+  const originalWorkdir =
+    application.workdir ||
+    appDefinition?.build?.target?.machine?.workdir ||
+    appDefinition?.build?.target?.machine?.workir ||
+    '';
   const runtimeDependencies = buildRuntimeDependencyConfigs(
     application,
     iacConfig,
@@ -254,13 +259,20 @@ function buildInitialFormState(
     selectedRequiredBinaryIds,
     updateApplicationConfig: application.app_config ?? null,
     updateApplicationId: application.id ? String(application.id) : null,
+    updateOriginalDefaultBranch: application.default_branch || '',
+    updateOriginalDomain: application.domain || '',
+    updateOriginalName: application.name || '',
+    updateOriginalRepoName: application.repo_name || '',
+    updateOriginalRepoOrg: application.repo_org || '',
+    updateOriginalRepoUrl: application.repo_url || '',
+    updateOriginalRuntimeItems:
+      iacConfig?.runtime_items ?? getApplicationRuntimeItems(application),
+    updateOriginalSource: application.source || '',
     updateOriginalPort: originalPort,
     updateOriginalServerID: originalServerID,
+    updateOriginalWorkdir: originalWorkdir,
     updateRawAppDefinition: appDefinition ?? null,
-    updateWorkdir:
-      application.workdir ||
-      appDefinition?.build?.target?.machine?.workdir ||
-      '',
+    updateWorkdir: originalWorkdir,
   };
 }
 

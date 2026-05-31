@@ -7,5 +7,4 @@ export interface LbCardProps {
   onClickEdit?: () => void;
   onClickDetails?: () => void;
   onClickDelete?: () => void;
-  onClickRestore?: () => void;
 }

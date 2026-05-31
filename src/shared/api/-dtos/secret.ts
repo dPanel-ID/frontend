@@ -4,6 +4,11 @@ export interface SshKeyV1 {
   name?: string;
   user_id?: number;
   organization_id?: string;
+  key_prefix?: string;
+  owner_provider?: string;
+  owner_subject?: string;
+  workspace_id?: string;
+  workspace_type?: string;
   token_version?: string;
   data?: SshKeyDataV1;
   error?: string;
@@ -23,7 +28,7 @@ export interface SshKeyV1 {
 }
 
 export interface SshKeyDataV1 {
-  private: string;
-  public: string;
-  length: string;
+  private?: string;
+  public?: string;
+  length?: string;
 }

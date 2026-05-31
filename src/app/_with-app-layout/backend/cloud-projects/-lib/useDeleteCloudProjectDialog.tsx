@@ -11,7 +11,7 @@ export default function useDeleteCloudProjectDialog(onSuccess: () => void) {
   const [openDialog] = useDialog();
 
   const handleClickDeleteCloudProject = (
-    projectID: number,
+    projectID: number | string,
     projectName: string,
   ) => {
     openDialog({

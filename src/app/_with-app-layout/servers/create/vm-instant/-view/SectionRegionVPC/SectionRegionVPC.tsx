@@ -55,7 +55,7 @@ const SubRegionCbo = () => {
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
-  }) as number | undefined;
+  }) as string | undefined;
 
   const [response, refreshRegions] = ApiCloud.Regions.$Id.useGet({
     cloudProjectId: String(cloudProjectID),
@@ -167,7 +167,7 @@ const SubZoneCbo = () => {
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
-  }) as number | undefined;
+  }) as string | undefined;
   const regionSlug = useWatch({
     control: form.control,
     name: 'regionSlug',
@@ -287,7 +287,7 @@ const SubVPCCbo = () => {
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
-  }) as number | undefined;
+  }) as string | undefined;
   const regionSlug = useWatch({
     control: form.control,
     name: 'regionSlug',
@@ -429,10 +429,24 @@ const SubVPCCbo = () => {
 function getUsableBillingAccounts(accounts: BillingAccountItem[]) {
   return accounts.filter(
     (account) =>
-      account.id != null &&
+      normalizeBillingAccountID(account.id) != null &&
       account.is_active !== false &&
       account.can_pay !== false,
   );
+}
+
+function normalizeBillingAccountID(accountID: BillingAccountItem['id']) {
+  if (typeof accountID === 'number') {
+    return Number.isFinite(accountID) ? accountID : undefined;
+  }
+
+  if (typeof accountID === 'string') {
+    const numericID = Number(accountID.trim());
+
+    return Number.isFinite(numericID) ? numericID : undefined;
+  }
+
+  return undefined;
 }
 
 function getPreferredBillingAccount(accounts: BillingAccountItem[]) {
@@ -446,11 +460,12 @@ const SubBillingAccountCbo = () => {
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
-  }) as number | undefined;
+  }) as string | undefined;
   const billingAccountID = useWatch({
     control: form.control,
     name: 'cloud.billingAccountID',
   });
+  const selectedBillingAccountID = normalizeBillingAccountID(billingAccountID);
 
   const [response, refreshBillingAccounts] =
     ApiCloud.Project.BillingAccounts.$Id.useGet({
@@ -472,7 +487,7 @@ const SubBillingAccountCbo = () => {
 
   useEffect(() => {
     if (!cloudProjectID) {
-      if (billingAccountID != null) {
+      if (selectedBillingAccountID != null) {
         form.setValue('cloud.billingAccountID', undefined);
       }
       return;
@@ -482,19 +497,24 @@ const SubBillingAccountCbo = () => {
 
     const preferredAccount = getPreferredBillingAccount(accounts);
 
-    if (!preferredAccount?.id) {
-      if (billingAccountID != null) {
+    const preferredAccountID = normalizeBillingAccountID(preferredAccount?.id);
+
+    if (preferredAccountID == null) {
+      if (selectedBillingAccountID != null) {
         form.setValue('cloud.billingAccountID', undefined);
       }
       return;
     }
 
     const selectedAccountStillExists = accounts.some(
-      (account) => account.id === billingAccountID,
+      (account) =>
+        normalizeBillingAccountID(account.id) === selectedBillingAccountID,
     );
 
     if (!selectedAccountStillExists) {
-      form.setValue('cloud.billingAccountID', preferredAccount.id);
+      form.setValue('cloud.billingAccountID', preferredAccountID, {
+        shouldValidate: true,
+      });
     }
   }, [
     accountIDs,
@@ -503,6 +523,7 @@ const SubBillingAccountCbo = () => {
     cloudProjectID,
     form,
     responseData,
+    selectedBillingAccountID,
   ]);
 
   if (!cloudProjectID || response.$status === 'initial') {
@@ -546,9 +567,10 @@ const SubBillingAccountCbo = () => {
   const items: Array<{ label: ReactNode; value: number }> = [];
 
   for (const account of accounts) {
-    if (!account.id) continue;
+    const accountID = normalizeBillingAccountID(account.id);
+    if (accountID == null) continue;
 
-    const label = account.name || account.title || `Billing #${account.id}`;
+    const label = account.name || account.title || `Billing #${accountID}`;
 
     items.push({
       label: (
@@ -559,7 +581,7 @@ const SubBillingAccountCbo = () => {
           )}
         </span>
       ),
-      value: account.id,
+      value: accountID,
     });
   }
 
@@ -570,9 +592,11 @@ const SubBillingAccountCbo = () => {
           classNameButton="w-full flex-1 bg-background"
           placeholder="Auto-select billing account"
           onChange={(value) => {
-            form.setValue('cloud.billingAccountID', value);
+            form.setValue('cloud.billingAccountID', value, {
+              shouldValidate: true,
+            });
           }}
-          value={billingAccountID}
+          value={selectedBillingAccountID}
           items={items}
         />
         <Button

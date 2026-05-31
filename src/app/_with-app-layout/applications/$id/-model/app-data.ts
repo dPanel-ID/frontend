@@ -71,7 +71,10 @@ export const [AppDataModelProvider, useAppDataModel] = buildSelector(
         : undefined,
     rawWorkdir:
       appDetailResponse.$status === 'success'
-        ? (appDetailResponse.workdir ?? '')
+        ? (appDetailResponse.workdir ??
+          appDetailResponse.app_definition?.build?.target?.machine?.workdir ??
+          appDetailResponse.app_definition?.build?.target?.machine?.workir ??
+          '')
         : '',
 
     applicationId,

@@ -14,6 +14,7 @@ import type {
 import type { ExecutionErrorDetailV1 } from './execution-error-detail';
 import type { MachineV1 } from './machine';
 import type { OrganizationV1 } from './organization';
+import type { UserPublicContactV1 } from './user';
 
 export type LoadBalancerIdV2 = string | number;
 
@@ -73,10 +74,7 @@ export interface LoadBalancerV2 {
   iac_repo?: string;
   playbook_path?: string;
   user_id?: string | number;
-  user?: {
-    username?: string;
-    fullname?: string;
-  };
+  user?: UserPublicContactV1;
   installer_status?: string;
   error?: string;
   error_detail?: ExecutionErrorDetailV1 | null;

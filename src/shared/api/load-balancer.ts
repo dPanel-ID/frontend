@@ -5,7 +5,6 @@ import * as Find from './load-balancer.find';
 import * as IAC$Id from './load-balancer.iac.$id';
 import * as Logs$Id from './load-balancer.logs.$id';
 import * as Update$Id from './load-balancer.update.$id';
-import * as Update$IdCaseRestore from './load-balancer.update.$id[restore]';
 
 const Root = {
   Create,
@@ -23,12 +22,7 @@ const Root = {
     $Id: Logs$Id,
   },
   Update: {
-    $Id: {
-      ...Update$Id,
-      $: {
-        Restore: Update$IdCaseRestore,
-      },
-    },
+    $Id: Update$Id,
   },
 };
 

@@ -11,7 +11,6 @@ export const formSchema = z.object({
     .trim()
     .max(500, 'Description must be at most 500 characters')
     .optional(),
-  user_id: z.string(),
 });
 
 export type FormSchema = z.infer<typeof formSchema>;

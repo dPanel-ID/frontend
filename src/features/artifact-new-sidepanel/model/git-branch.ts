@@ -1,11 +1,25 @@
 import { ApiGitBranch } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
+import type { Response } from '@/shared/libs/api-client/rules/types';
 import { excludeNully } from '@/shared/libs/browser/typeguards';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
 
 import type { GitBranchModelProps as ModelProps } from '../rules/types';
 
 import { useSubscribe } from './events';
+
+interface ConfigFilesData {
+  list: Array<{
+    relativePath: string;
+  }>;
+}
+
+function getConfigFiles(): Response<ConfigFilesData> {
+  return {
+    $status: 'success',
+    list: [],
+  };
+}
 
 export const [GitBranchModelProvider, useGitBranchModel] = buildSelector(
   'GitBranchModel',
@@ -37,5 +51,6 @@ export const [GitBranchModelProvider, useGitBranchModel] = buildSelector(
           .filter(excludeNully),
       };
     }),
+    configFiles: getConfigFiles(),
   };
 });

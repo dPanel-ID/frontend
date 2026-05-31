@@ -1,8 +1,8 @@
 export interface CloudProjectV1 {
-  id?: number;
+  id?: number | string;
   provider?: string;
   name?: string;
-  owner?: number;
+  owner?: number | string;
   error?: string;
   installer_status?: string;
   key_prefix?: string;
@@ -10,11 +10,12 @@ export interface CloudProjectV1 {
   owner_subject?: string;
   workspace_id?: string;
   workspace_type?: string;
+  workspace?: CloudProjectWorkspaceV1;
   credential?: Record<string, string>;
   created_at?: string;
   updated_at?: string;
   user?: {
-    id?: number;
+    id?: number | string;
     fullname?: string;
     username?: string;
     email?: string;
@@ -25,7 +26,15 @@ export interface CloudProjectV1 {
     name?: string;
   };
   organization_id?: string;
-  user_id?: number;
+  user_id?: number | string;
+}
+
+export interface CloudProjectWorkspaceV1 {
+  id?: string;
+  local_organization_id?: string;
+  name?: string;
+  roles?: string[];
+  type?: string;
 }
 
 export interface CloudProviderIconV1 {

@@ -26,7 +26,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
 
 export interface BillingAccountItem {
   can_pay?: boolean;
-  id?: number;
+  id?: number | string;
   is_active?: boolean;
   is_default?: boolean;
   name?: string;

@@ -53,12 +53,17 @@ export const formSchema = z
       .min(1, 'Please select a provider!'),
     cloud: z.object({
       projectID: z //
-        .number({ message: 'Please select a cloud project!' }),
-      billingAccountID: z //
-        .number()
-        .optional(),
+        .string({ message: 'Please select a cloud project!' })
+        .min(1, 'Please select a cloud project!'),
+      billingAccountID: z.preprocess((value) => {
+        if (value == null || value === '') return undefined;
+        if (typeof value === 'string') return Number(value);
+
+        return value;
+      }, z.number().optional()),
       sshKeyID: z //
-        .number({ message: 'Please select a SSH key!' }),
+        .string({ message: 'Please select a SSH key!' })
+        .min(1, 'Please select a SSH key!'),
       zoneSlug: z.string().optional(),
     }),
     regionSlug: z.string().optional(),

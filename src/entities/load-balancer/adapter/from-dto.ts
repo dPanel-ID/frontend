@@ -29,7 +29,7 @@ export const toLoadBalancerCard = createAdapter<
   return schemaLoadBalancerCard.parse({
     id: String(raw.id),
     state: ctorState(raw),
-    domain: raw.domain,
+    domain: ctorDomain(raw),
     description: raw.name,
     ownership: {
       owner: resolveOwnershipOwner(raw),
@@ -53,7 +53,7 @@ export const toLoadBalancerDetails = createAdapter<
   return schemaLoadBalancerDetails.parse({
     id: String(raw.id),
     state: ctorState(raw),
-    domain: raw.domain,
+    domain: ctorDomain(raw),
     description: raw.name,
     ownership: {
       owner: resolveOwnershipOwner(raw),
@@ -69,3 +69,17 @@ export const toLoadBalancerDetails = createAdapter<
     configuration: ctorConfiguration(raw),
   } as KeysOnlyDeep<z.input<typeof schemaLoadBalancerDetails>>);
 });
+
+function ctorDomain(raw: LoadBalancerDto) {
+  const explicitDomain = raw.domain?.trim();
+  if (explicitDomain) return explicitDomain;
+
+  const l4Domain = raw.domain_l4?.trim();
+  const l4Port = raw.port_l4?.trim();
+
+  if (l4Domain && l4Port && !l4Domain.includes(':')) {
+    return `${l4Domain}:${l4Port}`;
+  }
+
+  return l4Domain || 'localhost';
+}

@@ -40,15 +40,6 @@ export default function SshCard(props: SshCardProps) {
       onClick: handleClickDetails,
     },
     {
-      label: t('common.actions.migrateOwnership'),
-      onClick: () =>
-        emit('@ssh-keys/open--migrate-ownership', {
-          id,
-          name: name ?? String(id),
-          teamName,
-        }),
-    },
-    {
       variant: 'destructive',
       label: t('common.actions.delete'),
       onClick: () =>
@@ -63,7 +54,7 @@ export default function SshCard(props: SshCardProps) {
     !!teamName && { icon: BuildingIcon, text: teamName },
     !!ownerName && { icon: UserIcon, text: ownerName },
     !!type && { icon: KeyRoundIcon, text: type },
-  ].filter(Boolean) as { icon: typeof UserIcon; text: string }[];
+  ].filter(Boolean) as Array<{ icon: typeof UserIcon; text: string }>;
 
   return (
     <ResourceCard.Compact>
