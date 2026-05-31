@@ -139,6 +139,7 @@
     "brands": {
       "googleCloud": "Google Cloud",
       "idCloudHost": "IDCloudHost",
+      "biznetGio": "Biznet Gio",
       "digitalOcean": "DigitalOcean",
       "caddy": "Caddy"
     }
@@ -1408,6 +1409,9 @@
         "copyPublicKey": "Salin Kunci Publik",
         "noPublicKeyData": "Tidak ada data kunci publik",
         "privateKey": "Kunci Privat",
+        "notDisplayed": "Tidak ditampilkan",
+        "privateKeyStored": "Kunci privat disimpan terenkripsi dan hanya digunakan oleh backend untuk provisioning, pemulihan, dan browser SSH.",
+        "privateKeyNotDisplayed": "dPanel tidak menampilkan atau menyalin nilai kunci privat dari halaman ini. Gunakan kunci publik di atas saat perlu mengatur authorized_keys secara manual.",
         "hide": "Sembunyikan",
         "reveal": "Tampilkan",
         "copyPrivateKey": "Salin Kunci Privat",
@@ -1868,11 +1872,19 @@
     },
     "addTeamMember": {
       "title": "Tambah Anggota Baru",
+      "description": "Pilih pengguna dan tetapkan peran workspace sebelum menambahkannya.",
       "selectUser": "Pilih pengguna\u2026",
-      "searchByUsername": "Cari berdasarkan username\u2026",
+      "searchByUsername": "Cari berdasarkan username atau nama\u2026",
       "loading": "Memuat\u2026",
       "noUsersFound": "Pengguna tidak ditemukan",
-      "pageInfo": "Halaman {page} / {totalPage}"
+      "pageInfo": "Halaman {page} / {totalPage}",
+      "rolesTitle": "Peran workspace",
+      "rolesHint": "Pilih set peran yang akan diberikan ke anggota ini di workspace aktif.",
+      "submit": "Tambah anggota",
+      "toaster": {
+        "successMessage": "Anggota berhasil ditambahkan ke workspace",
+        "errorTitle": "Gagal menambahkan anggota"
+      }
     },
     "manageMemberRoles": {
       "title": "Kelola peran",

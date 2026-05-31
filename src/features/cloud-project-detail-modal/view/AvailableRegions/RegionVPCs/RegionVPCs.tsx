@@ -42,11 +42,16 @@ export default function RegionVPCs(props: Props) {
       content = (
         <div className="grid grid-cols-1 sm:grid-cols-2 grid-rows-1 gap-2">
           {vpcs.map((vpc) => {
+            const vpcName = vpc.name ?? vpc.network ?? vpc.id;
+            const vpcSubnet = vpc.subnet ?? vpc.region ?? '';
+
+            if (!vpcName) return null;
+
             return (
               <VpcDetailCard
                 key={vpc.id}
-                vpcName={vpc.name}
-                vpcSubnet={vpc.subnet}
+                vpcName={vpcName}
+                vpcSubnet={vpcSubnet}
               />
             );
           })}

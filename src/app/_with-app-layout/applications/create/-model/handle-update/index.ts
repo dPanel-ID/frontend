@@ -126,6 +126,49 @@ function normalizeRuntimeAppName(name: string, fallback?: string) {
   return 'application';
 }
 
+function normalizeContractValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((item) => normalizeContractValue(item));
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.keys(value as Record<string, unknown>)
+      .sort()
+      .reduce<Record<string, unknown>>((acc, key) => {
+        const item = (value as Record<string, unknown>)[key];
+        if (item === undefined) return acc;
+
+        const normalizedItem = normalizeContractValue(item);
+        if (Array.isArray(normalizedItem) && normalizedItem.length === 0) {
+          return acc;
+        }
+
+        acc[key] = normalizedItem;
+        return acc;
+      }, {});
+  }
+
+  return value;
+}
+
+function isContractValueEqual(left: unknown, right: unknown) {
+  return (
+    JSON.stringify(normalizeContractValue(left)) ===
+    JSON.stringify(normalizeContractValue(right))
+  );
+}
+
+function setChangedPayloadField(
+  payload: Record<string, unknown>,
+  key: keyof DTOs.ApplicationPayloadV1,
+  value: unknown,
+  originalValue: unknown,
+) {
+  if (isContractValueEqual(value, originalValue)) return;
+
+  payload[key] = value;
+}
+
 function buildUpdatedAppDefinition(params: {
   appBuildCommand: string[];
   appPort: string;
@@ -170,7 +213,7 @@ function buildUpdatedAppDefinition(params: {
         name: runtime.name,
         version: runtime.version || '',
       })),
-      router: rawAppDefinition?.setup?.router ?? null,
+      router: rawAppDefinition?.setup?.router,
     },
     build: {
       ...rawAppDefinition?.build,
@@ -226,14 +269,24 @@ export default function useHandleUpdateApplication() {
       runtimeEnvText,
       selectedDependencyIds,
       selectedRequiredBinaryIds,
-      updateApplicationConfig,
       updateApplicationId,
+      updateOriginalDefaultBranch,
+      updateOriginalDomain,
+      updateOriginalName,
+      updateOriginalRepoName,
+      updateOriginalRepoOrg,
+      updateOriginalRepoUrl,
+      updateOriginalRuntimeItems,
+      updateOriginalSource,
+      updateOriginalWorkdir,
       updateRawAppDefinition,
       updateTriggerBootstrap,
       updateWorkdir,
     } = formValues;
 
-    if (!updateApplicationId || !hostedServerID || !appSourceGithubRepo) return;
+    if (!updateApplicationId || !hostedServerID || !appSourceGithubRepo) {
+      return false;
+    }
 
     const runtimeAppName = normalizeRuntimeAppName(
       appName,
@@ -312,35 +365,70 @@ export default function useHandleUpdateApplication() {
       buildEnvVariables,
       runtimeEnvVariables,
     });
-    const payload = {
-      app_config: updateApplicationConfig || undefined,
-      app_definition: appDefinition,
-      default_branch: gitDefaultBranch || undefined,
-      domain: appDomain || undefined,
-      name: appName,
-      repo_name: fallbackRepoName || undefined,
-      repo_org: fallbackRepoOrganization || undefined,
-      repo_url: appSourceGithubRepo,
-      runtime_items: compiledConfig.runtime_items,
-      source: gitProvider,
-      source_type: 'github',
-      workdir:
-        updateWorkdir ||
-        updateRawAppDefinition?.build?.target?.machine?.workdir ||
-        undefined,
-      ...(updateTriggerBootstrap
-        ? {
-            artifact: {
-              ...compiledConfig.artifact,
-              app_definition: appDefinition,
-              is_primary: true,
-              machine_id: hostedServerID,
-            },
-            bootstrap: true,
-            deploy: compiledConfig.deploy,
-          }
-        : {}),
-    } satisfies DTOs.ApplicationV1 & Record<string, unknown>;
+    const payload: DTOs.ApplicationPayloadV1 & Record<string, unknown> = {};
+    const nextWorkdir = updateWorkdir;
+
+    setChangedPayloadField(
+      payload,
+      'app_definition',
+      appDefinition,
+      updateRawAppDefinition,
+    );
+    setChangedPayloadField(
+      payload,
+      'default_branch',
+      gitDefaultBranch,
+      updateOriginalDefaultBranch,
+    );
+    setChangedPayloadField(payload, 'domain', appDomain, updateOriginalDomain);
+    setChangedPayloadField(payload, 'name', appName, updateOriginalName);
+    setChangedPayloadField(
+      payload,
+      'repo_name',
+      fallbackRepoName,
+      updateOriginalRepoName,
+    );
+    setChangedPayloadField(
+      payload,
+      'repo_org',
+      fallbackRepoOrganization,
+      updateOriginalRepoOrg,
+    );
+    setChangedPayloadField(
+      payload,
+      'repo_url',
+      appSourceGithubRepo,
+      updateOriginalRepoUrl,
+    );
+    setChangedPayloadField(
+      payload,
+      'runtime_items',
+      compiledConfig.runtime_items,
+      updateOriginalRuntimeItems,
+    );
+    setChangedPayloadField(
+      payload,
+      'source',
+      gitProvider,
+      updateOriginalSource,
+    );
+    setChangedPayloadField(
+      payload,
+      'workdir',
+      nextWorkdir,
+      updateOriginalWorkdir,
+    );
+
+    if (updateTriggerBootstrap) {
+      payload.artifact = {
+        ...compiledConfig.artifact,
+        app_definition: appDefinition,
+        is_primary: true,
+        machine_id: hostedServerID,
+      };
+      payload.bootstrap = true;
+      payload.deploy = compiledConfig.deploy;
+    }
 
     const response = await ApiApplication.Update.$Id.doPost({
       applicationId: updateApplicationId,
@@ -353,7 +441,7 @@ export default function useHandleUpdateApplication() {
         message: response.error.message,
         variant: 'error',
       });
-      return;
+      return false;
     }
 
     openToaster({
@@ -366,6 +454,8 @@ export default function useHandleUpdateApplication() {
         id: updateApplicationId,
       },
     });
+
+    return true;
   });
 
   return {

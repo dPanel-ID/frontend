@@ -54,5 +54,7 @@ export default function useFormSubmissionUsecase() {
     }
   });
 
-  useSubscribe('#application-setup-edit-sidepanel/form-submit', handleSubmit);
+  useSubscribe('#application-setup-edit-sidepanel/form-submit', () =>
+    handleSubmit(),
+  );
 }

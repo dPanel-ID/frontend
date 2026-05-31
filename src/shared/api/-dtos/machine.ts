@@ -4,11 +4,17 @@
 //
 // =============================================================================
 
-import type { ExecutionErrorDetailV1, OrganizationV1, User } from '.';
+import type {
+  ExecutionErrorDetailV1,
+  OrganizationV1,
+  UserPublicContactV1,
+} from '.';
 
 export interface MachineAgentV1 {
   id?: string;
   machine_id?: string;
+  new_version?: string;
+  upgrade_available?: boolean;
   token?: string;
   version?: string;
   status?: string;
@@ -28,6 +34,12 @@ export interface MachineNetworkInterfaceDataV1 {
   address?: string;
   ip_v4?: string;
   ip_v6?: string;
+  is_global_unicast?: boolean;
+  is_interface_local_multicast?: boolean;
+  is_link_local_multicast?: boolean;
+  is_link_local_unicast?: boolean;
+  is_loopback?: boolean;
+  is_multicast?: boolean;
   subnet?: string;
 }
 
@@ -70,16 +82,17 @@ export interface MachineUserV1 {
 }
 
 export interface MachineV1 {
-  id?: number;
+  id?: number | string;
   hostname?: string;
   address?: string;
   http_port?: string;
   ssh_port?: string;
   organization_id?: string;
   organization?: OrganizationV1;
-  user_id?: number;
-  user?: User;
+  user_id?: number | string;
+  user?: UserPublicContactV1;
   cloud_id?: string;
+  cloud_project_id?: string;
   source?: string;
   provider?: string;
   region_id?: string;
@@ -88,6 +101,7 @@ export interface MachineV1 {
   owner_subject?: string;
   workspace_id?: string;
   workspace_type?: string;
+  workspace?: MachineWorkspaceV1;
   default_user?: string;
   agent?: MachineAgentV1;
   agent_version?: string;
@@ -114,6 +128,14 @@ export interface MachineV1 {
   error_detail?: ExecutionErrorDetailV1 | null;
   created_at?: string;
   updated_at?: string;
+}
+
+export interface MachineWorkspaceV1 {
+  id?: string;
+  local_organization_id?: string;
+  name?: string;
+  roles?: string[];
+  type?: string;
 }
 
 export interface ServerLogEntryV1 {

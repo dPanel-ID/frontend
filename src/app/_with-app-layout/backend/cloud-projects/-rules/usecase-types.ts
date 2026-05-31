@@ -1,5 +1,5 @@
 export interface CloudProjectDeletePayload {
-  id: number;
+  id: string;
   name: string;
 }
 
@@ -9,7 +9,7 @@ export interface CloudProjectDetailsPayload {
 }
 
 export interface CloudProjectMigrateOwnershipPayload {
-  id: number;
+  id: string;
   name: string;
   teamName?: string | null;
 }

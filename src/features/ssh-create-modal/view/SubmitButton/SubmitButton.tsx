@@ -1,4 +1,3 @@
-import { useAuthLoggedIn } from '@/services/auth';
 import { useModalEmit } from '@/services/modal/model/event';
 import { useToaster } from '@/services/toaster';
 
@@ -9,8 +8,6 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { useSSHCreateContext } from '../../model';
 
 export default function SubmitButton() {
-  const userId = useAuthLoggedIn().userProfile.id;
-
   const { displayName, keyLength, props, isMutating, setIsMutating } =
     useSSHCreateContext();
 
@@ -28,7 +25,6 @@ export default function SubmitButton() {
     const response = await ApiSecret.SshKey.Create.doPost({
       keyLength,
       displayName,
-      userId,
     });
 
     if (response.$status === 'failed') {

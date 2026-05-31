@@ -12,12 +12,12 @@ export type MachineCreatePayloadV1 = Omit<
   DTOs.MachineV1,
   'cloud_id' | 'secret_id'
 > & {
-  cloud_project_id?: number | string;
+  cloud_project_id?: string;
   cpu_core?: number;
   default_password?: string;
   disk?: number;
   os_template?: string;
-  secret_id?: number | string;
+  secret_id?: string;
   private_subnet?: string;
   ram?: number;
   vm?: {

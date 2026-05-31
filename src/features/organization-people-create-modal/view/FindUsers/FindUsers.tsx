@@ -25,7 +25,11 @@ export default function FindUsers() {
       errorMessage={form.formState.errors.user_id?.message}
       onSelect={(user) => {
         setSelectedUser(user);
-        form.setValue('user_id', String(user.id), { shouldValidate: true });
+        form.setValue('user_id', String(user.id), {
+          shouldDirty: true,
+          shouldTouch: true,
+          shouldValidate: true,
+        });
       }}
     />
   );

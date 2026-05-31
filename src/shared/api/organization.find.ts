@@ -14,7 +14,6 @@ import type { DTOs } from '.';
 export interface RecipeParams {
   id?: string;
   name?: string;
-  userId?: number | string;
   status?: string;
   order?: string;
   by?: string;
@@ -24,12 +23,11 @@ export interface RecipeParams {
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { id, userId, name, status, order, by, page, pageSize, limit } = params;
+  const { id, name, status, order, by, page, pageSize, limit } = params;
 
   const queryParams = createQueryParams({
     id,
     name,
-    user_id: userId,
     status,
     order,
     by,

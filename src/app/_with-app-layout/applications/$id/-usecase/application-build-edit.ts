@@ -14,8 +14,6 @@ export default function useApplicationBuildEditUsecase(params: Params) {
   const [openSidepanel] = useApplicationBuildEditSidepanel();
 
   const handleUsecase = useHandler((payload: ApplicationBuildEditPayload) => {
-    if (!payload.rawAppDefinition) return;
-
     openSidepanel({
       onSuccess,
       applicationId: payload.applicationId,

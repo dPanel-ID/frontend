@@ -10,15 +10,20 @@ import type {
 
 export interface RecipeParams {
   cloudProjectId: string;
+  filter?: string;
   zone?: string;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { cloudProjectId, zone } = params;
+  const { cloudProjectId, filter, zone } = params;
   const queryParams = new URLSearchParams();
 
   if (zone) {
     queryParams.set('zone', zone);
+  }
+
+  if (filter) {
+    queryParams.set('filter', filter);
   }
 
   const queryString = queryParams.toString();

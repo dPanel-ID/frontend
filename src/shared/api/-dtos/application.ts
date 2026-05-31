@@ -47,6 +47,31 @@ export interface ApplicationV1 {
   runtime_items?: ApplicationIACRuntimeItemV1[];
 }
 
+export interface ApplicationPayloadV1 {
+  app_config?: AppConfig;
+  app_definition?: AppDefinition;
+  artifact?: ArtifactV1 & Record<string, unknown>;
+  bootstrap?: boolean;
+  default_branch?: string;
+  deploy?: DeployV1 & Record<string, unknown>;
+  domain?: string;
+  framework?: string;
+  id?: number;
+  name?: string;
+  owner_provider?: string;
+  owner_subject?: string;
+  playbook?: ApplicationPlaybookPayloadV1;
+  repo_name?: string;
+  repo_org?: string;
+  repo_url?: string;
+  runtime_items?: ApplicationIACRuntimeItemV1[];
+  source?: string;
+  type?: string;
+  workdir?: string;
+  workspace_id?: string;
+  workspace_type?: string;
+}
+
 export interface ApplicationIACConfigV1 {
   application_id: string;
   workspace: ApplicationIACWorkspaceV1;

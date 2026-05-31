@@ -50,6 +50,7 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
   const timeGte = new Date(
     requestAnchor - timeFilterConfig.durationMs,
   ).toISOString();
+  const timeLt = new Date(requestAnchor).toISOString();
 
   const selectLog = useCallback((nextSelection: LogSelection) => {
     setLogSelection(nextSelection);
@@ -82,6 +83,7 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     line: timeFilterConfig.limit,
     machineId: logMetadata?.serverId,
     timeGte,
+    timeLt,
     options: {
       skip: !logSelection?.serverId || !logSelection.filename,
     },

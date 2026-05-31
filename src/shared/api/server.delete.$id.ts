@@ -11,12 +11,14 @@ export interface RecipeParams {
 }
 
 export interface Dto {
-  machine_id: string;
-  status: string;
-  deletion_phase: 'agent_uninstall' | 'permanent' | string;
+  agent_uninstalling?: boolean;
+  deletion_phase?: 'agent_uninstall' | 'origin_delete' | 'permanent' | string;
   execution_id?: string;
-  permanent_deleted: boolean;
-  agent_uninstalling: boolean;
+  machine_id?: string;
+  origin_deleting?: boolean;
+  origin_provider?: string;
+  permanent_deleted?: boolean;
+  status?: string;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {

@@ -56,7 +56,7 @@ export default function SshKeyInfoCard(props: SshKeyInfoCardProps) {
 export interface SshKeyInfoCardProps {
   sshkeyTitle: string;
   sshKeyDetail?: string;
-  sshkeyId: number;
+  sshkeyId: number | string;
   lastUpdated: string;
   onClickDetails?: () => void;
   onClickHostInfo?: () => void;

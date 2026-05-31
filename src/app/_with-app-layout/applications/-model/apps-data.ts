@@ -1,5 +1,3 @@
-import { useAuthLoggedIn } from '@/services/auth';
-
 import { AdapterApplicationFromDto } from '@/entities/application/adapter';
 
 import { ApiApplication } from '@/shared/api';
@@ -12,17 +10,12 @@ import { useFilterModel } from './filters';
 export const [AppsDataModelProvider, useAppsDataModel] = buildSelector(
   'AppsDataModel',
 )(() => {
-  const { userProfile } = useAuthLoggedIn();
-
-  const { pagination, searchQuery, ownership } =
-    useFilterModel();
+  const { pagination, searchQuery } = useFilterModel();
 
   const [response, refresh] = ApiApplication.Find.useGet({
     page: pagination,
     limit: 4,
     name: searchQuery,
-    forceMine: ownership === 'mine' ? 'true' : undefined,
-    userId: ownership === 'mine' ? userProfile.id : undefined,
   });
 
   useSubscribe('@applications/application-refresh', () => refresh());

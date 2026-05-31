@@ -10,15 +10,20 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { FailedState } from '@/widgets/failed-state';
 
 import useDeleteCloudProjectDialog from '../../-lib/useDeleteCloudProjectDialog';
-import { useFilter } from '../../-model/filters';
+import { useEmit } from '../../-model/events';
+import { useFilterModel } from '../../-model/filters';
 import { AddNewCard } from '../../-presentation/AddNewCard';
 import { CloudProjectCard } from '../../-presentation/CloudProjectCard';
 
 export default function GridList() {
-  const { searchQuery, pagination, setPagination } = useFilter();
+  const emit = useEmit();
+  const [searchQuery, pagination] = useFilterModel((s) => [
+    s.searchQuery,
+    s.currentPage,
+  ]);
 
   const [response, refresh] = ApiCloud.Project.Find.useGet({
-    page: 1,
+    page: pagination,
     searchQuery,
   });
 
@@ -48,7 +53,9 @@ export default function GridList() {
           <Pagination
             currentPage={pagination}
             maxPage={response.pagination.total_page}
-            onPageChange={(newPage) => setPagination(newPage)}
+            onPageChange={(newPage) =>
+              emit('@cloud-projects/filters/pagination--set', newPage)
+            }
           />
         </div>
       </div>

@@ -92,7 +92,7 @@ export const domain = relaxedUrl('https').transform((val, ctx) => {
 
 export type Gateway = z.output<typeof gateway>;
 export const gateway = z.object({
-  address: z.union([z.ipv4(), z.ipv6()]),
+  address: z.string().catch(''),
   server: schemaServerMinimal,
 });
 

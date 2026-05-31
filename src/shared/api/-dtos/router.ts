@@ -1,6 +1,7 @@
 import type { ExecutionErrorDetailV1 } from './execution-error-detail';
 import type { MachineV1 } from './machine';
 import type { OrganizationV1 } from './organization';
+import type { UserPublicContactV1 } from './user';
 
 export interface InputRouterV1 {
   id?: string | number;
@@ -72,10 +73,7 @@ export interface RouterV1 {
   iac_repo?: string;
   playbook_path?: string;
   user_id?: string | number;
-  user?: {
-    username?: string;
-    fullname?: string;
-  };
+  user?: UserPublicContactV1;
   machine_id?: string | number;
   installer_status?: string;
   error?: string;

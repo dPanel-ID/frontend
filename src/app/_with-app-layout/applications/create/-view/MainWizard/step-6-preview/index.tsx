@@ -1,7 +1,10 @@
+import { useState } from 'react';
+
 import { RocketIcon, WarehouseIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import useHandler from '@/shared/libs/react-hooks/useHandler';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 
 import useHandleDeploy from '../../../-model/handle-deploy';
@@ -33,7 +36,23 @@ export default function Step6Preview() {
   const [flowMode] = useFormStore((s) => [s.flowMode]);
   const { handleDeploy } = useHandleDeploy();
   const { handleUpdate } = useHandleUpdateApplication();
-  const handleSubmit = flowMode === 'update' ? handleUpdate : handleDeploy;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitAction = flowMode === 'update' ? handleUpdate : handleDeploy;
+  const handleSubmit = useHandler(async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const isSubmitted = await submitAction();
+      if (!isSubmitted) {
+        setIsSubmitting(false);
+      }
+    } catch (error) {
+      setIsSubmitting(false);
+      throw error;
+    }
+  });
   const [
     appName,
     appSourceGithubRepo,
@@ -89,6 +108,8 @@ export default function Step6Preview() {
         goToNext={handleSubmit}
         goToPrevious={goToPrevious}
         isPreviousHidden={isPreviousHidden}
+        isPreviousDisabled={isSubmitting}
+        isNextLoading={isSubmitting}
         labelNext={flowMode === 'update' ? t('update') : t('deploy')}
       />
 
@@ -141,6 +162,7 @@ export default function Step6Preview() {
             <Checkbox
               id="application-update-bootstrap"
               checked={updateTriggerBootstrap}
+              disabled={isSubmitting}
               onCheckedChange={(checked) =>
                 setUpdateTriggerBootstrap(checked === true)
               }
@@ -176,6 +198,8 @@ export default function Step6Preview() {
         goToNext={handleSubmit}
         goToPrevious={goToPrevious}
         isPreviousHidden={isPreviousHidden}
+        isPreviousDisabled={isSubmitting}
+        isNextLoading={isSubmitting}
         labelNext={flowMode === 'update' ? t('update') : t('deploy')}
       />
     </div>

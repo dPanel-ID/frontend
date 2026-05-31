@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon, Loader2Icon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -7,9 +7,11 @@ import { Button } from '@/shared/presentation/atoms/Button';
 
 interface CtaBarProps {
   isPreviousHidden?: boolean;
+  isPreviousDisabled?: boolean;
   isNextDisabled?: boolean;
-  goToPrevious?: () => void;
-  goToNext?: () => void;
+  isNextLoading?: boolean;
+  goToPrevious?: () => unknown | Promise<unknown>;
+  goToNext?: () => unknown | Promise<unknown>;
 
   labelPrevious?: string;
   labelNext?: string;
@@ -21,7 +23,9 @@ export default function CtaBar(props: CtaBarProps) {
 
   const {
     isPreviousHidden,
+    isPreviousDisabled,
     isNextDisabled,
+    isNextLoading,
     goToPrevious,
     goToNext,
     labelPrevious = t('common.actions.back'),
@@ -37,7 +41,13 @@ export default function CtaBar(props: CtaBarProps) {
       )}
     >
       {!isPreviousHidden ? (
-        <Button variant="outline" onClick={goToPrevious}>
+        <Button
+          variant="outline"
+          disabled={isPreviousDisabled}
+          onClick={() => {
+            void goToPrevious?.();
+          }}
+        >
           <ArrowLeftIcon className="size-4" />
           {labelPrevious}
         </Button>
@@ -45,9 +55,16 @@ export default function CtaBar(props: CtaBarProps) {
         <div />
       )}
 
-      <Button disabled={isNextDisabled} onClick={goToNext}>
+      <Button
+        aria-busy={isNextLoading}
+        disabled={isNextDisabled || isNextLoading}
+        onClick={() => {
+          void goToNext?.();
+        }}
+      >
+        {isNextLoading ? <Loader2Icon className="size-4 animate-spin" /> : null}
         {labelNext}
-        <ArrowRightIcon className="size-4" />
+        {!isNextLoading ? <ArrowRightIcon className="size-4" /> : null}
       </Button>
     </div>
   );

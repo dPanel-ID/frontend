@@ -16,6 +16,18 @@ export const SERVER_PROVIDER_METADATA: Record<
       label: 'common.terms.other',
     },
   },
+  biznetgio: {
+    imageSrc: IconServer,
+    i18n: {
+      label: 'common.brands.biznetGio',
+    },
+  },
+  digitalocean: {
+    imageSrc: IconDigitalOcean,
+    i18n: {
+      label: 'common.brands.digitalOcean',
+    },
+  },
   googlecloud: {
     imageSrc: IconGCloud,
     i18n: {

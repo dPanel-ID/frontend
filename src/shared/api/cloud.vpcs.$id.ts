@@ -11,14 +11,22 @@ import type {
 
 export interface RecipeParams {
   cloudProjectId: string;
+  productId?: number | string;
   regionSlug: string;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { cloudProjectId, regionSlug } = params;
+  const { cloudProjectId, productId, regionSlug } = params;
+  const queryParams = new URLSearchParams();
+
+  if (productId != null) {
+    queryParams.set('product_id', String(productId));
+  }
+
+  const queryString = queryParams.toString();
 
   return {
-    url: `/v1/cloud/project/detail/${cloudProjectId}/vpcs/${regionSlug}`,
+    url: `/v1/cloud/project/detail/${cloudProjectId}/vpcs/${regionSlug}${queryString ? `?${queryString}` : ''}`,
   };
 }
 

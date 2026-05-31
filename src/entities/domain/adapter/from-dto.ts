@@ -29,7 +29,7 @@ export const toDomainCard = createAdapter<DTOs.DomainV1, DomainCard>((raw) => {
 });
 
 export const toDomainDetails = createAdapter<
-  [DTOs.DomainV1, DTOs.CloudFlareListResponse],
+  [DTOs.DomainV1, DTOs.DomainRecordListResponseV1],
   DomainDetails
 >(([rawDomain, rawRecords]) => {
   return schemaDomainDetails.parse({

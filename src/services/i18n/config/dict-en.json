@@ -139,6 +139,7 @@
     "brands": {
       "googleCloud": "Google Cloud",
       "idCloudHost": "IDCloudHost",
+      "biznetGio": "Biznet Gio",
       "digitalOcean": "DigitalOcean",
       "caddy": "Caddy",
       "nginx": "Nginx",
@@ -1416,6 +1417,9 @@
         "copyPublicKey": "Copy Public Key",
         "noPublicKeyData": "No public key data",
         "privateKey": "Private Key",
+        "notDisplayed": "Not displayed",
+        "privateKeyStored": "The private key is stored encrypted and used only by backend provisioning, recovery, and browser SSH workflows.",
+        "privateKeyNotDisplayed": "dPanel does not display or copy private key values from this page. Use the public key above when you need to configure authorized_keys manually.",
         "hide": "Hide",
         "reveal": "Reveal",
         "copyPrivateKey": "Copy Private Key",
@@ -1877,11 +1881,19 @@
     },
     "addTeamMember": {
       "title": "Add New People",
+      "description": "Select a user and assign workspace roles before adding them.",
       "selectUser": "Select a user\u2026",
-      "searchByUsername": "Search by username\u2026",
+      "searchByUsername": "Search by username or name\u2026",
       "loading": "Loading\u2026",
       "noUsersFound": "No users found",
-      "pageInfo": "Page {page} / {totalPage}"
+      "pageInfo": "Page {page} / {totalPage}",
+      "rolesTitle": "Workspace roles",
+      "rolesHint": "Choose the role set this member should receive in the active workspace.",
+      "submit": "Add member",
+      "toaster": {
+        "successMessage": "Member added to workspace",
+        "errorTitle": "Failed to add member"
+      }
     },
     "manageMemberRoles": {
       "title": "Manage roles",

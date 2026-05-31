@@ -14,6 +14,9 @@ export default function useFormSubmissionUsecase() {
 
   const handleSubmit = form.handleSubmit(async (values) => {
     const { rawAppDefinition, applicationId } = props;
+    const rawBuild = rawAppDefinition.build;
+    const rawTarget = rawBuild?.target;
+    const rawMachine = rawTarget?.machine;
 
     const newSteps = values.steps.map((step) => ({
       name: step.name,
@@ -35,11 +38,11 @@ export default function useFormSubmissionUsecase() {
         app_definition: {
           ...rawAppDefinition,
           build: {
-            ...rawAppDefinition.build,
+            ...rawBuild,
             target: {
-              ...rawAppDefinition.build.target,
+              ...rawTarget,
               machine: {
-                ...rawAppDefinition.build.target.machine,
+                ...rawMachine,
                 steps: newSteps,
                 environment: newEnvs,
               },

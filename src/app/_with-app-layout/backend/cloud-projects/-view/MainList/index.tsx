@@ -1,13 +1,14 @@
 import dayjs from 'dayjs';
 
+import { useDevetekTranslations } from '@/services/i18n';
+
 import LayoutAutoGridList from '@/shared/presentation/atoms/LayoutAutoGridList';
 import { EmptyState } from '@/shared/presentation/organisms/EmptyState';
-import { useDevetekTranslations } from '@/services/i18n';
 import { buildResponseView } from '@/widgets/response-view-builder';
 
+import { CloudListState } from '../-presentation/CloudListState';
 import { useCloudDataModel } from '../../-model/cloud-data';
 import { useFilterModel } from '../../-model/filters';
-import { CloudListState } from '../-presentation/CloudListState';
 
 import CloudCard from './CloudCard';
 import CloudTable from './CloudTable';
@@ -34,13 +35,21 @@ export default buildResponseView({
     }
 
     const tableData: CloudTableData[] = list.flatMap((cloud) => {
-      const { id, name, provider, updated_at, installer_status, user, organization } =
-        cloud;
+      const {
+        id,
+        name,
+        provider,
+        updated_at,
+        installer_status,
+        user,
+        organization,
+        workspace,
+      } = cloud;
       if (!id) return [];
 
       return [
         {
-          id,
+          id: String(id),
           name,
           provider,
           installerStatus: installer_status,
@@ -48,7 +57,7 @@ export default buildResponseView({
             ? dayjs(updated_at).format('YYYY-MM-DD HH:mm:ss')
             : null,
           ownerName: user?.fullname || user?.username || user?.email || null,
-          teamName: organization?.name || null,
+          teamName: workspace?.name || organization?.name || null,
         },
       ];
     });

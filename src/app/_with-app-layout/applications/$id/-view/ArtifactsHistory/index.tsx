@@ -26,7 +26,7 @@ import { ArtifactsHistoryStates as UIStates } from './_States';
 const [guard, useAppDetail] = guardedSelects({
   fallbackLoading: UIStates.Loading,
   fallbackError: UIStates.Loading,
-})(couple(useAppDataModel, (s) => s.appDetail));
+})(couple(useAppDataModel, (s: any) => s.appDetail));
 
 const ArtifactsTabContent = guard(() => {
   const emit = useEmit();

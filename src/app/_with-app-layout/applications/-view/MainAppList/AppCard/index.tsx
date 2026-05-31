@@ -432,7 +432,7 @@ function ApplicationIcon(props: { icon: ReturnType<typeof getBundleIcon> }) {
 function ServerSummary(props: {
   server?: ApplicationServer;
   serverCount: number;
-  onClickServer: (serverId: number) => void;
+  onClickServer: (serverId: string) => void;
 }) {
   const { server, serverCount, onClickServer } = props;
   const t = useDevetekTranslations();

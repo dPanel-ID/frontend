@@ -7,6 +7,7 @@ import { useDevetekTranslations } from '@/services/i18n';
 import IconGoogleCloudPlatform from '@/shared/assets/ico-gcloud.png';
 import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
 import IconProxmox from '@/shared/assets/ico-proxmox.png';
+import IconDigitalOcean from '@/shared/assets/logo-digitalocean.png';
 import IconEye from '@/shared/presentation/icons/Eye';
 import IconEyeActive from '@/shared/presentation/icons/EyeActive';
 import IconLastDateActive from '@/shared/presentation/icons/LastDateActive';
@@ -20,8 +21,11 @@ export interface CloudCardProps {
 }
 
 const PROVIDER_META: Record<string, { src?: string; label: string }> = {
+  biznetgio: { label: 'Biznet Gio' },
+  digitalocean: { src: IconDigitalOcean, label: 'DigitalOcean' },
   idcloudhost: { src: IconIDCloudHost, label: 'IDCloudHost' },
   gcp: { src: IconGoogleCloudPlatform, label: 'Google Cloud' },
+  googlecloud: { src: IconGoogleCloudPlatform, label: 'Google Cloud' },
   proxmox: { src: IconProxmox, label: 'Proxmox VE' },
 };
 
@@ -78,7 +82,7 @@ export default function CloudCard(props: CloudCardProps) {
   const ownershipStatus = [
     !!teamName && { icon: BuildingIcon, text: teamName },
     !!ownerName && { icon: UserIcon, text: ownerName },
-  ].filter(Boolean) as { icon: typeof UserIcon; text: string }[];
+  ].filter(Boolean) as Array<{ icon: typeof UserIcon; text: string }>;
 
   return (
     <ResourceCard.Compact>

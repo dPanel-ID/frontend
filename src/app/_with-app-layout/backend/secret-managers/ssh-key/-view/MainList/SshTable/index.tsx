@@ -4,10 +4,11 @@ import dayjs from 'dayjs';
 import { BuildingIcon, EyeIcon, KeyIcon, UserIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+
+import IconSSH from '@/shared/assets/ico-ssh.svg';
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Tooltip } from '@/shared/presentation/atoms/Tooltip';
-import IconSSH from '@/shared/assets/ico-ssh.svg';
 import IconThreeDots from '@/shared/presentation/icons/ThreeDots';
 import ActionPopover from '@/shared/presentation/molecules/ActionPopover';
 import { buildResourceTable } from '@/widgets/resource-table';
@@ -15,7 +16,7 @@ import { buildResourceTable } from '@/widgets/resource-table';
 import { useEmit } from '../../../-model/events';
 
 export interface SshTableData {
-  id: number;
+  id: number | string;
   name?: string | null;
   type?: string | null;
   ownerName?: string | null;
@@ -129,16 +130,6 @@ const Table = buildResourceTable<SshTableData>({
 
         type Actions = ComponentProps<typeof ActionPopover>['actions'];
         const actions: Actions = [
-          {
-            label: t('common.actions.migrateOwnership'),
-            onClick: () => {
-              emit('@ssh-keys/open--migrate-ownership', {
-                id: row.id,
-                name: row.name ?? String(row.id),
-                teamName: row.teamName,
-              });
-            },
-          },
           {
             variant: 'danger',
             label: t('common.actions.delete'),

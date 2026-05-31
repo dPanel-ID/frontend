@@ -32,9 +32,11 @@ export default function ResourceCombo() {
     items = response.machines
       .map((machine) => {
         if (!machine.id || !machine.hostname || !machine.address) return null;
+        const machineId = Number(machine.id);
+        if (!Number.isFinite(machineId)) return null;
 
         return {
-          value: machine.id,
+          value: machineId,
           label: machine.hostname,
           description: <span className="opacity-50">({machine.address})</span>,
         };

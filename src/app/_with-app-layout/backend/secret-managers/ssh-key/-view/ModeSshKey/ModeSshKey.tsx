@@ -32,7 +32,10 @@ export default function ModeSshKey() {
     page: pagination,
   });
 
-  const handleClickDeleteSSHKey = (sshKeyId: number, sshKeyName: string) => {
+  const handleClickDeleteSSHKey = (
+    sshKeyId: number | string,
+    sshKeyName: string,
+  ) => {
     return () => {
       openDialog({
         title: t('page.sshKeys.deleteDialog.title'),
@@ -72,7 +75,7 @@ export default function ModeSshKey() {
     };
   };
 
-  const handleClickDetails = (sshKeyId: number) => {
+  const handleClickDetails = (sshKeyId: number | string) => {
     return () => {
       navigate({
         to: '/backend/secret-managers/ssh-key/$id',

@@ -1,5 +1,5 @@
 interface BaseProperties {
-  serverID: number;
+  serverID: string | number;
   version: string;
 }
 

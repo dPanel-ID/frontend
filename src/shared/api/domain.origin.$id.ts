@@ -28,12 +28,14 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
 //   Method
 // =============================================================================
 
+export type Dto = DTOs.DomainRecordListResponseV1;
+
 export function useGet(params: WithApiGetOptions<RecipeParams>) {
-  return useApiGet<DTOs.CloudFlareListResponse>(recipe(params), params.options);
+  return useApiGet<Dto>(recipe(params), params.options);
 }
 
 export function fetchGet(params: RecipeParams) {
-  return apiClient<DTOs.CloudFlareListResponse>({
+  return apiClient<Dto>({
     ...recipe(params),
     method: 'GET',
   });

@@ -9,6 +9,7 @@ interface LogViewerProps {
 }
 
 const DEFAULT_MAX_VISIBLE_LINES = 10;
+const SCROLL_EDGE_THRESHOLD_PX = 8;
 
 export default function LogViewer(props: LogViewerProps) {
   const {
@@ -19,15 +20,34 @@ export default function LogViewer(props: LogViewerProps) {
     scrollResetKey,
   } = props;
   const viewportRef = useRef<HTMLDivElement>(null);
+  const hasAutoScrolledRef = useRef(false);
+  const shouldStickToEndRef = useRef(true);
+  const previousScrollResetKeyRef = useRef<string | undefined>(undefined);
   const viewportMaxHeight = `calc(${maxVisibleLines} * 1.5rem + 1rem)`;
 
+  const handleScroll = () => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    const distanceToEnd =
+      viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight;
+    shouldStickToEndRef.current = distanceToEnd <= SCROLL_EDGE_THRESHOLD_PX;
+  };
+
   useEffect(() => {
-    if (lines.length <= maxVisibleLines) return;
+    if (previousScrollResetKeyRef.current !== scrollResetKey) {
+      previousScrollResetKeyRef.current = scrollResetKey;
+      hasAutoScrolledRef.current = false;
+      shouldStickToEndRef.current = true;
+    }
+
+    if (!shouldStickToEndRef.current && hasAutoScrolledRef.current) return;
 
     viewportRef.current?.scrollTo({
-      top: 0,
+      top: viewportRef.current.scrollHeight,
     });
-  }, [lines.length, maxVisibleLines, scrollResetKey]);
+    hasAutoScrolledRef.current = true;
+  }, [lines, scrollResetKey]);
 
   return (
     <div className="overflow-hidden rounded-lg border border-slate-800 bg-slate-950">
@@ -35,6 +55,7 @@ export default function LogViewer(props: LogViewerProps) {
         ref={viewportRef}
         aria-label={ariaLabel}
         className="overflow-auto overscroll-contain"
+        onScroll={handleScroll}
         role="region"
         style={{ maxHeight: viewportMaxHeight }}
         tabIndex={0}

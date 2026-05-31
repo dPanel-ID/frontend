@@ -6,7 +6,6 @@ import {
   ApiApplication,
   ApiCloud,
   ApiDomain,
-  ApiSecret,
   ApiServer,
 } from '@/shared/api';
 import { iife } from '@/shared/libs/browser/fn';
@@ -55,12 +54,6 @@ export default function useFormSubmissionUsecase() {
           case 'cloud-project':
             return ApiCloud.Project.Update.$Id.$.MigrateOwnership.doPost({
               cloudProjectId: mod.moduleId,
-              payload,
-            });
-
-          case 'secret-ssh':
-            return ApiSecret.SshKey.Update.$Id.$.MigrateOwnership.doPost({
-              sshKeyId: mod.moduleId,
               payload,
             });
 

@@ -87,14 +87,14 @@ const SubCloudSshCbo = () => {
     );
   }
 
-  const items: Array<{ label: string; value: number }> = [];
+  const items: Array<{ label: string; value: string }> = [];
 
   for (const secret of response.secrets || []) {
     if (!secret.name || !secret.id) continue;
 
     items.push({
       label: secret.name,
-      value: secret.id,
+      value: String(secret.id),
     });
   }
 

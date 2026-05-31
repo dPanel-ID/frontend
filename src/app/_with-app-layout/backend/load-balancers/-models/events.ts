@@ -5,7 +5,6 @@ import type { FilterRules } from '../-rules';
 import type {
   LbDeletePayload,
   LbOpenDetailsPayload,
-  LbRestorePayload,
 } from '../-rules/usecase-types';
 
 type EventsRegistry = Rescope<
@@ -16,7 +15,6 @@ type EventsRegistry = Rescope<
     'filters/pagination--set': number;
     'data--refresh': null;
     'lb--delete': LbDeletePayload;
-    'lb--restore': LbRestorePayload;
     'open--create': null;
     'open--details': LbOpenDetailsPayload;
   }

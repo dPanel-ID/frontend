@@ -270,7 +270,7 @@ export default function useHandleDeploy() {
 
   const handleDeploy = useHandler(async () => {
     const compiledConfig = compileConfig();
-    if (!compiledConfig) return;
+    if (!compiledConfig) return false;
 
     const response = await ApiBundle.Create.doPost({
       payload: compiledConfig,
@@ -282,7 +282,7 @@ export default function useHandleDeploy() {
         message: response.error.message,
         variant: 'error',
       });
-      return;
+      return false;
     }
 
     openDialog({
@@ -299,6 +299,8 @@ export default function useHandleDeploy() {
         },
       },
     });
+
+    return true;
   });
 
   return {

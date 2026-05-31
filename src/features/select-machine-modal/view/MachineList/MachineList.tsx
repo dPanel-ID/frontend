@@ -32,8 +32,9 @@ export default function MachineList(props: Props) {
     <div className="flex flex-col gap-1 lg:gap-2 lg:flex-row lg:flex-wrap [&>button]:basis-[calc(50%_-_0.25rem)]">
       {(response.machines ?? []).map((machine) => {
         const { id, hostname, address } = machine;
+        const machineId = Number(id);
 
-        if (!id || !hostname || !address) return null;
+        if (!Number.isFinite(machineId) || !hostname || !address) return null;
 
         return (
           <MachineCard
@@ -42,7 +43,7 @@ export default function MachineList(props: Props) {
             machinePublicIP={address}
             onClickSelect={() => {
               emitModal('%%modal/close', null);
-              onMachineSelected(id);
+              onMachineSelected(machineId);
             }}
           />
         );

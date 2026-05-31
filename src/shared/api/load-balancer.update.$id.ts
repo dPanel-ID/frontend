@@ -36,7 +36,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
     method: 'POST',
     url: `/v2/load-balancer/update/${loadBalancerId}`,
     data: {
-      advance_mode: advanceMode ?? true,
+      ...(advanceMode !== undefined ? { advance_mode: advanceMode } : {}),
       ...(name ? { name } : {}),
       ...(defaultUpstream ? { upstream: defaultUpstream } : {}),
       ...(config ? { config } : {}),

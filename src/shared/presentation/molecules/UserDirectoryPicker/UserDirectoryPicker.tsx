@@ -74,9 +74,7 @@ export default function UserDirectoryPicker(props: UserDirectoryPickerProps) {
     response.$status === 'loading' && response.prevData != null;
 
   const selectedLabel = selectedUser
-    ? selectedUser.fullname ||
-      selectedUser.username ||
-      String(selectedUser.id)
+    ? selectedUser.fullname || selectedUser.username || String(selectedUser.id)
     : '';
   const selectedSubtext = selectedUser
     ? selectedUser.username || String(selectedUser.id)

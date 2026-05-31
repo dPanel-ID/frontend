@@ -2,12 +2,14 @@ import type { DoRequestRecipe } from '@/shared/libs/api-client/rules/types';
 
 import { apiDoPost } from '../libs/api-client';
 
+import type { DTOs } from '.';
+
 // =============================================================================
 //   Recipe
 // =============================================================================
 
 export interface RecipeParams {
-  payload: Record<string, unknown>;
+  payload: DTOs.ApplicationPayloadV1 & Record<string, unknown>;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
@@ -16,7 +18,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
   return {
     method: 'POST',
     url: `/v2/bundle/create`,
-    data: payload,
+    data: stripLegacyOwnershipFields(payload),
   };
 }
 
@@ -24,12 +26,19 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
 //   Method
 // =============================================================================
 
-export interface Dto {
-  id: string;
-}
-
 export function doPost(params: RecipeParams) {
-  return apiDoPost<Dto>({
+  return apiDoPost<DTOs.ApplicationV1>({
     ...recipe(params),
   });
+}
+
+function stripLegacyOwnershipFields(
+  payload: DTOs.ApplicationPayloadV1 & Record<string, unknown>,
+) {
+  const nextPayload = { ...payload };
+  delete nextPayload.local_organization_id;
+  delete nextPayload.organization_id;
+  delete nextPayload.user_id;
+
+  return nextPayload;
 }

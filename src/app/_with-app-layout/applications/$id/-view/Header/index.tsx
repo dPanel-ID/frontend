@@ -37,7 +37,7 @@ const [guard, useAppDetail] = guardedSelects({
   initialIsLoading: true,
   fallbackLoading: FallbackLoading,
   fallbackError: FallbackLoading,
-})(couple(useAppDataModel, (s) => s.appDetail));
+})(couple(useAppDataModel, (s: any) => s.appDetail));
 
 const HeaderBreadcrumb = () => {
   const t = useDevetekTranslations();

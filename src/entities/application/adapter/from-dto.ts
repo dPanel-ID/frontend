@@ -39,7 +39,9 @@ export const toApplicationCard = createAdapter<
     additionalInfo: {
       domain: raw.domain,
       workdir:
-        raw.workdir ?? raw.app_definition?.build?.target?.machine?.workdir,
+        raw.workdir ??
+        raw.app_definition?.build?.target?.machine?.workdir ??
+        raw.app_definition?.build?.target?.machine?.workir,
       defaultBranch: raw.default_branch,
       repoUrl: raw.repo_url,
       latestArtifactBranch: raw.artifacts?.[0]?.branch,
@@ -47,7 +49,7 @@ export const toApplicationCard = createAdapter<
       servers: (raw.deploys ?? [])
         .filter((d) => d.machine?.id != null)
         .map((d) => ({
-          id: d.machine!.id,
+          id: String(d.machine!.id),
           name: d.machine!.hostname,
           address: d.machine!.address,
           deployStatus: d.installer_status,

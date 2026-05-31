@@ -16,7 +16,10 @@ export const [ApplicationRunEditModelProvider, useApplicationRunEditModel] =
         resolver: zodResolver(schemaApplicationRunEdit),
         defaultValues: {
           command: props.command,
-          envs: props.envs,
+          envs: props.envs.map((env) => ({
+            key: env.key,
+            value: env.value ?? '',
+          })),
         },
       });
 

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { HardDriveIcon, RefreshCwIcon } from 'lucide-react';
 import { useController, useWatch } from 'react-hook-form';
@@ -13,6 +13,7 @@ import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Input } from '@/shared/presentation/atoms/Input';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { Combobox } from '@/shared/presentation/molecules/Combobox';
+import { ComboboxWithSearchCb } from '@/shared/presentation/molecules/ComboboxWithSearchCb';
 
 import { OPTS_CPU_CORE, OPTS_DISK_GB, OPTS_RAM_GB } from '../../-config';
 import { useForm } from '../../-model';
@@ -110,12 +111,21 @@ function getPreferredCycle(product?: ProductItem) {
   return product?.default_cycle || product?.billing_cycles?.[0]?.cycle || '';
 }
 
+function buildGcpMachineTypeFilter(search: string) {
+  const trimmedSearch = search.trim();
+
+  if (!trimmedSearch) return undefined;
+  if (trimmedSearch.includes('=')) return trimmedSearch;
+
+  return `name=${trimmedSearch}*`;
+}
+
 const SubBiznetProductFields = () => {
   const { form, formErrors } = useForm();
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
-  }) as number | undefined;
+  }) as string | undefined;
   const productID = useWatch({
     control: form.control,
     name: 'spec.productID',
@@ -334,10 +344,11 @@ const SubBiznetProductFields = () => {
 
 const SubGcpMachineTypeCbo = () => {
   const { form, formErrors } = useForm();
+  const [machineTypeSearch, setMachineTypeSearch] = useState('');
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
-  }) as number | undefined;
+  }) as string | undefined;
   const zoneSlug = useWatch({
     control: form.control,
     name: 'cloud.zoneSlug',
@@ -346,9 +357,12 @@ const SubGcpMachineTypeCbo = () => {
     control: form.control,
     name: 'spec.machineType',
   });
+  const effectiveMachineTypeSearch =
+    cloudProjectID && zoneSlug ? machineTypeSearch : '';
 
   const [response, refreshProducts] = ApiCloud.Project.Products.$Id.useGet({
     cloudProjectId: String(cloudProjectID),
+    filter: buildGcpMachineTypeFilter(effectiveMachineTypeSearch),
     zone: zoneSlug ?? '',
     options: { skip: !cloudProjectID || !zoneSlug },
   });
@@ -382,7 +396,7 @@ const SubGcpMachineTypeCbo = () => {
     if (!responseData || !machineType) return;
 
     if (!selectedProduct) {
-      form.setValue('spec.machineType', '');
+      if (!effectiveMachineTypeSearch) form.setValue('spec.machineType', '');
       return;
     }
 
@@ -400,6 +414,7 @@ const SubGcpMachineTypeCbo = () => {
   }, [
     cloudProjectID,
     form,
+    effectiveMachineTypeSearch,
     machineType,
     machineTypes,
     responseData,
@@ -457,12 +472,22 @@ const SubGcpMachineTypeCbo = () => {
     })
     .filter(Boolean) as Array<{ label: string; value: string }>;
 
+  if (
+    machineType &&
+    !productItems.some((product) => product.value === machineType)
+  ) {
+    productItems.unshift({
+      label: machineType,
+      value: machineType,
+    });
+  }
+
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <Combobox
+        <ComboboxWithSearchCb
           classNameButton="w-full flex-1 bg-background"
-          placeholder="Select a machine type"
+          placeholder="Search and select a machine type"
           onChange={(value) => {
             const product = products.find(
               (item) => (item.value || item.name) === value,
@@ -478,6 +503,8 @@ const SubGcpMachineTypeCbo = () => {
 
             control.field.onChange(value);
           }}
+          onSearchEnter={setMachineTypeSearch}
+          searchValue={effectiveMachineTypeSearch}
           value={control.field.value}
           items={productItems}
         />
@@ -496,7 +523,11 @@ const SubGcpMachineTypeCbo = () => {
       {productItems.length === 0 && (
         <InlineState
           title="No machine types found"
-          description="The selected GCP zone did not return any deployable machine types."
+          description={
+            effectiveMachineTypeSearch
+              ? 'No machine types matched the current search. Try another family such as e2, n2, or c3.'
+              : 'The selected GCP zone did not return any deployable machine types.'
+          }
         />
       )}
 
@@ -510,7 +541,7 @@ const SubOsTemplateCbo = () => {
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
-  }) as number | undefined;
+  }) as string | undefined;
   const provider = useWatch({ control: form.control, name: 'provider' }) as
     | string
     | undefined;

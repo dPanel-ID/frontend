@@ -13,9 +13,35 @@ export function ctorCloud(
   if (!provider) return null;
 
   return {
-    provider: provider.toLocaleLowerCase(),
+    provider: normalizeCloudProvider(provider),
     region,
   };
+}
+
+function normalizeCloudProvider(provider: string) {
+  const normalizedProvider = provider.toLowerCase().replace(/[\s_-]/g, '');
+
+  if (normalizedProvider === 'gcp' || normalizedProvider === 'googlecloud') {
+    return 'googlecloud';
+  }
+
+  if (normalizedProvider === 'idcloudhost') {
+    return 'idcloudhost';
+  }
+
+  if (
+    normalizedProvider === 'biznetgio' ||
+    normalizedProvider === 'biznetgioneolite' ||
+    normalizedProvider === 'neolite'
+  ) {
+    return 'biznetgio';
+  }
+
+  if (normalizedProvider === 'do' || normalizedProvider === 'digitalocean') {
+    return normalizedProvider;
+  }
+
+  return normalizedProvider;
 }
 
 export function ctorSpecs(

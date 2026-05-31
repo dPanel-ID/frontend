@@ -27,7 +27,9 @@ export function ctorProviderDetails(raw: DTOs.DomainV1): ProviderDetails {
   };
 }
 
-export function ctorDnsRecord(raw: DTOs.CloudFlareItem): Partial<DnsRecord> {
+export function ctorDnsRecord(
+  raw: DTOs.DomainRecordItemV1,
+): Partial<DnsRecord> {
   return {
     id: raw.id,
     type: raw.type,

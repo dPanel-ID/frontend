@@ -10,7 +10,7 @@ import type { DTOs } from '.';
 
 export interface RecipeParams {
   applicationId: string;
-  payload: DTOs.ApplicationV1 & Record<string, unknown>;
+  payload: DTOs.ApplicationPayloadV1 & Record<string, unknown>;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
@@ -19,7 +19,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
   return {
     method: 'POST',
     url: `/v1/application/update/${applicationId}`,
-    data: payload,
+    data: stripLegacyOwnershipFields(payload),
   };
 }
 
@@ -31,4 +31,15 @@ export function doPost(params: RecipeParams) {
   return apiDoPost<DTOs.ApplicationV1>({
     ...recipe(params),
   });
+}
+
+function stripLegacyOwnershipFields(
+  payload: DTOs.ApplicationPayloadV1 & Record<string, unknown>,
+) {
+  const nextPayload = { ...payload };
+  delete nextPayload.local_organization_id;
+  delete nextPayload.organization_id;
+  delete nextPayload.user_id;
+
+  return nextPayload;
 }

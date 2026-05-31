@@ -142,11 +142,16 @@ export function ctorWebserver(raw: LoadBalancerDto) {
 export function ctorGateway(raw: LoadBalancerDto) {
   if (raw.machine == null) return undefined;
 
+  const machineId = raw.machine_id ?? raw.machine.id;
+
   return {
-    address: raw.machine.address,
+    address: raw.machine.address ?? '',
     server: {
-      id: String(raw.machine_id),
-      hostname: raw.machine.hostname,
+      id: String(machineId ?? ''),
+      hostname:
+        raw.machine.hostname ??
+        raw.machine.address ??
+        (machineId != null ? String(machineId) : ''),
     },
   } as KeysOnlyDeep<z.input<typeof gateway>>;
 }

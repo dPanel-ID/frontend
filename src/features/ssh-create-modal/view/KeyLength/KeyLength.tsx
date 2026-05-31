@@ -1,9 +1,15 @@
+import { useEffect, useMemo } from 'react';
+
+import { ApiSecret } from '@/shared/api';
 import { cn } from '@/shared/libs/tailwind/cn';
 
 import { KEY_LENGTH_LIST } from '../../config';
 import { useSSHCreateContext } from '../../model';
 
-const KEY_META: Record<number, { level: string; desc: string; recommended?: boolean }> = {
+const KEY_META: Record<
+  number,
+  { level: string; desc: string; recommended?: boolean }
+> = {
   2048: {
     level: 'Standard',
     desc: 'Compatible with all systems. Sufficient for most use cases.',
@@ -21,6 +27,35 @@ const KEY_META: Record<number, { level: string; desc: string; recommended?: bool
 
 export default function KeyLength() {
   const { keyLength, setKeyLength } = useSSHCreateContext();
+  const [lengthsResponse] = ApiSecret.SshKey.Lengths.useGet({});
+
+  const keyLengthList = useMemo(() => {
+    if (lengthsResponse.$status !== 'success') {
+      return KEY_LENGTH_LIST;
+    }
+
+    const supportedLengths = Array.from(lengthsResponse)
+      .filter((value) => Number.isFinite(value))
+      .sort((a, b) => a - b);
+
+    if (supportedLengths.length < 1) {
+      return KEY_LENGTH_LIST;
+    }
+
+    return supportedLengths.map((value) => ({
+      value,
+      label: String(value),
+    }));
+  }, [lengthsResponse]);
+
+  useEffect(() => {
+    if (keyLengthList.some((item) => item.value === keyLength)) return;
+
+    const fallbackLength = keyLengthList.at(-1)?.value;
+    if (fallbackLength) {
+      setKeyLength(fallbackLength);
+    }
+  }, [keyLength, keyLengthList, setKeyLength]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -30,7 +65,7 @@ export default function KeyLength() {
       </div>
 
       <div className="grid grid-cols-3 gap-2">
-        {KEY_LENGTH_LIST.map((item) => {
+        {keyLengthList.map((item) => {
           const meta = KEY_META[item.value];
           const isActive = keyLength === item.value;
 

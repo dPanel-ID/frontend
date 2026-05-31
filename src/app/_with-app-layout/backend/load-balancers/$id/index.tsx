@@ -85,7 +85,7 @@ type AddBackendMode = 'application' | 'address';
 type JsonRecord = Record<string, unknown>;
 type RawLoadBalancerDetailsDto = DTOs.RouterV1 | DTOs.LoadBalancerV2;
 
-const LOAD_BALANCER_LOG_LIMIT = 100;
+const LOAD_BALANCER_LOG_LIMIT = 10;
 const DEFAULT_LOG_LOOKBACK_MINUTES = 10;
 
 interface AccessLogEntry {
@@ -926,6 +926,7 @@ function UpstreamsTab(props: {
     try {
       const response = await ApiLoadBalancer.Update.$Id.doPost({
         loadBalancerId: details.id,
+        advanceMode: true,
         ...toLoadBalancerUpdatePayload(details, normalizedRows),
       });
 
@@ -1715,6 +1716,7 @@ function ConfigTab(props: {
     try {
       const response = await ApiLoadBalancer.Update.$Id.doPost({
         loadBalancerId: details.id,
+        advanceMode: true,
         name: details.description,
         config: toLoadBalancerConfigPayload(rawDetails, details, draft),
       });

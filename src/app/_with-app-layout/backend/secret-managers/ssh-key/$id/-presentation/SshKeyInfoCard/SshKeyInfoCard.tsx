@@ -10,7 +10,6 @@ export default function SshKeyInfoCard(props: SshKeyInfoCardProps) {
   const {
     sshkeyTitle,
     sshPubKey,
-    sshPrivKey,
     lastUpdated,
     onClickDetails,
     onClickDelete,
@@ -32,7 +31,6 @@ export default function SshKeyInfoCard(props: SshKeyInfoCardProps) {
       <TemplateCardInfo
         title={sshkeyTitle}
         // subtitle={sshKeyDetail}
-        sshPrivKey={sshPrivKey}
         sshPubKey={sshPubKey}
         logoAreaMain={
           <img className="size-12" src={logoSrc} alt="SSH Key Logo" />
@@ -59,8 +57,7 @@ export default function SshKeyInfoCard(props: SshKeyInfoCardProps) {
 export interface SshKeyInfoCardProps {
   sshkeyTitle: string;
   sshPubKey?: string;
-  sshPrivKey?: string;
-  sshkeyId: number;
+  sshkeyId: number | string;
   lastUpdated: string;
   onClickDetails?: () => void;
   onClickHostInfo?: () => void;

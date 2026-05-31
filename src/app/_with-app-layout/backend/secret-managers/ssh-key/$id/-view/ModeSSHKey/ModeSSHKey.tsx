@@ -7,8 +7,6 @@ import {
   CalendarIcon,
   CheckIcon,
   ClipboardIcon,
-  EyeIcon,
-  EyeOffIcon,
   GlobeIcon,
   KeyRoundIcon,
   LockIcon,
@@ -24,11 +22,9 @@ import type { DTOs } from '@/shared/api';
 import { ApiSecret } from '@/shared/api';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Card } from '@/shared/presentation/atoms/Card';
-import { cn } from '@/shared/libs/tailwind/cn';
 
 interface ModeSSHKeyProps {
   sshkey: DTOs.SshKeyV1;
-  refresh: () => void;
 }
 
 function CopyButton({ text, label }: { text: string; label?: string }) {
@@ -79,13 +75,11 @@ function MetaItem({
   );
 }
 
-export default function ModeSshKey({ sshkey, refresh }: ModeSSHKeyProps) {
+export default function ModeSshKey({ sshkey }: ModeSSHKeyProps) {
   const t = useDevetekTranslations();
-  const [privateRevealed, setPrivateRevealed] = useState(false);
 
   const sshKeyID = sshkey.id ?? 0;
   const sshKeyName = sshkey.name ?? '';
-  const sshPrivKey = sshkey.data?.private ?? '';
   const sshPubKey = sshkey.data?.public ?? '';
   const keyLength = sshkey.data?.length ?? '';
   const keyType = sshkey.type ?? '';
@@ -121,7 +115,11 @@ export default function ModeSshKey({ sshkey, refresh }: ModeSSHKeyProps) {
                 name: sshKeyName,
               }),
             });
-            navigate({ to: '/backend/secret-managers/ssh-key', replace: true });
+            navigate({
+              to: '/backend/secret-managers/ssh-key',
+              search: { page: 1 },
+              replace: true,
+            });
             return;
           }
 
@@ -202,69 +200,28 @@ export default function ModeSshKey({ sshkey, refresh }: ModeSSHKeyProps) {
       </Card>
 
       {/* Private Key */}
-      <Card
-        className={cn(
-          'overflow-hidden transition-colors',
-          privateRevealed ? 'border-amber-500/40' : '',
-        )}
-      >
+      <Card className="overflow-hidden border-amber-500/20">
         <div className="px-4 py-3 border-b flex items-center justify-between gap-2">
           <p className="text-sm font-semibold flex items-center gap-2">
             <LockIcon className="w-4 h-4 text-amber-500" />
             {t('page.sshKeys.detail.privateKey')}
           </p>
-          <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setPrivateRevealed((v) => !v)}
-            >
-              {privateRevealed ? (
-                <EyeOffIcon className="w-4 h-4 mr-1.5" />
-              ) : (
-                <EyeIcon className="w-4 h-4 mr-1.5" />
-              )}
-              {privateRevealed
-                ? t('page.sshKeys.detail.hide')
-                : t('page.sshKeys.detail.reveal')}
-            </Button>
-            {privateRevealed && (
-              <CopyButton
-                text={sshPrivKey}
-                label={t('page.sshKeys.detail.copyPrivateKey')}
-              />
-            )}
-          </div>
+          <span className="rounded-md border border-amber-500/20 bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600">
+            {t('page.sshKeys.detail.notDisplayed')}
+          </span>
         </div>
 
-        <div
-          className={cn(
-            'p-4 transition-colors',
-            privateRevealed ? 'bg-amber-500/5' : 'bg-muted/20',
-          )}
-        >
+        <div className="p-4 bg-muted/20">
           <div className="flex items-start gap-2 mb-3 p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
             <AlertTriangleIcon className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
             <p className="text-xs text-amber-600 leading-relaxed">
-              {t('page.sshKeys.detail.privateKeyWarning')}
+              {t('page.sshKeys.detail.privateKeyStored')}
             </p>
           </div>
 
-          {privateRevealed ? (
-            <pre className="font-mono text-xs leading-relaxed break-all whitespace-pre-wrap text-primary/80 max-h-64 overflow-y-auto">
-              {sshPrivKey || (
-                <em className="opacity-40">
-                  {t('page.sshKeys.detail.noPrivateKeyData')}
-                </em>
-              )}
-            </pre>
-          ) : (
-            <div className="flex items-center justify-center h-16 select-none">
-              <p className="font-mono text-2xl tracking-widest text-primary/20">
-                ● ● ● ● ● ● ● ● ● ●
-              </p>
-            </div>
-          )}
+          <p className="text-sm text-primary/60 leading-relaxed">
+            {t('page.sshKeys.detail.privateKeyNotDisplayed')}
+          </p>
         </div>
       </Card>
 
