@@ -1,3 +1,4 @@
+import IconBiznetGio from '@/shared/assets/biznetgio.png';
 import IconGCloud from '@/shared/assets/ico-gcloud.png';
 import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
 import IconServer from '@/shared/assets/ico-server.webp';
@@ -17,7 +18,7 @@ export const SERVER_PROVIDER_METADATA: Record<
     },
   },
   biznetgio: {
-    imageSrc: IconServer,
+    imageSrc: IconBiznetGio,
     i18n: {
       label: 'common.brands.biznetGio',
     },

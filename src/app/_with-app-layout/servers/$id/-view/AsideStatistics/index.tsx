@@ -10,20 +10,23 @@ import Layout from './_presentation/Layout';
 import { StatisticsCard } from './_presentation/StatisticsCard';
 import { AsideStatisticsStates as UIStates } from './_States';
 
+type ServerDataModelSource = ReturnType<typeof useServerDataModel>;
+type ServerStatsModelSource = ReturnType<typeof useServerStatsModel>;
+
 const [guardServerDetail] = guardedSelects({
   initialIsLoading: true,
   fallbackLoading: UIStates.Loading,
   fallbackError: UIStates.Loading,
-})(couple(useServerDataModel, (s) => s.detail));
+})(couple(useServerDataModel, (s) => (s as ServerDataModelSource).detail));
 
 const [guardStats] = guardedSelects({
   initialIsLoading: true,
   fallbackLoading: UIStates.Loading,
   fallbackError: UIStates.Failed,
 })(
-  couple(useServerStatsModel, (s) => s.cpu.usage),
-  couple(useServerStatsModel, (s) => s.memory.usage),
-  couple(useServerStatsModel, (s) => s.disk.usage),
+  couple(useServerStatsModel, (s) => (s as ServerStatsModelSource).cpu.usage),
+  couple(useServerStatsModel, (s) => (s as ServerStatsModelSource).memory.usage),
+  couple(useServerStatsModel, (s) => (s as ServerStatsModelSource).disk.usage),
 );
 
 export default guardServerDetail(

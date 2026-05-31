@@ -464,7 +464,7 @@ const SubBillingAccountCbo = () => {
   const billingAccountID = useWatch({
     control: form.control,
     name: 'cloud.billingAccountID',
-  });
+  }) as BillingAccountItem['id'] | undefined;
   const selectedBillingAccountID = normalizeBillingAccountID(billingAccountID);
 
   const [response, refreshBillingAccounts] =

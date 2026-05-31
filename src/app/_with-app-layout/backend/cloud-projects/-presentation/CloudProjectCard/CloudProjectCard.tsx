@@ -1,5 +1,6 @@
 import { ClockIcon, CloudIcon, Trash2Icon } from 'lucide-react';
 
+import IconBiznetGio from '@/shared/assets/biznetgio.png';
 import IconGoogleCloudPlatform from '@/shared/assets/ico-gcloud.png';
 import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
 import IconProxmox from '@/shared/assets/ico-proxmox.png';
@@ -9,7 +10,8 @@ import { Card } from '@/shared/presentation/atoms/Card';
 import { Tooltip } from '@/shared/presentation/atoms/Tooltip';
 
 const PROVIDER_META: Record<string, { src?: string; label: string }> = {
-  biznetgio: { label: 'Biznet Gio' },
+  biznetgio: { src: IconBiznetGio, label: 'Biznet Gio' },
+  biznetgioneolite: { src: IconBiznetGio, label: 'Biznet Gio' },
   digitalocean: { src: IconDigitalOcean, label: 'DigitalOcean' },
   idcloudhost: { src: IconIDCloudHost, label: 'IDCloudHost' },
   gcp: { src: IconGoogleCloudPlatform, label: 'Google Cloud' },

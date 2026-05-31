@@ -7,6 +7,7 @@ import {
 import { useController } from 'react-hook-form';
 
 import type { DTOs } from '@/shared/api';
+import IconBiznetGio from '@/shared/assets/biznetgio.png';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
@@ -26,6 +27,36 @@ interface FormBaseProps {
   isLoadingProviders: boolean;
   onRetryProviders: () => void;
   providers: DTOs.CloudProviderContractV1[];
+}
+
+function getProviderIconUrl(provider: DTOs.CloudProviderContractV1) {
+  const iconUrl = provider.icon?.url || provider.icon?.value;
+
+  if (iconUrl?.startsWith('http')) return iconUrl;
+  if (isBiznetGioProviderContract(provider)) return IconBiznetGio;
+
+  return undefined;
+}
+
+function isBiznetGioProviderContract(provider: DTOs.CloudProviderContractV1) {
+  const tokens = [
+    provider.id,
+    provider.name,
+    ...(provider.aliases ?? []),
+  ].map(normalizeProviderToken);
+
+  return tokens.some(
+    (token) => token === 'biznetgio' || token === 'biznetgioneolite',
+  );
+}
+
+function normalizeProviderToken(value?: string) {
+  return (
+    value
+      ?.trim()
+      .toLowerCase()
+      .replace(/[\s_-]+/g, '') ?? ''
+  );
 }
 
 export default function FormBase(props: FormBaseProps) {
@@ -171,6 +202,7 @@ function ProviderCard(props: {
     (field) => field.required,
   ).length;
   const providerLabel = getProviderLabel(provider);
+  const providerIconUrl = getProviderIconUrl(provider);
 
   return (
     <button
@@ -188,12 +220,12 @@ function ProviderCard(props: {
     >
       <div className="flex items-start gap-3">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-md border bg-card text-xs font-bold uppercase">
-          {provider.icon?.url ? (
+          {providerIconUrl ? (
             <img
               alt=""
               className="size-6 object-contain"
               loading="lazy"
-              src={provider.icon.url}
+              src={providerIconUrl}
             />
           ) : (
             getProviderIconFallback(provider)

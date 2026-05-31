@@ -9,6 +9,7 @@ import { useSSHKeyCreateModal } from '@/features/ssh-create-modal';
 
 import { ApiCloud, ApiSecret } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
+import IconBiznetGio from '@/shared/assets/biznetgio.png';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { useDebounceValue } from '@/shared/libs/react-hooks/useDebounce';
 import { cn } from '@/shared/libs/tailwind/cn';
@@ -42,8 +43,31 @@ function getProviderFallback(provider?: DTOs.CloudProviderContractV1) {
 function getProviderIconUrl(provider?: DTOs.CloudProviderContractV1) {
   const value = provider?.icon?.url || provider?.icon?.value;
 
-  if (!value?.startsWith('http')) return undefined;
-  return value;
+  if (value?.startsWith('http')) return value;
+  if (isBiznetGioProviderContract(provider)) return IconBiznetGio;
+
+  return undefined;
+}
+
+function isBiznetGioProviderContract(provider?: DTOs.CloudProviderContractV1) {
+  const tokens = [
+    provider?.id,
+    provider?.name,
+    ...(provider?.aliases ?? []),
+  ].map(normalizeProviderToken);
+
+  return tokens.some(
+    (token) => token === 'biznetgio' || token === 'biznetgioneolite',
+  );
+}
+
+function normalizeProviderToken(value?: string) {
+  return (
+    value
+      ?.trim()
+      .toLowerCase()
+      .replace(/[\s_-]+/g, '') ?? ''
+  );
 }
 
 function normalizeProviderContracts(response: {
