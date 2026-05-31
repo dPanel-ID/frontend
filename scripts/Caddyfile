@@ -4,7 +4,7 @@
 }
 
 http://{$DNOCS_STATIC_HOST:cloud-dev.terpusat.com}:{$PORT:8080} {
-    root * {$DNOCS_STATIC_ROOT:/srv/dnocs-fe/.output-static/client}
+    root * {$DNOCS_STATIC_ROOT:.output-static/client}
 
     encode zstd gzip
     try_files {path} {path}/index.html {path}.html =404
