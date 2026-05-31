@@ -3,9 +3,20 @@ import Cookies from 'js-cookie';
 import type { Locale } from '../config';
 import { DEFAULT_LOCALE, LOCALE_COOKIE, REGISTERED_LOCALES } from '../config';
 
+const messageLoaders = import.meta.glob('../config/dict-*.json', {
+  import: 'default',
+}) as Record<string, () => Promise<Record<string, unknown>>>;
+
 export async function loadMessages(locale: Locale) {
-  // Vite automatically splits this into chunks
-  return (await import(`@/services/i18n/config/dict-${locale}.json`)).default;
+  const loader =
+    messageLoaders[`../config/dict-${locale}.json`] ||
+    messageLoaders[`../config/dict-${DEFAULT_LOCALE}.json`];
+
+  if (!loader) {
+    throw new Error(`Missing messages for locale: ${locale}`);
+  }
+
+  return await loader();
 }
 
 export async function getLocale(): Promise<Locale> {

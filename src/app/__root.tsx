@@ -22,8 +22,14 @@ import { ToasterController } from '@/services/toaster';
 
 import { EventsProvider } from '@/shared/libs/events';
 
-import NotFoundView from './-view/NotFound';
 import appCss from '../styles.css?url';
+
+import NotFoundView from './-view/NotFound';
+
+const isStaticPrerender = import.meta.env.VITE_STATIC_PRERENDER === 'true';
+const staticRequestHeaders = {
+  userAgent: 'StaticPrerender',
+};
 
 const getHeaders = createServerFn().handler(() => {
   const headers = getRequestHeaders();
@@ -60,7 +66,9 @@ export const Route = createRootRoute({
   loader: async () => {
     const locale = await getLocale();
     const messages = await loadMessages(locale);
-    const requestHeaders = await getHeaders();
+    const requestHeaders = isStaticPrerender
+      ? staticRequestHeaders
+      : await getHeaders();
 
     return {
       locale,
@@ -76,7 +84,11 @@ function RootComponent() {
 
   return (
     <EventsProvider>
-      <DevetekIntlProvider locale={locale} messages={messages}>
+      <DevetekIntlProvider
+        locale={locale}
+        messages={messages}
+        timeZone={isStaticPrerender ? 'UTC' : undefined}
+      >
         <DevetekThemeModel>
           <AuthModelProvider>
             <ClientOnly>

@@ -55,6 +55,7 @@ count.txt
 .tanstack
 .wrangler
 .output
+.output-static
 .dpanel
 .vinxi
 version

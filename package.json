@@ -6,6 +6,7 @@
     "dev": "vite dev --port 3000",
     "dev-integrated": "vite dev --port 3000 --host 0.0.0.0",
     "build": "vite build",
+    "build:static": "STATIC_PRERENDER=true VITE_STATIC_PRERENDER=true BUILD_DIR=.output-static vite build",
     "serve": "vite preview",
     "test": "vitest run",
     "type-check": "tsc --noEmit",
