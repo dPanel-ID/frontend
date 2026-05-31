@@ -31,11 +31,13 @@ import { useServerDataModel } from '../../-model/server-data';
 import { HeaderPartials as Partials } from './_Partials';
 import { HeaderStates as UIStates } from './_States';
 
+type ServerDataModelSource = ReturnType<typeof useServerDataModel>;
+
 const [guard, useServerDetail] = guardedSelects({
   initialIsLoading: true,
   fallbackLoading: UIStates.Loading,
   fallbackError: UIStates.Loading,
-})(couple(useServerDataModel, (s) => s.detail));
+})(couple(useServerDataModel, (s) => (s as ServerDataModelSource).detail));
 
 export default guard(function Header() {
   const emit = useEmit();
@@ -49,7 +51,7 @@ export default guard(function Header() {
       s.host.address,
       s.agent.version,
       s.cloud?.provider,
-      s.ssh?.port,
+      s.ssh.port,
     ]);
 
   const sshTerminalUrl = `${import.meta.env.VITE_SECURE_SHELL_HOST}?id=${serverId}`;
