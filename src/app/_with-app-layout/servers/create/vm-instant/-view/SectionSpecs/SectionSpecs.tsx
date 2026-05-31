@@ -16,7 +16,7 @@ import { Combobox } from '@/shared/presentation/molecules/Combobox';
 
 import { OPTS_CPU_CORE, OPTS_DISK_GB, OPTS_RAM_GB } from '../../-config';
 import { useForm } from '../../-model';
-import { isBiznetGioProvider } from '../../-model/provider';
+import { isBiznetGioProvider, isGcpProvider } from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
 import { Sectioned } from '../../../-presentation/Sectioned';
 
@@ -75,10 +75,11 @@ function getProductSizeLabel(product?: ProductItem) {
 
 function getProductLabel(product: ProductItem) {
   const sizeLabel = getProductSizeLabel(product);
+  const productName = product.name || product.value || `Product #${product.id}`;
 
-  if (!sizeLabel) return product.name || `Product #${product.id}`;
+  if (!sizeLabel) return productName;
 
-  return `${product.name || `Product #${product.id}`} (${sizeLabel})`;
+  return `${productName} (${sizeLabel})`;
 }
 
 function getProductCycleItems(product?: ProductItem) {
@@ -331,6 +332,179 @@ const SubBiznetProductFields = () => {
   );
 };
 
+const SubGcpMachineTypeCbo = () => {
+  const { form, formErrors } = useForm();
+  const cloudProjectID = useWatch({
+    control: form.control,
+    name: 'cloud.projectID',
+  }) as number | undefined;
+  const zoneSlug = useWatch({
+    control: form.control,
+    name: 'cloud.zoneSlug',
+  });
+  const machineType = useWatch({
+    control: form.control,
+    name: 'spec.machineType',
+  });
+
+  const [response, refreshProducts] = ApiCloud.Project.Products.$Id.useGet({
+    cloudProjectId: String(cloudProjectID),
+    zone: zoneSlug ?? '',
+    options: { skip: !cloudProjectID || !zoneSlug },
+  });
+
+  const control = useController({
+    control: form.control,
+    name: 'spec.machineType',
+  });
+
+  const responseData =
+    response.$status === 'success'
+      ? response
+      : response.$status === 'loading'
+        ? response.prevData
+        : undefined;
+  const products = useMemo(() => responseData?.items ?? [], [responseData]);
+  const machineTypes = products
+    .map((product) => product.value || product.name || '')
+    .filter(Boolean)
+    .join(',');
+  const selectedProduct = products.find(
+    (product) => (product.value || product.name) === machineType,
+  );
+
+  useEffect(() => {
+    if (!cloudProjectID || !zoneSlug) {
+      form.setValue('spec.machineType', '');
+      return;
+    }
+
+    if (!responseData || !machineType) return;
+
+    if (!selectedProduct) {
+      form.setValue('spec.machineType', '');
+      return;
+    }
+
+    if (selectedProduct.vcpu) {
+      form.setValue('spec.cpuCore', selectedProduct.vcpu);
+    }
+
+    if (selectedProduct.ram_mb) {
+      form.setValue('spec.ramSizeGB', selectedProduct.ram_mb / 1024);
+    }
+
+    if (selectedProduct.disk_gb) {
+      form.setValue('spec.diskSizeGB', selectedProduct.disk_gb);
+    }
+  }, [
+    cloudProjectID,
+    form,
+    machineType,
+    machineTypes,
+    responseData,
+    selectedProduct,
+    zoneSlug,
+  ]);
+
+  if (!cloudProjectID || !zoneSlug || response.$status === 'initial') {
+    return (
+      <InlineState
+        title="Select a zone first"
+        description="GCP machine types are loaded from the selected cloud project and zone."
+      />
+    );
+  }
+
+  if (response.$status === 'loading' && response.prevData == null) {
+    return (
+      <div className="flex min-h-24 items-center justify-center rounded-lg border bg-background">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (response.$status === 'failed') {
+    return (
+      <InlineState
+        title="Could not load machine types"
+        description={getApiErrorDetail(response.error)}
+        variant="danger"
+        action={
+          <Button
+            buttonStyle="outline"
+            buttonColor="secondary"
+            size="sm"
+            onClick={() => refreshProducts()}
+          >
+            <RefreshCwIcon className="size-4" />
+            Refresh
+          </Button>
+        }
+      />
+    );
+  }
+
+  const productItems = products
+    .map((product) => {
+      const value = product.value || product.name || '';
+      if (!value) return undefined;
+
+      return {
+        label: getProductLabel(product),
+        value,
+      };
+    })
+    .filter(Boolean) as Array<{ label: string; value: string }>;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <Combobox
+          classNameButton="w-full flex-1 bg-background"
+          placeholder="Select a machine type"
+          onChange={(value) => {
+            const product = products.find(
+              (item) => (item.value || item.name) === value,
+            );
+
+            if (product?.vcpu) form.setValue('spec.cpuCore', product.vcpu);
+            if (product?.ram_mb) {
+              form.setValue('spec.ramSizeGB', product.ram_mb / 1024);
+            }
+            if (product?.disk_gb) {
+              form.setValue('spec.diskSizeGB', product.disk_gb);
+            }
+
+            control.field.onChange(value);
+          }}
+          value={control.field.value}
+          items={productItems}
+        />
+        <Button
+          aria-label="Refresh machine types"
+          title="Refresh machine types"
+          buttonStyle="outline"
+          buttonColor="secondary"
+          size="icon"
+          onClick={() => refreshProducts()}
+        >
+          <RefreshCwIcon className="size-4" />
+        </Button>
+      </div>
+
+      {productItems.length === 0 && (
+        <InlineState
+          title="No machine types found"
+          description="The selected GCP zone did not return any deployable machine types."
+        />
+      )}
+
+      <ErrorInline message={formErrors.spec?.machineType?.message} />
+    </div>
+  );
+};
+
 const SubOsTemplateCbo = () => {
   const { form, formErrors } = useForm();
   const cloudProjectID = useWatch({
@@ -345,10 +519,11 @@ const SubOsTemplateCbo = () => {
     name: 'spec.productID',
   });
   const usesBiznetGio = isBiznetGioProvider(provider);
+  const usesGcp = isGcpProvider(provider);
 
   const [response, refreshTemplates] = ApiCloud.Project.Ostemplates.$Id.useGet({
     cloudProjectId: String(cloudProjectID),
-    productId: productID,
+    productId: usesBiznetGio ? productID : undefined,
     options: { skip: !cloudProjectID || (usesBiznetGio && !productID) },
   });
 
@@ -466,7 +641,7 @@ const SubOsTemplateCbo = () => {
       )}
 
       <ErrorInline message={formErrors.spec?.osTemplate?.message} />
-      {!usesBiznetGio && (
+      {!usesBiznetGio && !usesGcp && (
         <>
           <ErrorInline message={formErrors.spec?.osName?.message} />
           <ErrorInline message={formErrors.spec?.osVersion?.message} />
@@ -482,6 +657,7 @@ export default function SectionSpecs() {
     | string
     | undefined;
   const usesBiznetGio = isBiznetGioProvider(provider);
+  const usesGcp = isGcpProvider(provider);
 
   const ctrlSpecCPUCore = useController({
     control: form.control,
@@ -509,7 +685,13 @@ export default function SectionSpecs() {
         <h6 className="text-sm font-semibold">VM Name</h6>
         <Input
           className="w-full bg-background"
-          placeholder={usesBiznetGio ? 'dpanel-bg01' : 'dpanel-idcloudhost-01'}
+          placeholder={
+            usesBiznetGio
+              ? 'dpanel-bg01'
+              : usesGcp
+                ? 'dpanel-gcp-01'
+                : 'dpanel-idcloudhost-01'
+          }
           {...form.register('spec.vmName')}
         />
         <ErrorInline message={formErrors.spec?.vmName?.message} />
@@ -530,37 +712,20 @@ export default function SectionSpecs() {
 
       {!usesBiznetGio && (
         <>
+          {usesGcp && (
+            <div className="mt-5 space-y-2">
+              <h6 className="text-sm font-semibold">Machine Type</h6>
+              <SubGcpMachineTypeCbo />
+            </div>
+          )}
+
           <div className="mt-5 space-y-2">
             <h6 className="text-sm font-semibold">OS Template</h6>
             <SubOsTemplateCbo />
           </div>
 
-          <div className="mt-5 grid gap-4 sm:grid-cols-3">
-            <div className="space-y-2">
-              <h6 className="text-sm font-semibold">CPU Cores</h6>
-              <Combobox
-                classNameButton="w-full bg-background"
-                placeholder="Select cores"
-                onChange={ctrlSpecCPUCore.field.onChange}
-                value={ctrlSpecCPUCore.field.value}
-                items={OPTS_CPU_CORE}
-              />
-              <ErrorInline message={formErrors.spec?.cpuCore?.message} />
-            </div>
-
-            <div className="space-y-2">
-              <h6 className="text-sm font-semibold">RAM</h6>
-              <Combobox
-                classNameButton="w-full bg-background"
-                placeholder="Select RAM"
-                onChange={ctrlSpecRAMSizeGB.field.onChange}
-                value={ctrlSpecRAMSizeGB.field.value}
-                items={OPTS_RAM_GB}
-              />
-              <ErrorInline message={formErrors.spec?.ramSizeGB?.message} />
-            </div>
-
-            <div className="space-y-2">
+          {usesGcp ? (
+            <div className="mt-5 space-y-2">
               <h6 className="text-sm font-semibold">Disk</h6>
               <Combobox
                 classNameButton="w-full bg-background"
@@ -571,7 +736,45 @@ export default function SectionSpecs() {
               />
               <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
             </div>
-          </div>
+          ) : (
+            <div className="mt-5 grid gap-4 sm:grid-cols-3">
+              <div className="space-y-2">
+                <h6 className="text-sm font-semibold">CPU Cores</h6>
+                <Combobox
+                  classNameButton="w-full bg-background"
+                  placeholder="Select cores"
+                  onChange={ctrlSpecCPUCore.field.onChange}
+                  value={ctrlSpecCPUCore.field.value}
+                  items={OPTS_CPU_CORE}
+                />
+                <ErrorInline message={formErrors.spec?.cpuCore?.message} />
+              </div>
+
+              <div className="space-y-2">
+                <h6 className="text-sm font-semibold">RAM</h6>
+                <Combobox
+                  classNameButton="w-full bg-background"
+                  placeholder="Select RAM"
+                  onChange={ctrlSpecRAMSizeGB.field.onChange}
+                  value={ctrlSpecRAMSizeGB.field.value}
+                  items={OPTS_RAM_GB}
+                />
+                <ErrorInline message={formErrors.spec?.ramSizeGB?.message} />
+              </div>
+
+              <div className="space-y-2">
+                <h6 className="text-sm font-semibold">Disk</h6>
+                <Combobox
+                  classNameButton="w-full bg-background"
+                  placeholder="Select disk"
+                  onChange={ctrlSpecDiskSizeGB.field.onChange}
+                  value={ctrlSpecDiskSizeGB.field.value}
+                  items={OPTS_DISK_GB}
+                />
+                <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
+              </div>
+            </div>
+          )}
         </>
       )}
     </Sectioned>

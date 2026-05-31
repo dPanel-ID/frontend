@@ -8,12 +8,16 @@ import type { DTOs } from '.';
 //   Recipe
 // =============================================================================
 
-export type MachineCreatePayloadV1 = DTOs.MachineV1 & {
-  cloud_project_id?: string;
+export type MachineCreatePayloadV1 = Omit<
+  DTOs.MachineV1,
+  'cloud_id' | 'secret_id'
+> & {
+  cloud_project_id?: number | string;
   cpu_core?: number;
   default_password?: string;
   disk?: number;
   os_template?: string;
+  secret_id?: number | string;
   private_subnet?: string;
   ram?: number;
   vm?: {
@@ -24,6 +28,8 @@ export type MachineCreatePayloadV1 = DTOs.MachineV1 & {
     disks?: number;
     keypair_id?: number;
     keypair_name?: string;
+    disk_size_gb?: number;
+    machine_type?: string;
     name?: string;
     network_uuid?: string;
     os_name?: string;
@@ -39,10 +45,13 @@ export type MachineCreatePayloadV1 = DTOs.MachineV1 & {
     region?: string;
     reserve_public_ip?: boolean;
     select_os?: string;
+    source_image?: string;
     ssh_and_console_user?: string;
+    subnetwork?: string;
     username?: string;
     vcpu?: number;
     vm_name?: string;
+    zone?: string;
   };
   vpc_id?: string;
 };

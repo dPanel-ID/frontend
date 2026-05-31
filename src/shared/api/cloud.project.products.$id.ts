@@ -10,13 +10,21 @@ import type {
 
 export interface RecipeParams {
   cloudProjectId: string;
+  zone?: string;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { cloudProjectId } = params;
+  const { cloudProjectId, zone } = params;
+  const queryParams = new URLSearchParams();
+
+  if (zone) {
+    queryParams.set('zone', zone);
+  }
+
+  const queryString = queryParams.toString();
 
   return {
-    url: `/v1/cloud/project/detail/${cloudProjectId}/products`,
+    url: `/v1/cloud/project/detail/${cloudProjectId}/products${queryString ? `?${queryString}` : ''}`,
   };
 }
 
@@ -39,6 +47,7 @@ export interface ProductItem {
   metadata?: Record<string, unknown>;
   name?: string;
   ram_mb?: number;
+  value?: string;
   vcpu?: number;
 }
 

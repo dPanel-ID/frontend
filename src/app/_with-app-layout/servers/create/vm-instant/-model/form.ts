@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { isBiznetGioProvider } from './provider';
+import { isBiznetGioProvider, isGcpProvider } from './provider';
 
 const bootstrapPasswordSchema = z
   .string()
@@ -59,6 +59,7 @@ export const formSchema = z
         .optional(),
       sshKeyID: z //
         .number({ message: 'Please select a SSH key!' }),
+      zoneSlug: z.string().optional(),
     }),
     regionSlug: z.string().optional(),
     vpcBulk: z.object({
@@ -70,6 +71,7 @@ export const formSchema = z
       osTemplate: z.string().optional(),
       osName: z.string().optional(),
       osVersion: z.string().optional(),
+      machineType: z.string().optional(),
       cpuCore: z //
         .number({ message: 'Please select a CPU core!' }),
       ramSizeGB: z //
@@ -86,11 +88,12 @@ export const formSchema = z
     }),
     login: z.object({
       username: z.string().min(1, 'Username is required'),
-      password: bootstrapPasswordSchema,
+      password: z.string().optional(),
     }),
   })
   .superRefine((values, ctx) => {
     const usesBiznetGio = isBiznetGioProvider(values.provider);
+    const usesGcp = isGcpProvider(values.provider);
 
     const vmNameResult = (
       usesBiznetGio ? biznetGioVmNameSchema : vmNameSchema
@@ -111,13 +114,26 @@ export const formSchema = z
     if (!usernameResult.success) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message:
-          usernameResult.error.issues[0]?.message ?? 'Invalid username.',
+        message: usernameResult.error.issues[0]?.message ?? 'Invalid username.',
         path: ['login', 'username'],
       });
     }
 
     if (usesBiznetGio) {
+      const passwordResult = bootstrapPasswordSchema.safeParse(
+        values.login.password,
+      );
+
+      if (!passwordResult.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            passwordResult.error.issues[0]?.message ??
+            'Invalid console password.',
+          path: ['login', 'password'],
+        });
+      }
+
       if (values.spec.productID == null) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -153,11 +169,61 @@ export const formSchema = z
       });
     }
 
+    if (usesGcp) {
+      if (!values.cloud.zoneSlug) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select a zone!',
+          path: ['cloud', 'zoneSlug'],
+        });
+      }
+
+      if (!values.spec.machineType) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select a machine type!',
+          path: ['spec', 'machineType'],
+        });
+      }
+
+      if (!values.spec.osTemplate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select an OS template!',
+          path: ['spec', 'osTemplate'],
+        });
+      }
+
+      if (values.spec.diskSizeGB < 20 || values.spec.diskSizeGB > 160) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select a disk size!',
+          path: ['spec', 'diskSizeGB'],
+        });
+      }
+
+      return;
+    }
+
     if (!values.vpcBulk.id || !values.vpcBulk.subnet) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Please select a VPC!',
         path: ['vpcBulk'],
+      });
+    }
+
+    const passwordResult = bootstrapPasswordSchema.safeParse(
+      values.login.password,
+    );
+
+    if (!passwordResult.success) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          passwordResult.error.issues[0]?.message ??
+          'Invalid bootstrap password.',
+        path: ['login', 'password'],
       });
     }
 
