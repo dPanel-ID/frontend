@@ -8,6 +8,10 @@ import { useController } from 'react-hook-form';
 
 import type { DTOs } from '@/shared/api';
 import IconBiznetGio from '@/shared/assets/biznetgio.png';
+import IconGoogleCloudPlatform from '@/shared/assets/ico-gcloud.png';
+import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
+import IconProxmox from '@/shared/assets/ico-proxmox.png';
+import IconDigitalOcean from '@/shared/assets/logo-digitalocean.png';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
@@ -33,21 +37,38 @@ function getProviderIconUrl(provider: DTOs.CloudProviderContractV1) {
   const iconUrl = provider.icon?.url || provider.icon?.value;
 
   if (iconUrl?.startsWith('http')) return iconUrl;
-  if (isBiznetGioProviderContract(provider)) return IconBiznetGio;
 
-  return undefined;
+  return getLocalProviderIcon(provider);
 }
 
-function isBiznetGioProviderContract(provider: DTOs.CloudProviderContractV1) {
+function getLocalProviderIcon(provider: DTOs.CloudProviderContractV1) {
   const tokens = [
     provider.id,
     provider.name,
     ...(provider.aliases ?? []),
   ].map(normalizeProviderToken);
 
-  return tokens.some(
-    (token) => token === 'biznetgio' || token === 'biznetgioneolite',
-  );
+  if (tokens.some((token) => token === 'biznetgio' || token === 'biznetgioneolite')) {
+    return IconBiznetGio;
+  }
+
+  if (tokens.some((token) => token === 'gcp' || token.includes('googlecloud'))) {
+    return IconGoogleCloudPlatform;
+  }
+
+  if (tokens.some((token) => token.includes('idcloudhost'))) {
+    return IconIDCloudHost;
+  }
+
+  if (tokens.some((token) => token.includes('digitalocean') || token === 'do')) {
+    return IconDigitalOcean;
+  }
+
+  if (tokens.some((token) => token.includes('proxmox'))) {
+    return IconProxmox;
+  }
+
+  return undefined;
 }
 
 function normalizeProviderToken(value?: string) {
