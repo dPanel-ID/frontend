@@ -21,8 +21,9 @@ export function getProviderContracts(response: {
 export function normalizeProviderContracts(
   providers?: DTOs.CloudProviderContractV1[],
 ) {
-  return (providers ?? []).filter((provider) =>
-    Boolean(getProviderValue(provider)),
+  return (providers ?? []).filter(
+    (provider) =>
+      provider.enabled !== false && Boolean(getProviderValue(provider)),
   );
 }
 

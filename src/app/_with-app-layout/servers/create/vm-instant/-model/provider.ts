@@ -11,3 +11,13 @@ export function isBiznetGioProvider(provider?: string) {
     normalizedProvider === 'neolite'
   );
 }
+
+export function isGcpProvider(provider?: string) {
+  const normalizedProvider = normalizeProviderKey(provider);
+
+  return (
+    normalizedProvider === 'gcp' ||
+    normalizedProvider === 'googlecloud' ||
+    normalizedProvider === 'googlecloudplatform'
+  );
+}

@@ -9,7 +9,7 @@ import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 
 import { useForm } from '../../-model';
-import { isBiznetGioProvider } from '../../-model/provider';
+import { isBiznetGioProvider, isGcpProvider } from '../../-model/provider';
 
 export default function SectionSubmit() {
   const [openToaster] = useToaster();
@@ -21,14 +21,15 @@ export default function SectionSubmit() {
 
   const handleSubmit = form.handleSubmit(async (values) => {
     const usesBiznetGio = isBiznetGioProvider(values.provider);
+    const usesGcp = isGcpProvider(values.provider);
     const vmName = values.spec.vmName.trim();
     const username = values.login.username.trim();
-    const password = values.login.password.trim();
+    const password = values.login.password?.trim() ?? '';
     const payload = usesBiznetGio
       ? {
           provider: values.provider,
-          cloud_project_id: String(values.cloud.projectID),
-          secret_id: String(values.cloud.sshKeyID),
+          cloud_project_id: values.cloud.projectID,
+          secret_id: values.cloud.sshKeyID,
           vm: {
             product_id: values.spec.productID,
             cycle: values.spec.billingCycle,
@@ -36,8 +37,7 @@ export default function SectionSubmit() {
             keypair_name: values.spec.keypairName?.trim() || `dpanel-${vmName}`,
             vm_name: vmName,
             description:
-              values.spec.description?.trim() ||
-              'dPanel managed NEO Lite VM',
+              values.spec.description?.trim() || 'dPanel managed NEO Lite VM',
             ssh_and_console_user: username,
             console_password: password,
             promocode: values.spec.promocode?.trim() || undefined,
@@ -45,26 +45,43 @@ export default function SectionSubmit() {
             reserve_public_ip: values.spec.reservePublicIP !== false,
           },
         }
-      : {
-          provider: values.provider,
-          cloud_project_id: String(values.cloud.projectID),
-          secret_id: String(values.cloud.sshKeyID),
-          vm: {
-            name: vmName,
-            region: values.regionSlug,
-            os_template_id: values.spec.osTemplate,
-            os_name: values.spec.osName,
-            os_version: values.spec.osVersion,
-            disks: values.spec.diskSizeGB,
-            vcpu: values.spec.cpuCore,
-            ram: values.spec.ramSizeGB * 1024,
-            username,
-            password,
-            billing_account_id: values.cloud.billingAccountID,
-            network_uuid: values.vpcBulk.id,
-            reserve_public_ip: true,
-          },
-        };
+      : usesGcp
+        ? {
+            provider: values.provider,
+            cloud_project_id: values.cloud.projectID,
+            secret_id: values.cloud.sshKeyID,
+            vm: {
+              name: vmName,
+              region: values.regionSlug,
+              zone: values.cloud.zoneSlug,
+              machine_type: values.spec.machineType,
+              source_image: values.spec.osTemplate,
+              disk_size_gb: values.spec.diskSizeGB,
+              username,
+              subnetwork: values.vpcBulk.id || undefined,
+              reserve_public_ip: values.spec.reservePublicIP !== false,
+            },
+          }
+        : {
+            provider: values.provider,
+            cloud_project_id: values.cloud.projectID,
+            secret_id: values.cloud.sshKeyID,
+            vm: {
+              name: vmName,
+              region: values.regionSlug,
+              os_template_id: values.spec.osTemplate,
+              os_name: values.spec.osName,
+              os_version: values.spec.osVersion,
+              disks: values.spec.diskSizeGB,
+              vcpu: values.spec.cpuCore,
+              ram: values.spec.ramSizeGB * 1024,
+              username,
+              password,
+              billing_account_id: values.cloud.billingAccountID,
+              network_uuid: values.vpcBulk.id,
+              reserve_public_ip: values.spec.reservePublicIP !== false,
+            },
+          };
 
     try {
       const createResponse = await ApiServer.Create.doPost({

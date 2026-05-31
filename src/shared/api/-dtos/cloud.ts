@@ -94,6 +94,7 @@ export interface CloudProviderContractV1 {
   capabilities?: string[];
   category?: string;
   documentation_url?: string;
+  enabled?: boolean;
   iac_backends?: string[];
   icon?: CloudProviderIconV1;
   id?: string;

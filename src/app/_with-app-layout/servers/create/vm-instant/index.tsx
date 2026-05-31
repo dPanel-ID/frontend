@@ -15,7 +15,7 @@ import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
 
 import { FormProvider, useForm } from './-model';
-import { isBiznetGioProvider } from './-model/provider';
+import { isBiznetGioProvider, isGcpProvider } from './-model/provider';
 import { SectionCloud } from './-view/SectionCloud';
 import { SectionLogin } from './-view/SectionLogin';
 import { SectionRegionVPC } from './-view/SectionRegionVPC';
@@ -100,12 +100,20 @@ function ProvisioningSummary() {
     name: 'spec.billingCycle',
   });
   const regionSlug = useWatch({ control: form.control, name: 'regionSlug' });
+  const zoneSlug = useWatch({
+    control: form.control,
+    name: 'cloud.zoneSlug',
+  });
   const vpcBulk = useWatch({ control: form.control, name: 'vpcBulk' });
   const osTemplate = useWatch({
     control: form.control,
     name: 'spec.osTemplate',
   });
   const productID = useWatch({ control: form.control, name: 'spec.productID' });
+  const machineType = useWatch({
+    control: form.control,
+    name: 'spec.machineType',
+  });
   const vmName = useWatch({ control: form.control, name: 'spec.vmName' });
   const cpuCore = useWatch({ control: form.control, name: 'spec.cpuCore' });
   const ramSizeGB = useWatch({ control: form.control, name: 'spec.ramSizeGB' });
@@ -115,11 +123,14 @@ function ProvisioningSummary() {
   });
   const username = useWatch({ control: form.control, name: 'login.username' });
 
-  const specSummary =
-    cpuCore && ramSizeGB && diskSizeGB
-      ? `${cpuCore} CPU / ${ramSizeGB} GB RAM / ${diskSizeGB} GB disk`
-      : undefined;
   const usesBiznetGio = isBiznetGioProvider(provider);
+  const usesGcp = isGcpProvider(provider);
+  const specSummary =
+    usesGcp && diskSizeGB
+      ? `${diskSizeGB} GB boot disk`
+      : cpuCore && ramSizeGB && diskSizeGB
+        ? `${cpuCore} CPU / ${ramSizeGB} GB RAM / ${diskSizeGB} GB disk`
+        : undefined;
   const readyFields = usesBiznetGio
     ? [
         provider,
@@ -132,18 +143,31 @@ function ProvisioningSummary() {
         specSummary,
         username,
       ]
-    : [
-        provider,
-        projectID,
-        sshKeyID,
-        vmName,
-        regionSlug,
-        billingAccountID || 'auto',
-        vpcBulk.id && vpcBulk.subnet,
-        osTemplate,
-        specSummary,
-        username,
-      ];
+    : usesGcp
+      ? [
+          provider,
+          projectID,
+          sshKeyID,
+          vmName,
+          regionSlug,
+          zoneSlug,
+          machineType,
+          osTemplate,
+          diskSizeGB,
+          username,
+        ]
+      : [
+          provider,
+          projectID,
+          sshKeyID,
+          vmName,
+          regionSlug,
+          billingAccountID || 'auto',
+          vpcBulk.id && vpcBulk.subnet,
+          osTemplate,
+          specSummary,
+          username,
+        ];
   const readyCount = readyFields.filter(Boolean).length;
   const totalFields = readyFields.length;
 
@@ -211,14 +235,33 @@ function ProvisioningSummary() {
               ready={Boolean(billingCycle)}
             />
           </>
+        ) : usesGcp ? (
+          <>
+            <SummaryRow
+              icon={NetworkIcon}
+              label="Zone"
+              value={zoneSlug}
+              ready={Boolean(zoneSlug)}
+            />
+            <SummaryRow
+              icon={ServerIcon}
+              label="Machine Type"
+              value={machineType}
+              ready={Boolean(machineType)}
+            />
+            <SummaryRow
+              icon={NetworkIcon}
+              label="Subnetwork"
+              value={vpcBulk.subnet || vpcBulk.id || 'Provider default'}
+              ready
+            />
+          </>
         ) : (
           <>
             <SummaryRow
               icon={CloudIcon}
               label="Billing"
-              value={
-                billingAccountID ? `Billing #${billingAccountID}` : 'Auto'
-              }
+              value={billingAccountID ? `Billing #${billingAccountID}` : 'Auto'}
               ready
             />
             <SummaryRow

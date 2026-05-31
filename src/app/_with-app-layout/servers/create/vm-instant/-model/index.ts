@@ -16,6 +16,7 @@ export const [FormProvider, useForm] = buildContext('Form', () => {
         billingAccountID: undefined,
         projectID: undefined,
         sshKeyID: undefined,
+        zoneSlug: '',
       },
       login: {
         username: 'dpanel',
@@ -28,6 +29,7 @@ export const [FormProvider, useForm] = buildContext('Form', () => {
         description: '',
         diskSizeGB: 20,
         keypairName: '',
+        machineType: '',
         osName: '',
         osTemplate: '',
         osVersion: '',
@@ -51,6 +53,7 @@ export const [FormProvider, useForm] = buildContext('Form', () => {
         billingAccountID: undefined,
         projectID: undefined,
         sshKeyID: undefined,
+        zoneSlug: '',
       },
       login: {
         username: 'dpanel',
@@ -63,6 +66,7 @@ export const [FormProvider, useForm] = buildContext('Form', () => {
         description: '',
         diskSizeGB: 20,
         keypairName: '',
+        machineType: '',
         osName: '',
         osTemplate: '',
         osVersion: '',

@@ -27,9 +27,12 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
 // =============================================================================
 
 export interface NetworkItem {
-  id: string;
-  name: string;
-  subnet: string;
+  id?: string;
+  metadata?: Record<string, unknown>;
+  name?: string;
+  network?: string;
+  region?: string;
+  subnet?: string;
 }
 
 export interface Dto {

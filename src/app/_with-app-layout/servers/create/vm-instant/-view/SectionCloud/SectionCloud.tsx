@@ -58,8 +58,9 @@ function normalizeProviderContracts(response: {
         ? response.prevData?.providers
         : [];
 
-  return (providers ?? []).filter((provider) =>
-    Boolean(getProviderValue(provider)),
+  return (providers ?? []).filter(
+    (provider) =>
+      provider.enabled !== false && Boolean(getProviderValue(provider)),
   );
 }
 
@@ -126,8 +127,10 @@ const SubCloudProviderCbo = () => {
     field.onChange(providerKey);
     form.resetField('cloud.projectID');
     form.setValue('cloud.billingAccountID', undefined);
+    form.setValue('cloud.zoneSlug', '');
     form.setValue('regionSlug', '');
     form.setValue('spec.billingCycle', '');
+    form.setValue('spec.machineType', '');
     form.setValue('spec.osTemplate', '');
     form.setValue('spec.osName', '');
     form.setValue('spec.osVersion', '');
@@ -396,7 +399,9 @@ const SubCloudProjectCbo = () => {
           onChange={(value) => {
             form.setValue('regionSlug', '');
             form.setValue('cloud.billingAccountID', undefined);
+            form.setValue('cloud.zoneSlug', '');
             form.setValue('spec.billingCycle', '');
+            form.setValue('spec.machineType', '');
             form.setValue('spec.osTemplate', '');
             form.setValue('spec.osName', '');
             form.setValue('spec.osVersion', '');

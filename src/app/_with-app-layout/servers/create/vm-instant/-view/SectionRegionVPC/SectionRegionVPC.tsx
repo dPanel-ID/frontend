@@ -13,7 +13,7 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { Combobox } from '@/shared/presentation/molecules/Combobox';
 
 import { useForm } from '../../-model';
-import { isBiznetGioProvider } from '../../-model/provider';
+import { isBiznetGioProvider, isGcpProvider } from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
 import { Sectioned } from '../../../-presentation/Sectioned';
 
@@ -130,6 +130,8 @@ const SubRegionCbo = () => {
           classNameButton="w-full flex-1 bg-background"
           placeholder="Select a Region"
           onChange={(value) => {
+            form.setValue('cloud.zoneSlug', '');
+            form.setValue('spec.machineType', '');
             form.setValue('vpcBulk', { id: '', subnet: '' });
             control.field.onChange(value);
           }}
@@ -160,9 +162,8 @@ const SubRegionCbo = () => {
   );
 };
 
-const SubVPCCbo = () => {
+const SubZoneCbo = () => {
   const { form, formErrors } = useForm();
-
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
@@ -172,25 +173,22 @@ const SubVPCCbo = () => {
     name: 'regionSlug',
   });
 
-  const [response, refreshVpcs] = ApiCloud.Vpcs.$Id.useGet({
+  const [response, refreshZones] = ApiCloud.Project.Zones.$Id.useGet({
     cloudProjectId: String(cloudProjectID),
-    regionSlug: regionSlug ?? '',
+    region: regionSlug ?? '',
     options: { skip: !cloudProjectID || !regionSlug },
   });
 
   const control = useController({
     control: form.control,
-    name: 'vpcBulk',
-    rules: {
-      required: 'Please select a VPC!',
-    },
+    name: 'cloud.zoneSlug',
   });
 
   if (!cloudProjectID || !regionSlug || response.$status === 'initial') {
     return (
       <InlineState
         title="Select a region first"
-        description="VPC options are scoped to the selected project and region."
+        description="Zones are loaded from the selected cloud project and region."
       />
     );
   }
@@ -206,7 +204,137 @@ const SubVPCCbo = () => {
   if (response.$status === 'failed') {
     return (
       <InlineState
-        title="Could not load VPCs"
+        title="Could not load zones"
+        description={getApiErrorDetail(response.error)}
+        variant="danger"
+        action={
+          <Button
+            buttonStyle="outline"
+            buttonColor="secondary"
+            size="sm"
+            onClick={() => refreshZones()}
+          >
+            <RefreshCwIcon className="size-4" />
+            Refresh
+          </Button>
+        }
+      />
+    );
+  }
+
+  const responseData =
+    response.$status === 'success' ? response : response.prevData;
+  const items: Array<{ label: ReactNode; value: string }> = [];
+
+  for (const zone of responseData?.items ?? []) {
+    if (!zone.name || !zone.id) continue;
+
+    items.push({
+      label: (
+        <span>
+          <span>{zone.name}</span>&nbsp;
+          <span className="opacity-50">({zone.id})</span>
+        </span>
+      ),
+      value: zone.id,
+    });
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <Combobox
+          classNameButton="w-full flex-1 bg-background"
+          placeholder="Select a Zone"
+          onChange={(value) => {
+            form.setValue('spec.machineType', '');
+            form.setValue('vpcBulk', { id: '', subnet: '' });
+            control.field.onChange(value);
+          }}
+          value={control.field.value}
+          items={items}
+        />
+        <Button
+          aria-label="Refresh zones"
+          title="Refresh zones"
+          buttonStyle="outline"
+          buttonColor="secondary"
+          size="icon"
+          onClick={() => refreshZones()}
+        >
+          <RefreshCwIcon className="size-4" />
+        </Button>
+      </div>
+
+      {items.length === 0 && (
+        <InlineState
+          title="No zones found"
+          description="The selected region did not return any deployable zones."
+        />
+      )}
+
+      <ErrorInline message={formErrors.cloud?.zoneSlug?.message} />
+    </div>
+  );
+};
+
+const SubVPCCbo = () => {
+  const { form, formErrors } = useForm();
+
+  const provider = useWatch({ control: form.control, name: 'provider' }) as
+    | string
+    | undefined;
+  const cloudProjectID = useWatch({
+    control: form.control,
+    name: 'cloud.projectID',
+  }) as number | undefined;
+  const regionSlug = useWatch({
+    control: form.control,
+    name: 'regionSlug',
+  });
+  const zoneSlug = useWatch({
+    control: form.control,
+    name: 'cloud.zoneSlug',
+  });
+  const usesGcp = isGcpProvider(provider);
+  const networkScope = usesGcp ? zoneSlug : regionSlug;
+
+  const [response, refreshVpcs] = ApiCloud.Vpcs.$Id.useGet({
+    cloudProjectId: String(cloudProjectID),
+    regionSlug: networkScope ?? '',
+    options: { skip: !cloudProjectID || !networkScope },
+  });
+
+  const control = useController({
+    control: form.control,
+    name: 'vpcBulk',
+  });
+
+  if (!cloudProjectID || !networkScope || response.$status === 'initial') {
+    return (
+      <InlineState
+        title={usesGcp ? 'Select a zone first' : 'Select a region first'}
+        description={
+          usesGcp
+            ? 'Subnetwork options are scoped to the selected project and zone.'
+            : 'VPC options are scoped to the selected project and region.'
+        }
+      />
+    );
+  }
+
+  if (response.$status === 'loading' && response.prevData == null) {
+    return (
+      <div className="flex min-h-24 items-center justify-center rounded-lg border bg-background">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (response.$status === 'failed') {
+    return (
+      <InlineState
+        title={usesGcp ? 'Could not load subnetworks' : 'Could not load VPCs'}
         description={getApiErrorDetail(response.error)}
         variant="danger"
         action={
@@ -229,39 +357,50 @@ const SubVPCCbo = () => {
   const items: Array<{ label: ReactNode; value: string }> = [];
 
   for (const vpc of responseData?.items ?? []) {
-    if (!vpc.name || !vpc.subnet || !vpc.id) continue;
+    const label = vpc.name || vpc.network || vpc.subnet || vpc.id;
+    const detail = vpc.subnet || vpc.region || vpc.network;
+
+    if (!label || !vpc.id) continue;
 
     items.push({
       label: (
         <span>
-          <span>{vpc.name}</span>&nbsp;
-          <span className="opacity-50">({vpc.subnet})</span>
+          <span>{label}</span>
+          {detail && <span className="opacity-50">&nbsp;({detail})</span>}
         </span>
       ),
-      value: `${vpc.subnet} ${vpc.id}`,
+      value: vpc.id,
     });
   }
 
-  const cboValue = control.field.value
-    ? `${control.field.value.subnet} ${control.field.value.id}`
-    : undefined;
+  const cboValue = control.field.value?.id || undefined;
 
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
         <Combobox
           classNameButton="w-full flex-1 bg-background"
-          placeholder="Select a VPC"
+          placeholder={usesGcp ? 'Select a Subnetwork' : 'Select a VPC'}
           onChange={(value) => {
-            const [subnet, id] = value.split(' ');
-            control.field.onChange({ subnet, id });
+            const selectedVpc = responseData?.items?.find(
+              (vpc) => vpc.id === value,
+            );
+
+            control.field.onChange({
+              id: selectedVpc?.id ?? '',
+              subnet:
+                selectedVpc?.subnet ??
+                selectedVpc?.name ??
+                selectedVpc?.network ??
+                '',
+            });
           }}
           value={cboValue}
           items={items}
         />
         <Button
-          aria-label="Refresh VPCs"
-          title="Refresh VPCs"
+          aria-label={usesGcp ? 'Refresh subnetworks' : 'Refresh VPCs'}
+          title={usesGcp ? 'Refresh subnetworks' : 'Refresh VPCs'}
           buttonStyle="outline"
           buttonColor="secondary"
           size="icon"
@@ -273,8 +412,12 @@ const SubVPCCbo = () => {
 
       {items.length === 0 && (
         <InlineState
-          title="No VPCs found"
-          description="The selected region did not return any VPC networks."
+          title={usesGcp ? 'No subnetworks found' : 'No VPCs found'}
+          description={
+            usesGcp
+              ? 'The selected zone did not return any subnetworks. The backend can create the VM with the provider default when available.'
+              : 'The selected region did not return any VPC networks.'
+          }
         />
       )}
 
@@ -461,6 +604,7 @@ export default function SectionRegionVPC() {
   const provider = useWatch({ control: form.control, name: 'provider' }) as
     | string
     | undefined;
+  const usesGcp = isGcpProvider(provider);
 
   if (isBiznetGioProvider(provider)) return null;
 
@@ -477,15 +621,22 @@ export default function SectionRegionVPC() {
           <SubRegionCbo />
         </div>
 
-        <div className="grid gap-2 lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start">
-          <h6 className="text-sm font-semibold lg:pt-2.5">
-            Billing Account
-          </h6>
-          <SubBillingAccountCbo />
-        </div>
+        {usesGcp ? (
+          <div className="grid gap-2 lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start">
+            <h6 className="text-sm font-semibold lg:pt-2.5">Zone</h6>
+            <SubZoneCbo />
+          </div>
+        ) : (
+          <div className="grid gap-2 lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start">
+            <h6 className="text-sm font-semibold lg:pt-2.5">Billing Account</h6>
+            <SubBillingAccountCbo />
+          </div>
+        )}
 
         <div className="grid gap-2 lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start">
-          <h6 className="text-sm font-semibold lg:pt-2.5">VPC</h6>
+          <h6 className="text-sm font-semibold lg:pt-2.5">
+            {usesGcp ? 'Subnetwork' : 'VPC'}
+          </h6>
           <SubVPCCbo />
         </div>
       </div>
