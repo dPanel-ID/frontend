@@ -36,7 +36,7 @@ export function recipe(params?: RecipeParams): GetRequestRecipe {
 // =============================================================================
 
 export interface Dto {
-  users?: DTOs.User[];
+  users?: DTOs.UserPublicV1[];
   pagination: DTOs.Pagination;
 }
 

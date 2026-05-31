@@ -32,7 +32,7 @@ export default function ServerUserCreateSidepanel(props: Props) {
   const [selectedUser, setSelectedUser] =
     useState<UserDirectoryPickerUser | null>(null);
   const [username, setUsername] = useState('');
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [password, setPassword] = useState('');
   const [homeDirectory, setHomeDirectory] = useState('/home/');
   const [group, setGroup] = useState(GROUP_ADMIN);
@@ -53,7 +53,7 @@ export default function ServerUserCreateSidepanel(props: Props) {
     const linuxUsername = resolveDefaultLinuxUsername(user);
 
     setSelectedUser(user);
-    setSelectedUserId(user.id);
+    setSelectedUserId(String(user.id));
     setUsername(linuxUsername);
     setHomeDirectory(`/home/${linuxUsername}`);
   };
@@ -139,7 +139,7 @@ export default function ServerUserCreateSidepanel(props: Props) {
           label="dPanel User"
           selectedUser={selectedUser}
           placeholder="Select user"
-          searchPlaceholder="Search by username, name, or email"
+          searchPlaceholder="Search by username or name"
           pageSize={5}
           onSelect={handleSelectUser}
         />
@@ -214,7 +214,7 @@ export default function ServerUserCreateSidepanel(props: Props) {
 
 function resolveDefaultLinuxUsername(user: UserDirectoryPickerUser) {
   return normalizeLinuxUsername(
-    user.email || user.fullname || user.username || String(user.id),
+    user.fullname || user.username || String(user.id),
     `user-${user.id}`,
   );
 }

@@ -16,7 +16,7 @@ export default function ProfileView() {
     userForm({
       action: 'update',
       user: {
-        id: Number(userProfile.id),
+        id: userProfile.id,
         fullname: userProfile.fullname,
         email: userProfile.email,
         username: userProfile.username,
