@@ -1,0 +1,12 @@
+{
+    admin off
+    auto_https off
+}
+
+http://{$DNOCS_STATIC_HOST:cloud-dev.terpusat.com} {
+    root * {$DNOCS_STATIC_ROOT:/srv/dnocs-fe/.output-static/client}
+
+    encode zstd gzip
+    try_files {path} {path}/index.html {path}.html =404
+    file_server
+}
