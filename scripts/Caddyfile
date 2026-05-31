@@ -3,7 +3,7 @@
     auto_https off
 }
 
-http://{$DNOCS_STATIC_HOST:cloud-dev.terpusat.com} {
+http://{$DNOCS_STATIC_HOST:cloud-dev.terpusat.com}:{$PORT:8080} {
     root * {$DNOCS_STATIC_ROOT:/srv/dnocs-fe/.output-static/client}
 
     encode zstd gzip
