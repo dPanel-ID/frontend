@@ -1,11 +1,21 @@
 export interface User {
-  id: number;
+  id: number | string;
   fullname: string;
   username: string;
   email: string;
   password?: string;
   register_from_user_id?: string;
   register_from?: string;
+  avatar_url?: string;
+  actived_at?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface UserPublicV1 {
+  id: string;
+  fullname?: string;
+  username?: string;
   avatar_url?: string;
   actived_at?: string;
   created_at?: string;

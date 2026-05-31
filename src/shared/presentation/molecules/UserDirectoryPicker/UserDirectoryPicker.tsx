@@ -6,7 +6,6 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   Loader2Icon,
-  MailIcon,
   SearchIcon,
   UserIcon,
 } from 'lucide-react';
@@ -21,7 +20,7 @@ import {
   PopoverTrigger,
 } from '@/shared/presentation/atoms/Popover';
 
-export type UserDirectoryPickerUser = DTOs.User;
+export type UserDirectoryPickerUser = DTOs.UserPublicV1;
 
 export interface UserDirectoryPickerProps {
   label?: string;
@@ -44,7 +43,7 @@ export default function UserDirectoryPicker(props: UserDirectoryPickerProps) {
     label,
     selectedUser,
     placeholder = 'Select user',
-    searchPlaceholder = 'Search by name, username, or email',
+    searchPlaceholder = 'Search by name or username',
     emptyText = 'No users found',
     loadingText = 'Loading users...',
     pageSize = DEFAULT_PAGE_SIZE,
@@ -77,11 +76,10 @@ export default function UserDirectoryPicker(props: UserDirectoryPickerProps) {
   const selectedLabel = selectedUser
     ? selectedUser.fullname ||
       selectedUser.username ||
-      selectedUser.email ||
       String(selectedUser.id)
     : '';
   const selectedSubtext = selectedUser
-    ? selectedUser.email || selectedUser.username || String(selectedUser.id)
+    ? selectedUser.username || String(selectedUser.id)
     : '';
 
   const handleSearchChange = (value: string) => {
@@ -175,9 +173,8 @@ export default function UserDirectoryPicker(props: UserDirectoryPickerProps) {
                     const userId = String(user.id);
                     const isSelected =
                       String(selectedUser?.id ?? '') === userId;
-                    const title =
-                      user.fullname || user.username || user.email || userId;
-                    const subtitle = user.email || user.username || userId;
+                    const title = user.fullname || user.username || userId;
+                    const subtitle = user.username || userId;
 
                     return (
                       <li key={userId}>
@@ -197,7 +194,7 @@ export default function UserDirectoryPicker(props: UserDirectoryPickerProps) {
                             </span>
                             {subtitle && (
                               <span className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
-                                <MailIcon className="size-3 shrink-0" />
+                                <UserIcon className="size-3 shrink-0" />
                                 <span className="truncate">{subtitle}</span>
                               </span>
                             )}
@@ -255,7 +252,7 @@ export default function UserDirectoryPicker(props: UserDirectoryPickerProps) {
 
 function UserAvatar(props: { user?: UserDirectoryPickerUser | null }) {
   const { user } = props;
-  const name = user?.fullname || user?.username || user?.email || 'User';
+  const name = user?.fullname || user?.username || 'User';
 
   return (
     <span className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full border bg-muted">

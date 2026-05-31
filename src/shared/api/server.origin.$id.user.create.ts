@@ -5,7 +5,7 @@ import { apiDoPost } from '../libs/api-client';
 export interface RecipeParams {
   serverId: string;
   payload: {
-    id: number;
+    id: string;
     username: string;
     password: string;
     group: string;
