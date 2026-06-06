@@ -26,7 +26,9 @@ import appCss from '../styles.css?url';
 
 import NotFoundView from './-view/NotFound';
 
-const isStaticPrerender = import.meta.env.VITE_STATIC_PRERENDER === 'true';
+const isStaticBuild =
+  import.meta.env.VITE_STATIC_PRERENDER === 'true' ||
+  import.meta.env.VITE_STATIC_SPA === 'true';
 const staticRequestHeaders = {
   userAgent: 'StaticPrerender',
 };
@@ -66,7 +68,7 @@ export const Route = createRootRoute({
   loader: async () => {
     const locale = await getLocale();
     const messages = await loadMessages(locale);
-    const requestHeaders = isStaticPrerender
+    const requestHeaders = isStaticBuild
       ? staticRequestHeaders
       : await getHeaders();
 
@@ -87,7 +89,7 @@ function RootComponent() {
       <DevetekIntlProvider
         locale={locale}
         messages={messages}
-        timeZone={isStaticPrerender ? 'UTC' : undefined}
+        timeZone={isStaticBuild ? 'UTC' : undefined}
       >
         <DevetekThemeModel>
           <AuthModelProvider>

@@ -14,10 +14,14 @@ const config = defineConfig(({ mode }) => {
   const isStaticPrerender: boolean =
     isEnabled(env.STATIC_PRERENDER || process.env.STATIC_PRERENDER) ||
     isEnabled(env.VITE_STATIC_PRERENDER || process.env.VITE_STATIC_PRERENDER);
+  const isStaticSpa: boolean =
+    isEnabled(env.STATIC_SPA || process.env.STATIC_SPA) ||
+    isEnabled(env.VITE_STATIC_SPA || process.env.VITE_STATIC_SPA);
+  const isStaticBuild: boolean = isStaticPrerender || isStaticSpa;
   const BUILD_DIR: string =
     env.BUILD_DIR ||
     process.env.BUILD_DIR ||
-    (isStaticPrerender ? '.output-static' : '.output');
+    (isStaticBuild ? '.output-static' : '.output');
   const BASE_PATH: string = env.BASE_PATH || process.env.BASE_PATH || '/';
   const isProduction: boolean = process.env.NODE_ENV === 'production';
   const ALLOWED_HOSTS: string[] | true = env.ALLOWED_HOSTS
@@ -36,7 +40,7 @@ const config = defineConfig(({ mode }) => {
       devtools({
         removeDevtoolsOnBuild: isProduction,
       }),
-      ...(isStaticPrerender
+      ...(isStaticBuild
         ? []
         : [
             nitro({
@@ -55,17 +59,35 @@ const config = defineConfig(({ mode }) => {
         router: {
           routesDirectory: './app',
         },
-        ...(isStaticPrerender
+        ...(isStaticSpa
           ? {
+              spa: {
+                enabled: true,
+                maskPath: '/',
+                prerender: {
+                  outputPath: '/index',
+                  crawlLinks: false,
+                  retryCount: 0,
+                },
+              },
               prerender: {
                 enabled: true,
-                autoSubfolderIndex: true,
-                autoStaticPathsDiscovery: true,
-                crawlLinks: true,
+                autoStaticPathsDiscovery: false,
+                crawlLinks: false,
                 failOnError: true,
               },
             }
-          : {}),
+          : isStaticPrerender
+            ? {
+                prerender: {
+                  enabled: true,
+                  autoSubfolderIndex: true,
+                  autoStaticPathsDiscovery: true,
+                  crawlLinks: true,
+                  failOnError: true,
+                },
+              }
+            : {}),
       }),
       viteReact({
         babel: {
