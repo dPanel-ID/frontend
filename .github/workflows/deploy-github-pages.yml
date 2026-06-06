@@ -47,6 +47,9 @@ jobs:
       - name: Build SPA static site
         run: pnpm run build:static
 
+      - name: Configure SPA fallback
+        run: cp .output-static/client/index.html .output-static/client/404.html
+
       - name: Configure custom domain
         run: |
           printf '%s\n' 'dnocs.devetek.app' > .output-static/client/CNAME
