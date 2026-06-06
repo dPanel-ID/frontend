@@ -42,21 +42,6 @@ jobs:
       - name: Build SPA static site
         run: pnpm run build:static
 
-      - name: Prepare Cloudflare Worker assets
-        run: |
-          rm -rf .output-static/worker-client
-          cp -R .output-static/client .output-static/worker-client
-          rm -f .output-static/worker-client/_redirects
-
-      - name: Deploy Cloudflare Worker
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_TOKEN_DEPLOYMENT }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: '4'
-          packageManager: pnpm
-          command: deploy --config wrangler.worker.jsonc
-
       - name: Deploy Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
