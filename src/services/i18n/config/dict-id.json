@@ -1665,7 +1665,11 @@
       "loadingDetails": "Memuat detil..."
     },
     "signUp": {
-      "title": "Daftar"
+      "title": "Daftar",
+      "showPassword": "Tampilkan password",
+      "hidePassword": "Sembunyikan password",
+      "showConfirmPassword": "Tampilkan konfirmasi password",
+      "hideConfirmPassword": "Sembunyikan konfirmasi password"
     },
     "editApplication": {
       "title": "Ubah Aplikasi",
