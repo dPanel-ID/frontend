@@ -1673,7 +1673,11 @@
       "loadingDetails": "Loading details..."
     },
     "signUp": {
-      "title": "Sign Up"
+      "title": "Sign Up",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "showConfirmPassword": "Show confirm password",
+      "hideConfirmPassword": "Hide confirm password"
     },
     "editApplication": {
       "title": "Edit Application",

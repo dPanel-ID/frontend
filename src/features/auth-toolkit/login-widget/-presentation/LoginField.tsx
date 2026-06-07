@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import type { HTMLInputTypeAttribute, ReactNode } from 'react';
+
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 import { useController } from 'react-hook-form';
 import type { FieldValues, Path, UseFormReturn } from 'react-hook-form';
@@ -6,6 +9,7 @@ import type { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { capitalizeFirstLetter } from '@/shared/libs/browser/string';
+import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
 
@@ -21,6 +25,7 @@ export default function LoginField<F extends FieldValues, K extends FormKey<F>>(
   props: LoginFieldProps<F, K>,
 ) {
   const { form, formName, appendSlot } = props;
+  const [showPassword, setShowPassword] = useState(false);
 
   const t = useDevetekTranslations();
 
@@ -35,6 +40,13 @@ export default function LoginField<F extends FieldValues, K extends FormKey<F>>(
     }
   };
 
+  const isPasswordInput = formName === 'password';
+  const resolvedInputType =
+    isPasswordInput && showPassword ? 'text' : isPasswordInput ? 'password' : 'text';
+  const toggleLabel = showPassword
+    ? t('sidepanel.signUp.hidePassword')
+    : t('sidepanel.signUp.showPassword');
+
   return (
     <div className="w-full">
       <p className="pl-1 text-sm font-medium text-primary/70">
@@ -42,12 +54,29 @@ export default function LoginField<F extends FieldValues, K extends FormKey<F>>(
         <span className="font-medium text-red-500">*</span>
       </p>
 
-      <Input
-        {...form.register(formName)}
-        type={formName === 'password' ? 'password' : 'text'}
-        className="w-full"
-        variant="3d"
-      />
+      <div className="relative">
+        <Input
+          {...form.register(formName)}
+          type={resolvedInputType}
+          className={isPasswordInput ? 'w-full pr-10' : 'w-full'}
+          variant="3d"
+        />
+
+        {isPasswordInput && (
+          <Button
+            asChild
+            size="icon-sm"
+            buttonStyle="ghost"
+            buttonColor="secondary"
+            className="absolute right-1 top-1/2 -translate-y-1/2"
+            onClick={() => setShowPassword((value) => !value)}
+          >
+            <button type="button" aria-label={toggleLabel} title={toggleLabel}>
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </button>
+          </Button>
+        )}
+      </div>
 
       <ErrorInline message={renderErrorMessage()} />
 
