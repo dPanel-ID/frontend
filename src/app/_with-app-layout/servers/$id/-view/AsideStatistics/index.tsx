@@ -16,7 +16,7 @@ type ServerStatsModelSource = ReturnType<typeof useServerStatsModel>;
 const [guardServerDetail] = guardedSelects({
   initialIsLoading: true,
   fallbackLoading: UIStates.Loading,
-  fallbackError: UIStates.Loading,
+  fallbackError: UIStates.FailedServerDetail,
 })(couple(useServerDataModel, (s) => (s as ServerDataModelSource).detail));
 
 const [guardStats] = guardedSelects({
