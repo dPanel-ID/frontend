@@ -62,7 +62,30 @@ function Failed() {
   );
 }
 
+function FailedServerDetail({ error }: { error: Error }) {
+  const emit = useEmit();
+
+  return (
+    <div className="relative">
+      <div className="relative opacity-50">
+        <Loading />
+      </div>
+
+      <div className="absolute left-1/2 top-1/2 -translate-1/2">
+        <FailedState.WallCentered.Retryable
+          withCard
+          errorPayload={error.message}
+          onClickRetry={() => {
+            emit('@servers::detail/server-detail-refresh', null);
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export const AsideStatisticsStates = {
   Loading,
   Failed,
+  FailedServerDetail,
 };

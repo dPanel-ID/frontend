@@ -36,7 +36,7 @@ type ServerDataModelSource = ReturnType<typeof useServerDataModel>;
 const [guard, useServerDetail] = guardedSelects({
   initialIsLoading: true,
   fallbackLoading: UIStates.Loading,
-  fallbackError: UIStates.Loading,
+  fallbackError: UIStates.Failed,
 })(couple(useServerDataModel, (s) => (s as ServerDataModelSource).detail));
 
 export default guard(function Header() {
