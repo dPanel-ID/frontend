@@ -46,11 +46,14 @@ export default function DialogController(): JSX.Element {
 
       const handleClick = async () => {
         setIsLoading(true);
-        await onClick?.();
-        setIsLoading(false);
+        try {
+          await onClick?.();
+        } finally {
+          setIsLoading(false);
 
-        if (!persistAfterAction) {
-          dialogEmit('%%dialog/close', null);
+          if (!persistAfterAction) {
+            dialogEmit('%%dialog/close', null);
+          }
         }
       };
 
