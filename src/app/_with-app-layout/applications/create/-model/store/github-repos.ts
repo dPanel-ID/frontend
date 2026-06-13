@@ -6,7 +6,7 @@ import { ApiGitRepository } from '@/shared/api';
 import { excludeNully } from '@/shared/libs/browser/typeguards';
 import { buildContext } from '@/shared/libs/react-factories/buildContext';
 
-export const ADD_GITHUB_ACCOUNT_VALUE = '__add_github_account__';
+export const ADD_GITHUB_ACCOUNT_VALUE = 'https://github.com/apps/dnocs-id';
 
 export const [GithubReposStoreProvider, useGithubReposStore] = buildContext(
   'ApplicationsCreateGithubReposStore',

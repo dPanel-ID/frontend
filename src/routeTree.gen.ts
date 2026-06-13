@@ -14,6 +14,7 @@ import { Route as WithAppLayoutRouteRouteImport } from './app/_with-app-layout/r
 import { Route as IndexRouteImport } from './app/index'
 import { Route as DocsIndexRouteImport } from './app/docs/index'
 import { Route as DocsIntroIndexRouteImport } from './app/docs/intro/index'
+import { Route as AuthCallbackIndexRouteImport } from './app/auth/callback/index'
 import { Route as WithAppLayoutTeamsIndexRouteImport } from './app/_with-app-layout/teams/index'
 import { Route as WithAppLayoutServersIndexRouteImport } from './app/_with-app-layout/servers/index'
 import { Route as WithAppLayoutProfileIndexRouteImport } from './app/_with-app-layout/profile/index'
@@ -59,6 +60,11 @@ const DocsIndexRoute = DocsIndexRouteImport.update({
 const DocsIntroIndexRoute = DocsIntroIndexRouteImport.update({
   id: '/docs/intro/',
   path: '/docs/intro/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackIndexRoute = AuthCallbackIndexRouteImport.update({
+  id: '/auth/callback/',
+  path: '/auth/callback/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WithAppLayoutTeamsIndexRoute = WithAppLayoutTeamsIndexRouteImport.update({
@@ -202,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof WithAppLayoutProfileIndexRoute
   '/servers': typeof WithAppLayoutServersIndexRoute
   '/teams': typeof WithAppLayoutTeamsIndexRoute
+  '/auth/callback': typeof AuthCallbackIndexRoute
   '/docs/intro': typeof DocsIntroIndexRoute
   '/applications/$id': typeof WithAppLayoutApplicationsIdIndexRoute
   '/applications/create': typeof WithAppLayoutApplicationsCreateIndexRoute
@@ -230,6 +237,7 @@ export interface FileRoutesByTo {
   '/profile': typeof WithAppLayoutProfileIndexRoute
   '/servers': typeof WithAppLayoutServersIndexRoute
   '/teams': typeof WithAppLayoutTeamsIndexRoute
+  '/auth/callback': typeof AuthCallbackIndexRoute
   '/docs/intro': typeof DocsIntroIndexRoute
   '/applications/$id': typeof WithAppLayoutApplicationsIdIndexRoute
   '/applications/create': typeof WithAppLayoutApplicationsCreateIndexRoute
@@ -260,6 +268,7 @@ export interface FileRoutesById {
   '/_with-app-layout/profile/': typeof WithAppLayoutProfileIndexRoute
   '/_with-app-layout/servers/': typeof WithAppLayoutServersIndexRoute
   '/_with-app-layout/teams/': typeof WithAppLayoutTeamsIndexRoute
+  '/auth/callback/': typeof AuthCallbackIndexRoute
   '/docs/intro/': typeof DocsIntroIndexRoute
   '/_with-app-layout/applications/$id/': typeof WithAppLayoutApplicationsIdIndexRoute
   '/_with-app-layout/applications/create/': typeof WithAppLayoutApplicationsCreateIndexRoute
@@ -290,6 +299,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/servers'
     | '/teams'
+    | '/auth/callback'
     | '/docs/intro'
     | '/applications/$id'
     | '/applications/create'
@@ -318,6 +328,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/servers'
     | '/teams'
+    | '/auth/callback'
     | '/docs/intro'
     | '/applications/$id'
     | '/applications/create'
@@ -347,6 +358,7 @@ export interface FileRouteTypes {
     | '/_with-app-layout/profile/'
     | '/_with-app-layout/servers/'
     | '/_with-app-layout/teams/'
+    | '/auth/callback/'
     | '/docs/intro/'
     | '/_with-app-layout/applications/$id/'
     | '/_with-app-layout/applications/create/'
@@ -372,6 +384,7 @@ export interface RootRouteChildren {
   WithAppLayoutRouteRoute: typeof WithAppLayoutRouteRouteWithChildren
   SplatRoute: typeof SplatRoute
   DocsIndexRoute: typeof DocsIndexRoute
+  AuthCallbackIndexRoute: typeof AuthCallbackIndexRoute
   DocsIntroIndexRoute: typeof DocsIntroIndexRoute
 }
 
@@ -410,6 +423,13 @@ declare module '@tanstack/react-router' {
       path: '/docs/intro'
       fullPath: '/docs/intro'
       preLoaderRoute: typeof DocsIntroIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/callback/': {
+      id: '/auth/callback/'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_with-app-layout/teams/': {
@@ -639,6 +659,7 @@ const rootRouteChildren: RootRouteChildren = {
   WithAppLayoutRouteRoute: WithAppLayoutRouteRouteWithChildren,
   SplatRoute: SplatRoute,
   DocsIndexRoute: DocsIndexRoute,
+  AuthCallbackIndexRoute: AuthCallbackIndexRoute,
   DocsIntroIndexRoute: DocsIntroIndexRoute,
 }
 export const routeTree = rootRouteImport
