@@ -21,3 +21,13 @@ export function isGcpProvider(provider?: string) {
     normalizedProvider === 'googlecloudplatform'
   );
 }
+
+export function isDigitalOceanProvider(provider?: string) {
+  const normalizedProvider = normalizeProviderKey(provider);
+
+  return (
+    normalizedProvider === 'digitalocean' ||
+    normalizedProvider === 'digitaloceancloud' ||
+    normalizedProvider === 'do'
+  );
+}

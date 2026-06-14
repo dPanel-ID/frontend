@@ -15,7 +15,11 @@ import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
 
 import { FormProvider, useForm } from './-model';
-import { isBiznetGioProvider, isGcpProvider } from './-model/provider';
+import {
+  isBiznetGioProvider,
+  isDigitalOceanProvider,
+  isGcpProvider,
+} from './-model/provider';
 import { SectionCloud } from './-view/SectionCloud';
 import { SectionLogin } from './-view/SectionLogin';
 import { SectionRegionVPC } from './-view/SectionRegionVPC';
@@ -125,9 +129,12 @@ function ProvisioningSummary() {
 
   const usesBiznetGio = isBiznetGioProvider(provider);
   const usesGcp = isGcpProvider(provider);
+  const usesDigitalOcean = isDigitalOceanProvider(provider);
   const specSummary =
     usesGcp && diskSizeGB
       ? `${diskSizeGB} GB boot disk`
+      : usesDigitalOcean && machineType
+        ? machineType
       : cpuCore && ramSizeGB && diskSizeGB
         ? `${cpuCore} CPU / ${ramSizeGB} GB RAM / ${diskSizeGB} GB disk`
         : undefined;
@@ -156,6 +163,17 @@ function ProvisioningSummary() {
           diskSizeGB,
           username,
         ]
+      : usesDigitalOcean
+        ? [
+            provider,
+            projectID,
+            sshKeyID,
+            vmName,
+            regionSlug,
+            machineType,
+            osTemplate,
+            username,
+          ]
       : [
           provider,
           projectID,
@@ -253,6 +271,21 @@ function ProvisioningSummary() {
               icon={NetworkIcon}
               label="Subnetwork"
               value={vpcBulk.subnet || vpcBulk.id || 'Provider default'}
+              ready
+            />
+          </>
+        ) : usesDigitalOcean ? (
+          <>
+            <SummaryRow
+              icon={ServerIcon}
+              label="Droplet Size"
+              value={machineType}
+              ready={Boolean(machineType)}
+            />
+            <SummaryRow
+              icon={NetworkIcon}
+              label="VPC UUID"
+              value={vpcBulk.id || 'Provider default'}
               ready
             />
           </>

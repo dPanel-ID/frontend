@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
-import { isBiznetGioProvider, isGcpProvider } from './provider';
+import {
+  isBiznetGioProvider,
+  isDigitalOceanProvider,
+  isGcpProvider,
+} from './provider';
 
 const bootstrapPasswordSchema = z
   .string()
@@ -99,6 +103,7 @@ export const formSchema = z
   .superRefine((values, ctx) => {
     const usesBiznetGio = isBiznetGioProvider(values.provider);
     const usesGcp = isGcpProvider(values.provider);
+    const usesDigitalOcean = isDigitalOceanProvider(values.provider);
 
     const vmNameResult = (
       usesBiznetGio ? biznetGioVmNameSchema : vmNameSchema
@@ -204,6 +209,26 @@ export const formSchema = z
           code: z.ZodIssueCode.custom,
           message: 'Please select a disk size!',
           path: ['spec', 'diskSizeGB'],
+        });
+      }
+
+      return;
+    }
+
+    if (usesDigitalOcean) {
+      if (!values.spec.machineType) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please provide a droplet size!',
+          path: ['spec', 'machineType'],
+        });
+      }
+
+      if (!values.spec.osTemplate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please provide an image slug!',
+          path: ['spec', 'osTemplate'],
         });
       }
 
