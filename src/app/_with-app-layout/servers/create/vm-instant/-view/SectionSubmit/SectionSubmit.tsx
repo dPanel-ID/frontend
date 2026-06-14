@@ -42,7 +42,7 @@ export default function SectionSubmit() {
               values.spec.description?.trim() || 'dPanel managed NEO Lite VM',
             ssh_and_console_user: username,
             console_password: password,
-            promocode: values.spec.promocode?.trim() || undefined,
+            promocode: values.spec.promocode?.trim() || 'AFNLDPANEL',
             pay_invoice_with_cc: values.spec.payInvoiceWithCC ?? 'no',
             reserve_public_ip: values.spec.reservePublicIP !== false,
           },
