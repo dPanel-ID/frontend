@@ -44,31 +44,47 @@ export default function useDomainDeleteUsecase(params: Params) {
     });
 
     while (dialog.isUnresolved && dialog.response === 'yes') {
-      const apiResponse = await ApiDomain.Delete.$Id.doDelete({
-        id: payload.id,
-      });
+      try {
+        const apiResponse = await ApiDomain.Delete.$Id.doDelete({
+          id: payload.id,
+        });
 
-      if (apiResponse.$status === 'success') {
+        if (apiResponse.$status === 'success') {
+          dialog.resolve();
+
+          openToaster({
+            variant: 'success',
+            message: t('toaster.domainDelete.success', {
+              domain: domain.hostname,
+            }),
+          });
+          onSuccess();
+          return;
+        }
+
         openToaster({
-          variant: 'success',
-          message: t('toaster.domainDelete.success', {
+          variant: 'error',
+          title: t('toaster.domainDelete.error', {
             domain: domain.hostname,
           }),
+          message: apiResponse.error.message,
         });
-        dialog.resolve();
-        onSuccess();
-        return;
+
+        await dialog.reject(apiResponse.error);
+      } catch (error) {
+        const normalizedError =
+          error instanceof Error ? error : new Error(String(error));
+
+        openToaster({
+          variant: 'error',
+          title: t('toaster.domainDelete.error', {
+            domain: domain.hostname,
+          }),
+          message: normalizedError.message,
+        });
+
+        await dialog.reject(normalizedError);
       }
-
-      openToaster({
-        variant: 'error',
-        title: t('toaster.domainDelete.error', {
-          domain: domain.hostname,
-        }),
-        message: apiResponse.error.message,
-      });
-
-      await dialog.reject(apiResponse.error);
     }
   });
 

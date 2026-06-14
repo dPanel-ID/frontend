@@ -41,33 +41,49 @@ export default function useRecordDeleteUsecase() {
       });
 
       while (dialog.isUnresolved && dialog.response === 'yes') {
-        const response = await ApiDomain.Origin.$Id.$RecordId.doDelete({
-          domainId,
-          recordId,
-        });
-
-        if (response.$status === 'success') {
-          openToaster({
-            variant: 'success',
-            message: t('toaster.domainRecordDelete.success', {
-              recordName,
-            }),
+        try {
+          const response = await ApiDomain.Origin.$Id.$RecordId.doDelete({
+            domainId,
+            recordId,
           });
 
-          dialog.resolve();
-          emit('#domain-details-sidepanel/details/refresh');
-          return;
+          if (response.$status === 'success') {
+            dialog.resolve();
+
+            openToaster({
+              variant: 'success',
+              message: t('toaster.domainRecordDelete.success', {
+                recordName,
+              }),
+            });
+
+            emit('#domain-details-sidepanel/details/refresh');
+            return;
+          }
+
+          openToaster({
+            variant: 'error',
+            title: t('toaster.domainRecordDelete.error', {
+              recordName,
+            }),
+            message: response.error.message,
+          });
+
+          await dialog.reject(response.error);
+        } catch (error) {
+          const normalizedError =
+            error instanceof Error ? error : new Error(String(error));
+
+          openToaster({
+            variant: 'error',
+            title: t('toaster.domainRecordDelete.error', {
+              recordName,
+            }),
+            message: normalizedError.message,
+          });
+
+          await dialog.reject(normalizedError);
         }
-
-        openToaster({
-          variant: 'error',
-          title: t('toaster.domainRecordDelete.error', {
-            recordName,
-          }),
-          message: response.error.message,
-        });
-
-        await dialog.reject(response.error);
       }
     },
   );
