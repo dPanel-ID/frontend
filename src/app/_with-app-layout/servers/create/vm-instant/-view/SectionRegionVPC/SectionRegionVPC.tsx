@@ -13,7 +13,11 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { Combobox } from '@/shared/presentation/molecules/Combobox';
 
 import { useForm } from '../../-model';
-import { isBiznetGioProvider, isGcpProvider } from '../../-model/provider';
+import {
+  isBiznetGioProvider,
+  isDigitalOceanProvider,
+  isGcpProvider,
+} from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
 import { Sectioned } from '../../../-presentation/Sectioned';
 
@@ -629,6 +633,7 @@ export default function SectionRegionVPC() {
     | string
     | undefined;
   const usesGcp = isGcpProvider(provider);
+  const usesDigitalOcean = isDigitalOceanProvider(provider);
 
   if (isBiznetGioProvider(provider)) return null;
 
@@ -650,12 +655,12 @@ export default function SectionRegionVPC() {
             <h6 className="text-sm font-semibold lg:pt-2.5">Zone</h6>
             <SubZoneCbo />
           </div>
-        ) : (
+        ) : !usesDigitalOcean ? (
           <div className="grid gap-2 lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start">
             <h6 className="text-sm font-semibold lg:pt-2.5">Billing Account</h6>
             <SubBillingAccountCbo />
           </div>
-        )}
+        ) : null}
 
         <div className="grid gap-2 lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start">
           <h6 className="text-sm font-semibold lg:pt-2.5">

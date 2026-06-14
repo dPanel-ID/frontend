@@ -17,7 +17,11 @@ import { ComboboxWithSearchCb } from '@/shared/presentation/molecules/ComboboxWi
 
 import { OPTS_CPU_CORE, OPTS_DISK_GB, OPTS_RAM_GB } from '../../-config';
 import { useForm } from '../../-model';
-import { isBiznetGioProvider, isGcpProvider } from '../../-model/provider';
+import {
+  isBiznetGioProvider,
+  isDigitalOceanProvider,
+  isGcpProvider,
+} from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
 import { Sectioned } from '../../../-presentation/Sectioned';
 
@@ -536,6 +540,110 @@ const SubGcpMachineTypeCbo = () => {
   );
 };
 
+const SubDigitalOceanSizeCbo = () => {
+  const { form, formErrors } = useForm();
+  const cloudProjectID = useWatch({
+    control: form.control,
+    name: 'cloud.projectID',
+  }) as string | undefined;
+  const regionSlug = useWatch({ control: form.control, name: 'regionSlug' });
+
+  const [response, refreshProducts] = ApiCloud.Project.Products.$Id.useGet({
+    cloudProjectId: String(cloudProjectID),
+    zone: regionSlug ?? '',
+    options: { skip: !cloudProjectID || !regionSlug },
+  });
+
+  const control = useController({
+    control: form.control,
+    name: 'spec.machineType',
+  });
+
+  if (!cloudProjectID || !regionSlug || response.$status === 'initial') {
+    return (
+      <InlineState
+        title="Select a region first"
+        description="DigitalOcean droplet sizes are filtered by the selected project and region."
+      />
+    );
+  }
+
+  if (response.$status === 'loading' && response.prevData == null) {
+    return (
+      <div className="flex min-h-24 items-center justify-center rounded-lg border bg-background">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (response.$status === 'failed') {
+    return (
+      <InlineState
+        title="Could not load droplet sizes"
+        description={getApiErrorDetail(response.error)}
+        variant="danger"
+        action={
+          <Button
+            buttonStyle="outline"
+            buttonColor="secondary"
+            size="sm"
+            onClick={() => refreshProducts()}
+          >
+            <RefreshCwIcon className="size-4" />
+            Refresh
+          </Button>
+        }
+      />
+    );
+  }
+
+  const responseData =
+    response.$status === 'success' ? response : response.prevData;
+  const items = (responseData?.items ?? [])
+    .map((product) => {
+      const value = product.value || product.name || '';
+      if (!value) return undefined;
+      return {
+        value,
+        label: getProductLabel(product),
+      };
+    })
+    .filter(Boolean) as Array<{ label: string; value: string }>;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <Combobox
+          classNameButton="w-full flex-1 bg-background"
+          placeholder="Select a droplet size"
+          onChange={control.field.onChange}
+          value={control.field.value}
+          items={items}
+        />
+        <Button
+          aria-label="Refresh droplet sizes"
+          title="Refresh droplet sizes"
+          buttonStyle="outline"
+          buttonColor="secondary"
+          size="icon"
+          onClick={() => refreshProducts()}
+        >
+          <RefreshCwIcon className="size-4" />
+        </Button>
+      </div>
+
+      {items.length === 0 && (
+        <InlineState
+          title="No droplet sizes found"
+          description="The selected region did not return available DigitalOcean sizes."
+        />
+      )}
+
+      <ErrorInline message={formErrors.spec?.machineType?.message} />
+    </div>
+  );
+};
+
 const SubOsTemplateCbo = () => {
   const { form, formErrors } = useForm();
   const cloudProjectID = useWatch({
@@ -689,6 +797,7 @@ export default function SectionSpecs() {
     | undefined;
   const usesBiznetGio = isBiznetGioProvider(provider);
   const usesGcp = isGcpProvider(provider);
+  const usesDigitalOcean = isDigitalOceanProvider(provider);
 
   const ctrlSpecCPUCore = useController({
     control: form.control,
@@ -721,6 +830,8 @@ export default function SectionSpecs() {
               ? 'dpanel-bg01'
               : usesGcp
                 ? 'dpanel-gcp-01'
+                : usesDigitalOcean
+                  ? 'dpanel-do-01'
                 : 'dpanel-idcloudhost-01'
           }
           {...form.register('spec.vmName')}
@@ -750,8 +861,17 @@ export default function SectionSpecs() {
             </div>
           )}
 
+          {usesDigitalOcean && (
+            <div className="mt-5 space-y-2">
+              <h6 className="text-sm font-semibold">Droplet Size</h6>
+              <SubDigitalOceanSizeCbo />
+            </div>
+          )}
+
           <div className="mt-5 space-y-2">
-            <h6 className="text-sm font-semibold">OS Template</h6>
+            <h6 className="text-sm font-semibold">
+              {usesDigitalOcean ? 'Image' : 'OS Template'}
+            </h6>
             <SubOsTemplateCbo />
           </div>
 
@@ -767,7 +887,7 @@ export default function SectionSpecs() {
               />
               <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
             </div>
-          ) : (
+          ) : !usesDigitalOcean ? (
             <div className="mt-5 grid gap-4 sm:grid-cols-3">
               <div className="space-y-2">
                 <h6 className="text-sm font-semibold">CPU Cores</h6>
@@ -805,7 +925,7 @@ export default function SectionSpecs() {
                 <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
               </div>
             </div>
-          )}
+          ) : null}
         </>
       )}
     </Sectioned>

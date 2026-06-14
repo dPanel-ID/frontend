@@ -7,7 +7,11 @@ import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Input } from '@/shared/presentation/atoms/Input';
 
 import { useForm } from '../../-model';
-import { isBiznetGioProvider, isGcpProvider } from '../../-model/provider';
+import {
+  isBiznetGioProvider,
+  isDigitalOceanProvider,
+  isGcpProvider,
+} from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
 import { Sectioned } from '../../../-presentation/Sectioned';
 
@@ -19,6 +23,7 @@ export default function SectionLogin() {
     | undefined;
   const usesBiznetGio = isBiznetGioProvider(provider);
   const usesGcp = isGcpProvider(provider);
+  const usesDigitalOcean = isDigitalOceanProvider(provider);
 
   return (
     <Sectioned
@@ -40,7 +45,7 @@ export default function SectionLogin() {
           <ErrorInline message={formErrors.login?.username?.message} />
         </div>
 
-        {!usesGcp && (
+        {!usesGcp && !usesDigitalOcean && (
           <div className="space-y-2">
             <h6 className="text-sm font-semibold">
               {usesBiznetGio ? 'Console Password' : 'Bootstrap Password'}
@@ -81,10 +86,10 @@ export default function SectionLogin() {
           </div>
         )}
 
-        {usesGcp && (
+        {(usesGcp || usesDigitalOcean) && (
           <p className="text-xs leading-relaxed text-muted-foreground">
             Sent as vm.username. The selected dPanel SSH key is injected into
-            GCP instance metadata for setup.
+            the provider VM request for setup.
           </p>
         )}
       </div>

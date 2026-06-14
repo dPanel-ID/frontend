@@ -9,7 +9,11 @@ import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 
 import { useForm } from '../../-model';
-import { isBiznetGioProvider, isGcpProvider } from '../../-model/provider';
+import {
+  isBiznetGioProvider,
+  isDigitalOceanProvider,
+  isGcpProvider,
+} from '../../-model/provider';
 
 export default function SectionSubmit() {
   const [openToaster] = useToaster();
@@ -22,6 +26,7 @@ export default function SectionSubmit() {
   const handleSubmit = form.handleSubmit(async (values) => {
     const usesBiznetGio = isBiznetGioProvider(values.provider);
     const usesGcp = isGcpProvider(values.provider);
+    const usesDigitalOcean = isDigitalOceanProvider(values.provider);
     const vmName = values.spec.vmName.trim();
     const username = values.login.username.trim();
     const password = values.login.password?.trim() ?? '';
@@ -64,6 +69,21 @@ export default function SectionSubmit() {
               reserve_public_ip: values.spec.reservePublicIP !== false,
             },
           }
+        : usesDigitalOcean
+          ? {
+              provider: values.provider,
+              cloud_project_id: cloudProjectId,
+              secret_id: sshKeyId,
+              vm: {
+                name: vmName,
+                region: values.regionSlug,
+                size: values.spec.machineType,
+                image: values.spec.osTemplate,
+                username,
+                vpc_uuid: values.vpcBulk.id || undefined,
+                reserve_public_ip: values.spec.reservePublicIP !== false,
+              },
+            }
         : {
             provider: values.provider,
             cloud_project_id: cloudProjectId,
