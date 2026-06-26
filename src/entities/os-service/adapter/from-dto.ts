@@ -18,5 +18,8 @@ export const toOsService = createAdapter<DTOs.ServiceOriginV1, OsService>(
     schemaOsService.parse({
       serviceName: raw.name.replace(/^(●|\*)\s*/, ''),
       serviceState: toState(raw.state).unwrap(),
+      installerStatus: raw.installer_status
+        ? toState(raw.installer_status).unwrap()
+        : undefined,
     } satisfies KeysOnly<z.input<typeof schemaOsService>>),
 );

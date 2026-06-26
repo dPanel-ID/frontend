@@ -220,6 +220,12 @@ export default function AppCard(props: AppCardProps) {
     : 'var(--color-orange-500)';
   const serviceState = normalizeServiceState(primaryServer?.serviceState);
   const serviceStateMeta = OS_SERVICE_STATE_METADATA[serviceState];
+  const serviceInstallerStatus = primaryServer?.serviceInstallerStatus
+    ? normalizeDeploymentStatus(primaryServer.serviceInstallerStatus)
+    : undefined;
+  const serviceInstallerStatusMeta = serviceInstallerStatus
+    ? CICD_ARTIFACT_STATUS_METADATA[serviceInstallerStatus]
+    : undefined;
   const autoDeployLabel = data.configDefs.cicd.autoDeploy.enabled
     ? t('common.terms.autoDeploy')
     : t('common.terms.off');
@@ -294,6 +300,14 @@ export default function AppCard(props: AppCardProps) {
                 icon={serviceStateMeta.icon}
                 label={t(serviceStateMeta.i18n.statusLabel)}
                 color={`var(${serviceStateMeta.color})`}
+                compact
+              />
+            )}
+            {serviceInstallerStatusMeta && (
+              <StatusPill
+                icon={serviceInstallerStatusMeta.icon}
+                label={t(serviceInstallerStatusMeta.i18n.statusLabel)}
+                color={`var(${serviceInstallerStatusMeta.color})`}
                 compact
               />
             )}
@@ -527,7 +541,7 @@ function InfoItem(props: {
 
   const content = (
     <>
-      <span className="flex min-w-[6.25rem] items-center gap-1.5 text-xs font-medium text-primary/45">
+      <span className="flex min-w-25 items-center gap-1.5 text-xs font-medium text-primary/45">
         <Icon className="size-3.5 shrink-0" />
         {label}
       </span>
