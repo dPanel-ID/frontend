@@ -1,3 +1,4 @@
+import { useRouter } from '@tanstack/react-router';
 import {
   AppWindowIcon,
   BoltIcon,
@@ -20,33 +21,35 @@ import {
   XIcon,
 } from 'lucide-react';
 
-import { useRouter } from '@tanstack/react-router';
-
 import { useDevetekLocale } from '@/services/i18n';
 
-import { AdapterOsServiceFromDto } from '@/entities/os-service/adapter';
 import type { CicdArtifact } from '@/entities/cicd-artifact/rules/schema';
 import type { CicdDeployment } from '@/entities/cicd-deployment/rules/schema';
+import { AdapterOsServiceFromDto } from '@/entities/os-service/adapter';
+import { ServiceState } from '@/entities/os-service/ui/presentation/ServiceState';
+import usePushServiceActivityUsecase from '@/entities/os-service/usecase/push-activity';
 
-import {
-  getDistanceFromNow,
-  humanizeSeconds,
-} from '@/shared/libs/browser/date';
 import { ApiService } from '@/shared/api';
-import { useAdapter } from '@/shared/libs/api-client';
+import { getDistanceFromNow, humanizeSeconds } from '@/shared/libs/browser/date';
 import { cn } from '@/shared/libs/tailwind/cn';
+import { Button } from '@/shared/presentation/atoms/Button';
 import { Card } from '@/shared/presentation/atoms/Card';
 import Shimmer from '@/shared/presentation/atoms/Shimmer';
-
-import usePushServiceActivityUsecase from '@/entities/os-service/usecase/push-activity';
-import { ServiceState } from '@/entities/os-service/ui/presentation/ServiceState';
-
-import { Button } from '@/shared/presentation/atoms/Button';
 
 import { useEmit } from '../../-model/events';
 import { ArtifactCardPartials as Partials } from './_presentation/ArtifactCard/_Partials';
 
 type DeployStatus = CicdDeployment['state']['status'];
+
+type OsServiceState =
+  | 'running'
+  | 'dead'
+  | 'failed'
+  | 'exited'
+  | 'reload'
+  | 'reloading'
+  | 'restarting'
+  | 'unknown';
 
 function DeploymentStatusBadge({ status }: { status: DeployStatus }) {
   if (status === 'ready') {
@@ -143,15 +146,6 @@ function DeploymentServiceState(props: {
     );
   }
 
-  if (!serviceState) {
-    return (
-      <span className="inline-flex items-center gap-1 text-xs text-slate-400">
-        <LoaderCircle className="size-3 animate-spin" />
-        Loading service status
-      </span>
-    );
-  }
-
   return (
     <>
       <ServiceState.Badge className="size-3 ml-0.5" serviceState={serviceState} />
@@ -176,7 +170,7 @@ function DeploymentServiceState(props: {
 function resolveServiceState(serviceDetail?: {
   active?: string;
   state?: string;
-}) {
+}): OsServiceState {
   const state = normalizeServiceState(serviceDetail?.state);
   if (state) return state;
 
@@ -186,7 +180,7 @@ function resolveServiceState(serviceDetail?: {
   return 'unknown';
 }
 
-function normalizeServiceState(value?: string) {
+function normalizeServiceState(value?: string): OsServiceState | undefined {
   switch (value?.trim().toLowerCase()) {
     case 'running':
     case 'dead':
@@ -195,13 +189,13 @@ function normalizeServiceState(value?: string) {
     case 'reload':
     case 'reloading':
     case 'restarting':
-      return value.trim().toLowerCase();
+      return value.trim().toLowerCase() as OsServiceState;
     default:
       return undefined;
   }
 }
 
-function normalizeActiveState(value?: string) {
+function normalizeActiveState(value?: string): OsServiceState | undefined {
   switch (value?.trim().toLowerCase()) {
     case 'active':
       return 'running';
