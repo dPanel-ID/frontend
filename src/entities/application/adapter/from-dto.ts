@@ -55,6 +55,7 @@ export const toApplicationCard = createAdapter<
           deployStatus: d.installer_status,
           serviceName: d.service?.name,
           serviceState: d.service?.state,
+          serviceInstallerStatus: d.service?.installer_status,
         })),
     },
   } satisfies KeysOnlyDeep<z.input<typeof schemaApplicationCard>>);

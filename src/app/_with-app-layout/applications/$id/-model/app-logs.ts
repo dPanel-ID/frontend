@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import type { DTOs } from '@/shared/api';
 import type { SchemaCommon } from '@/entities/shared/rules/schema';
 
 import { ApiApplication } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
+
+import { useArtifactHistoryModel } from './artifact-history';
 
 interface AppLogsModelProps {
   applicationId: SchemaCommon.UnitId;
@@ -13,6 +16,19 @@ interface AppLogsModelProps {
 interface LogSelection {
   filename: string;
   serverId: SchemaCommon.UnitId;
+}
+
+export interface AppLogEntryView {
+  line: string;
+  severity?: string;
+  time?: string;
+  attributes?: Record<string, unknown> | null;
+}
+
+interface AppLogView {
+  entries: AppLogEntryView[];
+  query: string;
+  queryErrors: string[];
 }
 
 export type AppLogTimeFilter = '10m' | '1h';
@@ -41,9 +57,12 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
   const [logSelection, setLogSelection] = useState<LogSelection>();
   const [timeFilter, setTimeFilter] = useState<AppLogTimeFilter>('10m');
   const [requestAnchor, setRequestAnchor] = useState(() => Date.now());
+  const [lastDeployment] = useArtifactHistoryModel((s) => [s.lastDeployment]);
   const timeFilterConfig = APP_LOG_TIME_FILTERS[timeFilter];
+  const deploymentId = lastDeployment?.id;
   const logMetadata = logSelection
     ? {
+        deploymentId,
         serverId: logSelection.serverId,
       }
     : undefined;
@@ -81,7 +100,8 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
   const [responseLog] = ApiApplication.Logs.$Id.useGet({
     applicationId,
     line: timeFilterConfig.limit,
-    machineId: logMetadata?.serverId,
+    deploymentId,
+    machineId: deploymentId ? undefined : logMetadata?.serverId,
     timeGte,
     timeLt,
     options: {
@@ -93,8 +113,20 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     ApiApplication.Logs.$Id.normalizeLogLines,
   );
 
+  const responseLogView = useAdapter(responseLog, normalizeLogView);
+
+  const logView =
+    responseLogView.$status === 'success'
+      ? responseLogView
+      : responseLogView.$status === 'loading' && responseLogView.prevData
+        ? responseLogView.prevData
+        : { entries: [], query: '', queryErrors: [] };
+
   return {
     log: responseLogLines,
+    logEntries: logView.entries,
+    logQuery: logView.query,
+    logQueryErrors: logView.queryErrors,
     refreshLog,
     timeFilter,
     selectTimeFilter,
@@ -110,3 +142,46 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     setLogSelection: selectLog,
   };
 });
+
+function normalizeLogView(raw: DTOs.ApplicationLogsResponseV1): AppLogView {
+  const query = typeof raw.query === 'string' ? raw.query : '';
+  const queryErrors = Array.isArray(raw.query_errors)
+    ? raw.query_errors.filter((queryError): queryError is string => Boolean(queryError))
+    : [];
+
+  return {
+    entries: normalizeLogEntries(raw),
+    query,
+    queryErrors,
+  };
+}
+
+function normalizeLogEntries(raw: DTOs.ApplicationLogsResponseV1): AppLogEntryView[] {
+  if (Array.isArray(raw)) {
+    return raw
+      .filter((line): line is string => typeof line === 'string')
+      .map((line) => ({ line }));
+  }
+
+  const entries = Array.isArray(raw.entries) ? raw.entries : [];
+
+  if (entries.length > 0) {
+    return entries
+      .filter((entry): entry is NonNullable<(typeof entries)[number]> => Boolean(entry))
+      .map((entry) => ({
+        line: typeof entry.line === 'string' && entry.line.trim() ? entry.line : ' ',
+        severity: entry.severity,
+        time:
+          typeof entry.time === 'string' || typeof entry.time === 'number'
+            ? String(entry.time)
+            : undefined,
+        attributes: entry.attributes ?? null,
+      }));
+  }
+
+  const lines = Array.isArray(raw.lines) ? raw.lines : [];
+
+  return lines
+    .filter((line): line is string => typeof line === 'string')
+    .map((line) => ({ line }));
+}

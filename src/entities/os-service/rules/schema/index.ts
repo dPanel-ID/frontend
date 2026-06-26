@@ -8,4 +8,5 @@ export type OsService = z.infer<typeof schemaOsService>;
 export const schemaOsService = z.object({
   serviceName: z.string(),
   serviceState: state,
+  installerStatus: state.optional(),
 });

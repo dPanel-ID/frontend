@@ -24,6 +24,7 @@ import { useRouter } from '@tanstack/react-router';
 
 import { useDevetekLocale } from '@/services/i18n';
 
+import { AdapterOsServiceFromDto } from '@/entities/os-service/adapter';
 import type { CicdArtifact } from '@/entities/cicd-artifact/rules/schema';
 import type { CicdDeployment } from '@/entities/cicd-deployment/rules/schema';
 
@@ -31,6 +32,8 @@ import {
   getDistanceFromNow,
   humanizeSeconds,
 } from '@/shared/libs/browser/date';
+import { ApiService } from '@/shared/api';
+import { useAdapter } from '@/shared/libs/api-client';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Card } from '@/shared/presentation/atoms/Card';
 import Shimmer from '@/shared/presentation/atoms/Shimmer';
@@ -95,6 +98,73 @@ function DeploymentStatusBadge({ status }: { status: DeployStatus }) {
     <span className="inline-flex items-center gap-1 rounded-tr-[7px] rounded-bl-md pl-1.5 pr-3 py-1 text-xs font-semibold bg-muted text-muted-foreground capitalize">
       {status}
     </span>
+  );
+}
+
+function DeploymentServiceState(props: {
+  serverId: string;
+  serviceName: string;
+  fallbackInstallerStatus?: string;
+}) {
+  const { serverId, serviceName, fallbackInstallerStatus } = props;
+  const [responseServiceDetail] = ApiService.Origin.$ServerId.Detail.$ServiceName.useGet(
+    {
+      serverId,
+      serviceName,
+      options: {
+        skip: !serverId || !serviceName,
+        refreshIntervalMs: 3000,
+      },
+    },
+  );
+
+  const serviceDetail =
+    responseServiceDetail.$status === 'success'
+      ? responseServiceDetail
+      : responseServiceDetail.$status === 'loading' && responseServiceDetail.prevData
+        ? responseServiceDetail.prevData
+        : undefined;
+
+  const serviceState = serviceDetail
+    ? AdapterOsServiceFromDto.toState(serviceDetail.state).unwrap()
+    : undefined;
+  const installerStatus = serviceDetail?.installer_status
+    ? AdapterOsServiceFromDto.toState(serviceDetail.installer_status).unwrap()
+    : fallbackInstallerStatus
+      ? AdapterOsServiceFromDto.toState(fallbackInstallerStatus).unwrap()
+      : undefined;
+
+  if (responseServiceDetail.$status === 'failed') {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs text-amber-300">
+        <LoaderCircle className="size-3 animate-spin" />
+        Checking service status
+      </span>
+    );
+  }
+
+  if (!serviceState) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+        <LoaderCircle className="size-3 animate-spin" />
+        Loading service status
+      </span>
+    );
+  }
+
+  return (
+    <>
+      <ServiceState.Badge className="size-3 ml-0.5" serviceState={serviceState} />
+      <ServiceState.Label as="span" className="text-xs" serviceState={serviceState} />
+      {installerStatus && installerStatus !== 'unknown' && (
+        <span className="ml-2 flex items-center gap-1">
+          <span className="text-[10px] uppercase tracking-wide text-primary/45">
+            Installer
+          </span>
+          <DeploymentStatusBadge status={installerStatus as DeployStatus} />
+        </span>
+      )}
+    </>
   );
 }
 
@@ -188,14 +258,10 @@ function DeploymentCard({ data, artifact, onClickActivity, onClickDelete, onClic
             <p className="text-xs text-primary/70 flex items-center gap-0.5">
               <AppWindowIcon className="size-3" />
               {data.osService.serviceName}
-              <ServiceState.Badge
-                className="size-3 ml-0.5"
-                serviceState={data.osService.serviceState}
-              />
-              <ServiceState.Label
-                as="span"
-                className="text-xs"
-                serviceState={data.osService.serviceState}
+              <DeploymentServiceState
+                fallbackInstallerStatus={data.osService.installerStatus}
+                serverId={data.serverSnapshot.id}
+                serviceName={data.osService.serviceName}
               />
             </p>
           )}

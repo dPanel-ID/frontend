@@ -30,6 +30,7 @@ export const schemaApplicationCard = z.object({
         deployStatus: z.string().optional(),
         serviceName: z.string().optional(),
         serviceState: z.string().optional(),
+          serviceInstallerStatus: z.string().optional(),
       }),
     ),
   }),

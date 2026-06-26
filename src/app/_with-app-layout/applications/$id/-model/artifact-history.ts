@@ -38,6 +38,8 @@ export const [ArtifactHistoryModelProvider, useArtifactHistoryModel] =
     const [responseDeployHistory, refreshDeployHistory] = ApiDeploy.Find.useGet(
       {
         applicationId: applicationId,
+        page: 1,
+        limit: 10,
         options: {
           refreshIntervalMs: 3000,
         },
