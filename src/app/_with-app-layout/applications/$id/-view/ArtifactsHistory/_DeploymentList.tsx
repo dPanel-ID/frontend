@@ -125,14 +125,14 @@ function DeploymentServiceState(props: {
         ? responseServiceDetail.prevData
         : undefined;
 
-  const serviceState = serviceDetail
-    ? AdapterOsServiceFromDto.toState(serviceDetail.state).unwrap()
-    : undefined;
+  const serviceState = resolveServiceState(serviceDetail);
   const installerStatus = serviceDetail?.installer_status
     ? AdapterOsServiceFromDto.toState(serviceDetail.installer_status).unwrap()
     : fallbackInstallerStatus
       ? AdapterOsServiceFromDto.toState(fallbackInstallerStatus).unwrap()
       : undefined;
+  const serviceError = serviceDetail?.error?.trim();
+  const serviceDetailLines = serviceDetail?.detail ?? [];
 
   if (responseServiceDetail.$status === 'failed') {
     return (
@@ -164,8 +164,55 @@ function DeploymentServiceState(props: {
           <DeploymentStatusBadge status={installerStatus as DeployStatus} />
         </span>
       )}
+      {serviceError && (
+        <span className="ml-2 text-[11px] text-red-400" title={serviceDetailLines.join('\n')}>
+          {serviceError}
+        </span>
+      )}
     </>
   );
+}
+
+function resolveServiceState(serviceDetail?: {
+  active?: string;
+  state?: string;
+}) {
+  const state = normalizeServiceState(serviceDetail?.state);
+  if (state) return state;
+
+  const active = normalizeActiveState(serviceDetail?.active);
+  if (active) return active;
+
+  return 'unknown';
+}
+
+function normalizeServiceState(value?: string) {
+  switch (value?.trim().toLowerCase()) {
+    case 'running':
+    case 'dead':
+    case 'failed':
+    case 'exited':
+    case 'reload':
+    case 'reloading':
+    case 'restarting':
+      return value.trim().toLowerCase();
+    default:
+      return undefined;
+  }
+}
+
+function normalizeActiveState(value?: string) {
+  switch (value?.trim().toLowerCase()) {
+    case 'active':
+      return 'running';
+    case 'inactive':
+    case 'deactivating':
+      return 'dead';
+    case 'failed':
+      return 'failed';
+    default:
+      return undefined;
+  }
 }
 
 interface DeploymentCardProps {
