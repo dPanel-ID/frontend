@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import {
+  isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
@@ -93,7 +94,7 @@ export const formSchema = z
       description: z.string().optional(),
       promocode: z.string().optional(),
       payInvoiceWithCC: z.enum(['no', 'yes']).optional(),
-      reservePublicIP: z.boolean().optional(),
+      reservePublicIP: z.boolean(),
     }),
     login: z.object({
       username: z.string().min(1, 'Username is required'),
@@ -104,6 +105,7 @@ export const formSchema = z
     const usesBiznetGio = isBiznetGioProvider(values.provider);
     const usesGcp = isGcpProvider(values.provider);
     const usesDigitalOcean = isDigitalOceanProvider(values.provider);
+    const usesAws = isAwsProvider(values.provider);
 
     const vmNameResult = (
       usesBiznetGio ? biznetGioVmNameSchema : vmNameSchema
@@ -117,16 +119,19 @@ export const formSchema = z
       });
     }
 
-    const usernameResult = (
-      usesBiznetGio ? biznetGioUsernameSchema : linuxUsernameSchema
-    ).safeParse(values.login.username);
+    if (!usesAws) {
+      const usernameResult = (
+        usesBiznetGio ? biznetGioUsernameSchema : linuxUsernameSchema
+      ).safeParse(values.login.username);
 
-    if (!usernameResult.success) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: usernameResult.error.issues[0]?.message ?? 'Invalid username.',
-        path: ['login', 'username'],
-      });
+      if (!usernameResult.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            usernameResult.error.issues[0]?.message ?? 'Invalid username.',
+          path: ['login', 'username'],
+        });
+      }
     }
 
     if (usesBiznetGio) {
@@ -229,6 +234,34 @@ export const formSchema = z
           code: z.ZodIssueCode.custom,
           message: 'Please provide an image slug!',
           path: ['spec', 'osTemplate'],
+        });
+      }
+
+      return;
+    }
+
+    if (usesAws) {
+      if (!values.spec.machineType) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select an instance type!',
+          path: ['spec', 'machineType'],
+        });
+      }
+
+      if (!values.spec.osTemplate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select an AMI image!',
+          path: ['spec', 'osTemplate'],
+        });
+      }
+
+      if (!values.vpcBulk.id) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select a VPC subnet!',
+          path: ['vpcBulk'],
         });
       }
 

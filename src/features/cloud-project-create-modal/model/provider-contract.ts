@@ -1,6 +1,11 @@
 import type { DTOs } from '@/shared/api';
 
-export type CloudProviderKind = 'gcp' | 'idcloudhost' | 'proxmox' | 'generic';
+export type CloudProviderKind =
+  | 'aws'
+  | 'gcp'
+  | 'idcloudhost'
+  | 'proxmox'
+  | 'generic';
 
 export function getProviderContracts(response: {
   $status: string;
@@ -69,6 +74,16 @@ export function getProviderKind(
   ].map(normalizeProviderToken);
 
   if (tokens.some((token) => token.includes('proxmox'))) return 'proxmox';
+  if (
+    tokens.some(
+      (token) =>
+        token === 'aws' ||
+        token.includes('amazonwebservices') ||
+        token.includes('amazonaws'),
+    )
+  ) {
+    return 'aws';
+  }
   if (tokens.some((token) => token === 'gcp' || token.includes('google'))) {
     return 'gcp';
   }

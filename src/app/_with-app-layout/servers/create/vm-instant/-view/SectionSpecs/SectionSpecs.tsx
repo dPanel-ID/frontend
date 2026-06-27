@@ -18,6 +18,7 @@ import { ComboboxWithSearchCb } from '@/shared/presentation/molecules/ComboboxWi
 import { OPTS_CPU_CORE, OPTS_DISK_GB, OPTS_RAM_GB } from '../../-config';
 import { useForm } from '../../-model';
 import {
+  isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
@@ -116,6 +117,15 @@ function getPreferredCycle(product?: ProductItem) {
 }
 
 function buildGcpMachineTypeFilter(search: string) {
+  const trimmedSearch = search.trim();
+
+  if (!trimmedSearch) return undefined;
+  if (trimmedSearch.includes('=')) return trimmedSearch;
+
+  return `name=${trimmedSearch}*`;
+}
+
+function buildMachineTypeFilter(search: string) {
   const trimmedSearch = search.trim();
 
   if (!trimmedSearch) return undefined;
@@ -540,30 +550,58 @@ const SubGcpMachineTypeCbo = () => {
   );
 };
 
-const SubDigitalOceanSizeCbo = () => {
-  const { form, formErrors } = useForm();
+const SubDigitalOceanSizeCbo = (props: {
+  emptyDescription: string;
+  emptyTitle: string;
+  fieldMessage?: string;
+  fieldName: 'spec.machineType';
+  itemPlaceholder: string;
+  loadingDescription: string;
+  loadingTitle: string;
+  refreshAriaLabel: string;
+  searchable?: boolean;
+  searchPlaceholder?: string;
+  titleOnError: string;
+}) => {
+  const {
+    emptyDescription,
+    emptyTitle,
+    fieldMessage,
+    fieldName,
+    itemPlaceholder,
+    loadingDescription,
+    loadingTitle,
+    refreshAriaLabel,
+    searchable,
+    searchPlaceholder,
+    titleOnError,
+  } = props;
+  const { form } = useForm();
+  const [searchValue, setSearchValue] = useState('');
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
   }) as string | undefined;
   const regionSlug = useWatch({ control: form.control, name: 'regionSlug' });
+  const effectiveSearch = cloudProjectID && regionSlug ? searchValue : '';
 
   const [response, refreshProducts] = ApiCloud.Project.Products.$Id.useGet({
     cloudProjectId: String(cloudProjectID),
+    filter: searchable ? buildMachineTypeFilter(effectiveSearch) : undefined,
     zone: regionSlug ?? '',
     options: { skip: !cloudProjectID || !regionSlug },
   });
 
   const control = useController({
     control: form.control,
-    name: 'spec.machineType',
+    name: fieldName,
   });
 
   if (!cloudProjectID || !regionSlug || response.$status === 'initial') {
     return (
       <InlineState
-        title="Select a region first"
-        description="DigitalOcean droplet sizes are filtered by the selected project and region."
+        title={loadingTitle}
+        description={loadingDescription}
       />
     );
   }
@@ -579,7 +617,7 @@ const SubDigitalOceanSizeCbo = () => {
   if (response.$status === 'failed') {
     return (
       <InlineState
-        title="Could not load droplet sizes"
+        title={titleOnError}
         description={getApiErrorDetail(response.error)}
         variant="danger"
         action={
@@ -613,16 +651,29 @@ const SubDigitalOceanSizeCbo = () => {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <Combobox
-          classNameButton="w-full flex-1 bg-background"
-          placeholder="Select a droplet size"
-          onChange={control.field.onChange}
-          value={control.field.value}
-          items={items}
-        />
+        {searchable ? (
+          <ComboboxWithSearchCb
+            classNameButton="w-full flex-1 bg-background"
+            placeholder={itemPlaceholder}
+            onChange={control.field.onChange}
+            onSearchEnter={setSearchValue}
+            searchPlaceholder={searchPlaceholder ?? 'Search'}
+            searchValue={effectiveSearch}
+            value={control.field.value}
+            items={items}
+          />
+        ) : (
+          <Combobox
+            classNameButton="w-full flex-1 bg-background"
+            placeholder={itemPlaceholder}
+            onChange={control.field.onChange}
+            value={control.field.value}
+            items={items}
+          />
+        )}
         <Button
-          aria-label="Refresh droplet sizes"
-          title="Refresh droplet sizes"
+          aria-label={refreshAriaLabel}
+          title={refreshAriaLabel}
           buttonStyle="outline"
           buttonColor="secondary"
           size="icon"
@@ -633,19 +684,17 @@ const SubDigitalOceanSizeCbo = () => {
       </div>
 
       {items.length === 0 && (
-        <InlineState
-          title="No droplet sizes found"
-          description="The selected region did not return available DigitalOcean sizes."
-        />
+        <InlineState title={emptyTitle} description={emptyDescription} />
       )}
 
-      <ErrorInline message={formErrors.spec?.machineType?.message} />
+      <ErrorInline message={fieldMessage} />
     </div>
   );
 };
 
 const SubOsTemplateCbo = () => {
   const { form, formErrors } = useForm();
+  const [templateSearch, setTemplateSearch] = useState('');
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
@@ -657,13 +706,24 @@ const SubOsTemplateCbo = () => {
     control: form.control,
     name: 'spec.productID',
   });
+  const regionSlug = useWatch({ control: form.control, name: 'regionSlug' });
   const usesBiznetGio = isBiznetGioProvider(provider);
   const usesGcp = isGcpProvider(provider);
+  const usesAws = isAwsProvider(provider);
+  const effectiveTemplateSearch =
+    usesAws && cloudProjectID && regionSlug ? templateSearch : '';
 
   const [response, refreshTemplates] = ApiCloud.Project.Ostemplates.$Id.useGet({
     cloudProjectId: String(cloudProjectID),
+    filter: usesAws ? buildMachineTypeFilter(effectiveTemplateSearch) : undefined,
     productId: usesBiznetGio ? productID : undefined,
-    options: { skip: !cloudProjectID || (usesBiznetGio && !productID) },
+    zone: usesAws ? (regionSlug ?? '') : undefined,
+    options: {
+      skip:
+        !cloudProjectID ||
+        (usesBiznetGio && !productID) ||
+        (usesAws && !regionSlug),
+    },
   });
 
   const control = useController({
@@ -677,11 +737,15 @@ const SubOsTemplateCbo = () => {
         title={
           usesBiznetGio
             ? 'Select a product first'
+            : usesAws
+              ? 'Select a region first'
             : 'Select a cloud project first'
         }
         description={
           usesBiznetGio
             ? 'Biznet Gio OS templates are scoped to the selected NEO Lite product.'
+            : usesAws
+              ? 'AWS AMI options are scoped to the selected cloud project and region.'
             : 'OS templates are returned by the selected cloud project.'
         }
       />
@@ -737,29 +801,58 @@ const SubOsTemplateCbo = () => {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        <Combobox
-          classNameButton="w-full flex-1 bg-background"
-          placeholder="Select an OS Template"
-          onChange={(value) => {
-            const selectedTemplate = templateList.find(
-              (template) => template.id === value,
-            );
+        {usesAws ? (
+          <ComboboxWithSearchCb
+            classNameButton="w-full flex-1 bg-background"
+            placeholder="Select an AMI image"
+            onChange={(value) => {
+              const selectedTemplate = templateList.find(
+                (template) => template.id === value,
+              );
 
-            form.setValue('spec.osName', selectedTemplate?.os_name ?? '', {
-              shouldValidate: true,
-            });
-            form.setValue(
-              'spec.osVersion',
-              selectedTemplate?.os_version ?? '',
-              {
+              form.setValue('spec.osName', selectedTemplate?.os_name ?? '', {
                 shouldValidate: true,
-              },
-            );
-            control.field.onChange(value);
-          }}
-          value={control.field.value}
-          items={items}
-        />
+              });
+              form.setValue(
+                'spec.osVersion',
+                selectedTemplate?.os_version ?? '',
+                {
+                  shouldValidate: true,
+                },
+              );
+              control.field.onChange(value);
+            }}
+            onSearchEnter={setTemplateSearch}
+            searchPlaceholder="Search AMI images (for example ubuntu, debian, amzn2)"
+            searchValue={effectiveTemplateSearch}
+            value={control.field.value}
+            items={items}
+          />
+        ) : (
+          <Combobox
+            classNameButton="w-full flex-1 bg-background"
+            placeholder="Select an OS Template"
+            onChange={(value) => {
+              const selectedTemplate = templateList.find(
+                (template) => template.id === value,
+              );
+
+              form.setValue('spec.osName', selectedTemplate?.os_name ?? '', {
+                shouldValidate: true,
+              });
+              form.setValue(
+                'spec.osVersion',
+                selectedTemplate?.os_version ?? '',
+                {
+                  shouldValidate: true,
+                },
+              );
+              control.field.onChange(value);
+            }}
+            value={control.field.value}
+            items={items}
+          />
+        )}
         <Button
           aria-label="Refresh OS templates"
           title="Refresh OS templates"
@@ -774,13 +867,19 @@ const SubOsTemplateCbo = () => {
 
       {items.length === 0 && (
         <InlineState
-          title="No OS templates found"
-          description="The selected cloud project did not return any available images."
+          title={usesAws ? 'No AMI images found' : 'No OS templates found'}
+          description={
+            usesAws
+              ? effectiveTemplateSearch
+                ? 'No AMI matched the current search. Try another keyword or use a provider-native filter such as name=ubuntu/images/*.'
+                : 'The selected cloud project and region did not return available AMI images.'
+              : 'The selected cloud project did not return any available images.'
+          }
         />
       )}
 
       <ErrorInline message={formErrors.spec?.osTemplate?.message} />
-      {!usesBiznetGio && !usesGcp && (
+      {!usesBiznetGio && !usesGcp && !usesAws && (
         <>
           <ErrorInline message={formErrors.spec?.osName?.message} />
           <ErrorInline message={formErrors.spec?.osVersion?.message} />
@@ -798,6 +897,7 @@ export default function SectionSpecs() {
   const usesBiznetGio = isBiznetGioProvider(provider);
   const usesGcp = isGcpProvider(provider);
   const usesDigitalOcean = isDigitalOceanProvider(provider);
+  const usesAws = isAwsProvider(provider);
 
   const ctrlSpecCPUCore = useController({
     control: form.control,
@@ -832,6 +932,8 @@ export default function SectionSpecs() {
                 ? 'dpanel-gcp-01'
                 : usesDigitalOcean
                   ? 'dpanel-do-01'
+                  : usesAws
+                    ? 'dpanel-aws-01'
                 : 'dpanel-idcloudhost-01'
           }
           {...form.register('spec.vmName')}
@@ -861,16 +963,45 @@ export default function SectionSpecs() {
             </div>
           )}
 
+          {usesAws && (
+            <div className="mt-5 space-y-2">
+              <h6 className="text-sm font-semibold">Instance Type</h6>
+              <SubDigitalOceanSizeCbo
+                emptyDescription="The selected region did not return available AWS instance types."
+                emptyTitle="No instance types found"
+                fieldMessage={formErrors.spec?.machineType?.message}
+                fieldName="spec.machineType"
+                itemPlaceholder="Select an instance type"
+                loadingDescription="AWS instance types are filtered by the selected project and region."
+                loadingTitle="Select a region first"
+                refreshAriaLabel="Refresh instance types"
+                searchable
+                searchPlaceholder="Search instance types (for example t3, c6i, m7g)"
+                titleOnError="Could not load instance types"
+              />
+            </div>
+          )}
+
           {usesDigitalOcean && (
             <div className="mt-5 space-y-2">
               <h6 className="text-sm font-semibold">Droplet Size</h6>
-              <SubDigitalOceanSizeCbo />
+              <SubDigitalOceanSizeCbo
+                emptyDescription="The selected region did not return available DigitalOcean sizes."
+                emptyTitle="No droplet sizes found"
+                fieldMessage={formErrors.spec?.machineType?.message}
+                fieldName="spec.machineType"
+                itemPlaceholder="Select a droplet size"
+                loadingDescription="DigitalOcean droplet sizes are filtered by the selected project and region."
+                loadingTitle="Select a region first"
+                refreshAriaLabel="Refresh droplet sizes"
+                titleOnError="Could not load droplet sizes"
+              />
             </div>
           )}
 
           <div className="mt-5 space-y-2">
             <h6 className="text-sm font-semibold">
-              {usesDigitalOcean ? 'Image' : 'OS Template'}
+              {usesDigitalOcean ? 'Image' : usesAws ? 'AMI Image' : 'OS Template'}
             </h6>
             <SubOsTemplateCbo />
           </div>
@@ -887,7 +1018,7 @@ export default function SectionSpecs() {
               />
               <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
             </div>
-          ) : !usesDigitalOcean ? (
+          ) : !usesDigitalOcean && !usesAws ? (
             <div className="mt-5 grid gap-4 sm:grid-cols-3">
               <div className="space-y-2">
                 <h6 className="text-sm font-semibold">CPU Cores</h6>

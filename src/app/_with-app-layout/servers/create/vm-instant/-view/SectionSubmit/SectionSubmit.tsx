@@ -10,6 +10,7 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 
 import { useForm } from '../../-model';
 import {
+  isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
@@ -27,6 +28,7 @@ export default function SectionSubmit() {
     const usesBiznetGio = isBiznetGioProvider(values.provider);
     const usesGcp = isGcpProvider(values.provider);
     const usesDigitalOcean = isDigitalOceanProvider(values.provider);
+    const usesAws = isAwsProvider(values.provider);
     const vmName = values.spec.vmName.trim();
     const username = values.login.username.trim();
     const password = values.login.password?.trim() ?? '';
@@ -84,6 +86,20 @@ export default function SectionSubmit() {
                 reserve_public_ip: values.spec.reservePublicIP !== false,
               },
             }
+          : usesAws
+            ? {
+                provider: values.provider,
+                cloud_project_id: cloudProjectId,
+                secret_id: sshKeyId,
+                vm: {
+                  name: vmName,
+                  region: values.regionSlug,
+                  instance_type: values.spec.machineType,
+                  image_id: values.spec.osTemplate,
+                  vpc_subnet_id: values.vpcBulk.id,
+                  reserve_public_ip: values.spec.reservePublicIP,
+                },
+              }
         : {
             provider: values.provider,
             cloud_project_id: cloudProjectId,

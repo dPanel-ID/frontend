@@ -8,6 +8,7 @@ import { Input } from '@/shared/presentation/atoms/Input';
 
 import { useForm } from '../../-model';
 import {
+  isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
@@ -24,6 +25,8 @@ export default function SectionLogin() {
   const usesBiznetGio = isBiznetGioProvider(provider);
   const usesGcp = isGcpProvider(provider);
   const usesDigitalOcean = isDigitalOceanProvider(provider);
+  const usesAws = isAwsProvider(provider);
+  const hidesCredentials = usesGcp || usesDigitalOcean || usesAws;
 
   return (
     <Sectioned
@@ -32,20 +35,22 @@ export default function SectionLogin() {
       sectionTitle="Access"
       sectionDescription="Set the initial VM login required by the provider VM creation contract."
     >
-      <div className={usesGcp ? 'space-y-2' : 'grid gap-4 lg:grid-cols-2'}>
-        <div className="space-y-2">
-          <h6 className="text-sm font-semibold">
-            {usesBiznetGio ? 'SSH and Console User' : 'Default User'}
-          </h6>
-          <Input
-            className="w-full bg-background"
-            placeholder={usesBiznetGio ? 'dpanel1' : 'dpanel'}
-            {...form.register('login.username')}
-          />
-          <ErrorInline message={formErrors.login?.username?.message} />
-        </div>
+      <div className={hidesCredentials ? 'space-y-2' : 'grid gap-4 lg:grid-cols-2'}>
+        {!usesAws && (
+          <div className="space-y-2">
+            <h6 className="text-sm font-semibold">
+              {usesBiznetGio ? 'SSH and Console User' : 'Default User'}
+            </h6>
+            <Input
+              className="w-full bg-background"
+              placeholder={usesBiznetGio ? 'dpanel1' : 'dpanel'}
+              {...form.register('login.username')}
+            />
+            <ErrorInline message={formErrors.login?.username?.message} />
+          </div>
+        )}
 
-        {!usesGcp && !usesDigitalOcean && (
+        {!hidesCredentials && (
           <div className="space-y-2">
             <h6 className="text-sm font-semibold">
               {usesBiznetGio ? 'Console Password' : 'Bootstrap Password'}
@@ -86,10 +91,11 @@ export default function SectionLogin() {
           </div>
         )}
 
-        {(usesGcp || usesDigitalOcean) && (
+        {hidesCredentials && (
           <p className="text-xs leading-relaxed text-muted-foreground">
-            Sent as vm.username. The selected dPanel SSH key is injected into
-            the provider VM request for setup.
+            {usesAws
+              ? 'The selected dPanel SSH key is injected into the EC2 instance during provider VM creation. Username and password are not requested by the AWS VM contract.'
+              : 'Sent as vm.username. The selected dPanel SSH key is injected into the provider VM request for setup.'}
           </p>
         )}
       </div>

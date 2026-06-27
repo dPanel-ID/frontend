@@ -10,15 +10,35 @@ import type {
 
 export interface RecipeParams {
   cloudProjectId: string;
+  filter?: string;
+  osFamily?: string;
   productId?: number;
+  tier?: string;
+  zone?: string;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { cloudProjectId, productId } = params;
+  const { cloudProjectId, filter, osFamily, productId, tier, zone } = params;
   const queryParams = new URLSearchParams();
 
   if (productId != null) {
     queryParams.set('product_id', String(productId));
+  }
+
+  if (zone) {
+    queryParams.set('zone', zone);
+  }
+
+  if (filter) {
+    queryParams.set('filter', filter);
+  }
+
+  if (osFamily) {
+    queryParams.set('os_family', osFamily);
+  }
+
+  if (tier) {
+    queryParams.set('tier', tier);
   }
 
   const queryString = queryParams.toString();
