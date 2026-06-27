@@ -31,3 +31,13 @@ export function isDigitalOceanProvider(provider?: string) {
     normalizedProvider === 'do'
   );
 }
+
+export function isAwsProvider(provider?: string) {
+  const normalizedProvider = normalizeProviderKey(provider);
+
+  return (
+    normalizedProvider === 'aws' ||
+    normalizedProvider === 'amazonwebservices' ||
+    normalizedProvider === 'amazon'
+  );
+}

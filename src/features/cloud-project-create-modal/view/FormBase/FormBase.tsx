@@ -8,6 +8,7 @@ import { useController } from 'react-hook-form';
 
 import type { DTOs } from '@/shared/api';
 import IconBiznetGio from '@/shared/assets/biznetgio.png';
+import IconAmazonWebServices from '@/shared/assets/ico-aws.svg';
 import IconGoogleCloudPlatform from '@/shared/assets/ico-gcloud.png';
 import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
 import IconProxmox from '@/shared/assets/ico-proxmox.png';
@@ -50,6 +51,10 @@ function getLocalProviderIcon(provider: DTOs.CloudProviderContractV1) {
 
   if (tokens.some((token) => token === 'biznetgio' || token === 'biznetgioneolite')) {
     return IconBiznetGio;
+  }
+
+  if (tokens.some((token) => token === 'aws' || token.includes('amazonwebservices') || token.includes('amazonaws'))) {
+    return IconAmazonWebServices;
   }
 
   if (tokens.some((token) => token === 'gcp' || token.includes('googlecloud'))) {

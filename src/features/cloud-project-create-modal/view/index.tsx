@@ -63,6 +63,9 @@ const CloudProviderForm = (props: {
   }
 
   switch (providerKind) {
+    case 'aws':
+      return <FormGenericCredential provider={provider} />;
+
     case 'idcloudhost':
       return <FormIDCloudHost provider={provider} />;
 

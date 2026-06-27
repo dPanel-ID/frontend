@@ -14,6 +14,7 @@ import { Combobox } from '@/shared/presentation/molecules/Combobox';
 
 import { useForm } from '../../-model';
 import {
+  isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
@@ -301,6 +302,7 @@ const SubVPCCbo = () => {
     name: 'cloud.zoneSlug',
   });
   const usesGcp = isGcpProvider(provider);
+  const usesAws = isAwsProvider(provider);
   const networkScope = usesGcp ? zoneSlug : regionSlug;
 
   const [response, refreshVpcs] = ApiCloud.Vpcs.$Id.useGet({
@@ -384,7 +386,7 @@ const SubVPCCbo = () => {
       <div className="flex items-center gap-2">
         <Combobox
           classNameButton="w-full flex-1 bg-background"
-          placeholder={usesGcp ? 'Select a Subnetwork' : 'Select a VPC'}
+          placeholder={usesGcp ? 'Select a Subnetwork' : usesAws ? 'Select a VPC Subnet' : 'Select a VPC'}
           onChange={(value) => {
             const selectedVpc = responseData?.items?.find(
               (vpc) => vpc.id === value,
@@ -416,10 +418,18 @@ const SubVPCCbo = () => {
 
       {items.length === 0 && (
         <InlineState
-          title={usesGcp ? 'No subnetworks found' : 'No VPCs found'}
+          title={
+            usesGcp
+              ? 'No subnetworks found'
+              : usesAws
+                ? 'No VPC subnets found'
+                : 'No VPCs found'
+          }
           description={
             usesGcp
               ? 'The selected zone did not return any subnetworks. The backend can create the VM with the provider default when available.'
+              : usesAws
+                ? 'The selected region did not return any subnet IDs for AWS VM creation.'
               : 'The selected region did not return any VPC networks.'
           }
         />
@@ -634,6 +644,7 @@ export default function SectionRegionVPC() {
     | undefined;
   const usesGcp = isGcpProvider(provider);
   const usesDigitalOcean = isDigitalOceanProvider(provider);
+  const usesAws = isAwsProvider(provider);
 
   if (isBiznetGioProvider(provider)) return null;
 
@@ -655,7 +666,7 @@ export default function SectionRegionVPC() {
             <h6 className="text-sm font-semibold lg:pt-2.5">Zone</h6>
             <SubZoneCbo />
           </div>
-        ) : !usesDigitalOcean ? (
+        ) : !usesDigitalOcean && !usesAws ? (
           <div className="grid gap-2 lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start">
             <h6 className="text-sm font-semibold lg:pt-2.5">Billing Account</h6>
             <SubBillingAccountCbo />
@@ -664,7 +675,7 @@ export default function SectionRegionVPC() {
 
         <div className="grid gap-2 lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start">
           <h6 className="text-sm font-semibold lg:pt-2.5">
-            {usesGcp ? 'Subnetwork' : 'VPC'}
+            {usesGcp ? 'Subnetwork' : usesAws ? 'VPC Subnet' : 'VPC'}
           </h6>
           <SubVPCCbo />
         </div>
