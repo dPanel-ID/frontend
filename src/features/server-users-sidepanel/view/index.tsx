@@ -6,6 +6,7 @@ import {
   RefreshCwIcon,
   SearchIcon,
   ShieldIcon,
+  Trash2Icon,
   UsersIcon,
 } from 'lucide-react';
 
@@ -34,6 +35,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/shared/presentation/atoms/Table';
+import { useDialog } from '@/services/dialog';
+import { useToaster } from '@/services/toaster';
 
 import type { ServerUsersSidepanelProps as Props } from '../rules/types';
 
@@ -50,6 +53,8 @@ export default function ServerUsersSidepanel(props: Props) {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [openServerUserCreateSidepanel] = useServerUserCreateSidepanel();
+  const [openDialog] = useDialog();
+  const [openToaster] = useToaster();
 
   const [responseUsers, refreshUsers] = ApiServer.Origin.$Id.User.useGet({
     serverId,
@@ -120,6 +125,56 @@ export default function ServerUsersSidepanel(props: Props) {
       serverId,
       onCreated: refreshUsers,
     });
+  };
+
+  const handleClickDeleteUser = (username: string) => {
+    return () => {
+      openDialog({
+        title: 'Delete Linux User',
+        content: (
+          <>
+            Are you sure you want to delete Linux user <br />
+            <code>{username}</code> ?
+          </>
+        ),
+        variant: 'warning',
+        actions: {
+          variant: 'YesNo',
+          yes: async () => {
+            const deleteResponse = await ApiServer.Origin.$Id.User.Delete.doDelete({
+              serverId,
+              payload: {
+                username,
+              },
+            });
+
+            if (deleteResponse.$status === 'success') {
+              openToaster({
+                variant: 'success',
+                message: (
+                  <>
+                    Successfully deleted Linux user <code>{username}</code>
+                  </>
+                ),
+              });
+
+              refreshUsers();
+              return;
+            }
+
+            openToaster({
+              variant: 'error',
+              title: (
+                <>
+                  Failed to delete Linux user <code>{username}</code>
+                </>
+              ),
+              message: getApiErrorDetail(deleteResponse.error),
+            });
+          },
+        },
+      });
+    };
   };
 
   const isLoading = responseUsers.$status === 'loading';
@@ -249,6 +304,9 @@ export default function ServerUsersSidepanel(props: Props) {
                 <TableHead className={serverManagementTableClassNames.head}>
                   Shell
                 </TableHead>
+                <TableHead className={serverManagementTableClassNames.head}>
+                  Actions
+                </TableHead>
               </TableRow>
             </TableHeader>
 
@@ -282,7 +340,7 @@ export default function ServerUsersSidepanel(props: Props) {
                   <TableCell
                     className={cn(
                       serverManagementTableClassNames.mutedCell,
-                      'max-w-[240px] truncate font-mono',
+                      'max-w-60 truncate font-mono',
                     )}
                     title={item.home}
                   >
@@ -296,6 +354,18 @@ export default function ServerUsersSidepanel(props: Props) {
                     title={item.shell}
                   >
                     {item.shell}
+                  </TableCell>
+                  <TableCell className={serverManagementTableClassNames.cell}>
+                    <Button
+                      size="sm"
+                      buttonStyle="outline"
+                      buttonColor="secondary"
+                      className="text-red-500 hover:text-red-600"
+                      onClick={handleClickDeleteUser(item.username)}
+                    >
+                      <Trash2Icon className="size-4" />
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
