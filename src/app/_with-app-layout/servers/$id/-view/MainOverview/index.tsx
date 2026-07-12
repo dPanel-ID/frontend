@@ -921,6 +921,8 @@ function InstalledModuleDialog(props: {
                 </div>
                 <VariableList variables={selected.installation.variables} />
               </div>
+
+              <ErrorDetailSection installation={selected.installation} />
             </div>
 
             <div className="shrink-0 border-t px-5 py-4">
@@ -996,6 +998,56 @@ function VariableList(props: { variables?: Record<string, unknown> }) {
           </pre>
         </div>
       ))}
+    </div>
+  );
+}
+
+function ErrorDetailSection(props: { installation: DTOs.ModuleInstallationV1 }) {
+  const { installation } = props;
+  const detail = installation.last_error_detail;
+  const detailRows: Array<{ label: string; value: unknown }> = [
+    { label: 'Summary', value: detail?.summary },
+    { label: 'Stderr', value: detail?.stderr },
+    { label: 'Stdout', value: detail?.stdout },
+    { label: 'Playbook', value: detail?.playbook },
+    { label: 'Task', value: detail?.task },
+    { label: 'Host', value: detail?.host },
+    { label: 'Exit code', value: detail?.exit_code },
+  ].filter((row) => row.value != null && String(row.value).trim() !== '');
+  const hasError =
+    Boolean(installation.last_error && String(installation.last_error).trim()) ||
+    detailRows.length > 0;
+
+  if (!hasError) return null;
+
+  return (
+    <div className="mt-5 rounded-xl border border-destructive/25 bg-destructive/5">
+      <div className="border-b border-destructive/20 px-4 py-3">
+        <h6 className="text-sm font-bold text-destructive">Error details</h6>
+        <p className="mt-1 text-xs text-primary/55">
+          Latest installer error captured in module inventory.
+        </p>
+      </div>
+      <div className="divide-y divide-destructive/10">
+        <div className="grid gap-2 px-4 py-3 md:grid-cols-[14rem_1fr]">
+          <p className="break-all text-xs font-semibold text-primary/60">
+            Last error
+          </p>
+          <pre className="max-h-52 overflow-auto whitespace-pre-wrap wrap-break-word rounded-md bg-background p-2 text-xs text-primary/85">
+            {formatVariable(installation.last_error)}
+          </pre>
+        </div>
+        {detailRows.map((row) => (
+          <div key={row.label} className="grid gap-2 px-4 py-3 md:grid-cols-[14rem_1fr]">
+            <p className="break-all text-xs font-semibold text-primary/60">
+              {row.label}
+            </p>
+            <pre className="max-h-72 overflow-auto whitespace-pre-wrap wrap-break-word rounded-md bg-background p-2 text-xs text-primary/85">
+              {formatVariable(row.value)}
+            </pre>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

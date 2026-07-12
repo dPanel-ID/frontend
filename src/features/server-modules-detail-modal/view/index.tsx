@@ -4,7 +4,6 @@ import { BaseContext } from '../config/base-context';
 import { ModuleHero } from '../presentation/ModuleHero';
 
 import { Installation } from './Installation';
-import { Submodules } from './Submodules';
 import type { ServerModulesDetailModalProps as Props } from './types';
 
 export default function ServerModulesDetailModal(props: Props) {
@@ -29,8 +28,6 @@ export default function ServerModulesDetailModal(props: Props) {
           />
 
           <Installation />
-
-          <Submodules />
         </ModalLayoutGeneral.Content>
       </ModalLayoutGeneral>
     </BaseContext>
