@@ -4,16 +4,12 @@ import { Link, createFileRoute } from '@tanstack/react-router';
 import {
   ActivityIcon,
   BookOpenIcon,
-  BoxesIcon,
   CheckCircle2Icon,
   CloudIcon,
-  DatabaseBackupIcon,
   DatabaseIcon,
   FolderGit2Icon,
-  GaugeIcon,
   Globe2Icon,
   Layers3Icon,
-  LockIcon,
   NetworkIcon,
   WorkflowIcon,
 } from 'lucide-react';
@@ -49,7 +45,6 @@ const navigation = [
   { href: '#decision-evidence', label: 'Compare evidence' },
   { href: '#documentation-map', label: 'Documentation map' },
   { href: '#iac-stacks', label: 'IaC stacks' },
-  { href: '#safety-model', label: 'Safety model' },
 ];
 
 const docGroups: DocGroup[] = [
@@ -288,17 +283,6 @@ const iacStacks = [
       'Needs clear workspace ownership and remote-state safety before it is presented as active.',
     ],
   },
-  {
-    title: 'Agent and custom automation stack',
-    status: 'target' as Status,
-    description:
-      'A control path for live machine operations that should not require opening inbound agent ports.',
-    details: [
-      'Active agents connect outbound to Manager and execute allowlisted commands.',
-      'Good for service actions, file operations, network inspection, deploy-artifact commands, and live diagnostics.',
-      'Custom automation must keep secrets redacted and execution results durable.',
-    ],
-  },
 ];
 
 export const Route = createFileRoute('/docs/intro/')({
@@ -339,7 +323,6 @@ function DocsIntroPage() {
           <DocsPageGuide />
           <DocumentationMap />
           <IacStacksSection />
-          <SafetySection />
         </div>
       </main>
     </>
@@ -526,8 +509,8 @@ function IacStacksSection() {
           <p className="text-sm leading-6 text-muted-foreground">
             dPanel should let each workspace choose the execution style that
             fits the job. Ansible is the current backend for server and
-            application operations; OpenTofu and custom agent automation belong
-            in the docs as extension paths with clear rollout status.
+            application operations; OpenTofu belongs in the docs as an extension
+            path with clear rollout status.
           </p>
         </div>
 
@@ -544,7 +527,7 @@ function IacStacksSection() {
         </figure>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2">
         {iacStacks.map((stack) => (
           <article
             key={stack.title}
@@ -554,10 +537,8 @@ function IacStacksSection() {
               <span className="flex size-9 items-center justify-center rounded-lg border bg-card text-accent">
                 {stack.title.includes('Ansible') ? (
                   <WorkflowIcon className="size-4" />
-                ) : stack.title.includes('OpenTofu') ? (
-                  <Layers3Icon className="size-4" />
                 ) : (
-                  <BoxesIcon className="size-4" />
+                  <Layers3Icon className="size-4" />
                 )}
               </span>
               <StatusBadge status={stack.status} />
@@ -580,65 +561,6 @@ function IacStacksSection() {
         ))}
       </div>
     </section>
-  );
-}
-
-function SafetySection() {
-  return (
-    <section
-      id="safety-model"
-      className="scroll-mt-20 rounded-lg border bg-card p-5 lg:p-6"
-    >
-      <div className="mb-5 space-y-2">
-        <Badge variant="outline">Safety model</Badge>
-        <h2 className="text-2xl font-semibold text-primary">
-          Documentation must protect production users.
-        </h2>
-        <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
-          dPanel v2 is additive. Documentation should be useful for new users
-          without breaking expectations for legacy records, old status values,
-          existing deployments, and sensitive infrastructure data.
-        </p>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-3">
-        <SafetyCard
-          title="Compatibility first"
-          description="Treat empty statuses, nullable JSON, numeric legacy IDs, and missing historical relationships as valid states."
-          Icon={DatabaseBackupIcon}
-        />
-        <SafetyCard
-          title="Secrets stay hidden"
-          description="Never show passwords, SSH keys, provider tokens, DNS credentials, database credentials, or payment data in docs or screenshots."
-          Icon={LockIcon}
-        />
-        <SafetyCard
-          title="Observable operations"
-          description="Every long-running setup, deploy, database, DNS, load-balancer, or IaC action should show status, timestamps, failure context, and recovery guidance."
-          Icon={GaugeIcon}
-        />
-      </div>
-    </section>
-  );
-}
-
-function SafetyCard(props: {
-  title: string;
-  description: string;
-  Icon: ComponentType<{ className?: string }>;
-}) {
-  const { title, description, Icon } = props;
-
-  return (
-    <article className="rounded-lg border bg-background p-4">
-      <span className="mb-3 flex size-9 items-center justify-center rounded-lg border bg-card text-accent">
-        <Icon className="size-4" />
-      </span>
-      <h3 className="text-base font-semibold text-primary">{title}</h3>
-      <p className="mt-2 text-sm leading-6 text-muted-foreground">
-        {description}
-      </p>
-    </article>
   );
 }
 

@@ -307,14 +307,18 @@ function OperatingLoop() {
 function OperatingViews() {
   return (
     <section className="grid gap-4 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)]">
-      <div className="rounded-xl border bg-primary p-5 text-primary-foreground sm:p-8">
-        <Badge className="border-primary-foreground/25 bg-primary-foreground/10 text-primary-foreground">
+      <div className="relative overflow-hidden rounded-xl border border-accent/30 bg-card p-5 sm:p-8">
+        <div
+          aria-hidden="true"
+          className="absolute -right-16 -top-16 size-40 rounded-full bg-accent/10 blur-3xl"
+        />
+        <Badge variant="outline" className="relative">
           Shared operational record
         </Badge>
-        <h2 className="mt-5 text-3xl font-semibold tracking-tight">
+        <h2 className="relative mt-5 text-3xl font-semibold tracking-tight text-primary">
           One operational record, useful to every decision-maker.
         </h2>
-        <p className="mt-4 max-w-md text-sm leading-6 text-primary-foreground/75">
+        <p className="relative mt-4 max-w-md text-sm leading-6 text-muted-foreground">
           The same Application, Repository, Deployment, Server, Cloud Project,
           execution history, and documented evidence support each review from a
           different seat.
