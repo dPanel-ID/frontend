@@ -68,7 +68,7 @@ function DocsHeader() {
           buttonStyle="outline"
           buttonColor="secondary"
           size="sm"
-          className="hidden sm:inline-flex"
+          className="inline-flex"
         >
           <Link to="/">Open app</Link>
         </Button>
