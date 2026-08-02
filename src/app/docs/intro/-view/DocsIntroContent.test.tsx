@@ -44,6 +44,7 @@ describe('DocsIntroContent', () => {
       expect(screen.getByText(step)).toBeTruthy();
     }
 
+    expect(screen.getByText(/supported providers/i)).toBeTruthy();
     expect(
       screen.getByText(/not a live provider-pricing calculator/i),
     ).toBeTruthy();

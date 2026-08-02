@@ -142,7 +142,8 @@ function CommandCenterHero() {
             <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
               dPanel keeps the Application, Repository, Deployment, Server, and
               Cloud Project connected through execution history and documented
-              evidence so each decision stays reviewable.
+              evidence so each decision across supported providers stays
+              reviewable.
             </p>
           </div>
 
@@ -223,8 +224,8 @@ function OperationalDecisionBoard() {
                 />
               ) : null}
 
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-2">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0 space-y-2">
                   <p className="text-xs font-medium uppercase tracking-[0.22em] text-slate-400">
                     {record.label}
                   </p>
@@ -236,7 +237,7 @@ function OperationalDecisionBoard() {
                   </p>
                 </div>
 
-                <Badge className="border-slate-700 bg-slate-950 text-slate-100">
+                <Badge className="max-w-full self-start border-slate-700 bg-slate-950 text-left whitespace-normal text-slate-100 sm:self-auto">
                   {record.state}
                 </Badge>
               </div>
