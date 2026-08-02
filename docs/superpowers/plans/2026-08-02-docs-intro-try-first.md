@@ -25,9 +25,11 @@
 ### Task 1: Lock the try-first public-content contract
 
 **Files:**
+
 - Modify: `src/app/docs/intro/-view/DocsIntroContent.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `DocsIntroContent` exported by `./DocsIntroContent`.
 - Produces: regression coverage for the short product proposition, safe external video link, in-app trial action, outcome strip, and removal of the decision-board framing.
 
@@ -63,7 +65,7 @@
   ```
 
   Expected: FAIL because the current component renders `Operate the path from
-  code to cloud.` and includes decision-board terminology instead of the
+code to cloud.` and includes decision-board terminology instead of the
   try-first heading and short outcome labels.
 
 - [ ] **Step 3: Keep the failing contract uncommitted until Task 2 makes it pass**
@@ -73,10 +75,12 @@
 ### Task 2: Replace the command-center content with the compact try-first story
 
 **Files:**
+
 - Modify: `src/app/docs/intro/-view/DocsIntroContent.tsx`
 - Modify: `src/app/docs/intro/-view/DocsIntroContent.test.tsx`
 
 **Interfaces:**
+
 - Consumes: existing `Badge`, `Button`, and Lucide icon components.
 - Produces: the existing no-props `DocsIntroContent` export, now with one hero, one three-item ordered strip, and one closing invitation.
 
@@ -89,11 +93,13 @@
   const tryFirstSteps = [
     {
       title: 'Learn in minutes',
-      description: 'Start with a short product walkthrough before you change anything.',
+      description:
+        'Start with a short product walkthrough before you change anything.',
     },
     {
       title: 'Test with confidence',
-      description: 'Try your application in an environment that fits the experiment.',
+      description:
+        'Try your application in an environment that fits the experiment.',
     },
     {
       title: 'Choose what fits',
@@ -158,9 +164,11 @@
 ### Task 3: Remove reference material and in-page navigation from the route shell
 
 **Files:**
+
 - Modify: `src/app/docs/intro/index.tsx`
 
 **Interfaces:**
+
 - Consumes: `DocsIntroContent` as the route’s entire public content.
 - Produces: a lean route shell with the skip link, Docs header, metadata, and compact intro only.
 
@@ -178,7 +186,7 @@
   Set the description to this plain-language content:
 
   ```ts
-  'Learn dPanel, try your application, and use the result to choose the infrastructure that fits your next step.'
+  'Learn dPanel, try your application, and use the result to choose the infrastructure that fits your next step.';
   ```
 
 - [ ] **Step 3: Delete reference-only data, components, and imports**
@@ -214,10 +222,12 @@
 ### Task 4: Verify the compact layout and update the pull request
 
 **Files:**
+
 - Verify: `src/app/docs/intro/-view/DocsIntroContent.tsx`
 - Verify: `src/app/docs/intro/index.tsx`
 
 **Interfaces:**
+
 - Consumes: the finished static `/docs/intro` route.
 - Produces: evidence that the page is concise, responsive, accessible, and ready for review.
 
