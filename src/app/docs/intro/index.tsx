@@ -45,7 +45,7 @@ type DocGroup = {
 };
 
 const navigation = [
-  { href: '#testing-journey', label: 'Testing journey' },
+  { href: '#operating-loop', label: 'Operating loop' },
   { href: '#decision-evidence', label: 'Compare evidence' },
   { href: '#documentation-map', label: 'Documentation map' },
   { href: '#iac-stacks', label: 'IaC stacks' },
@@ -311,7 +311,7 @@ export const Route = createFileRoute('/docs/intro/')({
       {
         name: 'description',
         content:
-          'Learn dPanel from the video, test applications on supported infrastructure, compare operational and cost evidence, and plan a cloud path that fits your team.',
+          'Learn how dPanel connects application delivery to infrastructure, review recorded operational and cloud-cost evidence during testing, and keep a future path easier to plan instead of automatic.',
       },
     ],
   }),
@@ -365,7 +365,7 @@ function DocsHeader() {
 
         <nav className="flex items-center gap-2">
           <Button asChild buttonStyle="ghost" buttonColor="secondary" size="sm">
-            <a href="#testing-journey">Journey</a>
+            <a href="#operating-loop">Operating loop</a>
           </Button>
           <Button asChild buttonStyle="ghost" buttonColor="secondary" size="sm">
             <a href="#documentation-map">Sections</a>

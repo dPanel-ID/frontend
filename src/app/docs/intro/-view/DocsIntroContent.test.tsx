@@ -48,5 +48,19 @@ describe('DocsIntroContent', () => {
       screen.getByText(/not a live provider-pricing calculator/i),
     ).toBeTruthy();
     expect(screen.getByText(/a move is not automatic/i)).toBeTruthy();
+
+    expect(
+      screen.getByRole('heading', {
+        name: 'Follow the decision through the shared operational record.',
+      }),
+    ).toBeTruthy();
+    expect(
+      screen
+        .getByRole('heading', {
+          name: 'Keep the Application record connected from Repository to review.',
+        })
+        .closest('section')
+        ?.getAttribute('id'),
+    ).toBe('operating-loop');
   });
 });

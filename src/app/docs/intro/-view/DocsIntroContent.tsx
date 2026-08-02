@@ -78,7 +78,7 @@ const operatingViews: OperatingView[] = [
   },
   {
     label: 'Teams',
-    title: 'Follow the decision without provider dashboards.',
+    title: 'Follow the decision through the shared operational record.',
     description:
       'Use the Application record, Server, Cloud Project, and documented evidence to review what changed without leaving the shared record.',
     signal: 'Documented evidence keeps the decision visible across the team.',
@@ -250,7 +250,10 @@ function OperationalDecisionBoard() {
 
 function OperatingLoop() {
   return (
-    <section className="rounded-xl border bg-card p-5 sm:p-8">
+    <section
+      id="operating-loop"
+      className="scroll-mt-20 rounded-xl border bg-card p-5 sm:p-8"
+    >
       <div className="max-w-3xl space-y-3">
         <Badge variant="outline">The operating loop</Badge>
         <h2 className="text-3xl font-semibold tracking-tight text-primary">
@@ -269,7 +272,7 @@ function OperatingLoop() {
           className="absolute left-[calc(12.5%+0.75rem)] right-[calc(12.5%+0.75rem)] top-6 hidden h-px bg-border lg:block"
         />
 
-        <ol id="operating-loop" className="grid gap-4 lg:grid-cols-4">
+        <ol className="grid gap-4 lg:grid-cols-4">
           {operatingStages.map((stage, index) => (
             <li
               key={stage.title}
