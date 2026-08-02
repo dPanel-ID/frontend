@@ -6,12 +6,12 @@ import { describe, expect, it } from 'vitest';
 import { DocsIntroContent } from './DocsIntroContent';
 
 describe('DocsIntroContent', () => {
-  it('orients visitors with the video CTA and cloud-testing journey', () => {
+  it('orients visitors with the command-center introduction', () => {
     render(<DocsIntroContent />);
 
     expect(
       screen.getByRole('heading', {
-        name: 'Learn, test, and choose the cloud that fits your application.',
+        name: 'Operate the path from code to cloud.',
       }),
     ).toBeTruthy();
 
@@ -27,19 +27,23 @@ describe('DocsIntroContent', () => {
 
     expect(
       screen
-        .getByRole('link', { name: 'See the testing journey' })
+        .getByRole('link', { name: 'Explore the operating loop' })
         .getAttribute('href'),
-    ).toBe('#testing-journey');
+    ).toBe('#operating-loop');
 
-    for (const step of ['Learn', 'Test', 'Compare', 'Keep or move']) {
+    for (const label of [
+      'Application record',
+      'Deployment evidence',
+      'Server and provider',
+      'Decision context',
+    ]) {
+      expect(screen.getByText(label)).toBeTruthy();
+    }
+
+    for (const step of ['Learn', 'Connect', 'Run', 'Decide']) {
       expect(screen.getByText(step)).toBeTruthy();
     }
 
-    expect(
-      screen.getAllByText(
-        /user-controlled infrastructure and supported providers/i,
-      ).length,
-    ).toBeGreaterThan(0);
     expect(
       screen.getByText(/not a live provider-pricing calculator/i),
     ).toBeTruthy();
