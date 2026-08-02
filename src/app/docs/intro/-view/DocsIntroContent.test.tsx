@@ -45,6 +45,27 @@ describe('DocsIntroContent', () => {
       expect(screen.getByText(label)).toBeTruthy();
     }
 
+    expect(
+      screen.getByRole('heading', { name: 'Try providers. Compare the fit.' }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole('heading', { name: 'Keep your IaC in your hands.' }),
+    ).toBeTruthy();
+
+    for (const provider of [
+      'IDCloudHost',
+      'AWS',
+      'GCP',
+      'Vultr',
+      'Manual SSH Access',
+    ]) {
+      expect(screen.getByText(provider)).toBeTruthy();
+    }
+
+    expect(
+      screen.getByText(/Every change is tracked with OpenTofu and Ansible/),
+    ).toBeTruthy();
+
     expect(screen.queryByText('Operational decision board')).toBeNull();
     expect(screen.queryByText('Application record')).toBeNull();
   });

@@ -2,8 +2,10 @@ import type { ComponentType } from 'react';
 
 import {
   CirclePlayIcon,
+  CloudIcon,
   CompassIcon,
   FlaskConicalIcon,
+  GitBranchIcon,
   ScaleIcon,
 } from 'lucide-react';
 
@@ -35,6 +37,14 @@ const tryFirstSteps = [
     Icon: ScaleIcon,
   },
 ] as const satisfies readonly TryFirstStep[];
+
+const availableProviders = [
+  'IDCloudHost',
+  'AWS',
+  'GCP',
+  'Vultr',
+  'Manual SSH Access',
+] as const;
 
 function TryFirstActions() {
   return (
@@ -114,6 +124,66 @@ function TryFirstOutcomeStrip() {
   );
 }
 
+function TryFirstReasons() {
+  return (
+    <section aria-labelledby="try-first-reasons" className="space-y-5">
+      <div className="max-w-2xl space-y-2">
+        <Badge variant="outline">Why try it with dPanel</Badge>
+        <h2
+          id="try-first-reasons"
+          className="text-2xl font-semibold tracking-tight text-primary sm:text-3xl"
+        >
+          Compare providers. Keep your IaC.
+        </h2>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <section className="rounded-xl border bg-card p-5">
+          <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-accent">
+            <CloudIcon className="size-4" />
+          </span>
+          <div className="mt-4 space-y-2">
+            <Badge variant="outline">Compare your options</Badge>
+            <h3 className="text-lg font-semibold text-primary">
+              Try providers. Compare the fit.
+            </h3>
+            <p className="text-sm leading-6 text-muted-foreground">
+              Run your application with the provider you want to evaluate, then
+              use the result to choose what fits your requirements.
+            </p>
+          </div>
+          <ul
+            aria-label="Available providers"
+            className="mt-4 flex flex-wrap gap-2"
+          >
+            {availableProviders.map((provider) => (
+              <li key={provider}>
+                <Badge variant="secondary">{provider}</Badge>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="rounded-xl border bg-card p-5">
+          <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-accent">
+            <GitBranchIcon className="size-4" />
+          </span>
+          <div className="mt-4 space-y-2">
+            <Badge variant="outline">Your infrastructure, documented</Badge>
+            <h3 className="text-lg font-semibold text-primary">
+              Keep your IaC in your hands.
+            </h3>
+            <p className="text-sm leading-6 text-muted-foreground">
+              Every change is tracked with OpenTofu and Ansible, so you can keep
+              using the same IaC in your own platform later.
+            </p>
+          </div>
+        </section>
+      </div>
+    </section>
+  );
+}
+
 function TryFirstInvitation() {
   return (
     <section className="rounded-xl border bg-card p-5 sm:p-6">
@@ -137,6 +207,7 @@ export function DocsIntroContent() {
     <>
       <TryFirstHero />
       <TryFirstOutcomeStrip />
+      <TryFirstReasons />
       <TryFirstInvitation />
     </>
   );
