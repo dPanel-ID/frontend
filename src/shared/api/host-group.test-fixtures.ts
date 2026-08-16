@@ -261,6 +261,18 @@ export const canonicalIacRepository = {
   error: '',
 };
 
+export const canonicalLegacyServerModuleActionResponse = {
+  execution_id: 'exec_server_1',
+  status: 'queued',
+  module: 'nodejs',
+  action: 'install',
+  target: {
+    type: 'server',
+    id: '101',
+  },
+  repository: canonicalIacRepository,
+};
+
 export const canonicalModuleHostGroupActionResponse = {
   operation_id: 'hgop_module_1',
   status: 'queued',

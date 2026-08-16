@@ -1,12 +1,19 @@
 import { z } from 'zod';
 
-const schemaExecutionStatus = z.enum([
+const schemaScopedExecutionStatus = z.enum([
   'pending',
   'queued',
   'running',
   'succeeded',
   'failed',
   'cancelled',
+]);
+
+const schemaHostGroupOperationStatus = z.enum([
+  'queued',
+  'running',
+  'succeeded',
+  'failed',
 ]);
 
 const schemaCommandStatus = z.enum([
@@ -241,7 +248,7 @@ export const schemaHostGroupOperationDto = z
     actor_subject: z.string().optional(),
     retry_of_operation_id: z.string().optional(),
     type: schemaHostGroupOperationType,
-    status: schemaExecutionStatus,
+    status: schemaHostGroupOperationStatus,
     request: z.record(z.string(), z.unknown()),
     target_count: z.number().int().nonnegative(),
     succeeded_count: z.number().int().nonnegative(),
@@ -260,7 +267,7 @@ export const schemaHostGroupOperationTargetDto = z
     execution_id: z.string().optional(),
     agent_command_id: z.string().optional(),
     deployment_id: z.string().optional(),
-    status: schemaExecutionStatus,
+    status: schemaHostGroupOperationStatus,
     error: z.string().optional(),
     created_at: z.string().min(1),
     updated_at: z.string().min(1),
@@ -274,18 +281,32 @@ export const schemaHostGroupOperationDetailDto = z
   })
   .strict();
 
-export const schemaHostGroupActionResponseDto = z
-  .object({
-    operation_id: z.string().min(1),
-    status: schemaExecutionStatus,
-    action: schemaHostGroupBulkAction,
-    command_type: schemaHostGroupBulkCommandType,
-    target_count: z.number().int().nonnegative(),
-    succeeded_count: z.number().int().nonnegative(),
-    failed_count: z.number().int().nonnegative(),
-    target: schemaHostGroupActionTargetDto,
-  })
-  .strict();
+const schemaHostGroupBulkActionBase = {
+  operation_id: z.string().min(1),
+  status: schemaHostGroupOperationStatus,
+  target_count: z.number().int().nonnegative(),
+  succeeded_count: z.number().int().nonnegative(),
+  failed_count: z.number().int().nonnegative(),
+  target: schemaHostGroupActionTargetDto,
+} as const;
+
+export const schemaHostGroupActionResponseDto = z.discriminatedUnion('action', [
+  z.object({
+    ...schemaHostGroupBulkActionBase,
+    action: z.literal('inventory'),
+    command_type: z.literal('module.inventory'),
+  }).strict(),
+  z.object({
+    ...schemaHostGroupBulkActionBase,
+    action: z.literal('upgrade'),
+    command_type: z.literal('agent.upgrade'),
+  }).strict(),
+  z.object({
+    ...schemaHostGroupBulkActionBase,
+    action: z.literal('reboot'),
+    command_type: z.literal('system.reboot'),
+  }).strict(),
+]);
 
 const schemaIacRepositoryActiveRef = z
   .object({
@@ -315,7 +336,7 @@ export const schemaIacRepositoryResponseDto = z
 export const schemaHostGroupModuleActionResponseDto = z
   .object({
     operation_id: z.string().min(1),
-    status: schemaExecutionStatus,
+    status: schemaHostGroupOperationStatus,
     module: z.string().min(1),
     action: z.string().min(1),
     target: schemaHostGroupActionTargetDto,
@@ -326,7 +347,7 @@ export const schemaHostGroupModuleActionResponseDto = z
 export const schemaHostGroupDeploymentActionResponseDto = z
   .object({
     operation_id: z.string().min(1),
-    status: schemaExecutionStatus,
+    status: z.literal('queued'),
     target: schemaHostGroupActionTargetDto,
   })
   .strict();
@@ -353,14 +374,17 @@ export type HostGroupModuleActionResponseDto = z.infer<
 export type HostGroupDeploymentActionResponseDto = z.infer<
   typeof schemaHostGroupDeploymentActionResponseDto
 >;
-export type HostGroupExecutionStatus = z.infer<typeof schemaExecutionStatus>;
+export type HostGroupExecutionStatus = z.infer<
+  typeof schemaHostGroupOperationStatus
+>;
 export type HostGroupCommandStatus = z.infer<typeof schemaCommandStatus>;
 
 export {
   schemaCommandStatus,
   schemaExecutionErrorDetail,
-  schemaExecutionStatus,
+  schemaHostGroupOperationStatus,
   schemaHostGroupBulkAction,
   schemaHostGroupBulkCommandType,
   schemaHostGroupOperationType,
+  schemaScopedExecutionStatus,
 };

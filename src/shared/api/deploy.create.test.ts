@@ -43,7 +43,7 @@ describe('deployment host-group action response boundary', () => {
     mockedApiDoPost.mockResolvedValue({
       $status: 'success',
       ...canonicalDeploymentHostGroupActionResponse,
-      status: 'queued-ish',
+      status: 'running',
     } as Awaited<ReturnType<typeof doPost>>);
 
     const response = await doPost({
@@ -60,5 +60,30 @@ describe('deployment host-group action response boundary', () => {
     if (response.$status !== 'failed') throw new Error('Expected failure');
     expect(response.kind).toBe('adapter');
     expect(response.error).toBeInstanceOf(AdapterError);
+  });
+
+  it('preserves machine_id precedence over a host-group target', async () => {
+    mockedApiDoPost.mockResolvedValue({
+      $status: 'success',
+      id: 77,
+      machine_id: 101,
+      installer_status: 'queued',
+    } as Awaited<ReturnType<typeof doPost>>);
+
+    await expect(
+      doPost({
+        applicationId: '13',
+        artifactId: '99',
+        workerId: '101',
+        target: {
+          type: 'hostgroup',
+          id: 'hg_1',
+        },
+      }),
+    ).resolves.toMatchObject({
+      $status: 'success',
+      id: 77,
+      machine_id: 101,
+    });
   });
 });

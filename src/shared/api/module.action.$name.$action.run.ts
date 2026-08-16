@@ -36,7 +36,7 @@ export interface Dto {
   status?: string;
   module?: string;
   action?: string;
-  target?: DTOs.HostGroupActionTargetV1;
+  target?: ExplicitTarget;
   repository?: DTOs.IACRepositoryV1;
 }
 
@@ -62,7 +62,13 @@ export function doPost(
       return response;
     }
 
-    if (params.payload.target?.type !== 'hostgroup') {
+    const hasLegacyServerId =
+      typeof params.payload.server_id === 'string' &&
+      params.payload.server_id.trim().length > 0;
+    const isHostGroupTarget =
+      !hasLegacyServerId && params.payload.target?.type === 'hostgroup';
+
+    if (!isHostGroupTarget) {
       return response as PureResponse<Dto>;
     }
 

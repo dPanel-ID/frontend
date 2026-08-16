@@ -4,7 +4,10 @@ import { apiDoPost } from '@/shared/libs/api-client/lib/apiDoPost';
 import { AdapterError } from '@/shared/libs/api-client/lib/error';
 
 import { doPost } from './module.action.$name.$action.run';
-import { canonicalModuleHostGroupActionResponse } from './host-group.test-fixtures';
+import {
+  canonicalLegacyServerModuleActionResponse,
+  canonicalModuleHostGroupActionResponse,
+} from './host-group.test-fixtures';
 
 vi.mock('@/shared/libs/api-client/lib/apiDoPost', () => ({
   apiDoPost: vi.fn(),
@@ -65,5 +68,33 @@ describe('module host-group action response boundary', () => {
     if (response.$status !== 'failed') throw new Error('Expected failure');
     expect(response.kind).toBe('adapter');
     expect(response.error).toBeInstanceOf(AdapterError);
+  });
+
+  it('preserves legacy server_id response precedence even when a host-group target is also sent', async () => {
+    mockedApiDoPost.mockResolvedValue({
+      $status: 'success',
+      ...canonicalLegacyServerModuleActionResponse,
+    } as Awaited<ReturnType<typeof doPost>>);
+
+    await expect(
+      doPost({
+        name: 'nodejs',
+        action: 'install',
+        payload: {
+          server_id: '101',
+          target: {
+            type: 'hostgroup',
+            id: 'hg_1',
+          },
+        },
+      }),
+    ).resolves.toMatchObject({
+      $status: 'success',
+      execution_id: 'exec_server_1',
+      target: {
+        type: 'server',
+        id: '101',
+      },
+    });
   });
 });

@@ -84,6 +84,35 @@ describe('host-group API boundaries', () => {
     ).toEqual(canonicalHostGroupActionResponse);
   });
 
+  it('rejects non-canonical host-group statuses and mismatched bulk action/command pairs', () => {
+    expect(() =>
+      parseHostGroupOperationPayload({
+        ...canonicalRetryOperation,
+        status: 'cancelled',
+      }),
+    ).toThrow();
+
+    expect(() =>
+      parseHostGroupOperationDetailPayload({
+        ...canonicalRetryOperationDetail,
+        targets: [
+          {
+            ...canonicalRetryOperationDetail.targets[0],
+            status: 'pending',
+          },
+        ],
+      }),
+    ).toThrow();
+
+    expect(() =>
+      parseHostGroupActionResponsePayload({
+        ...canonicalHostGroupActionResponse,
+        action: 'inventory',
+        command_type: 'system.reboot',
+      }),
+    ).toThrow();
+  });
+
   it('rejects invalid host-group detail fetch responses', async () => {
     mockedApiClient.mockResolvedValue({
       $status: 'success',
