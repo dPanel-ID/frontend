@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { CalendarIcon, FolderTreeIcon, PlusCircleIcon } from 'lucide-react';
 
 import { useAuthLoggedIn } from '@/services/auth';
@@ -9,6 +9,7 @@ import { toHostGroupSummary } from '@/entities/host-group/adapter';
 
 import { ApiHostGroup, ApiServer } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
+import { buildHostGroupMemberCountMap } from '@/features/server-groups/shared/lib/member-counts';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import {
@@ -50,6 +51,7 @@ function ServerGroupsPage() {
   const [selectedServerIds, setSelectedServerIds] = useState<string[]>([]);
   const [submitError, setSubmitError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [memberCounts, setMemberCounts] = useState<Record<string, number>>({});
 
   const [groupsResponse, refreshGroups] = ApiHostGroup.Find.useGet({});
   const [serversResponse] = ApiServer.Find.useGet({
@@ -80,6 +82,40 @@ function ServerGroupsPage() {
     serversResponse.$status === 'success'
       ? (serversResponse.machines ?? [])
       : [];
+
+  useEffect(() => {
+    const groupIds = groups.map((group) => group.id);
+
+    if (groupIds.length === 0) {
+      setMemberCounts({});
+      return;
+    }
+
+    let isDisposed = false;
+
+    void (async () => {
+      const responses = await Promise.all(
+        groupIds.map((groupId) => ApiHostGroup.Detail.$Id.fetchGet({ id: groupId })),
+      );
+
+      if (isDisposed) return;
+
+      setMemberCounts(
+        buildHostGroupMemberCountMap(
+          responses
+            .filter((response) => response.$status === 'success')
+            .map((response) => ({
+              id: String(response.id ?? ''),
+              members: response.members,
+            })),
+        ),
+      );
+    })();
+
+    return () => {
+      isDisposed = true;
+    };
+  }, [groups]);
 
   const groupsStatus =
     groupsResponse.$status === 'failed' && groupsResponse.kind === 'api'
@@ -210,16 +246,11 @@ function ServerGroupsPage() {
         {groups.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {groups.map((group) => (
-              <button
+              <Link
                 key={group.id}
-                type="button"
+                to="/servers/groups/$id"
+                params={{ id: group.id }}
                 className="rounded-lg border bg-card p-4 text-left transition-colors hover:border-primary/35 hover:bg-card/90"
-                onClick={() =>
-                  navigate({
-                    to: '/servers/groups/$id',
-                    params: { id: group.id },
-                  })
-                }
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -231,7 +262,9 @@ function ServerGroupsPage() {
                     </p>
                   </div>
                   <span className="rounded-full border px-2 py-1 text-xs font-medium text-primary/75">
-                    {group.memberCount} members
+                    {memberCounts[group.id] != null
+                      ? `${memberCounts[group.id]} members`
+                      : 'Members unavailable'}
                   </span>
                 </div>
 
@@ -239,7 +272,7 @@ function ServerGroupsPage() {
                   <CalendarIcon className="size-3.5" />
                   Updated {group.timestamp.updated.toLocaleString()}
                 </div>
-              </button>
+              </Link>
             ))}
           </div>
         ) : null}

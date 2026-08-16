@@ -13,6 +13,8 @@ export const [ArtifactNewGeneralModelProvider, useArtifactNewGeneralModel] =
       defaultValues: {
         appConfigFile: 'default',
         fromBranch: '',
+        hostGroupId: '',
+        targetMode: 'server',
         workerId: props.currentServerId || '',
       },
     });

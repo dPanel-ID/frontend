@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
 
-import type { Target } from '@/entities/host-group/rules/schema';
-
 import { ApiModule } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
@@ -101,7 +100,7 @@ export default function Installation() {
     moduleDetail?.inputs.filter((input) => !isHiddenInput(input)) ?? [];
   const requiredInputs = visibleInputs.filter((input) => input.required);
   const advancedInputs = visibleInputs.filter((input) => !input.required);
-  const activeTarget = useMemo((): Target | null => {
+  const activeTarget = useMemo((): ExplicitTarget | null => {
     if (targetMode === 'server' && serverID) {
       return {
         type: 'server',

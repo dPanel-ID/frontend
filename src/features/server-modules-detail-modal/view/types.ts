@@ -1,4 +1,4 @@
-import type { Target } from '@/entities/host-group/rules/schema';
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 import type { ServerModule } from '@/entities/server-modules/model/types';
 
 export interface ServerModulesDetailModalProps {
@@ -9,10 +9,11 @@ export interface ServerModulesDetailModalProps {
     label: string;
     memberCount: number;
   };
+  onOperationQueued?: (operationId: string) => void;
 }
 
 export interface InstallModuleTargetConfig {
-  target: Target;
+  target: ExplicitTarget;
   label: string;
   snapshotCount?: number;
 }

@@ -1,11 +1,17 @@
 import { Button } from '@/shared/presentation/atoms/Button';
+import { cn } from '@/shared/libs/tailwind/cn';
 
 export default function MachineCard(props: Props) {
-  const { machineName, machinePublicIP, onClickSelect } = props;
+  const { disabled, machineName, machinePublicIP, onClickSelect, selected } =
+    props;
 
   return (
     <Button
-      className="h-auto cursor-pointer px-3 py-2 flex items-center justify-start text-start overflow-hidden"
+      className={cn(
+        'h-auto cursor-pointer px-3 py-2 flex items-center justify-start text-start overflow-hidden',
+        selected && 'border-primary bg-primary/10',
+      )}
+      disabled={disabled}
       onClick={onClickSelect}
       variant="outline"
     >
@@ -20,7 +26,9 @@ export default function MachineCard(props: Props) {
 }
 
 interface Props {
+  disabled?: boolean;
   machineName: string;
   machinePublicIP: string;
   onClickSelect?: () => void;
+  selected?: boolean;
 }

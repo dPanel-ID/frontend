@@ -1,6 +1,6 @@
 import type { DoRequestRecipe } from '@/shared/libs/api-client/rules/types';
 
-import type { Target } from '@/entities/host-group/rules/schema';
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 
 import { apiDoPost } from '../libs/api-client';
 
@@ -14,7 +14,7 @@ export interface RecipeParams {
   applicationId: string;
   artifactId: string;
   workerId: string;
-  target?: Target;
+  target?: ExplicitTarget;
   noDeploy?: boolean;
   isPrimary?: boolean;
   bootstrap?: boolean;

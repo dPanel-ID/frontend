@@ -13,6 +13,7 @@ export interface DeploymentTargetOption {
   hostname: string;
   address?: string;
   defaultUser?: string;
+  hostGroupId?: string;
   provider?: string;
   region?: string;
   sshPort?: string;
@@ -62,6 +63,7 @@ export const [WorkersModelProvider, useWorkersModel] = buildSelector(
             hostname: server.hostname || `Server ${server.id}`,
             address: server.address || server.domain,
             defaultUser: server.default_user,
+            hostGroupId: server.host_group_id || undefined,
             provider: server.provider,
             region: server.region,
             sshPort: server.ssh_port,

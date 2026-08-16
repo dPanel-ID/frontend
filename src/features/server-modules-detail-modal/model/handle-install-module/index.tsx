@@ -1,18 +1,17 @@
 import { useDialog } from '@/services/dialog';
 import { useToaster } from '@/services/toaster';
 
-import type { Target } from '@/entities/host-group/rules/schema';
-
 import { ApiModule } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 
 import { useBaseContext } from '../../config/base-context';
 
 interface InstallModuleParams {
   action: string;
   actionTitle?: string;
-  target: Target;
+  target: ExplicitTarget;
   targetLabel: string;
   snapshotCount?: number;
   variables: Record<string, unknown>;
@@ -24,7 +23,7 @@ interface InstallModuleParams {
 
 export default function useHandleInstallModule() {
   const [openDialog] = useDialog();
-  const { moduleInfo } = useBaseContext();
+  const { moduleInfo, onOperationQueued } = useBaseContext();
 
   const [openToaster] = useToaster();
 
@@ -71,6 +70,10 @@ export default function useHandleInstallModule() {
               message: getApiErrorDetail(response.error),
             });
             return;
+          }
+
+          if (params.target.type === 'hostgroup' && response.operation_id) {
+            onOperationQueued?.(response.operation_id);
           }
 
           openToaster({

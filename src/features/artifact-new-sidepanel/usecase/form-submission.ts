@@ -1,6 +1,8 @@
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
+import type { ExplicitTarget } from '@/shared/rules/host-group';
+
 import { ApiArtifact, ApiDeploy, ApiGitBranch } from '@/shared/api';
 import { iife } from '@/shared/libs/browser/fn';
 
@@ -16,7 +18,8 @@ export default function useFormSubmissionUsecase() {
 
   const handleSubmit = form.handleSubmit(
     async (values) => {
-      const { appConfigFile, fromBranch, workerId } = values;
+      const { appConfigFile, fromBranch, hostGroupId, targetMode, workerId } =
+        values;
 
       if (!workerId) {
         openToaster({
@@ -44,6 +47,14 @@ export default function useFormSubmissionUsecase() {
         });
         return;
       }
+
+      const explicitTarget: ExplicitTarget | undefined =
+        targetMode === 'hostgroup' && hostGroupId
+          ? {
+              type: 'hostgroup',
+              id: hostGroupId,
+            }
+          : undefined;
 
       const responseArtifactCreation = await ApiArtifact.Create.doPost({
         appDefinition: undefined,
@@ -78,17 +89,20 @@ export default function useFormSubmissionUsecase() {
       }
 
       const responseDeployCreation = await iife(() => {
-        if (workerId === props.currentServerId) return Promise.resolve(null);
+        if (targetMode === 'server' && workerId === props.currentServerId) {
+          return Promise.resolve(null);
+        }
 
         // Create deployment with artifact ID, on worker is not the same as selected worker
         // It expect to create new deployment with status pending
         // status will "pending" when no_deploy set true
         return ApiDeploy.Create.doPost({
           applicationId: props.applicationId,
-          workerId,
+          workerId: targetMode === 'server' ? workerId : '',
           artifactId: String(createdArtifactId),
           isPrimary: true,
           noDeploy: true,
+          target: explicitTarget,
         });
       });
 
@@ -110,6 +124,19 @@ export default function useFormSubmissionUsecase() {
       sidepanelEmit('#artifact-new-sidepanel/sidepanel-close', {
         bypass: true,
       });
+
+      if (
+        explicitTarget?.type === 'hostgroup' &&
+        responseDeployCreation != null &&
+        responseDeployCreation.$status === 'success' &&
+        'operation_id' in responseDeployCreation &&
+        responseDeployCreation.operation_id
+      ) {
+        props.onOperationQueued?.(
+          explicitTarget.id,
+          responseDeployCreation.operation_id,
+        );
+      }
 
       props.onSuccess?.(workerId);
     },

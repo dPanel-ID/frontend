@@ -8,8 +8,19 @@ import { FailedState } from '@/widgets/failed-state';
 import { MachineCard } from '../../presentation/MachineCard';
 import type { SelectMachineModalProps as Props } from '../types';
 
-export default function MachineList(props: Props) {
-  const { onMachineSelected } = props;
+interface MachineListProps extends Props {
+  selectedMachineIds: number[];
+  setSelectedMachineIds: React.Dispatch<React.SetStateAction<number[]>>;
+}
+
+export default function MachineList(props: MachineListProps) {
+  const {
+    disabledMachineIds = [],
+    onMachineSelected,
+    selectedMachineIds,
+    selectionMode = 'single',
+    setSelectedMachineIds,
+  } = props;
 
   const emitModal = useModalEmit();
 
@@ -39,12 +50,23 @@ export default function MachineList(props: Props) {
         return (
           <MachineCard
             key={id}
+            disabled={disabledMachineIds.includes(machineId)}
             machineName={hostname}
             machinePublicIP={address}
             onClickSelect={() => {
+              if (selectionMode === 'multiple') {
+                setSelectedMachineIds((current) =>
+                  current.includes(machineId)
+                    ? current.filter((selectedId) => selectedId !== machineId)
+                    : [...current, machineId],
+                );
+                return;
+              }
+
               emitModal('%%modal/close', null);
-              onMachineSelected(machineId);
+              onMachineSelected?.(machineId);
             }}
+            selected={selectedMachineIds.includes(machineId)}
           />
         );
       })}

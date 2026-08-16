@@ -1,6 +1,6 @@
 import type { DoRequestRecipe } from '@/shared/libs/api-client/rules/types';
 
-import type { Target } from '@/entities/host-group/rules/schema';
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 
 import { apiDoPost } from '../libs/api-client';
 
@@ -14,7 +14,7 @@ export interface ModuleRunRefPayload {
 
 export interface ModuleRunPayload {
   server_id?: string;
-  target?: Target;
+  target?: ExplicitTarget;
   ref?: ModuleRunRefPayload;
   variables?: Record<string, unknown>;
   persist_variables?: boolean;

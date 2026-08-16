@@ -1,4 +1,5 @@
 import { useArtifactNewSidepanel } from '@/features/artifact-new-sidepanel';
+import { useNavigate } from '@tanstack/react-router';
 
 import { iife } from '@/shared/libs/browser/fn';
 import {
@@ -167,6 +168,7 @@ const DeploymentsTabContent = guard(() => {
 
 export default function ArtifactsHistory() {
   const emit = useEmit();
+  const navigate = useNavigate();
   const [gitDetail, appDetail, selectedServerId] = useAppDataModel((s) => [
     s.gitDetail,
     s.appDetail,
@@ -202,6 +204,17 @@ export default function ArtifactsHistory() {
       applicationId: appDetail.id,
       currentServerId: firstDeploymentMachineId,
       appConfig: appDetail.configDefs,
+      onOperationQueued: (groupId, operationId) => {
+        navigate({
+          to: '/servers/groups/$id',
+          params: {
+            id: groupId,
+          },
+          search: {
+            operationId,
+          },
+        });
+      },
       onSuccess: () => {
         emit('@applications::detail/deployment-history-refresh', null);
         emit('@applications::detail/app-detail-refresh', null);

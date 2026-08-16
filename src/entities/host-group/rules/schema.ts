@@ -1,18 +1,10 @@
 import { z } from 'zod';
 
 import { SchemaCommon } from '@/entities/shared/rules/schema';
+import { schemaExplicitTarget } from '@/shared/rules/host-group';
 
-export type Target = z.output<typeof schemaTarget>;
-export const schemaTarget = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal('server'),
-    id: SchemaCommon.unitId,
-  }),
-  z.object({
-    type: z.literal('hostgroup'),
-    id: SchemaCommon.unitId,
-  }),
-]);
+export type Target = z.output<typeof schemaExplicitTarget>;
+export const schemaTarget = schemaExplicitTarget;
 
 export type HostGroupSummary = z.output<typeof schemaHostGroupSummary>;
 export const schemaHostGroupSummary = z.object({

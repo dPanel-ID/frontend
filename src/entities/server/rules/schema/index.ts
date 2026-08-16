@@ -33,6 +33,7 @@ export const schemaServerDetail = z.object({
   id: SchemaCommon.unitId,
   timestamp: SchemaCommon.timestamp,
   ownership: SchemaCommon.ownership,
+  hostGroupId: z.string().optional(),
   cloud: cloud.optional(),
   host: z.object({
     name: z.string().catch(''),

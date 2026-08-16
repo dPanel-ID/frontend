@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
@@ -14,16 +14,21 @@ import {
 } from 'lucide-react';
 import { z } from 'zod';
 
-import { useAuthLoggedIn } from '@/services/auth';
+import { useDialog } from '@/services/dialog';
 
 import {
   toHostGroupDetail,
   toHostGroupOperation,
 } from '@/entities/host-group/adapter';
-import type { Target } from '@/entities/host-group/rules/schema';
 import { toServerModuleFromCatalog } from '@/entities/server-modules/lib/catalog';
 
+import { useSelectMachineModal } from '@/features/select-machine-modal';
 import { useServerModulesDetailModal } from '@/features/server-modules-detail-modal';
+import {
+  getOperationRefreshInterval,
+  isTerminalOperationStatus,
+} from '@/features/server-groups/shared/lib/operation';
+import { isSemanticReleaseTag } from '@/features/server-groups/shared/lib/validation';
 
 import {
   ApiApplication,
@@ -31,11 +36,10 @@ import {
   ApiDeploy,
   ApiHostGroup,
   ApiModule,
-  ApiServer,
 } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
-import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import {
   Dialog,
   DialogContent,
@@ -76,22 +80,18 @@ function isUnauthorizedStatus(status?: number | string) {
   return normalizedStatus === 401 || normalizedStatus === 403;
 }
 
-function terminalOperationStatus(status?: string) {
-  return ['succeeded', 'failed', 'cancelled'].includes(
-    String(status ?? '').toLowerCase(),
-  );
-}
-
 function ServerGroupDetailPage() {
   const navigate = useNavigate();
-  const { userProfile } = useAuthLoggedIn();
   const { id } = Route.useParams();
   const { operationId } = Route.useSearch();
+  const [openDialog] = useDialog();
+  const [openSelectMachineModal] = useSelectMachineModal();
   const [openServerModulesDetailModal] = useServerModulesDetailModal();
 
-  const [addMembersOpen, setAddMembersOpen] = useState(false);
   const [deployOpen, setDeployOpen] = useState(false);
-  const [selectedServerIds, setSelectedServerIds] = useState<string[]>([]);
+  const [operationRefreshStatus, setOperationRefreshStatus] = useState<
+    string | undefined
+  >();
   const [selectedApplicationId, setSelectedApplicationId] = useState('');
   const [selectedArtifactId, setSelectedArtifactId] = useState('');
   const [selectedModuleId, setSelectedModuleId] = useState('');
@@ -115,16 +115,12 @@ function ServerGroupDetailPage() {
       id: operationId ?? '',
       options: {
         skip: !operationId,
-        refreshIntervalMs: operationId ? 3_000 : 0,
+        refreshIntervalMs: getOperationRefreshInterval(
+          operationId,
+          operationRefreshStatus,
+        ),
       },
     });
-
-  const [serversResponse] = ApiServer.Find.useGet({
-    filter: 'shared-with-me',
-    page: 1,
-    pageSize: 200,
-    userId: userProfile.id,
-  });
 
   const [applicationsResponse] = ApiApplication.Find.useGet({
     page: 1,
@@ -182,10 +178,6 @@ function ServerGroupDetailPage() {
       : [];
   }, [modulesResponse]);
 
-  const availableServers =
-    serversResponse.$status === 'success'
-      ? (serversResponse.machines ?? [])
-      : [];
   const applications =
     applicationsResponse.$status === 'success'
       ? (applicationsResponse.applications ?? [])
@@ -208,23 +200,14 @@ function ServerGroupDetailPage() {
       ? operationResponse.error.status
       : undefined;
 
-  const groupTarget: Target = {
+  const groupTarget: ExplicitTarget = {
     type: 'hostgroup',
     id,
   };
 
   const memberCount = group?.memberCount ?? 0;
 
-  const handleSelectServer = (serverId: string, checked: boolean) => {
-    setSelectedServerIds((current) =>
-      checked
-        ? [...current, serverId]
-        : current.filter((item) => item !== serverId),
-    );
-  };
-
   const resetDialogState = () => {
-    setSelectedServerIds([]);
     setSelectedApplicationId('');
     setSelectedArtifactId('');
     setSubmitError('');
@@ -241,8 +224,8 @@ function ServerGroupDetailPage() {
     });
   };
 
-  const handleAddMembers = async () => {
-    if (selectedServerIds.length === 0) {
+  const submitMembers = async (serverIds: string[], mode: 'add' | 'replace') => {
+    if (serverIds.length === 0) {
       setSubmitError('Select at least one server.');
       return;
     }
@@ -250,10 +233,16 @@ function ServerGroupDetailPage() {
     setIsSubmitting(true);
     setSubmitError('');
 
-    const response = await ApiHostGroup.Members.$Id.doPost({
-      id,
-      serverIds: selectedServerIds,
-    });
+    const response =
+      mode === 'replace'
+        ? await ApiHostGroup.Members.$Id.doPut({
+            id,
+            serverIds,
+          })
+        : await ApiHostGroup.Members.$Id.doPost({
+            id,
+            serverIds,
+          });
 
     setIsSubmitting(false);
 
@@ -262,19 +251,80 @@ function ServerGroupDetailPage() {
       return;
     }
 
-    setAddMembersOpen(false);
     resetDialogState();
     refreshDetail();
+  };
+
+  const handleRemoveMember = (serverId: string, hostname: string) => {
+    openDialog({
+      title: 'Remove member',
+      content: <>Remove {hostname} from this explicit server group?</>,
+      variant: 'info',
+      actions: {
+        variant: 'YesNo',
+        yes: async () => {
+          const response = await ApiHostGroup.Members.$Id.doDelete({
+            id,
+            serverId,
+          });
+
+          if (response.$status === 'failed') {
+            setSubmitError(getApiErrorDetail(response.error));
+            return;
+          }
+
+          refreshDetail();
+        },
+      },
+    });
+  };
+
+  const handleOpenMembersPicker = (mode: 'add' | 'replace') => {
+    openSelectMachineModal({
+      confirmLabel: mode === 'replace' ? 'Replace Members' : 'Add Members',
+      description:
+        mode === 'replace'
+          ? `Choose the exact servers that should remain in ${group?.name ?? 'this group'}.`
+          : `Choose the exact servers to add to ${group?.name ?? 'this group'}.`,
+      disabledMachineIds:
+        mode === 'add'
+          ? group?.members
+              .map((member) => Number(member.id))
+              .filter((memberId) => Number.isFinite(memberId)) ?? []
+          : [],
+      initialSelectedMachineIds:
+        mode === 'replace'
+          ? group?.members
+              .map((member) => Number(member.id))
+              .filter((memberId) => Number.isFinite(memberId)) ?? []
+          : [],
+      onMachinesSelected: async (machineIds) => {
+        await submitMembers(
+          machineIds.map((machineId) => String(machineId)),
+          mode,
+        );
+      },
+      selectionMode: 'multiple',
+      title: mode === 'replace' ? 'Replace Members' : 'Add Members',
+    });
   };
 
   const handleSubmitAction = async () => {
     if (!pendingAction || !group) return;
 
+    if (
+      pendingAction.action === 'upgrade' &&
+      !isSemanticReleaseTag(upgradeVersion)
+    ) {
+      setSubmitError('Enter a semantic release tag like v1.2.3.');
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError('');
 
     const payload =
-      pendingAction.action === 'upgrade' && upgradeVersion.trim()
+      pendingAction.action === 'upgrade'
         ? { version: upgradeVersion.trim() }
         : {};
 
@@ -342,8 +392,20 @@ function ServerGroupDetailPage() {
         label: group?.name ?? 'Selected group',
         memberCount,
       },
+      onOperationQueued: navigateToOperation,
     });
   };
+
+  const operationStatusValue =
+    operationResponse.$status === 'success'
+      ? operationResponse.operation?.status
+      : operationResponse.$status === 'loading'
+        ? operationResponse.prevData?.operation?.status
+        : undefined;
+
+  useEffect(() => {
+    setOperationRefreshStatus(operationStatusValue);
+  }, [operationStatusValue]);
 
   if (detailResponse.$status === 'loading' && !group) {
     return <PageHeaderShimmer hasHeadnote hasStatuses hasRightAppend />;
@@ -400,10 +462,17 @@ function ServerGroupDetailPage() {
             <Button
               buttonStyle="outline"
               buttonColor="secondary"
-              onClick={() => setAddMembersOpen(true)}
+              onClick={() => handleOpenMembersPicker('add')}
             >
               <PlusCircleIcon />
               Add Members
+            </Button>
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              onClick={() => handleOpenMembersPicker('replace')}
+            >
+              Replace Members
             </Button>
             <Button
               buttonStyle="outline"
@@ -525,18 +594,19 @@ function ServerGroupDetailPage() {
           </div>
 
           <div className="overflow-x-auto">
-            <div className="min-w-[720px]">
-              <div className="grid grid-cols-[minmax(220px,1.2fr)_minmax(180px,1fr)_140px_140px] gap-4 border-b px-4 py-3 text-xs font-semibold uppercase text-muted-foreground">
+            <div className="min-w-[840px]">
+              <div className="grid grid-cols-[minmax(220px,1.2fr)_minmax(180px,1fr)_140px_140px_120px] gap-4 border-b px-4 py-3 text-xs font-semibold uppercase text-muted-foreground">
                 <span>Server</span>
                 <span>Address</span>
                 <span>Status</span>
                 <span>Current group</span>
+                <span>Actions</span>
               </div>
 
               {group.members.map((member) => (
                 <div
                   key={member.id}
-                  className="grid grid-cols-[minmax(220px,1.2fr)_minmax(180px,1fr)_140px_140px] gap-4 border-b px-4 py-3 text-sm last:border-b-0"
+                  className="grid grid-cols-[minmax(220px,1.2fr)_minmax(180px,1fr)_140px_140px_120px] gap-4 border-b px-4 py-3 text-sm last:border-b-0"
                 >
                   <Link
                     to="/servers/$id"
@@ -552,6 +622,14 @@ function ServerGroupDetailPage() {
                   <span className="truncate text-muted-foreground">
                     {member.currentHostGroupId || '-'}
                   </span>
+                  <Button
+                    buttonStyle="outline"
+                    buttonColor="secondary"
+                    size="sm"
+                    onClick={() => handleRemoveMember(member.id, member.hostname)}
+                  >
+                    Remove
+                  </Button>
                 </div>
               ))}
             </div>
@@ -567,7 +645,7 @@ function ServerGroupDetailPage() {
                 </h2>
                 <p className="text-sm text-muted-foreground">
                   The selected operation shows the exact snapshotted member
-                  targets and linked child resources.
+                  targets and any child work IDs returned by the backend.
                 </p>
               </div>
               {operationId ? (
@@ -615,7 +693,7 @@ function ServerGroupDetailPage() {
                 <span>{operation.succeededCount} succeeded</span>
                 <span>•</span>
                 <span>{operation.failedCount} failed</span>
-                {!terminalOperationStatus(operation.status) ? (
+                {!isTerminalOperationStatus(operation.status) ? (
                   <>
                     <span>•</span>
                     <span className="inline-flex items-center gap-1 text-amber-600">
@@ -672,76 +750,6 @@ function ServerGroupDetailPage() {
       </div>
 
       <Dialog
-        open={addMembersOpen}
-        onOpenChange={(open) => {
-          setAddMembersOpen(open);
-          if (!open) resetDialogState();
-        }}
-      >
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Add Members</DialogTitle>
-            <DialogDescription>
-              Pick the exact servers to add to {group.name}. Current assignment
-              is shown for conflict awareness.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="max-h-80 overflow-y-auto rounded-lg border bg-background">
-            {availableServers.map((server) => {
-              const serverId = String(server.id ?? '');
-
-              return (
-                <label
-                  key={serverId}
-                  className="grid cursor-pointer grid-cols-[auto_1fr] gap-3 border-b px-4 py-3 last:border-b-0"
-                >
-                  <Checkbox
-                    checked={selectedServerIds.includes(serverId)}
-                    onCheckedChange={(checked) =>
-                      handleSelectServer(serverId, checked === true)
-                    }
-                  />
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="truncate font-medium text-primary">
-                        {server.hostname || serverId}
-                      </span>
-                      {server.host_group_id ? (
-                        <span className="rounded-full border px-2 py-0.5 text-[11px] text-muted-foreground">
-                          current group {server.host_group_id}
-                        </span>
-                      ) : null}
-                    </div>
-                    <p className="truncate text-xs text-muted-foreground">
-                      {server.address || 'No public address'}
-                    </p>
-                  </div>
-                </label>
-              );
-            })}
-          </div>
-
-          {submitError ? (
-            <p className="text-sm text-destructive">{submitError}</p>
-          ) : null}
-
-          <DialogFooter>
-            <Button
-              buttonStyle="outline"
-              buttonColor="secondary"
-              onClick={() => setAddMembersOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button disabled={isSubmitting} onClick={handleAddMembers}>
-              {isSubmitting ? 'Saving...' : 'Add Members'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog
         open={Boolean(pendingAction)}
         onOpenChange={(open) => {
           if (!open) {
@@ -768,6 +776,9 @@ function ServerGroupDetailPage() {
                 onChange={(event) => setUpgradeVersion(event.target.value)}
                 placeholder="v2.3.1"
               />
+              <span className="text-xs text-muted-foreground">
+                Enter a semantic release tag such as v2.3.1.
+              </span>
             </label>
           ) : null}
 
@@ -783,7 +794,14 @@ function ServerGroupDetailPage() {
             >
               Cancel
             </Button>
-            <Button disabled={isSubmitting} onClick={handleSubmitAction}>
+            <Button
+              disabled={
+                isSubmitting ||
+                (pendingAction?.action === 'upgrade' &&
+                  !isSemanticReleaseTag(upgradeVersion))
+              }
+              onClick={handleSubmitAction}
+            >
               {isSubmitting ? 'Queueing...' : 'Queue Action'}
             </Button>
           </DialogFooter>
