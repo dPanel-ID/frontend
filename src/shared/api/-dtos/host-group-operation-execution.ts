@@ -20,7 +20,7 @@ export const schemaHostGroupOperationExecutionV1 = z
 export const schemaHostGroupOperationExecutionDetailV1 = z
   .object({
     execution: schemaHostGroupOperationExecutionV1,
-    events: z.array(z.unknown()).optional(),
+    events: z.array(z.never()).optional(),
     events_source: z.string().optional(),
     events_stored: z.boolean().optional(),
     events_message: z.string().optional(),

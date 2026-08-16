@@ -81,4 +81,22 @@ describe('schemaHostGroupOperationExecutionDetailV1', () => {
     expect(parsed.execution).not.toHaveProperty('trace_id');
     expect(parsed.execution).not.toHaveProperty('error_detail');
   });
+
+  it('rejects non-empty events because the scoped backend contract only permits an empty placeholder array', () => {
+    expect(() =>
+      schemaHostGroupOperationExecutionDetailV1.parse({
+        execution: {
+          id: 'execution-1',
+          type: 'deploy',
+          status: 'running',
+        },
+        events: [
+          {
+            id: 'event-1',
+            message: 'this must stay private',
+          },
+        ],
+      }),
+    ).toThrow();
+  });
 });
