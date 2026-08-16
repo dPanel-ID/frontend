@@ -1,6 +1,4 @@
-import { apiClient } from '@/shared/libs/api-client/lib/client';
 import { apiDoPost } from '@/shared/libs/api-client/lib/apiDoPost';
-import type { PureResponse } from '@/shared/libs/api-client/rules/types';
 
 export interface ReplacePayload {
   id: string;
@@ -18,13 +16,13 @@ export interface RemovePayload {
 }
 
 export function doPut(payload: ReplacePayload) {
-  return apiClient<boolean>({
+  return apiDoPost<void>({
     method: 'PUT',
     url: `/v1/host-groups/${payload.id}/members`,
     data: {
       server_ids: payload.serverIds,
     },
-  }) as Promise<PureResponse<boolean>>;
+  });
 }
 
 export function doPost(payload: AddPayload) {
@@ -38,8 +36,8 @@ export function doPost(payload: AddPayload) {
 }
 
 export function doDelete(payload: RemovePayload) {
-  return apiClient<boolean>({
+  return apiDoPost<void>({
     method: 'DELETE',
     url: `/v1/host-groups/${payload.id}/members/${payload.serverId}`,
-  }) as Promise<PureResponse<boolean>>;
+  });
 }

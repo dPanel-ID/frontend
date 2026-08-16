@@ -7,6 +7,7 @@ import type {
 } from '@/shared/libs/api-client/rules/types';
 
 import { fetchGet } from './host-group.operation.execution.$operationId.$machineId';
+import { canonicalHostGroupExecutionDetail } from './host-group.test-fixtures';
 
 vi.mock('@/shared/libs/api-client/lib/client', () => ({
   apiClient: vi.fn(),
@@ -15,30 +16,7 @@ vi.mock('@/shared/libs/api-client/lib/client', () => ({
 const mockedApiClient = vi.mocked(apiClient);
 
 function buildSafeDetail() {
-  return {
-    execution: {
-      id: 'execution-1',
-      type: 'deploy',
-      status: 'running',
-      organization_id: 'org-1',
-      actor_subject: 'user-1',
-      machine_id: 'server-1',
-      module: 'deploy',
-      module_id: 'module-1',
-      started_at: '2026-08-16T10:00:00Z',
-      finished_at: '2026-08-16T10:05:00Z',
-      created_at: '2026-08-16T10:00:00Z',
-      updated_at: '2026-08-16T10:05:00Z',
-    },
-    events: [],
-    events_source: 'uptrace',
-    events_stored: false,
-    events_message: 'events are not exposed for scoped detail',
-    events_retention_days: 0,
-    events_retention_expires_at: '2026-08-16T10:05:00Z',
-    events_retained: false,
-    events_unavailable_reason: 'retention',
-  };
+  return canonicalHostGroupExecutionDetail;
 }
 
 describe('host-group scoped execution detail client', () => {
@@ -61,7 +39,7 @@ describe('host-group scoped execution detail client', () => {
     ).resolves.toMatchObject({
       $status: 'success',
       execution: {
-        id: 'execution-1',
+        id: 'exec_1',
       },
       events: [],
     });
@@ -113,5 +91,27 @@ describe('host-group scoped execution detail client', () => {
     expect(response.kind).toBe('adapter');
     expect(response.error).toBeInstanceOf(AdapterError);
     expect(response.error.message).toContain('trace_id');
+  });
+
+  it('rejects scoped execution responses that omit required safe fields', async () => {
+    mockedApiClient.mockResolvedValue({
+      $status: 'success',
+      $statusCode: 200,
+      ...buildSafeDetail(),
+      execution: {
+        ...buildSafeDetail().execution,
+        machine_id: undefined,
+      },
+    } as ApiClientResponse<unknown>);
+
+    const response = await fetchGet({
+      machineId: 'server-1',
+      operationId: 'operation-1',
+    });
+
+    expect(response.$status).toBe('failed');
+    if (response.$status !== 'failed') throw new Error('Expected failure');
+    expect(response.kind).toBe('adapter');
+    expect(response.error).toBeInstanceOf(AdapterError);
   });
 });

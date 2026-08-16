@@ -4,6 +4,7 @@ import {
   buildModuleRetryRequirements,
   containsRedactedModuleValue,
   isPinnedModuleRef,
+  parseModuleRetryPayload,
 } from './retry';
 
 describe('host-group retry helpers', () => {
@@ -49,5 +50,56 @@ describe('host-group retry helpers', () => {
       requiresPinnedRef: true,
       requiresVariablesResubmission: true,
     });
+  });
+
+  it('leaves invalid retry defaults empty until the user replaces them', () => {
+    expect(
+      buildModuleRetryRequirements({
+        action: 'install',
+        ref: {
+          name: 'main',
+          type: 'branch',
+        },
+        variables: {
+          api_token: '[redacted]',
+        },
+      }),
+    ).toMatchObject({
+      defaultRefText: '',
+      defaultVariablesText: '',
+    });
+  });
+
+  it('rejects unchanged invalid retry payloads before dispatch', () => {
+    expect(() =>
+      parseModuleRetryPayload(
+        {
+          action: 'install',
+          ref: {
+            name: 'main',
+            type: 'branch',
+          },
+          variables: {
+            api_token: '[redacted]',
+          },
+        },
+        '',
+        '',
+      ),
+    ).toThrowError('Resubmit the full variable set');
+
+    expect(() =>
+      parseModuleRetryPayload(
+        {
+          action: 'install',
+          ref: {
+            name: 'main',
+            type: 'branch',
+          },
+        },
+        '{"api_token":"fresh"}',
+        '{"type":"branch","name":"main"}',
+      ),
+    ).toThrowError('Provide an explicit pinned ref');
   });
 });

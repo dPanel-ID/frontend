@@ -30,7 +30,10 @@ import {
   getOperationRefreshInterval,
   isTerminalOperationStatus,
 } from '@/features/server-groups/shared/lib/operation';
-import { buildModuleRetryRequirements } from '@/features/server-groups/shared/lib/retry';
+import {
+  buildModuleRetryRequirements,
+  parseModuleRetryPayload,
+} from '@/features/server-groups/shared/lib/retry';
 import { useServerGroupMemberMutations } from '@/features/server-groups/usecase/member-mutations';
 import { useRetainedResponseData } from '@/features/server-groups/usecase/use-retained-response-data';
 import { MembersTable } from '@/features/server-groups/view/MembersTable';
@@ -89,10 +92,6 @@ function isUnauthorizedStatus(status?: number | string) {
 
 function isConfigDisabledMessage(message: string) {
   return /(disabled|not configured|unavailable)/i.test(message);
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return value != null && typeof value === 'object' && !Array.isArray(value);
 }
 
 function isModuleOperation(type: string) {
@@ -259,6 +258,7 @@ function ServerGroupDetailPage() {
 
   const memberCount = group?.memberCount ?? 0;
   const hasMembers = memberCount > 0;
+  const canLaunchMemberActions = hasMembers && !isDetailDegraded;
   const {
     isMutatingMembers,
     memberActionError,
@@ -342,7 +342,14 @@ function ServerGroupDetailPage() {
   };
 
   const handleSubmitAction = async () => {
-    if (!pendingAction || !group || !hasMembers) return;
+    if (!pendingAction || !group || !canLaunchMemberActions) {
+      if (isDetailDegraded) {
+        setSubmitError(
+          'Refresh group details before queueing actions from stale member data.',
+        );
+      }
+      return;
+    }
 
     if (
       pendingAction.action === 'upgrade' &&
@@ -384,7 +391,14 @@ function ServerGroupDetailPage() {
   };
 
   const handleDeploy = async () => {
-    if (!hasMembers) {
+    if (!canLaunchMemberActions) {
+      if (isDetailDegraded) {
+        setSubmitError(
+          'Refresh group details before launching deployments from stale member data.',
+        );
+        return;
+      }
+
       setSubmitError('Add at least one member before launching a deployment.');
       return;
     }
@@ -422,7 +436,7 @@ function ServerGroupDetailPage() {
   };
 
   const handleOpenModule = () => {
-    if (!selectedModule || !hasMembers) return;
+    if (!selectedModule || !canLaunchMemberActions) return;
 
     openServerModulesDetailModal({
       moduleInfo: selectedModule,
@@ -499,7 +513,6 @@ function ServerGroupDetailPage() {
     if (!operation) return;
 
     const isModule = isModuleOperation(operation.type);
-    const requirements = buildModuleRetryRequirements(operation.request);
     let variables: Record<string, unknown> | undefined;
     let ref:
       | {
@@ -511,38 +524,11 @@ function ServerGroupDetailPage() {
 
     try {
       if (isModule) {
-        if (requirements.requiresVariablesResubmission && !retryVariablesText.trim()) {
-          setRetryError(
-            'Resubmit the full variable set before retrying a redacted module operation.',
-          );
-          return;
-        }
-        if (requirements.requiresPinnedRef && !retryRefText.trim()) {
-          setRetryError(
-            'Provide an explicit pinned ref before retrying an unpinned module operation.',
-          );
-          return;
-        }
-
-        if (retryVariablesText.trim()) {
-          const parsed = JSON.parse(retryVariablesText) as unknown;
-          if (!isRecord(parsed)) {
-            throw new Error('Variables JSON must be an object.');
-          }
-          variables = parsed;
-        }
-
-        if (retryRefText.trim()) {
-          const parsed = JSON.parse(retryRefText) as unknown;
-          if (!isRecord(parsed)) {
-            throw new Error('Ref JSON must be an object.');
-          }
-          ref = parsed as {
-            type?: string;
-            name?: string;
-            expected_commit?: string;
-          };
-        }
+        ({ ref, variables } = parseModuleRetryPayload(
+          operation.request,
+          retryVariablesText,
+          retryRefText,
+        ));
       }
     } catch (error) {
       setRetryError(
@@ -686,7 +672,7 @@ function ServerGroupDetailPage() {
             <Button
               buttonStyle="outline"
               buttonColor="secondary"
-              disabled={!hasMembers}
+              disabled={!canLaunchMemberActions}
               onClick={() => setDeployOpen(true)}
             >
               <HardDriveUploadIcon />
@@ -713,7 +699,7 @@ function ServerGroupDetailPage() {
                 </p>
               </div>
               <Button
-                disabled={!selectedModule || !hasMembers}
+                disabled={!selectedModule || !canLaunchMemberActions}
                 buttonStyle="outline"
                 buttonColor="secondary"
                 onClick={handleOpenModule}
@@ -758,9 +744,11 @@ function ServerGroupDetailPage() {
                 </div>
               )}
             </div>
-            {!hasMembers ? (
+            {!canLaunchMemberActions ? (
               <p className="mt-3 text-sm text-muted-foreground">
-                Add at least one member before queueing a module action.
+                {isDetailDegraded
+                  ? 'Refresh group details before queueing a module action from stale member data.'
+                  : 'Add at least one member before queueing a module action.'}
               </p>
             ) : null}
           </section>
@@ -776,7 +764,7 @@ function ServerGroupDetailPage() {
               <Button
                 buttonStyle="outline"
                 buttonColor="secondary"
-                disabled={!hasMembers}
+                disabled={!canLaunchMemberActions}
                 onClick={() =>
                   setPendingAction({
                     action: 'inventory',
@@ -790,7 +778,7 @@ function ServerGroupDetailPage() {
               <Button
                 buttonStyle="outline"
                 buttonColor="secondary"
-                disabled={!hasMembers}
+                disabled={!canLaunchMemberActions}
                 onClick={() =>
                   setPendingAction({
                     action: 'reboot',
@@ -804,7 +792,7 @@ function ServerGroupDetailPage() {
               <Button
                 buttonStyle="outline"
                 buttonColor="secondary"
-                disabled={!hasMembers}
+                disabled={!canLaunchMemberActions}
                 onClick={() =>
                   setPendingAction({
                     action: 'upgrade',
@@ -816,9 +804,11 @@ function ServerGroupDetailPage() {
                 Upgrade Agent
               </Button>
             </div>
-            {!hasMembers ? (
+            {!canLaunchMemberActions ? (
               <p className="mt-3 text-sm text-muted-foreground">
-                Add at least one member before queueing a bulk action.
+                {isDetailDegraded
+                  ? 'Refresh group details before queueing bulk actions from stale member data.'
+                  : 'Add at least one member before queueing a bulk action.'}
               </p>
             ) : null}
           </section>
@@ -1181,7 +1171,10 @@ function ServerGroupDetailPage() {
             >
               Cancel
             </Button>
-            <Button disabled={isSubmitting || !hasMembers} onClick={handleDeploy}>
+            <Button
+              disabled={isSubmitting || !canLaunchMemberActions}
+              onClick={handleDeploy}
+            >
               {isSubmitting ? 'Queueing...' : 'Deploy'}
             </Button>
           </DialogFooter>

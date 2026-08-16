@@ -1,9 +1,8 @@
 import { apiClient } from '@/shared/libs/api-client/lib/client';
 import { apiDoPost } from '@/shared/libs/api-client/lib/apiDoPost';
 import { processError } from '@/shared/libs/api-client/lib/processor';
-import type { PureResponse } from '@/shared/libs/api-client/rules/types';
 
-import { parseHostGroupDetailPayload } from './host-group.parsers';
+import { parseHostGroupSummaryPayload } from './host-group.parsers';
 
 export interface CreatePayload {
   name: string;
@@ -34,7 +33,7 @@ export function doPost(payload: CreatePayload) {
     try {
       return {
         $status: 'success' as const,
-        ...parseHostGroupDetailPayload(response),
+        ...parseHostGroupSummaryPayload(response),
       };
     } catch (error) {
       return {
@@ -61,7 +60,7 @@ export function doPatch(payload: UpdatePayload) {
     try {
       return {
         $status: 'success' as const,
-        ...parseHostGroupDetailPayload(response),
+        ...parseHostGroupSummaryPayload(response),
       };
     } catch (error) {
       return {
@@ -73,8 +72,8 @@ export function doPatch(payload: UpdatePayload) {
 }
 
 export function doDelete(payload: DeletePayload) {
-  return apiClient<boolean>({
+  return apiDoPost<void>({
     method: 'DELETE',
     url: `/v1/host-groups/${payload.id}`,
-  }) as Promise<PureResponse<boolean>>;
+  });
 }

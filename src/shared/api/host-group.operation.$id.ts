@@ -4,6 +4,7 @@ import { apiDoPost } from '@/shared/libs/api-client/lib/apiDoPost';
 import { processError } from '@/shared/libs/api-client/lib/processor';
 import type {
   GetRequestRecipe,
+  PureResponse,
   WithApiGetOptions,
 } from '@/shared/libs/api-client/rules/types';
 
@@ -53,7 +54,9 @@ export function fetchGet(params: DetailRecipeParams) {
   }).then(parseHostGroupOperationDetailResponse);
 }
 
-export function doPost(payload: SubmitPayload) {
+export function doPost(
+  payload: SubmitPayload,
+): Promise<PureResponse<ReturnType<typeof parseHostGroupActionResponsePayload>>> {
   return apiDoPost<unknown>({
     method: 'POST',
     url: `/v1/host-groups/${payload.id}/operations`,
@@ -80,7 +83,9 @@ export function doPost(payload: SubmitPayload) {
   });
 }
 
-export function retryPost(payload: RetryPayload) {
+export function retryPost(
+  payload: RetryPayload,
+): Promise<PureResponse<ReturnType<typeof parseHostGroupOperationPayload>>> {
   return apiDoPost<unknown>({
     method: 'POST',
     url: `/v1/host-group-operations/${payload.id}/retry`,

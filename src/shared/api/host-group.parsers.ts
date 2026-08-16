@@ -7,13 +7,16 @@ import type {
 import { schemaHostGroupOperationAgentCommandDetailV2 } from '@/shared/api/-dtos/agent-command';
 import {
   schemaHostGroupActionResponseDto,
-  schemaHostGroupDto,
+  schemaHostGroupDeploymentActionResponseDto,
+  schemaHostGroupDetailDto,
+  schemaHostGroupModuleActionResponseDto,
   schemaHostGroupOperationDetailDto,
   schemaHostGroupOperationDto,
+  schemaHostGroupSummaryDto,
 } from '@/shared/rules/host-group';
 
 function stripResponseMetadata(value: unknown) {
-  if (value == null || typeof value !== 'object') {
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
     return value;
   }
 
@@ -57,11 +60,15 @@ function adaptResponse<Data>(
 }
 
 export function parseHostGroupListPayload(value: unknown) {
-  return schemaHostGroupDto.array().parse(stripResponseMetadata(value));
+  return schemaHostGroupSummaryDto.array().parse(stripResponseMetadata(value));
 }
 
 export function parseHostGroupDetailPayload(value: unknown) {
-  return schemaHostGroupDto.parse(stripResponseMetadata(value));
+  return schemaHostGroupDetailDto.parse(stripResponseMetadata(value));
+}
+
+export function parseHostGroupSummaryPayload(value: unknown) {
+  return schemaHostGroupSummaryDto.parse(stripResponseMetadata(value));
 }
 
 export function parseHostGroupOperationDetailPayload(value: unknown) {
@@ -78,6 +85,18 @@ export function parseHostGroupActionResponsePayload(value: unknown) {
 
 export function parseHostGroupOperationPayload(value: unknown) {
   return schemaHostGroupOperationDto.parse(stripResponseMetadata(value));
+}
+
+export function parseHostGroupModuleActionResponsePayload(value: unknown) {
+  return schemaHostGroupModuleActionResponseDto.parse(
+    stripResponseMetadata(value),
+  );
+}
+
+export function parseHostGroupDeploymentActionResponsePayload(value: unknown) {
+  return schemaHostGroupDeploymentActionResponseDto.parse(
+    stripResponseMetadata(value),
+  );
 }
 
 export function parseHostGroupAgentCommandPayload(value: unknown) {
@@ -124,6 +143,12 @@ export function parseHostGroupAgentCommandResponse(
   response: ApiClientResponse<unknown>,
 ) {
   return adaptSuccessResponse(response, parseHostGroupAgentCommandPayload);
+}
+
+export function parseHostGroupSummaryResponse(
+  response: ApiClientResponse<unknown>,
+) {
+  return adaptSuccessResponse(response, parseHostGroupSummaryPayload);
 }
 
 export function useHostGroupListAdapter(response: Response<unknown>) {

@@ -58,6 +58,9 @@ describe('schemaHostGroupOperationExecutionDetailV1', () => {
         id: 'execution-1',
         type: 'deploy',
         status: 'running',
+        machine_id: 'server-1',
+        created_at: '2026-08-16T10:00:00Z',
+        updated_at: '2026-08-16T10:05:00Z',
       },
       events: [],
       events_source: 'uptrace',
@@ -89,6 +92,9 @@ describe('schemaHostGroupOperationExecutionDetailV1', () => {
           id: 'execution-1',
           type: 'deploy',
           status: 'running',
+          machine_id: 'server-1',
+          created_at: '2026-08-16T10:00:00Z',
+          updated_at: '2026-08-16T10:05:00Z',
         },
         events: [
           {

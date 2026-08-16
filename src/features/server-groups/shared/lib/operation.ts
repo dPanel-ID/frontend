@@ -2,7 +2,10 @@ import type { DTOs } from '@/shared/api';
 
 interface ModuleRunResponseLike {
   operation_id?: string;
-  target?: DTOs.HostGroupActionTargetV1;
+  target?: {
+    type?: string;
+    id?: string;
+  };
 }
 
 export function isTerminalOperationStatus(status?: string) {

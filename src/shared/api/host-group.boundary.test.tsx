@@ -11,7 +11,21 @@ import type {
 import * as HostGroupAgentCommandApi from './host-group.operation.agent-command.$operationId.$machineId';
 import * as HostGroupDetailApi from './host-group.detail.$id';
 import * as HostGroupOperationApi from './host-group.operation.$id';
-import { parseHostGroupListPayload } from './host-group.parsers';
+import {
+  parseHostGroupActionResponsePayload,
+  parseHostGroupDetailPayload,
+  parseHostGroupListPayload,
+  parseHostGroupOperationDetailPayload,
+  parseHostGroupOperationHistoryPayload,
+  parseHostGroupOperationPayload,
+} from './host-group.parsers';
+import {
+  canonicalHostGroupActionResponse,
+  canonicalHostGroupDetail,
+  canonicalHostGroupSummary,
+  canonicalRetryOperation,
+  canonicalRetryOperationDetail,
+} from './host-group.test-fixtures';
 
 vi.mock('@/shared/libs/api-client/lib/client', () => ({
   apiClient: vi.fn(),
@@ -38,6 +52,36 @@ describe('host-group API boundaries', () => {
         },
       ]),
     ).toThrow();
+  });
+
+  it('accepts canonical host-group list payloads without member_count', () => {
+    expect(parseHostGroupListPayload([canonicalHostGroupSummary])).toEqual([
+      canonicalHostGroupSummary,
+    ]);
+  });
+
+  it('accepts canonical host-group detail payloads with the full public member shape', () => {
+    expect(parseHostGroupDetailPayload(canonicalHostGroupDetail)).toEqual(
+      canonicalHostGroupDetail,
+    );
+  });
+
+  it('accepts retry lineage across retry response, history, and detail payloads', () => {
+    expect(parseHostGroupOperationPayload(canonicalRetryOperation)).toEqual(
+      canonicalRetryOperation,
+    );
+    expect(
+      parseHostGroupOperationHistoryPayload([canonicalRetryOperation]),
+    ).toEqual([canonicalRetryOperation]);
+    expect(
+      parseHostGroupOperationDetailPayload(canonicalRetryOperationDetail),
+    ).toEqual(canonicalRetryOperationDetail);
+  });
+
+  it('accepts strict host-group bulk action responses with exact discriminators', () => {
+    expect(
+      parseHostGroupActionResponsePayload(canonicalHostGroupActionResponse),
+    ).toEqual(canonicalHostGroupActionResponse);
   });
 
   it('rejects invalid host-group detail fetch responses', async () => {
@@ -112,5 +156,14 @@ describe('host-group API boundaries', () => {
     if (response.$status !== 'failed') throw new Error('Expected failure');
     expect(response.kind).toBe('adapter');
     expect(response.error).toBeInstanceOf(AdapterError);
+  });
+
+  it('rejects retry responses that omit retry lineage-safe required fields', () => {
+    expect(() =>
+      parseHostGroupOperationPayload({
+        ...canonicalRetryOperation,
+        status: 'queued-ish',
+      }),
+    ).toThrow();
   });
 });

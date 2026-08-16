@@ -1,11 +1,13 @@
 import { z } from 'zod';
 
+import { schemaCommandStatus } from '@/shared/rules/host-group';
+
 export const schemaAgentCommandV2 = z.object({
   id: z.string().min(1),
   execution_id: z.string().optional(),
   machine_id: z.string().min(1),
   command_type: z.string().min(1),
-  status: z.string().min(1),
+  status: schemaCommandStatus,
   requested_by: z.string().optional(),
   expires_at: z.string().optional(),
   started_at: z.string().optional(),
