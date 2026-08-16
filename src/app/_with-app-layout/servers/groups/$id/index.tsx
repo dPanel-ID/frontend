@@ -657,7 +657,11 @@ function ServerGroupDetailPage() {
                 ) : null}
               </div>
 
-              <OperationTargetsTable groupId={id} targets={operation.targets} />
+              <OperationTargetsTable
+                groupId={id}
+                operationId={operation.id}
+                targets={operation.targets}
+              />
             </div>
           ) : (
             <div className="flex justify-center py-8">

@@ -3,14 +3,11 @@ import type { HostGroupOperationTarget } from '@/entities/host-group/rules/schem
 export interface OperationTargetLinks {
   agentCommand:
     | {
-        to: '/servers/groups/$groupId/operations/agent-commands/$id';
+        to: '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId';
         params: {
           groupId: string;
-          id: string;
-        };
-        search: {
-          executionId: string;
           machineId: string;
+          operationId: string;
         };
       }
     | null;
@@ -25,10 +22,11 @@ export interface OperationTargetLinks {
     | null;
   execution:
     | {
-        to: '/servers/groups/$groupId/operations/executions/$id';
+        to: '/servers/groups/$groupId/operations/executions/$operationId/$machineId';
         params: {
           groupId: string;
-          id: string;
+          machineId: string;
+          operationId: string;
         };
       }
     | null;
@@ -42,22 +40,20 @@ export interface OperationTargetLinks {
 
 export function buildOperationTargetLinks(params: {
   groupId: string;
+  operationId: string;
   target: HostGroupOperationTarget;
 }): OperationTargetLinks {
-  const { groupId, target } = params;
+  const { groupId, operationId, target } = params;
 
   return {
     agentCommand:
-      target.agentCommandId && target.executionId
+      target.agentCommandId
         ? {
-            to: '/servers/groups/$groupId/operations/agent-commands/$id',
+            to: '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId',
             params: {
               groupId,
-              id: target.agentCommandId,
-            },
-            search: {
-              executionId: target.executionId,
               machineId: target.serverId,
+              operationId,
             },
           }
         : null,
@@ -72,10 +68,11 @@ export function buildOperationTargetLinks(params: {
       : null,
     execution: target.executionId
       ? {
-          to: '/servers/groups/$groupId/operations/executions/$id',
+          to: '/servers/groups/$groupId/operations/executions/$operationId/$machineId',
           params: {
             groupId,
-            id: target.executionId,
+            machineId: target.serverId,
+            operationId,
           },
         }
       : null,

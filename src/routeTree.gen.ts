@@ -39,9 +39,9 @@ import { Route as WithAppLayoutBackendLoadBalancersIdIndexRouteImport } from './
 import { Route as WithAppLayoutBackendDomainCreateIndexRouteImport } from './app/_with-app-layout/backend/domain/create/index'
 import { Route as WithAppLayoutApplicationsIdUpdateIndexRouteImport } from './app/_with-app-layout/applications/$id/update/index'
 import { Route as WithAppLayoutBackendSecretManagersSshKeyIdIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/$id/index'
-import { Route as WithAppLayoutServersGroupsGroupIdOperationsExecutionsIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$groupId/operations/executions/$id/index'
 import { Route as WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/index'
-import { Route as WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$id/index'
+import { Route as WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/index'
+import { Route as WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/index'
 
 const SplatRoute = SplatRouteImport.update({
   id: '/$',
@@ -215,14 +215,6 @@ const WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute =
     path: '/backend/secret-managers/ssh-key/$id/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutServersGroupsGroupIdOperationsExecutionsIdIndexRoute =
-  WithAppLayoutServersGroupsGroupIdOperationsExecutionsIdIndexRouteImport.update(
-    {
-      id: '/servers/groups/$groupId/operations/executions/$id/',
-      path: '/servers/groups/$groupId/operations/executions/$id/',
-      getParentRoute: () => WithAppLayoutRouteRoute,
-    } as any,
-  )
 const WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute =
   WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRouteImport.update(
     {
@@ -231,11 +223,19 @@ const WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute =
       getParentRoute: () => WithAppLayoutRouteRoute,
     } as any,
   )
-const WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsIdIndexRoute =
-  WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsIdIndexRouteImport.update(
+const WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute =
+  WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRouteImport.update(
     {
-      id: '/servers/groups/$groupId/operations/agent-commands/$id/',
-      path: '/servers/groups/$groupId/operations/agent-commands/$id/',
+      id: '/servers/groups/$groupId/operations/executions/$operationId/$machineId/',
+      path: '/servers/groups/$groupId/operations/executions/$operationId/$machineId/',
+      getParentRoute: () => WithAppLayoutRouteRoute,
+    } as any,
+  )
+const WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRoute =
+  WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRouteImport.update(
+    {
+      id: '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/',
+      path: '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/',
       getParentRoute: () => WithAppLayoutRouteRoute,
     } as any,
   )
@@ -270,9 +270,9 @@ export interface FileRoutesByFullPath {
   '/servers/create/vm-manual': typeof WithAppLayoutServersCreateVmManualIndexRoute
   '/servers/groups/$id': typeof WithAppLayoutServersGroupsIdIndexRoute
   '/backend/secret-managers/ssh-key/$id': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
-  '/servers/groups/$groupId/operations/agent-commands/$id': typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsIdIndexRoute
   '/servers/groups/$groupId/operations/deployments/$id': typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute
-  '/servers/groups/$groupId/operations/executions/$id': typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsIdIndexRoute
+  '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId': typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRoute
+  '/servers/groups/$groupId/operations/executions/$operationId/$machineId': typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -304,9 +304,9 @@ export interface FileRoutesByTo {
   '/servers/create/vm-manual': typeof WithAppLayoutServersCreateVmManualIndexRoute
   '/servers/groups/$id': typeof WithAppLayoutServersGroupsIdIndexRoute
   '/backend/secret-managers/ssh-key/$id': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
-  '/servers/groups/$groupId/operations/agent-commands/$id': typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsIdIndexRoute
   '/servers/groups/$groupId/operations/deployments/$id': typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute
-  '/servers/groups/$groupId/operations/executions/$id': typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsIdIndexRoute
+  '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId': typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRoute
+  '/servers/groups/$groupId/operations/executions/$operationId/$machineId': typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -340,9 +340,9 @@ export interface FileRoutesById {
   '/_with-app-layout/servers/create/vm-manual/': typeof WithAppLayoutServersCreateVmManualIndexRoute
   '/_with-app-layout/servers/groups/$id/': typeof WithAppLayoutServersGroupsIdIndexRoute
   '/_with-app-layout/backend/secret-managers/ssh-key/$id/': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
-  '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$id/': typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsIdIndexRoute
   '/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/': typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute
-  '/_with-app-layout/servers/groups/$groupId/operations/executions/$id/': typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsIdIndexRoute
+  '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/': typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRoute
+  '/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/': typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -376,9 +376,9 @@ export interface FileRouteTypes {
     | '/servers/create/vm-manual'
     | '/servers/groups/$id'
     | '/backend/secret-managers/ssh-key/$id'
-    | '/servers/groups/$groupId/operations/agent-commands/$id'
     | '/servers/groups/$groupId/operations/deployments/$id'
-    | '/servers/groups/$groupId/operations/executions/$id'
+    | '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId'
+    | '/servers/groups/$groupId/operations/executions/$operationId/$machineId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -410,9 +410,9 @@ export interface FileRouteTypes {
     | '/servers/create/vm-manual'
     | '/servers/groups/$id'
     | '/backend/secret-managers/ssh-key/$id'
-    | '/servers/groups/$groupId/operations/agent-commands/$id'
     | '/servers/groups/$groupId/operations/deployments/$id'
-    | '/servers/groups/$groupId/operations/executions/$id'
+    | '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId'
+    | '/servers/groups/$groupId/operations/executions/$operationId/$machineId'
   id:
     | '__root__'
     | '/'
@@ -445,9 +445,9 @@ export interface FileRouteTypes {
     | '/_with-app-layout/servers/create/vm-manual/'
     | '/_with-app-layout/servers/groups/$id/'
     | '/_with-app-layout/backend/secret-managers/ssh-key/$id/'
-    | '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$id/'
     | '/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/'
-    | '/_with-app-layout/servers/groups/$groupId/operations/executions/$id/'
+    | '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/'
+    | '/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -671,13 +671,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/servers/groups/$groupId/operations/executions/$id/': {
-      id: '/_with-app-layout/servers/groups/$groupId/operations/executions/$id/'
-      path: '/servers/groups/$groupId/operations/executions/$id'
-      fullPath: '/servers/groups/$groupId/operations/executions/$id'
-      preLoaderRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsIdIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
     '/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/': {
       id: '/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/'
       path: '/servers/groups/$groupId/operations/deployments/$id'
@@ -685,11 +678,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$id/': {
-      id: '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$id/'
-      path: '/servers/groups/$groupId/operations/agent-commands/$id'
-      fullPath: '/servers/groups/$groupId/operations/agent-commands/$id'
-      preLoaderRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsIdIndexRouteImport
+    '/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/': {
+      id: '/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/'
+      path: '/servers/groups/$groupId/operations/executions/$operationId/$machineId'
+      fullPath: '/servers/groups/$groupId/operations/executions/$operationId/$machineId'
+      preLoaderRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/': {
+      id: '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/'
+      path: '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId'
+      fullPath: '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId'
+      preLoaderRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
   }
@@ -720,9 +720,9 @@ interface WithAppLayoutRouteRouteChildren {
   WithAppLayoutServersCreateVmManualIndexRoute: typeof WithAppLayoutServersCreateVmManualIndexRoute
   WithAppLayoutServersGroupsIdIndexRoute: typeof WithAppLayoutServersGroupsIdIndexRoute
   WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
-  WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsIdIndexRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsIdIndexRoute
   WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute
-  WithAppLayoutServersGroupsGroupIdOperationsExecutionsIdIndexRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsIdIndexRoute
+  WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRoute
+  WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute
 }
 
 const WithAppLayoutRouteRouteChildren: WithAppLayoutRouteRouteChildren = {
@@ -763,12 +763,12 @@ const WithAppLayoutRouteRouteChildren: WithAppLayoutRouteRouteChildren = {
     WithAppLayoutServersGroupsIdIndexRoute,
   WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute:
     WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute,
-  WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsIdIndexRoute:
-    WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsIdIndexRoute,
   WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute:
     WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute,
-  WithAppLayoutServersGroupsGroupIdOperationsExecutionsIdIndexRoute:
-    WithAppLayoutServersGroupsGroupIdOperationsExecutionsIdIndexRoute,
+  WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRoute:
+    WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRoute,
+  WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute:
+    WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute,
 }
 
 const WithAppLayoutRouteRouteWithChildren =

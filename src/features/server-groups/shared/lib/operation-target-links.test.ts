@@ -7,6 +7,7 @@ describe('buildOperationTargetLinks', () => {
     expect(
       buildOperationTargetLinks({
         groupId: 'group-1',
+        operationId: 'operation-1',
         target: {
           agentCommandId: 'cmd-1',
           deploymentId: 'deploy-1',
@@ -21,13 +22,10 @@ describe('buildOperationTargetLinks', () => {
       agentCommand: {
         params: {
           groupId: 'group-1',
-          id: 'cmd-1',
-        },
-        search: {
-          executionId: 'exec-1',
           machineId: 'server-1',
+          operationId: 'operation-1',
         },
-        to: '/servers/groups/$groupId/operations/agent-commands/$id',
+        to: '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId',
       },
       deployment: {
         params: {
@@ -39,9 +37,10 @@ describe('buildOperationTargetLinks', () => {
       execution: {
         params: {
           groupId: 'group-1',
-          id: 'exec-1',
+          machineId: 'server-1',
+          operationId: 'operation-1',
         },
-        to: '/servers/groups/$groupId/operations/executions/$id',
+        to: '/servers/groups/$groupId/operations/executions/$operationId/$machineId',
       },
       server: {
         params: {
@@ -56,6 +55,7 @@ describe('buildOperationTargetLinks', () => {
     expect(
       buildOperationTargetLinks({
         groupId: 'group-1',
+        operationId: 'operation-1',
         target: {
           agentCommandId: 'cmd-1',
           error: undefined,
@@ -65,7 +65,14 @@ describe('buildOperationTargetLinks', () => {
         },
       }),
     ).toEqual({
-      agentCommand: null,
+      agentCommand: {
+        params: {
+          groupId: 'group-1',
+          machineId: 'server-1',
+          operationId: 'operation-1',
+        },
+        to: '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId',
+      },
       deployment: null,
       execution: null,
       server: {

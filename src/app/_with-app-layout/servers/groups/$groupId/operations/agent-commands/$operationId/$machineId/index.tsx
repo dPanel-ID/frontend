@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 
-import { ApiExecution } from '@/shared/api';
+import * as ApiHostGroupOperationAgentCommand from '@/shared/api/host-group.operation.agent-command.$operationId.$machineId';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import {
@@ -12,15 +12,16 @@ import { FailedState } from '@/widgets/failed-state';
 import { FallbackState } from '@/widgets/fallback-state';
 
 export const Route = createFileRoute(
-  '/_with-app-layout/servers/groups/$groupId/operations/executions/$id/',
+  '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/',
 )({
-  component: ExecutionDetailPage,
+  component: AgentCommandDetailPage,
 });
 
-function ExecutionDetailPage() {
-  const { groupId, id } = Route.useParams();
-  const [response, refresh] = ApiExecution.Detail.$Id.useGet({
-    id,
+function AgentCommandDetailPage() {
+  const { groupId, machineId, operationId } = Route.useParams();
+  const [response, refresh] = ApiHostGroupOperationAgentCommand.useGet({
+    machineId,
+    operationId,
   });
 
   const detail =
@@ -52,7 +53,7 @@ function ExecutionDetailPage() {
     return null;
   }
 
-  const execution = detail.execution;
+  const command = detail.command;
 
   return (
     <>
@@ -67,64 +68,88 @@ function ExecutionDetailPage() {
             ]}
           />
         }
-        title={`Execution ${execution.id ?? id}`}
-        description="Executor-level detail for a child operation target."
+        title={`Agent Command ${command.id ?? machineId}`}
+        description="Scoped agent-command detail for a server-group operation target."
       />
 
       <section className="rounded-lg border bg-card p-4">
         <DetailSummaryTable
           rows={[
             {
-              label: 'Execution ID',
+              label: 'Operation ID',
               value: (
-                <span className="font-mono text-xs">{execution.id ?? id}</span>
+                <span className="font-mono text-xs">{operationId}</span>
+              ),
+            },
+            {
+              label: 'Command ID',
+              value: (
+                <span className="font-mono text-xs">{command.id ?? '-'}</span>
               ),
             },
             {
               label: 'Status',
-              value: execution.status ?? '-',
+              value: command.status ?? '-',
             },
             {
               label: 'Type',
-              value: execution.type ?? '-',
+              value: command.command_type ?? '-',
             },
             {
-              label: 'Server',
-              value: execution.machine_id ? (
+              label: 'Execution',
+              value: command.execution_id ? (
                 <Link
                   className="text-primary hover:underline"
-                  params={{ id: execution.machine_id }}
-                  to="/servers/$id"
+                  params={{
+                    groupId,
+                    machineId,
+                    operationId,
+                  }}
+                  to="/servers/groups/$groupId/operations/executions/$operationId/$machineId"
                 >
-                  {execution.machine_id}
+                  {command.execution_id}
                 </Link>
               ) : (
                 '-'
               ),
             },
             {
-              label: 'Module',
-              value: execution.module ?? '-',
+              label: 'Server',
+              value: command.machine_id ? (
+                <Link
+                  className="text-primary hover:underline"
+                  params={{ id: command.machine_id }}
+                  to="/servers/$id"
+                >
+                  {command.machine_id}
+                </Link>
+              ) : (
+                machineId
+              ),
             },
             {
-              label: 'Actor',
-              value: execution.actor_subject ?? '-',
+              label: 'Requested by',
+              value: command.requested_by ?? '-',
+            },
+            {
+              label: 'Expires',
+              value: command.expires_at ?? '-',
+            },
+            {
+              label: 'Started',
+              value: command.started_at ?? '-',
+            },
+            {
+              label: 'Finished',
+              value: command.finished_at ?? '-',
             },
             {
               label: 'Created',
-              value: execution.created_at ?? '-',
+              value: command.created_at ?? '-',
             },
             {
               label: 'Updated',
-              value: execution.updated_at ?? '-',
-            },
-            {
-              label: 'Events',
-              value: detail.events_message ?? 'No event detail was returned.',
-            },
-            {
-              label: 'Retention',
-              value: detail.events_retention_expires_at ?? '-',
+              value: command.updated_at ?? '-',
             },
           ]}
         />

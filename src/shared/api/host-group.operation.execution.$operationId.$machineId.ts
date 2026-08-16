@@ -8,12 +8,13 @@ import type {
 import type { DTOs } from '.';
 
 export interface RecipeParams {
-  id: string;
+  machineId: string;
+  operationId: string;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
   return {
-    url: `/v2/executions/${params.id}`,
+    url: `/v1/host-group-operations/${params.operationId}/targets/${params.machineId}/execution`,
   };
 }
 

@@ -15,6 +15,7 @@ import {
 
 interface OperationTargetsTableProps {
   groupId: string;
+  operationId: string;
   targets: HostGroupOperationTarget[];
 }
 
@@ -30,7 +31,7 @@ function TargetLink(props: {
 }
 
 export function OperationTargetsTable(props: OperationTargetsTableProps) {
-  const { groupId, targets } = props;
+  const { groupId, operationId, targets } = props;
 
   return (
     <Table>
@@ -48,6 +49,7 @@ export function OperationTargetsTable(props: OperationTargetsTableProps) {
         {targets.map((target) => {
           const links = buildOperationTargetLinks({
             groupId,
+            operationId,
             target,
           });
 
@@ -94,7 +96,6 @@ export function OperationTargetsTable(props: OperationTargetsTableProps) {
                   <Link
                     className="font-mono text-xs text-primary hover:underline"
                     params={links.agentCommand.params}
-                    search={links.agentCommand.search}
                     to={links.agentCommand.to}
                   >
                     {target.agentCommandId}
