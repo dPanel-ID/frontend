@@ -6,6 +6,7 @@ export * from './artifact';
 export * from './deploy';
 export * from './execution-error-detail';
 export * from './machine';
+export * from './host-group';
 export * from './service';
 export * from './folder';
 export * from './git';

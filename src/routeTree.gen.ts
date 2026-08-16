@@ -21,6 +21,7 @@ import { Route as WithAppLayoutProfileIndexRouteImport } from './app/_with-app-l
 import { Route as WithAppLayoutDashboardIndexRouteImport } from './app/_with-app-layout/dashboard/index'
 import { Route as WithAppLayoutApplicationsIndexRouteImport } from './app/_with-app-layout/applications/index'
 import { Route as WithAppLayoutTeamsIdIndexRouteImport } from './app/_with-app-layout/teams/$id/index'
+import { Route as WithAppLayoutServersGroupsIndexRouteImport } from './app/_with-app-layout/servers/groups/index'
 import { Route as WithAppLayoutServersCreateIndexRouteImport } from './app/_with-app-layout/servers/create/index'
 import { Route as WithAppLayoutServersIdIndexRouteImport } from './app/_with-app-layout/servers/$id/index'
 import { Route as WithAppLayoutBackendLoadBalancersIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/index'
@@ -29,6 +30,7 @@ import { Route as WithAppLayoutBackendDatabaseIndexRouteImport } from './app/_wi
 import { Route as WithAppLayoutBackendCloudProjectsIndexRouteImport } from './app/_with-app-layout/backend/cloud-projects/index'
 import { Route as WithAppLayoutApplicationsCreateIndexRouteImport } from './app/_with-app-layout/applications/create/index'
 import { Route as WithAppLayoutApplicationsIdIndexRouteImport } from './app/_with-app-layout/applications/$id/index'
+import { Route as WithAppLayoutServersGroupsIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$id/index'
 import { Route as WithAppLayoutServersCreateVmManualIndexRouteImport } from './app/_with-app-layout/servers/create/vm-manual/index'
 import { Route as WithAppLayoutServersCreateVmInstantIndexRouteImport } from './app/_with-app-layout/servers/create/vm-instant/index'
 import { Route as WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/index'
@@ -102,6 +104,12 @@ const WithAppLayoutTeamsIdIndexRoute =
     path: '/teams/$id/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
+const WithAppLayoutServersGroupsIndexRoute =
+  WithAppLayoutServersGroupsIndexRouteImport.update({
+    id: '/servers/groups/',
+    path: '/servers/groups/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
 const WithAppLayoutServersCreateIndexRoute =
   WithAppLayoutServersCreateIndexRouteImport.update({
     id: '/servers/create/',
@@ -148,6 +156,12 @@ const WithAppLayoutApplicationsIdIndexRoute =
   WithAppLayoutApplicationsIdIndexRouteImport.update({
     id: '/applications/$id/',
     path: '/applications/$id/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
+const WithAppLayoutServersGroupsIdIndexRoute =
+  WithAppLayoutServersGroupsIdIndexRouteImport.update({
+    id: '/servers/groups/$id/',
+    path: '/servers/groups/$id/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
 const WithAppLayoutServersCreateVmManualIndexRoute =
@@ -218,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/backend/load-balancers': typeof WithAppLayoutBackendLoadBalancersIndexRoute
   '/servers/$id': typeof WithAppLayoutServersIdIndexRoute
   '/servers/create': typeof WithAppLayoutServersCreateIndexRoute
+  '/servers/groups': typeof WithAppLayoutServersGroupsIndexRoute
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
   '/applications/$id/update': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/backend/domain/create': typeof WithAppLayoutBackendDomainCreateIndexRoute
@@ -226,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/backend/secret-managers/ssh-key': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   '/servers/create/vm-instant': typeof WithAppLayoutServersCreateVmInstantIndexRoute
   '/servers/create/vm-manual': typeof WithAppLayoutServersCreateVmManualIndexRoute
+  '/servers/groups/$id': typeof WithAppLayoutServersGroupsIdIndexRoute
   '/backend/secret-managers/ssh-key/$id': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -247,6 +263,7 @@ export interface FileRoutesByTo {
   '/backend/load-balancers': typeof WithAppLayoutBackendLoadBalancersIndexRoute
   '/servers/$id': typeof WithAppLayoutServersIdIndexRoute
   '/servers/create': typeof WithAppLayoutServersCreateIndexRoute
+  '/servers/groups': typeof WithAppLayoutServersGroupsIndexRoute
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
   '/applications/$id/update': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/backend/domain/create': typeof WithAppLayoutBackendDomainCreateIndexRoute
@@ -255,6 +272,7 @@ export interface FileRoutesByTo {
   '/backend/secret-managers/ssh-key': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   '/servers/create/vm-instant': typeof WithAppLayoutServersCreateVmInstantIndexRoute
   '/servers/create/vm-manual': typeof WithAppLayoutServersCreateVmManualIndexRoute
+  '/servers/groups/$id': typeof WithAppLayoutServersGroupsIdIndexRoute
   '/backend/secret-managers/ssh-key/$id': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
 }
 export interface FileRoutesById {
@@ -278,6 +296,7 @@ export interface FileRoutesById {
   '/_with-app-layout/backend/load-balancers/': typeof WithAppLayoutBackendLoadBalancersIndexRoute
   '/_with-app-layout/servers/$id/': typeof WithAppLayoutServersIdIndexRoute
   '/_with-app-layout/servers/create/': typeof WithAppLayoutServersCreateIndexRoute
+  '/_with-app-layout/servers/groups/': typeof WithAppLayoutServersGroupsIndexRoute
   '/_with-app-layout/teams/$id/': typeof WithAppLayoutTeamsIdIndexRoute
   '/_with-app-layout/applications/$id/update/': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/_with-app-layout/backend/domain/create/': typeof WithAppLayoutBackendDomainCreateIndexRoute
@@ -286,6 +305,7 @@ export interface FileRoutesById {
   '/_with-app-layout/backend/secret-managers/ssh-key/': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   '/_with-app-layout/servers/create/vm-instant/': typeof WithAppLayoutServersCreateVmInstantIndexRoute
   '/_with-app-layout/servers/create/vm-manual/': typeof WithAppLayoutServersCreateVmManualIndexRoute
+  '/_with-app-layout/servers/groups/$id/': typeof WithAppLayoutServersGroupsIdIndexRoute
   '/_with-app-layout/backend/secret-managers/ssh-key/$id/': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -309,6 +329,7 @@ export interface FileRouteTypes {
     | '/backend/load-balancers'
     | '/servers/$id'
     | '/servers/create'
+    | '/servers/groups'
     | '/teams/$id'
     | '/applications/$id/update'
     | '/backend/domain/create'
@@ -317,6 +338,7 @@ export interface FileRouteTypes {
     | '/backend/secret-managers/ssh-key'
     | '/servers/create/vm-instant'
     | '/servers/create/vm-manual'
+    | '/servers/groups/$id'
     | '/backend/secret-managers/ssh-key/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -338,6 +360,7 @@ export interface FileRouteTypes {
     | '/backend/load-balancers'
     | '/servers/$id'
     | '/servers/create'
+    | '/servers/groups'
     | '/teams/$id'
     | '/applications/$id/update'
     | '/backend/domain/create'
@@ -346,6 +369,7 @@ export interface FileRouteTypes {
     | '/backend/secret-managers/ssh-key'
     | '/servers/create/vm-instant'
     | '/servers/create/vm-manual'
+    | '/servers/groups/$id'
     | '/backend/secret-managers/ssh-key/$id'
   id:
     | '__root__'
@@ -368,6 +392,7 @@ export interface FileRouteTypes {
     | '/_with-app-layout/backend/load-balancers/'
     | '/_with-app-layout/servers/$id/'
     | '/_with-app-layout/servers/create/'
+    | '/_with-app-layout/servers/groups/'
     | '/_with-app-layout/teams/$id/'
     | '/_with-app-layout/applications/$id/update/'
     | '/_with-app-layout/backend/domain/create/'
@@ -376,6 +401,7 @@ export interface FileRouteTypes {
     | '/_with-app-layout/backend/secret-managers/ssh-key/'
     | '/_with-app-layout/servers/create/vm-instant/'
     | '/_with-app-layout/servers/create/vm-manual/'
+    | '/_with-app-layout/servers/groups/$id/'
     | '/_with-app-layout/backend/secret-managers/ssh-key/$id/'
   fileRoutesById: FileRoutesById
 }
@@ -474,6 +500,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithAppLayoutTeamsIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
+    '/_with-app-layout/servers/groups/': {
+      id: '/_with-app-layout/servers/groups/'
+      path: '/servers/groups'
+      fullPath: '/servers/groups'
+      preLoaderRoute: typeof WithAppLayoutServersGroupsIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
     '/_with-app-layout/servers/create/': {
       id: '/_with-app-layout/servers/create/'
       path: '/servers/create'
@@ -528,6 +561,13 @@ declare module '@tanstack/react-router' {
       path: '/applications/$id'
       fullPath: '/applications/$id'
       preLoaderRoute: typeof WithAppLayoutApplicationsIdIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/servers/groups/$id/': {
+      id: '/_with-app-layout/servers/groups/$id/'
+      path: '/servers/groups/$id'
+      fullPath: '/servers/groups/$id'
+      preLoaderRoute: typeof WithAppLayoutServersGroupsIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
     '/_with-app-layout/servers/create/vm-manual/': {
@@ -603,6 +643,7 @@ interface WithAppLayoutRouteRouteChildren {
   WithAppLayoutBackendLoadBalancersIndexRoute: typeof WithAppLayoutBackendLoadBalancersIndexRoute
   WithAppLayoutServersIdIndexRoute: typeof WithAppLayoutServersIdIndexRoute
   WithAppLayoutServersCreateIndexRoute: typeof WithAppLayoutServersCreateIndexRoute
+  WithAppLayoutServersGroupsIndexRoute: typeof WithAppLayoutServersGroupsIndexRoute
   WithAppLayoutTeamsIdIndexRoute: typeof WithAppLayoutTeamsIdIndexRoute
   WithAppLayoutApplicationsIdUpdateIndexRoute: typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   WithAppLayoutBackendDomainCreateIndexRoute: typeof WithAppLayoutBackendDomainCreateIndexRoute
@@ -611,6 +652,7 @@ interface WithAppLayoutRouteRouteChildren {
   WithAppLayoutBackendSecretManagersSshKeyIndexRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   WithAppLayoutServersCreateVmInstantIndexRoute: typeof WithAppLayoutServersCreateVmInstantIndexRoute
   WithAppLayoutServersCreateVmManualIndexRoute: typeof WithAppLayoutServersCreateVmManualIndexRoute
+  WithAppLayoutServersGroupsIdIndexRoute: typeof WithAppLayoutServersGroupsIdIndexRoute
   WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
 }
 
@@ -632,6 +674,7 @@ const WithAppLayoutRouteRouteChildren: WithAppLayoutRouteRouteChildren = {
     WithAppLayoutBackendLoadBalancersIndexRoute,
   WithAppLayoutServersIdIndexRoute: WithAppLayoutServersIdIndexRoute,
   WithAppLayoutServersCreateIndexRoute: WithAppLayoutServersCreateIndexRoute,
+  WithAppLayoutServersGroupsIndexRoute: WithAppLayoutServersGroupsIndexRoute,
   WithAppLayoutTeamsIdIndexRoute: WithAppLayoutTeamsIdIndexRoute,
   WithAppLayoutApplicationsIdUpdateIndexRoute:
     WithAppLayoutApplicationsIdUpdateIndexRoute,
@@ -647,6 +690,8 @@ const WithAppLayoutRouteRouteChildren: WithAppLayoutRouteRouteChildren = {
     WithAppLayoutServersCreateVmInstantIndexRoute,
   WithAppLayoutServersCreateVmManualIndexRoute:
     WithAppLayoutServersCreateVmManualIndexRoute,
+  WithAppLayoutServersGroupsIdIndexRoute:
+    WithAppLayoutServersGroupsIdIndexRoute,
   WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute:
     WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute,
 }

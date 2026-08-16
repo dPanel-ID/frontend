@@ -1,6 +1,10 @@
 import type { DoRequestRecipe } from '@/shared/libs/api-client/rules/types';
 
+import type { Target } from '@/entities/host-group/rules/schema';
+
 import { apiDoPost } from '../libs/api-client';
+
+import type { DTOs } from '.';
 
 export interface ModuleRunRefPayload {
   type?: string;
@@ -9,7 +13,8 @@ export interface ModuleRunRefPayload {
 }
 
 export interface ModuleRunPayload {
-  server_id: string;
+  server_id?: string;
+  target?: Target;
   ref?: ModuleRunRefPayload;
   variables?: Record<string, unknown>;
   persist_variables?: boolean;
@@ -23,10 +28,13 @@ export interface RecipeParams {
 }
 
 export interface Dto {
-  execution_id: string;
-  status: string;
-  module: string;
-  action: string;
+  execution_id?: string;
+  operation_id?: string;
+  status?: string;
+  module?: string;
+  action?: string;
+  target?: DTOs.HostGroupActionTargetV1;
+  repository?: DTOs.IACRepositoryV1;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
