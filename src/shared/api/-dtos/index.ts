@@ -12,6 +12,7 @@ export * from './host-group';
 export * from './service';
 export * from './folder';
 export * from './git';
+export * from './host-group-operation-execution';
 export * from './load-balancer';
 export * from './router';
 export * from './user';

@@ -19,11 +19,14 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
 }
 
 export function useGet(params: WithApiGetOptions<RecipeParams>) {
-  return useApiGet<DTOs.ExecutionDetailV2>(recipe(params), params.options);
+  return useApiGet<DTOs.HostGroupOperationExecutionDetailV1>(
+    recipe(params),
+    params.options,
+  );
 }
 
 export function fetchGet(params: RecipeParams) {
-  return apiClient<DTOs.ExecutionDetailV2>({
+  return apiClient<DTOs.HostGroupOperationExecutionDetailV1>({
     ...recipe(params),
     method: 'GET',
   });
