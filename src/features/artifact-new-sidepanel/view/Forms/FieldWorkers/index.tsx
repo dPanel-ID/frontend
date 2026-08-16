@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   CheckCircle2Icon,
@@ -18,6 +18,7 @@ import { useEmit } from '@/features/artifact-new-sidepanel/model/events';
 import { useArtifactNewGeneralModel } from '@/features/artifact-new-sidepanel/model/general';
 import type { DeploymentTargetsData } from '@/features/artifact-new-sidepanel/model/workers';
 import { useWorkersModel } from '@/features/artifact-new-sidepanel/model/workers';
+import { syncDeploymentTargetSelection } from '@/features/artifact-new-sidepanel/usecase/target-selection';
 
 import type { Response } from '@/shared/libs/api-client/rules/types';
 import {
@@ -89,6 +90,7 @@ const WorkersList = guard(() => {
   });
 
   const selectedServer = servers.find((server) => server.id === field.value);
+  const previousServerIdRef = useRef<string | undefined>(field.value || undefined);
   const [hostGroupResponse] = ApiHostGroup.Detail.$Id.useGet({
     id: selectedServer?.hostGroupId ?? '',
     options: {
@@ -117,9 +119,31 @@ const WorkersList = guard(() => {
   }, [debouncedSearch, setSearchQuery]);
 
   useEffect(() => {
-    hostGroupField.onChange(selectedServer?.hostGroupId ?? '');
-    targetModeField.onChange('server');
-  }, [hostGroupField, selectedServer?.hostGroupId, targetModeField]);
+    const nextSelection = syncDeploymentTargetSelection({
+      currentTargetMode:
+        targetModeField.value === 'hostgroup' ? 'hostgroup' : 'server',
+      nextHostGroupId: selectedServer?.hostGroupId,
+      nextServerId: field.value || undefined,
+      previousServerId: previousServerIdRef.current,
+    });
+
+    previousServerIdRef.current = field.value || undefined;
+
+    if (hostGroupField.value !== nextSelection.hostGroupId) {
+      hostGroupField.onChange(nextSelection.hostGroupId);
+    }
+
+    if (targetModeField.value !== nextSelection.targetMode) {
+      targetModeField.onChange(nextSelection.targetMode);
+    }
+  }, [
+    field.value,
+    hostGroupField.onChange,
+    hostGroupField.value,
+    selectedServer?.hostGroupId,
+    targetModeField.onChange,
+    targetModeField.value,
+  ]);
 
   const totalPage = Math.max(1, pagination.total_page);
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import {
   BoxesIcon,
@@ -28,6 +28,9 @@ import {
   getOperationRefreshInterval,
   isTerminalOperationStatus,
 } from '@/features/server-groups/shared/lib/operation';
+import { useServerGroupMemberMutations } from '@/features/server-groups/usecase/member-mutations';
+import { MembersTable } from '@/features/server-groups/view/MembersTable';
+import { OperationTargetsTable } from '@/features/server-groups/view/OperationTargetsTable';
 import { isSemanticReleaseTag } from '@/features/server-groups/shared/lib/validation';
 
 import {
@@ -122,12 +125,12 @@ function ServerGroupDetailPage() {
       },
     });
 
-  const [applicationsResponse] = ApiApplication.Find.useGet({
+  const [applicationsResponse, refreshApplications] = ApiApplication.Find.useGet({
     page: 1,
     limit: 100,
   });
 
-  const [artifactsResponse] = ApiArtifact.Find.useGet({
+  const [artifactsResponse, refreshArtifacts] = ApiArtifact.Find.useGet({
     applicationId: selectedApplicationId || id,
     limit: 50,
     page: 1,
@@ -136,7 +139,7 @@ function ServerGroupDetailPage() {
     },
   });
 
-  const [modulesResponse] = ApiModule.Find.useGet({
+  const [modulesResponse, refreshModules] = ApiModule.Find.useGet({
     options: {
       refreshIntervalMs: 15_000,
     },
@@ -206,6 +209,19 @@ function ServerGroupDetailPage() {
   };
 
   const memberCount = group?.memberCount ?? 0;
+  const {
+    isMutatingMembers,
+    memberActionError,
+    pendingMemberAction,
+    removeMember,
+    submitMembers,
+  } = useServerGroupMemberMutations({
+    groupId: id,
+    onSuccess: () => {
+      resetDialogState();
+      refreshDetail();
+    },
+  });
 
   const resetDialogState = () => {
     setSelectedApplicationId('');
@@ -224,37 +240,6 @@ function ServerGroupDetailPage() {
     });
   };
 
-  const submitMembers = async (serverIds: string[], mode: 'add' | 'replace') => {
-    if (serverIds.length === 0) {
-      setSubmitError('Select at least one server.');
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitError('');
-
-    const response =
-      mode === 'replace'
-        ? await ApiHostGroup.Members.$Id.doPut({
-            id,
-            serverIds,
-          })
-        : await ApiHostGroup.Members.$Id.doPost({
-            id,
-            serverIds,
-          });
-
-    setIsSubmitting(false);
-
-    if (response.$status === 'failed') {
-      setSubmitError(getApiErrorDetail(response.error));
-      return;
-    }
-
-    resetDialogState();
-    refreshDetail();
-  };
-
   const handleRemoveMember = (serverId: string, hostname: string) => {
     openDialog({
       title: 'Remove member',
@@ -263,17 +248,7 @@ function ServerGroupDetailPage() {
       actions: {
         variant: 'YesNo',
         yes: async () => {
-          const response = await ApiHostGroup.Members.$Id.doDelete({
-            id,
-            serverId,
-          });
-
-          if (response.$status === 'failed') {
-            setSubmitError(getApiErrorDetail(response.error));
-            return;
-          }
-
-          refreshDetail();
+          await removeMember(serverId);
         },
       },
     });
@@ -462,6 +437,7 @@ function ServerGroupDetailPage() {
             <Button
               buttonStyle="outline"
               buttonColor="secondary"
+              disabled={isMutatingMembers}
               onClick={() => handleOpenMembersPicker('add')}
             >
               <PlusCircleIcon />
@@ -470,6 +446,7 @@ function ServerGroupDetailPage() {
             <Button
               buttonStyle="outline"
               buttonColor="secondary"
+              disabled={isMutatingMembers}
               onClick={() => handleOpenMembersPicker('replace')}
             >
               Replace Members
@@ -512,6 +489,12 @@ function ServerGroupDetailPage() {
               {modulesResponse.$status === 'loading' && modules.length === 0 ? (
                 <div className="flex justify-center py-8">
                   <Spinner />
+                </div>
+              ) : modulesResponse.$status === 'failed' && modules.length === 0 ? (
+                <FailedState.BannerRetryable onClickRetry={() => refreshModules()} />
+              ) : modules.length === 0 ? (
+                <div className="rounded-lg border border-dashed px-3 py-4 text-sm text-muted-foreground">
+                  No modules are currently available for this workspace.
                 </div>
               ) : (
                 <Select
@@ -593,46 +576,16 @@ function ServerGroupDetailPage() {
             </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <div className="min-w-[840px]">
-              <div className="grid grid-cols-[minmax(220px,1.2fr)_minmax(180px,1fr)_140px_140px_120px] gap-4 border-b px-4 py-3 text-xs font-semibold uppercase text-muted-foreground">
-                <span>Server</span>
-                <span>Address</span>
-                <span>Status</span>
-                <span>Current group</span>
-                <span>Actions</span>
-              </div>
-
-              {group.members.map((member) => (
-                <div
-                  key={member.id}
-                  className="grid grid-cols-[minmax(220px,1.2fr)_minmax(180px,1fr)_140px_140px_120px] gap-4 border-b px-4 py-3 text-sm last:border-b-0"
-                >
-                  <Link
-                    to="/servers/$id"
-                    params={{ id: member.id }}
-                    className="truncate font-medium text-primary hover:underline"
-                  >
-                    {member.hostname}
-                  </Link>
-                  <span className="truncate text-muted-foreground">
-                    {member.address || '-'}
-                  </span>
-                  <span>{member.status || '-'}</span>
-                  <span className="truncate text-muted-foreground">
-                    {member.currentHostGroupId || '-'}
-                  </span>
-                  <Button
-                    buttonStyle="outline"
-                    buttonColor="secondary"
-                    size="sm"
-                    onClick={() => handleRemoveMember(member.id, member.hostname)}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              ))}
-            </div>
+          <div className="px-4 py-4">
+            <MembersTable
+              errorMessage={memberActionError?.message}
+              members={group.members}
+              onRemoveMember={(member) =>
+                handleRemoveMember(member.id, member.hostname)
+              }
+              onRetry={memberActionError?.retry}
+              pendingMemberAction={pendingMemberAction}
+            />
           </div>
         </section>
 
@@ -704,42 +657,7 @@ function ServerGroupDetailPage() {
                 ) : null}
               </div>
 
-              <div className="overflow-x-auto">
-                <div className="min-w-[960px]">
-                  <div className="grid grid-cols-[minmax(180px,1fr)_120px_180px_180px_minmax(220px,1.1fr)] gap-4 border-b pb-2 text-xs font-semibold uppercase text-muted-foreground">
-                    <span>Server</span>
-                    <span>Status</span>
-                    <span>Execution</span>
-                    <span>Deployment</span>
-                    <span>Error</span>
-                  </div>
-
-                  {operation.targets.map((target) => (
-                    <div
-                      key={target.id}
-                      className="grid grid-cols-[minmax(180px,1fr)_120px_180px_180px_minmax(220px,1.1fr)] gap-4 border-b py-3 text-sm last:border-b-0"
-                    >
-                      <Link
-                        to="/servers/$id"
-                        params={{ id: target.serverId }}
-                        className="truncate font-medium text-primary hover:underline"
-                      >
-                        {target.serverId}
-                      </Link>
-                      <span>{target.status}</span>
-                      <span className="truncate font-mono text-xs text-muted-foreground">
-                        {target.executionId || '-'}
-                      </span>
-                      <span className="truncate font-mono text-xs text-muted-foreground">
-                        {target.deploymentId || '-'}
-                      </span>
-                      <span className="text-muted-foreground">
-                        {target.error || '-'}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <OperationTargetsTable groupId={id} targets={operation.targets} />
             </div>
           ) : (
             <div className="flex justify-center py-8">
@@ -825,6 +743,12 @@ function ServerGroupDetailPage() {
           </DialogHeader>
 
           <div className="grid gap-4">
+            {applicationsResponse.$status === 'failed' ? (
+              <FailedState.BannerRetryable
+                onClickRetry={() => refreshApplications()}
+              />
+            ) : null}
+
             <label className="grid gap-2">
               <span className="text-sm font-medium">Application</span>
               <Select
@@ -854,6 +778,11 @@ function ServerGroupDetailPage() {
 
             <label className="grid gap-2">
               <span className="text-sm font-medium">Artifact</span>
+              {artifactsResponse.$status === 'failed' && selectedApplicationId ? (
+                <FailedState.BannerRetryable
+                  onClickRetry={() => refreshArtifacts()}
+                />
+              ) : null}
               <Select
                 value={selectedArtifactId}
                 onValueChange={setSelectedArtifactId}

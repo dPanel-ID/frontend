@@ -6,6 +6,7 @@ import { ModalLayoutGeneral } from '@/services/modal/ui/presentation';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 
 import { MachineList } from './MachineList';
+import { submitMachineSelection } from './submit-selection';
 import type { SelectMachineModalProps as Props } from './types';
 
 export default function SelectMachineModal(props: Props) {
@@ -18,6 +19,8 @@ export default function SelectMachineModal(props: Props) {
     selectionMode = 'single',
     title = 'Select Machine',
   } = props;
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedMachineIds, setSelectedMachineIds] = useState<number[]>(
     initialSelectedMachineIds,
   );
@@ -26,7 +29,7 @@ export default function SelectMachineModal(props: Props) {
 
   return (
     <ModalLayoutGeneral>
-      <ModalLayoutGeneral.Title canClickClose title={title} />
+      <ModalLayoutGeneral.Title canClickClose={!isSubmitting} title={title} />
 
       <ModalLayoutGeneral.Content className="flex flex-col gap-2">
         {description ? (
@@ -37,6 +40,11 @@ export default function SelectMachineModal(props: Props) {
           selectedMachineIds={selectedMachineIds}
           setSelectedMachineIds={setSelectedMachineIds}
         />
+        {errorMessage ? (
+          <p aria-live="polite" className="text-sm text-destructive" role="alert">
+            {errorMessage}
+          </p>
+        ) : null}
       </ModalLayoutGeneral.Content>
 
       {isMultiple ? (
@@ -44,18 +52,33 @@ export default function SelectMachineModal(props: Props) {
           <Button
             buttonStyle="outline"
             buttonColor="secondary"
+            disabled={isSubmitting}
             onClick={() => emitModal('%%modal/close', null)}
           >
             Cancel
           </Button>
           <Button
-            disabled={selectedMachineIds.length === 0}
-            onClick={() => {
-              onMachinesSelected?.(selectedMachineIds);
+            disabled={selectedMachineIds.length === 0 || isSubmitting}
+            onClick={async () => {
+              setErrorMessage('');
+              setIsSubmitting(true);
+
+              const result = await submitMachineSelection({
+                machineIds: selectedMachineIds,
+                onMachinesSelected,
+              });
+
+              setIsSubmitting(false);
+
+              if (!result.shouldClose) {
+                setErrorMessage(result.error ?? 'Unable to submit selection.');
+                return;
+              }
+
               emitModal('%%modal/close', null);
             }}
           >
-            {confirmLabel}
+            {isSubmitting ? 'Saving...' : confirmLabel}
           </Button>
         </div>
       ) : null}

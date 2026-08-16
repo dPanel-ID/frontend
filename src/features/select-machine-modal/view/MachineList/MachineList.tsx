@@ -40,15 +40,21 @@ export default function MachineList(props: MachineListProps) {
   }
 
   return (
-    <div className="flex flex-col gap-1 lg:gap-2 lg:flex-row lg:flex-wrap [&>button]:basis-[calc(50%_-_0.25rem)]">
+    <div
+      aria-label="Available machines"
+      className="flex flex-col gap-1 lg:flex-row lg:flex-wrap lg:gap-2 [&>button]:basis-[calc(50%_-_0.25rem)]"
+      role={selectionMode === 'multiple' ? 'group' : 'radiogroup'}
+    >
       {(response.machines ?? []).map((machine) => {
         const { id, hostname, address } = machine;
         const machineId = Number(id);
+        const isSelected = selectedMachineIds.includes(machineId);
 
         if (!Number.isFinite(machineId) || !hostname || !address) return null;
 
         return (
           <MachineCard
+            checked={isSelected}
             key={id}
             disabled={disabledMachineIds.includes(machineId)}
             machineName={hostname}
@@ -66,7 +72,8 @@ export default function MachineList(props: MachineListProps) {
               emitModal('%%modal/close', null);
               onMachineSelected?.(machineId);
             }}
-            selected={selectedMachineIds.includes(machineId)}
+            selected={isSelected}
+            selectionRole={selectionMode === 'multiple' ? 'checkbox' : 'radio'}
           />
         );
       })}
