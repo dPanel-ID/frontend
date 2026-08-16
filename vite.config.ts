@@ -24,6 +24,7 @@ const config = defineConfig(({ mode }) => {
     (isStaticBuild ? '.output-static' : '.output');
   const BASE_PATH: string = env.BASE_PATH || process.env.BASE_PATH || '/';
   const isProduction: boolean = process.env.NODE_ENV === 'production';
+  const isVitest = mode === 'test' || process.env.VITEST === 'true';
   const ALLOWED_HOSTS: string[] | true = env.ALLOWED_HOSTS
     ? JSON.parse(env.ALLOWED_HOSTS || '["*"]')
     : true;
@@ -89,11 +90,15 @@ const config = defineConfig(({ mode }) => {
               }
             : {}),
       }),
-      viteReact({
-        babel: {
-          plugins: ['babel-plugin-react-compiler'],
-        },
-      }),
+      viteReact(
+        isVitest
+          ? {}
+          : {
+              babel: {
+                plugins: ['babel-plugin-react-compiler'],
+              },
+            },
+      ),
     ],
   };
 });
