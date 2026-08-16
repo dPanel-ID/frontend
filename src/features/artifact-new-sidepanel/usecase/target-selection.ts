@@ -1,4 +1,5 @@
 export interface SyncDeploymentTargetSelectionParams {
+  currentHostGroupId?: string;
   previousServerId?: string;
   nextServerId?: string;
   nextHostGroupId?: string;
@@ -9,6 +10,7 @@ export function syncDeploymentTargetSelection(
   params: SyncDeploymentTargetSelectionParams,
 ) {
   const {
+    currentHostGroupId,
     currentTargetMode,
     nextHostGroupId,
     nextServerId,
@@ -16,9 +18,11 @@ export function syncDeploymentTargetSelection(
   } = params;
 
   const serverChanged = previousServerId !== nextServerId;
+  const hostGroupId =
+    nextHostGroupId ?? (serverChanged ? '' : currentHostGroupId ?? '');
 
   return {
-    hostGroupId: nextHostGroupId ?? '',
+    hostGroupId,
     targetMode: serverChanged ? 'server' : currentTargetMode,
   } as const;
 }

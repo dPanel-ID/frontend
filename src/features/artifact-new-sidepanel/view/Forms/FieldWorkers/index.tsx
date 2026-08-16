@@ -91,10 +91,11 @@ const WorkersList = guard(() => {
 
   const selectedServer = servers.find((server) => server.id === field.value);
   const previousServerIdRef = useRef<string | undefined>(field.value || undefined);
+  const activeHostGroupId = hostGroupField.value || selectedServer?.hostGroupId || '';
   const [hostGroupResponse] = ApiHostGroup.Detail.$Id.useGet({
-    id: selectedServer?.hostGroupId ?? '',
+    id: activeHostGroupId,
     options: {
-      skip: !selectedServer?.hostGroupId,
+      skip: !activeHostGroupId,
     },
   });
 
@@ -120,6 +121,7 @@ const WorkersList = guard(() => {
 
   useEffect(() => {
     const nextSelection = syncDeploymentTargetSelection({
+      currentHostGroupId: hostGroupField.value || undefined,
       currentTargetMode:
         targetModeField.value === 'hostgroup' ? 'hostgroup' : 'server',
       nextHostGroupId: selectedServer?.hostGroupId,

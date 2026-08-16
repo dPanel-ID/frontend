@@ -9,6 +9,25 @@ import { iife } from '@/shared/libs/browser/fn';
 import { useEmit, useSubscribe } from '../model/events';
 import { useArtifactNewGeneralModel } from '../model/general';
 
+export function resolveDeploymentRequestTarget(params: {
+  hostGroupId?: string;
+  targetMode: 'server' | 'hostgroup';
+  workerId: string;
+}) {
+  const explicitTarget: ExplicitTarget | undefined =
+    params.targetMode === 'hostgroup' && params.hostGroupId
+      ? {
+          type: 'hostgroup',
+          id: params.hostGroupId,
+        }
+      : undefined;
+
+  return {
+    explicitTarget,
+    workerId: explicitTarget ? '' : params.workerId,
+  } as const;
+}
+
 export default function useFormSubmissionUsecase() {
   const { form, props } = useArtifactNewGeneralModel();
   const t = useDevetekTranslations('sidepanel.artifactNew.toaster');
@@ -48,13 +67,11 @@ export default function useFormSubmissionUsecase() {
         return;
       }
 
-      const explicitTarget: ExplicitTarget | undefined =
-        targetMode === 'hostgroup' && hostGroupId
-          ? {
-              type: 'hostgroup',
-              id: hostGroupId,
-            }
-          : undefined;
+      const deploymentTarget = resolveDeploymentRequestTarget({
+        hostGroupId,
+        targetMode,
+        workerId,
+      });
 
       const responseArtifactCreation = await ApiArtifact.Create.doPost({
         appDefinition: undefined,
@@ -98,11 +115,11 @@ export default function useFormSubmissionUsecase() {
         // status will "pending" when no_deploy set true
         return ApiDeploy.Create.doPost({
           applicationId: props.applicationId,
-          workerId: targetMode === 'server' ? workerId : '',
+          workerId: deploymentTarget.workerId,
           artifactId: String(createdArtifactId),
           isPrimary: true,
           noDeploy: true,
-          target: explicitTarget,
+          target: deploymentTarget.explicitTarget,
         });
       });
 
@@ -126,14 +143,14 @@ export default function useFormSubmissionUsecase() {
       });
 
       if (
-        explicitTarget?.type === 'hostgroup' &&
+        deploymentTarget.explicitTarget?.type === 'hostgroup' &&
         responseDeployCreation != null &&
         responseDeployCreation.$status === 'success' &&
         'operation_id' in responseDeployCreation &&
         responseDeployCreation.operation_id
       ) {
         props.onOperationQueued?.(
-          explicitTarget.id,
+          deploymentTarget.explicitTarget.id,
           responseDeployCreation.operation_id,
         );
       }
