@@ -5,7 +5,10 @@ import type {
   WithApiGetOptions,
 } from '@/shared/libs/api-client/rules/types';
 
-import type { DTOs } from '.';
+import {
+  parseHostGroupAgentCommandResponse,
+  useHostGroupAgentCommandAdapter,
+} from './host-group.parsers';
 
 export interface RecipeParams {
   machineId: string;
@@ -19,15 +22,14 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
 }
 
 export function useGet(params: WithApiGetOptions<RecipeParams>) {
-  return useApiGet<DTOs.HostGroupOperationAgentCommandDetailV2>(
-    recipe(params),
-    params.options,
-  );
+  const [response, refresh] = useApiGet<unknown>(recipe(params), params.options);
+
+  return [useHostGroupAgentCommandAdapter(response), refresh] as const;
 }
 
 export function fetchGet(params: RecipeParams) {
-  return apiClient<DTOs.HostGroupOperationAgentCommandDetailV2>({
+  return apiClient<unknown>({
     ...recipe(params),
     method: 'GET',
-  });
+  }).then(parseHostGroupAgentCommandResponse);
 }

@@ -7,9 +7,11 @@ import {
   CalendarIcon,
   CpuIcon,
   HardDriveUploadIcon,
+  PencilLineIcon,
   PlusCircleIcon,
   RefreshCwIcon,
   RotateCcwIcon,
+  Trash2Icon,
   TriangleAlertIcon,
 } from 'lucide-react';
 import { z } from 'zod';
@@ -28,7 +30,9 @@ import {
   getOperationRefreshInterval,
   isTerminalOperationStatus,
 } from '@/features/server-groups/shared/lib/operation';
+import { buildModuleRetryRequirements } from '@/features/server-groups/shared/lib/retry';
 import { useServerGroupMemberMutations } from '@/features/server-groups/usecase/member-mutations';
+import { useRetainedResponseData } from '@/features/server-groups/usecase/use-retained-response-data';
 import { MembersTable } from '@/features/server-groups/view/MembersTable';
 import { OperationTargetsTable } from '@/features/server-groups/view/OperationTargetsTable';
 import { isSemanticReleaseTag } from '@/features/server-groups/shared/lib/validation';
@@ -83,6 +87,18 @@ function isUnauthorizedStatus(status?: number | string) {
   return normalizedStatus === 401 || normalizedStatus === 403;
 }
 
+function isConfigDisabledMessage(message: string) {
+  return /(disabled|not configured|unavailable)/i.test(message);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function isModuleOperation(type: string) {
+  return type.startsWith('module.');
+}
+
 function ServerGroupDetailPage() {
   const navigate = useNavigate();
   const { id } = Route.useParams();
@@ -92,6 +108,9 @@ function ServerGroupDetailPage() {
   const [openServerModulesDetailModal] = useServerModulesDetailModal();
 
   const [deployOpen, setDeployOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [retryOpen, setRetryOpen] = useState(false);
   const [operationRefreshStatus, setOperationRefreshStatus] = useState<
     string | undefined
   >();
@@ -100,7 +119,17 @@ function ServerGroupDetailPage() {
   const [selectedModuleId, setSelectedModuleId] = useState('');
   const [upgradeVersion, setUpgradeVersion] = useState('');
   const [submitError, setSubmitError] = useState('');
+  const [editError, setEditError] = useState('');
+  const [editName, setEditName] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [deleteError, setDeleteError] = useState('');
+  const [retryError, setRetryError] = useState('');
+  const [retryRefText, setRetryRefText] = useState('');
+  const [retryVariablesText, setRetryVariablesText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSavingMetadata, setIsSavingMetadata] = useState(false);
+  const [isDeletingGroup, setIsDeletingGroup] = useState(false);
+  const [isRetryingOperation, setIsRetryingOperation] = useState(false);
   const [pendingAction, setPendingAction] = useState<{
     action: 'inventory' | 'reboot' | 'upgrade';
     title: string;
@@ -124,6 +153,13 @@ function ServerGroupDetailPage() {
         ),
       },
     });
+  const [operationHistoryResponse, refreshOperationHistory] =
+    ApiHostGroup.Operations.$Id.useGet({
+      id,
+      options: {
+        refreshIntervalMs: 15_000,
+      },
+    });
 
   const [applicationsResponse, refreshApplications] = ApiApplication.Find.useGet({
     page: 1,
@@ -145,50 +181,60 @@ function ServerGroupDetailPage() {
     },
   });
 
+  const { data: retainedDetailData, isDegraded: isDetailDegraded } =
+    useRetainedResponseData(detailResponse);
+  const { data: retainedOperationData, isDegraded: isOperationDegraded } =
+    useRetainedResponseData(operationResponse);
+  const { data: retainedHistoryData, isDegraded: isHistoryDegraded } =
+    useRetainedResponseData(operationHistoryResponse);
+  const { data: retainedApplicationsData, isDegraded: isApplicationsDegraded } =
+    useRetainedResponseData(applicationsResponse);
+  const { data: retainedArtifactsData, isDegraded: isArtifactsDegraded } =
+    useRetainedResponseData(artifactsResponse);
+  const { data: retainedModulesData, isDegraded: isModulesDegraded } =
+    useRetainedResponseData(modulesResponse);
+
   const group =
-    detailResponse.$status === 'success'
-      ? toHostGroupDetail(detailResponse).unwrap()
-      : detailResponse.$status === 'loading' && detailResponse.prevData
-        ? toHostGroupDetail(detailResponse.prevData).unwrap()
-        : null;
+    retainedDetailData ? toHostGroupDetail(retainedDetailData).unwrap() : null;
 
   const operation =
-    operationResponse.$status === 'success'
-      ? toHostGroupOperation(operationResponse).unwrap()
-      : operationResponse.$status === 'loading' && operationResponse.prevData
-        ? toHostGroupOperation(operationResponse.prevData).unwrap()
-        : null;
+    retainedOperationData
+      ? toHostGroupOperation(retainedOperationData).unwrap()
+      : null;
 
   const modules = useMemo(() => {
-    if (modulesResponse.$status === 'success') {
-      return modulesResponse.modules.map((module) =>
+    if (retainedModulesData) {
+      return retainedModulesData.modules.map((module) =>
         toServerModuleFromCatalog(
           module,
-          modulesResponse.repository?.ref?.name,
-          modulesResponse.repository?.ref?.resolved_commit,
+          retainedModulesData.repository?.ref?.name,
+          retainedModulesData.repository?.ref?.resolved_commit,
         ),
       );
     }
 
-    return modulesResponse.$status === 'loading' && modulesResponse.prevData
-      ? modulesResponse.prevData.modules.map((module) =>
-          toServerModuleFromCatalog(
-            module,
-            modulesResponse.prevData?.repository?.ref?.name,
-            modulesResponse.prevData?.repository?.ref?.resolved_commit,
-          ),
-        )
-      : [];
-  }, [modulesResponse]);
+    return [];
+  }, [retainedModulesData]);
 
-  const applications =
-    applicationsResponse.$status === 'success'
-      ? (applicationsResponse.applications ?? [])
-      : [];
-  const artifacts =
-    artifactsResponse.$status === 'success'
-      ? (artifactsResponse.artifacts ?? [])
-      : [];
+  const applications = retainedApplicationsData?.applications ?? [];
+  const artifacts = retainedArtifactsData?.artifacts ?? [];
+  const operationHistory = useMemo(() => {
+    return (retainedHistoryData ?? [])
+      .map((item) => ({
+        id: String(item.id ?? ''),
+        action:
+          String(item.request?.action ?? '').trim() || String(item.type ?? ''),
+        failedCount: Number(item.failed_count ?? 0),
+        status: String(item.status ?? ''),
+        targetCount: Number(item.target_count ?? 0),
+        updatedAt: item.updated_at ?? '',
+      }))
+      .filter((item) => item.id && item.status)
+      .sort(
+        (left, right) =>
+          new Date(right.updatedAt).getTime() - new Date(left.updatedAt).getTime(),
+      );
+  }, [retainedHistoryData]);
 
   const selectedModule =
     modules.find((module) => module.id === selectedModuleId) ?? null;
@@ -197,18 +243,22 @@ function ServerGroupDetailPage() {
     detailResponse.$status === 'failed' && detailResponse.kind === 'api'
       ? detailResponse.error.status
       : undefined;
+  const detailErrorMessage =
+    detailResponse.$status === 'failed'
+      ? getApiErrorDetail(detailResponse.error)
+      : '';
 
   const operationStatus =
     operationResponse.$status === 'failed' && operationResponse.kind === 'api'
       ? operationResponse.error.status
       : undefined;
-
   const groupTarget: ExplicitTarget = {
     type: 'hostgroup',
     id,
   };
 
   const memberCount = group?.memberCount ?? 0;
+  const hasMembers = memberCount > 0;
   const {
     isMutatingMembers,
     memberActionError,
@@ -229,6 +279,18 @@ function ServerGroupDetailPage() {
     setSubmitError('');
     setIsSubmitting(false);
   };
+  const resetEditState = () => {
+    setEditError('');
+    setIsSavingMetadata(false);
+  };
+  const resetDeleteState = () => {
+    setDeleteError('');
+    setIsDeletingGroup(false);
+  };
+  const resetRetryState = () => {
+    setRetryError('');
+    setIsRetryingOperation(false);
+  };
 
   const navigateToOperation = (nextOperationId: string) => {
     navigate({
@@ -238,6 +300,7 @@ function ServerGroupDetailPage() {
         operationId: nextOperationId,
       },
     });
+    void refreshOperationHistory();
   };
 
   const handleRemoveMember = (serverId: string, hostname: string) => {
@@ -259,25 +322,19 @@ function ServerGroupDetailPage() {
       confirmLabel: mode === 'replace' ? 'Replace Members' : 'Add Members',
       description:
         mode === 'replace'
-          ? `Choose the exact servers that should remain in ${group?.name ?? 'this group'}.`
+          ? `Choose the exact servers that should remain in ${group?.name ?? 'this group'}. Leave the selection empty to remove every member.`
           : `Choose the exact servers to add to ${group?.name ?? 'this group'}.`,
+      allowEmptySelection: mode === 'replace',
       disabledMachineIds:
         mode === 'add'
-          ? group?.members
-              .map((member) => Number(member.id))
-              .filter((memberId) => Number.isFinite(memberId)) ?? []
+          ? group?.members.map((member) => member.id) ?? []
           : [],
       initialSelectedMachineIds:
         mode === 'replace'
-          ? group?.members
-              .map((member) => Number(member.id))
-              .filter((memberId) => Number.isFinite(memberId)) ?? []
+          ? group?.members.map((member) => member.id) ?? []
           : [],
       onMachinesSelected: async (machineIds) => {
-        await submitMembers(
-          machineIds.map((machineId) => String(machineId)),
-          mode,
-        );
+        await submitMembers(machineIds, mode);
       },
       selectionMode: 'multiple',
       title: mode === 'replace' ? 'Replace Members' : 'Add Members',
@@ -285,7 +342,7 @@ function ServerGroupDetailPage() {
   };
 
   const handleSubmitAction = async () => {
-    if (!pendingAction || !group) return;
+    if (!pendingAction || !group || !hasMembers) return;
 
     if (
       pendingAction.action === 'upgrade' &&
@@ -323,9 +380,15 @@ function ServerGroupDetailPage() {
     setPendingAction(null);
     setUpgradeVersion('');
     refreshDetail();
+    refreshOperationHistory();
   };
 
   const handleDeploy = async () => {
+    if (!hasMembers) {
+      setSubmitError('Add at least one member before launching a deployment.');
+      return;
+    }
+
     if (!selectedApplicationId || !selectedArtifactId) {
       setSubmitError('Select both an application and an artifact.');
       return;
@@ -355,10 +418,11 @@ function ServerGroupDetailPage() {
     setDeployOpen(false);
     resetDialogState();
     refreshDetail();
+    refreshOperationHistory();
   };
 
   const handleOpenModule = () => {
-    if (!selectedModule) return;
+    if (!selectedModule || !hasMembers) return;
 
     openServerModulesDetailModal({
       moduleInfo: selectedModule,
@@ -369,6 +433,145 @@ function ServerGroupDetailPage() {
       },
       onOperationQueued: navigateToOperation,
     });
+  };
+  const handleOpenEdit = () => {
+    if (!group) return;
+
+    setEditName(group.name);
+    setEditDescription(group.description ?? '');
+    resetEditState();
+    setEditOpen(true);
+  };
+  const handleSaveMetadata = async () => {
+    if (!group || !editName.trim()) {
+      setEditError('Group name is required.');
+      return;
+    }
+
+    setIsSavingMetadata(true);
+    setEditError('');
+
+    const response = await ApiHostGroup.Create.doPatch({
+      id: group.id,
+      name: editName.trim(),
+      description: editDescription.trim() || undefined,
+    });
+
+    setIsSavingMetadata(false);
+
+    if (response.$status === 'failed') {
+      setEditError(getApiErrorDetail(response.error));
+      return;
+    }
+
+    setEditOpen(false);
+    refreshDetail();
+  };
+  const handleDeleteGroup = async () => {
+    if (!group) return;
+
+    setIsDeletingGroup(true);
+    setDeleteError('');
+
+    const response = await ApiHostGroup.Create.doDelete({
+      id: group.id,
+    });
+
+    setIsDeletingGroup(false);
+
+    if (response.$status === 'failed') {
+      setDeleteError(getApiErrorDetail(response.error));
+      return;
+    }
+
+    navigate({ to: '/servers/groups' });
+  };
+  const handleOpenRetry = () => {
+    if (!operation) return;
+
+    const requirements = buildModuleRetryRequirements(operation.request);
+    setRetryRefText(requirements.defaultRefText);
+    setRetryVariablesText(requirements.defaultVariablesText);
+    resetRetryState();
+    setRetryOpen(true);
+  };
+  const handleRetryOperation = async () => {
+    if (!operation) return;
+
+    const isModule = isModuleOperation(operation.type);
+    const requirements = buildModuleRetryRequirements(operation.request);
+    let variables: Record<string, unknown> | undefined;
+    let ref:
+      | {
+          type?: string;
+          name?: string;
+          expected_commit?: string;
+        }
+      | undefined;
+
+    try {
+      if (isModule) {
+        if (requirements.requiresVariablesResubmission && !retryVariablesText.trim()) {
+          setRetryError(
+            'Resubmit the full variable set before retrying a redacted module operation.',
+          );
+          return;
+        }
+        if (requirements.requiresPinnedRef && !retryRefText.trim()) {
+          setRetryError(
+            'Provide an explicit pinned ref before retrying an unpinned module operation.',
+          );
+          return;
+        }
+
+        if (retryVariablesText.trim()) {
+          const parsed = JSON.parse(retryVariablesText) as unknown;
+          if (!isRecord(parsed)) {
+            throw new Error('Variables JSON must be an object.');
+          }
+          variables = parsed;
+        }
+
+        if (retryRefText.trim()) {
+          const parsed = JSON.parse(retryRefText) as unknown;
+          if (!isRecord(parsed)) {
+            throw new Error('Ref JSON must be an object.');
+          }
+          ref = parsed as {
+            type?: string;
+            name?: string;
+            expected_commit?: string;
+          };
+        }
+      }
+    } catch (error) {
+      setRetryError(
+        error instanceof Error
+          ? error.message
+          : 'Unable to parse retry JSON.',
+      );
+      return;
+    }
+
+    setIsRetryingOperation(true);
+    setRetryError('');
+
+    const response = await ApiHostGroup.Operation.$Id.retryPost({
+      id: operation.id,
+      ref,
+      variables,
+    });
+
+    setIsRetryingOperation(false);
+
+    if (response.$status === 'failed') {
+      setRetryError(getApiErrorDetail(response.error));
+      return;
+    }
+
+    setRetryOpen(false);
+    navigateToOperation(response.id);
+    refreshOperationHistory();
   };
 
   const operationStatusValue =
@@ -387,6 +590,14 @@ function ServerGroupDetailPage() {
   }
 
   if (detailResponse.$status === 'failed' && !group) {
+    if (isConfigDisabledMessage(detailErrorMessage)) {
+      return (
+        <div className="rounded-lg border border-dashed bg-card px-4 py-6 text-sm text-muted-foreground">
+          Server group management is currently unavailable in this environment.
+        </div>
+      );
+    }
+
     return isUnauthorizedStatus(detailStatus) ? (
       <FallbackState.Unauthorized withCard />
     ) : (
@@ -438,6 +649,27 @@ function ServerGroupDetailPage() {
               buttonStyle="outline"
               buttonColor="secondary"
               disabled={isMutatingMembers}
+              onClick={handleOpenEdit}
+            >
+              <PencilLineIcon />
+              Edit Metadata
+            </Button>
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              disabled={isDeletingGroup}
+              onClick={() => {
+                resetDeleteState();
+                setDeleteOpen(true);
+              }}
+            >
+              <Trash2Icon />
+              Delete Group
+            </Button>
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              disabled={isMutatingMembers}
               onClick={() => handleOpenMembersPicker('add')}
             >
               <PlusCircleIcon />
@@ -454,6 +686,7 @@ function ServerGroupDetailPage() {
             <Button
               buttonStyle="outline"
               buttonColor="secondary"
+              disabled={!hasMembers}
               onClick={() => setDeployOpen(true)}
             >
               <HardDriveUploadIcon />
@@ -464,6 +697,10 @@ function ServerGroupDetailPage() {
       />
 
       <div className="grid gap-4">
+        {isDetailDegraded ? (
+          <FailedState.BannerRetryable onClickRetry={() => refreshDetail()} />
+        ) : null}
+
         <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
           <section className="rounded-lg border bg-card p-4">
             <div className="flex items-center justify-between gap-3">
@@ -476,7 +713,7 @@ function ServerGroupDetailPage() {
                 </p>
               </div>
               <Button
-                disabled={!selectedModule}
+                disabled={!selectedModule || !hasMembers}
                 buttonStyle="outline"
                 buttonColor="secondary"
                 onClick={handleOpenModule}
@@ -497,23 +734,35 @@ function ServerGroupDetailPage() {
                   No modules are currently available for this workspace.
                 </div>
               ) : (
-                <Select
-                  value={selectedModuleId}
-                  onValueChange={setSelectedModuleId}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose a server role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {modules.map((module) => (
-                      <SelectItem key={module.id} value={module.id}>
-                        {module.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="grid gap-3">
+                  {isModulesDegraded ? (
+                    <FailedState.BannerRetryable
+                      onClickRetry={() => refreshModules()}
+                    />
+                  ) : null}
+                  <Select
+                    value={selectedModuleId}
+                    onValueChange={setSelectedModuleId}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose a server role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {modules.map((module) => (
+                        <SelectItem key={module.id} value={module.id}>
+                          {module.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               )}
             </div>
+            {!hasMembers ? (
+              <p className="mt-3 text-sm text-muted-foreground">
+                Add at least one member before queueing a module action.
+              </p>
+            ) : null}
           </section>
 
           <section className="rounded-lg border bg-card p-4">
@@ -527,6 +776,7 @@ function ServerGroupDetailPage() {
               <Button
                 buttonStyle="outline"
                 buttonColor="secondary"
+                disabled={!hasMembers}
                 onClick={() =>
                   setPendingAction({
                     action: 'inventory',
@@ -540,6 +790,7 @@ function ServerGroupDetailPage() {
               <Button
                 buttonStyle="outline"
                 buttonColor="secondary"
+                disabled={!hasMembers}
                 onClick={() =>
                   setPendingAction({
                     action: 'reboot',
@@ -553,6 +804,7 @@ function ServerGroupDetailPage() {
               <Button
                 buttonStyle="outline"
                 buttonColor="secondary"
+                disabled={!hasMembers}
                 onClick={() =>
                   setPendingAction({
                     action: 'upgrade',
@@ -564,6 +816,11 @@ function ServerGroupDetailPage() {
                 Upgrade Agent
               </Button>
             </div>
+            {!hasMembers ? (
+              <p className="mt-3 text-sm text-muted-foreground">
+                Add at least one member before queueing a bulk action.
+              </p>
+            ) : null}
           </section>
         </div>
 
@@ -594,6 +851,62 @@ function ServerGroupDetailPage() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-lg font-semibold text-primary">
+                  Operation history
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Review previous snapshots and reopen an operation for details
+                  or retry.
+                </p>
+              </div>
+              <Button
+                buttonStyle="outline"
+                buttonColor="secondary"
+                onClick={() => refreshOperationHistory()}
+              >
+                <RefreshCwIcon />
+                Refresh
+              </Button>
+            </div>
+          </div>
+
+          <div className="grid gap-3 px-4 py-4">
+            {isHistoryDegraded ? (
+              <FailedState.BannerRetryable
+                onClickRetry={() => refreshOperationHistory()}
+              />
+            ) : null}
+            {operationHistoryResponse.$status === 'failed' &&
+            operationHistory.length === 0 ? (
+              <FailedState.BannerRetryable
+                onClickRetry={() => refreshOperationHistory()}
+              />
+            ) : null}
+            {operationHistory.length === 0 ? (
+              <div className="rounded-lg border border-dashed px-3 py-4 text-sm text-muted-foreground">
+                No operations have been recorded for this group yet.
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {operationHistory.map((item) => (
+                  <Button
+                    key={item.id}
+                    buttonStyle={item.id === operationId ? 'flat' : 'outline'}
+                    buttonColor="secondary"
+                    onClick={() => navigateToOperation(item.id)}
+                  >
+                    {item.action} • {item.status} • {item.targetCount} targets
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="rounded-lg border bg-card">
+          <div className="border-b px-4 py-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-primary">
                   Operation detail
                 </h2>
                 <p className="text-sm text-muted-foreground">
@@ -601,16 +914,29 @@ function ServerGroupDetailPage() {
                   targets and any child work IDs returned by the backend.
                 </p>
               </div>
-              {operationId ? (
-                <Button
-                  buttonStyle="outline"
-                  buttonColor="secondary"
-                  onClick={() => refreshOperation()}
-                >
-                  <RefreshCwIcon />
-                  Refresh
-                </Button>
-              ) : null}
+              <div className="flex flex-wrap gap-2">
+                {operation &&
+                isTerminalOperationStatus(operation.status) &&
+                operation.failedCount > 0 ? (
+                  <Button
+                    buttonStyle="outline"
+                    buttonColor="secondary"
+                    onClick={handleOpenRetry}
+                  >
+                    Retry Failed Targets
+                  </Button>
+                ) : null}
+                {operationId ? (
+                  <Button
+                    buttonStyle="outline"
+                    buttonColor="secondary"
+                    onClick={() => refreshOperation()}
+                  >
+                    <RefreshCwIcon />
+                    Refresh
+                  </Button>
+                ) : null}
+              </div>
             </div>
           </div>
 
@@ -635,6 +961,11 @@ function ServerGroupDetailPage() {
             )
           ) : operation ? (
             <div className="grid gap-4 px-4 py-4">
+              {isOperationDegraded ? (
+                <FailedState.BannerRetryable
+                  onClickRetry={() => refreshOperation()}
+                />
+              ) : null}
               <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 <span className="rounded-full border px-2 py-1 text-xs font-medium text-primary/75">
                   {operation.action}
@@ -752,10 +1083,16 @@ function ServerGroupDetailPage() {
                 onClickRetry={() => refreshApplications()}
               />
             ) : null}
+            {isApplicationsDegraded ? (
+              <FailedState.BannerRetryable
+                onClickRetry={() => refreshApplications()}
+              />
+            ) : null}
 
             <label className="grid gap-2">
               <span className="text-sm font-medium">Application</span>
               <Select
+                disabled={applicationsResponse.$status === 'loading'}
                 value={selectedApplicationId}
                 onValueChange={(value) => {
                   setSelectedApplicationId(value);
@@ -778,6 +1115,12 @@ function ServerGroupDetailPage() {
                   ))}
                 </SelectContent>
               </Select>
+              {applicationsResponse.$status !== 'loading' &&
+              applications.length === 0 ? (
+                <span className="text-xs text-muted-foreground">
+                  No applications are available for deployment.
+                </span>
+              ) : null}
             </label>
 
             <label className="grid gap-2">
@@ -787,7 +1130,16 @@ function ServerGroupDetailPage() {
                   onClickRetry={() => refreshArtifacts()}
                 />
               ) : null}
+              {isArtifactsDegraded && selectedApplicationId ? (
+                <FailedState.BannerRetryable
+                  onClickRetry={() => refreshArtifacts()}
+                />
+              ) : null}
               <Select
+                disabled={
+                  !selectedApplicationId ||
+                  artifactsResponse.$status === 'loading'
+                }
                 value={selectedArtifactId}
                 onValueChange={setSelectedArtifactId}
               >
@@ -807,6 +1159,13 @@ function ServerGroupDetailPage() {
                   ))}
                 </SelectContent>
               </Select>
+              {selectedApplicationId &&
+              artifactsResponse.$status !== 'loading' &&
+              artifacts.length === 0 ? (
+                <span className="text-xs text-muted-foreground">
+                  No artifacts are available for the selected application.
+                </span>
+              ) : null}
             </label>
           </div>
 
@@ -822,8 +1181,158 @@ function ServerGroupDetailPage() {
             >
               Cancel
             </Button>
-            <Button disabled={isSubmitting} onClick={handleDeploy}>
+            <Button disabled={isSubmitting || !hasMembers} onClick={handleDeploy}>
               {isSubmitting ? 'Queueing...' : 'Deploy'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={editOpen}
+        onOpenChange={(open) => {
+          setEditOpen(open);
+          if (!open) resetEditState();
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit group metadata</DialogTitle>
+            <DialogDescription>
+              Update the name and description for this explicit server group.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4">
+            <label className="grid gap-2">
+              <span className="text-sm font-medium">Name</span>
+              <Input
+                value={editName}
+                onChange={(event) => setEditName(event.target.value)}
+              />
+            </label>
+            <label className="grid gap-2">
+              <span className="text-sm font-medium">Description</span>
+              <Input
+                value={editDescription}
+                onChange={(event) => setEditDescription(event.target.value)}
+              />
+            </label>
+            {editError ? (
+              <p className="text-sm text-destructive">{editError}</p>
+            ) : null}
+          </div>
+
+          <DialogFooter>
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              onClick={() => setEditOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button disabled={isSavingMetadata} onClick={handleSaveMetadata}>
+              {isSavingMetadata ? 'Saving...' : 'Save'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={deleteOpen}
+        onOpenChange={(open) => {
+          setDeleteOpen(open);
+          if (!open) resetDeleteState();
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete group</DialogTitle>
+            <DialogDescription>
+              Deleting this group unassigns its current members but does not
+              delete any server or historical operation.
+            </DialogDescription>
+          </DialogHeader>
+
+          {deleteError ? (
+            <p className="text-sm text-destructive">{deleteError}</p>
+          ) : null}
+
+          <DialogFooter>
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              onClick={() => setDeleteOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button disabled={isDeletingGroup} onClick={handleDeleteGroup}>
+              {isDeletingGroup ? 'Deleting...' : 'Delete Group'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={retryOpen}
+        onOpenChange={(open) => {
+          setRetryOpen(open);
+          if (!open) resetRetryState();
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Retry failed targets</DialogTitle>
+            <DialogDescription>
+              Retry only the failed targets that are still eligible members of
+              this group snapshot.
+            </DialogDescription>
+          </DialogHeader>
+
+          {operation && isModuleOperation(operation.type) ? (
+            <div className="grid gap-4">
+              {buildModuleRetryRequirements(operation.request)
+                .requiresVariablesResubmission ? (
+                <p className="text-sm text-amber-700">
+                  Redacted variables must be fully resubmitted before retrying.
+                </p>
+              ) : null}
+              {buildModuleRetryRequirements(operation.request).requiresPinnedRef ? (
+                <p className="text-sm text-amber-700">
+                  This retry requires an explicit pinned ref.
+                </p>
+              ) : null}
+              <label className="grid gap-2">
+                <span className="text-sm font-medium">Variables JSON</span>
+                <Input
+                  value={retryVariablesText}
+                  onChange={(event) => setRetryVariablesText(event.target.value)}
+                />
+              </label>
+              <label className="grid gap-2">
+                <span className="text-sm font-medium">Ref JSON</span>
+                <Input
+                  value={retryRefText}
+                  onChange={(event) => setRetryRefText(event.target.value)}
+                />
+              </label>
+            </div>
+          ) : null}
+
+          {retryError ? (
+            <p className="text-sm text-destructive">{retryError}</p>
+          ) : null}
+
+          <DialogFooter>
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              onClick={() => setRetryOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button disabled={isRetryingOperation} onClick={handleRetryOperation}>
+              {isRetryingOperation ? 'Retrying...' : 'Retry Failed Targets'}
             </Button>
           </DialogFooter>
         </DialogContent>

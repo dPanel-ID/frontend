@@ -20,6 +20,10 @@ import { FailedState } from '@/widgets/failed-state';
 
 import { useBaseContext } from '../../config/base-context';
 import useHandleInstallModule from '../../model/handle-install-module';
+import {
+  getAvailableModuleActions,
+  isBlockedHostGroupAction,
+} from './action-options';
 
 type FieldValue = unknown;
 
@@ -89,12 +93,15 @@ export default function Installation() {
         ? detail.prevData
         : undefined;
 
-  const action = useMemo(() => {
-    return (
-      moduleDetail?.action_details.find((item) => item.name === 'install') ??
-      moduleDetail?.action_details[0]
-    );
-  }, [moduleDetail]);
+  const availableActions = useMemo(
+    () =>
+      getAvailableModuleActions(
+        moduleDetail?.action_details,
+        targetMode === 'hostgroup' && Boolean(hostGroupTarget),
+      ),
+    [hostGroupTarget, moduleDetail?.action_details, targetMode],
+  );
+  const action = availableActions.defaultAction;
 
   const visibleInputs =
     moduleDetail?.inputs.filter((input) => !isHiddenInput(input)) ?? [];
@@ -127,6 +134,16 @@ export default function Installation() {
 
   const handleClickInstall = () => {
     if (!activeTarget || !moduleDetail || !action) return;
+
+    if (
+      activeTarget.type === 'hostgroup' &&
+      isBlockedHostGroupAction(action.name)
+    ) {
+      setFormError(
+        'Delete and reprovision actions are only available for a single server target.',
+      );
+      return;
+    }
 
     try {
       setFormError('');
@@ -181,7 +198,9 @@ export default function Installation() {
   if (!moduleDetail || !action) {
     return (
       <p className="text-sm italic">
-        No installation action is available for this role.
+        {targetMode === 'hostgroup'
+          ? 'No non-destructive action is available for this explicit server group.'
+          : 'No installation action is available for this role.'}
       </p>
     );
   }

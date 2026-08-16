@@ -13,6 +13,15 @@ interface UseServerGroupMemberMutationsParams {
   onSuccess: () => void;
 }
 
+export function assertMemberSelection(
+  serverIds: string[],
+  mode: 'add' | 'replace',
+) {
+  if (mode === 'add' && serverIds.length === 0) {
+    throw new Error('Select at least one server.');
+  }
+}
+
 export function useServerGroupMemberMutations(
   params: UseServerGroupMemberMutationsParams,
 ) {
@@ -60,9 +69,7 @@ export function useServerGroupMemberMutations(
     serverIds: string[],
     mode: 'add' | 'replace',
   ) => {
-    if (serverIds.length === 0) {
-      throw new Error('Select at least one server.');
-    }
+    assertMemberSelection(serverIds, mode);
 
     await runMutation(
       mode,

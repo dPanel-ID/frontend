@@ -7,9 +7,11 @@ import { useAuthLoggedIn } from '@/services/auth';
 
 import { toHostGroupSummary } from '@/entities/host-group/adapter';
 
+import { useRetainedResponseData } from '@/features/server-groups/usecase/use-retained-response-data';
 import { ApiHostGroup, ApiServer } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { buildHostGroupMemberCountMap } from '@/features/server-groups/shared/lib/member-counts';
+import { toSelectableMachine } from '@/features/select-machine-modal/view/machine-options';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import {
@@ -42,6 +44,10 @@ function isUnauthorizedStatus(status?: number | string) {
   return normalizedStatus === 401 || normalizedStatus === 403;
 }
 
+function isConfigDisabledMessage(message: string) {
+  return /(disabled|not configured|unavailable)/i.test(message);
+}
+
 function ServerGroupsPage() {
   const navigate = useNavigate();
   const { userProfile } = useAuthLoggedIn();
@@ -52,18 +58,23 @@ function ServerGroupsPage() {
   const [submitError, setSubmitError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [memberCounts, setMemberCounts] = useState<Record<string, number>>({});
+  const [serverPage, setServerPage] = useState(1);
+  const [serverSearchQuery, setServerSearchQuery] = useState('');
 
   const [groupsResponse, refreshGroups] = ApiHostGroup.Find.useGet({});
-  const [serversResponse] = ApiServer.Find.useGet({
+  const [serversResponse, refreshServers] = ApiServer.Find.useGet({
     filter: 'shared-with-me',
-    page: 1,
-    pageSize: 200,
+    page: serverPage,
+    pageSize: 20,
+    searchQuery: serverSearchQuery.trim() || undefined,
     userId: userProfile.id,
   });
+  const { data: retainedGroupsData, isDegraded: isGroupsDegraded } =
+    useRetainedResponseData(groupsResponse);
 
   const groups = useMemo(() => {
-    if (groupsResponse.$status === 'success') {
-      return groupsResponse
+    if (retainedGroupsData) {
+      return retainedGroupsData
         .map((item) => toHostGroupSummary(item).unwrap())
         .sort(
           (a, b) =>
@@ -71,17 +82,24 @@ function ServerGroupsPage() {
         );
     }
 
-    return groupsResponse.$status === 'loading'
-      ? (groupsResponse.prevData?.map((item) =>
-          toHostGroupSummary(item).unwrap(),
-        ) ?? [])
-      : [];
-  }, [groupsResponse]);
+    return [];
+  }, [retainedGroupsData]);
 
   const availableServers =
     serversResponse.$status === 'success'
       ? (serversResponse.machines ?? [])
-      : [];
+      : serversResponse.$status === 'loading' && serversResponse.prevData
+        ? (serversResponse.prevData.machines ?? [])
+        : [];
+  const selectableServers = availableServers
+    .map((server) => toSelectableMachine(server))
+    .filter((server) => server != null);
+  const serverPagination =
+    serversResponse.$status === 'success'
+      ? serversResponse.pagination
+      : serversResponse.$status === 'loading'
+        ? serversResponse.prevData?.pagination
+        : undefined;
 
   useEffect(() => {
     const groupIds = groups.map((group) => group.id);
@@ -121,6 +139,10 @@ function ServerGroupsPage() {
     groupsResponse.$status === 'failed' && groupsResponse.kind === 'api'
       ? groupsResponse.error.status
       : undefined;
+  const groupsErrorMessage =
+    groupsResponse.$status === 'failed'
+      ? getApiErrorDetail(groupsResponse.error)
+      : '';
 
   const handleToggleServer = (serverId: string, checked: boolean) => {
     setSelectedServerIds((current) =>
@@ -134,6 +156,8 @@ function ServerGroupsPage() {
     setCreateName('');
     setCreateDescription('');
     setSelectedServerIds([]);
+    setServerPage(1);
+    setServerSearchQuery('');
     setSubmitError('');
     setIsSubmitting(false);
   };
@@ -218,13 +242,22 @@ function ServerGroupsPage() {
       />
 
       <div className="flex flex-col gap-4">
+        {isGroupsDegraded ? (
+          <FailedState.BannerRetryable onClickRetry={() => refreshGroups()} />
+        ) : null}
+
         {groupsResponse.$status === 'loading' && groups.length === 0 ? (
           <PageHeaderShimmer hasStatuses />
         ) : null}
 
-        {groupsResponse.$status === 'failed' ? (
+        {groupsResponse.$status === 'failed' && groups.length === 0 ? (
           isUnauthorizedStatus(groupsStatus) ? (
             <FallbackState.Unauthorized withCard />
+          ) : isConfigDisabledMessage(groupsErrorMessage) ? (
+            <div className="rounded-lg border border-dashed bg-card px-4 py-6 text-sm text-muted-foreground">
+              Server group management is currently unavailable in this
+              environment.
+            </div>
           ) : (
             <FailedState.WallCentered.Retryable
               withCard
@@ -321,21 +354,46 @@ function ServerGroupsPage() {
                 </span>
               </div>
 
+              <label className="grid gap-2">
+                <span className="text-sm font-medium">Search machines</span>
+                <Input
+                  value={serverSearchQuery}
+                  onChange={(event) => {
+                    setServerSearchQuery(event.target.value);
+                    setServerPage(1);
+                  }}
+                  placeholder="Filter by hostname"
+                />
+              </label>
+
               <div className="max-h-72 overflow-y-auto rounded-lg border bg-background">
-                {serversResponse.$status === 'loading' ? (
+                {serversResponse.$status === 'loading' &&
+                selectableServers.length === 0 ? (
                   <div className="flex justify-center py-8">
                     <Spinner />
                   </div>
                 ) : null}
 
                 {serversResponse.$status === 'failed' ? (
-                  <div className="p-4 text-sm text-destructive">
-                    {getApiErrorDetail(serversResponse.error)}
+                  <div className="grid gap-3 p-4">
+                    <FailedState.BannerRetryable
+                      onClickRetry={() => refreshServers()}
+                    />
+                    <p className="text-sm text-destructive">
+                      {getApiErrorDetail(serversResponse.error)}
+                    </p>
                   </div>
                 ) : null}
 
-                {availableServers.map((server) => {
-                  const serverId = String(server.id ?? '');
+                {serversResponse.$status !== 'failed' &&
+                selectableServers.length === 0 ? (
+                  <div className="p-4 text-sm text-muted-foreground">
+                    No machines match the current search.
+                  </div>
+                ) : null}
+
+                {selectableServers.map((server) => {
+                  const serverId = server.id;
 
                   return (
                     <label
@@ -351,21 +409,51 @@ function ServerGroupsPage() {
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="truncate font-medium text-primary">
-                            {server.hostname || serverId}
+                            {server.hostname}
                           </span>
-                          {server.host_group_id ? (
+                          {server.currentHostGroupId ? (
                             <span className="rounded-full border px-2 py-0.5 text-[11px] text-muted-foreground">
-                              current group {server.host_group_id}
+                              current group {server.currentHostGroupId}
                             </span>
                           ) : null}
                         </div>
                         <p className="truncate text-xs text-muted-foreground">
-                          {server.address || 'No public address'}
+                          {server.address}
                         </p>
                       </div>
                     </label>
                   );
                 })}
+              </div>
+
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs text-muted-foreground">
+                  Page {serverPagination?.page ?? serverPage} of{' '}
+                  {serverPagination?.total_page ?? 1}
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    buttonStyle="outline"
+                    buttonColor="secondary"
+                    disabled={(serverPagination?.page ?? serverPage) <= 1}
+                    onClick={() =>
+                      setServerPage((current) => Math.max(1, current - 1))
+                    }
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    buttonStyle="outline"
+                    buttonColor="secondary"
+                    disabled={
+                      (serverPagination?.page ?? serverPage) >=
+                      (serverPagination?.total_page ?? 1)
+                    }
+                    onClick={() => setServerPage((current) => current + 1)}
+                  >
+                    Next
+                  </Button>
+                </div>
               </div>
             </div>
 

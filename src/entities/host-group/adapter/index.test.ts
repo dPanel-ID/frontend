@@ -15,6 +15,7 @@ describe('host-group adapter', () => {
         description: 'Primary API fleet',
         workspace_id: 'org_1',
         workspace_type: 'group',
+        member_count: 2,
         created_at: '2026-08-15T10:00:00Z',
         updated_at: '2026-08-16T10:00:00Z',
         members: [
@@ -38,6 +39,7 @@ describe('host-group adapter', () => {
         description: 'Primary API fleet',
         workspace_id: 'org_1',
         workspace_type: 'group',
+        member_count: 2,
         created_at: '2026-08-15T10:00:00Z',
         updated_at: '2026-08-16T10:00:00Z',
         members: [
@@ -78,6 +80,8 @@ describe('host-group adapter', () => {
         operation: {
           id: 'hgo_1',
           host_group_id: 'hg_1',
+          workspace_id: 'org_1',
+          workspace_type: 'group',
           type: 'module.install',
           status: 'running',
           request: {
@@ -92,15 +96,21 @@ describe('host-group adapter', () => {
         targets: [
           {
             id: 'hgot_1',
+            operation_id: 'hgo_1',
             machine_id: '44',
             status: 'succeeded',
             execution_id: 'exec_1',
+            created_at: '2026-08-16T09:00:00Z',
+            updated_at: '2026-08-16T09:01:00Z',
           },
           {
             id: 'hgot_2',
+            operation_id: 'hgo_1',
             machine_id: '45',
             status: 'running',
             execution_id: 'exec_2',
+            created_at: '2026-08-16T09:00:00Z',
+            updated_at: '2026-08-16T09:05:00Z',
           },
         ],
       }).unwrap(),

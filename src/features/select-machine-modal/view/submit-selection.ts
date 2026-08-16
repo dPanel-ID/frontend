@@ -1,6 +1,6 @@
 export interface SubmitMachineSelectionParams {
-  machineIds: number[];
-  onMachinesSelected?: (machineIDs: number[]) => void | Promise<void>;
+  machineIds: string[];
+  onMachinesSelected?: (machineIDs: string[]) => void | Promise<void>;
 }
 
 export async function submitMachineSelection(

@@ -42,6 +42,12 @@ export function MembersTable(props: MembersTableProps) {
         </div>
       ) : null}
 
+      {members.length === 0 ? (
+        <div className="rounded-lg border border-dashed px-3 py-4 text-sm text-muted-foreground">
+          This group does not have any members yet.
+        </div>
+      ) : null}
+
       <Table>
         <TableHeader>
           <TableRow>

@@ -4,7 +4,7 @@ import type {
   WithApiGetOptions,
 } from '@/shared/libs/api-client/rules/types';
 
-import type { DTOs } from '.';
+import { useHostGroupListAdapter } from './host-group.parsers';
 
 export interface RecipeParams {
   page?: number;
@@ -18,5 +18,7 @@ export function recipe(_params: RecipeParams = {}): GetRequestRecipe {
 }
 
 export function useGet(params: WithApiGetOptions<RecipeParams>) {
-  return useApiGet<DTOs.HostGroupV1[]>(recipe(params), params.options);
+  const [response, refresh] = useApiGet<unknown>(recipe(params), params.options);
+
+  return [useHostGroupListAdapter(response), refresh] as const;
 }

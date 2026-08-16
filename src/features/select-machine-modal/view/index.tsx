@@ -12,6 +12,7 @@ import type { SelectMachineModalProps as Props } from './types';
 export default function SelectMachineModal(props: Props) {
   const emitModal = useModalEmit();
   const {
+    allowEmptySelection = false,
     confirmLabel = 'Confirm',
     description,
     initialSelectedMachineIds = [],
@@ -21,7 +22,7 @@ export default function SelectMachineModal(props: Props) {
   } = props;
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedMachineIds, setSelectedMachineIds] = useState<number[]>(
+  const [selectedMachineIds, setSelectedMachineIds] = useState<string[]>(
     initialSelectedMachineIds,
   );
 
@@ -45,6 +46,12 @@ export default function SelectMachineModal(props: Props) {
             {errorMessage}
           </p>
         ) : null}
+        {isMultiple && allowEmptySelection && selectedMachineIds.length === 0 ? (
+          <p className="text-sm text-amber-700">
+            Saving with no selected machines will remove every member from this
+            group.
+          </p>
+        ) : null}
       </ModalLayoutGeneral.Content>
 
       {isMultiple ? (
@@ -58,7 +65,10 @@ export default function SelectMachineModal(props: Props) {
             Cancel
           </Button>
           <Button
-            disabled={selectedMachineIds.length === 0 || isSubmitting}
+            disabled={
+              (!allowEmptySelection && selectedMachineIds.length === 0) ||
+              isSubmitting
+            }
             onClick={async () => {
               setErrorMessage('');
               setIsSubmitting(true);

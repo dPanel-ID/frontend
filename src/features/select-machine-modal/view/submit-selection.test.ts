@@ -8,7 +8,7 @@ describe('submitMachineSelection', () => {
 
     await expect(
       submitMachineSelection({
-        machineIds: [1, 2],
+        machineIds: ['server-1', 'server-2'],
         onMachinesSelected,
       }),
     ).resolves.toEqual({
@@ -16,7 +16,7 @@ describe('submitMachineSelection', () => {
       shouldClose: true,
     });
 
-    expect(onMachinesSelected).toHaveBeenCalledWith([1, 2]);
+    expect(onMachinesSelected).toHaveBeenCalledWith(['server-1', 'server-2']);
   });
 
   it('returns the mutation error so the active picker surface can stay open and retry', async () => {
@@ -26,7 +26,7 @@ describe('submitMachineSelection', () => {
 
     await expect(
       submitMachineSelection({
-        machineIds: [1],
+        machineIds: ['server-1'],
         onMachinesSelected,
       }),
     ).resolves.toEqual({
