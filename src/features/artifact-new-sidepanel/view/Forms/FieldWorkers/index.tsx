@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   CheckCircle2Icon,
@@ -18,8 +18,16 @@ import { useEmit } from '@/features/artifact-new-sidepanel/model/events';
 import { useArtifactNewGeneralModel } from '@/features/artifact-new-sidepanel/model/general';
 import type { DeploymentTargetsData } from '@/features/artifact-new-sidepanel/model/workers';
 import { useWorkersModel } from '@/features/artifact-new-sidepanel/model/workers';
+import { syncDeploymentTargetSelection } from '@/features/artifact-new-sidepanel/usecase/target-selection';
 
 import type { Response } from '@/shared/libs/api-client/rules/types';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/presentation/atoms/Select';
 import {
   couple,
   guardedSelects,
@@ -29,6 +37,8 @@ import { cn } from '@/shared/libs/tailwind/cn';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
 import { Pagination } from '@/shared/presentation/atoms/Pagination';
+import { resolveExplicitTargetSelection } from '@/shared/lib/explicit-target/resolve-target-selection';
+import { ApiHostGroup } from '@/shared/api';
 
 import {
   FieldLoading,
@@ -70,10 +80,72 @@ const WorkersList = guard(() => {
     control: form.control,
     name: 'workerId',
   });
+  const { field: hostGroupField } = useController({
+    control: form.control,
+    name: 'hostGroupId',
+  });
+  const { field: targetModeField } = useController({
+    control: form.control,
+    name: 'targetMode',
+  });
+
+  const selectedServer = servers.find((server) => server.id === field.value);
+  const previousServerIdRef = useRef<string | undefined>(field.value || undefined);
+  const activeHostGroupId = hostGroupField.value || selectedServer?.hostGroupId || '';
+  const [hostGroupResponse] = ApiHostGroup.Detail.$Id.useGet({
+    id: activeHostGroupId,
+    options: {
+      skip: !activeHostGroupId,
+    },
+  });
+
+  const hostGroupTarget =
+    hostGroupResponse.$status === 'success'
+      ? {
+          id: String(hostGroupResponse.id ?? ''),
+          label: hostGroupResponse.name ?? `Group ${hostGroupResponse.id ?? ''}`,
+          memberCount: hostGroupResponse.members?.length ?? 0,
+        }
+      : undefined;
+
+  const targetSelection = resolveExplicitTargetSelection({
+    preferredMode:
+      targetModeField.value === 'hostgroup' ? 'hostgroup' : 'server',
+    serverId: field.value,
+    hostGroup: hostGroupTarget,
+  });
 
   useEffect(() => {
     setSearchQuery(debouncedSearch);
   }, [debouncedSearch, setSearchQuery]);
+
+  useEffect(() => {
+    const nextSelection = syncDeploymentTargetSelection({
+      currentHostGroupId: hostGroupField.value || undefined,
+      currentTargetMode:
+        targetModeField.value === 'hostgroup' ? 'hostgroup' : 'server',
+      nextHostGroupId: selectedServer?.hostGroupId,
+      nextServerId: field.value || undefined,
+      previousServerId: previousServerIdRef.current,
+    });
+
+    previousServerIdRef.current = field.value || undefined;
+
+    if (hostGroupField.value !== nextSelection.hostGroupId) {
+      hostGroupField.onChange(nextSelection.hostGroupId);
+    }
+
+    if (targetModeField.value !== nextSelection.targetMode) {
+      targetModeField.onChange(nextSelection.targetMode);
+    }
+  }, [
+    field.value,
+    hostGroupField.onChange,
+    hostGroupField.value,
+    selectedServer?.hostGroupId,
+    targetModeField.onChange,
+    targetModeField.value,
+  ]);
 
   const totalPage = Math.max(1, pagination.total_page);
 
@@ -212,6 +284,38 @@ const WorkersList = guard(() => {
           })
         )}
       </div>
+
+      {targetSelection.options.length > 1 ? (
+        <div className="grid gap-2 rounded-lg border bg-card p-3">
+          <span className="text-sm font-medium text-primary">
+            Explicit deploy target
+          </span>
+          <Select
+            value={targetSelection.activeMode}
+            onValueChange={(value) => targetModeField.onChange(value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Choose target" />
+            </SelectTrigger>
+            <SelectContent>
+              {targetSelection.options.map((option) => (
+                <SelectItem key={option.mode} value={option.mode}>
+                  {option.label}
+                  {option.description ? ` (${option.description})` : ''}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p
+            className="text-xs text-muted-foreground"
+            aria-live="polite"
+          >
+            {targetSelection.activeMode === 'server'
+              ? 'Deploy to the selected server.'
+              : 'Deploy to the selected server group snapshot.'}
+          </p>
+        </div>
+      ) : null}
 
       {totalPage > 1 && (
         <div className="flex items-center justify-between gap-3">

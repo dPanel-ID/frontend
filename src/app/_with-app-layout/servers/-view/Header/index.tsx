@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { FileTextIcon, PlusCircleIcon } from 'lucide-react';
+import { FileTextIcon, FolderTreeIcon, PlusCircleIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
@@ -35,6 +35,13 @@ export default function Header() {
       title={t('page.servers.headerTitle')}
       rightAppend={
         <div className="flex flex-wrap items-center justify-end gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate({ to: '/servers/groups' })}
+          >
+            <FolderTreeIcon /> Server Groups
+          </Button>
           <HeaderHelpAction
             icon={FileTextIcon}
             label={t('page.servers.docs')}

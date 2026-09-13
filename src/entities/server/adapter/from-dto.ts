@@ -69,6 +69,7 @@ export const toServerDetail = createAdapter<DTOs.MachineV1, ServerDetail>(
         domain: raw.domain,
         httpPort: raw.http_port ? Number(raw.http_port) : undefined,
       },
+      hostGroupId: raw.host_group_id || undefined,
       cloud: ctorCloud(raw),
       host: {
         address: raw.address ?? raw.domain,

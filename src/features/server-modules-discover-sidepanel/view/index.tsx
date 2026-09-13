@@ -25,7 +25,7 @@ import {
 } from '@/features/server-management-sidepanel-ui';
 import { useServerModulesDetailModal } from '@/features/server-modules-detail-modal';
 
-import { ApiModule, ApiServer } from '@/shared/api';
+import { ApiHostGroup, ApiModule, ApiServer } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
@@ -34,7 +34,8 @@ import { Input } from '@/shared/presentation/atoms/Input';
 import type { ServerModulesDiscoverSidepanelProps as Props } from '../rules/types';
 
 export default function ServerModulesDiscoverSidepanel(props: Props) {
-  const { serverId, serverName } = props;
+  const { serverId, serverName, hostGroupId, onHostGroupOperationQueued } =
+    props;
 
   const [query, setQuery] = useState('');
   const [isRefreshingInventory, setIsRefreshingInventory] = useState(false);
@@ -43,6 +44,12 @@ export default function ServerModulesDiscoverSidepanel(props: Props) {
 
   const [response, refreshCatalog] = ApiModule.Find.useGet({
     serverId,
+  });
+  const [hostGroupResponse] = ApiHostGroup.Detail.$Id.useGet({
+    id: hostGroupId ?? '',
+    options: {
+      skip: !hostGroupId,
+    },
   });
 
   const catalog =
@@ -131,6 +138,14 @@ export default function ServerModulesDiscoverSidepanel(props: Props) {
 
   const isLoading = response.$status === 'loading';
   const hasCatalog = Boolean(catalog);
+  const hostGroupTarget =
+    hostGroupResponse.$status === 'success'
+      ? {
+          id: String(hostGroupResponse.id ?? ''),
+          label: hostGroupResponse.name ?? `Group ${hostGroupResponse.id ?? ''}`,
+          memberCount: hostGroupResponse.members?.length ?? 0,
+        }
+      : undefined;
 
   return (
     <ServerManagementSidepanel
@@ -240,7 +255,9 @@ export default function ServerModulesDiscoverSidepanel(props: Props) {
                   {modulesInCategory.map((module) => (
                     <DiscoverModuleCard
                       key={module.id}
+                      hostGroupTarget={hostGroupTarget}
                       moduleInfo={module}
+                      onHostGroupOperationQueued={onHostGroupOperationQueued}
                       serverId={serverId}
                     />
                   ))}
@@ -255,12 +272,19 @@ export default function ServerModulesDiscoverSidepanel(props: Props) {
 }
 
 interface DiscoverModuleCardProps {
+  hostGroupTarget?: {
+    id: string;
+    label: string;
+    memberCount: number;
+  };
   moduleInfo: ServerModule;
+  onHostGroupOperationQueued?: (groupId: string, operationId: string) => void;
   serverId: string;
 }
 
 function DiscoverModuleCard(props: DiscoverModuleCardProps) {
-  const { moduleInfo, serverId } = props;
+  const { hostGroupTarget, moduleInfo, onHostGroupOperationQueued, serverId } =
+    props;
 
   const [openServerModulesDetailModal] = useServerModulesDetailModal();
 
@@ -269,7 +293,13 @@ function DiscoverModuleCard(props: DiscoverModuleCardProps) {
 
   const handleClickMoreDetail = () => {
     openServerModulesDetailModal({
+      hostGroupTarget,
       moduleInfo,
+      onOperationQueued: (operationId) => {
+        if (!hostGroupTarget) return;
+
+        onHostGroupOperationQueued?.(hostGroupTarget.id, operationId);
+      },
       serverID: Number(serverId),
     });
   };

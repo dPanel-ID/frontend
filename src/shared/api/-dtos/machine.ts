@@ -101,6 +101,7 @@ export interface MachineV1 {
   owner_subject?: string;
   workspace_id?: string;
   workspace_type?: string;
+  host_group_id?: string;
   workspace?: MachineWorkspaceV1;
   default_user?: string;
   agent?: MachineAgentV1;

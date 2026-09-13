@@ -8,6 +8,7 @@ export interface ArtifactNewSidepanelProps {
   currentServerId?: SchemaCommon.UnitId;
   appConfig: SchemaApplicationParts.ConfigDefs;
   onSuccess?: (newWorkerId: SchemaCommon.UnitId) => void;
+  onOperationQueued?: (groupId: string, operationId: string) => void;
 }
 
 export interface GitBranchModelProps {
