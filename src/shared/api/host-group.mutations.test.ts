@@ -62,4 +62,3 @@ describe('host-group null-success mutations', () => {
     });
   });
 });
-
