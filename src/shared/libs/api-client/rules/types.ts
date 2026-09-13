@@ -77,7 +77,7 @@ export interface BaseRequestRecipe {
 export type GetRequestRecipe = BaseRequestRecipe;
 
 export interface DoRequestRecipe extends BaseRequestRecipe {
-  method: 'POST' | 'DELETE';
+  method: 'POST' | 'DELETE' | 'PUT' | 'PATCH';
   data?: unknown;
 }
 

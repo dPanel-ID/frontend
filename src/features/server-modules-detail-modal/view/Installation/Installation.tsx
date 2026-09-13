@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { ApiModule } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
@@ -19,6 +20,10 @@ import { FailedState } from '@/widgets/failed-state';
 
 import { useBaseContext } from '../../config/base-context';
 import useHandleInstallModule from '../../model/handle-install-module';
+import {
+  getAvailableModuleActions,
+  isBlockedHostGroupAction,
+} from './action-options';
 
 type FieldValue = unknown;
 
@@ -65,10 +70,13 @@ function isHiddenInput(input: DTOs.ModuleInputV1) {
 }
 
 export default function Installation() {
-  const { moduleInfo, serverID } = useBaseContext();
+  const { moduleInfo, serverID, hostGroupTarget } = useBaseContext();
   const { installModule } = useHandleInstallModule();
   const [values, setValues] = useState<Record<string, FieldValue>>({});
   const [formError, setFormError] = useState('');
+  const [targetMode, setTargetMode] = useState<'server' | 'hostgroup'>(
+    serverID ? 'server' : 'hostgroup',
+  );
 
   const [detail] = ApiModule.Detail.$Name.useGet({
     name: moduleInfo.id,
@@ -85,17 +93,37 @@ export default function Installation() {
         ? detail.prevData
         : undefined;
 
-  const action = useMemo(() => {
-    return (
-      moduleDetail?.action_details.find((item) => item.name === 'install') ??
-      moduleDetail?.action_details[0]
-    );
-  }, [moduleDetail]);
+  const availableActions = useMemo(
+    () =>
+      getAvailableModuleActions(
+        moduleDetail?.action_details,
+        targetMode === 'hostgroup' && Boolean(hostGroupTarget),
+      ),
+    [hostGroupTarget, moduleDetail?.action_details, targetMode],
+  );
+  const action = availableActions.defaultAction;
 
   const visibleInputs =
     moduleDetail?.inputs.filter((input) => !isHiddenInput(input)) ?? [];
   const requiredInputs = visibleInputs.filter((input) => input.required);
   const advancedInputs = visibleInputs.filter((input) => !input.required);
+  const activeTarget = useMemo((): ExplicitTarget | null => {
+    if (targetMode === 'server' && serverID) {
+      return {
+        type: 'server',
+        id: String(serverID),
+      };
+    }
+
+    if (targetMode === 'hostgroup' && hostGroupTarget) {
+      return {
+        type: 'hostgroup',
+        id: hostGroupTarget.id,
+      };
+    }
+
+    return null;
+  }, [hostGroupTarget, serverID, targetMode]);
 
   const handleChange = (name: string, value: FieldValue) => {
     setValues((current) => ({
@@ -105,7 +133,17 @@ export default function Installation() {
   };
 
   const handleClickInstall = () => {
-    if (!serverID || !moduleDetail || !action) return;
+    if (!activeTarget || !moduleDetail || !action) return;
+
+    if (
+      activeTarget.type === 'hostgroup' &&
+      isBlockedHostGroupAction(action.name)
+    ) {
+      setFormError(
+        'Delete and reprovision actions are only available for a single server target.',
+      );
+      return;
+    }
 
     try {
       setFormError('');
@@ -113,7 +151,15 @@ export default function Installation() {
       installModule({
         action: action.name,
         actionTitle: action.title,
-        serverID: String(serverID),
+        target: activeTarget,
+        targetLabel:
+          activeTarget.type === 'hostgroup'
+            ? (hostGroupTarget?.label ?? activeTarget.id)
+            : `server ${activeTarget.id}`,
+        snapshotCount:
+          activeTarget.type === 'hostgroup'
+            ? hostGroupTarget?.memberCount
+            : undefined,
         variables,
         ref: {
           name: moduleDetail.input_catalog.ref_name,
@@ -129,10 +175,10 @@ export default function Installation() {
     }
   };
 
-  if (!serverID) {
+  if (!serverID && !hostGroupTarget) {
     return (
       <div className="rounded-xl border bg-card p-4 text-sm text-primary/70">
-        Select a server before installing this role.
+        Select a server or explicit server group before installing this role.
       </div>
     );
   }
@@ -152,7 +198,9 @@ export default function Installation() {
   if (!moduleDetail || !action) {
     return (
       <p className="text-sm italic">
-        No installation action is available for this role.
+        {targetMode === 'hostgroup'
+          ? 'No non-destructive action is available for this explicit server group.'
+          : 'No installation action is available for this role.'}
       </p>
     );
   }
@@ -243,6 +291,31 @@ export default function Installation() {
       </div>
 
       <div className="flex max-h-[clamp(18rem,calc(100svh-22rem),40rem)] min-h-0 flex-col gap-5 overflow-y-auto overscroll-contain border-t p-4">
+        {serverID && hostGroupTarget ? (
+          <div className="rounded-lg border bg-card p-3">
+            <h6 className="text-sm font-bold text-primary/80">Target</h6>
+            <div className="mt-2">
+              <Select
+                value={targetMode}
+                onValueChange={(value) =>
+                  setTargetMode(value as 'server' | 'hostgroup')
+                }
+              >
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Choose target" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="server">Selected server</SelectItem>
+                  <SelectItem value="hostgroup">
+                    {hostGroupTarget.label} ({hostGroupTarget.memberCount}{' '}
+                    members)
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        ) : null}
+
         <div className="rounded-lg border bg-card p-3">
           <h6 className="text-sm font-bold text-primary/80">Roles to run</h6>
           <div className="mt-2 flex flex-wrap gap-2">

@@ -13,6 +13,7 @@ export { default as ApiGitBranch } from './git-branch';
 export { default as ApiGitFile } from './git-file';
 export { default as ApiGitRepository } from './git-repository';
 export * as ApiGitUser from './git-user';
+export { default as ApiHostGroup } from './host-group';
 export { default as ApiModule } from './module';
 export { default as ApiOrganization } from './organization';
 export { default as ApiOrganizationPeople } from './organization-people';

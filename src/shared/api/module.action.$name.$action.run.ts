@@ -1,6 +1,13 @@
 import type { DoRequestRecipe } from '@/shared/libs/api-client/rules/types';
+import type { PureResponse } from '@/shared/libs/api-client/rules/types';
+import { processError } from '@/shared/libs/api-client/lib/processor';
+
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 
 import { apiDoPost } from '../libs/api-client';
+import { parseHostGroupModuleActionResponsePayload } from './host-group.parsers';
+
+import type { DTOs } from '.';
 
 export interface ModuleRunRefPayload {
   type?: string;
@@ -9,7 +16,8 @@ export interface ModuleRunRefPayload {
 }
 
 export interface ModuleRunPayload {
-  server_id: string;
+  server_id?: string;
+  target?: ExplicitTarget;
   ref?: ModuleRunRefPayload;
   variables?: Record<string, unknown>;
   persist_variables?: boolean;
@@ -23,11 +31,18 @@ export interface RecipeParams {
 }
 
 export interface Dto {
-  execution_id: string;
-  status: string;
-  module: string;
-  action: string;
+  execution_id?: string;
+  operation_id?: string;
+  status?: string;
+  module?: string;
+  action?: string;
+  target?: ExplicitTarget;
+  repository?: DTOs.IACRepositoryV1;
 }
+
+export type ModuleRunResponse =
+  | Dto
+  | DTOs.HostGroupModuleActionResponseV1;
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
   return {
@@ -37,8 +52,36 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
   };
 }
 
-export function doPost(params: RecipeParams) {
-  return apiDoPost<Dto>({
+export function doPost(
+  params: RecipeParams,
+): Promise<PureResponse<ModuleRunResponse>> {
+  return apiDoPost<unknown>({
     ...recipe(params),
+  }).then((response) => {
+    if (response.$status !== 'success') {
+      return response;
+    }
+
+    const hasLegacyServerId =
+      typeof params.payload.server_id === 'string' &&
+      params.payload.server_id.trim().length > 0;
+    const isHostGroupTarget =
+      !hasLegacyServerId && params.payload.target?.type === 'hostgroup';
+
+    if (!isHostGroupTarget) {
+      return response as PureResponse<Dto>;
+    }
+
+    try {
+      return {
+        $status: 'success' as const,
+        ...parseHostGroupModuleActionResponsePayload(response),
+      } as PureResponse<DTOs.HostGroupModuleActionResponseV1>;
+    } catch (error) {
+      return {
+        $status: 'failed' as const,
+        ...processError(error),
+      } as PureResponse<ModuleRunResponse>;
+    }
   });
 }

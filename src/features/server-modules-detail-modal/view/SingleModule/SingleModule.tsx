@@ -57,11 +57,15 @@ export default function SingleModule() {
   }, [configuration]);
 
   const handleClickInstall = () => {
-    if (!configuration) return;
+    if (!configuration || !serverID) return;
     installModule({
       action: 'install',
       actionTitle: 'Install',
-      serverID: String(serverID),
+      target: {
+        type: 'server',
+        id: String(serverID),
+      },
+      targetLabel: `server ${serverID}`,
       variables: {},
       ref: {
         name: moduleInfo.refName,

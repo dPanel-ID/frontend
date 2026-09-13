@@ -4,13 +4,16 @@ import { useToaster } from '@/services/toaster';
 import { ApiModule } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 
 import { useBaseContext } from '../../config/base-context';
 
 interface InstallModuleParams {
   action: string;
   actionTitle?: string;
-  serverID: string;
+  target: ExplicitTarget;
+  targetLabel: string;
+  snapshotCount?: number;
   variables: Record<string, unknown>;
   ref?: {
     name?: string;
@@ -20,17 +23,27 @@ interface InstallModuleParams {
 
 export default function useHandleInstallModule() {
   const [openDialog] = useDialog();
-  const { moduleInfo } = useBaseContext();
+  const { moduleInfo, onOperationQueued } = useBaseContext();
 
   const [openToaster] = useToaster();
 
   const installModule = useHandler((params: InstallModuleParams) => {
     const actionTitle = params.actionTitle || params.action;
+    const isHostGroupTarget = params.target.type === 'hostgroup';
+
     openDialog({
       title: 'Install role',
       content: (
         <>
-          Run {actionTitle} for {moduleInfo.name} on the selected server?
+          Run {actionTitle} for {moduleInfo.name} on{' '}
+          {isHostGroupTarget ? params.targetLabel : 'the selected server'}?
+          {isHostGroupTarget && params.snapshotCount != null ? (
+            <>
+              <br />
+              This will snapshot exactly {params.snapshotCount} member
+              {params.snapshotCount === 1 ? '' : 's'} before queueing.
+            </>
+          ) : null}
         </>
       ),
       variant: 'info',
@@ -41,7 +54,10 @@ export default function useHandleInstallModule() {
             name: moduleInfo.id,
             action: params.action,
             payload: {
-              server_id: params.serverID,
+              server_id:
+                params.target.type === 'server' ? params.target.id : undefined,
+              target:
+                params.target.type === 'hostgroup' ? params.target : undefined,
               variables: params.variables,
               ref: params.ref,
             },
@@ -54,6 +70,10 @@ export default function useHandleInstallModule() {
               message: getApiErrorDetail(response.error),
             });
             return;
+          }
+
+          if (params.target.type === 'hostgroup' && response.operation_id) {
+            onOperationQueued?.(response.operation_id);
           }
 
           openToaster({
