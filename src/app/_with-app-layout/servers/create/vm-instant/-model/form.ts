@@ -119,7 +119,7 @@ export const formSchema = z
       });
     }
 
-    if (!usesAws) {
+    if (!usesAws && !usesGcp) {
       const usernameResult = (
         usesBiznetGio ? biznetGioUsernameSchema : linuxUsernameSchema
       ).safeParse(values.login.username);
