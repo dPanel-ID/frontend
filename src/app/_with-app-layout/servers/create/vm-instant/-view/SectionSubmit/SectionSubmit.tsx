@@ -67,7 +67,7 @@ export default function SectionSubmit() {
               source_image: values.spec.osTemplate,
               disk_size_gb: values.spec.diskSizeGB,
               username,
-              subnetwork: values.vpcBulk.id || undefined,
+              // No network: the VM joins dpanel-network, created on first use.
               reserve_public_ip: values.spec.reservePublicIP !== false,
             },
           }
@@ -96,30 +96,30 @@ export default function SectionSubmit() {
                   region: values.regionSlug,
                   instance_type: values.spec.machineType,
                   image_id: values.spec.osTemplate,
-                  vpc_subnet_id: values.vpcBulk.id,
+                  // No subnet: the VM joins dpanel-network, created on first use.
                   reserve_public_ip: values.spec.reservePublicIP,
                 },
               }
-        : {
-            provider: values.provider,
-            cloud_project_id: cloudProjectId,
-            secret_id: sshKeyId,
-            vm: {
-              name: vmName,
-              region: values.regionSlug,
-              os_template_id: values.spec.osTemplate,
-              os_name: values.spec.osName,
-              os_version: values.spec.osVersion,
-              disks: values.spec.diskSizeGB,
-              vcpu: values.spec.cpuCore,
-              ram: values.spec.ramSizeGB * 1024,
-              username,
-              password,
-              billing_account_id: values.cloud.billingAccountID,
-              network_uuid: values.vpcBulk.id,
-              reserve_public_ip: values.spec.reservePublicIP !== false,
-            },
-          };
+            : {
+                provider: values.provider,
+                cloud_project_id: cloudProjectId,
+                secret_id: sshKeyId,
+                vm: {
+                  name: vmName,
+                  region: values.regionSlug,
+                  os_template_id: values.spec.osTemplate,
+                  os_name: values.spec.osName,
+                  os_version: values.spec.osVersion,
+                  disks: values.spec.diskSizeGB,
+                  vcpu: values.spec.cpuCore,
+                  ram: values.spec.ramSizeGB * 1024,
+                  username,
+                  password,
+                  billing_account_id: values.cloud.billingAccountID,
+                  network_uuid: values.vpcBulk.id,
+                  reserve_public_ip: values.spec.reservePublicIP !== false,
+                },
+              };
 
     try {
       const createResponse = await ApiServer.Create.doPost({

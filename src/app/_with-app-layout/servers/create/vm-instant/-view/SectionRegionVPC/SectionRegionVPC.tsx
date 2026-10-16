@@ -283,9 +283,39 @@ const SubZoneCbo = () => {
   );
 };
 
-const SubVPCCbo = () => {
-  const { form, formErrors } = useForm();
+/** The network dPanel creates on first use and reuses for every VM. */
+export const MANAGED_NETWORK_NAME = 'dpanel-network';
 
+/**
+ * AWS and GCP VMs always join dpanel-network: the provider role creates it in
+ * the region on first use, so there is nothing to pick, even for a brand new
+ * cloud project.
+ */
+const SubManagedNetwork = (props: { scopeLabel: string }) => {
+  const { form } = useForm();
+
+  useEffect(() => {
+    form.setValue('vpcBulk', { id: '', subnet: '' });
+  }, [form]);
+
+  return (
+    <div className="rounded-lg border bg-background p-3">
+      <p className="text-sm font-medium">{MANAGED_NETWORK_NAME}</p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Created automatically in the selected {props.scopeLabel} on first use
+        and reused for every VM. Only SSH, HTTP and HTTPS are open.
+      </p>
+    </div>
+  );
+};
+
+/**
+ * DigitalOcean and IDCloudHost always return a network for a region, so the
+ * network is chosen automatically: dpanel-network when it exists, otherwise
+ * the provider default (DigitalOcean) or the first network (IDCloudHost).
+ */
+const SubAutoNetwork = () => {
+  const { form, formErrors } = useForm();
   const provider = useWatch({ control: form.control, name: 'provider' }) as
     | string
     | undefined;
@@ -297,18 +327,12 @@ const SubVPCCbo = () => {
     control: form.control,
     name: 'regionSlug',
   });
-  const zoneSlug = useWatch({
-    control: form.control,
-    name: 'cloud.zoneSlug',
-  });
-  const usesGcp = isGcpProvider(provider);
-  const usesAws = isAwsProvider(provider);
-  const networkScope = usesGcp ? zoneSlug : regionSlug;
+  const usesDigitalOcean = isDigitalOceanProvider(provider);
 
   const [response, refreshVpcs] = ApiCloud.Vpcs.$Id.useGet({
     cloudProjectId: String(cloudProjectID),
-    regionSlug: networkScope ?? '',
-    options: { skip: !cloudProjectID || !networkScope },
+    regionSlug: regionSlug ?? '',
+    options: { skip: !cloudProjectID || !regionSlug },
   });
 
   const control = useController({
@@ -316,22 +340,41 @@ const SubVPCCbo = () => {
     name: 'vpcBulk',
   });
 
-  if (!cloudProjectID || !networkScope || response.$status === 'initial') {
+  const networks = useMemo(() => {
+    const data = response.$status === 'success' ? response : undefined;
+    return (data?.items ?? []).filter((vpc) => Boolean(vpc.id));
+  }, [response]);
+
+  const chosen = useMemo(() => {
+    const managed = networks.find((vpc) => vpc.name === MANAGED_NETWORK_NAME);
+    if (managed) return managed;
+    // DigitalOcean places a droplet in the region's default VPC when no VPC
+    // is sent, creating it if needed.
+    if (usesDigitalOcean) return undefined;
+    return networks[0];
+  }, [networks, usesDigitalOcean]);
+
+  const { onChange } = control.field;
+  useEffect(() => {
+    if (response.$status !== 'success') return;
+    onChange({
+      id: chosen?.id ?? '',
+      subnet: chosen?.subnet ?? chosen?.name ?? chosen?.network ?? '',
+    });
+  }, [chosen, onChange, response.$status]);
+
+  if (!cloudProjectID || !regionSlug || response.$status === 'initial') {
     return (
       <InlineState
-        title={usesGcp ? 'Select a zone first' : 'Select a region first'}
-        description={
-          usesGcp
-            ? 'Subnetwork options are scoped to the selected project and zone.'
-            : 'VPC options are scoped to the selected project and region.'
-        }
+        title="Select a region first"
+        description="The network is chosen automatically for the selected region."
       />
     );
   }
 
-  if (response.$status === 'loading' && response.prevData == null) {
+  if (response.$status === 'loading') {
     return (
-      <div className="flex min-h-24 items-center justify-center rounded-lg border bg-background">
+      <div className="flex min-h-12 items-center justify-center rounded-lg border bg-background">
         <Spinner />
       </div>
     );
@@ -340,7 +383,7 @@ const SubVPCCbo = () => {
   if (response.$status === 'failed') {
     return (
       <InlineState
-        title={usesGcp ? 'Could not load subnetworks' : 'Could not load VPCs'}
+        title="Could not load networks"
         description={getApiErrorDetail(response.error)}
         variant="danger"
         action={
@@ -358,86 +401,57 @@ const SubVPCCbo = () => {
     );
   }
 
-  const responseData =
-    response.$status === 'success' ? response : response.prevData;
-  const items: Array<{ label: ReactNode; value: string }> = [];
-
-  for (const vpc of responseData?.items ?? []) {
-    const label = vpc.name || vpc.network || vpc.subnet || vpc.id;
-    const detail = vpc.subnet || vpc.region || vpc.network;
-
-    if (!label || !vpc.id) continue;
-
-    items.push({
-      label: (
-        <span>
-          <span>{label}</span>
-          {detail && <span className="opacity-50">&nbsp;({detail})</span>}
-        </span>
-      ),
-      value: vpc.id,
-    });
+  if (!chosen && !usesDigitalOcean) {
+    return (
+      <div className="space-y-2">
+        <InlineState
+          title="No network found"
+          description="The selected region has no network for VM creation. Create one in the provider console, then refresh."
+          variant="danger"
+          action={
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              size="sm"
+              onClick={() => refreshVpcs()}
+            >
+              <RefreshCwIcon className="size-4" />
+              Refresh
+            </Button>
+          }
+        />
+        <ErrorInline message={formErrors.vpcBulk?.message} />
+      </div>
+    );
   }
-
-  const cboValue = control.field.value?.id || undefined;
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <Combobox
-          classNameButton="w-full flex-1 bg-background"
-          placeholder={usesGcp ? 'Select a Subnetwork' : usesAws ? 'Select a VPC Subnet' : 'Select a VPC'}
-          onChange={(value) => {
-            const selectedVpc = responseData?.items?.find(
-              (vpc) => vpc.id === value,
-            );
-
-            control.field.onChange({
-              id: selectedVpc?.id ?? '',
-              subnet:
-                selectedVpc?.subnet ??
-                selectedVpc?.name ??
-                selectedVpc?.network ??
-                '',
-            });
-          }}
-          value={cboValue}
-          items={items}
-        />
-        <Button
-          aria-label={usesGcp ? 'Refresh subnetworks' : 'Refresh VPCs'}
-          title={usesGcp ? 'Refresh subnetworks' : 'Refresh VPCs'}
-          buttonStyle="outline"
-          buttonColor="secondary"
-          size="icon"
-          onClick={() => refreshVpcs()}
-        >
-          <RefreshCwIcon className="size-4" />
-        </Button>
+      <div className="rounded-lg border bg-background p-3">
+        <p className="text-sm font-medium">
+          {chosen ? chosen.name || chosen.id : 'Default VPC'}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {chosen
+            ? `Chosen automatically${chosen.subnet ? ` · ${chosen.subnet}` : ''}.`
+            : "Uses the region's default VPC, which the provider creates if needed."}
+        </p>
       </div>
-
-      {items.length === 0 && (
-        <InlineState
-          title={
-            usesGcp
-              ? 'No subnetworks found'
-              : usesAws
-                ? 'No VPC subnets found'
-                : 'No VPCs found'
-          }
-          description={
-            usesGcp
-              ? 'The selected zone did not return any subnetworks. The backend can create the VM with the provider default when available.'
-              : usesAws
-                ? 'The selected region did not return any subnet IDs for AWS VM creation.'
-              : 'The selected region did not return any VPC networks.'
-          }
-        />
-      )}
-
       <ErrorInline message={formErrors.vpcBulk?.message} />
     </div>
   );
+};
+
+const SubNetwork = () => {
+  const { form } = useForm();
+  const provider = useWatch({ control: form.control, name: 'provider' }) as
+    | string
+    | undefined;
+
+  if (isGcpProvider(provider))
+    return <SubManagedNetwork scopeLabel="zone's region" />;
+  if (isAwsProvider(provider)) return <SubManagedNetwork scopeLabel="region" />;
+  return <SubAutoNetwork />;
 };
 
 function getUsableBillingAccounts(accounts: BillingAccountItem[]) {
@@ -674,10 +688,8 @@ export default function SectionRegionVPC() {
         ) : null}
 
         <div className="grid gap-2 lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start">
-          <h6 className="text-sm font-semibold lg:pt-2.5">
-            {usesGcp ? 'Subnetwork' : usesAws ? 'VPC Subnet' : 'VPC'}
-          </h6>
-          <SubVPCCbo />
+          <h6 className="text-sm font-semibold lg:pt-2.5">Network</h6>
+          <SubNetwork />
         </div>
       </div>
     </Sectioned>

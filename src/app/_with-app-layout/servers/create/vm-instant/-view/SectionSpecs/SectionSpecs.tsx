@@ -599,10 +599,7 @@ const SubDigitalOceanSizeCbo = (props: {
 
   if (!cloudProjectID || !regionSlug || response.$status === 'initial') {
     return (
-      <InlineState
-        title={loadingTitle}
-        description={loadingDescription}
-      />
+      <InlineState title={loadingTitle} description={loadingDescription} />
     );
   }
 
@@ -694,7 +691,6 @@ const SubDigitalOceanSizeCbo = (props: {
 
 const SubOsTemplateCbo = () => {
   const { form, formErrors } = useForm();
-  const [templateSearch, setTemplateSearch] = useState('');
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
@@ -710,12 +706,13 @@ const SubOsTemplateCbo = () => {
   const usesBiznetGio = isBiznetGioProvider(provider);
   const usesGcp = isGcpProvider(provider);
   const usesAws = isAwsProvider(provider);
-  const effectiveTemplateSearch =
-    usesAws && cloudProjectID && regionSlug ? templateSearch : '';
+  // Every provider except Biznet Gio offers only the supported Ubuntu LTS
+  // releases (24.04 and 26.04.1), resolved to the provider's current image.
+  const usesUbuntuCatalog = !usesBiznetGio;
 
   const [response, refreshTemplates] = ApiCloud.Project.Ostemplates.$Id.useGet({
+    catalog: usesUbuntuCatalog ? 'ubuntu-lts' : undefined,
     cloudProjectId: String(cloudProjectID),
-    filter: usesAws ? buildMachineTypeFilter(effectiveTemplateSearch) : undefined,
     productId: usesBiznetGio ? productID : undefined,
     zone: usesAws ? (regionSlug ?? '') : undefined,
     options: {
@@ -731,6 +728,31 @@ const SubOsTemplateCbo = () => {
     name: 'spec.osTemplate',
   });
 
+  const catalogTemplates =
+    usesUbuntuCatalog &&
+    response.$status === 'success' &&
+    Array.isArray(response)
+      ? (response as unknown as OsTemplateItem[])
+      : undefined;
+  const firstCatalogTemplate = catalogTemplates?.[0];
+  const selectedTemplateID = control.field.value;
+  useEffect(() => {
+    // Preselect Ubuntu 24.04 LTS, or keep the user's choice while it is
+    // still offered.
+    if (!catalogTemplates || !firstCatalogTemplate?.id) return;
+    if (catalogTemplates.some((template) => template.id === selectedTemplateID))
+      return;
+    form.setValue('spec.osTemplate', firstCatalogTemplate.id, {
+      shouldValidate: true,
+    });
+    form.setValue('spec.osName', firstCatalogTemplate.os_name ?? '', {
+      shouldValidate: true,
+    });
+    form.setValue('spec.osVersion', firstCatalogTemplate.os_version ?? '', {
+      shouldValidate: true,
+    });
+  }, [catalogTemplates, firstCatalogTemplate, selectedTemplateID, form]);
+
   if (!cloudProjectID || response.$status === 'initial') {
     return (
       <InlineState
@@ -739,14 +761,14 @@ const SubOsTemplateCbo = () => {
             ? 'Select a product first'
             : usesAws
               ? 'Select a region first'
-            : 'Select a cloud project first'
+              : 'Select a cloud project first'
         }
         description={
           usesBiznetGio
             ? 'Biznet Gio OS templates are scoped to the selected NEO Lite product.'
             : usesAws
               ? 'AWS AMI options are scoped to the selected cloud project and region.'
-            : 'OS templates are returned by the selected cloud project.'
+              : 'OS templates are returned by the selected cloud project.'
         }
       />
     );
@@ -801,58 +823,33 @@ const SubOsTemplateCbo = () => {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
-        {usesAws ? (
-          <ComboboxWithSearchCb
-            classNameButton="w-full flex-1 bg-background"
-            placeholder="Select an AMI image"
-            onChange={(value) => {
-              const selectedTemplate = templateList.find(
-                (template) => template.id === value,
-              );
+        <Combobox
+          classNameButton="w-full flex-1 bg-background"
+          placeholder={
+            usesUbuntuCatalog
+              ? 'Select an Ubuntu release'
+              : 'Select an OS Template'
+          }
+          onChange={(value) => {
+            const selectedTemplate = templateList.find(
+              (template) => template.id === value,
+            );
 
-              form.setValue('spec.osName', selectedTemplate?.os_name ?? '', {
+            form.setValue('spec.osName', selectedTemplate?.os_name ?? '', {
+              shouldValidate: true,
+            });
+            form.setValue(
+              'spec.osVersion',
+              selectedTemplate?.os_version ?? '',
+              {
                 shouldValidate: true,
-              });
-              form.setValue(
-                'spec.osVersion',
-                selectedTemplate?.os_version ?? '',
-                {
-                  shouldValidate: true,
-                },
-              );
-              control.field.onChange(value);
-            }}
-            onSearchEnter={setTemplateSearch}
-            searchPlaceholder="Search AMI images (for example ubuntu, debian, amzn2)"
-            searchValue={effectiveTemplateSearch}
-            value={control.field.value}
-            items={items}
-          />
-        ) : (
-          <Combobox
-            classNameButton="w-full flex-1 bg-background"
-            placeholder="Select an OS Template"
-            onChange={(value) => {
-              const selectedTemplate = templateList.find(
-                (template) => template.id === value,
-              );
-
-              form.setValue('spec.osName', selectedTemplate?.os_name ?? '', {
-                shouldValidate: true,
-              });
-              form.setValue(
-                'spec.osVersion',
-                selectedTemplate?.os_version ?? '',
-                {
-                  shouldValidate: true,
-                },
-              );
-              control.field.onChange(value);
-            }}
-            value={control.field.value}
-            items={items}
-          />
-        )}
+              },
+            );
+            control.field.onChange(value);
+          }}
+          value={control.field.value}
+          items={items}
+        />
         <Button
           aria-label="Refresh OS templates"
           title="Refresh OS templates"
@@ -867,12 +864,14 @@ const SubOsTemplateCbo = () => {
 
       {items.length === 0 && (
         <InlineState
-          title={usesAws ? 'No AMI images found' : 'No OS templates found'}
+          title={
+            usesUbuntuCatalog
+              ? 'No supported Ubuntu image found'
+              : 'No OS templates found'
+          }
           description={
-            usesAws
-              ? effectiveTemplateSearch
-                ? 'No AMI matched the current search. Try another keyword or use a provider-native filter such as name=ubuntu/images/*.'
-                : 'The selected cloud project and region did not return available AMI images.'
+            usesUbuntuCatalog
+              ? 'The provider did not return Ubuntu 24.04 LTS or 26.04.1 LTS for the selected project and region.'
               : 'The selected cloud project did not return any available images.'
           }
         />
@@ -934,7 +933,7 @@ export default function SectionSpecs() {
                   ? 'dpanel-do-01'
                   : usesAws
                     ? 'dpanel-aws-01'
-                : 'dpanel-idcloudhost-01'
+                    : 'dpanel-idcloudhost-01'
           }
           {...form.register('spec.vmName')}
         />
@@ -1001,7 +1000,11 @@ export default function SectionSpecs() {
 
           <div className="mt-5 space-y-2">
             <h6 className="text-sm font-semibold">
-              {usesDigitalOcean ? 'Image' : usesAws ? 'AMI Image' : 'OS Template'}
+              {usesDigitalOcean
+                ? 'Image'
+                : usesAws
+                  ? 'AMI Image'
+                  : 'OS Template'}
             </h6>
             <SubOsTemplateCbo />
           </div>
