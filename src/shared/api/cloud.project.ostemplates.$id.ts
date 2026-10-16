@@ -9,6 +9,8 @@ import type {
 // =============================================================================
 
 export interface RecipeParams {
+  /** Curated catalog; ubuntu-lts returns one image per supported Ubuntu LTS release. */
+  catalog?: 'ubuntu-lts';
   cloudProjectId: string;
   filter?: string;
   osFamily?: string;
@@ -18,8 +20,13 @@ export interface RecipeParams {
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { cloudProjectId, filter, osFamily, productId, tier, zone } = params;
+  const { catalog, cloudProjectId, filter, osFamily, productId, tier, zone } =
+    params;
   const queryParams = new URLSearchParams();
+
+  if (catalog) {
+    queryParams.set('catalog', catalog);
+  }
 
   if (productId != null) {
     queryParams.set('product_id', String(productId));

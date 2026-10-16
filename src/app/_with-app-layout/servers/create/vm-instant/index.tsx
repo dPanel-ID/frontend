@@ -16,6 +16,7 @@ import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
 
 import { FormProvider, useForm } from './-model';
 import {
+  isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
@@ -130,14 +131,15 @@ function ProvisioningSummary() {
   const usesBiznetGio = isBiznetGioProvider(provider);
   const usesGcp = isGcpProvider(provider);
   const usesDigitalOcean = isDigitalOceanProvider(provider);
+  const usesAws = isAwsProvider(provider);
   const specSummary =
     usesGcp && diskSizeGB
       ? `${diskSizeGB} GB boot disk`
       : usesDigitalOcean && machineType
         ? machineType
-      : cpuCore && ramSizeGB && diskSizeGB
-        ? `${cpuCore} CPU / ${ramSizeGB} GB RAM / ${diskSizeGB} GB disk`
-        : undefined;
+        : cpuCore && ramSizeGB && diskSizeGB
+          ? `${cpuCore} CPU / ${ramSizeGB} GB RAM / ${diskSizeGB} GB disk`
+          : undefined;
   const readyFields = usesBiznetGio
     ? [
         provider,
@@ -163,7 +165,7 @@ function ProvisioningSummary() {
           diskSizeGB,
           username,
         ]
-      : usesDigitalOcean
+      : usesDigitalOcean || usesAws
         ? [
             provider,
             projectID,
@@ -174,18 +176,18 @@ function ProvisioningSummary() {
             osTemplate,
             username,
           ]
-      : [
-          provider,
-          projectID,
-          sshKeyID,
-          vmName,
-          regionSlug,
-          billingAccountID || 'auto',
-          vpcBulk.id && vpcBulk.subnet,
-          osTemplate,
-          specSummary,
-          username,
-        ];
+        : [
+            provider,
+            projectID,
+            sshKeyID,
+            vmName,
+            regionSlug,
+            billingAccountID || 'auto',
+            vpcBulk.id,
+            osTemplate,
+            specSummary,
+            username,
+          ];
   const readyCount = readyFields.filter(Boolean).length;
   const totalFields = readyFields.length;
 
@@ -269,8 +271,8 @@ function ProvisioningSummary() {
             />
             <SummaryRow
               icon={NetworkIcon}
-              label="Subnetwork"
-              value={vpcBulk.subnet || vpcBulk.id || 'Provider default'}
+              label="Network"
+              value="dpanel-network"
               ready
             />
           </>
@@ -284,8 +286,23 @@ function ProvisioningSummary() {
             />
             <SummaryRow
               icon={NetworkIcon}
-              label="VPC UUID"
-              value={vpcBulk.id || 'Provider default'}
+              label="Network"
+              value={vpcBulk.subnet || vpcBulk.id || 'Default VPC'}
+              ready
+            />
+          </>
+        ) : usesAws ? (
+          <>
+            <SummaryRow
+              icon={ServerIcon}
+              label="Instance Type"
+              value={machineType}
+              ready={Boolean(machineType)}
+            />
+            <SummaryRow
+              icon={NetworkIcon}
+              label="Network"
+              value="dpanel-network"
               ready
             />
           </>
@@ -299,9 +316,9 @@ function ProvisioningSummary() {
             />
             <SummaryRow
               icon={NetworkIcon}
-              label="VPC"
+              label="Network"
               value={vpcBulk.subnet || vpcBulk.id}
-              ready={Boolean(vpcBulk.id && vpcBulk.subnet)}
+              ready={Boolean(vpcBulk.id)}
             />
           </>
         )}
