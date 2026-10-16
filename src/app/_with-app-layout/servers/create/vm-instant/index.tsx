@@ -337,8 +337,10 @@ function ProvisioningSummary() {
         <SummaryRow
           icon={KeyRoundIcon}
           label={usesBiznetGio ? 'Console User' : 'Default User'}
-          value={username}
-          ready={Boolean(username)}
+          value={
+            usesGcp ? 'ubuntu' : usesAws ? 'ubuntu (AMI default)' : username
+          }
+          ready={usesGcp || usesAws || Boolean(username)}
         />
       </div>
     </aside>
