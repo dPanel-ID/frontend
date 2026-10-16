@@ -21,6 +21,7 @@ export interface SshTableData {
   type?: string | null;
   ownerName?: string | null;
   teamName?: string | null;
+  teamId?: string | null;
   lastUpdated?: string | null;
 }
 
@@ -130,6 +131,17 @@ const Table = buildResourceTable<SshTableData>({
 
         type Actions = ComponentProps<typeof ActionPopover>['actions'];
         const actions: Actions = [
+          {
+            label: t('common.actions.migrateOwnership'),
+            onClick: () => {
+              emit('@ssh-keys/open--migrate-ownership', {
+                id: row.id,
+                name: row.name ?? String(row.id),
+                teamName: row.teamName,
+                teamId: row.teamId,
+              });
+            },
+          },
           {
             variant: 'danger',
             label: t('common.actions.delete'),

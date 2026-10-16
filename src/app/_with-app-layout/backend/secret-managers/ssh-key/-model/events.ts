@@ -5,6 +5,7 @@ import type { FilterRules } from '../-rules';
 import type {
   SshKeyDeletePayload,
   SshKeyDetailsPayload,
+  SshKeyMigrateOwnershipPayload,
 } from '../-rules/usecase-types';
 
 type EventsRegistry = Rescope<
@@ -17,6 +18,7 @@ type EventsRegistry = Rescope<
     'data--refresh': null;
     'ssh-key--delete': SshKeyDeletePayload;
     'open--details': SshKeyDetailsPayload;
+    'open--migrate-ownership': SshKeyMigrateOwnershipPayload;
   }
 >;
 

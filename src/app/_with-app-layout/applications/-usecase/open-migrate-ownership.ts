@@ -24,6 +24,7 @@ export default function useApplicationOpenMigrateOwnershipUsecase(
         moduleTeam: payload.ownership.team
           ? {
               name: payload.ownership.team,
+              id: payload.ownership.teamId,
             }
           : undefined,
       },

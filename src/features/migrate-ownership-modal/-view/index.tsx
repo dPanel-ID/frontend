@@ -54,6 +54,9 @@ function Title() {
           case 'cloud-project':
             return t('common.terms.cloudProject');
 
+          case 'ssh-key':
+            return t('modal.migrateOwnership.resourceType.secretSsh');
+
           default:
             return t(`common.terms.${kebabCaseToCamelCase(mod.type)}`);
         }

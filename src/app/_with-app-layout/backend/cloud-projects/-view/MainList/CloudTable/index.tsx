@@ -17,7 +17,6 @@ import IconThreeDots from '@/shared/presentation/icons/ThreeDots';
 import ActionPopover from '@/shared/presentation/molecules/ActionPopover';
 import { buildResourceTable } from '@/widgets/resource-table';
 
-
 import { useEmit } from '../../../-model/events';
 
 export interface CloudTableData {
@@ -26,6 +25,7 @@ export interface CloudTableData {
   provider?: string | null;
   ownerName?: string | null;
   teamName?: string | null;
+  teamId?: string | null;
   lastUpdated?: string | null;
   installerStatus?: string | null;
 }
@@ -181,6 +181,7 @@ const Table = buildResourceTable<CloudTableData>({
                 id: row.id,
                 name: row.name ?? String(row.id),
                 teamName: row.teamName,
+                teamId: row.teamId,
               });
             },
           },

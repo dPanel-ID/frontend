@@ -22,6 +22,7 @@ export default function useServerOpenMigrateOwnershipUsecase(params: Params) {
         moduleTeam: payload.serverTeam
           ? {
               name: payload.serverTeam,
+              id: payload.serverTeamId,
             }
           : undefined,
       },

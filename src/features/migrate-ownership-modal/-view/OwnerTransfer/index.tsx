@@ -70,11 +70,15 @@ export default function OwnerTransfer() {
       );
     }
 
-    const currentTeam = mod.moduleTeam?.name;
+    const currentTeam = mod.moduleTeam;
+    const isCurrentTeam = (team: { id: string; name: string }) =>
+      currentTeam?.id
+        ? team.id === currentTeam.id
+        : team.name === currentTeam?.name;
 
     const selections = [
       ...teams
-        .filter((team) => team.name !== currentTeam)
+        .filter((team) => !isCurrentTeam(team))
         .map((team) => {
           return {
             label: (
@@ -106,7 +110,7 @@ export default function OwnerTransfer() {
         value={target.field.value}
       />
     );
-  }, [teams, target, mod.moduleTeam?.name, handleClickTryAgain, t]);
+  }, [teams, target, mod.moduleTeam, handleClickTryAgain, t]);
 
   const CurrentOwnerIcon = mod.moduleTeam ? BuildingIcon : UserIcon;
 
