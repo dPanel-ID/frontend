@@ -183,9 +183,7 @@ export default function DashboardView() {
     (activeWorkspaceId && activeWorkspaceId !== 'personal'),
   );
   const activeOrganizationId = isTeamWorkspace
-    ? workspaceToOrganizationId(
-        activeWorkspace?.local_organization_id || activeWorkspaceId,
-      )
+    ? workspaceToOrganizationId(activeWorkspace?.id || activeWorkspaceId)
     : '';
 
   const [membersResponse] = ApiOrganization.Detail.$Id.Members.useGet({

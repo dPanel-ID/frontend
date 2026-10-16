@@ -1857,8 +1857,11 @@
       "summaryMessage": "Izin akan langsung dipindahkan ke pemilik baru. Tindakan ini akan mencabut akses pengelolaan dari pemilik saat ini.",
       "toaster": {
         "success": "Berhasil memindahkan kepemilikan",
-        "error": "Gagal memindahkan kepemilikan"
-      }
+        "error": "Gagal memindahkan kepemilikan",
+        "successWithDependencies": "Kepemilikan {count} resource berhasil dipindahkan"
+      },
+      "includeDependencies": "Pindahkan juga dependensinya",
+      "includeDependenciesHint": "Ikut pindahkan SSH key, cloud project, atau server yang dibutuhkan resource ini, jika tidak dipakai resource lain."
     },
     "createTeam": {
       "title": "Buat ruang kerja",

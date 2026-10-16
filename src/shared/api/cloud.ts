@@ -6,7 +6,6 @@ import * as ProjectOstemplates$Id from './cloud.project.ostemplates.$id';
 import * as ProjectProducts$Id from './cloud.project.products.$id';
 import * as ProjectProviders from './cloud.project.providers';
 import * as ProjectProviders$Provider from './cloud.project.providers.$provider';
-import * as ProjectUpdate$IdCaseMigrateOwnership from './cloud.project.update.$id[migrate-ownership]';
 import * as ProjectZones$Id from './cloud.project.zones.$id';
 import * as Regions$Id from './cloud.regions.$id';
 import * as Vpcs$Id from './cloud.vpcs.$id';
@@ -33,13 +32,6 @@ const Root = {
     Providers: {
       ...ProjectProviders,
       $Provider: ProjectProviders$Provider,
-    },
-    Update: {
-      $Id: {
-        $: {
-          MigrateOwnership: ProjectUpdate$IdCaseMigrateOwnership,
-        },
-      },
     },
   },
   Regions: {

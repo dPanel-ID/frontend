@@ -3,8 +3,11 @@ import { useMemo } from 'react';
 import { ArrowRightIcon, BuildingIcon, UserIcon } from 'lucide-react';
 import { useController } from 'react-hook-form';
 
+import { useDevetekTranslations } from '@/services/i18n';
+
 import { excludeFalsy } from '@/shared/libs/browser/typeguards';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
+import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { Tooltip } from '@/shared/presentation/atoms/Tooltip';
 import { Combobox } from '@/shared/presentation/molecules/Combobox';
@@ -13,7 +16,6 @@ import { usePropsModel } from '../../-models';
 import { useEmit } from '../../-models/events';
 import { useMigrateOwnershipForm } from '../../-models/form';
 import { useResourcesModel } from '../../-models/resources';
-import { useDevetekTranslations } from '@/services/i18n';
 
 export default function OwnerTransfer() {
   const t = useDevetekTranslations();
@@ -23,9 +25,13 @@ export default function OwnerTransfer() {
   const emit = useEmit();
 
   const form = useMigrateOwnershipForm();
-  const newTeamId = useController({
+  const target = useController({
     control: form.control,
-    name: 'newTeamId',
+    name: 'target',
+  });
+  const includeDependencies = useController({
+    control: form.control,
+    name: 'includeDependencies',
   });
 
   const [teams] = useResourcesModel((s) => [s.teams]);
@@ -86,7 +92,7 @@ export default function OwnerTransfer() {
             <em>{t('modal.migrateOwnership.me')}</em>
           </span>
         ),
-        value: '0',
+        value: 'personal',
       },
     ].filter(excludeFalsy);
 
@@ -96,11 +102,11 @@ export default function OwnerTransfer() {
         size="sm"
         placeholder={t('modal.migrateOwnership.selectNewOwner')}
         items={selections}
-        onChange={newTeamId.field.onChange}
-        value={newTeamId.field.value}
+        onChange={target.field.onChange}
+        value={target.field.value}
       />
     );
-  }, [teams, newTeamId, mod.moduleTeam?.name, handleClickTryAgain]);
+  }, [teams, target, mod.moduleTeam?.name, handleClickTryAgain, t]);
 
   const CurrentOwnerIcon = mod.moduleTeam ? BuildingIcon : UserIcon;
 
@@ -138,6 +144,24 @@ export default function OwnerTransfer() {
 
         <div className="flex flex-col gap-y-1">{renderedTeamsPicker}</div>
       </div>
+
+      <label className="mt-3 flex items-start gap-x-2 cursor-pointer">
+        <Checkbox
+          className="mt-0.5"
+          checked={includeDependencies.field.value}
+          onCheckedChange={(checked) =>
+            includeDependencies.field.onChange(checked === true)
+          }
+        />
+        <span className="flex flex-col">
+          <span className="text-xs font-medium text-primary">
+            {t('modal.migrateOwnership.includeDependencies')}
+          </span>
+          <span className="text-xs text-primary/60">
+            {t('modal.migrateOwnership.includeDependenciesHint')}
+          </span>
+        </span>
+      </label>
     </div>
   );
 }
