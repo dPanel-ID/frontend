@@ -58,7 +58,6 @@ export const canonicalHostGroupDetail = {
         id: 'team-1',
         type: 'group',
         name: 'Platform',
-        local_organization_id: '19',
         roles: ['server-admin'],
       },
       cloud_id: 'cloud-1',

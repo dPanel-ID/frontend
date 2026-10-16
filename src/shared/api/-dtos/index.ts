@@ -26,7 +26,3 @@ export interface Pagination {
   total_item: number;
   total_page: number;
 }
-
-export type PayloadUpdateOwnership =
-  | { into: 'personal' } //
-  | { into: 'team'; teamId: string };

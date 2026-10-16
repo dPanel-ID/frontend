@@ -101,7 +101,6 @@ const schemaMachineWorkspace = z
     id: z.string(),
     type: z.string(),
     name: z.string(),
-    local_organization_id: z.string().optional(),
     roles: z.array(z.string()).optional(),
   })
   .strict();
@@ -291,21 +290,27 @@ const schemaHostGroupBulkActionBase = {
 } as const;
 
 export const schemaHostGroupActionResponseDto = z.discriminatedUnion('action', [
-  z.object({
-    ...schemaHostGroupBulkActionBase,
-    action: z.literal('inventory'),
-    command_type: z.literal('module.inventory'),
-  }).strict(),
-  z.object({
-    ...schemaHostGroupBulkActionBase,
-    action: z.literal('upgrade'),
-    command_type: z.literal('agent.upgrade'),
-  }).strict(),
-  z.object({
-    ...schemaHostGroupBulkActionBase,
-    action: z.literal('reboot'),
-    command_type: z.literal('system.reboot'),
-  }).strict(),
+  z
+    .object({
+      ...schemaHostGroupBulkActionBase,
+      action: z.literal('inventory'),
+      command_type: z.literal('module.inventory'),
+    })
+    .strict(),
+  z
+    .object({
+      ...schemaHostGroupBulkActionBase,
+      action: z.literal('upgrade'),
+      command_type: z.literal('agent.upgrade'),
+    })
+    .strict(),
+  z
+    .object({
+      ...schemaHostGroupBulkActionBase,
+      action: z.literal('reboot'),
+      command_type: z.literal('system.reboot'),
+    })
+    .strict(),
 ]);
 
 const schemaIacRepositoryActiveRef = z

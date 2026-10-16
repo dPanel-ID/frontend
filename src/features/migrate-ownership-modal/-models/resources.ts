@@ -1,6 +1,4 @@
-import { useAuthLoggedIn } from '@/services/auth/usecase';
-
-import { ApiOrganizationPeople } from '@/shared/api';
+import { ApiUser } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
 
@@ -9,29 +7,23 @@ import { useSubscribe } from './events';
 export const [ResourcesModelProvider, useResourcesModel] = buildSelector(
   'MigrateOwnershipResourcesModel',
 )(() => {
-  const { userProfile } = useAuthLoggedIn();
-
-  const [responseTeams, refreshTeams] = ApiOrganizationPeople.Find.useGet({
-    page: 1,
-    pageSize: 12,
-    userId: userProfile.id,
-  });
+  const [responseProfile, refreshProfile] = ApiUser.Profile.useGet();
 
   useSubscribe(
     '#migrate-ownership-modal/resources/teams-refresh',
-    refreshTeams,
+    refreshProfile,
   );
 
   return {
-    teams: useAdapter(responseTeams, (raw) => {
-      return (raw.org_peoples ?? []).map((org) => {
-        const { organization, organization_id } = org;
-
-        return {
-          name: organization!.name!,
-          id: organization_id!,
-        };
-      });
+    // Casdoor workspace groups the user belongs to; transfers target these
+    // by group ID.
+    teams: useAdapter(responseProfile, (raw) => {
+      return (raw.workspaces ?? [])
+        .filter((workspace) => workspace.type === 'group' && workspace.id)
+        .map((workspace) => ({
+          name: workspace.name || workspace.id,
+          id: workspace.id,
+        }));
     }),
   };
 });
