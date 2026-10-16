@@ -35,8 +35,10 @@ export default function SectionLogin() {
       sectionTitle="Access"
       sectionDescription="Set the initial VM login required by the provider VM creation contract."
     >
-      <div className={hidesCredentials ? 'space-y-2' : 'grid gap-4 lg:grid-cols-2'}>
-        {!usesAws && (
+      <div
+        className={hidesCredentials ? 'space-y-2' : 'grid gap-4 lg:grid-cols-2'}
+      >
+        {!usesAws && !usesGcp && (
           <div className="space-y-2">
             <h6 className="text-sm font-semibold">
               {usesBiznetGio ? 'SSH and Console User' : 'Default User'}
@@ -95,7 +97,9 @@ export default function SectionLogin() {
           <p className="text-xs leading-relaxed text-muted-foreground">
             {usesAws
               ? 'The selected dPanel SSH key is injected into the EC2 instance during provider VM creation. Username and password are not requested by the AWS VM contract.'
-              : 'Sent as vm.username. The selected dPanel SSH key is injected into the provider VM request for setup.'}
+              : usesGcp
+                ? 'dPanel logs in as ubuntu with the selected SSH key. The dpanel user is created by setup and cannot be the login user.'
+                : 'Sent as vm.username. The selected dPanel SSH key is injected into the provider VM request for setup.'}
           </p>
         )}
       </div>

@@ -66,7 +66,7 @@ export default function SectionSubmit() {
               machine_type: values.spec.machineType,
               source_image: values.spec.osTemplate,
               disk_size_gb: values.spec.diskSizeGB,
-              username,
+              // The API logs in as ubuntu; dpanel is reserved for setup.
               // No network: the VM joins dpanel-network, created on first use.
               reserve_public_ip: values.spec.reservePublicIP !== false,
             },
