@@ -252,26 +252,18 @@ export const formSchema = z
       if (!values.spec.osTemplate) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: 'Please select an AMI image!',
+          message: 'Please select an Ubuntu release!',
           path: ['spec', 'osTemplate'],
-        });
-      }
-
-      if (!values.vpcBulk.id) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'Please select a VPC subnet!',
-          path: ['vpcBulk'],
         });
       }
 
       return;
     }
 
-    if (!values.vpcBulk.id || !values.vpcBulk.subnet) {
+    if (!values.vpcBulk.id) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Please select a VPC!',
+        message: 'No network is available in the selected region.',
         path: ['vpcBulk'],
       });
     }
