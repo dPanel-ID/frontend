@@ -4,6 +4,7 @@ import type { Rescope } from '@/shared/libs/events/models/registerEvents';
 import type { FilterRules } from '../-rules';
 import type {
   LbDeletePayload,
+  LbMigrateOwnershipPayload,
   LbOpenDetailsPayload,
 } from '../-rules/usecase-types';
 
@@ -17,6 +18,7 @@ type EventsRegistry = Rescope<
     'lb--delete': LbDeletePayload;
     'open--create': null;
     'open--details': LbOpenDetailsPayload;
+    'open--migrate-ownership': LbMigrateOwnershipPayload;
   }
 >;
 

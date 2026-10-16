@@ -24,6 +24,7 @@ export default function useOpenCloudProjectMigrateOwnershipUsecase(
         moduleTeam: payload.teamName
           ? {
               name: payload.teamName,
+              id: payload.teamId ?? undefined,
             }
           : undefined,
       },

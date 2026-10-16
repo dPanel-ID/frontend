@@ -33,7 +33,7 @@ const PROVIDER_META: Record<string, { src?: string; label: string }> = {
 
 export default function CloudCard(props: CloudCardProps) {
   const { data } = props;
-  const { id, name, provider, lastUpdated, ownerName, teamName } = data;
+  const { id, name, provider, lastUpdated, ownerName, teamName, teamId } = data;
 
   const t = useDevetekTranslations();
 
@@ -68,6 +68,7 @@ export default function CloudCard(props: CloudCardProps) {
           id,
           name: name ?? String(id),
           teamName,
+          teamId,
         }),
     },
     {

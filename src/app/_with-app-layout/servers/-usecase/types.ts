@@ -4,6 +4,8 @@ export interface ServerMigrateOwnershipPayload {
   serverId: SchemaCommon.UnitId;
   serverName: string;
   serverTeam?: string;
+  /** Casdoor workspace group ID; absent for personal servers. */
+  serverTeamId?: string;
 }
 
 export interface MachineReinstallPayload {

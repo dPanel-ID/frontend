@@ -44,6 +44,8 @@ export default buildResponseView({
         user,
         organization,
         workspace,
+        workspace_type,
+        workspace_id,
       } = cloud;
       if (!id) return [];
 
@@ -58,6 +60,7 @@ export default buildResponseView({
             : null,
           ownerName: user?.fullname || user?.username || user?.email || null,
           teamName: workspace?.name || organization?.name || null,
+          teamId: workspace_type === 'group' ? workspace_id : null,
         },
       ];
     });

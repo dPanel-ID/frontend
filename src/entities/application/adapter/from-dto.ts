@@ -2,6 +2,7 @@ import type z from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
 import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
+import { resolveOwnershipTeamId } from '@/entities/shared/lib/resolveOwnershipTeamId';
 
 import type { DTOs } from '@/shared/api';
 import type { KeysOnly, KeysOnlyDeep } from '@/shared/libs/types/keys-only';
@@ -30,6 +31,7 @@ export const toApplicationCard = createAdapter<
     state: ctorState(raw),
     ownership: {
       team: raw.organization?.name,
+      teamId: resolveOwnershipTeamId(raw),
       owner: resolveOwnershipOwner(raw),
     },
     timestamp: {
@@ -72,6 +74,7 @@ export const toApplicationDetail = createAdapter<
     deploymentTargets: ctorDeploymentTargets(raw),
     ownership: {
       team: raw.organization?.name,
+      teamId: resolveOwnershipTeamId(raw),
       owner: resolveOwnershipOwner(raw),
     },
     timestamp: {

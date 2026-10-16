@@ -13,7 +13,9 @@ const resourceTypes: Record<SupportedModule, ResourceType> = {
   server: 'server',
   application: 'application',
   domain: 'domain',
+  'load-balancer': 'load-balancer',
   'cloud-project': 'cloud-project',
+  'ssh-key': 'ssh-key',
 };
 
 export default function useFormSubmissionUsecase() {

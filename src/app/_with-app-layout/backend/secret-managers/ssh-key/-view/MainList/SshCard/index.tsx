@@ -19,7 +19,7 @@ export interface SshCardProps {
 
 export default function SshCard(props: SshCardProps) {
   const { data } = props;
-  const { id, name, type, lastUpdated, ownerName, teamName } = data;
+  const { id, name, type, lastUpdated, ownerName, teamName, teamId } = data;
 
   const t = useDevetekTranslations();
 
@@ -38,6 +38,16 @@ export default function SshCard(props: SshCardProps) {
       icon: IconEye,
       iconActive: IconEyeActive,
       onClick: handleClickDetails,
+    },
+    {
+      label: t('common.actions.migrateOwnership'),
+      onClick: () =>
+        emit('@ssh-keys/open--migrate-ownership', {
+          id,
+          name: name ?? String(id),
+          teamName,
+          teamId,
+        }),
     },
     {
       variant: 'destructive',
