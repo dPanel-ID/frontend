@@ -8,7 +8,6 @@ import * as Origin$Id$RecordId from './domain.origin.$id.$recordId';
 import * as Origin$IdCreate from './domain.origin.$id.create';
 import * as Providers from './domain.providers';
 import * as Update$Id from './domain.update.$id';
-import * as Update$IdCaseMigrateOwnership from './domain.update.$id[migrate-ownership]';
 
 const Root = {
   Create,
@@ -33,9 +32,6 @@ const Root = {
   Update: {
     $Id: {
       ...Update$Id,
-      $: {
-        MigrateOwnership: Update$IdCaseMigrateOwnership,
-      },
     },
   },
 };

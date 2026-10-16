@@ -33,7 +33,6 @@ export interface Dto {
     id: string;
     type: string;
     name: string;
-    local_organization_id?: string;
     roles?: string[];
   }>;
 }

@@ -1866,8 +1866,11 @@
       "summaryMessage": "Permissions will be transferred to the new owner immediately. This action will revoke existing management access for the current owner.",
       "toaster": {
         "success": "Ownership migrated successfully",
-        "error": "Failed to migrate ownership"
-      }
+        "error": "Failed to migrate ownership",
+        "successWithDependencies": "Ownership migrated for {count} resources"
+      },
+      "includeDependencies": "Move what it needs too",
+      "includeDependenciesHint": "Also move the SSH key, cloud project or server this resource depends on, when nothing else still uses them."
     },
     "createTeam": {
       "title": "Create workspace",

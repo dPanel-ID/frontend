@@ -18,7 +18,6 @@ import * as Origin$IdUserCreate from './server.origin.$id.user.create';
 import * as Origin$IdUserDelete from './server.origin.$id.user.delete';
 import * as Setup$Id from './server.setup.$id';
 import * as Update$Id from './server.update.$id';
-import * as Update$IdCaseMigrateOwnership from './server.update.$id[migrate-ownership]';
 
 const Root = {
   Create,
@@ -67,9 +66,6 @@ const Root = {
   Update: {
     $Id: {
       ...Update$Id,
-      $: {
-        MigrateOwnership: Update$IdCaseMigrateOwnership,
-      },
     },
   },
 };

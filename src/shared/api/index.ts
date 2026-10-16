@@ -16,6 +16,7 @@ export * as ApiGitUser from './git-user';
 export { default as ApiHostGroup } from './host-group';
 export { default as ApiModule } from './module';
 export { default as ApiOrganization } from './organization';
+export { default as ApiOwnership } from './ownership';
 export { default as ApiOrganizationPeople } from './organization-people';
 export { default as ApiRouter } from './router';
 export { default as ApiSecret } from './secret';

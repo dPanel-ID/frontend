@@ -1,18 +1,20 @@
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
-import type { DTOs } from '@/shared/api';
-import {
-  ApiApplication,
-  ApiCloud,
-  ApiDomain,
-  ApiServer,
-} from '@/shared/api';
-import { iife } from '@/shared/libs/browser/fn';
+import { ApiOwnership } from '@/shared/api';
+import type { ResourceType } from '@/shared/api/ownership.transfer';
 
 import { usePropsModel } from '../-models';
 import { useEmit, useSubscribe } from '../-models/events';
 import { useMigrateOwnershipForm } from '../-models/form';
+import type { SupportedModule } from '../-rules/types';
+
+const resourceTypes: Record<SupportedModule, ResourceType> = {
+  server: 'server',
+  application: 'application',
+  domain: 'domain',
+  'cloud-project': 'cloud-project',
+};
 
 export default function useFormSubmissionUsecase() {
   const [openToaster] = useToaster();
@@ -25,61 +27,35 @@ export default function useFormSubmissionUsecase() {
   const form = useMigrateOwnershipForm();
 
   const handleSubmit = form.handleSubmit(async (values) => {
-    try {
-      const response = await iife(() => {
-        const payload: DTOs.PayloadUpdateOwnership =
-          values.newTeamId === '0'
-            ? { into: 'personal' }
-            : { into: 'team', teamId: values.newTeamId };
+    const response = await ApiOwnership.Transfer.doPost({
+      resourceType: resourceTypes[mod.type],
+      resourceId: mod.moduleId,
+      target: values.target,
+      includeDependencies: values.includeDependencies,
+    });
 
-        switch (mod.type) {
-          case 'server':
-            return ApiServer.Update.$Id.$.MigrateOwnership.doPost({
-              serverId: mod.moduleId,
-              payload,
-            });
-
-          case 'application':
-            return ApiApplication.Update.$Id.$.MigrateOwnership.doPost({
-              applicationId: mod.moduleId,
-              payload,
-            });
-
-          case 'domain':
-            return ApiDomain.Update.$Id.$.MigrateOwnership.doPost({
-              domainId: mod.moduleId,
-              payload,
-            });
-
-          case 'cloud-project':
-            return ApiCloud.Project.Update.$Id.$.MigrateOwnership.doPost({
-              cloudProjectId: mod.moduleId,
-              payload,
-            });
-
-          default:
-            throw Error('Unsupported mod type');
-        }
-      });
-
-      if (response.$status === 'success') {
-        openToaster({
-          variant: 'success',
-          message: t('modal.migrateOwnership.toaster.success'),
-        });
-        emit('#migrate-ownership-modal/modal-close');
-        onSuccess?.();
-        return;
-      }
-
-      throw response.error;
-    } catch (error) {
+    if (response.$status === 'success') {
+      const moved = response.moved.length;
       openToaster({
-        variant: 'error',
-        message: t('modal.migrateOwnership.toaster.error'),
+        variant: 'success',
+        message:
+          moved > 1
+            ? t('modal.migrateOwnership.toaster.successWithDependencies', {
+                count: moved,
+              })
+            : t('modal.migrateOwnership.toaster.success'),
       });
+      emit('#migrate-ownership-modal/modal-close');
+      onSuccess?.();
       return;
     }
+
+    // The API explains forbidden and dependency conflicts in plain words.
+    openToaster({
+      variant: 'error',
+      message:
+        response.error.message || t('modal.migrateOwnership.toaster.error'),
+    });
   });
 
   useSubscribe('#migrate-ownership-modal/form-submit', () => {

@@ -5,7 +5,6 @@ import * as Find from './application.find';
 import * as IAC$Id from './application.iac.$id';
 import * as Logs$Id from './application.logs.$id';
 import * as Update$Id from './application.update.$id';
-import * as Update$IdCaseMigrateOwnership from './application.update.$id[migrate-ownership]';
 
 const Root = {
   Create,
@@ -25,9 +24,6 @@ const Root = {
   Update: {
     $Id: {
       ...Update$Id,
-      $: {
-        MigrateOwnership: Update$IdCaseMigrateOwnership,
-      },
     },
   },
 };

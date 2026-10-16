@@ -7,6 +7,7 @@ import { schemaMigrateOwnershipForm } from '../-rules/schemas/form';
 export const [FormProvider, useMigrateOwnershipForm] = buildRHF({
   resolver: zodResolver(schemaMigrateOwnershipForm),
   defaultValues: {
-    newTeamId: '',
+    target: '',
+    includeDependencies: false,
   },
 });

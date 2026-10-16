@@ -133,7 +133,6 @@ export interface MachineV1 {
 
 export interface MachineWorkspaceV1 {
   id?: string;
-  local_organization_id?: string;
   name?: string;
   roles?: string[];
   type?: string;

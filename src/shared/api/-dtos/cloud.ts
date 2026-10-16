@@ -31,7 +31,6 @@ export interface CloudProjectV1 {
 
 export interface CloudProjectWorkspaceV1 {
   id?: string;
-  local_organization_id?: string;
   name?: string;
   roles?: string[];
   type?: string;
