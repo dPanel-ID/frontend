@@ -9,6 +9,8 @@ import {
   IconApp,
   IconCloud,
   IconGlobe,
+  IconLoadBalancer,
+  IconLock,
   IconServer,
 } from '@/shared/presentation/icons';
 
@@ -18,7 +20,9 @@ const MODULE_LOGO: Record<Module['type'], ComponentType<LucideProps>> = {
   application: IconApp,
   server: IconServer,
   domain: IconGlobe,
+  'load-balancer': IconLoadBalancer,
   'cloud-project': IconCloud,
+  'ssh-key': IconLock,
 };
 
 interface InfoCardProps {
@@ -43,8 +47,14 @@ export default function InfoCard(props: InfoCardProps) {
       case 'domain':
         return t('modal.migrateOwnership.resourceType.domain');
 
+      case 'load-balancer':
+        return t('modal.migrateOwnership.resourceType.loadBalancer');
+
       case 'cloud-project':
         return t('modal.migrateOwnership.resourceType.cloudProject');
+
+      case 'ssh-key':
+        return t('modal.migrateOwnership.resourceType.secretSsh');
     }
   });
 

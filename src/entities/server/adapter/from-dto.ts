@@ -3,6 +3,7 @@ import type z from 'zod';
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
 import { resolveExecutionErrorMessage } from '@/entities/shared/lib/resolveExecutionErrorMessage';
 import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
+import { resolveOwnershipTeamId } from '@/entities/shared/lib/resolveOwnershipTeamId';
 
 import type { DTOs } from '@/shared/api';
 import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
@@ -39,6 +40,7 @@ export const toServerCard = createAdapter<DTOs.MachineV1, ServerCard>((raw) =>
     ownership: {
       owner: resolveOwnershipOwner(raw),
       team: raw.organization?.name,
+      teamId: resolveOwnershipTeamId(raw),
     },
     ssh: {
       port: raw.ssh_port ? Number(raw.ssh_port) : undefined,
@@ -78,6 +80,7 @@ export const toServerDetail = createAdapter<DTOs.MachineV1, ServerDetail>(
       ownership: {
         owner: resolveOwnershipOwner(raw),
         team: raw.organization?.name,
+        teamId: resolveOwnershipTeamId(raw),
       },
       secret: {
         id: raw.secret_id ? String(raw.secret_id) : undefined,

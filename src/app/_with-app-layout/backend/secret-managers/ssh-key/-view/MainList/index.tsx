@@ -1,13 +1,14 @@
 import dayjs from 'dayjs';
 
+import { useDevetekTranslations } from '@/services/i18n';
+
 import LayoutAutoGridList from '@/shared/presentation/atoms/LayoutAutoGridList';
 import { EmptyState } from '@/shared/presentation/organisms/EmptyState';
-import { useDevetekTranslations } from '@/services/i18n';
 import { buildResponseView } from '@/widgets/response-view-builder';
 
-import { useSshKeyDataModel } from '../../-model/ssh-key-data';
-import { useFilterModel } from '../../-model/filters';
 import { SshListState } from '../-presentation/SshListState';
+import { useFilterModel } from '../../-model/filters';
+import { useSshKeyDataModel } from '../../-model/ssh-key-data';
 
 import SshCard from './SshCard';
 import SshTable from './SshTable';
@@ -34,7 +35,16 @@ export default buildResponseView({
     }
 
     const tableData: SshTableData[] = list.flatMap((sshKey) => {
-      const { id, name, type, updated_at, user, organization } = sshKey;
+      const {
+        id,
+        name,
+        type,
+        updated_at,
+        user,
+        organization,
+        workspace_type,
+        workspace_id,
+      } = sshKey;
       if (!id) return [];
 
       return [
@@ -47,6 +57,7 @@ export default buildResponseView({
             : null,
           ownerName: user?.fullname || user?.username || user?.email || null,
           teamName: organization?.name || null,
+          teamId: workspace_type === 'group' ? workspace_id : null,
         },
       ];
     });

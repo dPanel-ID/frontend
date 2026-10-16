@@ -2,6 +2,7 @@ import type { z } from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
 import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
+import { resolveOwnershipTeamId } from '@/entities/shared/lib/resolveOwnershipTeamId';
 
 import type { DTOs } from '@/shared/api';
 import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
@@ -34,6 +35,7 @@ export const toLoadBalancerCard = createAdapter<
     ownership: {
       owner: resolveOwnershipOwner(raw),
       team: raw.organization?.name,
+      teamId: resolveOwnershipTeamId(raw),
     },
     timestamp: {
       created: raw.created_at,
@@ -58,6 +60,7 @@ export const toLoadBalancerDetails = createAdapter<
     ownership: {
       owner: resolveOwnershipOwner(raw),
       team: raw.organization?.name,
+      teamId: resolveOwnershipTeamId(raw),
     },
     timestamp: {
       created: raw.created_at,

@@ -15,6 +15,8 @@ export const unitId = z.string();
 export type Ownership = z.output<typeof ownership>;
 export const ownership = z.object({
   team: z.string().optional(),
+  /** Casdoor workspace group ID; absent for personal resources. */
+  teamId: z.string().optional(),
   owner: z.string(),
 });
 

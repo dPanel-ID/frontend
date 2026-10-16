@@ -49,6 +49,9 @@ export default buildResponseView({
         onClickDelete={() => {
           emit('@load-balancers/lb--delete', loadBalancer);
         }}
+        onClickMigrateOwnership={() =>
+          emit('@load-balancers/open--migrate-ownership', loadBalancer)
+        }
       />
     );
 

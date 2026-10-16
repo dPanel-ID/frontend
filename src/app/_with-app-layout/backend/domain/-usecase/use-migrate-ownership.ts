@@ -22,6 +22,7 @@ export default function useDomainOpenMigrateOwnershipUsecase(params: Params) {
         moduleTeam: payload.ownership.team
           ? {
               name: payload.ownership.team,
+              id: payload.ownership.teamId,
             }
           : undefined,
       },

@@ -3,3 +3,5 @@ import type { LoadBalancerEssentials } from '@/entities/load-balancer/rules/sche
 export type LbDeletePayload = LoadBalancerEssentials;
 
 export type LbOpenDetailsPayload = LoadBalancerEssentials;
+
+export type LbMigrateOwnershipPayload = LoadBalancerEssentials;

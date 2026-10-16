@@ -107,12 +107,12 @@ export default guard(function ServerList() {
 
         const handleClickMigrateOwnership = () => {
           return () => {
-            if (!server.host.name) return undefined;
-
+            // Manual servers often have no hostname; fall back to the address.
             emit('@resources::servers/server-migrate-ownership', {
               serverId: server.id,
-              serverName: server.host.name,
+              serverName: server.host.name || server.host.address || server.id,
               serverTeam: server.ownership.team,
+              serverTeamId: server.ownership.teamId,
             });
           };
         };
