@@ -21,8 +21,6 @@ export default function useFormSubmissionUsecase() {
       serverId,
       payload: {
         address: values.serverAddress,
-        domain: values.agent.domain,
-        http_port: String(values.agent.httpPort),
         ssh_port: String(values.ssh.port),
         default_user: values.ssh.username,
       },

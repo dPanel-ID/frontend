@@ -20,17 +20,17 @@ import {
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
 import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 import type { StatusTone } from '@/shared/presentation/molecules/StatusPill';
+import {
+  DataPanel,
+  DataPanelMeta,
+  DataPanelPagination,
+  DataPanelRetry,
+  DataPanelState,
+  dataTable,
+  usePagedList,
+} from '@/shared/presentation/organisms/DataPanel';
 
 import { useServerDataModel } from '../../../-model/server-data';
-import {
-  TabMeta,
-  TabPagination,
-  TabPanel,
-  TabRetry,
-  TabState,
-  tabTable,
-  usePagedList,
-} from '../_shared/TabPanel';
 
 type NetworkView = 'ports' | 'interfaces';
 
@@ -56,7 +56,7 @@ const EMPTY_INTERFACES: InterfaceItem[] = [];
 /** Ports in use and interface addresses, one table at a time. */
 export default function NetworkTab() {
   const t = useDevetekTranslations('page.serverDetail.network');
-  const tCommon = useDevetekTranslations('page.serverDetail.tabsCommon');
+  const tCommon = useDevetekTranslations('common.dataPanel');
   const [serverId] = useServerDataModel((s) => [String(s.serverId)]);
   const [view, setView] = useState<NetworkView>('ports');
 
@@ -119,7 +119,7 @@ export default function NetworkTab() {
   };
 
   return (
-    <TabPanel
+    <DataPanel
       icon={NetworkIcon}
       title={t('title')}
       description={t('description')}
@@ -161,8 +161,10 @@ export default function NetworkTab() {
       }
       footer={
         <>
-          <TabMeta>{tCommon('rows', { count: activeCount })}</TabMeta>
-          <TabPagination
+          <DataPanelMeta>
+            {tCommon('rows', { count: activeCount })}
+          </DataPanelMeta>
+          <DataPanelPagination
             page={paged.page}
             totalPage={paged.totalPage}
             onPageChange={paged.setPage}
@@ -171,16 +173,16 @@ export default function NetworkTab() {
       }
     >
       {active.$status === 'initial' || active.$status === 'loading' ? (
-        <TabState state="loading" title={tCommon('loading')} />
+        <DataPanelState state="loading" title={tCommon('loading')} />
       ) : active.$status === 'failed' ? (
-        <TabState
+        <DataPanelState
           state="failed"
           title={tCommon('loadFailed')}
           description={getApiErrorDetail(active.error)}
-          action={<TabRetry onClick={refresh} />}
+          action={<DataPanelRetry onClick={refresh} />}
         />
       ) : activeCount === 0 ? (
-        <TabState
+        <DataPanelState
           state="empty"
           title={view === 'ports' ? t('emptyPorts') : t('emptyInterfaces')}
         />
@@ -188,19 +190,19 @@ export default function NetworkTab() {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className={cn(tabTable.head, 'w-24')}>
+              <TableHead className={cn(dataTable.head, 'w-24')}>
                 {t('table.port')}
               </TableHead>
-              <TableHead className={tabTable.head}>
+              <TableHead className={dataTable.head}>
                 {t('table.process')}
               </TableHead>
-              <TableHead className={cn(tabTable.head, 'w-24')}>
+              <TableHead className={cn(dataTable.head, 'w-24')}>
                 {t('table.pid')}
               </TableHead>
-              <TableHead className={tabTable.head}>
+              <TableHead className={dataTable.head}>
                 {t('table.allowFrom')}
               </TableHead>
-              <TableHead className={cn(tabTable.head, 'w-32')}>
+              <TableHead className={cn(dataTable.head, 'w-32')}>
                 {t('table.state')}
               </TableHead>
             </TableRow>
@@ -210,22 +212,22 @@ export default function NetworkTab() {
               <TableRow key={`${item.port}-${item.processId}-${index}`}>
                 <TableCell
                   className={cn(
-                    tabTable.monoCell,
+                    dataTable.monoCell,
                     'font-semibold text-primary',
                   )}
                 >
                   {item.port}
                 </TableCell>
-                <TableCell className={tabTable.cell}>
+                <TableCell className={dataTable.cell}>
                   {item.processName}
                 </TableCell>
-                <TableCell className={tabTable.monoCell}>
+                <TableCell className={dataTable.monoCell}>
                   {item.processId}
                 </TableCell>
-                <TableCell className={tabTable.monoCell}>
+                <TableCell className={dataTable.monoCell}>
                   {item.allowFrom}
                 </TableCell>
-                <TableCell className={tabTable.cell}>
+                <TableCell className={dataTable.cell}>
                   <StatusPill
                     tone={portStateTone(item.state)}
                     label={item.state}
@@ -239,15 +241,19 @@ export default function NetworkTab() {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className={cn(tabTable.head, 'w-32')}>
+              <TableHead className={cn(dataTable.head, 'w-32')}>
                 {t('table.interface')}
               </TableHead>
-              <TableHead className={tabTable.head}>
+              <TableHead className={dataTable.head}>
                 {t('table.address')}
               </TableHead>
-              <TableHead className={tabTable.head}>{t('table.ipv4')}</TableHead>
-              <TableHead className={tabTable.head}>{t('table.ipv6')}</TableHead>
-              <TableHead className={tabTable.head}>
+              <TableHead className={dataTable.head}>
+                {t('table.ipv4')}
+              </TableHead>
+              <TableHead className={dataTable.head}>
+                {t('table.ipv6')}
+              </TableHead>
+              <TableHead className={dataTable.head}>
                 {t('table.subnet')}
               </TableHead>
             </TableRow>
@@ -255,15 +261,19 @@ export default function NetworkTab() {
           <TableBody>
             {pagedInterfaces.pageItems.map((item, index) => (
               <TableRow key={`${item.interfaceName}-${item.address}-${index}`}>
-                <TableCell className={cn(tabTable.cell, 'font-semibold')}>
+                <TableCell className={cn(dataTable.cell, 'font-semibold')}>
                   {item.interfaceName}
                 </TableCell>
-                <TableCell className={tabTable.monoCell}>
+                <TableCell className={dataTable.monoCell}>
                   {item.address}
                 </TableCell>
-                <TableCell className={tabTable.monoCell}>{item.ipV4}</TableCell>
-                <TableCell className={tabTable.monoCell}>{item.ipV6}</TableCell>
-                <TableCell className={tabTable.monoCell}>
+                <TableCell className={dataTable.monoCell}>
+                  {item.ipV4}
+                </TableCell>
+                <TableCell className={dataTable.monoCell}>
+                  {item.ipV6}
+                </TableCell>
+                <TableCell className={dataTable.monoCell}>
                   {item.subnet}
                 </TableCell>
               </TableRow>
@@ -271,7 +281,7 @@ export default function NetworkTab() {
           </TableBody>
         </Table>
       )}
-    </TabPanel>
+    </DataPanel>
   );
 }
 

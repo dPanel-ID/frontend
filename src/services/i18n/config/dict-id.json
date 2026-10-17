@@ -144,6 +144,15 @@
       "digitalOcean": "DigitalOcean",
       "caddy": "Caddy",
       "aws": "AWS"
+    },
+    "dataPanel": {
+      "refresh": "Segarkan",
+      "rows": "{count} baris",
+      "pageOf": "Halaman {page} dari {total}",
+      "loading": "Memuat\u2026",
+      "loadFailed": "Bagian ini tidak dapat dimuat",
+      "retry": "Coba lagi",
+      "clearSearch": "Hapus pencarian"
     }
   },
   "page": {
@@ -1120,15 +1129,6 @@
         "title": "Pengaturan",
         "description": "Perubahan yang jarang diperlukan, masing-masing menjelaskan efeknya."
       },
-      "tabsCommon": {
-        "refresh": "Segarkan",
-        "rows": "{count} baris",
-        "pageOf": "Halaman {page} dari {total}",
-        "loading": "Memuat\u2026",
-        "loadFailed": "Bagian ini tidak dapat dimuat",
-        "retry": "Coba lagi",
-        "clearSearch": "Hapus pencarian"
-      },
       "services": {
         "title": "Layanan",
         "description": "Unit systemd yang dilaporkan agen. Mulai, hentikan atau mulai ulang dari sini.",
@@ -1217,7 +1217,8 @@
           "level": "Level",
           "source": "Sumber",
           "message": "Pesan"
-        }
+        },
+        "openEntry": "Buka entri"
       }
     },
     "loadBalancers": {
@@ -2136,20 +2137,48 @@
         "ssh": {
           "title": "Login SSH",
           "description": "Pengguna dan port yang dipakai dPanel untuk masuk."
-        },
-        "agent": {
-          "title": "Agen",
-          "description": "Cara dPanel berbicara dengan agen yang dipasangnya."
         }
       },
       "fields": {
         "address": "Alamat server",
         "sshUser": "Pengguna Linux",
-        "sshPort": "Port SSH",
-        "domain": "Domain",
-        "domainHint": "Opsional. Dipakai sebagai pengganti alamat untuk agen.",
-        "httpPort": "Port HTTP"
+        "sshPort": "Port SSH"
       }
+    },
+    "logEntry": {
+      "title": "Entri log",
+      "line": "Baris {number}",
+      "message": "Pesan",
+      "payload": "Payload terstruktur",
+      "context": "Konteks",
+      "raw": "Baris mentah",
+      "copy": "Salin baris mentah",
+      "copied": "Tersalin",
+      "close": "Tutup"
+    },
+    "modulesDiscover": {
+      "title": "Tambah modul",
+      "heading": "Katalog modul",
+      "description": "Runtime, database dan web server yang bisa dipasang dPanel di server ini lewat SSH.",
+      "reload": "Muat ulang katalog",
+      "refreshInstalled": "Segarkan terpasang",
+      "refreshed": "Modul terpasang disegarkan.",
+      "refreshFailed": "Tidak dapat menyegarkan modul terpasang",
+      "tiles": {
+        "available": "Tersedia",
+        "installed": "Terpasang",
+        "categories": "Kategori"
+      },
+      "searchPlaceholder": "Cari modul",
+      "all": "Semua",
+      "install": "Pasang",
+      "manage": "Kelola",
+      "installed": "Terpasang",
+      "noDescription": "Tidak ada deskripsi.",
+      "loading": "Memuat katalog modul\u2026",
+      "failed": "Katalog tidak dapat dimuat",
+      "empty": "Repositori modul tidak menyediakan modul apa pun.",
+      "noMatch": "Tidak ada modul yang cocok."
     }
   },
   "modal": {

@@ -16,10 +16,6 @@ export default function useServerEditSidepanelUsecase(params: Params) {
   const handleUsecase = useHandler((server: ServerCard) => {
     openServerEditSidepanel({
       serverName: server.host.name,
-      agent: {
-        domain: server.agent.domain,
-        httpPort: server.agent.httpPort,
-      },
       serverAddress: server.host.address || '',
       serverId: server.id,
       ssh: {
