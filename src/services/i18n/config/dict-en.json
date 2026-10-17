@@ -777,54 +777,9 @@
       "create": {
         "documentTitle": "Create server | dPanel",
         "headerTitle": "Create Server",
-        "headerDesc": "Register an existing machine, connect SSH access, and let dPanel finish the setup.",
-        "progress": {
-          "title": "Setup progress",
-          "description": "Manual server creation has four short decisions."
-        },
-        "steps": {
-          "method": {
-            "eyebrow": "Step 1",
-            "title": "Creation mode",
-            "description": "Choose how this server will be registered."
-          },
-          "ssh": {
-            "eyebrow": "Step 2",
-            "title": "SSH access",
-            "description": "Select or generate the SSH key used by dPanel."
-          },
-          "server": {
-            "eyebrow": "Step 3",
-            "title": "Server details",
-            "description": "Tell dPanel how to reach the existing machine."
-          },
-          "preview": {
-            "eyebrow": "Step 4",
-            "title": "Preview",
-            "description": "Review everything before setup starts."
-          }
-        },
-        "creationMode": {
-          "title": "How do you want to create this server?",
-          "description": "Start with a machine you already own, or let dPanel create one for supported cloud providers.",
-          "manual": {
-            "title": "Manual setup",
-            "subtitle": "Existing VM, PC, or Raspberry Pi",
-            "badge": "Recommended now",
-            "description": "Use an existing machine. dPanel only needs SSH access, a reachable address, and a Linux user."
-          },
-          "instant": {
-            "title": "Instant setup",
-            "subtitle": "Supported cloud providers",
-            "badge": "Automation",
-            "description": "Create a server from a connected cloud account. This keeps the existing instant flow available."
-          }
-        },
+        "headerDesc": "Launch a cloud VM in a few clicks, or connect a server you already run. dPanel sets it up either way.",
         "ssh": {
-          "title": "Prepare SSH access",
-          "description": "Choose the private key dPanel will use, then place the matching public key on the target Linux user.",
           "keysTitle": "SSH keys",
-          "keysDescription": "Select an existing key or create a new one here.",
           "searchLabel": "Search SSH keys",
           "searchPlaceholder": "Search SSH keys",
           "createKey": "Create SSH key",
@@ -836,57 +791,16 @@
           "fallbackKeyName": "SSH key {id}",
           "keyId": "ID {id}",
           "keyLengthSuffix": " - {length} bits",
-          "copyPublicKey": "Copy public key",
-          "copyPublicKeyFor": "Copy public key for {name}",
-          "publicKeyUnavailable": "Public key unavailable",
-          "publicKeyUnavailableToast": "This SSH key does not expose a public key in the list data.",
-          "publicKeyCopiedToast": "Public key copied.",
-          "manualActionTitle": "Manual action required",
-          "manualActionDescription": "Add the selected public key to the target Linux user at <code>~/.ssh/authorized_keys</code>. dPanel cannot connect until that key is trusted.",
-          "selectedPublicKey": "Selected public key",
-          "selectedPublicKeyDescription": "Paste this into the server user's authorized keys file."
+          "publicKeyUnavailableToast": "This SSH key does not expose a public key in the list data."
         },
         "serverDetails": {
-          "title": "Connect to your existing machine",
-          "description": "Use the server address and Linux user that already has the SSH public key in authorized_keys.",
           "addressLabel": "Server address",
           "addressDescription": "Use IPv4, hostname, or domain. Local demos can still use 0.0.0.0.",
           "addressPlaceholder": "203.0.113.10 or server.example.com",
           "sshPortLabel": "SSH port",
-          "sshPortDescription": "Default is 22 unless your VM maps SSH to another port.",
-          "sshPortPlaceholder": "22",
-          "linuxUserLabel": "Linux user",
-          "linuxUserDescription": "The user that can connect through the selected SSH key.",
-          "linuxUserPlaceholder": "root",
-          "manualProviderTitle": "Manual provider",
-          "manualProviderDescription": "dPanel will save this server with provider <code>{provider}</code>. Cloud-specific data can be attached later when provider integrations are enabled.",
-          "sshCheckTitle": "SSH check",
-          "sshCheckDescription": "Before deploying, make sure the Linux user can log in using the selected private key. Setup will stop early when SSH is not reachable."
-        },
-        "preview": {
-          "title": "Review and deploy",
-          "description": "Confirm the connection details. You can go back to adjust anything before dPanel registers the server.",
-          "sshKeyTitle": "SSH key",
-          "connectionTitle": "Connection",
-          "linuxAccessTitle": "Linux access",
-          "name": "Name",
-          "id": "ID",
-          "address": "Address",
-          "sshPort": "SSH port",
-          "user": "User",
-          "provider": "Provider",
-          "afterDeployTitle": "What happens after deploy?",
-          "afterDeployDescription": "dPanel creates the server record, validates workspace observability credentials, and starts setup through the executor. The server detail page will show setup progress and operational data once the agent comes online."
-        },
-        "actions": {
-          "continue": "Continue",
-          "preview": "Preview",
-          "editDetails": "Edit details",
-          "deployServer": "Deploy server"
+          "linuxUserLabel": "Linux user"
         },
         "toaster": {
-          "selectSshKey": "Select an SSH key or create a new one first.",
-          "fixServerDetails": "Fix the highlighted server details before continuing.",
           "deployFailedTitle": "Unable to deploy server"
         },
         "dialog": {
@@ -906,6 +820,84 @@
           "sshPortInvalid": "Use a valid TCP port between 1 and 65535.",
           "linuxUserRequired": "Linux user is required.",
           "linuxUserInvalid": "Use a valid Linux username, for example root or dpanel."
+        },
+        "chooser": {
+          "cloud": {
+            "badge": "Recommended",
+            "title": "Launch a cloud server",
+            "description": "Pick a provider and size; dPanel creates the VM in your cloud account, then installs everything it needs.",
+            "providersTitle": "Launch on",
+            "launchOn": "Launch a server on {provider}",
+            "features": {
+              "ubuntu": "Ubuntu 24.04 or 26.04.1 LTS",
+              "network": "Network and firewall created for you",
+              "setup": "Setup runs automatically"
+            },
+            "duration": "Ready in about 10–20 minutes",
+            "cta": "Launch a server"
+          },
+          "manual": {
+            "badge": "Any Linux server",
+            "title": "Connect your own server",
+            "description": "Bring a VPS, bare-metal box or home lab machine. dPanel connects over SSH and takes it from there.",
+            "requirementsTitle": "You need",
+            "requirements": {
+              "ssh": "A server reachable over SSH (Ubuntu or Debian)",
+              "key": "One dPanel SSH key added to its login user",
+              "agent": "A minute for dPanel to install its agent"
+            },
+            "duration": "Takes about 5 minutes",
+            "cta": "Connect a server"
+          },
+          "next": {
+            "title": "What happens next",
+            "step": "Step {number}",
+            "create": {
+              "title": "Create or connect",
+              "description": "dPanel launches the VM or reaches your server with the SSH key you choose."
+            },
+            "setup": {
+              "title": "dPanel sets it up",
+              "description": "It creates the dpanel user, installs the agent and starts monitoring."
+            },
+            "manage": {
+              "title": "Start shipping",
+              "description": "Install modules, deploy applications and add load balancers from one place."
+            }
+          }
+        },
+        "manual": {
+          "headerTitle": "Connect your own server",
+          "headerDesc": "Authorize one SSH key on your server, tell dPanel where it is, and connect.",
+          "back": "All ways to add a server",
+          "key": {
+            "title": "Choose an SSH key",
+            "description": "dPanel connects with this key. Pick one, or create a new key here."
+          },
+          "authorize": {
+            "title": "Authorize the key on your server",
+            "description": "Run this once on the server so dPanel can log in.",
+            "runAs": "Run on the server as {user}",
+            "copy": "Copy",
+            "copied": "Copied",
+            "copyFailed": "Could not copy. Select the command and copy it manually.",
+            "confirm": "I added this key to the server",
+            "confirmHint": "Setup stops early if dPanel cannot log in with it."
+          },
+          "connection": {
+            "title": "Where is the server?",
+            "description": "The address and Linux user that now trust the key."
+          },
+          "review": {
+            "eyebrow": "Review",
+            "title": "Almost ready",
+            "readyTitle": "Ready to connect",
+            "key": "SSH key selected",
+            "authorized": "Key authorized on the server",
+            "connection": "Server address and login",
+            "connect": "Connect server",
+            "whatHappens": "dPanel saves the server, then installs its agent over SSH. Follow progress on the server page."
+          }
         }
       },
       "emptyState": {
@@ -1779,7 +1771,6 @@
       "namePlaceholder": "My Team",
       "descPlaceholder": "A short description of this team\u2026"
     },
-
     "loadBalancerCreation": {
       "title": "Create Load Balancer",
       "sectionLbKind": "LB Type Allocation",

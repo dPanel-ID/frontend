@@ -9,12 +9,12 @@ import { useSSHKeyCreateModal } from '@/features/ssh-create-modal';
 
 import { ApiCloud, ApiSecret } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
-import IconBiznetGio from '@/shared/assets/biznetgio.png';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { useDebounceValue } from '@/shared/libs/react-hooks/useDebounce';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
+import { CloudProviderLogo } from '@/shared/presentation/molecules/CloudProviderLogo';
 import { ComboboxWithSearchCb } from '@/shared/presentation/molecules/ComboboxWithSearchCb';
 
 import { useForm } from '../../-model';
@@ -44,30 +44,8 @@ function getProviderIconUrl(provider?: DTOs.CloudProviderContractV1) {
   const value = provider?.icon?.url || provider?.icon?.value;
 
   if (value?.startsWith('http')) return value;
-  if (isBiznetGioProviderContract(provider)) return IconBiznetGio;
 
   return undefined;
-}
-
-function isBiznetGioProviderContract(provider?: DTOs.CloudProviderContractV1) {
-  const tokens = [
-    provider?.id,
-    provider?.name,
-    ...(provider?.aliases ?? []),
-  ].map(normalizeProviderToken);
-
-  return tokens.some(
-    (token) => token === 'biznetgio' || token === 'biznetgioneolite',
-  );
-}
-
-function normalizeProviderToken(value?: string) {
-  return (
-    value
-      ?.trim()
-      .toLowerCase()
-      .replace(/[\s_-]+/g, '') ?? ''
-  );
 }
 
 function normalizeProviderContracts(response: {
@@ -127,14 +105,16 @@ function ProviderIcon(props: { provider: DTOs.CloudProviderContractV1 }) {
 
   if (iconUrl) {
     return (
-      <img alt="" className="size-8 rounded-md object-contain" src={iconUrl} />
+      <img alt="" className="size-9 rounded-lg object-contain" src={iconUrl} />
     );
   }
 
   return (
-    <span className="flex size-8 items-center justify-center rounded-md border bg-background text-xs font-semibold text-muted-foreground">
-      {getProviderFallback(provider)}
-    </span>
+    <CloudProviderLogo
+      className="size-9"
+      provider={getProviderValue(provider)}
+      fallbackLabel={getProviderFallback(provider)}
+    />
   );
 }
 

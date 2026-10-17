@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
+
 import { createFileRoute } from '@tanstack/react-router';
+import { zodValidator } from '@tanstack/zod-adapter';
 import {
   CheckCircle2Icon,
   CircleIcon,
@@ -9,6 +12,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useWatch } from 'react-hook-form';
+import { z } from 'zod';
 
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
@@ -31,7 +35,25 @@ export const Route = createFileRoute(
   '/_with-app-layout/servers/create/vm-instant/',
 )({
   component: CreateNewServerVmInstantPage,
+  // ?provider=aws preselects a provider, for example from /servers/create.
+  validateSearch: zodValidator(
+    z.object({ provider: z.string().max(64).optional().catch(undefined) }),
+  ),
 });
+
+/** Applies ?provider= once, without overriding a choice already made. */
+function PresetProvider() {
+  const { provider } = Route.useSearch();
+  const { form } = useForm();
+
+  useEffect(() => {
+    if (provider && !form.getValues('provider')) {
+      form.setValue('provider', provider);
+    }
+  }, [provider, form]);
+
+  return null;
+}
 
 const BREADCRUMB = (
   <Breadcrumb
@@ -44,7 +66,7 @@ const BREADCRUMB = (
         url: '/servers',
       },
       {
-        text: 'Create new server',
+        text: 'Create Server',
         url: '/servers/create',
       },
     ]}
@@ -352,11 +374,12 @@ function CreateNewServerVmInstantPage() {
     <>
       <PageHeader
         headnote={BREADCRUMB}
-        title="Create Instant VM"
-        description="Provision a cloud server from live backend provider contracts."
+        title="Launch a cloud server"
+        description="Pick a provider, region and size. dPanel creates the VM in your cloud account and sets it up for you."
       />
 
       <FormProvider>
+        <PresetProvider />
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
           <div className="flex min-w-0 flex-col gap-4">
             <SectionCloud />

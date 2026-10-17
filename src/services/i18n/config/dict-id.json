@@ -768,54 +768,9 @@
       "create": {
         "documentTitle": "Buat server | dPanel",
         "headerTitle": "Buat Server",
-        "headerDesc": "Daftarkan mesin yang sudah ada, hubungkan akses SSH, lalu biarkan dPanel menyelesaikan setup.",
-        "progress": {
-          "title": "Progres setup",
-          "description": "Pembuatan server manual memiliki empat keputusan singkat."
-        },
-        "steps": {
-          "method": {
-            "eyebrow": "Langkah 1",
-            "title": "Mode pembuatan",
-            "description": "Pilih bagaimana server ini akan didaftarkan."
-          },
-          "ssh": {
-            "eyebrow": "Langkah 2",
-            "title": "Akses SSH",
-            "description": "Pilih atau buat SSH key yang digunakan dPanel."
-          },
-          "server": {
-            "eyebrow": "Langkah 3",
-            "title": "Detail server",
-            "description": "Beri tahu dPanel cara menjangkau mesin yang sudah ada."
-          },
-          "preview": {
-            "eyebrow": "Langkah 4",
-            "title": "Pratinjau",
-            "description": "Tinjau semuanya sebelum setup dimulai."
-          }
-        },
-        "creationMode": {
-          "title": "Bagaimana Anda ingin membuat server ini?",
-          "description": "Mulai dari mesin yang sudah Anda miliki, atau biarkan dPanel membuatnya melalui cloud provider yang didukung.",
-          "manual": {
-            "title": "Setup manual",
-            "subtitle": "VM, PC, atau Raspberry Pi yang sudah ada",
-            "badge": "Direkomendasikan",
-            "description": "Gunakan mesin yang sudah ada. dPanel hanya membutuhkan akses SSH, alamat yang dapat dijangkau, dan user Linux."
-          },
-          "instant": {
-            "title": "Setup instan",
-            "subtitle": "Cloud provider yang didukung",
-            "badge": "Otomatisasi",
-            "description": "Buat server dari akun cloud yang terhubung. Alur instan yang ada tetap tersedia."
-          }
-        },
+        "headerDesc": "Luncurkan VM cloud dalam beberapa klik, atau hubungkan server yang sudah Anda jalankan. dPanel menyiapkannya untuk Anda.",
         "ssh": {
-          "title": "Siapkan akses SSH",
-          "description": "Pilih private key yang akan digunakan dPanel, lalu pasang public key yang cocok pada user Linux target.",
           "keysTitle": "SSH key",
-          "keysDescription": "Pilih key yang sudah ada atau buat yang baru di sini.",
           "searchLabel": "Cari SSH key",
           "searchPlaceholder": "Cari SSH key",
           "createKey": "Buat SSH key",
@@ -827,57 +782,16 @@
           "fallbackKeyName": "SSH key {id}",
           "keyId": "ID {id}",
           "keyLengthSuffix": " - {length} bit",
-          "copyPublicKey": "Salin public key",
-          "copyPublicKeyFor": "Salin public key untuk {name}",
-          "publicKeyUnavailable": "Public key tidak tersedia",
-          "publicKeyUnavailableToast": "SSH key ini tidak menyediakan public key pada data daftar.",
-          "publicKeyCopiedToast": "Public key disalin.",
-          "manualActionTitle": "Aksi manual diperlukan",
-          "manualActionDescription": "Tambahkan public key yang dipilih ke user Linux target pada <code>~/.ssh/authorized_keys</code>. dPanel tidak dapat terhubung sampai key tersebut dipercaya.",
-          "selectedPublicKey": "Public key terpilih",
-          "selectedPublicKeyDescription": "Tempelkan ini ke file authorized keys milik user server."
+          "publicKeyUnavailableToast": "SSH key ini tidak menyediakan public key pada data daftar."
         },
         "serverDetails": {
-          "title": "Hubungkan ke mesin yang sudah ada",
-          "description": "Gunakan alamat server dan user Linux yang sudah memiliki public key SSH di authorized_keys.",
           "addressLabel": "Alamat server",
           "addressDescription": "Gunakan IPv4, hostname, atau domain. Demo lokal tetap dapat menggunakan 0.0.0.0.",
           "addressPlaceholder": "203.0.113.10 atau server.example.com",
           "sshPortLabel": "Port SSH",
-          "sshPortDescription": "Default 22 kecuali VM Anda memetakan SSH ke port lain.",
-          "sshPortPlaceholder": "22",
-          "linuxUserLabel": "User Linux",
-          "linuxUserDescription": "User yang dapat terhubung menggunakan SSH key yang dipilih.",
-          "linuxUserPlaceholder": "root",
-          "manualProviderTitle": "Provider manual",
-          "manualProviderDescription": "dPanel akan menyimpan server ini dengan provider <code>{provider}</code>. Data khusus cloud dapat ditambahkan nanti ketika integrasi provider aktif.",
-          "sshCheckTitle": "Pengecekan SSH",
-          "sshCheckDescription": "Sebelum deploy, pastikan user Linux dapat login menggunakan private key yang dipilih. Setup akan berhenti lebih awal jika SSH tidak dapat dijangkau."
-        },
-        "preview": {
-          "title": "Tinjau dan deploy",
-          "description": "Konfirmasi detail koneksi. Anda dapat kembali untuk menyesuaikan apa pun sebelum dPanel mendaftarkan server.",
-          "sshKeyTitle": "SSH key",
-          "connectionTitle": "Koneksi",
-          "linuxAccessTitle": "Akses Linux",
-          "name": "Nama",
-          "id": "ID",
-          "address": "Alamat",
-          "sshPort": "Port SSH",
-          "user": "User",
-          "provider": "Provider",
-          "afterDeployTitle": "Apa yang terjadi setelah deploy?",
-          "afterDeployDescription": "dPanel membuat record server, memvalidasi kredensial observability workspace, dan memulai setup melalui executor. Halaman detail server akan menampilkan progres setup dan data operasional setelah agent online."
-        },
-        "actions": {
-          "continue": "Lanjutkan",
-          "preview": "Pratinjau",
-          "editDetails": "Ubah detail",
-          "deployServer": "Deploy server"
+          "linuxUserLabel": "User Linux"
         },
         "toaster": {
-          "selectSshKey": "Pilih SSH key atau buat yang baru terlebih dahulu.",
-          "fixServerDetails": "Perbaiki detail server yang ditandai sebelum melanjutkan.",
           "deployFailedTitle": "Gagal deploy server"
         },
         "dialog": {
@@ -897,6 +811,84 @@
           "sshPortInvalid": "Gunakan port TCP valid antara 1 dan 65535.",
           "linuxUserRequired": "User Linux wajib diisi.",
           "linuxUserInvalid": "Gunakan username Linux yang valid, contohnya root atau dpanel."
+        },
+        "chooser": {
+          "cloud": {
+            "badge": "Direkomendasikan",
+            "title": "Luncurkan server cloud",
+            "description": "Pilih provider dan ukuran; dPanel membuat VM di akun cloud Anda lalu memasang semua yang dibutuhkan.",
+            "providersTitle": "Luncurkan di",
+            "launchOn": "Luncurkan server di {provider}",
+            "features": {
+              "ubuntu": "Ubuntu 24.04 atau 26.04.1 LTS",
+              "network": "Jaringan dan firewall dibuatkan",
+              "setup": "Setup berjalan otomatis"
+            },
+            "duration": "Siap dalam sekitar 10–20 menit",
+            "cta": "Luncurkan server"
+          },
+          "manual": {
+            "badge": "Server Linux apa pun",
+            "title": "Hubungkan server Anda",
+            "description": "Gunakan VPS, bare metal, atau mesin home lab. dPanel terhubung lewat SSH dan melanjutkan sisanya.",
+            "requirementsTitle": "Yang dibutuhkan",
+            "requirements": {
+              "ssh": "Server yang bisa diakses lewat SSH (Ubuntu atau Debian)",
+              "key": "Satu SSH key dPanel yang ditambahkan ke user login",
+              "agent": "Sebentar waktu bagi dPanel untuk memasang agent"
+            },
+            "duration": "Sekitar 5 menit",
+            "cta": "Hubungkan server"
+          },
+          "next": {
+            "title": "Selanjutnya",
+            "step": "Langkah {number}",
+            "create": {
+              "title": "Buat atau hubungkan",
+              "description": "dPanel meluncurkan VM atau menjangkau server Anda dengan SSH key yang dipilih."
+            },
+            "setup": {
+              "title": "dPanel menyiapkannya",
+              "description": "Membuat user dpanel, memasang agent, dan mulai memantau."
+            },
+            "manage": {
+              "title": "Mulai berkarya",
+              "description": "Pasang modul, deploy aplikasi, dan tambah load balancer dari satu tempat."
+            }
+          }
+        },
+        "manual": {
+          "headerTitle": "Hubungkan server Anda",
+          "headerDesc": "Izinkan satu SSH key di server Anda, beri tahu dPanel lokasinya, lalu hubungkan.",
+          "back": "Semua cara menambah server",
+          "key": {
+            "title": "Pilih SSH key",
+            "description": "dPanel terhubung dengan key ini. Pilih salah satu, atau buat key baru di sini."
+          },
+          "authorize": {
+            "title": "Izinkan key di server Anda",
+            "description": "Jalankan sekali di server agar dPanel bisa login.",
+            "runAs": "Jalankan di server sebagai {user}",
+            "copy": "Salin",
+            "copied": "Tersalin",
+            "copyFailed": "Gagal menyalin. Pilih perintah lalu salin secara manual.",
+            "confirm": "Saya sudah menambahkan key ini ke server",
+            "confirmHint": "Setup berhenti lebih awal jika dPanel tidak bisa login dengannya."
+          },
+          "connection": {
+            "title": "Di mana servernya?",
+            "description": "Alamat dan user Linux yang sekarang memercayai key tersebut."
+          },
+          "review": {
+            "eyebrow": "Tinjauan",
+            "title": "Hampir siap",
+            "readyTitle": "Siap dihubungkan",
+            "key": "SSH key dipilih",
+            "authorized": "Key diizinkan di server",
+            "connection": "Alamat server dan login",
+            "connect": "Hubungkan server",
+            "whatHappens": "dPanel menyimpan server, lalu memasang agent lewat SSH. Pantau progresnya di halaman server."
+          }
         }
       },
       "emptyState": {
