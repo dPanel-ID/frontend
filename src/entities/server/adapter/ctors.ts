@@ -7,10 +7,11 @@ import type { cloud, specs } from '../rules/schema/parts';
 
 export function ctorCloud(
   raw: DTOs.MachineV1,
-): KeysOnly<z.input<typeof cloud>> | null {
+): KeysOnly<z.input<typeof cloud>> | undefined {
   const { provider, region } = raw;
 
-  if (!provider) return null;
+  // Own servers have no provider; the schema treats a missing cloud as optional.
+  if (!provider) return undefined;
 
   return {
     provider: normalizeCloudProvider(provider),
@@ -20,6 +21,14 @@ export function ctorCloud(
 
 function normalizeCloudProvider(provider: string) {
   const normalizedProvider = provider.toLowerCase().replace(/[\s_-]/g, '');
+
+  if (
+    normalizedProvider === 'aws' ||
+    normalizedProvider === 'amazon' ||
+    normalizedProvider === 'amazonwebservices'
+  ) {
+    return 'aws';
+  }
 
   if (normalizedProvider === 'gcp' || normalizedProvider === 'googlecloud') {
     return 'googlecloud';

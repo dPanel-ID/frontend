@@ -1,4 +1,5 @@
 import IconBiznetGio from '@/shared/assets/biznetgio.png';
+import IconAWS from '@/shared/assets/ico-aws.svg';
 import IconGCloud from '@/shared/assets/ico-gcloud.png';
 import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
 import IconServer from '@/shared/assets/ico-server.webp';
@@ -15,6 +16,12 @@ export const SERVER_PROVIDER_METADATA: Record<
     imageSrc: IconServer,
     i18n: {
       label: 'common.terms.other',
+    },
+  },
+  aws: {
+    imageSrc: IconAWS,
+    i18n: {
+      label: 'common.brands.aws',
     },
   },
   biznetgio: {

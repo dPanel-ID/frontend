@@ -1,27 +1,29 @@
-import { useNavigate } from '@tanstack/react-router';
-import { FileTextIcon, FolderTreeIcon, PlusCircleIcon } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import {
+  FileTextIcon,
+  FolderTreeIcon,
+  PlusIcon,
+  ServerIcon,
+} from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
-import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
+import {
+  FlowHero,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
 import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
+/** Page opening in the same visual language as the create flows. */
 export default function Header() {
   const t = useDevetekTranslations();
 
-  const navigate = useNavigate();
-
-  const handleClickAddMore = () => {
-    navigate({
-      to: '/servers/create',
-    });
-  };
-
   return (
-    <PageHeader
+    <FlowHero
+      accent="sky"
+      icon={ServerIcon}
       headnote={
         <Breadcrumb
           items={[
@@ -33,58 +35,35 @@ export default function Header() {
         />
       }
       title={t('page.servers.headerTitle')}
-      rightAppend={
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate({ to: '/servers/groups' })}
-          >
-            <FolderTreeIcon /> Server Groups
+      description={t('page.servers.hero.description')}
+      aside={
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/servers/groups">
+              <FolderTreeIcon />
+              <span className="hidden sm:inline">
+                {t('page.servers.hero.groups')}
+              </span>
+            </Link>
           </Button>
-          <HeaderHelpAction
-            icon={FileTextIcon}
-            label={t('page.servers.docs')}
-            href={LINK__DOCUMENTATION}
-          />
-          <Button variant="outline" size="sm" onClick={handleClickAddMore}>
-            <PlusCircleIcon /> {t('page.servers.createServer')}
+          <Button variant="outline" size="sm" asChild>
+            <a
+              href={LINK__DOCUMENTATION}
+              aria-label={t('page.servers.docs')}
+              title={t('page.servers.docs')}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FileTextIcon />
+              <span className="hidden sm:inline">{t('page.servers.docs')}</span>
+            </a>
           </Button>
+          <Link to="/servers/create" className={flowCtaClassName('sky')}>
+            <PlusIcon className="size-4" />
+            {t('page.servers.createServer')}
+          </Link>
         </div>
       }
-      description={t('page.servers.headerDesc')}
-      footnote={t.rich('page.servers.headerFootnote', {
-        code: (chunks) => <code>{chunks}</code>,
-        a: (chunks) => (
-          <a className="underline" href="//www.youtube.com/@dpanel_id">
-            {chunks}
-          </a>
-        ),
-      })}
     />
-  );
-}
-
-function HeaderHelpAction(props: {
-  icon: LucideIcon;
-  label: string;
-  href: string;
-}) {
-  const { icon: Icon, label, href } = props;
-  const isMail = href.startsWith('mailto:');
-
-  return (
-    <Button variant="outline" size="sm" asChild>
-      <a
-        href={href}
-        aria-label={label}
-        title={label}
-        target={isMail ? undefined : '_blank'}
-        rel={isMail ? undefined : 'noreferrer'}
-      >
-        <Icon />
-        <span className="hidden sm:inline">{label}</span>
-      </a>
-    </Button>
   );
 }

@@ -1,14 +1,9 @@
 import type { ServerCard } from '@/entities/server/rules/schema';
 
-export interface ServerCardProps {
-  variant: 'full' | 'compact';
-  data: ServerCard;
-  applicationCount?: number;
+import type { ServerHandlers } from '../useServerHandlers';
 
-  onClickEdit?: () => void;
-  onClickStatus?: () => void;
-  onClickDetails?: () => void;
-  onClickReinstall?: () => void;
-  onClickMigrateOwnership?: () => void;
-  onClickDelete?: () => void;
+export interface ServerCardProps {
+  server: ServerCard;
+  handlers: ServerHandlers;
+  applicationCount?: number;
 }

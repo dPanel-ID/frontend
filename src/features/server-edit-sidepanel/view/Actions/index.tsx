@@ -1,13 +1,17 @@
-import { LoaderCircleIcon } from 'lucide-react';
+import { LoaderCircleIcon, SaveIcon } from 'lucide-react';
+
+import { useDevetekTranslations } from '@/services/i18n';
 
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/Button';
+import { flowCtaClassName } from '@/shared/presentation/organisms/FlowHero';
 
 import { useServerEditModel } from '../../model';
 import { useEmit } from '../../model/events';
 
 export default function Actions() {
-  const { isSubmitting, hasChanges } = useServerEditModel();
+  const { isSubmitting, hasChanges, isValid } = useServerEditModel();
+  const t = useDevetekTranslations();
 
   const emit = useEmit();
 
@@ -19,22 +23,27 @@ export default function Actions() {
     emit('#server-edit-sidepanel/sidepanel-close', null);
   };
 
-  const cnCancel = cn(hasChanges && 'border-yellow-500 border-dashed');
-
   return (
     <>
-      <Button
+      <button
+        type="button"
+        className={flowCtaClassName('sky', 'w-full py-2.5')}
         onClick={handleClickSubmit}
-        disabled={isSubmitting || !hasChanges}
+        disabled={isSubmitting || !hasChanges || !isValid}
       >
-        {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : 'Save'}
-      </Button>
+        {isSubmitting ? (
+          <LoaderCircleIcon className="size-4 animate-spin" />
+        ) : (
+          <SaveIcon className="size-4" />
+        )}
+        {t('common.actions.save')}
+      </button>
       <Button
-        className={cnCancel}
+        className={cn(hasChanges && 'border-dashed border-amber-500')}
         variant="outline"
         onClick={handleClickCancel}
       >
-        Cancel
+        {t('common.actions.cancel')}
       </Button>
     </>
   );

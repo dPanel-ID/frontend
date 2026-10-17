@@ -4,6 +4,8 @@ import useMachineReinstallUsecase from './-usecase/machine-reinstall';
 import useServerOpenMigrateOwnershipUsecase from './-usecase/open-migrate-ownership';
 import useServerEditSidepanelUsecase from './-usecase/server-edit-sidepanel';
 import useServerStatusInfoDialogUsecase from './-usecase/server-status-info-dialog';
+import { DeleteServerDialog } from './-view/dialogs/DeleteServerDialog';
+import { ReinstallServerDialog } from './-view/dialogs/ReinstallServerDialog';
 
 export default function EventController() {
   const emit = useEmit();
@@ -21,13 +23,13 @@ export default function EventController() {
     handleOpenMigrateOwnership,
   );
 
-  const [handleMachineReinstall] = useMachineReinstallUsecase({
+  const [handleMachineReinstall, reinstall] = useMachineReinstallUsecase({
     onSuccess: handleDefaultSuccess,
   });
 
   useSubscribe('@resources::servers/machine-reinstall', handleMachineReinstall);
 
-  const [handleMachineDelete] = useMachineDeleteUsecase({
+  const [handleMachineDelete, deletion] = useMachineDeleteUsecase({
     onSuccess: handleDefaultSuccess,
   });
 
@@ -49,5 +51,20 @@ export default function EventController() {
     handleServerEditSidepanel,
   );
 
-  return null;
+  return (
+    <>
+      <DeleteServerDialog
+        target={deletion.target}
+        isDeleting={deletion.isDeleting}
+        onConfirm={deletion.confirm}
+        onClose={deletion.close}
+      />
+      <ReinstallServerDialog
+        target={reinstall.target}
+        isSubmitting={reinstall.isSubmitting}
+        onConfirm={reinstall.confirm}
+        onClose={reinstall.close}
+      />
+    </>
+  );
 }

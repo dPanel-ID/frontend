@@ -1,8 +1,9 @@
 # Servers module: UI/UX redesign plan
 
-Status: proposal, 2026-10-17. The create-server landing and the manual
-connect flow are done (dPanel-ID/frontend#8). This plan brings every other
-page and panel of the servers module to the same standard.
+Status: in progress, 2026-10-17. Done so far: the create-server landing and
+manual connect flow (dPanel-ID/frontend#8), the Launch cloud VM page (#9,
+#10) and the server list with its panels (shared blocks `StatTile`,
+`StatusPill`, `ServerIdentity`, `ServerStatusPill`). Next: server detail.
 
 ## Design principles
 
@@ -76,9 +77,12 @@ better page by page and nothing is half-done.
 
 1. **Shared blocks.** `ReviewPanel`, `StepCard`, `StatTile`, `StatusPill`,
    plus the `ServerIdentity` row (logo, name, OS, status) used by every list
-   and header. Includes removing `/servers/create/vm-manual`.
-2. **Launch cloud VM** (#4). The biggest usability gap left in creation.
-3. **Server list** (#1) with panels A–E.
+   and header. Includes removing `/servers/create/vm-manual`. Done.
+2. **Launch cloud VM** (#4). The biggest usability gap left in creation. Done.
+3. **Server list** (#1) with panels A–E. Done: hero, fleet tiles that filter
+   by state, list/grid/table views, typed-confirm delete, reinstall with
+   "what happens next", grouped edit sidepanel. Panel E (migrate ownership)
+   is shared across resources and keeps its current look for now.
 4. **Server detail** (#6) with tabs F–L and P.
 5. **Server groups** (#7, #8) with N, O.
 6. **Operation detail pages** (#9–#11) on the shared execution layout.
