@@ -16,11 +16,6 @@ export const [ServerEditModelProvider, useServerEditModel] = buildContext(
       // Validate as the user types so Save can stay disabled until the form is valid.
       mode: 'onChange',
       defaultValues: {
-        agent: {
-          // An undefined default reads back as '' and would mark the form dirty.
-          domain: props.agent.domain ?? '',
-          httpPort: props.agent.httpPort,
-        },
         serverAddress: props.serverAddress,
         ssh: {
           port: props.ssh.port,

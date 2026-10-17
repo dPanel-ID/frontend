@@ -47,7 +47,6 @@ export default function EventController() {
         serverName: server.host.name,
         serverAddress: server.host.address,
         ssh: { port: server.ssh.port, username: server.ssh.defaultUser },
-        agent: { domain: server.agent.domain, httpPort: server.agent.httpPort },
         onSuccess: refreshDetail,
       });
     }),

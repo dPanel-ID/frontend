@@ -46,18 +46,18 @@ import {
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
 import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 import type { StatusTone } from '@/shared/presentation/molecules/StatusPill';
+import {
+  DATA_PANEL_PAGE_SIZE,
+  DataPanel,
+  DataPanelMeta,
+  DataPanelPagination,
+  DataPanelRetry,
+  DataPanelSearch,
+  DataPanelState,
+  dataTable,
+} from '@/shared/presentation/organisms/DataPanel';
 
 import { useServerDataModel } from '../../../-model/server-data';
-import {
-  TAB_PAGE_SIZE,
-  TabMeta,
-  TabPagination,
-  TabPanel,
-  TabRetry,
-  TabSearch,
-  TabState,
-  tabTable,
-} from '../_shared/TabPanel';
 
 const ATTENTION_STATES = new Set<SchemaOsServiceParts.State>([
   'failed',
@@ -79,7 +79,7 @@ const STATE_TONE: Record<SchemaOsServiceParts.State, StatusTone> = {
 /** systemd units on the server, searchable and paged by the API. */
 export default function ServicesTab() {
   const t = useDevetekTranslations('page.serverDetail.services');
-  const tCommon = useDevetekTranslations('page.serverDetail.tabsCommon');
+  const tCommon = useDevetekTranslations('common.dataPanel');
   const [serverId] = useServerDataModel((s) => [String(s.serverId)]);
   const [openServiceOverviewModal] = useServiceOverviewModal();
 
@@ -90,7 +90,7 @@ export default function ServicesTab() {
   const [response, refresh] = ApiService.Origin.$ServerId.useGet({
     serverId,
     page,
-    pageSize: TAB_PAGE_SIZE,
+    pageSize: DATA_PANEL_PAGE_SIZE,
     searchByName: debouncedSearchQuery.trim() || undefined,
   });
 
@@ -119,7 +119,7 @@ export default function ServicesTab() {
   const isLoading = response.$status === 'loading';
 
   return (
-    <TabPanel
+    <DataPanel
       icon={SlidersHorizontalIcon}
       title={t('title')}
       description={t('description')}
@@ -161,7 +161,7 @@ export default function ServicesTab() {
       }
       toolbar={
         <>
-          <TabSearch
+          <DataPanelSearch
             value={searchQuery}
             placeholder={t('searchPlaceholder')}
             onChange={(value) => {
@@ -169,11 +169,13 @@ export default function ServicesTab() {
               setPage(1);
             }}
           />
-          <TabMeta>{tCommon('rows', { count: total ?? 0 })}</TabMeta>
+          <DataPanelMeta>
+            {tCommon('rows', { count: total ?? 0 })}
+          </DataPanelMeta>
         </>
       }
       footer={
-        <TabPagination
+        <DataPanelPagination
           page={Math.min(page, totalPage)}
           totalPage={totalPage}
           onPageChange={setPage}
@@ -182,16 +184,16 @@ export default function ServicesTab() {
     >
       {services.$status === 'initial' ||
       (services.$status === 'loading' && !services.prevData) ? (
-        <TabState state="loading" title={tCommon('loading')} />
+        <DataPanelState state="loading" title={tCommon('loading')} />
       ) : services.$status === 'failed' ? (
-        <TabState
+        <DataPanelState
           state="failed"
           title={tCommon('loadFailed')}
           description={getApiErrorDetail(services.error)}
-          action={<TabRetry onClick={() => refresh()} />}
+          action={<DataPanelRetry onClick={() => refresh()} />}
         />
       ) : list.length === 0 ? (
-        <TabState
+        <DataPanelState
           state="empty"
           title={searchQuery ? t('noMatch') : t('empty')}
         />
@@ -199,13 +201,13 @@ export default function ServicesTab() {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className={cn(tabTable.head, 'w-40')}>
+              <TableHead className={cn(dataTable.head, 'w-40')}>
                 {t('table.state')}
               </TableHead>
-              <TableHead className={tabTable.head}>
+              <TableHead className={dataTable.head}>
                 {t('table.service')}
               </TableHead>
-              <TableHead className={cn(tabTable.head, 'w-48 text-right')}>
+              <TableHead className={cn(dataTable.head, 'w-48 text-right')}>
                 {t('table.actions')}
               </TableHead>
             </TableRow>
@@ -233,7 +235,7 @@ export default function ServicesTab() {
           </TableBody>
         </Table>
       )}
-    </TabPanel>
+    </DataPanel>
   );
 }
 
@@ -253,17 +255,17 @@ function ServiceRow(props: {
 
   return (
     <TableRow>
-      <TableCell className={tabTable.cell}>
+      <TableCell className={dataTable.cell}>
         <StatusPill
           tone={STATE_TONE[service.serviceState]}
           pulse={pulse}
           label={t(metadata.i18n.statusLabel)}
         />
       </TableCell>
-      <TableCell className={cn(tabTable.monoCell, 'text-primary')}>
+      <TableCell className={cn(dataTable.monoCell, 'text-primary')}>
         {service.serviceName}
       </TableCell>
-      <TableCell className={cn(tabTable.cell, 'text-right')}>
+      <TableCell className={cn(dataTable.cell, 'text-right')}>
         <div className="inline-flex items-center gap-1.5">
           <Button
             size="sm"

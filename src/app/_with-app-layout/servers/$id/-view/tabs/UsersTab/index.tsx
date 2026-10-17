@@ -29,19 +29,19 @@ import {
   TableRow,
 } from '@/shared/presentation/atoms/Table';
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
+import {
+  DataPanel,
+  DataPanelMeta,
+  DataPanelPagination,
+  DataPanelRetry,
+  DataPanelSearch,
+  DataPanelState,
+  dataTable,
+  usePagedList,
+} from '@/shared/presentation/organisms/DataPanel';
 import { flowCtaClassName } from '@/shared/presentation/organisms/FlowHero';
 
 import { useServerDataModel } from '../../../-model/server-data';
-import {
-  TabMeta,
-  TabPagination,
-  TabPanel,
-  TabRetry,
-  TabSearch,
-  TabState,
-  tabTable,
-  usePagedList,
-} from '../_shared/TabPanel';
 
 interface UserItem {
   username: string;
@@ -56,7 +56,7 @@ const NO_LOGIN_SHELLS = new Set(['-', '/usr/sbin/nologin', '/bin/false']);
 /** Local Linux accounts, searched and paged in the browser. */
 export default function UsersTab() {
   const t = useDevetekTranslations('page.serverDetail.users');
-  const tCommon = useDevetekTranslations('page.serverDetail.tabsCommon');
+  const tCommon = useDevetekTranslations('common.dataPanel');
   const [serverId] = useServerDataModel((s) => [String(s.serverId)]);
   const [openServerUserCreateSidepanel] = useServerUserCreateSidepanel();
   const [openDialog] = useDialog();
@@ -152,7 +152,7 @@ export default function UsersTab() {
   };
 
   return (
-    <TabPanel
+    <DataPanel
       icon={UsersIcon}
       title={t('title')}
       description={t('description')}
@@ -204,16 +204,18 @@ export default function UsersTab() {
       }
       toolbar={
         <>
-          <TabSearch
+          <DataPanelSearch
             value={searchQuery}
             placeholder={t('searchPlaceholder')}
             onChange={setSearchQuery}
           />
-          <TabMeta>{tCommon('rows', { count: filteredUsers.length })}</TabMeta>
+          <DataPanelMeta>
+            {tCommon('rows', { count: filteredUsers.length })}
+          </DataPanelMeta>
         </>
       }
       footer={
-        <TabPagination
+        <DataPanelPagination
           page={page}
           totalPage={totalPage}
           onPageChange={setPage}
@@ -221,16 +223,16 @@ export default function UsersTab() {
       }
     >
       {users.$status === 'initial' || users.$status === 'loading' ? (
-        <TabState state="loading" title={tCommon('loading')} />
+        <DataPanelState state="loading" title={tCommon('loading')} />
       ) : users.$status === 'failed' ? (
-        <TabState
+        <DataPanelState
           state="failed"
           title={tCommon('loadFailed')}
           description={getApiErrorDetail(users.error)}
-          action={<TabRetry onClick={() => refreshUsers()} />}
+          action={<DataPanelRetry onClick={() => refreshUsers()} />}
         />
       ) : filteredUsers.length === 0 ? (
-        <TabState
+        <DataPanelState
           state="empty"
           title={searchQuery ? t('noMatch') : t('empty')}
         />
@@ -238,20 +240,22 @@ export default function UsersTab() {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead className={tabTable.head}>
+              <TableHead className={dataTable.head}>
                 {t('table.username')}
               </TableHead>
-              <TableHead className={cn(tabTable.head, 'w-20')}>
+              <TableHead className={cn(dataTable.head, 'w-20')}>
                 {t('table.uid')}
               </TableHead>
-              <TableHead className={cn(tabTable.head, 'w-20')}>
+              <TableHead className={cn(dataTable.head, 'w-20')}>
                 {t('table.gid')}
               </TableHead>
-              <TableHead className={tabTable.head}>{t('table.home')}</TableHead>
-              <TableHead className={tabTable.head}>
+              <TableHead className={dataTable.head}>
+                {t('table.home')}
+              </TableHead>
+              <TableHead className={dataTable.head}>
                 {t('table.shell')}
               </TableHead>
-              <TableHead className={cn(tabTable.head, 'w-28 text-right')}>
+              <TableHead className={cn(dataTable.head, 'w-28 text-right')}>
                 {t('table.actions')}
               </TableHead>
             </TableRow>
@@ -259,20 +263,20 @@ export default function UsersTab() {
           <TableBody>
             {pageItems.map((user) => (
               <TableRow key={`${user.username}-${user.uid}`}>
-                <TableCell className={cn(tabTable.cell, 'font-semibold')}>
+                <TableCell className={cn(dataTable.cell, 'font-semibold')}>
                   {user.username}
                 </TableCell>
-                <TableCell className={tabTable.monoCell}>{user.uid}</TableCell>
-                <TableCell className={tabTable.monoCell}>{user.gid}</TableCell>
+                <TableCell className={dataTable.monoCell}>{user.uid}</TableCell>
+                <TableCell className={dataTable.monoCell}>{user.gid}</TableCell>
                 <TableCell
-                  className={cn(tabTable.monoCell, 'max-w-56 truncate')}
+                  className={cn(dataTable.monoCell, 'max-w-56 truncate')}
                   title={user.home}
                 >
                   {user.home}
                 </TableCell>
                 <TableCell
                   className={cn(
-                    tabTable.monoCell,
+                    dataTable.monoCell,
                     'max-w-48 truncate',
                     NO_LOGIN_SHELLS.has(user.shell) && 'text-muted-foreground',
                   )}
@@ -280,7 +284,7 @@ export default function UsersTab() {
                 >
                   {user.shell}
                 </TableCell>
-                <TableCell className={cn(tabTable.cell, 'text-right')}>
+                <TableCell className={cn(dataTable.cell, 'text-right')}>
                   <Button
                     size="sm"
                     buttonStyle="outline"
@@ -297,6 +301,6 @@ export default function UsersTab() {
           </TableBody>
         </Table>
       )}
-    </TabPanel>
+    </DataPanel>
   );
 }
