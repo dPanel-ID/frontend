@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { EyeIcon, EyeOffIcon, UserRoundIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useWatch } from 'react-hook-form';
 
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
@@ -14,7 +14,6 @@ import {
   isGcpProvider,
 } from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
-import { Sectioned } from '../../../-presentation/Sectioned';
 
 export default function SectionLogin() {
   const { form, formErrors } = useForm();
@@ -29,12 +28,7 @@ export default function SectionLogin() {
   const hidesCredentials = usesGcp || usesDigitalOcean || usesAws;
 
   return (
-    <Sectioned
-      withinCard
-      sectionIcon={UserRoundIcon}
-      sectionTitle="Access"
-      sectionDescription="Set the initial VM login required by the provider VM creation contract."
-    >
+    <div className="space-y-5">
       <div
         className={hidesCredentials ? 'space-y-2' : 'grid gap-4 lg:grid-cols-2'}
       >
@@ -103,6 +97,6 @@ export default function SectionLogin() {
           </p>
         )}
       </div>
-    </Sectioned>
+    </div>
   );
 }

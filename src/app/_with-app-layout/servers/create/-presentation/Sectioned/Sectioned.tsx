@@ -15,12 +15,7 @@ export default function Sectioned(props: Props) {
   } = props;
 
   const content = (
-    <div
-      className={cn(
-        'flex w-full flex-col gap-4 p-4 sm:p-5',
-        className,
-      )}
-    >
+    <div className={cn('flex w-full flex-col gap-4 p-4 sm:p-5', className)}>
       {(SectionIcon || sectionTitle) && (
         <div className="flex items-start gap-3 border-b pb-4">
           {SectionIcon && (
@@ -41,9 +36,7 @@ export default function Sectioned(props: Props) {
         </div>
       )}
 
-      <div className={cn('min-w-0', classNameContent)}>
-        {children}
-      </div>
+      <div className={cn('min-w-0', classNameContent)}>{children}</div>
     </div>
   );
 

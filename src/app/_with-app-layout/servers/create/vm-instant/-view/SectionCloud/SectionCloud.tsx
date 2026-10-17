@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
-import { CloudIcon, KeyRoundIcon, PlusIcon, RefreshCwIcon } from 'lucide-react';
+import { KeyRoundIcon, PlusIcon, RefreshCwIcon } from 'lucide-react';
 import { useController, useWatch } from 'react-hook-form';
 
 import { useCloudProjectCreateModal } from '@/features/cloud-project-create-modal';
@@ -19,7 +19,6 @@ import { ComboboxWithSearchCb } from '@/shared/presentation/molecules/ComboboxWi
 
 import { useForm } from '../../-model';
 import { ErrorInline } from '../../-presentation/ErrorInline';
-import { Sectioned } from '../../../-presentation/Sectioned';
 
 const PAGE_SIZE = 5;
 
@@ -192,7 +191,7 @@ const SubCloudProviderCbo = () => {
   }
 
   return (
-    <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="grid grid-cols-2 gap-2 xl:grid-cols-3">
       {providers.map((provider) => {
         const providerValue = getProviderValue(provider);
         const isChecked = field.value === providerValue;
@@ -224,15 +223,6 @@ const SubCloudProviderCbo = () => {
               <p className="truncate text-sm font-semibold">
                 {getProviderLabel(provider)}
               </p>
-              {provider.capabilities?.length ? (
-                <p className="mt-1 truncate text-xs text-muted-foreground">
-                  {provider.capabilities.slice(0, 2).join(', ')}
-                </p>
-              ) : (
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Backend contract
-                </p>
-              )}
             </div>
           </button>
         );
@@ -305,16 +295,12 @@ const SubCloudProviderContractStatus = () => {
     );
   }
 
-  return (
-    <InlineState
-      title="VM creation contract ready"
-      description={`Payload path: ${vmContract.payload_path || 'vm'}; backend: ${vmContract.execution_backend || 'manager'}.`}
-    />
-  );
+  // Ready is the normal case; only problems are worth a notice.
+  return null;
 };
 
 const SubCloudProjectCbo = () => {
-  const { form, formErrors } = useForm();
+  const { form, formErrors, setLabel } = useForm();
   const [openCloudProjectCreateModal] = useCloudProjectCreateModal();
   const [projectSearch, setProjectSearch] = useState('');
   const [debouncedProjectSearch] = useDebounceValue(projectSearch);
@@ -411,6 +397,10 @@ const SubCloudProjectCbo = () => {
             form.setValue('spec.osVersion', '');
             form.setValue('spec.productID', undefined);
             form.setValue('vpcBulk', { id: '', subnet: '' });
+            setLabel(
+              'project',
+              items.find((item) => item.value === value)?.label ?? '',
+            );
             control.field.onChange(value);
           }}
           value={control.field.value}
@@ -458,7 +448,7 @@ const SubCloudProjectCbo = () => {
 };
 
 const SubCloudSshCbo = () => {
-  const { form, formErrors } = useForm();
+  const { form, formErrors, setLabel } = useForm();
   const [openSSHKeyCreateModal] = useSSHKeyCreateModal();
   const [sshKeySearch, setSshKeySearch] = useState('');
   const [debouncedSshKeySearch] = useDebounceValue(sshKeySearch);
@@ -533,7 +523,13 @@ const SubCloudSshCbo = () => {
           searchValue={sshKeySearch}
           onSearchEnter={setSshKeySearch}
           placeholder="Select a SSH Key"
-          onChange={control.field.onChange}
+          onChange={(value) => {
+            setLabel(
+              'sshKey',
+              items.find((item) => item.value === value)?.label ?? '',
+            );
+            control.field.onChange(value);
+          }}
           value={control.field.value}
           items={items}
         />
@@ -576,12 +572,7 @@ const SubCloudSshCbo = () => {
 
 export default function SectionCloud() {
   return (
-    <Sectioned
-      withinCard
-      sectionIcon={CloudIcon}
-      sectionTitle="Cloud Information"
-      sectionDescription="Choose a backend-supported provider contract, cloud project, and SSH key."
-    >
+    <div className="space-y-5">
       <div className="space-y-2">
         <h6 className="text-sm font-semibold">Provider</h6>
         <SubCloudProviderCbo />
@@ -599,6 +590,6 @@ export default function SectionCloud() {
           <SubCloudSshCbo />
         </div>
       </div>
-    </Sectioned>
+    </div>
   );
 }

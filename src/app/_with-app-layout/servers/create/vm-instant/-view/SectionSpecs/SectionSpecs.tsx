@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { HardDriveIcon, RefreshCwIcon } from 'lucide-react';
+import { RefreshCwIcon } from 'lucide-react';
 import { useController, useWatch } from 'react-hook-form';
 
 import { ApiCloud } from '@/shared/api';
@@ -24,7 +24,6 @@ import {
   isGcpProvider,
 } from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
-import { Sectioned } from '../../../-presentation/Sectioned';
 
 function InlineState(props: {
   action?: ReactNode;
@@ -135,7 +134,7 @@ function buildMachineTypeFilter(search: string) {
 }
 
 const SubBiznetProductFields = () => {
-  const { form, formErrors } = useForm();
+  const { form, setLabel, formErrors } = useForm();
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
@@ -292,6 +291,7 @@ const SubBiznetProductFields = () => {
                 if (product?.disk_gb) {
                   form.setValue('spec.diskSizeGB', product.disk_gb);
                 }
+                setLabel('product', product ? getProductLabel(product) : '');
                 productControl.field.onChange(value);
               }}
               value={productControl.field.value}
@@ -914,14 +914,9 @@ export default function SectionSpecs() {
   });
 
   return (
-    <Sectioned
-      withinCard
-      sectionIcon={HardDriveIcon}
-      sectionTitle="Specification"
-      sectionDescription="Choose the image and sizing for the provisioning request."
-    >
+    <div className="space-y-5">
       <div className="space-y-2">
-        <h6 className="text-sm font-semibold">VM Name</h6>
+        <h6 className="text-sm font-semibold">Server name</h6>
         <Input
           className="w-full bg-background"
           placeholder={
@@ -947,7 +942,7 @@ export default function SectionSpecs() {
           </div>
 
           <div className="mt-5 space-y-2">
-            <h6 className="text-sm font-semibold">OS Template</h6>
+            <h6 className="text-sm font-semibold">Ubuntu release</h6>
             <SubOsTemplateCbo />
           </div>
         </>
@@ -999,13 +994,7 @@ export default function SectionSpecs() {
           )}
 
           <div className="mt-5 space-y-2">
-            <h6 className="text-sm font-semibold">
-              {usesDigitalOcean
-                ? 'Image'
-                : usesAws
-                  ? 'AMI Image'
-                  : 'OS Template'}
-            </h6>
+            <h6 className="text-sm font-semibold">Ubuntu release</h6>
             <SubOsTemplateCbo />
           </div>
 
@@ -1062,6 +1051,6 @@ export default function SectionSpecs() {
           ) : null}
         </>
       )}
-    </Sectioned>
+    </div>
   );
 }
