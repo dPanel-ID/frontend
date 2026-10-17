@@ -12,6 +12,7 @@ import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Input } from '@/shared/presentation/atoms/Input';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
+import { ChoiceTile } from '@/shared/presentation/molecules/ChoiceTile';
 import { Combobox } from '@/shared/presentation/molecules/Combobox';
 import { ComboboxWithSearchCb } from '@/shared/presentation/molecules/ComboboxWithSearchCb';
 
@@ -820,47 +821,70 @@ const SubOsTemplateCbo = () => {
     });
   }
 
+  const selectTemplate = (value: string) => {
+    const selectedTemplate = templateList.find(
+      (template) => template.id === value,
+    );
+
+    form.setValue('spec.osName', selectedTemplate?.os_name ?? '', {
+      shouldValidate: true,
+    });
+    form.setValue('spec.osVersion', selectedTemplate?.os_version ?? '', {
+      shouldValidate: true,
+    });
+    control.field.onChange(value);
+  };
+
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <Combobox
-          classNameButton="w-full flex-1 bg-background"
-          placeholder={
-            usesUbuntuCatalog
-              ? 'Select an Ubuntu release'
-              : 'Select an OS Template'
-          }
-          onChange={(value) => {
-            const selectedTemplate = templateList.find(
-              (template) => template.id === value,
-            );
-
-            form.setValue('spec.osName', selectedTemplate?.os_name ?? '', {
-              shouldValidate: true,
-            });
-            form.setValue(
-              'spec.osVersion',
-              selectedTemplate?.os_version ?? '',
-              {
-                shouldValidate: true,
-              },
-            );
-            control.field.onChange(value);
-          }}
-          value={control.field.value}
-          items={items}
-        />
-        <Button
-          aria-label="Refresh OS templates"
-          title="Refresh OS templates"
-          buttonStyle="outline"
-          buttonColor="secondary"
-          size="icon"
-          onClick={() => refreshTemplates()}
+      {usesUbuntuCatalog ? (
+        <div
+          role="radiogroup"
+          aria-label="Ubuntu release"
+          className="grid gap-2 sm:grid-cols-2"
         >
-          <RefreshCwIcon className="size-4" />
-        </Button>
-      </div>
+          {templateList.map((template, index) => {
+            if (!template.id) return null;
+            const version = template.os_version ?? '';
+
+            return (
+              <ChoiceTile
+                key={template.id}
+                selected={control.field.value === template.id}
+                onSelect={() => selectTemplate(template.id)}
+                badge={index === 0 ? 'Recommended' : 'Newest'}
+                leading={
+                  <span className="flex size-10 items-center justify-center rounded-lg border bg-[#E95420] text-sm font-bold text-white">
+                    {version.split('.')[0] || 'U'}
+                  </span>
+                }
+                title={template.name || template.id}
+                subtitle="Long-term support, 64-bit"
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <div className="flex items-center gap-2">
+          <Combobox
+            classNameButton="w-full flex-1 bg-background"
+            placeholder="Select an OS Template"
+            onChange={selectTemplate}
+            value={control.field.value}
+            items={items}
+          />
+          <Button
+            aria-label="Refresh OS templates"
+            title="Refresh OS templates"
+            buttonStyle="outline"
+            buttonColor="secondary"
+            size="icon"
+            onClick={() => refreshTemplates()}
+          >
+            <RefreshCwIcon className="size-4" />
+          </Button>
+        </div>
+      )}
 
       {items.length === 0 && (
         <InlineState

@@ -1,21 +1,22 @@
 import type { ReactNode } from 'react';
-import { useState } from 'react';
 
-import { KeyRoundIcon, PlusIcon, RefreshCwIcon } from 'lucide-react';
+import { PlusIcon, RefreshCwIcon } from 'lucide-react';
 import { useController, useWatch } from 'react-hook-form';
 
 import { useCloudProjectCreateModal } from '@/features/cloud-project-create-modal';
-import { useSSHKeyCreateModal } from '@/features/ssh-create-modal';
 
-import { ApiCloud, ApiSecret } from '@/shared/api';
+import { ApiCloud } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
-import { useDebounceValue } from '@/shared/libs/react-hooks/useDebounce';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
-import { CloudProviderLogo } from '@/shared/presentation/molecules/CloudProviderLogo';
-import { ComboboxWithSearchCb } from '@/shared/presentation/molecules/ComboboxWithSearchCb';
+import { ChoiceTile } from '@/shared/presentation/molecules/ChoiceTile';
+import {
+  CloudProviderLogo,
+  getCloudProviderLabel,
+} from '@/shared/presentation/molecules/CloudProviderLogo';
+import { SshKeyPicker } from '@/shared/presentation/organisms/SshKeyPicker';
 
 import { useForm } from '../../-model';
 import { ErrorInline } from '../../-presentation/ErrorInline';
@@ -191,40 +192,24 @@ const SubCloudProviderCbo = () => {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-2 xl:grid-cols-3">
+    <div
+      role="radiogroup"
+      aria-label="Provider"
+      className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+    >
       {providers.map((provider) => {
         const providerValue = getProviderValue(provider);
-        const isChecked = field.value === providerValue;
 
         return (
-          <button
+          <ChoiceTile
             key={providerValue}
-            type="button"
-            aria-pressed={isChecked}
-            onClick={() => handleSelect(providerValue)}
-            className={cn(
-              'group flex min-h-24 flex-col justify-between rounded-lg border bg-background p-3 text-left transition-all',
-              'hover:border-primary/45 hover:bg-primary/5',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-2',
-              isChecked && 'border-primary bg-primary/10',
-            )}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <ProviderIcon provider={provider} />
-              <span
-                className={cn(
-                  'mt-1 flex size-4 shrink-0 rounded-full border',
-                  isChecked && 'border-4 border-primary',
-                )}
-              />
-            </div>
-
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold">
-                {getProviderLabel(provider)}
-              </p>
-            </div>
-          </button>
+            selected={field.value === providerValue}
+            onSelect={() => handleSelect(providerValue)}
+            leading={<ProviderIcon provider={provider} />}
+            title={
+              getCloudProviderLabel(providerValue) || getProviderLabel(provider)
+            }
+          />
         );
       })}
     </div>
@@ -302,8 +287,6 @@ const SubCloudProviderContractStatus = () => {
 const SubCloudProjectCbo = () => {
   const { form, formErrors, setLabel } = useForm();
   const [openCloudProjectCreateModal] = useCloudProjectCreateModal();
-  const [projectSearch, setProjectSearch] = useState('');
-  const [debouncedProjectSearch] = useDebounceValue(projectSearch);
   const provider = useWatch({ control: form.control, name: 'provider' }) as
     | string
     | undefined;
@@ -312,7 +295,7 @@ const SubCloudProjectCbo = () => {
     page: 1,
     pageSize: PAGE_SIZE,
     provider,
-    searchQuery: debouncedProjectSearch.trim() || undefined,
+
     options: { skip: !provider },
   });
 
@@ -378,70 +361,82 @@ const SubCloudProjectCbo = () => {
     });
   };
 
+  const selectProject = (value: string) => {
+    form.setValue('regionSlug', '');
+    form.setValue('cloud.billingAccountID', undefined);
+    form.setValue('cloud.zoneSlug', '');
+    form.setValue('spec.billingCycle', '');
+    form.setValue('spec.machineType', '');
+    form.setValue('spec.osTemplate', '');
+    form.setValue('spec.osName', '');
+    form.setValue('spec.osVersion', '');
+    form.setValue('spec.productID', undefined);
+    form.setValue('vpcBulk', { id: '', subnet: '' });
+    setLabel(
+      'project',
+      items.find((item) => item.value === value)?.label ?? '',
+    );
+    control.field.onChange(value);
+  };
+
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-2">
-        <ComboboxWithSearchCb
-          classNameButton="w-full min-w-56 flex-1 bg-background"
-          searchValue={projectSearch}
-          onSearchEnter={setProjectSearch}
-          placeholder="Select a cloud project"
-          onChange={(value) => {
-            form.setValue('regionSlug', '');
-            form.setValue('cloud.billingAccountID', undefined);
-            form.setValue('cloud.zoneSlug', '');
-            form.setValue('spec.billingCycle', '');
-            form.setValue('spec.machineType', '');
-            form.setValue('spec.osTemplate', '');
-            form.setValue('spec.osName', '');
-            form.setValue('spec.osVersion', '');
-            form.setValue('spec.productID', undefined);
-            form.setValue('vpcBulk', { id: '', subnet: '' });
-            setLabel(
-              'project',
-              items.find((item) => item.value === value)?.label ?? '',
-            );
-            control.field.onChange(value);
-          }}
-          value={control.field.value}
-          items={items}
-        />
-        <Button
-          aria-label="Refresh cloud projects"
-          title="Refresh cloud projects"
-          buttonStyle="outline"
-          buttonColor="secondary"
-          size="icon"
-          onClick={() => refreshProjects()}
-        >
-          <RefreshCwIcon className="size-4" />
-        </Button>
-        <Button
-          buttonStyle="outline"
-          buttonColor="secondary"
-          size="sm"
-          onClick={handleOpenCreateProject}
-        >
-          <PlusIcon className="size-4" />
-          Add
-        </Button>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs text-muted-foreground">
+          {items.length === 0
+            ? 'No project yet for this provider.'
+            : 'Projects connected to this provider.'}
+        </p>
+        <div className="flex items-center gap-2">
+          <Button
+            aria-label="Refresh cloud projects"
+            title="Refresh cloud projects"
+            buttonStyle="outline"
+            buttonColor="secondary"
+            size="icon-sm"
+            onClick={() => refreshProjects()}
+          >
+            <RefreshCwIcon className="size-4" />
+          </Button>
+          <Button
+            buttonStyle="outline"
+            buttonColor="secondary"
+            size="sm"
+            onClick={handleOpenCreateProject}
+          >
+            <PlusIcon className="size-4" />
+            Add project
+          </Button>
+        </div>
       </div>
-
-      {items.length === 0 && (
-        <InlineState
-          title={
-            projectSearch
-              ? 'No matching cloud projects'
-              : 'No cloud projects found'
-          }
-          description={
-            projectSearch
-              ? 'Try another project name or clear the search.'
-              : 'Create or connect a cloud project before provisioning an instant VM.'
-          }
-        />
-      )}
-
+      <div
+        role="radiogroup"
+        aria-label="Cloud project"
+        className="grid gap-2 sm:grid-cols-2"
+      >
+        {items.map((item) => (
+          <ChoiceTile
+            key={item.value}
+            selected={control.field.value === item.value}
+            onSelect={() => selectProject(item.value)}
+            leading={
+              <CloudProviderLogo className="size-9" provider={provider} />
+            }
+            title={item.label}
+            subtitle={`Project #${item.value}`}
+          />
+        ))}
+        {items.length === 0 && (
+          <button
+            type="button"
+            onClick={handleOpenCreateProject}
+            className="flex min-h-16 items-center justify-center gap-2 rounded-xl border border-dashed p-3 text-sm text-muted-foreground transition-colors hover:border-sky-400/50 hover:bg-sky-500/5 sm:col-span-2"
+          >
+            <PlusIcon className="size-4" />
+            Connect a cloud project to continue
+          </button>
+        )}
+      </div>
       <ErrorInline message={formErrors.cloud?.projectID?.message} />
     </div>
   );
@@ -449,122 +444,20 @@ const SubCloudProjectCbo = () => {
 
 const SubCloudSshCbo = () => {
   const { form, formErrors, setLabel } = useForm();
-  const [openSSHKeyCreateModal] = useSSHKeyCreateModal();
-  const [sshKeySearch, setSshKeySearch] = useState('');
-  const [debouncedSshKeySearch] = useDebounceValue(sshKeySearch);
-
-  const [response, refreshSshKeys] = ApiSecret.SshKey.Find.useGet({
-    page: 1,
-    pageSize: PAGE_SIZE,
-    searchQuery: debouncedSshKeySearch.trim() || undefined,
-  });
-
   const control = useController({
     control: form.control,
     name: 'cloud.sshKeyID',
   });
 
-  if (
-    response.$status === 'initial' ||
-    (response.$status === 'loading' && response.prevData == null)
-  ) {
-    return (
-      <div className="flex min-h-24 items-center justify-center rounded-lg border bg-background">
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (response.$status === 'failed') {
-    return (
-      <InlineState
-        title="Could not load SSH keys"
-        description={getApiErrorDetail(response.error)}
-        variant="danger"
-        action={
-          <Button
-            buttonStyle="outline"
-            buttonColor="secondary"
-            size="sm"
-            onClick={() => refreshSshKeys()}
-          >
-            <RefreshCwIcon className="size-4" />
-            Refresh
-          </Button>
-        }
-      />
-    );
-  }
-
-  const responseData =
-    response.$status === 'success' ? response : response.prevData;
-  const items: Array<{ label: string; value: string }> = [];
-
-  for (const secret of responseData?.secrets ?? []) {
-    if (!secret.name || !secret.id) continue;
-
-    items.push({
-      label: secret.name,
-      value: String(secret.id),
-    });
-  }
-
-  const handleOpenCreateKey = () => {
-    openSSHKeyCreateModal({
-      onSubmitSuccess: refreshSshKeys,
-    });
-  };
-
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-2">
-        <ComboboxWithSearchCb
-          classNameButton="w-full min-w-56 flex-1 bg-background"
-          searchValue={sshKeySearch}
-          onSearchEnter={setSshKeySearch}
-          placeholder="Select a SSH Key"
-          onChange={(value) => {
-            setLabel(
-              'sshKey',
-              items.find((item) => item.value === value)?.label ?? '',
-            );
-            control.field.onChange(value);
-          }}
-          value={control.field.value}
-          items={items}
-        />
-        <Button
-          aria-label="Refresh SSH keys"
-          title="Refresh SSH keys"
-          buttonStyle="outline"
-          buttonColor="secondary"
-          size="icon"
-          onClick={() => refreshSshKeys()}
-        >
-          <RefreshCwIcon className="size-4" />
-        </Button>
-        <Button
-          buttonStyle="outline"
-          buttonColor="secondary"
-          size="sm"
-          onClick={handleOpenCreateKey}
-        >
-          <KeyRoundIcon className="size-4" />
-          Add
-        </Button>
-      </div>
-
-      {items.length === 0 && (
-        <InlineState
-          title={sshKeySearch ? 'No matching SSH keys' : 'No SSH keys found'}
-          description={
-            sshKeySearch
-              ? 'Try another SSH key name or clear the search.'
-              : 'Create an SSH key before provisioning an instant VM.'
-          }
-        />
-      )}
-
+      <SshKeyPicker
+        selectedID={control.field.value}
+        onSelect={(sshKey) => {
+          setLabel('sshKey', sshKey.name || `SSH key ${sshKey.id}`);
+          control.field.onChange(String(sshKey.id));
+        }}
+      />
       <ErrorInline message={formErrors.cloud?.sshKeyID?.message} />
     </div>
   );
@@ -579,16 +472,14 @@ export default function SectionCloud() {
         <SubCloudProviderContractStatus />
       </div>
 
-      <div className="mt-5 grid gap-4 lg:grid-cols-2">
-        <div className="space-y-2">
-          <h6 className="text-sm font-semibold">Project</h6>
-          <SubCloudProjectCbo />
-        </div>
+      <div className="mt-5 space-y-2">
+        <h6 className="text-sm font-semibold">Cloud project</h6>
+        <SubCloudProjectCbo />
+      </div>
 
-        <div className="space-y-2">
-          <h6 className="text-sm font-semibold">SSH Key</h6>
-          <SubCloudSshCbo />
-        </div>
+      <div className="mt-5 space-y-2">
+        <h6 className="text-sm font-semibold">SSH key</h6>
+        <SubCloudSshCbo />
       </div>
     </div>
   );

@@ -23,6 +23,11 @@ import {
   cloudProviderRank,
   getCloudProviderLabel,
 } from '@/shared/presentation/molecules/CloudProviderLogo';
+import {
+  FLOW_ACCENTS,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
+import type { FlowAccent } from '@/shared/presentation/organisms/FlowHero';
 
 /**
  * Landing of /servers/create: a clear choice between launching a cloud VM,
@@ -48,7 +53,7 @@ export default function CreateChooser() {
             <Link
               to="/servers/create"
               search={{ mode: 'manual' }}
-              className={ctaClassName('violet')}
+              className={flowCtaClassName('violet')}
             >
               {t('page.servers.create.chooser.manual.cta')}
               <ArrowRightIcon className="size-4 transition-transform group-hover/cta:translate-x-0.5" />
@@ -91,7 +96,10 @@ function CloudPathCard() {
       description={t('page.servers.create.chooser.cloud.description')}
       duration={t('page.servers.create.chooser.cloud.duration')}
       cta={
-        <Link to="/servers/create/vm-instant" className={ctaClassName('sky')}>
+        <Link
+          to="/servers/create/vm-instant"
+          className={flowCtaClassName('sky')}
+        >
           {t('page.servers.create.chooser.cloud.cta')}
           <ArrowRightIcon className="size-4 transition-transform group-hover/cta:translate-x-0.5" />
         </Link>
@@ -215,39 +223,8 @@ function WhatHappensNext() {
   );
 }
 
-type Accent = 'sky' | 'violet';
-
-const ACCENTS: Record<
-  Accent,
-  { glow: string; border: string; icon: string; badge: string; cta: string }
-> = {
-  sky: {
-    glow: 'bg-[radial-gradient(120%_80%_at_0%_0%,rgba(56,189,248,0.16),transparent_60%)]',
-    border: 'hover:border-sky-400/40',
-    icon: 'border-sky-400/30 bg-sky-500/10 text-sky-600 dark:text-sky-300',
-    badge: 'border-sky-400/30 bg-sky-500/10 text-sky-700 dark:text-sky-300',
-    cta: 'bg-sky-500 text-white hover:bg-sky-400 dark:bg-sky-400 dark:text-sky-950 dark:hover:bg-sky-300 focus-visible:ring-sky-400',
-  },
-  violet: {
-    glow: 'bg-[radial-gradient(120%_80%_at_0%_0%,rgba(167,139,250,0.14),transparent_60%)]',
-    border: 'hover:border-violet-400/40',
-    icon: 'border-violet-400/30 bg-violet-500/10 text-violet-600 dark:text-violet-300',
-    badge:
-      'border-violet-400/30 bg-violet-500/10 text-violet-700 dark:text-violet-300',
-    cta: 'bg-violet-500 text-white hover:bg-violet-400 dark:bg-violet-400 dark:text-violet-950 dark:hover:bg-violet-300 focus-visible:ring-violet-400',
-  },
-};
-
-function ctaClassName(accent: Accent) {
-  return cn(
-    'group/cta inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-    ACCENTS[accent].cta,
-  );
-}
-
 function PathCard(props: {
-  accent: Accent;
+  accent: FlowAccent;
   badge: string;
   children: ReactNode;
   className?: string;
@@ -268,7 +245,7 @@ function PathCard(props: {
     icon: Icon,
     title,
   } = props;
-  const tone = ACCENTS[accent];
+  const tone = FLOW_ACCENTS[accent];
 
   return (
     <section

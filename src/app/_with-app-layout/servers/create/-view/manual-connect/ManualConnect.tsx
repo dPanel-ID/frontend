@@ -5,8 +5,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
+  FileTextIcon,
   KeyRoundIcon,
   PlugZapIcon,
+  ServerCogIcon,
   ServerIcon,
   ShieldCheckIcon,
 } from 'lucide-react';
@@ -19,17 +21,23 @@ import { useToaster } from '@/services/toaster';
 import type { DTOs } from '@/shared/api';
 import { ApiServer } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import { Input } from '@/shared/presentation/atoms/Input';
+import { Spinner } from '@/shared/presentation/atoms/Spinner';
+import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
+import {
+  FlowHero,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
 import { ReviewPanel } from '@/shared/presentation/organisms/ReviewPanel';
+import { SshKeyPicker } from '@/shared/presentation/organisms/SshKeyPicker';
 import { StepCard } from '@/shared/presentation/organisms/StepCard';
+import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
 import type { ManualServerCreateForm } from '../../-rules/manual-create';
 import { createManualServerCreateSchema } from '../../-rules/manual-create';
 
 import AuthorizeKeySnippet from './AuthorizeKeySnippet';
-import SshKeyPicker from './SshKeyPicker';
 
 const MANUAL_PROVIDER = 'other';
 const DEFAULT_AGENT_HTTP_PORT = '20000';
@@ -159,6 +167,38 @@ export default function ManualConnect() {
 
   return (
     <div className="flex flex-col gap-4">
+      <FlowHero
+        accent="violet"
+        icon={ServerCogIcon}
+        badge={t('page.servers.create.chooser.manual.badge')}
+        title={t('page.servers.create.manual.headerTitle')}
+        description={t('page.servers.create.manual.headerDesc')}
+        duration={t('page.servers.create.chooser.manual.duration')}
+        headnote={
+          <Breadcrumb
+            items={[
+              { text: t('sidebar.dashboard'), url: '/dashboard' },
+              { text: t('sidebar.servers'), url: '/servers' },
+              {
+                text: t('page.servers.create.headerTitle'),
+                url: '/servers/create',
+              },
+            ]}
+          />
+        }
+        aside={
+          <a
+            href={LINK__DOCUMENTATION}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-lg border bg-background/60 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-background"
+          >
+            <FileTextIcon className="size-4" />
+            {t('page.servers.docs')}
+          </a>
+        }
+      />
+
       <Link
         to="/servers/create"
         className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -173,11 +213,13 @@ export default function ManualConnect() {
             accent="violet"
             number={1}
             done={readiness.authorized}
+            active={!readiness.authorized}
             icon={KeyRoundIcon}
             title={t('page.servers.create.manual.key.title')}
             description={t('page.servers.create.manual.key.description')}
           >
             <SshKeyPicker
+              accent="violet"
               selectedID={values.cloud?.sshKeyID || undefined}
               onSelect={handleSelectKey}
             />
@@ -224,6 +266,7 @@ export default function ManualConnect() {
             accent="violet"
             number={2}
             done={readiness.connection}
+            active={readiness.authorized && !readiness.connection}
             icon={ServerIcon}
             title={t('page.servers.create.manual.connection.title')}
             description={t('page.servers.create.manual.connection.description')}
@@ -297,15 +340,19 @@ export default function ManualConnect() {
             },
           ]}
           action={
-            <Button.Action
-              className="w-full"
-              disabled={!readiness.all}
-              buttonState={isConnecting ? 'loading' : 'initial'}
+            <button
+              type="button"
+              className={flowCtaClassName('violet', 'w-full py-2.5')}
+              disabled={!readiness.all || isConnecting}
               onClick={handleConnect}
             >
-              <PlugZapIcon className="size-4" />
+              {isConnecting ? (
+                <Spinner className="size-4" />
+              ) : (
+                <PlugZapIcon className="size-4" />
+              )}
               {t('page.servers.create.manual.review.connect')}
-            </Button.Action>
+            </button>
           }
           footnote={
             <span className="flex items-start gap-2">

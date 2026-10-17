@@ -6,6 +6,8 @@ import { zodValidator } from '@tanstack/zod-adapter';
 import {
   ArrowLeftIcon,
   CloudIcon,
+  CloudLightningIcon,
+  FileTextIcon,
   HardDriveIcon,
   MapPinIcon,
   RocketIcon,
@@ -16,15 +18,20 @@ import { useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import {
   CloudProviderLogo,
   getCloudProviderLabel,
 } from '@/shared/presentation/molecules/CloudProviderLogo';
-import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
+import {
+  FlowHero,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
 import { ReviewPanel } from '@/shared/presentation/organisms/ReviewPanel';
 import type { ReviewPanelRow } from '@/shared/presentation/organisms/ReviewPanel';
 import { StepCard } from '@/shared/presentation/organisms/StepCard';
+import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
 import { FormProvider, useForm } from './-model';
 import { formSchema } from './-model/form';
@@ -55,7 +62,13 @@ function LaunchCloudServerPage() {
     <>
       <title>Launch a cloud server | dPanel</title>
 
-      <PageHeader
+      <FlowHero
+        accent="sky"
+        icon={CloudLightningIcon}
+        badge="Recommended"
+        title="Launch a cloud server"
+        description="Pick a provider, a location and a size. dPanel creates the VM in your cloud account and sets it up for you."
+        duration="Ready in about 10–20 minutes"
         headnote={
           <Breadcrumb
             items={[
@@ -65,8 +78,17 @@ function LaunchCloudServerPage() {
             ]}
           />
         }
-        title="Launch a cloud server"
-        description="Pick a provider, a location and a size. dPanel creates the VM in your cloud account and sets it up for you."
+        aside={
+          <a
+            href={LINK__DOCUMENTATION}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-lg border bg-background/60 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-background"
+          >
+            <FileTextIcon className="size-4" />
+            Docs
+          </a>
+        }
       />
 
       <FormProvider>
@@ -293,6 +315,8 @@ function LaunchFlow() {
     ];
   }
 
+  const activeStep = steps.find((step) => !stepDone(step.key))?.key;
+
   return (
     <div className="flex flex-col gap-4">
       <Link
@@ -310,6 +334,7 @@ function LaunchFlow() {
               key={step.key}
               number={index + 1}
               done={stepDone(step.key)}
+              active={activeStep === step.key}
               icon={step.icon}
               title={step.title}
               description={step.description}
@@ -320,20 +345,29 @@ function LaunchFlow() {
         </div>
 
         <ReviewPanel
+          leading={
+            provider ? (
+              <CloudProviderLogo className="size-12 p-2" provider={provider} />
+            ) : undefined
+          }
           eyebrow="Review"
           title={provider ? 'Almost ready' : 'Pick a provider to start'}
           readyTitle="Ready to launch"
           rows={rows}
           action={
-            <Button.Action
-              className="w-full"
-              disabled={!valid}
-              buttonState={isSubmitting ? 'loading' : 'initial'}
+            <button
+              type="button"
+              className={flowCtaClassName('sky', 'w-full py-2.5')}
+              disabled={!valid || isSubmitting}
               onClick={launch}
             >
-              <RocketIcon className="size-4" />
+              {isSubmitting ? (
+                <Spinner className="size-4" />
+              ) : (
+                <RocketIcon className="size-4" />
+              )}
               Launch server
-            </Button.Action>
+            </button>
           }
           secondaryAction={
             <Button
