@@ -1,3 +1,5 @@
+import { useCallback, useState } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm as useReactHookForm } from 'react-hook-form';
 
@@ -47,7 +49,17 @@ export const [FormProvider, useForm] = buildContext('Form', () => {
     },
   });
 
+  // Display names for IDs the form stores (project, SSH key, product), so
+  // the review panel can show names without refetching.
+  const [labels, setLabels] = useState<Record<string, string>>({});
+  const setLabel = useCallback((key: string, label: string) => {
+    setLabels((current) =>
+      current[key] === label ? current : { ...current, [key]: label },
+    );
+  }, []);
+
   const handleFormReset = useHandler(() => {
+    setLabels({});
     form.reset({
       cloud: {
         billingAccountID: undefined,
@@ -89,5 +101,7 @@ export const [FormProvider, useForm] = buildContext('Form', () => {
     form,
     formErrors: form.formState.errors,
     handleFormReset,
+    labels,
+    setLabel,
   };
 });

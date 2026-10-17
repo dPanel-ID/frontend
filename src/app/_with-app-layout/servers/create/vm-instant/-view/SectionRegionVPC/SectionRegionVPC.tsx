@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
 
-import { GlobeIcon, RefreshCwIcon } from 'lucide-react';
+import { RefreshCwIcon } from 'lucide-react';
 import { useController, useWatch } from 'react-hook-form';
 
 import { ApiCloud } from '@/shared/api';
@@ -20,7 +20,6 @@ import {
   isGcpProvider,
 } from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
-import { Sectioned } from '../../../-presentation/Sectioned';
 
 function InlineState(props: {
   action?: ReactNode;
@@ -663,12 +662,7 @@ export default function SectionRegionVPC() {
   if (isBiznetGioProvider(provider)) return null;
 
   return (
-    <Sectioned
-      withinCard
-      sectionIcon={GlobeIcon}
-      sectionTitle="Region Information"
-      sectionDescription="Choose where the VM should run using live region and network data from the selected project."
-    >
+    <div className="space-y-5">
       <div className="space-y-4">
         <div className="grid gap-2 lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start">
           <h6 className="text-sm font-semibold lg:pt-2.5">Region</h6>
@@ -692,6 +686,6 @@ export default function SectionRegionVPC() {
           <SubNetwork />
         </div>
       </div>
-    </Sectioned>
+    </div>
   );
 }

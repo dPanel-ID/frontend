@@ -31,7 +31,6 @@ import { Route as WithAppLayoutBackendCloudProjectsIndexRouteImport } from './ap
 import { Route as WithAppLayoutApplicationsCreateIndexRouteImport } from './app/_with-app-layout/applications/create/index'
 import { Route as WithAppLayoutApplicationsIdIndexRouteImport } from './app/_with-app-layout/applications/$id/index'
 import { Route as WithAppLayoutServersGroupsIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$id/index'
-import { Route as WithAppLayoutServersCreateVmManualIndexRouteImport } from './app/_with-app-layout/servers/create/vm-manual/index'
 import { Route as WithAppLayoutServersCreateVmInstantIndexRouteImport } from './app/_with-app-layout/servers/create/vm-instant/index'
 import { Route as WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/index'
 import { Route as WithAppLayoutBackendLoadBalancersCreateIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/create/index'
@@ -167,12 +166,6 @@ const WithAppLayoutServersGroupsIdIndexRoute =
     path: '/servers/groups/$id/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutServersCreateVmManualIndexRoute =
-  WithAppLayoutServersCreateVmManualIndexRouteImport.update({
-    id: '/servers/create/vm-manual/',
-    path: '/servers/create/vm-manual/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
 const WithAppLayoutServersCreateVmInstantIndexRoute =
   WithAppLayoutServersCreateVmInstantIndexRouteImport.update({
     id: '/servers/create/vm-instant/',
@@ -267,7 +260,6 @@ export interface FileRoutesByFullPath {
   '/backend/load-balancers/create': typeof WithAppLayoutBackendLoadBalancersCreateIndexRoute
   '/backend/secret-managers/ssh-key': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   '/servers/create/vm-instant': typeof WithAppLayoutServersCreateVmInstantIndexRoute
-  '/servers/create/vm-manual': typeof WithAppLayoutServersCreateVmManualIndexRoute
   '/servers/groups/$id': typeof WithAppLayoutServersGroupsIdIndexRoute
   '/backend/secret-managers/ssh-key/$id': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
   '/servers/groups/$groupId/operations/deployments/$id': typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute
@@ -301,7 +293,6 @@ export interface FileRoutesByTo {
   '/backend/load-balancers/create': typeof WithAppLayoutBackendLoadBalancersCreateIndexRoute
   '/backend/secret-managers/ssh-key': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   '/servers/create/vm-instant': typeof WithAppLayoutServersCreateVmInstantIndexRoute
-  '/servers/create/vm-manual': typeof WithAppLayoutServersCreateVmManualIndexRoute
   '/servers/groups/$id': typeof WithAppLayoutServersGroupsIdIndexRoute
   '/backend/secret-managers/ssh-key/$id': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
   '/servers/groups/$groupId/operations/deployments/$id': typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute
@@ -337,7 +328,6 @@ export interface FileRoutesById {
   '/_with-app-layout/backend/load-balancers/create/': typeof WithAppLayoutBackendLoadBalancersCreateIndexRoute
   '/_with-app-layout/backend/secret-managers/ssh-key/': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   '/_with-app-layout/servers/create/vm-instant/': typeof WithAppLayoutServersCreateVmInstantIndexRoute
-  '/_with-app-layout/servers/create/vm-manual/': typeof WithAppLayoutServersCreateVmManualIndexRoute
   '/_with-app-layout/servers/groups/$id/': typeof WithAppLayoutServersGroupsIdIndexRoute
   '/_with-app-layout/backend/secret-managers/ssh-key/$id/': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
   '/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/': typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute
@@ -373,7 +363,6 @@ export interface FileRouteTypes {
     | '/backend/load-balancers/create'
     | '/backend/secret-managers/ssh-key'
     | '/servers/create/vm-instant'
-    | '/servers/create/vm-manual'
     | '/servers/groups/$id'
     | '/backend/secret-managers/ssh-key/$id'
     | '/servers/groups/$groupId/operations/deployments/$id'
@@ -407,7 +396,6 @@ export interface FileRouteTypes {
     | '/backend/load-balancers/create'
     | '/backend/secret-managers/ssh-key'
     | '/servers/create/vm-instant'
-    | '/servers/create/vm-manual'
     | '/servers/groups/$id'
     | '/backend/secret-managers/ssh-key/$id'
     | '/servers/groups/$groupId/operations/deployments/$id'
@@ -442,7 +430,6 @@ export interface FileRouteTypes {
     | '/_with-app-layout/backend/load-balancers/create/'
     | '/_with-app-layout/backend/secret-managers/ssh-key/'
     | '/_with-app-layout/servers/create/vm-instant/'
-    | '/_with-app-layout/servers/create/vm-manual/'
     | '/_with-app-layout/servers/groups/$id/'
     | '/_with-app-layout/backend/secret-managers/ssh-key/$id/'
     | '/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/'
@@ -615,13 +602,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithAppLayoutServersGroupsIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/servers/create/vm-manual/': {
-      id: '/_with-app-layout/servers/create/vm-manual/'
-      path: '/servers/create/vm-manual'
-      fullPath: '/servers/create/vm-manual'
-      preLoaderRoute: typeof WithAppLayoutServersCreateVmManualIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
     '/_with-app-layout/servers/create/vm-instant/': {
       id: '/_with-app-layout/servers/create/vm-instant/'
       path: '/servers/create/vm-instant'
@@ -717,7 +697,6 @@ interface WithAppLayoutRouteRouteChildren {
   WithAppLayoutBackendLoadBalancersCreateIndexRoute: typeof WithAppLayoutBackendLoadBalancersCreateIndexRoute
   WithAppLayoutBackendSecretManagersSshKeyIndexRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
   WithAppLayoutServersCreateVmInstantIndexRoute: typeof WithAppLayoutServersCreateVmInstantIndexRoute
-  WithAppLayoutServersCreateVmManualIndexRoute: typeof WithAppLayoutServersCreateVmManualIndexRoute
   WithAppLayoutServersGroupsIdIndexRoute: typeof WithAppLayoutServersGroupsIdIndexRoute
   WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
   WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute
@@ -757,8 +736,6 @@ const WithAppLayoutRouteRouteChildren: WithAppLayoutRouteRouteChildren = {
     WithAppLayoutBackendSecretManagersSshKeyIndexRoute,
   WithAppLayoutServersCreateVmInstantIndexRoute:
     WithAppLayoutServersCreateVmInstantIndexRoute,
-  WithAppLayoutServersCreateVmManualIndexRoute:
-    WithAppLayoutServersCreateVmManualIndexRoute,
   WithAppLayoutServersGroupsIdIndexRoute:
     WithAppLayoutServersGroupsIdIndexRoute,
   WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute:
