@@ -1,14 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { zodValidator } from '@tanstack/zod-adapter';
 
 import EventController from './-EventController';
 import { ServerDataModelProvider } from './-model/server-data';
-import { ServerNetworkInterfaceModelProvider } from './-model/server-network-interface';
-import { ServerPortInUsedModelProvider } from './-model/server-port-in-used';
 import { ServerStatsModelProvider } from './-model/server-stats';
+import { schemaServerDetailSearch } from './-rules/tabs';
 import ServerDetailView from './-view';
 
 export const Route = createFileRoute('/_with-app-layout/servers/$id/')({
   component: ServerDetailPage,
+  validateSearch: zodValidator(schemaServerDetailSearch),
 });
 
 function ServerDetailPage() {
@@ -17,13 +18,9 @@ function ServerDetailPage() {
   return (
     <ServerDataModelProvider serverId={id}>
       <ServerStatsModelProvider serverId={id}>
-        <ServerNetworkInterfaceModelProvider serverId={id}>
-          <ServerPortInUsedModelProvider serverId={id}>
-            <EventController />
+        <EventController />
 
-            <ServerDetailView />
-          </ServerPortInUsedModelProvider>
-        </ServerNetworkInterfaceModelProvider>
+        <ServerDetailView />
       </ServerStatsModelProvider>
     </ServerDataModelProvider>
   );

@@ -994,6 +994,111 @@
           "title": "Anda belum memasang modul apapun saat ini.",
           "subtitle": "Alat jelajah modul kami memiliki banyak modul yang bisa anda tambahkan ke server anda."
         }
+      },
+      "hero": {
+        "refresh": "Segarkan",
+        "connectSsh": "Hubungkan lewat SSH",
+        "sshHint": "ssh {user}@{host} -p {port}",
+        "edit": "Edit koneksi",
+        "more": "Aksi lainnya",
+        "reinstall": "Instal ulang",
+        "migrateOwnership": "Pindahkan kepemilikan",
+        "delete": "Hapus server",
+        "agent": "Agen {version}",
+        "noAgent": "Agen belum terpasang",
+        "created": "Ditambahkan {when}",
+        "setupRunning": "Penyiapan sedang berjalan. dPanel memasang agennya dan akan melapor di sini.",
+        "followLogs": "Buka log",
+        "setupFailed": "Penyiapan server gagal",
+        "noErrorDetail": "Tidak ada detail error yang dikembalikan.",
+        "viewDetail": "Lihat detail",
+        "closeTerminal": "Tutup terminal SSH",
+        "terminalTitle": "Terminal SSH untuk {name}"
+      },
+      "tabs": {
+        "ariaLabel": "Bagian server",
+        "overview": "Ringkasan",
+        "modules": "Modul",
+        "services": "Layanan",
+        "users": "Pengguna",
+        "network": "Jaringan",
+        "files": "Berkas",
+        "logs": "Log",
+        "settings": "Pengaturan"
+      },
+      "overview": {
+        "liveUsage": "Pemakaian langsung",
+        "liveUsageHint": "Dibaca dari agen setiap beberapa detik selama halaman ini terbuka.",
+        "liveUsageWhenReady": "Pemakaian langsung tampil setelah server siap.",
+        "cpu": "CPU",
+        "cores": "{count} core",
+        "memory": "Memori",
+        "disk": "Disk",
+        "ofTotal": "dari {total}",
+        "applications": "Aplikasi",
+        "applicationsHint": "{running} berjalan di sini",
+        "loadBalancers": "Load balancer",
+        "databases": "Database",
+        "modules": "Modul",
+        "modulesHint": "{tracked} tercatat",
+        "details": "Detail server",
+        "address": "Alamat",
+        "ssh": "Login SSH",
+        "system": "Sistem operasi",
+        "agent": "Agen",
+        "provider": "Penyedia",
+        "ownServer": "Server sendiri",
+        "ownership": "Kepemilikan",
+        "added": "Ditambahkan",
+        "runsHere": "Yang berjalan di sini",
+        "runsHereHint": "Modul yang dilaporkan agen.",
+        "noModules": "Inventaris modul belum dilaporkan.",
+        "manageModules": "Kelola modul",
+        "more": "+{count} lagi"
+      },
+      "modules": {
+        "title": "Modul terpasang",
+        "description": "Semua yang dipasang dPanel di server ini, dikelompokkan per modul.",
+        "add": "Tambah modul",
+        "refresh": "Segarkan inventaris",
+        "refreshed": "Inventaris modul disegarkan.",
+        "refreshFailed": "Tidak dapat menyegarkan inventaris",
+        "empty": {
+          "title": "Belum ada modul",
+          "message": "Tambahkan runtime, database atau web server dari katalog; dPanel memasangnya lewat SSH."
+        }
+      },
+      "files": {
+        "title": "Berkas",
+        "description": "Jelajahi sistem berkas server, unggah berkas dan pratinjau berkas teks tanpa meninggalkan dPanel.",
+        "open": "Buka pengelola berkas",
+        "features": {
+          "browse": "Jelajahi folder sebagai pohon atau tabel",
+          "upload": "Unggah berkas dan buat folder",
+          "preview": "Pratinjau berkas teks di tempat"
+        }
+      },
+      "settings": {
+        "connection": {
+          "title": "Koneksi",
+          "description": "Alamat, login SSH dan port agen yang dipakai dPanel untuk menjangkau server ini.",
+          "action": "Edit koneksi"
+        },
+        "setup": {
+          "title": "Penyiapan",
+          "description": "Jalankan kembali alur penyiapan: hubungkan lewat SSH, instal ulang agen dan segarkan inventaris.",
+          "action": "Instal ulang"
+        },
+        "ownership": {
+          "title": "Kepemilikan",
+          "description": "Server ini milik {owner}. Pindahkan ke workspace lain atau ke ruang pribadi.",
+          "action": "Pindahkan kepemilikan"
+        },
+        "danger": {
+          "title": "Zona berbahaya",
+          "description": "Menghapus akan mengeluarkan server dari dPanel. VM cloud dihancurkan di penyedia.",
+          "action": "Hapus server"
+        }
       }
     },
     "loadBalancers": {

@@ -8,7 +8,12 @@ type EventsRegistry = {
   'server-stats-refresh': null;
   'server-services-refresh': null;
   'server-modules-refresh': null;
-  'server-network-refresh': null;
+  /** Lifecycle actions on the server shown; payloads come from the detail model. */
+  'server-edit': null;
+  'server-reinstall': null;
+  'server-delete': null;
+  'server-migrate-ownership': null;
+  'server-status-info': null;
   'favorite-navigation': FavoriteNavigationPayload;
 };
 
