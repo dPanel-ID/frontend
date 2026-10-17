@@ -14,6 +14,8 @@ export interface RecipeParams {
   userId?: string;
   filter?: 'mine' | 'shared-with-me' | 'public-resource' | 'team' | null;
   hasModules?: 'db' | 'memstore' | null;
+  /** Exact server status, for example "ready" or "failed". */
+  status?: string;
   searchQuery?: string;
   page?: number;
   pageSize?: number;
@@ -25,6 +27,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     filter,
     searchQuery,
     hasModules,
+    status,
     page = 1,
     pageSize = 12,
   } = params;
@@ -65,6 +68,10 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
 
   if (searchQuery) {
     queryParams.set('hostname', searchQuery);
+  }
+
+  if (status) {
+    queryParams.set('status', status);
   }
 
   return {

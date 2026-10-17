@@ -1,9 +1,5 @@
 import { useMemo } from 'react';
 
-import { useNavigate } from '@tanstack/react-router';
-
-import { useDevetekTranslations } from '@/services/i18n';
-
 import type { ServerCard as ServerCardModel } from '@/entities/server/rules/schema';
 
 import { ApiApplication } from '@/shared/api';
@@ -13,15 +9,16 @@ import {
   guardedSelects,
 } from '@/shared/libs/react-factories/guardedSelect';
 import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
-import LayoutAutoGridList from '@/shared/presentation/atoms/LayoutAutoGridList';
-import { EmptyState } from '@/shared/presentation/organisms/EmptyState';
 
-import { useEmit } from '../../-model/events';
 import { useFilterModel } from '../../-model/filters';
 import { useServersModel } from '../../-model/servers';
 import { ServerListState } from '../_presentation/ServerListState';
 
 import ServerCard from './ServerCard';
+import { ServerCompactCard } from './ServerCompactCard';
+import { ServersEmptyState } from './ServersEmptyState';
+import { ServerTable } from './ServerTable';
+import { useServerHandlers } from './useServerHandlers';
 
 type ServersData = {
   servers: ServerCardModel[];
@@ -38,14 +35,18 @@ const [guard, useServers] = guardedSelects({
 );
 
 export default guard(function ServerList() {
-  const navigate = useNavigate();
-  const emit = useEmit();
-  const t = useDevetekTranslations();
-
   const isDesktop = useBreakpoint('lg');
+  const handlersFor = useServerHandlers();
 
   const [servers] = useServers((s) => [s.servers]);
-  const { viewMode } = useFilterModel();
+  const {
+    viewMode,
+    searchQuery,
+    status,
+    setSearchQuery,
+    setStatus,
+    setPagination,
+  } = useFilterModel();
 
   const [applicationsResponse] = ApiApplication.Find.useGet({
     page: 1,
@@ -74,75 +75,51 @@ export default guard(function ServerList() {
     return counts;
   }, [applicationsData]);
 
-  const derivedViewMode: 'grid' | 'list' =
+  const resolvedViewMode =
     viewMode === 'auto' ? (isDesktop ? 'list' : 'grid') : viewMode;
 
   if (servers.length < 1) {
     return (
-      <EmptyState
-        title={t('page.servers.emptyState.title')}
-        message={t('page.servers.emptyState.message')}
-        ctaText={t('page.servers.emptyState.cta')}
-        ctaOnClick={() =>
-          navigate({
-            to: '/servers/create',
-          })
-        }
+      <ServersEmptyState
+        filtered={Boolean(searchQuery || status)}
+        onClearFilters={() => {
+          setPagination(1);
+          setSearchQuery('');
+          setStatus('');
+        }}
       />
     );
   }
 
-  return (
-    <LayoutAutoGridList viewMode={viewMode}>
-      {servers.map((server: ServerCardModel) => {
-        const handleClickEdit = () => {
-          emit('@resources::servers/server-edit-sidepanel', server);
-        };
+  if (resolvedViewMode === 'table') {
+    return <ServerTable servers={servers} handlersFor={handlersFor} />;
+  }
 
-        const handleClickReinstall = () => {
-          emit('@resources::servers/machine-reinstall', {
-            serverId: server.id,
-          });
-        };
-
-        const handleClickMigrateOwnership = () => {
-          return () => {
-            // Manual servers often have no hostname; fall back to the address.
-            emit('@resources::servers/server-migrate-ownership', {
-              serverId: server.id,
-              serverName: server.host.name || server.host.address || server.id,
-              serverTeam: server.ownership.team,
-              serverTeamId: server.ownership.teamId,
-            });
-          };
-        };
-
-        const handleClickDelete = () => {
-          emit('@resources::servers/machine-delete', {
-            serverId: server.id,
-            serverName: server.host.name,
-          });
-        };
-
-        const handleClickStatus = () => {
-          emit('@resources::servers/server-status-info-dialog', server);
-        };
-
-        return (
-          <ServerCard
+  if (resolvedViewMode === 'grid') {
+    return (
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {servers.map((server) => (
+          <ServerCompactCard
             key={server.id}
-            variant={derivedViewMode === 'list' ? 'full' : 'compact'}
-            data={server}
-            applicationCount={applicationCountByServerId.get(server.id) ?? 0}
-            onClickEdit={handleClickEdit}
-            onClickReinstall={handleClickReinstall}
-            onClickMigrateOwnership={handleClickMigrateOwnership()}
-            onClickDelete={handleClickDelete}
-            onClickStatus={handleClickStatus}
+            server={server}
+            handlers={handlersFor(server)}
           />
-        );
-      })}
-    </LayoutAutoGridList>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      {servers.map((server) => (
+        <ServerCard
+          key={server.id}
+          server={server}
+          handlers={handlersFor(server)}
+          applicationCount={applicationCountByServerId.get(server.id) ?? 0}
+        />
+      ))}
+    </div>
   );
 });
 

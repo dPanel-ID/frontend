@@ -1,17 +1,24 @@
-import { ArrowLeftRightIcon, Grid2X2Icon, RefreshCwIcon, Rows3Icon } from 'lucide-react';
+import {
+  ArrowLeftRightIcon,
+  Grid2X2Icon,
+  RefreshCwIcon,
+  Rows3Icon,
+  TableIcon,
+  XIcon,
+} from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
-import { Card } from '@/shared/presentation/atoms/Card';
 import SearchCollapsible from '@/shared/presentation/atoms/SearchCollapsible';
 import SearchKeywordBadge from '@/shared/presentation/atoms/SearchKeywordBadge';
 import { buildSegmentedControl } from '@/widgets/ui-atomic-builder/atom-segmented-control';
 
 import { useEmit } from '../../-model/events';
 import { useFilterModel } from '../../-model/filters';
+import type { ServerViewMode } from '../../-model/filters';
 
-const ViewModeSO = buildSegmentedControl<'auto' | 'list' | 'grid'>({
+const ViewModeSO = buildSegmentedControl<ServerViewMode>({
   options: [
     {
       id: 'auto',
@@ -27,6 +34,11 @@ const ViewModeSO = buildSegmentedControl<'auto' | 'list' | 'grid'>({
       id: 'grid',
       icon: Grid2X2Icon,
       tooltipI18n: 'common.terms.cardGridView',
+    },
+    {
+      id: 'table',
+      icon: TableIcon,
+      tooltipI18n: 'common.terms.tableView',
     },
   ],
 });
@@ -44,12 +56,15 @@ const SlotViewMode = () => {
 
 const SlotRefresh = () => {
   const emit = useEmit();
+  const t = useDevetekTranslations();
 
   return (
     <Button
       size="icon-sm"
       buttonColor="secondary"
       buttonStyle="ghost"
+      aria-label={t('common.actions.refresh')}
+      title={t('common.actions.refresh')}
       onClick={() => emit('@resources::servers/servers-refresh', null)}
     >
       <RefreshCwIcon />
@@ -72,30 +87,52 @@ const SlotSearch = () => {
         setPagination(1);
         setSearchQuery('');
       }}
-      placeholderText={t('common.terms.searchPlaceholder')}
+      placeholderText={t('page.servers.filters.searchPlaceholder')}
     />
   );
 };
 
-const SlotKeywordBadge = () => {
-  const { searchQuery, setSearchQuery, setPagination } = useFilterModel();
+const SlotActiveFilters = () => {
+  const t = useDevetekTranslations();
+  const { searchQuery, setSearchQuery, status, setStatus, setPagination } =
+    useFilterModel();
+
+  if (!searchQuery && !status) return null;
 
   return (
-    <SearchKeywordBadge
-      keyword={searchQuery}
-      onClear={() => {
-        setPagination(1);
-        setSearchQuery('');
-      }}
-    />
+    <div className="flex flex-wrap items-center gap-2">
+      <SearchKeywordBadge
+        keyword={searchQuery}
+        onClear={() => {
+          setPagination(1);
+          setSearchQuery('');
+        }}
+      />
+      {status && (
+        <button
+          type="button"
+          onClick={() => {
+            setPagination(1);
+            setStatus('');
+          }}
+          className="inline-flex max-w-fit items-center gap-x-1.5 rounded-md border border-sky-400/30 bg-sky-500/10 px-2 py-1 text-[0.7rem] text-sky-700 transition-colors hover:bg-sky-500/15 dark:text-sky-300"
+        >
+          <span>{t('page.servers.filters.status')}</span>
+          <span className="font-semibold">
+            {t(`page.servers.overview.${status}`)}
+          </span>
+          <XIcon className="size-3" />
+        </button>
+      )}
+    </div>
   );
 };
 
-export default function MainFilter() {
+export default function FilterBar() {
   return (
     <>
-      <Card className="bg-card/30 rounded-xl p-1.5 grid grid-cols-[1fr_auto] gap-x-2">
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="grid grid-cols-[1fr_auto] gap-x-2 rounded-xl border bg-card/40 p-1.5">
+        <div className="flex flex-wrap items-center gap-2">
           <SlotSearch />
         </div>
 
@@ -103,8 +140,8 @@ export default function MainFilter() {
           <SlotRefresh />
           <SlotViewMode />
         </div>
-      </Card>
-      <SlotKeywordBadge />
+      </div>
+      <SlotActiveFilters />
     </>
   );
 }

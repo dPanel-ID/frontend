@@ -101,7 +101,8 @@
       "port": "Port",
       "path": "Path",
       "branch": "Branch",
-      "command": "Command"
+      "command": "Command",
+      "ownServer": "Own server"
     },
     "actions": {
       "refresh": "Refresh",
@@ -150,7 +151,8 @@
       "http2": "HTTP/2",
       "quic": "QUIC",
       "ssltls": "SSL/TLS",
-      "brotli": "Brotli"
+      "brotli": "Brotli",
+      "aws": "AWS"
     }
   },
   "page": {
@@ -904,6 +906,80 @@
         "title": "No servers found.",
         "message": "Why not add new one to get started?",
         "cta": "Add new server"
+      },
+      "hero": {
+        "description": "Every server dPanel runs for you: cloud VMs it launched and machines you connected.",
+        "groups": "Server groups"
+      },
+      "overview": {
+        "total": "Servers",
+        "totalHint": "{cloud} cloud · {own} own",
+        "ready": "Ready",
+        "progress": "In progress",
+        "failed": "Needs attention"
+      },
+      "filters": {
+        "searchPlaceholder": "Search by hostname",
+        "status": "Status"
+      },
+      "card": {
+        "applications": "Applications",
+        "loadBalancers": "Load balancers",
+        "databases": "Databases",
+        "modules": "Modules",
+        "cpu": "CPU",
+        "memory": "Memory",
+        "disk": "Disk",
+        "liveStatsWhenReady": "Live usage appears once the server is ready.",
+        "noModules": "No module inventory reported yet.",
+        "more": "+{count} more",
+        "setupFailed": "Server setup failed",
+        "noErrorDetail": "No error detail was returned.",
+        "viewDetail": "View detail",
+        "errorDialogTitle": "Server error detail",
+        "noStructuredError": "No structured error detail was returned for this server.",
+        "agent": "Agent {version}"
+      },
+      "table": {
+        "server": "Server",
+        "status": "Status",
+        "provider": "Provider",
+        "system": "System",
+        "address": "Address",
+        "owner": "Owner",
+        "updated": "Updated",
+        "actions": "Actions"
+      },
+      "empty": {
+        "title": "No servers yet",
+        "message": "Launch a VM at a cloud provider or connect a server you already run. dPanel sets it up either way.",
+        "launch": "Launch a cloud server",
+        "connect": "Connect your own server",
+        "filteredTitle": "No servers match",
+        "filteredMessage": "Try another search, or clear the filters to see every server.",
+        "clear": "Clear filters"
+      },
+      "dialogs": {
+        "delete": {
+          "title": "Delete server",
+          "description": "This removes <strong>{name}</strong> from dPanel and cannot be undone.",
+          "happens": "What happens",
+          "uninstallAgent": "dPanel uninstalls its agent from the server.",
+          "cloudDeleted": "The VM is deleted at {provider}. Its disk and everything on it are gone.",
+          "ownKept": "The machine keeps running; only dPanel forgets it.",
+          "blocked": "Deletion is refused while applications or load balancers still use this server.",
+          "confirmLabel": "Type <code>{name}</code> to confirm",
+          "confirm": "Delete server"
+        },
+        "reinstall": {
+          "title": "Reinstall server",
+          "description": "Runs the setup workflow again on <strong>{name}</strong>.",
+          "happens": "What happens next",
+          "step1": "dPanel connects over SSH with the stored key.",
+          "step2": "It reinstalls the agent and refreshes the inventory.",
+          "step3": "Installed modules and your data stay on the server.",
+          "confirm": "Reinstall"
+        }
       }
     },
     "serverDetail": {
@@ -1832,6 +1908,31 @@
           "placeholder": "Select an application",
           "onError": "Failed to load applications."
         }
+      }
+    },
+    "serverEdit": {
+      "title": "Edit server",
+      "sections": {
+        "address": {
+          "title": "Address",
+          "description": "Where dPanel reaches the server. Changing it affects every workflow."
+        },
+        "ssh": {
+          "title": "SSH login",
+          "description": "The user and port dPanel logs in with."
+        },
+        "agent": {
+          "title": "Agent",
+          "description": "How dPanel talks to the agent it installed."
+        }
+      },
+      "fields": {
+        "address": "Server address",
+        "sshUser": "Linux user",
+        "sshPort": "SSH port",
+        "domain": "Domain",
+        "domainHint": "Optional. Used instead of the address for the agent.",
+        "httpPort": "HTTP port"
       }
     }
   },

@@ -9,19 +9,23 @@ import buildSelector from '@/shared/libs/react-factories/buildSelector';
 import { useSubscribe } from './events';
 import { useFilterModel } from './filters';
 
+/** Servers per page; rich cards each poll the agent, so keep it modest. */
+export const SERVERS_PAGE_SIZE = 6;
+
 export const [ServersModelProvider, useServersModel] = buildSelector(
   'ServersModel',
 )(() => {
   const { id: userId } = useAuthLoggedIn().userProfile;
 
-  const { pagination, ownership, searchQuery } = useFilterModel();
+  const { pagination, ownership, searchQuery, status } = useFilterModel();
 
   const [responseServers, refresh] = ApiServer.Find.useGet({
     filter: ownership,
     userId,
-    pageSize: 4,
+    pageSize: SERVERS_PAGE_SIZE,
     page: pagination,
     searchQuery,
+    status,
   });
 
   useSubscribe('@resources::servers/servers-refresh', () => refresh());

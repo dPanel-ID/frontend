@@ -1,4 +1,5 @@
-import { useDialog } from '@/services/dialog';
+import { useState } from 'react';
+
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
@@ -12,21 +13,34 @@ interface Params {
   onSuccess: () => void;
 }
 
+/**
+ * Holds the server waiting for a reinstall confirmation and queues the setup
+ * workflow once it is given. The view renders the dialog from the state.
+ */
 export default function useMachineReinstallUsecase(params: Params) {
   const { onSuccess } = params;
 
   const t = useDevetekTranslations();
-
   const [openToaster] = useToaster();
-  const [openDialog] = useDialog();
+
+  const [target, setTarget] = useState<MachineReinstallPayload | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleUsecase = useHandler((payload: MachineReinstallPayload) => {
-    const { serverId } = payload;
+    setTarget(payload);
+  });
 
-    const action = async () => {
-      const response = await ApiServer.Setup.$Id.doPost({
-        id: serverId,
-      });
+  const close = useHandler(() => {
+    if (!isSubmitting) setTarget(null);
+  });
+
+  const confirm = useHandler(async () => {
+    if (!target || isSubmitting) return;
+    const { serverId } = target;
+
+    setIsSubmitting(true);
+    try {
+      const response = await ApiServer.Setup.$Id.doPost({ id: serverId });
 
       if (response.$status === 'success') {
         openToaster({
@@ -48,21 +62,11 @@ export default function useMachineReinstallUsecase(params: Params) {
         }),
         message: getApiErrorDetail(response.error),
       });
-    };
-
-    openDialog({
-      title: t('dialog.machineReinstall.title'),
-      content: t.rich('dialog.machineReinstall.message', {
-        code: (chunks) => <code>{chunks}</code>,
-        machineID: serverId,
-      }),
-      variant: 'warning',
-      actions: {
-        variant: 'YesNo',
-        yes: action,
-      },
-    });
+    } finally {
+      setIsSubmitting(false);
+      setTarget(null);
+    }
   });
 
-  return [handleUsecase] as const;
+  return [handleUsecase, { target, isSubmitting, confirm, close }] as const;
 }
