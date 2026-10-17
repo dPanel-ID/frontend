@@ -1807,12 +1807,12 @@
         "unknown": "Tidak diketahui"
       },
       "operationType": {
-        "module.install": "Pasang modul",
-        "module.action": "Aksi modul",
-        "application.deploy": "Deploy artefak",
-        "module.inventory": "Segarkan inventaris",
-        "agent.upgrade": "Perbarui agen",
-        "system.reboot": "Reboot"
+        "moduleInstall": "Pasang modul",
+        "moduleAction": "Aksi modul",
+        "applicationDeploy": "Deploy artefak",
+        "moduleInventory": "Segarkan inventaris",
+        "agentUpgrade": "Perbarui agen",
+        "systemReboot": "Reboot"
       },
       "createDialog": {
         "title": "Buat grup server",

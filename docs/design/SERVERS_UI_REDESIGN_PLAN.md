@@ -4,7 +4,8 @@ Status: in progress, 2026-10-17. Done so far: the create-server landing and
 manual connect flow (dPanel-ID/frontend#8), the Launch cloud VM page (#9,
 #10), the server list with its panels (#11; shared blocks `StatTile`,
 `StatusPill`, `ServerIdentity`, `ServerStatusPill`) and the server detail
-page with its tabs. Next: server groups.
+page with its tabs, and the server groups pages. Next: operation detail
+pages.
 
 ## Design principles
 
@@ -93,7 +94,10 @@ better page by page and nothing is half-done.
    shows the last 20 lines by default; Files opens the file manager; the
    Firewall placeholder is gone. The delete/reinstall dialogs now live in
    `features/server-lifecycle-dialogs` and are shared with the list.
-5. **Server groups** (#7, #8) with N, O.
+5. **Server groups** (#7, #8) with N, O. Done: list with fleet tiles and
+   member-chip cards, detail with Servers and Operations tabs on the shared
+   `DataPanel`, a "Run on this group" strip, operation history and per-server
+   results, dialogs that say what happens, and the restyled server picker.
 6. **Operation detail pages** (#9–#11) on the shared execution layout.
 
 Each PR is checked in a local preview against a mock API at 1440, 1024 and

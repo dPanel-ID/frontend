@@ -19,6 +19,7 @@ import type {
 import { useRetainedResponseData } from '@/features/server-groups/usecase/use-retained-response-data';
 
 import { ApiHostGroup } from '@/shared/api';
+import type { DTOs } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
@@ -33,6 +34,18 @@ import { CreateGroupDialog } from './CreateGroupDialog';
 import { GroupCard } from './GroupCard';
 import type { GroupExtras } from './GroupCard';
 import { GroupsEmptyState } from './GroupsEmptyState';
+
+/**
+ * fetchGet spreads a list payload into the response object, so the items sit
+ * under numeric keys; this puts them back into an array.
+ */
+function arrayPayload<T>(response: object): T[] {
+  const record = response as Record<string, unknown>;
+  return Object.keys(record)
+    .filter((key) => /^\d+$/.test(key))
+    .sort((left, right) => Number(left) - Number(right))
+    .map((key) => record[key] as T);
+}
 
 function isUnauthorizedStatus(status?: number | string) {
   const normalizedStatus = Number(status);
@@ -91,23 +104,23 @@ export default function ServerGroupsView() {
                   region: member.region || undefined,
                 }))
               : [];
-          const latest =
+          const operationList =
             operations.$status === 'success'
-              ? [...operations]
-                  .sort(
-                    (left, right) =>
-                      new Date(right.updated_at).getTime() -
-                      new Date(left.updated_at).getTime(),
-                  )
-                  .at(0)
-              : undefined;
+              ? arrayPayload<DTOs.HostGroupOperationV1>(operations)
+              : [];
+          const latest = operationList
+            .sort(
+              (left, right) =>
+                new Date(right.updated_at).getTime() -
+                new Date(left.updated_at).getTime(),
+            )
+            .at(0);
 
           return [
             groupId,
             {
               members,
-              operationCount:
-                operations.$status === 'success' ? operations.length : 0,
+              operationCount: operationList.length,
               lastOperation:
                 latest === undefined
                   ? undefined

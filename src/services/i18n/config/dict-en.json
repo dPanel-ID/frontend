@@ -1815,12 +1815,12 @@
         "unknown": "Unknown"
       },
       "operationType": {
-        "module.install": "Install module",
-        "module.action": "Module action",
-        "application.deploy": "Deploy artifact",
-        "module.inventory": "Refresh inventory",
-        "agent.upgrade": "Upgrade agent",
-        "system.reboot": "Reboot"
+        "moduleInstall": "Install module",
+        "moduleAction": "Module action",
+        "applicationDeploy": "Deploy artifact",
+        "moduleInventory": "Refresh inventory",
+        "agentUpgrade": "Upgrade agent",
+        "systemReboot": "Reboot"
       },
       "createDialog": {
         "title": "Create server group",

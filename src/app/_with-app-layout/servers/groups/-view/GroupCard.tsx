@@ -149,18 +149,20 @@ function MemberChip(props: { member: HostGroupMember }) {
   );
 }
 
+const OPERATION_TYPE_KEYS: Record<string, string> = {
+  'module.install': 'moduleInstall',
+  'module.action': 'moduleAction',
+  'application.deploy': 'applicationDeploy',
+  'module.inventory': 'moduleInventory',
+  'agent.upgrade': 'agentUpgrade',
+  'system.reboot': 'systemReboot',
+};
+
 /** Human label of an operation type, falling back to the raw type. */
 export function operationTypeLabel(
   type: string,
   t: ReturnType<typeof useDevetekTranslations>,
 ) {
-  const known = [
-    'module.install',
-    'module.action',
-    'application.deploy',
-    'module.inventory',
-    'agent.upgrade',
-    'system.reboot',
-  ];
-  return known.includes(type) ? t(`operationType.${type}`) : type;
+  const key = OPERATION_TYPE_KEYS[type];
+  return key ? t(`operationType.${key}`) : type;
 }
