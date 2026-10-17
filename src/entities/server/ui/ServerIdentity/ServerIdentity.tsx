@@ -25,6 +25,8 @@ export interface ServerIdentityProps {
   trailing?: ReactNode;
   /** Shows the address, OS and region under the name. */
   meta?: boolean;
+  /** Makes the name a button, for example to open the server's page. */
+  onClickName?: () => void;
   className?: string;
 }
 
@@ -49,7 +51,14 @@ const SIZE_CLASSES = {
  * its name, and optionally where it lives and what it runs.
  */
 export function ServerIdentity(props: ServerIdentityProps) {
-  const { className, meta = false, server, size = 'md', trailing } = props;
+  const {
+    className,
+    meta = false,
+    onClickName,
+    server,
+    size = 'md',
+    trailing,
+  } = props;
   const t = useDevetekTranslations();
   const sizes = SIZE_CLASSES[size];
   const cloud = isCloudServer(server);
@@ -76,14 +85,27 @@ export function ServerIdentity(props: ServerIdentityProps) {
 
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-          <span
-            className={cn(
-              'truncate font-bold leading-tight text-primary',
-              sizes.name,
-            )}
-          >
-            {serverDisplayName(server)}
-          </span>
+          {onClickName ? (
+            <button
+              type="button"
+              onClick={onClickName}
+              className={cn(
+                'truncate rounded text-left font-bold leading-tight text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50',
+                sizes.name,
+              )}
+            >
+              {serverDisplayName(server)}
+            </button>
+          ) : (
+            <span
+              className={cn(
+                'truncate font-bold leading-tight text-primary',
+                sizes.name,
+              )}
+            >
+              {serverDisplayName(server)}
+            </span>
+          )}
           {trailing}
         </div>
 

@@ -34,13 +34,11 @@ export function ServerCompactCard(props: ServerCompactCardProps) {
         status === 'deleting' && 'border-dashed border-amber-400/50',
       )}
     >
-      <button
-        type="button"
-        className="min-w-0 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50"
-        onClick={handlers.openDetails}
-      >
-        <ServerIdentity server={server} size="md" />
-      </button>
+      <ServerIdentity
+        server={server}
+        size="md"
+        onClickName={handlers.openDetails}
+      />
 
       <ServerStatusPill
         state={server.state}

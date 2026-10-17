@@ -8,15 +8,7 @@ export interface ServerMigrateOwnershipPayload {
   serverTeamId?: string;
 }
 
-export interface MachineReinstallPayload {
-  serverId: SchemaCommon.UnitId;
-  serverName?: string;
-}
-
-export interface MachineDeletePayload {
-  serverId: SchemaCommon.UnitId;
-  serverName?: string;
-  serverAddress?: string;
-  /** Cloud provider ID when dPanel launched the VM; absent for own servers. */
-  provider?: string;
-}
+export type {
+  DeleteServerPayload as MachineDeletePayload,
+  ReinstallServerPayload as MachineReinstallPayload,
+} from '@/features/server-lifecycle-dialogs';
