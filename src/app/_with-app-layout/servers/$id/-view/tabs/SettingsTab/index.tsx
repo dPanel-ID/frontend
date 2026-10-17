@@ -13,10 +13,10 @@ import { useDevetekTranslations } from '@/services/i18n';
 
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { DataPanel } from '@/shared/presentation/organisms/DataPanel';
 
 import { useEmit } from '../../../-model/events';
 import { useServerDataModel } from '../../../-model/server-data';
-import { TabPanel } from '../_shared/TabPanel';
 
 /** The rarely needed actions, each with what it does spelled out. */
 export default function SettingsTab() {
@@ -27,7 +27,7 @@ export default function SettingsTab() {
   const busy = server?.state.status === 'progress';
 
   return (
-    <TabPanel
+    <DataPanel
       icon={SettingsIcon}
       title={t('title')}
       description={t('description')}
@@ -104,7 +104,7 @@ export default function SettingsTab() {
           }
         />
       </div>
-    </TabPanel>
+    </DataPanel>
   );
 }
 

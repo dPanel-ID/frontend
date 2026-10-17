@@ -153,6 +153,15 @@
       "ssltls": "SSL/TLS",
       "brotli": "Brotli",
       "aws": "AWS"
+    },
+    "dataPanel": {
+      "refresh": "Refresh",
+      "rows": "{count} rows",
+      "pageOf": "Page {page} of {total}",
+      "loading": "Loading\u2026",
+      "loadFailed": "Could not load this section",
+      "retry": "Retry",
+      "clearSearch": "Clear search"
     }
   },
   "page": {
@@ -1129,15 +1138,6 @@
         "title": "Settings",
         "description": "Changes you rarely need, each saying what it does."
       },
-      "tabsCommon": {
-        "refresh": "Refresh",
-        "rows": "{count} rows",
-        "pageOf": "Page {page} of {total}",
-        "loading": "Loading\u2026",
-        "loadFailed": "Could not load this section",
-        "retry": "Retry",
-        "clearSearch": "Clear search"
-      },
       "services": {
         "title": "Services",
         "description": "systemd units reported by the agent. Start, stop or restart them from here.",
@@ -1226,7 +1226,8 @@
           "level": "Level",
           "source": "Source",
           "message": "Message"
-        }
+        },
+        "openEntry": "Open entry"
       }
     },
     "loadBalancers": {
@@ -2144,20 +2145,48 @@
         "ssh": {
           "title": "SSH login",
           "description": "The user and port dPanel logs in with."
-        },
-        "agent": {
-          "title": "Agent",
-          "description": "How dPanel talks to the agent it installed."
         }
       },
       "fields": {
         "address": "Server address",
         "sshUser": "Linux user",
-        "sshPort": "SSH port",
-        "domain": "Domain",
-        "domainHint": "Optional. Used instead of the address for the agent.",
-        "httpPort": "HTTP port"
+        "sshPort": "SSH port"
       }
+    },
+    "logEntry": {
+      "title": "Log entry",
+      "line": "Line {number}",
+      "message": "Message",
+      "payload": "Structured payload",
+      "context": "Context",
+      "raw": "Raw line",
+      "copy": "Copy raw line",
+      "copied": "Copied",
+      "close": "Close"
+    },
+    "modulesDiscover": {
+      "title": "Add module",
+      "heading": "Module catalog",
+      "description": "Runtimes, databases and web servers dPanel can install on this server over SSH.",
+      "reload": "Reload catalog",
+      "refreshInstalled": "Refresh installed",
+      "refreshed": "Installed modules refreshed.",
+      "refreshFailed": "Could not refresh installed modules",
+      "tiles": {
+        "available": "Available",
+        "installed": "Installed",
+        "categories": "Categories"
+      },
+      "searchPlaceholder": "Search modules",
+      "all": "All",
+      "install": "Install",
+      "manage": "Manage",
+      "installed": "Installed",
+      "noDescription": "No description available.",
+      "loading": "Loading the module catalog\u2026",
+      "failed": "Could not load the catalog",
+      "empty": "The module repository did not expose any modules.",
+      "noMatch": "No modules match your search."
     }
   },
   "modal": {

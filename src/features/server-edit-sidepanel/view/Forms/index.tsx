@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { GlobeIcon, HardHatIcon, KeyRoundIcon } from 'lucide-react';
+import { GlobeIcon, KeyRoundIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
@@ -56,32 +56,6 @@ export default function Forms() {
               {...form.register('ssh.port', { valueAsNumber: true })}
             />
             <ErrorInline message={errors.ssh?.port?.message} />
-          </Field>
-        </div>
-      </Section>
-
-      <Section
-        icon={HardHatIcon}
-        title={t('sections.agent.title')}
-        description={t('sections.agent.description')}
-      >
-        <div className="grid gap-3">
-          <Field label={t('fields.httpPort')} required className="sm:w-40">
-            <Input
-              type="number"
-              inputMode="numeric"
-              {...form.register('agent.httpPort', { valueAsNumber: true })}
-            />
-            <ErrorInline message={errors.agent?.httpPort?.message} />
-          </Field>
-          <Field label={t('fields.domain')} hint={t('fields.domainHint')}>
-            <Input
-              autoComplete="off"
-              spellCheck={false}
-              placeholder="agent.example.com"
-              {...form.register('agent.domain')}
-            />
-            <ErrorInline message={errors.agent?.domain?.message} />
           </Field>
         </div>
       </Section>

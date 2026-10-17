@@ -60,7 +60,7 @@ const JSON_TIME_KEYS = [
 ] as const;
 const JSON_LEVEL_KEYS = ['level', 'severity', 'status', 'priority'] as const;
 
-type LogLevel = 'debug' | 'info' | 'notice' | 'warn' | 'error' | 'fatal';
+export type LogLevel = 'debug' | 'info' | 'notice' | 'warn' | 'error' | 'fatal';
 
 export interface ParsedLogLine {
   id: string;
@@ -94,7 +94,7 @@ const LEVEL_STYLE: Record<LogLevel, string> = {
   fatal: 'border-red-600/30 bg-red-600/15 text-red-700 dark:text-red-200',
 };
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+export function isRecord(value: unknown): value is Record<string, unknown> {
   return value != null && typeof value === 'object' && !Array.isArray(value);
 }
 
@@ -156,7 +156,7 @@ function isJsonLikeLogText(value: string) {
   );
 }
 
-function formatJson(value: unknown) {
+export function formatJson(value: unknown) {
   try {
     return JSON.stringify(value, null, 2);
   } catch {
@@ -680,7 +680,7 @@ function ToolbarIconButton(props: {
   );
 }
 
-function LogLevelBadge(props: { level: LogLevel }) {
+export function LogLevelBadge(props: { level: LogLevel }) {
   const { level } = props;
 
   return (

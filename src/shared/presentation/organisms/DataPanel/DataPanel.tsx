@@ -13,9 +13,9 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { buildPaginationV2 } from '@/widgets/ui-atomic-builder/atom-pagination-v2';
 
 /** Rows per page on tabs that paginate in the browser. */
-export const TAB_PAGE_SIZE = 10;
+export const DATA_PANEL_PAGE_SIZE = 10;
 
-interface TabPanelProps {
+interface DataPanelProps {
   icon: LucideIcon;
   title: string;
   description: string;
@@ -31,11 +31,11 @@ interface TabPanelProps {
 }
 
 /**
- * The anatomy every tab shares: header, summary tiles, toolbar, content,
- * footer. Tabs differ in data, never in structure, so switching between
- * them feels like staying on one page.
+ * The anatomy every data section shares: header, summary tiles, toolbar,
+ * content, footer. Sections differ in data, never in structure, so moving
+ * between them feels like staying on one page.
  */
-export function TabPanel(props: TabPanelProps) {
+export function DataPanel(props: DataPanelProps) {
   const {
     actions,
     children,
@@ -92,13 +92,13 @@ export function TabPanel(props: TabPanelProps) {
 }
 
 /** The search box every toolbar starts with. */
-export function TabSearch(props: {
+export function DataPanelSearch(props: {
   value: string;
   placeholder: string;
   onChange: (value: string) => void;
 }) {
   const { onChange, placeholder, value } = props;
-  const t = useDevetekTranslations('page.serverDetail.tabsCommon');
+  const t = useDevetekTranslations('common.dataPanel');
 
   return (
     <label className="relative w-full sm:w-80">
@@ -130,12 +130,12 @@ export function TabSearch(props: {
 }
 
 /** Small right-aligned text in a toolbar or footer, for counts. */
-export function TabMeta(props: { children: ReactNode }) {
+export function DataPanelMeta(props: { children: ReactNode }) {
   return <p className="text-xs text-muted-foreground">{props.children}</p>;
 }
 
 /** Loading, empty and failed states, all the same height and tone. */
-export function TabState(props: {
+export function DataPanelState(props: {
   state: 'loading' | 'empty' | 'failed';
   title: string;
   description?: string;
@@ -167,8 +167,8 @@ export function TabState(props: {
 }
 
 /** A retry button for failed states. */
-export function TabRetry(props: { onClick: () => void }) {
-  const t = useDevetekTranslations('page.serverDetail.tabsCommon');
+export function DataPanelRetry(props: { onClick: () => void }) {
+  const t = useDevetekTranslations('common.dataPanel');
 
   return (
     <Button
@@ -183,7 +183,7 @@ export function TabRetry(props: { onClick: () => void }) {
 }
 
 /** Table cell classes shared by every tab, so columns line up alike. */
-export const tabTable = {
+export const dataTable = {
   head: 'h-auto bg-background/60 px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground',
   cell: 'px-4 py-2.5 text-sm',
   mutedCell: 'px-4 py-2.5 text-sm text-muted-foreground',
@@ -193,19 +193,19 @@ export const tabTable = {
 const Pagination = buildPaginationV2({});
 
 /** Footer pagination; renders nothing with a single page. */
-export function TabPagination(props: {
+export function DataPanelPagination(props: {
   page: number;
   totalPage: number;
   onPageChange: (page: number) => void;
 }) {
   const { onPageChange, page, totalPage } = props;
-  const t = useDevetekTranslations('page.serverDetail.tabsCommon');
+  const t = useDevetekTranslations('common.dataPanel');
 
   if (totalPage <= 1) return null;
 
   return (
     <>
-      <TabMeta>{t('pageOf', { page, total: totalPage })}</TabMeta>
+      <DataPanelMeta>{t('pageOf', { page, total: totalPage })}</DataPanelMeta>
       <Pagination
         alwaysShowPaginationRows
         currentPage={page}
@@ -219,7 +219,7 @@ export function TabPagination(props: {
 }
 
 /** Browser-side paging over a list; the page resets when the list changes. */
-export function usePagedList<T>(items: T[], pageSize = TAB_PAGE_SIZE) {
+export function usePagedList<T>(items: T[], pageSize = DATA_PANEL_PAGE_SIZE) {
   // Remember which list the page belongs to, so a new list starts at page 1
   // without an effect.
   const [pageState, setPageState] = useState({ items, page: 1 });

@@ -12,10 +12,6 @@ export const schemaServerEdit = z.object({
     username: z.string().trim().min(1, 'Required'),
     port,
   }),
-  agent: z.object({
-    httpPort: port,
-    domain: z.string().trim().optional(),
-  }),
 });
 
 export type SchemaServerEdit = z.infer<typeof schemaServerEdit>;

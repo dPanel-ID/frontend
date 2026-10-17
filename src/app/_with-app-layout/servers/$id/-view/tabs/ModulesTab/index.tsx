@@ -19,11 +19,16 @@ import {
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
+import {
+  DataPanel,
+  DataPanelMeta,
+  DataPanelSearch,
+  DataPanelState,
+} from '@/shared/presentation/organisms/DataPanel';
 import { flowCtaClassName } from '@/shared/presentation/organisms/FlowHero';
 
 import { useEmit } from '../../../-model/events';
 import { useServerDataModel } from '../../../-model/server-data';
-import { TabMeta, TabPanel, TabSearch, TabState } from '../_shared/TabPanel';
 
 import { ModulesTabStates as UIStates } from './_States';
 import ModulesList from './ModulesList';
@@ -39,7 +44,7 @@ const [guard, useServerModules] = guardedSelects({
 /** Everything dPanel installed here, with the catalog one click away. */
 export default guard(function ModulesTab() {
   const t = useDevetekTranslations('page.serverDetail.modules');
-  const tCommon = useDevetekTranslations('page.serverDetail.tabsCommon');
+  const tCommon = useDevetekTranslations('common.dataPanel');
   const emit = useEmit();
   const [openToaster] = useToaster();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -99,7 +104,7 @@ export default guard(function ModulesTab() {
   }
 
   return (
-    <TabPanel
+    <DataPanel
       icon={PuzzleIcon}
       title={t('title')}
       description={t('description')}
@@ -152,17 +157,19 @@ export default guard(function ModulesTab() {
       }
       toolbar={
         <>
-          <TabSearch
+          <DataPanelSearch
             value={searchQuery}
             placeholder={t('searchPlaceholder')}
             onChange={setSearchQuery}
           />
-          <TabMeta>{tCommon('rows', { count: visibleModules.length })}</TabMeta>
+          <DataPanelMeta>
+            {tCommon('rows', { count: visibleModules.length })}
+          </DataPanelMeta>
         </>
       }
     >
       {visibleModules.length === 0 ? (
-        <TabState state="empty" title={t('noMatch')} />
+        <DataPanelState state="empty" title={t('noMatch')} />
       ) : (
         <ModulesList
           modules={visibleModules}
@@ -170,6 +177,6 @@ export default guard(function ModulesTab() {
           onDeleted={refreshModules}
         />
       )}
-    </TabPanel>
+    </DataPanel>
   );
 });

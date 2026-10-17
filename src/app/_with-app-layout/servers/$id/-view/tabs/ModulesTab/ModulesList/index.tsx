@@ -30,9 +30,9 @@ import {
 } from '@/shared/presentation/atoms/Table';
 import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 import type { StatusTone } from '@/shared/presentation/molecules/StatusPill';
+import { dataTable } from '@/shared/presentation/organisms/DataPanel';
 
 import useModuleInstallationDelete from '../../../../-usecase/module-installation-delete';
-import { tabTable } from '../../_shared/TabPanel';
 
 import type { ModulesListProps } from './types';
 
@@ -69,11 +69,13 @@ export default function ModulesList(props: ModulesListProps) {
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            <TableHead className={tabTable.head}>{t('table.module')}</TableHead>
-            <TableHead className={tabTable.head}>
+            <TableHead className={dataTable.head}>
+              {t('table.module')}
+            </TableHead>
+            <TableHead className={dataTable.head}>
               {t('table.versions')}
             </TableHead>
-            <TableHead className={cn(tabTable.head, 'w-36')}>
+            <TableHead className={cn(dataTable.head, 'w-36')}>
               {t('table.status')}
             </TableHead>
           </TableRow>
@@ -87,7 +89,7 @@ export default function ModulesList(props: ModulesListProps) {
 
             return (
               <TableRow key={group.id}>
-                <TableCell className={tabTable.cell}>
+                <TableCell className={dataTable.cell}>
                   <div className="flex min-w-0 items-center gap-3">
                     <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-white p-1.5 shadow-sm">
                       <img
@@ -106,7 +108,7 @@ export default function ModulesList(props: ModulesListProps) {
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className={tabTable.cell}>
+                <TableCell className={dataTable.cell}>
                   <div className="flex flex-wrap gap-1.5">
                     {group.installations.map((installation) => (
                       <button
@@ -129,7 +131,7 @@ export default function ModulesList(props: ModulesListProps) {
                     ))}
                   </div>
                 </TableCell>
-                <TableCell className={tabTable.cell}>
+                <TableCell className={dataTable.cell}>
                   <StatusPill
                     tone={GROUP_STATUS_TONE[status]}
                     pulse={status === 'installing'}
