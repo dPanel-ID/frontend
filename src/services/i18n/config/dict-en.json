@@ -1003,6 +1003,111 @@
           "title": "You haven't installed any modules yet.",
           "subtitle": "Our modules discovery has tons of modules you can add for your server."
         }
+      },
+      "hero": {
+        "refresh": "Refresh",
+        "connectSsh": "Connect over SSH",
+        "sshHint": "ssh {user}@{host} -p {port}",
+        "edit": "Edit connection",
+        "more": "More actions",
+        "reinstall": "Reinstall",
+        "migrateOwnership": "Migrate ownership",
+        "delete": "Delete server",
+        "agent": "Agent {version}",
+        "noAgent": "Agent not installed yet",
+        "created": "Added {when}",
+        "setupRunning": "Setup is running. dPanel is installing its agent and will report back here.",
+        "followLogs": "Open logs",
+        "setupFailed": "Server setup failed",
+        "noErrorDetail": "No error detail was returned.",
+        "viewDetail": "View detail",
+        "closeTerminal": "Close SSH terminal",
+        "terminalTitle": "SSH terminal for {name}"
+      },
+      "tabs": {
+        "ariaLabel": "Server sections",
+        "overview": "Overview",
+        "modules": "Modules",
+        "services": "Services",
+        "users": "Users",
+        "network": "Network",
+        "files": "Files",
+        "logs": "Logs",
+        "settings": "Settings"
+      },
+      "overview": {
+        "liveUsage": "Live usage",
+        "liveUsageHint": "Read from the agent every few seconds while this page is open.",
+        "liveUsageWhenReady": "Live usage appears once the server is ready.",
+        "cpu": "CPU",
+        "cores": "{count} cores",
+        "memory": "Memory",
+        "disk": "Disk",
+        "ofTotal": "of {total}",
+        "applications": "Applications",
+        "applicationsHint": "{running} running here",
+        "loadBalancers": "Load balancers",
+        "databases": "Databases",
+        "modules": "Modules",
+        "modulesHint": "{tracked} tracked",
+        "details": "Server details",
+        "address": "Address",
+        "ssh": "SSH login",
+        "system": "Operating system",
+        "agent": "Agent",
+        "provider": "Provider",
+        "ownServer": "Own server",
+        "ownership": "Ownership",
+        "added": "Added",
+        "runsHere": "What runs here",
+        "runsHereHint": "Modules reported by the agent.",
+        "noModules": "No module inventory reported yet.",
+        "manageModules": "Manage modules",
+        "more": "+{count} more"
+      },
+      "modules": {
+        "title": "Installed modules",
+        "description": "Everything dPanel installed on this server, grouped by module.",
+        "add": "Add module",
+        "refresh": "Refresh inventory",
+        "refreshed": "Module inventory refreshed.",
+        "refreshFailed": "Could not refresh the inventory",
+        "empty": {
+          "title": "No modules yet",
+          "message": "Add a runtime, database or web server from the catalog; dPanel installs it over SSH."
+        }
+      },
+      "files": {
+        "title": "Files",
+        "description": "Browse the server's filesystem, upload files and preview text files without leaving dPanel.",
+        "open": "Open file manager",
+        "features": {
+          "browse": "Browse folders as a tree or a table",
+          "upload": "Upload files and create folders",
+          "preview": "Preview text files in place"
+        }
+      },
+      "settings": {
+        "connection": {
+          "title": "Connection",
+          "description": "The address, SSH login and agent ports dPanel uses to reach this server.",
+          "action": "Edit connection"
+        },
+        "setup": {
+          "title": "Setup",
+          "description": "Run the setup workflow again: reconnect over SSH, reinstall the agent and refresh the inventory.",
+          "action": "Reinstall"
+        },
+        "ownership": {
+          "title": "Ownership",
+          "description": "This server belongs to {owner}. Move it to another workspace or to a personal space.",
+          "action": "Migrate ownership"
+        },
+        "danger": {
+          "title": "Danger zone",
+          "description": "Deleting removes the server from dPanel. Cloud VMs are destroyed at the provider.",
+          "action": "Delete server"
+        }
       }
     },
     "loadBalancers": {

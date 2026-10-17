@@ -21,8 +21,16 @@ import type { LucideIcon } from 'lucide-react';
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import { serverDisplayName } from '@/entities/server/lib/describeServer';
+import { getServerErrorSummary } from '@/entities/server/lib/error-detail';
+import { ServerErrorDialog } from '@/entities/server/ui/ServerErrorDialog';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
+import {
+  DATABASE_MODULE_IDS,
+  groupModules,
+  moduleInstanceLabel,
+} from '@/entities/server-modules/lib/installations';
+import type { OverviewModuleGroup } from '@/entities/server-modules/lib/installations';
 
 import { ApiLoadBalancer, ApiServer } from '@/shared/api';
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
@@ -32,20 +40,12 @@ import { StatTile } from '@/shared/presentation/molecules/StatTile';
 
 import { ServerActions } from '../ServerActions';
 
-import { getServerErrorSummary } from './error-detail';
 import {
   formatDataSize,
   formatDecimal,
   joinCompact,
   sanitizePercent,
 } from './metrics';
-import {
-  DATABASE_MODULE_IDS,
-  groupModules,
-  moduleInstanceLabel,
-} from './modules';
-import type { OverviewModuleGroup } from './modules';
-import { ServerErrorDialog } from './ServerErrorDialog';
 import type { ServerCardProps } from './types';
 
 /**
@@ -166,23 +166,18 @@ export default function ServerCard(props: ServerCardProps) {
 
       <div className="relative grid gap-4 xl:grid-cols-[minmax(0,1fr)_19rem]">
         <div className="grid min-w-0 content-start gap-3">
-          <button
-            type="button"
-            className="min-w-0 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50"
-            onClick={handlers.openDetails}
-          >
-            <ServerIdentity
-              server={server}
-              size="lg"
-              meta
-              trailing={
-                <ServerStatusPill
-                  state={server.state}
-                  onClick={handlers.showStatus}
-                />
-              }
-            />
-          </button>
+          <ServerIdentity
+            server={server}
+            size="lg"
+            meta
+            onClickName={handlers.openDetails}
+            trailing={
+              <ServerStatusPill
+                state={server.state}
+                onClick={handlers.showStatus}
+              />
+            }
+          />
 
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             <StatTile

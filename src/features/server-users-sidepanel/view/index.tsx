@@ -10,6 +10,9 @@ import {
   UsersIcon,
 } from 'lucide-react';
 
+import { useDialog } from '@/services/dialog';
+import { useToaster } from '@/services/toaster';
+
 import {
   ServerManagementIconButton,
   ServerManagementMetric,
@@ -35,8 +38,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/shared/presentation/atoms/Table';
-import { useDialog } from '@/services/dialog';
-import { useToaster } from '@/services/toaster';
 
 import type { ServerUsersSidepanelProps as Props } from '../rules/types';
 
@@ -49,7 +50,7 @@ interface UserItem {
 }
 
 export default function ServerUsersSidepanel(props: Props) {
-  const { serverId, serverName } = props;
+  const { embedded = false, serverId, serverName } = props;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [openServerUserCreateSidepanel] = useServerUserCreateSidepanel();
@@ -121,7 +122,7 @@ export default function ServerUsersSidepanel(props: Props) {
 
   const handleClickAddUser = () => {
     openServerUserCreateSidepanel({
-      $mode: 'push',
+      ...(embedded ? {} : { $mode: 'push' as const }),
       serverId,
       onCreated: refreshUsers,
     });
@@ -141,12 +142,13 @@ export default function ServerUsersSidepanel(props: Props) {
         actions: {
           variant: 'YesNo',
           yes: async () => {
-            const deleteResponse = await ApiServer.Origin.$Id.User.Delete.doDelete({
-              serverId,
-              payload: {
-                username,
-              },
-            });
+            const deleteResponse =
+              await ApiServer.Origin.$Id.User.Delete.doDelete({
+                serverId,
+                payload: {
+                  username,
+                },
+              });
 
             if (deleteResponse.$status === 'success') {
               openToaster({
@@ -181,6 +183,7 @@ export default function ServerUsersSidepanel(props: Props) {
 
   return (
     <ServerManagementSidepanel
+      embedded={embedded}
       title="Linux Users"
       subtitle={serverName || `Server ID: ${serverId}`}
       icon={UsersIcon}
