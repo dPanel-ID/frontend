@@ -1768,6 +1768,252 @@
     "notFound": {
       "title": "Halaman Tidak Ditemukan",
       "description": "Halaman yang kamu cari tidak tersedia atau mungkin sudah dipindahkan. Periksa kembali URL atau kembali ke halaman sebelumnya."
+    },
+    "serverGroups": {
+      "title": "Grup server",
+      "hero": {
+        "description": "Satukan server yang saling terkait dalam satu grup, lalu pasang modul, deploy dan jalankan pemeliharaan ke semuanya sekaligus.",
+        "create": "Buat grup",
+        "back": "Semua server"
+      },
+      "overview": {
+        "groups": "Grup",
+        "servers": "Server tergrup",
+        "operations": "Operasi"
+      },
+      "card": {
+        "members": "{count} anggota",
+        "noMembers": "Belum ada server",
+        "noDescription": "Tidak ada deskripsi.",
+        "more": "+{count} lagi",
+        "updated": "Diperbarui {when}",
+        "lastOperation": "Operasi terakhir",
+        "noOperation": "Belum ada operasi"
+      },
+      "empty": {
+        "title": "Belum ada grup server",
+        "message": "Grup adalah kumpulan server tersimpan. Pasang modul, deploy artefak atau reboot seluruh kumpulan dengan satu aksi, dan pantau hasil tiap server di satu tempat.",
+        "cta": "Buat grup pertama"
+      },
+      "unavailable": "Grup server tidak tersedia di lingkungan ini.",
+      "operationStatus": {
+        "pending": "Menunggu",
+        "queued": "Antrean",
+        "running": "Berjalan",
+        "succeeded": "Berhasil",
+        "failed": "Gagal",
+        "cancelled": "Dibatalkan",
+        "expired": "Kedaluwarsa",
+        "unknown": "Tidak diketahui"
+      },
+      "operationType": {
+        "moduleInstall": "Pasang modul",
+        "moduleAction": "Aksi modul",
+        "applicationDeploy": "Deploy artefak",
+        "moduleInventory": "Segarkan inventaris",
+        "agentUpgrade": "Perbarui agen",
+        "systemReboot": "Reboot"
+      },
+      "createDialog": {
+        "title": "Buat grup server",
+        "description": "Beri nama grupnya sekarang; tambahkan server berikutnya dari halaman grup.",
+        "name": "Nama",
+        "namePlaceholder": "API Produksi",
+        "descriptionLabel": "Deskripsi",
+        "descriptionPlaceholder": "Kesamaan server-server ini",
+        "nameRequired": "Nama grup wajib diisi.",
+        "cancel": "Batal",
+        "create": "Buat grup",
+        "creating": "Membuat\u2026"
+      },
+      "detail": {
+        "tabs": {
+          "ariaLabel": "Bagian grup",
+          "members": "Server",
+          "operations": "Operasi"
+        },
+        "hero": {
+          "members": "{count} server",
+          "created": "Dibuat {when}",
+          "updated": "Diperbarui {when}",
+          "edit": "Edit",
+          "addServers": "Tambah server",
+          "more": "Aksi lainnya",
+          "replaceServers": "Ganti server",
+          "delete": "Hapus grup",
+          "noDescription": "Belum ada deskripsi."
+        },
+        "members": {
+          "title": "Server dalam grup ini",
+          "description": "Setiap aksi pada grup berjalan tepat di server-server ini.",
+          "add": "Tambah server",
+          "searchPlaceholder": "Cari server",
+          "tiles": {
+            "total": "Server",
+            "ready": "Siap",
+            "attention": "Perlu perhatian"
+          },
+          "table": {
+            "server": "Server",
+            "status": "Status",
+            "actions": "Aksi"
+          },
+          "remove": "Keluarkan",
+          "removing": "Mengeluarkan\u2026",
+          "empty": "Grup ini belum punya server.",
+          "emptyHint": "Tambahkan server untuk menjalankan aksi bersama.",
+          "noMatch": "Tidak ada server yang cocok.",
+          "removeTitle": "Keluarkan server dari grup",
+          "removeMessage": "Keluarkan <strong>{name}</strong> dari {group}? Servernya sendiri tidak berubah.",
+          "picker": {
+            "addTitle": "Tambah server",
+            "addDescription": "Pilih server yang ditambahkan ke {group}.",
+            "addConfirm": "Tambah server",
+            "replaceTitle": "Ganti server",
+            "replaceDescription": "Pilih tepat server yang harus ada di {group}. Kosongkan pilihan untuk mengeluarkan semua server.",
+            "replaceConfirm": "Ganti server",
+            "alreadyMember": "Sudah anggota"
+          }
+        },
+        "operations": {
+          "run": {
+            "title": "Jalankan pada grup ini",
+            "description": "Setiap aksi memotret daftar server saat ini sebelum diantrekan.",
+            "needMembers": "Tambahkan minimal satu server sebelum menjalankan aksi.",
+            "stale": "Segarkan grup sebelum mengantrekan aksi dari data usang.",
+            "installModule": "Pasang modul",
+            "installModuleHint": "Pilih modul dari katalog",
+            "deploy": "Deploy artefak",
+            "deployHint": "Satu build aplikasi ke semua server",
+            "inventory": "Segarkan inventaris",
+            "inventoryHint": "Baca ulang modul dan layanan",
+            "reboot": "Reboot",
+            "rebootHint": "Mulai ulang semua server",
+            "upgrade": "Perbarui agen",
+            "upgradeHint": "Pasang rilis agen dPanel"
+          },
+          "history": {
+            "title": "Riwayat operasi",
+            "description": "Semua yang pernah dijalankan pada grup ini, terbaru di atas. Buka satu untuk melihat hasil tiap server.",
+            "tiles": {
+              "total": "Operasi",
+              "running": "Berjalan",
+              "failed": "Gagal"
+            },
+            "table": {
+              "operation": "Operasi",
+              "status": "Status",
+              "targets": "Server",
+              "result": "Hasil",
+              "updated": "Diperbarui"
+            },
+            "result": "{succeeded} ok · {failed} gagal",
+            "empty": "Belum ada operasi yang dijalankan pada grup ini.",
+            "open": "Buka"
+          },
+          "detail": {
+            "title": "Detail operasi",
+            "description": "Server tempat operasi ini berjalan dan hasil tiap server.",
+            "close": "Tutup",
+            "refresh": "Segarkan",
+            "retry": "Ulangi server yang gagal",
+            "polling": "Masih berjalan; disegarkan tiap beberapa detik.",
+            "targets": "{count} server",
+            "table": {
+              "server": "Server",
+              "status": "Status",
+              "links": "Detail",
+              "error": "Error"
+            },
+            "execution": "Eksekusi",
+            "deployment": "Deployment",
+            "command": "Perintah",
+            "noTargets": "Tidak ada server tercatat untuk operasi ini."
+          }
+        },
+        "dialogs": {
+          "edit": {
+            "title": "Edit grup",
+            "description": "Nama dan deskripsi yang dilihat semua orang di workspace.",
+            "name": "Nama",
+            "descriptionLabel": "Deskripsi",
+            "nameRequired": "Nama grup wajib diisi.",
+            "save": "Simpan",
+            "saving": "Menyimpan\u2026",
+            "cancel": "Batal"
+          },
+          "delete": {
+            "title": "Hapus grup",
+            "description": "Menghapus <strong>{name}</strong> dari dPanel.",
+            "happens": "Yang akan terjadi",
+            "servers": "Servernya tetap seperti semula; hanya tidak lagi tergrup.",
+            "history": "Operasi lama dan lognya tetap disimpan.",
+            "confirm": "Hapus grup",
+            "deleting": "Menghapus\u2026",
+            "cancel": "Batal"
+          },
+          "bulk": {
+            "inventory": {
+              "title": "Segarkan inventaris",
+              "happens": "Yang akan terjadi",
+              "step1": "dPanel meminta agen di tiap server membaca ulang modul dan layanan terpasang.",
+              "step2": "Hasil tampil di detail operasi saat tiap server melapor."
+            },
+            "reboot": {
+              "title": "Reboot server",
+              "happens": "Yang akan terjadi",
+              "step1": "Semua server dalam grup dimulai ulang sekarang; aplikasi sempat tidak tersedia.",
+              "step2": "Tiap server melapor saat sudah kembali aktif."
+            },
+            "upgrade": {
+              "title": "Perbarui agen",
+              "happens": "Yang akan terjadi",
+              "step1": "Agen dPanel di semua server diganti dengan rilis yang Anda pilih.",
+              "step2": "Pemantauan berlanjut setelah tiap agen dimulai ulang.",
+              "version": "Rilis agen",
+              "versionPlaceholder": "v2.3.1",
+              "versionHint": "Tag rilis semantik seperti v2.3.1."
+            },
+            "targets": "Berjalan pada {count} server.",
+            "queue": "Jalankan",
+            "queueing": "Mengantrekan\u2026",
+            "cancel": "Batal"
+          },
+          "deploy": {
+            "title": "Deploy artefak",
+            "description": "Men-deploy satu build ke semua server di {name}.",
+            "application": "Aplikasi",
+            "applicationPlaceholder": "Pilih aplikasi",
+            "noApplications": "Tidak ada aplikasi tersedia.",
+            "artifact": "Artefak",
+            "artifactPlaceholder": "Pilih artefak",
+            "noArtifacts": "Tidak ada artefak untuk aplikasi ini.",
+            "selectBoth": "Pilih aplikasi dan artefak.",
+            "deploy": "Deploy",
+            "queueing": "Mengantrekan\u2026",
+            "cancel": "Batal"
+          },
+          "retry": {
+            "title": "Ulangi server yang gagal",
+            "description": "Menjalankan operasi lagi, hanya pada server yang gagal dan masih ada di grup.",
+            "variables": "Variabel (JSON)",
+            "ref": "Ref (JSON)",
+            "variablesNote": "Variabel yang disamarkan harus dimasukkan lagi.",
+            "refNote": "Ref terpin diperlukan untuk pengulangan ini.",
+            "retry": "Ulangi",
+            "retrying": "Mengulang\u2026",
+            "cancel": "Batal"
+          },
+          "module": {
+            "title": "Pasang modul",
+            "description": "Pilih modul untuk dipasang di semua server di {name}.",
+            "searchPlaceholder": "Cari modul",
+            "continue": "Lanjut",
+            "cancel": "Tutup",
+            "noMatch": "Tidak ada modul yang cocok."
+          }
+        }
+      }
     }
   },
   "widget": {
@@ -2266,6 +2512,20 @@
       "activeWorkspace": "Workspace aktif",
       "roleCount": "{count, plural, one {# role} other {# role}}",
       "empty": "Tidak ada role yang dilaporkan untuk workspace ini."
+    },
+    "selectMachine": {
+      "title": "Pilih server",
+      "searchPlaceholder": "Cari berdasarkan hostname",
+      "selectedCount": "{count} dipilih",
+      "listLabel": "Server tersedia",
+      "loadFailed": "Server tidak dapat dimuat",
+      "empty": "Belum ada server di workspace ini.",
+      "noMatch": "Tidak ada server yang cocok.",
+      "emptySelectionWarning": "Menyimpan tanpa server terpilih akan mengeluarkan semua anggota grup ini.",
+      "cancel": "Batal",
+      "confirm": "Konfirmasi",
+      "saving": "Menyimpan\u2026",
+      "submitFailed": "Pilihan tidak dapat dikirim."
     }
   },
   "formErrors": {

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { SchemaCommon } from '@/entities/shared/rules/schema';
+
 import { schemaExplicitTarget } from '@/shared/rules/host-group';
 
 export type Target = z.output<typeof schemaExplicitTarget>;
@@ -23,6 +24,8 @@ export const schemaHostGroupMember = z.object({
   hostname: z.string(),
   address: z.string().optional(),
   status: z.string().optional(),
+  provider: z.string().optional(),
+  region: z.string().optional(),
   currentHostGroupId: z.string().optional(),
 });
 
