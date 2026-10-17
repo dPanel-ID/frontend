@@ -9,7 +9,7 @@ describe('toSelectableMachine', () => {
         id: 'server-alpha',
       }),
     ).toEqual({
-      address: 'No public address',
+      address: '',
       currentHostGroupId: undefined,
       hostname: 'server-alpha',
       id: 'server-alpha',

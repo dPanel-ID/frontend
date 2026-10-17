@@ -4,6 +4,9 @@ export interface SelectableMachine {
   id: string;
   hostname: string;
   address: string;
+  provider?: string;
+  region?: string;
+  status?: string;
   currentHostGroupId?: string;
 }
 
@@ -21,7 +24,10 @@ export function toSelectableMachine(
   return {
     id,
     hostname: machine.hostname?.trim() || id,
-    address: machine.address?.trim() || 'No public address',
+    address: machine.address?.trim() || '',
+    provider: machine.provider || undefined,
+    region: machine.region || undefined,
+    status: machine.status || undefined,
     currentHostGroupId: machine.host_group_id || undefined,
   };
 }
