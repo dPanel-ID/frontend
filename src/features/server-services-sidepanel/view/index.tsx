@@ -34,7 +34,7 @@ const SERVICES_PAGE_SIZE = 10;
 const ServicePaginationControl = buildPaginationV2({});
 
 export default function ServerServicesSidepanel(props: Props) {
-  const { embedded = false, serverId, serverName } = props;
+  const { serverId, serverName } = props;
 
   const [openServiceOverviewModal] = useServiceOverviewModal();
   const [page, setPage] = useState(1);
@@ -88,7 +88,6 @@ export default function ServerServicesSidepanel(props: Props) {
 
   return (
     <ServerManagementSidepanel
-      embedded={embedded}
       title="Services"
       subtitle={serverName || `Server ID: ${serverId}`}
       icon={SettingsIcon}

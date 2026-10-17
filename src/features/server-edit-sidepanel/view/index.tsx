@@ -26,7 +26,7 @@ export default function ServerEditSidepanel(props: Props) {
     <ModelProvider {...props}>
       <Controller />
 
-      <Layout>
+      <Layout classNameFrame="w-[calc(100svw_-_16px)] max-w-[480px]">
         <Layout.Title
           title={t('title')}
           subtitle={serverName || `Id: ${serverId}`}

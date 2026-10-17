@@ -1,6 +1,12 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-import { PlusIcon, RefreshCwIcon } from 'lucide-react';
+import {
+  Layers3Icon,
+  PlusIcon,
+  PuzzleIcon,
+  RefreshCwIcon,
+  ShieldAlertIcon,
+} from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
@@ -12,10 +18,12 @@ import {
 } from '@/shared/libs/react-factories/guardedSelect';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { StatTile } from '@/shared/presentation/molecules/StatTile';
 import { flowCtaClassName } from '@/shared/presentation/organisms/FlowHero';
 
 import { useEmit } from '../../../-model/events';
 import { useServerDataModel } from '../../../-model/server-data';
+import { TabMeta, TabPanel, TabSearch, TabState } from '../_shared/TabPanel';
 
 import { ModulesTabStates as UIStates } from './_States';
 import ModulesList from './ModulesList';
@@ -31,13 +39,33 @@ const [guard, useServerModules] = guardedSelects({
 /** Everything dPanel installed here, with the catalog one click away. */
 export default guard(function ModulesTab() {
   const t = useDevetekTranslations('page.serverDetail.modules');
+  const tCommon = useDevetekTranslations('page.serverDetail.tabsCommon');
   const emit = useEmit();
   const [openToaster] = useToaster();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [modules] = useServerModules((s) => [s.modules]);
   const [serverId, refreshModuleInventory, refreshModules] = useServerDataModel(
     (s) => [String(s.serverId), s.refreshModuleInventory, s.refreshModules],
   );
+
+  const installed = modules.filter(
+    (module) => module.status === 'installed',
+  ).length;
+  const moduleCount = new Set(
+    modules.map((module) => module.module_name || module.name),
+  ).size;
+  const attention = modules.length - installed;
+
+  const visibleModules = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return modules;
+    return modules.filter((module) =>
+      [module.module_name, module.name, module.display_name]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(query)),
+    );
+  }, [modules, searchQuery]);
 
   const handleClickAdd = () => {
     emit('@servers::detail/favorite-navigation', { to: 'modules-discover' });
@@ -71,13 +99,12 @@ export default guard(function ModulesTab() {
   }
 
   return (
-    <section className="rounded-2xl border bg-card">
-      <header className="flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-base font-bold">{t('title')}</h2>
-          <p className="text-sm text-muted-foreground">{t('description')}</p>
-        </div>
-        <div className="flex items-center gap-2">
+    <TabPanel
+      icon={PuzzleIcon}
+      title={t('title')}
+      description={t('description')}
+      actions={
+        <>
           <Button
             buttonStyle="outline"
             buttonColor="secondary"
@@ -96,15 +123,53 @@ export default guard(function ModulesTab() {
             <PlusIcon className="size-4" />
             {t('add')}
           </button>
-        </div>
-      </header>
-      <div className="p-4">
+        </>
+      }
+      tiles={
+        <>
+          <StatTile
+            size="sm"
+            icon={PuzzleIcon}
+            tone="sky"
+            label={t('tiles.modules')}
+            value={moduleCount}
+          />
+          <StatTile
+            size="sm"
+            icon={Layers3Icon}
+            tone="emerald"
+            label={t('tiles.installed')}
+            value={installed}
+          />
+          <StatTile
+            size="sm"
+            icon={ShieldAlertIcon}
+            tone={attention > 0 ? 'amber' : 'neutral'}
+            label={t('tiles.attention')}
+            value={attention}
+          />
+        </>
+      }
+      toolbar={
+        <>
+          <TabSearch
+            value={searchQuery}
+            placeholder={t('searchPlaceholder')}
+            onChange={setSearchQuery}
+          />
+          <TabMeta>{tCommon('rows', { count: visibleModules.length })}</TabMeta>
+        </>
+      }
+    >
+      {visibleModules.length === 0 ? (
+        <TabState state="empty" title={t('noMatch')} />
+      ) : (
         <ModulesList
-          modules={modules}
+          modules={visibleModules}
           serverId={serverId}
           onDeleted={refreshModules}
         />
-      </div>
-    </section>
+      )}
+    </TabPanel>
   );
 });

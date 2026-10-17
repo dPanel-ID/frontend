@@ -19,7 +19,7 @@ export default function Forms() {
   const { errors } = form.formState;
 
   return (
-    <div className="grid gap-4 pb-4">
+    <div className="grid gap-5 py-2 pb-6">
       <Section
         icon={GlobeIcon}
         title={t('sections.address.title')}
@@ -40,7 +40,7 @@ export default function Forms() {
         title={t('sections.ssh.title')}
         description={t('sections.ssh.description')}
       >
-        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_7rem]">
+        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_8rem]">
           <Field label={t('fields.sshUser')} required>
             <Input
               autoComplete="off"
@@ -98,19 +98,17 @@ function Section(props: {
   const { children, description, icon: Icon, title } = props;
 
   return (
-    <section className="rounded-2xl border bg-card">
-      <header className="flex items-start gap-3 border-b p-4">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-background text-muted-foreground">
-          <Icon className="size-4" />
-        </span>
+    <section className="grid gap-3 border-t pt-5 first:border-t-0 first:pt-0">
+      <div className="flex items-start gap-2.5">
+        <Icon className="mt-0.5 size-4 shrink-0 text-sky-600 dark:text-sky-300" />
         <div className="min-w-0">
           <h4 className="text-sm font-bold">{title}</h4>
-          <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+          <p className="text-xs leading-relaxed text-muted-foreground">
             {description}
           </p>
         </div>
-      </header>
-      <div className="p-4">{children}</div>
+      </div>
+      {children}
     </section>
   );
 }
@@ -125,8 +123,8 @@ function Field(props: {
   const { children, className, hint, label, required } = props;
 
   return (
-    <label className={cn('flex flex-col gap-1', className)}>
-      <span className="text-xs font-bold text-primary/70">
+    <label className={cn('flex flex-col gap-1.5', className)}>
+      <span className="text-xs font-semibold text-primary/80">
         {label}
         {required && <ImportantMarker />}
       </span>

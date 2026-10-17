@@ -11,6 +11,7 @@ import {
 import { getModuleInfoByFind } from '@/entities/server-modules/model/getModuleInfo';
 
 import type { DTOs } from '@/shared/api';
+import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/Button';
 import {
   Dialog,
@@ -19,8 +20,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/presentation/atoms/Dialog';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/shared/presentation/atoms/Table';
+import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
+import type { StatusTone } from '@/shared/presentation/molecules/StatusPill';
 
 import useModuleInstallationDelete from '../../../../-usecase/module-installation-delete';
+import { tabTable } from '../../_shared/TabPanel';
 
 import type { ModulesListProps } from './types';
 
@@ -38,8 +50,12 @@ type SelectedInstallation = {
   installation: DTOs.ModuleInstallationV1;
 };
 
+type GroupStatus = 'installed' | 'installing' | 'failed' | 'mixed';
+
+/** One row per module, its installations as version chips. */
 export default function ModulesList(props: ModulesListProps) {
   const { modules, onDeleted, serverId } = props;
+  const t = useDevetekTranslations('page.serverDetail.modules');
   const [selectedInstallation, setSelectedInstallation] =
     useState<SelectedInstallation | null>(null);
 
@@ -50,75 +66,81 @@ export default function ModulesList(props: ModulesListProps) {
 
   return (
     <>
-      <div className="flex w-full flex-col gap-5">
-        {SERVER_MODULES_CATEGORY.map((category) => {
-          const categoryGroups = groupedModules.filter(
-            (group) => group.categoryID === category.id,
-          );
+      <Table>
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className={tabTable.head}>{t('table.module')}</TableHead>
+            <TableHead className={tabTable.head}>
+              {t('table.versions')}
+            </TableHead>
+            <TableHead className={cn(tabTable.head, 'w-36')}>
+              {t('table.status')}
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {groupedModules.map((group) => {
+            const status = groupStatus(group.installations);
+            const category = SERVER_MODULES_CATEGORY.find(
+              (item) => item.id === group.categoryID,
+            );
 
-          if (categoryGroups.length < 1) return null;
-
-          return (
-            <section key={category.id} className="flex flex-col gap-2">
-              <h6 className="text-xs font-semibold text-primary/75">
-                {category.name}
-              </h6>
-
-              <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
-                {categoryGroups.map((group) => (
-                  <div
-                    key={group.id}
-                    className="flex min-w-0 flex-col gap-3 rounded-xl border bg-card/40 p-3"
-                  >
-                    <div className="flex min-w-0 items-center gap-3">
-                      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-background">
-                        <img
-                          className="max-h-6 max-w-6 object-contain"
-                          src={group.logoUrl}
-                          alt=""
-                        />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-bold text-primary">
-                          {group.name}
-                        </p>
-                        <p className="truncate text-xs text-primary/55">
-                          {group.installations.length}{' '}
-                          {group.installations.length === 1
-                            ? 'installed instance'
-                            : 'installed instances'}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-1.5">
-                      {group.installations.map((installation) => (
-                        <button
-                          key={installation.id}
-                          type="button"
-                          className="inline-flex max-w-full items-center gap-1 rounded-2xl border px-2.5 py-1 text-left text-xs font-medium text-primary/80 transition-colors hover:bg-border/40"
-                          onClick={() =>
-                            setSelectedInstallation({ group, installation })
-                          }
-                        >
-                          <span className="truncate">
-                            {moduleInstanceLabel(installation)}
-                          </span>
-                          {installation.status !== 'installed' && (
-                            <span className="text-primary/50">
-                              ({installation.status})
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
+            return (
+              <TableRow key={group.id}>
+                <TableCell className={tabTable.cell}>
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-white p-1.5 shadow-sm">
+                      <img
+                        className="size-full object-contain"
+                        src={group.logoUrl}
+                        alt=""
+                      />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate font-semibold text-primary">
+                        {group.name}
+                      </span>
+                      <span className="block truncate text-xs text-muted-foreground">
+                        {category?.name ?? group.categoryID}
+                      </span>
+                    </span>
                   </div>
-                ))}
-              </div>
-            </section>
-          );
-        })}
-      </div>
+                </TableCell>
+                <TableCell className={tabTable.cell}>
+                  <div className="flex flex-wrap gap-1.5">
+                    {group.installations.map((installation) => (
+                      <button
+                        key={installation.id}
+                        type="button"
+                        className={cn(
+                          'inline-flex max-w-full items-center gap-1 rounded-full border bg-background/60 px-2.5 py-1 text-left text-xs font-semibold text-primary/80 transition-colors hover:border-sky-400/50 hover:bg-sky-500/5',
+                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50',
+                          installation.status !== 'installed' &&
+                            'border-dashed text-muted-foreground',
+                        )}
+                        onClick={() =>
+                          setSelectedInstallation({ group, installation })
+                        }
+                      >
+                        <span className="truncate">
+                          {moduleInstanceLabel(installation)}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </TableCell>
+                <TableCell className={tabTable.cell}>
+                  <StatusPill
+                    tone={GROUP_STATUS_TONE[status]}
+                    pulse={status === 'installing'}
+                    label={t(`status.${status}`)}
+                  />
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
 
       <InstalledModuleDialog
         serverId={serverId}
@@ -133,6 +155,32 @@ export default function ModulesList(props: ModulesListProps) {
       />
     </>
   );
+}
+
+const GROUP_STATUS_TONE: Record<GroupStatus, StatusTone> = {
+  installed: 'success',
+  installing: 'info',
+  failed: 'danger',
+  mixed: 'warning',
+};
+
+/** The one word that describes every installation of a module. */
+export function groupStatus(
+  installations: DTOs.ModuleInstallationV1[],
+): GroupStatus {
+  const statuses = new Set(
+    installations.map((installation) => installation.status || 'unknown'),
+  );
+  if (statuses.size === 1 && statuses.has('installed')) return 'installed';
+  if (statuses.has('failed')) return 'failed';
+  if (
+    [...statuses].every(
+      (status) => status === 'installing' || status === 'progress',
+    )
+  ) {
+    return 'installing';
+  }
+  return 'mixed';
 }
 
 function groupInstalledModules(

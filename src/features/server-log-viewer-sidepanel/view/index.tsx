@@ -62,7 +62,7 @@ const JSON_LEVEL_KEYS = ['level', 'severity', 'status', 'priority'] as const;
 
 type LogLevel = 'debug' | 'info' | 'notice' | 'warn' | 'error' | 'fatal';
 
-interface ParsedLogLine {
+export interface ParsedLogLine {
   id: string;
   lineNumber: number;
   raw: string;
@@ -533,7 +533,7 @@ function parseDpanelAgentSyslogLine(params: {
   };
 }
 
-function parseLogLine(
+export function parseLogLine(
   raw: string,
   lineIndex: number,
   source: ServerLogSource | undefined,
@@ -705,7 +705,7 @@ function LogPreviewBadge(props: { children: ReactNode }) {
   );
 }
 
-function LogRow(props: {
+export function LogRow(props: {
   entry: ParsedLogLine;
   expanded: boolean;
   onToggle: () => void;
@@ -813,15 +813,15 @@ function LogRow(props: {
   );
 }
 
-function getResponseErrorMessage(error: ResponseError) {
+export function getResponseErrorMessage(error: ResponseError) {
   return getApiErrorDetail(error.error);
 }
 
-function isEmptyLogResponse(error: ResponseError) {
+export function isEmptyLogResponse(error: ResponseError) {
   return /data is empty/i.test(getResponseErrorMessage(error));
 }
 
-function getLogViewerLines(response: DTOs.ServerLogViewerV1) {
+export function getLogViewerLines(response: DTOs.ServerLogViewerV1) {
   const rawResponse = response as unknown;
 
   if (Array.isArray(rawResponse)) {
@@ -875,7 +875,7 @@ function LogViewerState(props: {
   );
 }
 
-function useServerLogSourceDiscovery(serverId: string) {
+export function useServerLogSourceDiscovery(serverId: string) {
   const [rootLogsResponse, refreshRootLogs] = ApiFolder.Origin.$ServerId.useGet(
     {
       serverId,
@@ -973,12 +973,8 @@ function useServerLogSourceDiscovery(serverId: string) {
   };
 }
 
-/** The log browser itself: sources on the left, entries on the right. */
-export function ServerLogViewer(props: {
-  serverId: string;
-  className?: string;
-}) {
-  const { className, serverId } = props;
+export default function ServerLogViewerSidepanel(props: Props) {
+  const { serverId, serverName } = props;
 
   const [selectedSourceId, setSelectedSourceId] = useState(DEFAULT_SOURCE_ID);
   const [lineCount, setLineCount] = useState(DEFAULT_LINE_COUNT);
@@ -1129,294 +1125,6 @@ export function ServerLogViewer(props: {
   };
 
   return (
-    <div
-      className={cn(
-        'grid h-full min-h-0 flex-1 grid-cols-[300px_1fr] overflow-hidden border-t bg-background',
-        className,
-      )}
-    >
-      <aside className="grid min-h-0 grid-rows-[auto_1fr] overflow-hidden border-r">
-        <div className="space-y-3 border-b bg-card/30 p-3">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-2.5">
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground">
-                <FileTextIcon className="size-4" />
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-sm font-semibold text-primary">
-                  Sources
-                </span>
-                <span className="block truncate text-xs text-muted-foreground">
-                  {sourceStatusText}
-                </span>
-              </span>
-            </div>
-
-            <ToolbarIconButton
-              className="shrink-0 bg-background"
-              disabled={sourceDiscovery.isLoading}
-              onClick={sourceDiscovery.refresh}
-              title="Refresh log sources"
-            >
-              <RefreshCwIcon
-                className={cn(
-                  'size-4',
-                  sourceDiscovery.isLoading && 'animate-spin',
-                )}
-              />
-            </ToolbarIconButton>
-          </div>
-
-          <div className="relative">
-            <SearchIcon className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              className="h-9 pl-8"
-              inputSize="sm"
-              value={sourceSearchQuery}
-              placeholder="Search log files"
-              onChange={(event) => setSourceSearchQuery(event.target.value)}
-            />
-          </div>
-
-          {sourceSearchQuery.trim() ? (
-            <p className="px-1 text-xs text-muted-foreground">
-              Showing {filteredSourceFileCount} of {sourceFileCount} log files
-            </p>
-          ) : null}
-        </div>
-
-        <div className="min-h-0 space-y-4 overflow-y-auto p-2">
-          {VM_LOG_SOURCE_CATEGORIES.map((category) => {
-            const sources = filteredSourceCatalog.filter(
-              (source) => source.category === category.id,
-            );
-            if (sources.length === 0) return null;
-
-            return (
-              <section key={category.id} className="space-y-1">
-                <p className="px-2 text-[11px] font-medium uppercase text-muted-foreground">
-                  {category.label}
-                </p>
-                {sources.map((source) => {
-                  const isSelected = resolvedSelectedSourceId === source.id;
-
-                  return (
-                    <button
-                      key={source.id}
-                      type="button"
-                      title={source.path ?? source.label}
-                      onClick={() => handleClickSource(source)}
-                      className={cn(
-                        'flex w-full cursor-pointer items-center gap-2 rounded-md border px-2 py-2 text-left transition-colors',
-                        isSelected
-                          ? 'border-border bg-card text-primary shadow-sm'
-                          : 'border-transparent text-primary hover:bg-border/60',
-                      )}
-                    >
-                      <ScrollTextIcon
-                        className={cn(
-                          'size-3.5 shrink-0',
-                          isSelected ? 'text-primary' : 'text-muted-foreground',
-                        )}
-                      />
-                      <span className="min-w-0">
-                        <span className="block truncate text-sm">
-                          {source.label}
-                        </span>
-                        {source.path ? (
-                          <span
-                            className={cn(
-                              'block truncate text-[11px]',
-                              isSelected
-                                ? 'text-muted-foreground'
-                                : 'text-muted-foreground',
-                            )}
-                          >
-                            {source.path}
-                          </span>
-                        ) : null}
-                      </span>
-                    </button>
-                  );
-                })}
-              </section>
-            );
-          })}
-
-          {filteredSourceCatalog.length === 0 ? (
-            <p className="px-2 py-4 text-sm text-muted-foreground">
-              No log files match the search.
-            </p>
-          ) : null}
-        </div>
-      </aside>
-
-      <section className="grid min-h-0 grid-rows-[auto_1fr] overflow-hidden rounded-tl-xl border-l border-t bg-card">
-        <div className="grid gap-3 border-b p-3">
-          <div className="flex min-w-0 items-center justify-between gap-3">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <ScrollTextIcon className="size-4 text-muted-foreground" />
-                <p className="text-sm font-semibold text-primary">
-                  {selectedSource?.label ?? 'Logs'}
-                </p>
-              </div>
-              <p className="truncate font-mono text-xs text-muted-foreground">
-                {activePath}
-              </p>
-            </div>
-
-            <div className="flex shrink-0 items-center gap-2">
-              <Select
-                value={String(lineCount)}
-                onValueChange={(value) => setLineCount(Number(value))}
-              >
-                <SelectTrigger className="h-8 w-[106px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {LINE_OPTIONS.map((value) => (
-                    <SelectItem key={value} value={String(value)}>
-                      {value} lines
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <ToolbarIconButton
-                disabled={!selectedSource || logResponse.$status === 'loading'}
-                onClick={handleRefresh}
-                title="Refresh"
-              >
-                <RefreshCwIcon
-                  className={cn(
-                    'size-4',
-                    logResponse.$status === 'loading' && 'animate-spin',
-                  )}
-                />
-              </ToolbarIconButton>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-[1fr_auto] items-center gap-3">
-            <Input
-              inputSize="sm"
-              value={searchQuery}
-              placeholder="Filter logs"
-              onChange={(event) => setSearchQuery(event.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">
-              {filteredLogLines.length} / {parsedLogLines.length}
-            </p>
-          </div>
-        </div>
-
-        <div ref={logViewportRef} className="min-h-0 overflow-y-auto">
-          {logResponse.$status === 'initial' ||
-          logResponse.$status === 'loading' ? (
-            <LogViewerState
-              description="Fetching the latest lines from the selected source."
-              icon={ScrollTextIcon}
-              title="Loading log entries"
-              action={<Spinner size="sm" />}
-            />
-          ) : logResponse.$status === 'failed' && isEmptyLogFile ? (
-            <LogViewerState
-              description="This log file exists, but no entries were returned for the selected range."
-              icon={InboxIcon}
-              title="No log entries yet"
-              action={
-                <Button
-                  buttonColor="secondary"
-                  buttonStyle="outline"
-                  size="sm"
-                  onClick={handleRefresh}
-                >
-                  <RefreshCwIcon className="size-4" />
-                  Refresh
-                </Button>
-              }
-            />
-          ) : logResponse.$status === 'failed' ? (
-            <LogViewerState
-              description={getResponseErrorMessage(logResponse)}
-              icon={AlertCircleIcon}
-              title="Unable to load logs"
-              tone="danger"
-              action={
-                <Button
-                  buttonColor="secondary"
-                  buttonStyle="outline"
-                  size="sm"
-                  onClick={handleRefresh}
-                >
-                  <RefreshCwIcon className="size-4" />
-                  Retry
-                </Button>
-              }
-            />
-          ) : parsedLogLines.length === 0 ? (
-            <LogViewerState
-              description="The selected source returned an empty log for the current line limit."
-              icon={InboxIcon}
-              title="No log entries yet"
-              action={
-                <Button
-                  buttonColor="secondary"
-                  buttonStyle="outline"
-                  size="sm"
-                  onClick={handleRefresh}
-                >
-                  <RefreshCwIcon className="size-4" />
-                  Refresh
-                </Button>
-              }
-            />
-          ) : filteredLogLines.length === 0 ? (
-            <LogViewerState
-              description="Try a different keyword or clear the filter to see all returned log lines."
-              icon={FileSearchIcon}
-              title="No matching log lines"
-              action={
-                <Button
-                  buttonColor="secondary"
-                  buttonStyle="outline"
-                  size="sm"
-                  onClick={() => setSearchQuery('')}
-                >
-                  Clear filter
-                </Button>
-              }
-            />
-          ) : (
-            <div className="min-w-[780px]">
-              <div className="sticky top-0 z-10 grid grid-cols-[44px_160px_72px_120px_minmax(0,1fr)] gap-3 border-b bg-card px-3 py-2 text-[11px] font-semibold uppercase text-muted-foreground">
-                <span>#</span>
-                <span>Time</span>
-                <span>Level</span>
-                <span>Source</span>
-                <span>Message</span>
-              </div>
-              {filteredLogLines.map((entry) => (
-                <LogRow
-                  key={entry.id}
-                  entry={entry}
-                  expanded={expandedRows.has(entry.id)}
-                  onToggle={() => toggleExpanded(entry.id)}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-    </div>
-  );
-}
-
-export default function ServerLogViewerSidepanel(props: Props) {
-  const { serverId, serverName } = props;
-
-  return (
     <Layout classNameFrame="w-[calc(100svw_-_16px)] max-w-[1120px]">
       <Layout.Title
         className="bg-background"
@@ -1425,7 +1133,286 @@ export default function ServerLogViewerSidepanel(props: Props) {
         hasCloseButton
       />
 
-      <ServerLogViewer serverId={serverId} />
+      <div className="grid h-full min-h-0 flex-1 grid-cols-[300px_1fr] overflow-hidden border-t bg-background">
+        <aside className="grid min-h-0 grid-rows-[auto_1fr] overflow-hidden border-r">
+          <div className="space-y-3 border-b bg-card/30 p-3">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-2.5">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground">
+                  <FileTextIcon className="size-4" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold text-primary">
+                    Sources
+                  </span>
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {sourceStatusText}
+                  </span>
+                </span>
+              </div>
+
+              <ToolbarIconButton
+                className="shrink-0 bg-background"
+                disabled={sourceDiscovery.isLoading}
+                onClick={sourceDiscovery.refresh}
+                title="Refresh log sources"
+              >
+                <RefreshCwIcon
+                  className={cn(
+                    'size-4',
+                    sourceDiscovery.isLoading && 'animate-spin',
+                  )}
+                />
+              </ToolbarIconButton>
+            </div>
+
+            <div className="relative">
+              <SearchIcon className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                className="h-9 pl-8"
+                inputSize="sm"
+                value={sourceSearchQuery}
+                placeholder="Search log files"
+                onChange={(event) => setSourceSearchQuery(event.target.value)}
+              />
+            </div>
+
+            {sourceSearchQuery.trim() ? (
+              <p className="px-1 text-xs text-muted-foreground">
+                Showing {filteredSourceFileCount} of {sourceFileCount} log files
+              </p>
+            ) : null}
+          </div>
+
+          <div className="min-h-0 space-y-4 overflow-y-auto p-2">
+            {VM_LOG_SOURCE_CATEGORIES.map((category) => {
+              const sources = filteredSourceCatalog.filter(
+                (source) => source.category === category.id,
+              );
+              if (sources.length === 0) return null;
+
+              return (
+                <section key={category.id} className="space-y-1">
+                  <p className="px-2 text-[11px] font-medium uppercase text-muted-foreground">
+                    {category.label}
+                  </p>
+                  {sources.map((source) => {
+                    const isSelected = resolvedSelectedSourceId === source.id;
+
+                    return (
+                      <button
+                        key={source.id}
+                        type="button"
+                        title={source.path ?? source.label}
+                        onClick={() => handleClickSource(source)}
+                        className={cn(
+                          'flex w-full cursor-pointer items-center gap-2 rounded-md border px-2 py-2 text-left transition-colors',
+                          isSelected
+                            ? 'border-border bg-card text-primary shadow-sm'
+                            : 'border-transparent text-primary hover:bg-border/60',
+                        )}
+                      >
+                        <ScrollTextIcon
+                          className={cn(
+                            'size-3.5 shrink-0',
+                            isSelected
+                              ? 'text-primary'
+                              : 'text-muted-foreground',
+                          )}
+                        />
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm">
+                            {source.label}
+                          </span>
+                          {source.path ? (
+                            <span
+                              className={cn(
+                                'block truncate text-[11px]',
+                                isSelected
+                                  ? 'text-muted-foreground'
+                                  : 'text-muted-foreground',
+                              )}
+                            >
+                              {source.path}
+                            </span>
+                          ) : null}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </section>
+              );
+            })}
+
+            {filteredSourceCatalog.length === 0 ? (
+              <p className="px-2 py-4 text-sm text-muted-foreground">
+                No log files match the search.
+              </p>
+            ) : null}
+          </div>
+        </aside>
+
+        <section className="grid min-h-0 grid-rows-[auto_1fr] overflow-hidden rounded-tl-xl border-l border-t bg-card">
+          <div className="grid gap-3 border-b p-3">
+            <div className="flex min-w-0 items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <ScrollTextIcon className="size-4 text-muted-foreground" />
+                  <p className="text-sm font-semibold text-primary">
+                    {selectedSource?.label ?? 'Logs'}
+                  </p>
+                </div>
+                <p className="truncate font-mono text-xs text-muted-foreground">
+                  {activePath}
+                </p>
+              </div>
+
+              <div className="flex shrink-0 items-center gap-2">
+                <Select
+                  value={String(lineCount)}
+                  onValueChange={(value) => setLineCount(Number(value))}
+                >
+                  <SelectTrigger className="h-8 w-[106px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {LINE_OPTIONS.map((value) => (
+                      <SelectItem key={value} value={String(value)}>
+                        {value} lines
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <ToolbarIconButton
+                  disabled={
+                    !selectedSource || logResponse.$status === 'loading'
+                  }
+                  onClick={handleRefresh}
+                  title="Refresh"
+                >
+                  <RefreshCwIcon
+                    className={cn(
+                      'size-4',
+                      logResponse.$status === 'loading' && 'animate-spin',
+                    )}
+                  />
+                </ToolbarIconButton>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-[1fr_auto] items-center gap-3">
+              <Input
+                inputSize="sm"
+                value={searchQuery}
+                placeholder="Filter logs"
+                onChange={(event) => setSearchQuery(event.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                {filteredLogLines.length} / {parsedLogLines.length}
+              </p>
+            </div>
+          </div>
+
+          <div ref={logViewportRef} className="min-h-0 overflow-y-auto">
+            {logResponse.$status === 'initial' ||
+            logResponse.$status === 'loading' ? (
+              <LogViewerState
+                description="Fetching the latest lines from the selected source."
+                icon={ScrollTextIcon}
+                title="Loading log entries"
+                action={<Spinner size="sm" />}
+              />
+            ) : logResponse.$status === 'failed' && isEmptyLogFile ? (
+              <LogViewerState
+                description="This log file exists, but no entries were returned for the selected range."
+                icon={InboxIcon}
+                title="No log entries yet"
+                action={
+                  <Button
+                    buttonColor="secondary"
+                    buttonStyle="outline"
+                    size="sm"
+                    onClick={handleRefresh}
+                  >
+                    <RefreshCwIcon className="size-4" />
+                    Refresh
+                  </Button>
+                }
+              />
+            ) : logResponse.$status === 'failed' ? (
+              <LogViewerState
+                description={getResponseErrorMessage(logResponse)}
+                icon={AlertCircleIcon}
+                title="Unable to load logs"
+                tone="danger"
+                action={
+                  <Button
+                    buttonColor="secondary"
+                    buttonStyle="outline"
+                    size="sm"
+                    onClick={handleRefresh}
+                  >
+                    <RefreshCwIcon className="size-4" />
+                    Retry
+                  </Button>
+                }
+              />
+            ) : parsedLogLines.length === 0 ? (
+              <LogViewerState
+                description="The selected source returned an empty log for the current line limit."
+                icon={InboxIcon}
+                title="No log entries yet"
+                action={
+                  <Button
+                    buttonColor="secondary"
+                    buttonStyle="outline"
+                    size="sm"
+                    onClick={handleRefresh}
+                  >
+                    <RefreshCwIcon className="size-4" />
+                    Refresh
+                  </Button>
+                }
+              />
+            ) : filteredLogLines.length === 0 ? (
+              <LogViewerState
+                description="Try a different keyword or clear the filter to see all returned log lines."
+                icon={FileSearchIcon}
+                title="No matching log lines"
+                action={
+                  <Button
+                    buttonColor="secondary"
+                    buttonStyle="outline"
+                    size="sm"
+                    onClick={() => setSearchQuery('')}
+                  >
+                    Clear filter
+                  </Button>
+                }
+              />
+            ) : (
+              <div className="min-w-[780px]">
+                <div className="sticky top-0 z-10 grid grid-cols-[44px_160px_72px_120px_minmax(0,1fr)] gap-3 border-b bg-card px-3 py-2 text-[11px] font-semibold uppercase text-muted-foreground">
+                  <span>#</span>
+                  <span>Time</span>
+                  <span>Level</span>
+                  <span>Source</span>
+                  <span>Message</span>
+                </div>
+                {filteredLogLines.map((entry) => (
+                  <LogRow
+                    key={entry.id}
+                    entry={entry}
+                    expanded={expandedRows.has(entry.id)}
+                    onToggle={() => toggleExpanded(entry.id)}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
     </Layout>
   );
 }

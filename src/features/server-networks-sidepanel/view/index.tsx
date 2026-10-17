@@ -64,7 +64,7 @@ function PortStateBadge(props: { state: string }) {
 }
 
 export default function ServerNetworksSidepanel(props: Props) {
-  const { embedded = false, serverId, serverName } = props;
+  const { serverId, serverName } = props;
 
   const [activeTab, setActiveTab] = useState<NetworkTab>('ports');
 
@@ -120,7 +120,6 @@ export default function ServerNetworksSidepanel(props: Props) {
 
   return (
     <ServerManagementSidepanel
-      embedded={embedded}
       title="Networks"
       subtitle={serverName || `Server ID: ${serverId}`}
       icon={NetworkIcon}

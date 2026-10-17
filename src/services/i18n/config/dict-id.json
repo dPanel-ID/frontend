@@ -1066,7 +1066,25 @@
         "empty": {
           "title": "Belum ada modul",
           "message": "Tambahkan runtime, database atau web server dari katalog; dPanel memasangnya lewat SSH."
-        }
+        },
+        "tiles": {
+          "modules": "Modul",
+          "installed": "Terpasang",
+          "attention": "Perlu perhatian"
+        },
+        "table": {
+          "module": "Modul",
+          "versions": "Versi",
+          "status": "Status"
+        },
+        "status": {
+          "installed": "Terpasang",
+          "installing": "Memasang",
+          "failed": "Gagal",
+          "mixed": "Campuran"
+        },
+        "searchPlaceholder": "Cari modul",
+        "noMatch": "Tidak ada modul yang cocok."
       },
       "files": {
         "title": "Berkas",
@@ -1098,6 +1116,107 @@
           "title": "Zona berbahaya",
           "description": "Menghapus akan mengeluarkan server dari dPanel. VM cloud dihancurkan di penyedia.",
           "action": "Hapus server"
+        },
+        "title": "Pengaturan",
+        "description": "Perubahan yang jarang diperlukan, masing-masing menjelaskan efeknya."
+      },
+      "tabsCommon": {
+        "refresh": "Segarkan",
+        "rows": "{count} baris",
+        "pageOf": "Halaman {page} dari {total}",
+        "loading": "Memuat\u2026",
+        "loadFailed": "Bagian ini tidak dapat dimuat",
+        "retry": "Coba lagi",
+        "clearSearch": "Hapus pencarian"
+      },
+      "services": {
+        "title": "Layanan",
+        "description": "Unit systemd yang dilaporkan agen. Mulai, hentikan atau mulai ulang dari sini.",
+        "tiles": {
+          "total": "Layanan",
+          "running": "Berjalan",
+          "attention": "Perlu perhatian"
+        },
+        "searchPlaceholder": "Cari nama layanan",
+        "table": {
+          "state": "Status",
+          "service": "Layanan",
+          "actions": "Aksi"
+        },
+        "details": "Detail",
+        "activity": "Aksi layanan",
+        "empty": "Agen tidak melaporkan layanan apa pun.",
+        "noMatch": "Tidak ada layanan yang cocok."
+      },
+      "users": {
+        "title": "Pengguna Linux",
+        "description": "Akun lokal di server. Tambahkan pengguna terkelola atau hapus yang tidak lagi diperlukan.",
+        "add": "Tambah pengguna",
+        "tiles": {
+          "total": "Pengguna",
+          "shells": "Shell login",
+          "homes": "Direktori home"
+        },
+        "searchPlaceholder": "Cari username, UID, home atau shell",
+        "table": {
+          "username": "Username",
+          "uid": "UID",
+          "gid": "GID",
+          "home": "Home",
+          "shell": "Shell",
+          "actions": "Aksi"
+        },
+        "delete": "Hapus",
+        "deleteTitle": "Hapus pengguna Linux",
+        "deleteMessage": "Hapus akun Linux <code>{username}</code> dari server ini?",
+        "deleted": "Pengguna Linux <code>{username}</code> telah dihapus.",
+        "deleteFailed": "Tidak dapat menghapus pengguna Linux <code>{username}</code>",
+        "empty": "Agen tidak melaporkan pengguna Linux apa pun.",
+        "noMatch": "Tidak ada pengguna yang cocok."
+      },
+      "network": {
+        "title": "Jaringan",
+        "description": "Port terbuka dan alamat antarmuka sebagaimana dilihat agen.",
+        "tiles": {
+          "ports": "Port aktif",
+          "interfaces": "Antarmuka"
+        },
+        "ports": "Port aktif",
+        "interfacesTab": "Antarmuka",
+        "table": {
+          "port": "Port",
+          "process": "Proses",
+          "pid": "PID",
+          "allowFrom": "Diizinkan dari",
+          "state": "Status",
+          "interface": "Antarmuka",
+          "address": "Alamat",
+          "ipv4": "IPv4",
+          "ipv6": "IPv6",
+          "subnet": "Subnet"
+        },
+        "emptyPorts": "Agen tidak melaporkan port yang dipakai.",
+        "emptyInterfaces": "Agen tidak melaporkan antarmuka jaringan."
+      },
+      "logs": {
+        "title": "Log",
+        "description": "Baris terbaru dari berkas log di server, diurai per waktu dan level.",
+        "source": "Sumber log",
+        "lines": "{count} baris",
+        "filterPlaceholder": "Saring baris log",
+        "showing": "Menampilkan {shown} dari {total} baris",
+        "discovering": "Mencari berkas log\u2026",
+        "allLogs": "Semua log VM",
+        "loading": "Memuat entri log",
+        "emptyFile": "Tidak ada entri pada rentang yang dipilih.",
+        "failed": "Log tidak dapat dimuat",
+        "noMatch": "Tidak ada baris log yang cocok.",
+        "table": {
+          "n": "#",
+          "time": "Waktu",
+          "level": "Level",
+          "source": "Sumber",
+          "message": "Pesan"
         }
       }
     },

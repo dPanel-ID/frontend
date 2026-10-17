@@ -50,7 +50,7 @@ interface UserItem {
 }
 
 export default function ServerUsersSidepanel(props: Props) {
-  const { embedded = false, serverId, serverName } = props;
+  const { serverId, serverName } = props;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [openServerUserCreateSidepanel] = useServerUserCreateSidepanel();
@@ -122,7 +122,7 @@ export default function ServerUsersSidepanel(props: Props) {
 
   const handleClickAddUser = () => {
     openServerUserCreateSidepanel({
-      ...(embedded ? {} : { $mode: 'push' as const }),
+      $mode: 'push',
       serverId,
       onCreated: refreshUsers,
     });
@@ -183,7 +183,6 @@ export default function ServerUsersSidepanel(props: Props) {
 
   return (
     <ServerManagementSidepanel
-      embedded={embedded}
       title="Linux Users"
       subtitle={serverName || `Server ID: ${serverId}`}
       icon={UsersIcon}
