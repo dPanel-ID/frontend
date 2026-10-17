@@ -1,9 +1,11 @@
 import { useState } from 'react';
 
+import { useDevetekTranslations } from '@/services/i18n';
 import { useModalEmit } from '@/services/modal/model/event';
 import { ModalLayoutGeneral } from '@/services/modal/ui/presentation';
 
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { flowCtaClassName } from '@/shared/presentation/organisms/FlowHero';
 
 import { MachineList } from './MachineList';
 import { submitMachineSelection } from './submit-selection';
@@ -11,14 +13,15 @@ import type { SelectMachineModalProps as Props } from './types';
 
 export default function SelectMachineModal(props: Props) {
   const emitModal = useModalEmit();
+  const t = useDevetekTranslations('modal.selectMachine');
   const {
     allowEmptySelection = false,
-    confirmLabel = 'Confirm',
+    confirmLabel,
     description,
     initialSelectedMachineIds = [],
     onMachinesSelected,
     selectionMode = 'single',
-    title = 'Select Machine',
+    title,
   } = props;
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,27 +32,33 @@ export default function SelectMachineModal(props: Props) {
   const isMultiple = selectionMode === 'multiple';
 
   return (
-    <ModalLayoutGeneral>
-      <ModalLayoutGeneral.Title canClickClose={!isSubmitting} title={title} />
+    <ModalLayoutGeneral maxWidth="760px">
+      <ModalLayoutGeneral.Title
+        canClickClose={!isSubmitting}
+        title={title ?? t('title')}
+        description={description}
+      />
 
-      <ModalLayoutGeneral.Content className="flex flex-col gap-2">
-        {description ? (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        ) : null}
+      <ModalLayoutGeneral.Content className="flex flex-col gap-3">
         <MachineList
           {...props}
           selectedMachineIds={selectedMachineIds}
           setSelectedMachineIds={setSelectedMachineIds}
         />
         {errorMessage ? (
-          <p aria-live="polite" className="text-sm text-destructive" role="alert">
+          <p
+            aria-live="polite"
+            className="text-sm text-red-600 dark:text-red-300"
+            role="alert"
+          >
             {errorMessage}
           </p>
         ) : null}
-        {isMultiple && allowEmptySelection && selectedMachineIds.length === 0 ? (
-          <p className="text-sm text-amber-700">
-            Saving with no selected machines will remove every member from this
-            group.
+        {isMultiple &&
+        allowEmptySelection &&
+        selectedMachineIds.length === 0 ? (
+          <p className="rounded-lg border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
+            {t('emptySelectionWarning')}
           </p>
         ) : null}
       </ModalLayoutGeneral.Content>
@@ -62,9 +71,11 @@ export default function SelectMachineModal(props: Props) {
             disabled={isSubmitting}
             onClick={() => emitModal('%%modal/close', null)}
           >
-            Cancel
+            {t('cancel')}
           </Button>
-          <Button
+          <button
+            type="button"
+            className={flowCtaClassName('sky')}
             disabled={
               (!allowEmptySelection && selectedMachineIds.length === 0) ||
               isSubmitting
@@ -81,15 +92,15 @@ export default function SelectMachineModal(props: Props) {
               setIsSubmitting(false);
 
               if (!result.shouldClose) {
-                setErrorMessage(result.error ?? 'Unable to submit selection.');
+                setErrorMessage(result.error || t('submitFailed'));
                 return;
               }
 
               emitModal('%%modal/close', null);
             }}
           >
-            {isSubmitting ? 'Saving...' : confirmLabel}
-          </Button>
+            {isSubmitting ? t('saving') : (confirmLabel ?? t('confirm'))}
+          </button>
         </div>
       ) : null}
     </ModalLayoutGeneral>

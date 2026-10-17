@@ -1776,6 +1776,252 @@
     "notFound": {
       "title": "Page Not Found",
       "description": "The page you are looking for is unavailable or may have been moved. Check the URL again or go back to the previous page."
+    },
+    "serverGroups": {
+      "title": "Server groups",
+      "hero": {
+        "description": "Put servers that belong together in a group, then install modules, deploy and run maintenance on all of them at once.",
+        "create": "Create group",
+        "back": "All servers"
+      },
+      "overview": {
+        "groups": "Groups",
+        "servers": "Grouped servers",
+        "operations": "Operations"
+      },
+      "card": {
+        "members": "{count} members",
+        "noMembers": "No servers yet",
+        "noDescription": "No description.",
+        "more": "+{count} more",
+        "updated": "Updated {when}",
+        "lastOperation": "Last operation",
+        "noOperation": "No operations yet"
+      },
+      "empty": {
+        "title": "No server groups yet",
+        "message": "A group is a saved set of servers. Install a module, deploy an artifact or reboot the whole set with one action, and follow every server's result in one place.",
+        "cta": "Create your first group"
+      },
+      "unavailable": "Server groups are not available in this environment.",
+      "operationStatus": {
+        "pending": "Pending",
+        "queued": "Queued",
+        "running": "Running",
+        "succeeded": "Succeeded",
+        "failed": "Failed",
+        "cancelled": "Cancelled",
+        "expired": "Expired",
+        "unknown": "Unknown"
+      },
+      "operationType": {
+        "moduleInstall": "Install module",
+        "moduleAction": "Module action",
+        "applicationDeploy": "Deploy artifact",
+        "moduleInventory": "Refresh inventory",
+        "agentUpgrade": "Upgrade agent",
+        "systemReboot": "Reboot"
+      },
+      "createDialog": {
+        "title": "Create server group",
+        "description": "Name the group now; add servers next, from the group page.",
+        "name": "Name",
+        "namePlaceholder": "Production API",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "What these servers have in common",
+        "nameRequired": "Group name is required.",
+        "cancel": "Cancel",
+        "create": "Create group",
+        "creating": "Creating\u2026"
+      },
+      "detail": {
+        "tabs": {
+          "ariaLabel": "Group sections",
+          "members": "Servers",
+          "operations": "Operations"
+        },
+        "hero": {
+          "members": "{count} servers",
+          "created": "Created {when}",
+          "updated": "Updated {when}",
+          "edit": "Edit",
+          "addServers": "Add servers",
+          "more": "More actions",
+          "replaceServers": "Replace servers",
+          "delete": "Delete group",
+          "noDescription": "No description yet."
+        },
+        "members": {
+          "title": "Servers in this group",
+          "description": "Every action on the group runs on exactly these servers.",
+          "add": "Add servers",
+          "searchPlaceholder": "Search servers",
+          "tiles": {
+            "total": "Servers",
+            "ready": "Ready",
+            "attention": "Needs attention"
+          },
+          "table": {
+            "server": "Server",
+            "status": "Status",
+            "actions": "Actions"
+          },
+          "remove": "Remove",
+          "removing": "Removing\u2026",
+          "empty": "This group has no servers yet.",
+          "emptyHint": "Add servers to run actions on them together.",
+          "noMatch": "No servers match your search.",
+          "removeTitle": "Remove server from group",
+          "removeMessage": "Remove <strong>{name}</strong> from {group}? The server itself is not changed.",
+          "picker": {
+            "addTitle": "Add servers",
+            "addDescription": "Pick the servers to add to {group}.",
+            "addConfirm": "Add servers",
+            "replaceTitle": "Replace servers",
+            "replaceDescription": "Pick exactly the servers that should be in {group}. Leave the selection empty to remove every server.",
+            "replaceConfirm": "Replace servers",
+            "alreadyMember": "Already in group"
+          }
+        },
+        "operations": {
+          "run": {
+            "title": "Run on this group",
+            "description": "Each action snapshots the current servers before it is queued.",
+            "needMembers": "Add at least one server before running actions.",
+            "stale": "Refresh the group before queueing actions from stale data.",
+            "installModule": "Install module",
+            "installModuleHint": "Pick a module from the catalog",
+            "deploy": "Deploy artifact",
+            "deployHint": "An application build to every server",
+            "inventory": "Refresh inventory",
+            "inventoryHint": "Re-read modules and services",
+            "reboot": "Reboot",
+            "rebootHint": "Restart every server",
+            "upgrade": "Upgrade agent",
+            "upgradeHint": "Install a dPanel agent release"
+          },
+          "history": {
+            "title": "Operation history",
+            "description": "Everything that ran on this group, newest first. Open one to see each server's result.",
+            "tiles": {
+              "total": "Operations",
+              "running": "Running",
+              "failed": "Failed"
+            },
+            "table": {
+              "operation": "Operation",
+              "status": "Status",
+              "targets": "Servers",
+              "result": "Result",
+              "updated": "Updated"
+            },
+            "result": "{succeeded} ok · {failed} failed",
+            "empty": "No operations have run on this group yet.",
+            "open": "Open"
+          },
+          "detail": {
+            "title": "Operation detail",
+            "description": "The servers this operation ran on and what each one returned.",
+            "close": "Close",
+            "refresh": "Refresh",
+            "retry": "Retry failed servers",
+            "polling": "Still running; refreshing every few seconds.",
+            "targets": "{count} servers",
+            "table": {
+              "server": "Server",
+              "status": "Status",
+              "links": "Details",
+              "error": "Error"
+            },
+            "execution": "Execution",
+            "deployment": "Deployment",
+            "command": "Command",
+            "noTargets": "No servers were recorded for this operation."
+          }
+        },
+        "dialogs": {
+          "edit": {
+            "title": "Edit group",
+            "description": "The name and description shown to everyone in the workspace.",
+            "name": "Name",
+            "descriptionLabel": "Description",
+            "nameRequired": "Group name is required.",
+            "save": "Save",
+            "saving": "Saving\u2026",
+            "cancel": "Cancel"
+          },
+          "delete": {
+            "title": "Delete group",
+            "description": "Removes <strong>{name}</strong> from dPanel.",
+            "happens": "What happens",
+            "servers": "Its servers stay as they are; they are simply no longer grouped.",
+            "history": "Past operations and their logs are kept.",
+            "confirm": "Delete group",
+            "deleting": "Deleting\u2026",
+            "cancel": "Cancel"
+          },
+          "bulk": {
+            "inventory": {
+              "title": "Refresh inventory",
+              "happens": "What happens",
+              "step1": "dPanel asks the agent on each server to re-read installed modules and services.",
+              "step2": "Results appear in the operation detail as each server reports back."
+            },
+            "reboot": {
+              "title": "Reboot servers",
+              "happens": "What happens",
+              "step1": "Every server in the group restarts now; applications are briefly unavailable.",
+              "step2": "Each server reports back when it is up again."
+            },
+            "upgrade": {
+              "title": "Upgrade agent",
+              "happens": "What happens",
+              "step1": "The dPanel agent on every server is replaced with the release you choose.",
+              "step2": "Monitoring continues once each agent restarts.",
+              "version": "Agent release",
+              "versionPlaceholder": "v2.3.1",
+              "versionHint": "A semantic release tag such as v2.3.1."
+            },
+            "targets": "Runs on {count} servers.",
+            "queue": "Run",
+            "queueing": "Queueing\u2026",
+            "cancel": "Cancel"
+          },
+          "deploy": {
+            "title": "Deploy artifact",
+            "description": "Deploys one build to every server in {name}.",
+            "application": "Application",
+            "applicationPlaceholder": "Choose an application",
+            "noApplications": "No applications available.",
+            "artifact": "Artifact",
+            "artifactPlaceholder": "Choose an artifact",
+            "noArtifacts": "No artifacts for this application.",
+            "selectBoth": "Select an application and an artifact.",
+            "deploy": "Deploy",
+            "queueing": "Queueing\u2026",
+            "cancel": "Cancel"
+          },
+          "retry": {
+            "title": "Retry failed servers",
+            "description": "Runs the operation again, only on the servers that failed and are still in the group.",
+            "variables": "Variables (JSON)",
+            "ref": "Ref (JSON)",
+            "variablesNote": "Redacted variables must be entered again.",
+            "refNote": "A pinned ref is required for this retry.",
+            "retry": "Retry",
+            "retrying": "Retrying\u2026",
+            "cancel": "Cancel"
+          },
+          "module": {
+            "title": "Install module",
+            "description": "Choose a module to install on every server in {name}.",
+            "searchPlaceholder": "Search modules",
+            "continue": "Continue",
+            "cancel": "Close",
+            "noMatch": "No modules match your search."
+          }
+        }
+      }
     }
   },
   "widget": {
@@ -2274,6 +2520,20 @@
       "activeWorkspace": "Active workspace",
       "roleCount": "{count, plural, one {# role} other {# roles}}",
       "empty": "No roles reported for this workspace."
+    },
+    "selectMachine": {
+      "title": "Select servers",
+      "searchPlaceholder": "Search by hostname",
+      "selectedCount": "{count} selected",
+      "listLabel": "Available servers",
+      "loadFailed": "Could not load servers",
+      "empty": "No servers in this workspace yet.",
+      "noMatch": "No servers match your search.",
+      "emptySelectionWarning": "Saving with no server selected removes every member from this group.",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "saving": "Saving\u2026",
+      "submitFailed": "Unable to submit the selection."
     }
   },
   "formErrors": {
