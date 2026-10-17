@@ -1,4 +1,5 @@
-import { useDialog } from '@/services/dialog';
+import { useState } from 'react';
+
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
@@ -15,21 +16,34 @@ interface Params {
   onSuccess: () => void;
 }
 
+/**
+ * Holds the server waiting for a typed confirmation and performs the delete
+ * once it is given. The view renders the dialog from the returned state.
+ */
 export default function useMachineDeleteUsecase(params: Params) {
   const { onSuccess } = params;
 
   const t = useDevetekTranslations();
-
   const [openToaster] = useToaster();
-  const [openDialog] = useDialog();
+
+  const [target, setTarget] = useState<MachineDeletePayload | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleUsecase = useHandler((payload: MachineDeletePayload) => {
-    const { serverId, serverName } = payload;
+    setTarget(payload);
+  });
 
-    const action = async () => {
-      const response = await ApiServer.Delete.$Id.doDelete({
-        id: serverId,
-      });
+  const close = useHandler(() => {
+    if (!isDeleting) setTarget(null);
+  });
+
+  const confirm = useHandler(async () => {
+    if (!target || isDeleting) return;
+    const { serverId, serverName } = target;
+
+    setIsDeleting(true);
+    try {
+      const response = await ApiServer.Delete.$Id.doDelete({ id: serverId });
 
       if (response.$status === 'success') {
         const messageKey = response.permanent_deleted
@@ -59,38 +73,23 @@ export default function useMachineDeleteUsecase(params: Params) {
         }),
         message: blockingResources ? (
           <>
-            <span>{getMachineDeleteErrorMessage(response.error)}</span>
+            <span>{getApiErrorDetail(response.error)}</span>
             <br />
             <span>
               {t('toaster.machineDelete.blockingResources', blockingResources)}
             </span>
           </>
         ) : (
-          getMachineDeleteErrorMessage(response.error)
+          getApiErrorDetail(response.error)
         ),
       });
-    };
-
-    openDialog({
-      title: t('dialog.machineDelete.title'),
-      content: t.rich('dialog.machineDelete.message', {
-        code: (chunks) => <code>{chunks}</code>,
-        machineName: serverName || '',
-        machineID: serverId,
-      }),
-      variant: 'warning',
-      actions: {
-        variant: 'YesNo',
-        yes: action,
-      },
-    });
+    } finally {
+      setIsDeleting(false);
+      setTarget(null);
+    }
   });
 
-  return [handleUsecase] as const;
-}
-
-function getMachineDeleteErrorMessage(error: Error) {
-  return getApiErrorDetail(error);
+  return [handleUsecase, { target, isDeleting, confirm, close }] as const;
 }
 
 function getBlockingResourceCounts(error: Error) {

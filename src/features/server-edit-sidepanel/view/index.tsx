@@ -1,3 +1,4 @@
+import { useDevetekTranslations } from '@/services/i18n';
 import Layout from '@/services/sidepanel/ui/presentation/Layout/General';
 
 import { DisclaimersLabel } from '@/widgets/disclaimers-label';
@@ -19,6 +20,7 @@ const Controller = () => {
 
 export default function ServerEditSidepanel(props: Props) {
   const { serverId, serverName } = props;
+  const t = useDevetekTranslations('sidepanel.serverEdit');
 
   return (
     <ModelProvider {...props}>
@@ -26,7 +28,7 @@ export default function ServerEditSidepanel(props: Props) {
 
       <Layout>
         <Layout.Title
-          title="Edit Server"
+          title={t('title')}
           subtitle={serverName || `Id: ${serverId}`}
           hasCloseButton
         />

@@ -101,7 +101,8 @@
       "port": "Port",
       "path": "Path",
       "branch": "Branch",
-      "command": "Command"
+      "command": "Command",
+      "ownServer": "Server sendiri"
     },
     "actions": {
       "refresh": "Segarkan",
@@ -141,7 +142,8 @@
       "idCloudHost": "IDCloudHost",
       "biznetGio": "Biznet Gio",
       "digitalOcean": "DigitalOcean",
-      "caddy": "Caddy"
+      "caddy": "Caddy",
+      "aws": "AWS"
     }
   },
   "page": {
@@ -895,6 +897,80 @@
         "title": "Tidak ada server ditemukan.",
         "message": "Mengapa tidak menambahkan yang baru untuk memulai?",
         "cta": "Tambah server baru"
+      },
+      "hero": {
+        "description": "Semua server yang dijalankan dPanel untuk Anda: VM cloud yang diluncurkan dan mesin yang Anda hubungkan.",
+        "groups": "Grup server"
+      },
+      "overview": {
+        "total": "Server",
+        "totalHint": "{cloud} cloud · {own} milik sendiri",
+        "ready": "Siap",
+        "progress": "Sedang diproses",
+        "failed": "Perlu perhatian"
+      },
+      "filters": {
+        "searchPlaceholder": "Cari berdasarkan hostname",
+        "status": "Status"
+      },
+      "card": {
+        "applications": "Aplikasi",
+        "loadBalancers": "Load balancer",
+        "databases": "Database",
+        "modules": "Modul",
+        "cpu": "CPU",
+        "memory": "Memori",
+        "disk": "Disk",
+        "liveStatsWhenReady": "Pemakaian langsung tampil setelah server siap.",
+        "noModules": "Inventaris modul belum dilaporkan.",
+        "more": "+{count} lagi",
+        "setupFailed": "Penyiapan server gagal",
+        "noErrorDetail": "Tidak ada detail error yang dikembalikan.",
+        "viewDetail": "Lihat detail",
+        "errorDialogTitle": "Detail error server",
+        "noStructuredError": "Tidak ada detail error terstruktur untuk server ini.",
+        "agent": "Agen {version}"
+      },
+      "table": {
+        "server": "Server",
+        "status": "Status",
+        "provider": "Penyedia",
+        "system": "Sistem",
+        "address": "Alamat",
+        "owner": "Pemilik",
+        "updated": "Diperbarui",
+        "actions": "Aksi"
+      },
+      "empty": {
+        "title": "Belum ada server",
+        "message": "Luncurkan VM di penyedia cloud atau hubungkan server yang sudah Anda jalankan. dPanel menyiapkannya untuk Anda.",
+        "launch": "Luncurkan server cloud",
+        "connect": "Hubungkan server sendiri",
+        "filteredTitle": "Tidak ada server yang cocok",
+        "filteredMessage": "Coba pencarian lain, atau hapus filter untuk melihat semua server.",
+        "clear": "Hapus filter"
+      },
+      "dialogs": {
+        "delete": {
+          "title": "Hapus server",
+          "description": "Ini menghapus <strong>{name}</strong> dari dPanel dan tidak bisa dibatalkan.",
+          "happens": "Yang akan terjadi",
+          "uninstallAgent": "dPanel mencopot agennya dari server.",
+          "cloudDeleted": "VM dihapus di {provider}. Disk dan seluruh isinya hilang.",
+          "ownKept": "Mesin tetap berjalan; hanya dPanel yang melupakannya.",
+          "blocked": "Penghapusan ditolak selama masih ada aplikasi atau load balancer yang memakai server ini.",
+          "confirmLabel": "Ketik <code>{name}</code> untuk konfirmasi",
+          "confirm": "Hapus server"
+        },
+        "reinstall": {
+          "title": "Instal ulang server",
+          "description": "Menjalankan kembali alur penyiapan pada <strong>{name}</strong>.",
+          "happens": "Yang terjadi selanjutnya",
+          "step1": "dPanel terhubung lewat SSH dengan kunci tersimpan.",
+          "step2": "Agen diinstal ulang dan inventaris disegarkan.",
+          "step3": "Modul terpasang dan data Anda tetap di server.",
+          "confirm": "Instal ulang"
+        }
       }
     },
     "serverDetail": {
@@ -1825,6 +1901,31 @@
       "fieldName": "Nama Tim",
       "namePlaceholder": "Tim Saya",
       "descPlaceholder": "Deskripsi singkat tim ini\u2026"
+    },
+    "serverEdit": {
+      "title": "Edit server",
+      "sections": {
+        "address": {
+          "title": "Alamat",
+          "description": "Tempat dPanel menjangkau server. Mengubahnya memengaruhi semua alur kerja."
+        },
+        "ssh": {
+          "title": "Login SSH",
+          "description": "Pengguna dan port yang dipakai dPanel untuk masuk."
+        },
+        "agent": {
+          "title": "Agen",
+          "description": "Cara dPanel berbicara dengan agen yang dipasangnya."
+        }
+      },
+      "fields": {
+        "address": "Alamat server",
+        "sshUser": "Pengguna Linux",
+        "sshPort": "Port SSH",
+        "domain": "Domain",
+        "domainHint": "Opsional. Dipakai sebagai pengganti alamat untuk agen.",
+        "httpPort": "Port HTTP"
+      }
     }
   },
   "modal": {

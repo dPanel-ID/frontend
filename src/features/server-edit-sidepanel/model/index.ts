@@ -13,9 +13,12 @@ export const [ServerEditModelProvider, useServerEditModel] = buildContext(
 
     const form = useForm({
       resolver: zodResolver(schemaServerEdit),
+      // Validate as the user types so Save can stay disabled until the form is valid.
+      mode: 'onChange',
       defaultValues: {
         agent: {
-          domain: props.agent.domain,
+          // An undefined default reads back as '' and would mark the form dirty.
+          domain: props.agent.domain ?? '',
           httpPort: props.agent.httpPort,
         },
         serverAddress: props.serverAddress,
@@ -32,6 +35,7 @@ export const [ServerEditModelProvider, useServerEditModel] = buildContext(
       onSuccess,
       isSubmitting: form.formState.isSubmitting,
       hasChanges: form.formState.isDirty,
+      isValid: form.formState.isValid,
     };
   },
 );

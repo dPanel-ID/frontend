@@ -12,6 +12,7 @@ export const agent = z.object({
 export type CloudProvider = z.output<typeof cloudProvider>;
 export const cloudProvider = z
   .enum([
+    'aws',
     'biznetgio',
     'digitalocean',
     'googlecloud',
