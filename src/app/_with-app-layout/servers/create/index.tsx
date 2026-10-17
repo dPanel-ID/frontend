@@ -27,48 +27,36 @@ function CreateNewServerPage() {
     <>
       <title>{t('page.servers.create.documentTitle')}</title>
 
-      <PageHeader
-        headnote={
-          <Breadcrumb
-            items={[
-              { text: t('sidebar.dashboard'), url: '/dashboard' },
-              { text: t('sidebar.servers'), url: '/servers' },
-              ...(isManual
-                ? [
-                    {
-                      text: t('page.servers.create.headerTitle'),
-                      url: '/servers/create',
-                    },
-                  ]
-                : []),
-            ]}
-          />
-        }
-        title={
-          isManual
-            ? t('page.servers.create.manual.headerTitle')
-            : t('page.servers.create.headerTitle')
-        }
-        description={
-          isManual
-            ? t('page.servers.create.manual.headerDesc')
-            : t('page.servers.create.headerDesc')
-        }
-        rightAppend={
-          <Button variant="outline" size="sm" asChild>
-            <a
-              href={LINK__DOCUMENTATION}
-              aria-label={t('page.servers.docs')}
-              title={t('page.servers.docs')}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <FileTextIcon className="size-4" />
-              <span className="hidden sm:inline">{t('page.servers.docs')}</span>
-            </a>
-          </Button>
-        }
-      />
+      {!isManual && (
+        <PageHeader
+          headnote={
+            <Breadcrumb
+              items={[
+                { text: t('sidebar.dashboard'), url: '/dashboard' },
+                { text: t('sidebar.servers'), url: '/servers' },
+              ]}
+            />
+          }
+          title={t('page.servers.create.headerTitle')}
+          description={t('page.servers.create.headerDesc')}
+          rightAppend={
+            <Button variant="outline" size="sm" asChild>
+              <a
+                href={LINK__DOCUMENTATION}
+                aria-label={t('page.servers.docs')}
+                title={t('page.servers.docs')}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <FileTextIcon className="size-4" />
+                <span className="hidden sm:inline">
+                  {t('page.servers.docs')}
+                </span>
+              </a>
+            </Button>
+          }
+        />
+      )}
 
       {isManual ? <ManualConnect /> : <CreateChooser />}
     </>
