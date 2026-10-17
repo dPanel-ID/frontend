@@ -1,45 +1,81 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import type { ReactNode } from 'react';
 
-import { createFileRoute } from '@tanstack/react-router';
+import { Link, createFileRoute } from '@tanstack/react-router';
 import { zodValidator } from '@tanstack/zod-adapter';
 import {
-  CheckCircle2Icon,
-  CircleIcon,
+  ArrowLeftIcon,
   CloudIcon,
-  KeyRoundIcon,
-  NetworkIcon,
-  ServerIcon,
+  HardDriveIcon,
+  MapPinIcon,
+  RocketIcon,
+  UserRoundIcon,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
-import { cn } from '@/shared/libs/tailwind/cn';
+import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
+import {
+  CloudProviderLogo,
+  getCloudProviderLabel,
+} from '@/shared/presentation/molecules/CloudProviderLogo';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
+import { ReviewPanel } from '@/shared/presentation/organisms/ReviewPanel';
+import type { ReviewPanelRow } from '@/shared/presentation/organisms/ReviewPanel';
+import { StepCard } from '@/shared/presentation/organisms/StepCard';
 
 import { FormProvider, useForm } from './-model';
+import { formSchema } from './-model/form';
 import {
   isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
 } from './-model/provider';
+import useLaunch from './-usecase/use-launch';
 import { SectionCloud } from './-view/SectionCloud';
 import { SectionLogin } from './-view/SectionLogin';
 import { SectionRegionVPC } from './-view/SectionRegionVPC';
 import { SectionSpecs } from './-view/SectionSpecs';
-import { SectionSubmit } from './-view/SectionSubmit';
 
 export const Route = createFileRoute(
   '/_with-app-layout/servers/create/vm-instant/',
 )({
-  component: CreateNewServerVmInstantPage,
+  component: LaunchCloudServerPage,
   // ?provider=aws preselects a provider, for example from /servers/create.
   validateSearch: zodValidator(
     z.object({ provider: z.string().max(64).optional().catch(undefined) }),
   ),
 });
+
+function LaunchCloudServerPage() {
+  return (
+    <>
+      <title>Launch a cloud server | dPanel</title>
+
+      <PageHeader
+        headnote={
+          <Breadcrumb
+            items={[
+              { text: 'Dashboard', url: '/dashboard' },
+              { text: 'Servers', url: '/servers' },
+              { text: 'Create Server', url: '/servers/create' },
+            ]}
+          />
+        }
+        title="Launch a cloud server"
+        description="Pick a provider, a location and a size. dPanel creates the VM in your cloud account and sets it up for you."
+      />
+
+      <FormProvider>
+        <PresetProvider />
+        <LaunchFlow />
+      </FormProvider>
+    </>
+  );
+}
 
 /** Applies ?provider= once, without overriding a choice already made. */
 function PresetProvider() {
@@ -55,343 +91,267 @@ function PresetProvider() {
   return null;
 }
 
-const BREADCRUMB = (
-  <Breadcrumb
-    items={[
-      {
-        text: 'Resources',
-      },
-      {
-        text: 'Servers',
-        url: '/servers',
-      },
-      {
-        text: 'Create Server',
-        url: '/servers/create',
-      },
-    ]}
-  />
-);
+type StepKey = 'cloud' | 'location' | 'spec' | 'access';
 
-function SummaryRow(props: {
-  icon: LucideIcon;
-  label: string;
-  ready?: boolean;
-  value?: number | string;
-}) {
-  const { icon: Icon, label, ready, value } = props;
+/** The review rows each step owns; a step is done when all of them are. */
+const STEP_ROWS: Record<StepKey, string[]> = {
+  cloud: ['provider', 'project', 'sshKey'],
+  location: ['location', 'network'],
+  spec: ['name', 'size', 'image'],
+  access: ['login'],
+};
+
+function LaunchFlow() {
+  const { form, labels } = useForm();
+  const values = useWatch({ control: form.control });
+  const { isSubmitting, launch, reset } = useLaunch();
+
+  const provider = values.provider ?? '';
+  const usesBiznetGio = isBiznetGioProvider(provider);
+  const usesGcp = isGcpProvider(provider);
+  const usesAws = isAwsProvider(provider);
+  const usesDigitalOcean = isDigitalOceanProvider(provider);
+  const managedNetwork = usesGcp || usesAws;
+  const needsAccessStep = !usesGcp && !usesAws;
+
+  // One validation pass drives every "done" state, so the panel can never
+  // disagree with what the form will accept.
+  const { issuePaths, valid } = useMemo(() => {
+    const result = formSchema.safeParse(values);
+    const paths: string[] = [];
+    if (!result.success) {
+      for (const issue of result.error.issues) {
+        paths.push(issue.path.map(String).join('.'));
+      }
+    }
+    return { issuePaths: paths, valid: result.success };
+  }, [values]);
+
+  const clean = (...fields: string[]) =>
+    fields.every(
+      (field) =>
+        !issuePaths.some(
+          (path) => path === field || path.startsWith(field + '.'),
+        ),
+    );
+
+  const steps: Array<{
+    key: StepKey;
+    icon: LucideIcon;
+    title: string;
+    description: string;
+    content: ReactNode;
+  }> = [
+    {
+      key: 'cloud',
+      icon: CloudIcon,
+      title: 'Provider and project',
+      description:
+        'Where the server runs, which cloud project pays for it, and the SSH key dPanel uses to reach it.',
+      content: <SectionCloud />,
+    },
+    ...(usesBiznetGio
+      ? []
+      : [
+          {
+            key: 'location' as const,
+            icon: MapPinIcon,
+            title: 'Location',
+            description: managedNetwork
+              ? 'The region to launch in. dPanel puts the server on dpanel-network, created on first use.'
+              : 'The region to launch in. The network is chosen for you.',
+            content: <SectionRegionVPC />,
+          },
+        ]),
+    {
+      key: 'spec',
+      icon: HardDriveIcon,
+      title: 'Size and image',
+      description: 'Name the server, then choose its size and Ubuntu release.',
+      content: <SectionSpecs />,
+    },
+    ...(needsAccessStep
+      ? [
+          {
+            key: 'access' as const,
+            icon: UserRoundIcon,
+            title: 'Access',
+            description: 'The first login dPanel uses to set up the server.',
+            content: <SectionLogin />,
+          },
+        ]
+      : []),
+  ];
+
+  const providerLabel = getCloudProviderLabel(provider) || provider;
+  const sizeValue = usesBiznetGio
+    ? labels.product
+    : usesGcp || usesAws || usesDigitalOcean
+      ? values.spec?.machineType
+      : values.spec?.cpuCore && values.spec.ramSizeGB && values.spec.diskSizeGB
+        ? `${values.spec.cpuCore} vCPU · ${values.spec.ramSizeGB} GB RAM · ${values.spec.diskSizeGB} GB disk`
+        : undefined;
+  const sizeFields = usesBiznetGio
+    ? ['spec.productID', 'spec.billingCycle']
+    : usesGcp
+      ? ['spec.machineType', 'spec.diskSizeGB']
+      : usesAws || usesDigitalOcean
+        ? ['spec.machineType']
+        : ['spec.cpuCore', 'spec.ramSizeGB', 'spec.diskSizeGB'];
+  const imageValue =
+    values.spec?.osName && values.spec.osVersion
+      ? `${capitalize(values.spec.osName)} ${values.spec.osVersion}`
+      : values.spec?.osTemplate || undefined;
+  const loginValue = needsAccessStep ? values.login?.username : 'ubuntu';
+
+  const rows: ReviewPanelRow[] = buildRows();
+  const stepDone = (step: StepKey) =>
+    rows
+      .filter((row) => STEP_ROWS[step].includes(row.key))
+      .every((row) => row.done);
+
+  function buildRows(): ReviewPanelRow[] {
+    return [
+      {
+        key: 'provider',
+        label: 'Provider',
+        value: provider ? (
+          <span className="inline-flex items-center gap-1.5">
+            <CloudProviderLogo
+              className="size-5 rounded p-0.5"
+              provider={provider}
+            />
+            {providerLabel}
+          </span>
+        ) : undefined,
+        done: Boolean(provider) && clean('provider'),
+      },
+      {
+        key: 'project',
+        label: 'Cloud project',
+        value: labels.project,
+        done: Boolean(values.cloud?.projectID) && clean('cloud.projectID'),
+      },
+      {
+        key: 'sshKey',
+        label: 'SSH key',
+        value: labels.sshKey,
+        done: Boolean(values.cloud?.sshKeyID) && clean('cloud.sshKeyID'),
+      },
+      ...(usesBiznetGio
+        ? []
+        : [
+            {
+              key: 'location',
+              label: 'Location',
+              value: usesGcp ? values.cloud?.zoneSlug : values.regionSlug,
+              done:
+                Boolean(usesGcp ? values.cloud?.zoneSlug : values.regionSlug) &&
+                clean('regionSlug', 'cloud.zoneSlug'),
+            },
+            {
+              key: 'network',
+              label: 'Network',
+              value: managedNetwork
+                ? 'dpanel-network'
+                : values.vpcBulk?.subnet ||
+                  values.vpcBulk?.id ||
+                  (usesDigitalOcean && values.regionSlug
+                    ? 'Default VPC'
+                    : undefined),
+              done: managedNetwork
+                ? Boolean(provider)
+                : Boolean(values.regionSlug) && clean('vpcBulk'),
+            },
+          ]),
+      {
+        key: 'name',
+        label: 'Server name',
+        value: values.spec?.vmName,
+        done: Boolean(values.spec?.vmName) && clean('spec.vmName'),
+      },
+      {
+        key: 'size',
+        label: 'Size',
+        value: sizeValue,
+        done: Boolean(sizeValue) && clean(...sizeFields),
+      },
+      {
+        key: 'image',
+        label: 'Image',
+        value: imageValue,
+        done: Boolean(values.spec?.osTemplate) && clean('spec.osTemplate'),
+      },
+      {
+        key: 'login',
+        label: 'Login user',
+        value: loginValue,
+        done: needsAccessStep
+          ? Boolean(provider) && clean('login')
+          : Boolean(provider),
+      },
+    ];
+  }
 
   return (
-    <div className="flex min-w-0 items-start gap-3 rounded-md bg-background/60 p-3">
-      <span className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-card text-muted-foreground">
-        <Icon className="size-4" />
-      </span>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          {ready ? (
-            <CheckCircle2Icon className="size-3.5 shrink-0 text-primary" />
-          ) : (
-            <CircleIcon className="size-3.5 shrink-0 text-muted-foreground/60" />
-          )}
-          <p className="truncate text-[11px] font-medium uppercase tracking-normal text-muted-foreground">
-            {label}
-          </p>
+    <div className="flex flex-col gap-4">
+      <Link
+        to="/servers/create"
+        className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <ArrowLeftIcon className="size-4" />
+        All ways to add a server
+      </Link>
+
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
+        <div className="flex min-w-0 flex-col gap-4">
+          {steps.map((step, index) => (
+            <StepCard
+              key={step.key}
+              number={index + 1}
+              done={stepDone(step.key)}
+              icon={step.icon}
+              title={step.title}
+              description={step.description}
+            >
+              {step.content}
+            </StepCard>
+          ))}
         </div>
-        <p
-          className={cn(
-            'mt-1 truncate text-sm font-medium',
-            !value && 'text-muted-foreground',
-          )}
-        >
-          {value || 'Not selected'}
-        </p>
+
+        <ReviewPanel
+          eyebrow="Review"
+          title={provider ? 'Almost ready' : 'Pick a provider to start'}
+          readyTitle="Ready to launch"
+          rows={rows}
+          action={
+            <Button.Action
+              className="w-full"
+              disabled={!valid}
+              buttonState={isSubmitting ? 'loading' : 'initial'}
+              onClick={launch}
+            >
+              <RocketIcon className="size-4" />
+              Launch server
+            </Button.Action>
+          }
+          secondaryAction={
+            <Button
+              className="w-full"
+              buttonStyle="ghost"
+              buttonColor="secondary"
+              onClick={reset}
+            >
+              Clear form
+            </Button>
+          }
+          footnote="dPanel creates the VM in your cloud account, then installs its agent. The provider bills the VM while it runs. Ready in about 10 to 20 minutes."
+        />
       </div>
     </div>
   );
 }
 
-function ProvisioningSummary() {
-  const { form } = useForm();
-  const provider = useWatch({ control: form.control, name: 'provider' });
-  const projectID = useWatch({
-    control: form.control,
-    name: 'cloud.projectID',
-  });
-  const sshKeyID = useWatch({ control: form.control, name: 'cloud.sshKeyID' });
-  const billingAccountID = useWatch({
-    control: form.control,
-    name: 'cloud.billingAccountID',
-  });
-  const billingCycle = useWatch({
-    control: form.control,
-    name: 'spec.billingCycle',
-  });
-  const regionSlug = useWatch({ control: form.control, name: 'regionSlug' });
-  const zoneSlug = useWatch({
-    control: form.control,
-    name: 'cloud.zoneSlug',
-  });
-  const vpcBulk = useWatch({ control: form.control, name: 'vpcBulk' });
-  const osTemplate = useWatch({
-    control: form.control,
-    name: 'spec.osTemplate',
-  });
-  const productID = useWatch({ control: form.control, name: 'spec.productID' });
-  const machineType = useWatch({
-    control: form.control,
-    name: 'spec.machineType',
-  });
-  const vmName = useWatch({ control: form.control, name: 'spec.vmName' });
-  const cpuCore = useWatch({ control: form.control, name: 'spec.cpuCore' });
-  const ramSizeGB = useWatch({ control: form.control, name: 'spec.ramSizeGB' });
-  const diskSizeGB = useWatch({
-    control: form.control,
-    name: 'spec.diskSizeGB',
-  });
-  const username = useWatch({ control: form.control, name: 'login.username' });
-
-  const usesBiznetGio = isBiznetGioProvider(provider);
-  const usesGcp = isGcpProvider(provider);
-  const usesDigitalOcean = isDigitalOceanProvider(provider);
-  const usesAws = isAwsProvider(provider);
-  const specSummary =
-    usesGcp && diskSizeGB
-      ? `${diskSizeGB} GB boot disk`
-      : usesDigitalOcean && machineType
-        ? machineType
-        : cpuCore && ramSizeGB && diskSizeGB
-          ? `${cpuCore} CPU / ${ramSizeGB} GB RAM / ${diskSizeGB} GB disk`
-          : undefined;
-  const readyFields = usesBiznetGio
-    ? [
-        provider,
-        projectID,
-        sshKeyID,
-        vmName,
-        productID,
-        billingCycle,
-        osTemplate,
-        specSummary,
-        username,
-      ]
-    : usesGcp
-      ? [
-          provider,
-          projectID,
-          sshKeyID,
-          vmName,
-          regionSlug,
-          zoneSlug,
-          machineType,
-          osTemplate,
-          diskSizeGB,
-          username,
-        ]
-      : usesDigitalOcean || usesAws
-        ? [
-            provider,
-            projectID,
-            sshKeyID,
-            vmName,
-            regionSlug,
-            machineType,
-            osTemplate,
-            username,
-          ]
-        : [
-            provider,
-            projectID,
-            sshKeyID,
-            vmName,
-            regionSlug,
-            billingAccountID || 'auto',
-            vpcBulk.id,
-            osTemplate,
-            specSummary,
-            username,
-          ];
-  const readyCount = readyFields.filter(Boolean).length;
-  const totalFields = readyFields.length;
-
-  return (
-    <aside className="rounded-lg border bg-card xl:sticky xl:top-20 xl:h-max">
-      <div className="border-b p-4">
-        <div className="flex items-center gap-3">
-          <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-primary">
-            <ServerIcon className="size-4" />
-          </span>
-          <div className="min-w-0">
-            <h2 className="text-base font-semibold">Provisioning Review</h2>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {readyCount}/{totalFields} fields ready
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-1">
-        <SummaryRow
-          icon={CloudIcon}
-          label="Provider"
-          value={provider}
-          ready={Boolean(provider)}
-        />
-        <SummaryRow
-          icon={CloudIcon}
-          label="Cloud Project"
-          value={projectID ? `Project #${projectID}` : undefined}
-          ready={Boolean(projectID)}
-        />
-        <SummaryRow
-          icon={KeyRoundIcon}
-          label="SSH Key"
-          value={sshKeyID ? `SSH key #${sshKeyID}` : undefined}
-          ready={Boolean(sshKeyID)}
-        />
-        <SummaryRow
-          icon={ServerIcon}
-          label="VM Name"
-          value={vmName}
-          ready={Boolean(vmName)}
-        />
-        {!usesBiznetGio && (
-          <SummaryRow
-            icon={NetworkIcon}
-            label="Region"
-            value={regionSlug}
-            ready={Boolean(regionSlug)}
-          />
-        )}
-        {usesBiznetGio ? (
-          <>
-            <SummaryRow
-              icon={ServerIcon}
-              label="Product"
-              value={productID ? `Product #${productID}` : undefined}
-              ready={Boolean(productID)}
-            />
-            <SummaryRow
-              icon={CloudIcon}
-              label="Billing Cycle"
-              value={billingCycle}
-              ready={Boolean(billingCycle)}
-            />
-          </>
-        ) : usesGcp ? (
-          <>
-            <SummaryRow
-              icon={NetworkIcon}
-              label="Zone"
-              value={zoneSlug}
-              ready={Boolean(zoneSlug)}
-            />
-            <SummaryRow
-              icon={ServerIcon}
-              label="Machine Type"
-              value={machineType}
-              ready={Boolean(machineType)}
-            />
-            <SummaryRow
-              icon={NetworkIcon}
-              label="Network"
-              value="dpanel-network"
-              ready
-            />
-          </>
-        ) : usesDigitalOcean ? (
-          <>
-            <SummaryRow
-              icon={ServerIcon}
-              label="Droplet Size"
-              value={machineType}
-              ready={Boolean(machineType)}
-            />
-            <SummaryRow
-              icon={NetworkIcon}
-              label="Network"
-              value={vpcBulk.subnet || vpcBulk.id || 'Default VPC'}
-              ready
-            />
-          </>
-        ) : usesAws ? (
-          <>
-            <SummaryRow
-              icon={ServerIcon}
-              label="Instance Type"
-              value={machineType}
-              ready={Boolean(machineType)}
-            />
-            <SummaryRow
-              icon={NetworkIcon}
-              label="Network"
-              value="dpanel-network"
-              ready
-            />
-          </>
-        ) : (
-          <>
-            <SummaryRow
-              icon={CloudIcon}
-              label="Billing"
-              value={billingAccountID ? `Billing #${billingAccountID}` : 'Auto'}
-              ready
-            />
-            <SummaryRow
-              icon={NetworkIcon}
-              label="Network"
-              value={vpcBulk.subnet || vpcBulk.id}
-              ready={Boolean(vpcBulk.id)}
-            />
-          </>
-        )}
-        <SummaryRow
-          icon={ServerIcon}
-          label="Image"
-          value={osTemplate}
-          ready={Boolean(osTemplate)}
-        />
-        <SummaryRow
-          icon={ServerIcon}
-          label="Size"
-          value={specSummary}
-          ready={Boolean(specSummary)}
-        />
-        <SummaryRow
-          icon={KeyRoundIcon}
-          label={usesBiznetGio ? 'Console User' : 'Default User'}
-          value={
-            usesGcp ? 'ubuntu' : usesAws ? 'ubuntu (AMI default)' : username
-          }
-          ready={usesGcp || usesAws || Boolean(username)}
-        />
-      </div>
-    </aside>
-  );
-}
-
-function CreateNewServerVmInstantPage() {
-  return (
-    <>
-      <PageHeader
-        headnote={BREADCRUMB}
-        title="Launch a cloud server"
-        description="Pick a provider, region and size. dPanel creates the VM in your cloud account and sets it up for you."
-      />
-
-      <FormProvider>
-        <PresetProvider />
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
-          <div className="flex min-w-0 flex-col gap-4">
-            <SectionCloud />
-            <SectionRegionVPC />
-            <SectionSpecs />
-            <SectionLogin />
-            <SectionSubmit />
-          </div>
-
-          <ProvisioningSummary />
-        </div>
-      </FormProvider>
-    </>
-  );
+function capitalize(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }

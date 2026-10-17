@@ -5,8 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
-  CheckIcon,
-  CircleIcon,
   KeyRoundIcon,
   PlugZapIcon,
   ServerIcon,
@@ -21,10 +19,11 @@ import { useToaster } from '@/services/toaster';
 import type { DTOs } from '@/shared/api';
 import { ApiServer } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
-import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import { Input } from '@/shared/presentation/atoms/Input';
+import { ReviewPanel } from '@/shared/presentation/organisms/ReviewPanel';
+import { StepCard } from '@/shared/presentation/organisms/StepCard';
 
 import type { ManualServerCreateForm } from '../../-rules/manual-create';
 import { createManualServerCreateSchema } from '../../-rules/manual-create';
@@ -171,6 +170,7 @@ export default function ManualConnect() {
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="flex min-w-0 flex-col gap-4">
           <StepCard
+            accent="violet"
             number={1}
             done={readiness.authorized}
             icon={KeyRoundIcon}
@@ -221,6 +221,7 @@ export default function ManualConnect() {
           </StepCard>
 
           <StepCard
+            accent="violet"
             number={2}
             done={readiness.connection}
             icon={ServerIcon}
@@ -269,150 +270,52 @@ export default function ManualConnect() {
         </div>
 
         <ReviewPanel
-          keyName={selectedKey?.name}
-          address={values.server?.address?.trim()}
-          port={values.server?.ssh_port?.trim()}
-          user={values.login?.default_user?.trim()}
-          readiness={readiness}
-          isConnecting={isConnecting}
-          onConnect={handleConnect}
+          accent="violet"
+          eyebrow={t('page.servers.create.manual.review.eyebrow')}
+          title={t('page.servers.create.manual.review.title')}
+          readyTitle={t('page.servers.create.manual.review.readyTitle')}
+          rows={[
+            {
+              key: 'key',
+              label: t('page.servers.create.manual.review.key'),
+              value: selectedKey?.name,
+              done: readiness.key,
+            },
+            {
+              key: 'authorized',
+              label: t('page.servers.create.manual.review.authorized'),
+              done: readiness.authorized,
+            },
+            {
+              key: 'connection',
+              label: t('page.servers.create.manual.review.connection'),
+              value:
+                values.server?.address?.trim() && values.login?.default_user
+                  ? `${values.login.default_user.trim()}@${values.server.address.trim()}:${values.server.ssh_port?.trim() || '22'}`
+                  : undefined,
+              done: readiness.connection,
+            },
+          ]}
+          action={
+            <Button.Action
+              className="w-full"
+              disabled={!readiness.all}
+              buttonState={isConnecting ? 'loading' : 'initial'}
+              onClick={handleConnect}
+            >
+              <PlugZapIcon className="size-4" />
+              {t('page.servers.create.manual.review.connect')}
+            </Button.Action>
+          }
+          footnote={
+            <span className="flex items-start gap-2">
+              <ShieldCheckIcon className="mt-0.5 size-3.5 shrink-0" />
+              {t('page.servers.create.manual.review.whatHappens')}
+            </span>
+          }
         />
       </div>
     </div>
-  );
-}
-
-function ReviewPanel(props: {
-  keyName?: string;
-  address?: string;
-  port?: string;
-  user?: string;
-  readiness: {
-    key: boolean;
-    authorized: boolean;
-    connection: boolean;
-    all: boolean;
-  };
-  isConnecting: boolean;
-  onConnect: () => void;
-}) {
-  const { address, isConnecting, keyName, onConnect, port, readiness, user } =
-    props;
-  const t = useDevetekTranslations();
-  const checks: Array<{ done: boolean; label: string; value?: string }> = [
-    {
-      done: readiness.key,
-      label: t('page.servers.create.manual.review.key'),
-      value: keyName,
-    },
-    {
-      done: readiness.authorized,
-      label: t('page.servers.create.manual.review.authorized'),
-    },
-    {
-      done: readiness.connection,
-      label: t('page.servers.create.manual.review.connection'),
-      value: address && user ? `${user}@${address}:${port || '22'}` : undefined,
-    },
-  ];
-
-  return (
-    <aside className="flex h-max flex-col overflow-hidden rounded-2xl border bg-card xl:sticky xl:top-20">
-      <div className="relative border-b p-5">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(120%_100%_at_100%_0%,rgba(167,139,250,0.14),transparent_60%)]" />
-        <p className="relative text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          {t('page.servers.create.manual.review.eyebrow')}
-        </p>
-        <h2 className="relative mt-1 text-lg font-bold">
-          {readiness.all
-            ? t('page.servers.create.manual.review.readyTitle')
-            : t('page.servers.create.manual.review.title')}
-        </h2>
-      </div>
-
-      <ul className="flex flex-col gap-3 p-5">
-        {checks.map((check) => (
-          <li key={check.label} className="flex items-start gap-3">
-            <span
-              className={cn(
-                'mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border',
-                check.done
-                  ? 'border-emerald-500 bg-emerald-500 text-white'
-                  : 'text-muted-foreground/50',
-              )}
-            >
-              {check.done ? (
-                <CheckIcon className="size-3" />
-              ) : (
-                <CircleIcon className="size-2 fill-current" />
-              )}
-            </span>
-            <span className="min-w-0">
-              <span className="block text-sm font-medium">{check.label}</span>
-              {check.value && (
-                <span className="mt-0.5 block truncate font-mono text-xs text-muted-foreground">
-                  {check.value}
-                </span>
-              )}
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      <div className="flex flex-col gap-3 border-t p-5">
-        <Button.Action
-          className="w-full"
-          disabled={!readiness.all}
-          buttonState={isConnecting ? 'loading' : 'initial'}
-          onClick={onConnect}
-        >
-          <PlugZapIcon className="size-4" />
-          {t('page.servers.create.manual.review.connect')}
-        </Button.Action>
-        <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
-          <ShieldCheckIcon className="mt-0.5 size-3.5 shrink-0" />
-          {t('page.servers.create.manual.review.whatHappens')}
-        </p>
-      </div>
-    </aside>
-  );
-}
-
-function StepCard(props: {
-  number: number;
-  done: boolean;
-  icon: typeof KeyRoundIcon;
-  title: string;
-  description: string;
-  children: ReactNode;
-}) {
-  const { children, description, done, icon: Icon, number, title } = props;
-
-  return (
-    <section className="rounded-2xl border bg-card">
-      <header className="flex items-start gap-4 border-b p-5">
-        <span
-          className={cn(
-            'flex size-10 shrink-0 items-center justify-center rounded-xl border text-sm font-bold transition-colors',
-            done
-              ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-              : 'border-violet-400/30 bg-violet-500/10 text-violet-600 dark:text-violet-300',
-          )}
-        >
-          {done ? <CheckIcon className="size-5" /> : number}
-        </span>
-        <div className="min-w-0">
-          <h2 className="flex items-center gap-2 text-lg font-bold">
-            <Icon className="size-4 text-muted-foreground" />
-            {title}
-          </h2>
-          <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-            {description}
-          </p>
-        </div>
-      </header>
-      <div className="p-5">{children}</div>
-    </section>
   );
 }
 
