@@ -88,9 +88,10 @@ better page by page and nothing is half-done.
 4. **Server detail** (#6) with tabs F–L and P. Done: hero with identity,
    status, SSH hint and lifecycle menu; `?tab=` sections Overview (live
    usage, workload tiles, details), Modules, Services, Users, Network, Files,
-   Logs and Settings. Services, Users, Network and Logs embed the existing
-   panels (`embedded` mode); Files opens the file manager; the Firewall
-   placeholder is gone. The delete/reinstall dialogs now live in
+   Logs and Settings. Every list tab shares one anatomy (`TabPanel`: header,
+   summary tiles, toolbar, table, footer) with browser-side paging; Logs
+   shows the last 20 lines by default; Files opens the file manager; the
+   Firewall placeholder is gone. The delete/reinstall dialogs now live in
    `features/server-lifecycle-dialogs` and are shared with the list.
 5. **Server groups** (#7, #8) with N, O.
 6. **Operation detail pages** (#9–#11) on the shared execution layout.

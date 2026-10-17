@@ -1075,7 +1075,25 @@
         "empty": {
           "title": "No modules yet",
           "message": "Add a runtime, database or web server from the catalog; dPanel installs it over SSH."
-        }
+        },
+        "tiles": {
+          "modules": "Modules",
+          "installed": "Installed",
+          "attention": "Needs attention"
+        },
+        "table": {
+          "module": "Module",
+          "versions": "Versions",
+          "status": "Status"
+        },
+        "status": {
+          "installed": "Installed",
+          "installing": "Installing",
+          "failed": "Failed",
+          "mixed": "Mixed"
+        },
+        "searchPlaceholder": "Search modules",
+        "noMatch": "No modules match your search."
       },
       "files": {
         "title": "Files",
@@ -1107,6 +1125,107 @@
           "title": "Danger zone",
           "description": "Deleting removes the server from dPanel. Cloud VMs are destroyed at the provider.",
           "action": "Delete server"
+        },
+        "title": "Settings",
+        "description": "Changes you rarely need, each saying what it does."
+      },
+      "tabsCommon": {
+        "refresh": "Refresh",
+        "rows": "{count} rows",
+        "pageOf": "Page {page} of {total}",
+        "loading": "Loading\u2026",
+        "loadFailed": "Could not load this section",
+        "retry": "Retry",
+        "clearSearch": "Clear search"
+      },
+      "services": {
+        "title": "Services",
+        "description": "systemd units reported by the agent. Start, stop or restart them from here.",
+        "tiles": {
+          "total": "Services",
+          "running": "Running",
+          "attention": "Needs attention"
+        },
+        "searchPlaceholder": "Search service name",
+        "table": {
+          "state": "State",
+          "service": "Service",
+          "actions": "Actions"
+        },
+        "details": "Details",
+        "activity": "Service actions",
+        "empty": "The agent did not report any services.",
+        "noMatch": "No services match your search."
+      },
+      "users": {
+        "title": "Linux users",
+        "description": "Local accounts on the server. Add managed users or remove ones you no longer need.",
+        "add": "Add user",
+        "tiles": {
+          "total": "Users",
+          "shells": "Login shells",
+          "homes": "Home directories"
+        },
+        "searchPlaceholder": "Search username, UID, home or shell",
+        "table": {
+          "username": "Username",
+          "uid": "UID",
+          "gid": "GID",
+          "home": "Home",
+          "shell": "Shell",
+          "actions": "Actions"
+        },
+        "delete": "Delete",
+        "deleteTitle": "Delete Linux user",
+        "deleteMessage": "Remove the Linux account <code>{username}</code> from this server?",
+        "deleted": "Linux user <code>{username}</code> was deleted.",
+        "deleteFailed": "Could not delete Linux user <code>{username}</code>",
+        "empty": "The agent did not report any Linux users.",
+        "noMatch": "No users match your search."
+      },
+      "network": {
+        "title": "Network",
+        "description": "Open ports and interface addresses as the agent sees them.",
+        "tiles": {
+          "ports": "Active ports",
+          "interfaces": "Interfaces"
+        },
+        "ports": "Active ports",
+        "interfacesTab": "Interfaces",
+        "table": {
+          "port": "Port",
+          "process": "Process",
+          "pid": "PID",
+          "allowFrom": "Allow from",
+          "state": "State",
+          "interface": "Interface",
+          "address": "Address",
+          "ipv4": "IPv4",
+          "ipv6": "IPv6",
+          "subnet": "Subnet"
+        },
+        "emptyPorts": "The agent did not report any ports in use.",
+        "emptyInterfaces": "The agent did not report any network interfaces."
+      },
+      "logs": {
+        "title": "Logs",
+        "description": "The newest lines of a log file on the server, parsed for time and level.",
+        "source": "Log source",
+        "lines": "{count} lines",
+        "filterPlaceholder": "Filter log lines",
+        "showing": "Showing {shown} of {total} lines",
+        "discovering": "Discovering log files\u2026",
+        "allLogs": "All VM logs",
+        "loading": "Loading log entries",
+        "emptyFile": "No entries in the selected range.",
+        "failed": "Unable to load logs",
+        "noMatch": "No log lines match the filter.",
+        "table": {
+          "n": "#",
+          "time": "Time",
+          "level": "Level",
+          "source": "Source",
+          "message": "Message"
         }
       }
     },

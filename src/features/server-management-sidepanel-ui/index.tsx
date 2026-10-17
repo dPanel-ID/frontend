@@ -17,8 +17,6 @@ interface ServerManagementSidepanelProps {
   description: string;
   actions?: ReactNode;
   metrics?: ReactNode;
-  /** Render as a card inside a page instead of a drawer. */
-  embedded?: boolean;
   children: ReactNode;
 }
 
@@ -34,48 +32,8 @@ export function ServerManagementSidepanel(
     description,
     actions,
     metrics,
-    embedded = false,
     children,
   } = props;
-
-  const panel = (
-    <div
-      className={cn(
-        'grid min-h-0 grid-rows-[auto_1fr] overflow-hidden bg-background',
-        embedded ? 'rounded-2xl border' : 'h-full flex-1 border-t',
-      )}
-    >
-      <header className="grid gap-3 border-b bg-card p-3">
-        <div className="flex min-w-0 items-start justify-between gap-3">
-          <div className="flex min-w-0 items-start gap-3">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-background">
-              <Icon className="size-4 text-muted-foreground" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-primary">{heading}</p>
-              <p className="mt-0.5 text-sm leading-5 text-muted-foreground">
-                {description}
-              </p>
-            </div>
-          </div>
-
-          {actions ? (
-            <div className="flex shrink-0 items-center gap-2">{actions}</div>
-          ) : null}
-        </div>
-
-        {metrics ? (
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2">
-            {metrics}
-          </div>
-        ) : null}
-      </header>
-
-      <div className="min-h-0 overflow-y-auto p-3">{children}</div>
-    </div>
-  );
-
-  if (embedded) return panel;
 
   return (
     <Layout classNameFrame={classNameFrame}>
@@ -86,7 +44,35 @@ export function ServerManagementSidepanel(
         hasCloseButton
       />
 
-      {panel}
+      <div className="grid h-full min-h-0 flex-1 grid-rows-[auto_1fr] overflow-hidden border-t bg-background">
+        <header className="grid gap-3 border-b bg-card p-3">
+          <div className="flex min-w-0 items-start justify-between gap-3">
+            <div className="flex min-w-0 items-start gap-3">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-background">
+                <Icon className="size-4 text-muted-foreground" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-primary">{heading}</p>
+                <p className="mt-0.5 text-sm leading-5 text-muted-foreground">
+                  {description}
+                </p>
+              </div>
+            </div>
+
+            {actions ? (
+              <div className="flex shrink-0 items-center gap-2">{actions}</div>
+            ) : null}
+          </div>
+
+          {metrics ? (
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2">
+              {metrics}
+            </div>
+          ) : null}
+        </header>
+
+        <div className="min-h-0 overflow-y-auto p-3">{children}</div>
+      </div>
     </Layout>
   );
 }

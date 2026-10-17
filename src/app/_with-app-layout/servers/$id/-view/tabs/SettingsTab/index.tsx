@@ -4,6 +4,7 @@ import {
   BuildingIcon,
   PencilIcon,
   RotateCcwIcon,
+  SettingsIcon,
   Trash2Icon,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -15,6 +16,7 @@ import { Button } from '@/shared/presentation/atoms/ButtonV2';
 
 import { useEmit } from '../../../-model/events';
 import { useServerDataModel } from '../../../-model/server-data';
+import { TabPanel } from '../_shared/TabPanel';
 
 /** The rarely needed actions, each with what it does spelled out. */
 export default function SettingsTab() {
@@ -25,78 +27,84 @@ export default function SettingsTab() {
   const busy = server?.state.status === 'progress';
 
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <SettingCard
-        icon={PencilIcon}
-        title={t('connection.title')}
-        description={t('connection.description')}
-        action={
-          <Button
-            buttonStyle="outline"
-            buttonColor="secondary"
-            size="sm"
-            disabled={busy}
-            onClick={() => emit('@servers::detail/server-edit', null)}
-          >
-            <PencilIcon />
-            {t('connection.action')}
-          </Button>
-        }
-      />
-      <SettingCard
-        icon={RotateCcwIcon}
-        title={t('setup.title')}
-        description={t('setup.description')}
-        action={
-          <Button
-            buttonStyle="outline"
-            buttonColor="secondary"
-            size="sm"
-            disabled={busy}
-            onClick={() => emit('@servers::detail/server-reinstall', null)}
-          >
-            <RotateCcwIcon />
-            {t('setup.action')}
-          </Button>
-        }
-      />
-      <SettingCard
-        icon={BuildingIcon}
-        title={t('ownership.title')}
-        description={t('ownership.description', {
-          owner: server?.ownership.team || server?.ownership.owner || '-',
-        })}
-        action={
-          <Button
-            buttonStyle="outline"
-            buttonColor="secondary"
-            size="sm"
-            onClick={() =>
-              emit('@servers::detail/server-migrate-ownership', null)
-            }
-          >
-            <BuildingIcon />
-            {t('ownership.action')}
-          </Button>
-        }
-      />
-      <SettingCard
-        icon={Trash2Icon}
-        tone="danger"
-        title={t('danger.title')}
-        description={t('danger.description')}
-        action={
-          <Button
-            className="bg-red-600 text-white hover:bg-red-500"
-            size="sm"
-            onClick={() => emit('@servers::detail/server-delete', null)}
-          >
-            <Trash2Icon />
-            {t('danger.action')}
-          </Button>
-        }
-      />
-    </div>
+    <TabPanel
+      icon={SettingsIcon}
+      title={t('title')}
+      description={t('description')}
+    >
+      <div className="grid gap-3 p-4 lg:grid-cols-2">
+        <SettingCard
+          icon={PencilIcon}
+          title={t('connection.title')}
+          description={t('connection.description')}
+          action={
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              size="sm"
+              disabled={busy}
+              onClick={() => emit('@servers::detail/server-edit', null)}
+            >
+              <PencilIcon />
+              {t('connection.action')}
+            </Button>
+          }
+        />
+        <SettingCard
+          icon={RotateCcwIcon}
+          title={t('setup.title')}
+          description={t('setup.description')}
+          action={
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              size="sm"
+              disabled={busy}
+              onClick={() => emit('@servers::detail/server-reinstall', null)}
+            >
+              <RotateCcwIcon />
+              {t('setup.action')}
+            </Button>
+          }
+        />
+        <SettingCard
+          icon={BuildingIcon}
+          title={t('ownership.title')}
+          description={t('ownership.description', {
+            owner: server?.ownership.team || server?.ownership.owner || '-',
+          })}
+          action={
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              size="sm"
+              onClick={() =>
+                emit('@servers::detail/server-migrate-ownership', null)
+              }
+            >
+              <BuildingIcon />
+              {t('ownership.action')}
+            </Button>
+          }
+        />
+        <SettingCard
+          icon={Trash2Icon}
+          tone="danger"
+          title={t('danger.title')}
+          description={t('danger.description')}
+          action={
+            <Button
+              className="bg-red-600 text-white hover:bg-red-500"
+              size="sm"
+              onClick={() => emit('@servers::detail/server-delete', null)}
+            >
+              <Trash2Icon />
+              {t('danger.action')}
+            </Button>
+          }
+        />
+      </div>
+    </TabPanel>
   );
 }
 
@@ -112,7 +120,7 @@ function SettingCard(props: {
   return (
     <section
       className={cn(
-        'flex flex-col gap-4 rounded-2xl border bg-card p-5',
+        'flex flex-col gap-4 rounded-xl border bg-background/50 p-4',
         tone === 'danger' && 'border-red-400/40',
       )}
     >
