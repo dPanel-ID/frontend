@@ -32,6 +32,8 @@ export interface ReviewPanelProps {
   action: ReactNode;
   /** An optional secondary action rendered under the primary one. */
   secondaryAction?: ReactNode;
+  /** Rendered before the title, for example a provider logo. */
+  leading?: ReactNode;
   /** Short note on what the action will do. */
   footnote?: ReactNode;
   accent?: ReviewPanelAccent;
@@ -49,6 +51,7 @@ export function ReviewPanel(props: ReviewPanelProps) {
     className,
     eyebrow,
     footnote,
+    leading,
     readyTitle,
     rows,
     secondaryAction,
@@ -73,13 +76,16 @@ export function ReviewPanel(props: ReviewPanelProps) {
           )}
         />
         <div className="relative flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {eyebrow}
-            </p>
-            <h2 className="mt-1 text-lg font-bold">
-              {ready ? readyTitle : title}
-            </h2>
+          <div className="flex min-w-0 items-center gap-3">
+            {leading}
+            <div className="min-w-0">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {eyebrow}
+              </p>
+              <h2 className="mt-1 text-lg font-bold">
+                {ready ? readyTitle : title}
+              </h2>
+            </div>
           </div>
           <span className="shrink-0 rounded-full border bg-background/60 px-2 py-0.5 text-xs font-semibold tabular-nums text-muted-foreground">
             {doneCount}/{rows.length}

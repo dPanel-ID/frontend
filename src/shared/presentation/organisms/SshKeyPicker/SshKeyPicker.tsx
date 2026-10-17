@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 
 import {
-  CheckIcon,
   KeyRoundIcon,
   PlusIcon,
   RefreshCwIcon,
@@ -20,20 +19,29 @@ import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Input } from '@/shared/presentation/atoms/Input';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
+import { ChoiceTile } from '@/shared/presentation/molecules/ChoiceTile';
+import { FLOW_ACCENTS } from '@/shared/presentation/organisms/FlowHero/accents';
+import type { FlowAccent } from '@/shared/presentation/organisms/FlowHero/accents';
 
 const PAGE_SIZE = 6;
 
-/** Selectable grid of the workspace's SSH keys, with search and create. */
-export default function SshKeyPicker(props: {
+export type SshKeyWithID = DTOs.SshKeyV1 & { id: number };
+
+export interface SshKeyPickerProps {
   selectedID?: string;
-  onSelect: (sshKey: DTOs.SshKeyV1) => void;
-}) {
-  const { onSelect, selectedID } = props;
+  onSelect: (sshKey: SshKeyWithID) => void;
+  accent?: FlowAccent;
+}
+
+/** Selectable cards of the workspace's SSH keys, with search and create. */
+export function SshKeyPicker(props: SshKeyPickerProps) {
+  const { accent = 'sky', onSelect, selectedID } = props;
   const t = useDevetekTranslations();
   const [openSSHKeyCreateModal] = useSSHKeyCreateModal();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [debouncedSearch] = useDebounceValue(search);
+  const tone = FLOW_ACCENTS[accent];
 
   const [response, refresh] = ApiSecret.SshKey.Find.useGet({
     page,
@@ -50,7 +58,7 @@ export default function SshKeyPicker(props: {
   const sshKeys = useMemo(
     () =>
       (data?.secrets ?? []).filter(
-        (sshKey): sshKey is DTOs.SshKeyV1 & { id: number } => sshKey.id != null,
+        (sshKey): sshKey is SshKeyWithID => sshKey.id != null,
       ),
     [data?.secrets],
   );
@@ -123,7 +131,10 @@ export default function SshKeyPicker(props: {
         <button
           type="button"
           onClick={handleCreate}
-          className="flex flex-col items-center gap-2 rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground transition-colors hover:border-violet-400/50 hover:bg-violet-500/5"
+          className={cn(
+            'flex flex-col items-center gap-2 rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground transition-colors',
+            tone.hover,
+          )}
         >
           <KeyRoundIcon className="size-6" />
           {search.trim()
@@ -140,59 +151,36 @@ export default function SshKeyPicker(props: {
         >
           {sshKeys.map((sshKey) => {
             const id = String(sshKey.id);
-            const isSelected = id === selectedID;
             const name =
               sshKey.name ||
               t('page.servers.create.ssh.fallbackKeyName', { id: sshKey.id });
 
             return (
-              <button
+              <ChoiceTile
                 key={id}
-                type="button"
-                role="radio"
-                aria-checked={isSelected}
-                onClick={() => onSelect(sshKey)}
-                className={cn(
-                  'flex items-center gap-3 rounded-xl border bg-background/60 p-3 text-left transition-all',
-                  'hover:border-violet-400/50 hover:bg-violet-500/5',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50',
-                  isSelected &&
-                    'border-violet-400/70 bg-violet-500/10 shadow-sm shadow-violet-500/10',
-                )}
-              >
-                <span
-                  className={cn(
-                    'flex size-9 shrink-0 items-center justify-center rounded-lg border bg-card text-muted-foreground',
-                    isSelected &&
-                      'border-violet-400/40 text-violet-600 dark:text-violet-300',
-                  )}
-                >
-                  <KeyRoundIcon className="size-4" />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold">
-                    {name}
+                accent={accent}
+                selected={id === selectedID}
+                onSelect={() => onSelect(sshKey)}
+                leading={
+                  <span
+                    className={cn(
+                      'flex size-9 items-center justify-center rounded-lg border bg-card text-muted-foreground',
+                      id === selectedID && tone.text,
+                    )}
+                  >
+                    <KeyRoundIcon className="size-4" />
                   </span>
-                  <span className="mt-0.5 block truncate text-xs text-muted-foreground">
-                    {t('page.servers.create.ssh.keyId', { id: sshKey.id })}
-                    {sshKey.data?.length
-                      ? t('page.servers.create.ssh.keyLengthSuffix', {
-                          length: sshKey.data.length,
-                        })
-                      : ''}
-                  </span>
-                </span>
-                <span
-                  aria-hidden
-                  className={cn(
-                    'flex size-5 shrink-0 items-center justify-center rounded-full border text-transparent',
-                    isSelected &&
-                      'border-violet-500 bg-violet-500 text-white dark:border-violet-400 dark:bg-violet-400 dark:text-violet-950',
-                  )}
-                >
-                  <CheckIcon className="size-3" />
-                </span>
-              </button>
+                }
+                title={name}
+                subtitle={
+                  t('page.servers.create.ssh.keyId', { id: sshKey.id }) +
+                  (sshKey.data?.length
+                    ? t('page.servers.create.ssh.keyLengthSuffix', {
+                        length: sshKey.data.length,
+                      })
+                    : '')
+                }
+              />
             );
           })}
         </div>
