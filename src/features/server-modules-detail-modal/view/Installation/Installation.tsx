@@ -7,6 +7,7 @@ import { Button } from '@/shared/presentation/atoms/Button';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
+import { PasswordInput } from '@/shared/presentation/atoms/PasswordInput';
 import {
   Select,
   SelectContent,
@@ -67,6 +68,27 @@ function buildVariables(
 
 function isHiddenInput(input: DTOs.ModuleInputV1) {
   return input.type === 'hidden';
+}
+
+/** A secret the operator types, such as a database administrator password. */
+function isSecretInput(input: DTOs.ModuleInputV1) {
+  return Boolean(input.sensitive) && input.type !== 'boolean';
+}
+
+/**
+ * Required fields the operator left empty. A password has no default to fall
+ * back on, so the install would otherwise fail on the server minutes later.
+ */
+function missingRequiredInputs(
+  inputs: DTOs.ModuleInputV1[],
+  values: Record<string, FieldValue>,
+) {
+  return inputs.filter((input) => {
+    if (!input.required || isHiddenInput(input)) return false;
+    const value = values[input.name] ?? defaultFieldValue(input);
+    if (input.type === 'boolean') return false;
+    return String(value).trim() === '';
+  });
 }
 
 export default function Installation() {
@@ -141,6 +163,14 @@ export default function Installation() {
     ) {
       setFormError(
         'Delete and reprovision actions are only available for a single server target.',
+      );
+      return;
+    }
+
+    const missing = missingRequiredInputs(moduleDetail.inputs, values);
+    if (missing.length > 0) {
+      setFormError(
+        `Fill in ${missing.map((input) => input.label || input.name).join(', ')} before installing.`,
       );
       return;
     }
@@ -223,6 +253,11 @@ export default function Installation() {
         <label key={input.name} className="flex flex-col gap-1">
           <span className="text-sm font-semibold text-primary/80">
             {input.label || input.name}
+            {input.required && (
+              <span aria-hidden className="ml-0.5 font-bold text-red-500">
+                *
+              </span>
+            )}
           </span>
           {input.description && (
             <span className="text-xs text-primary/55">{input.description}</span>
@@ -258,6 +293,12 @@ export default function Installation() {
             <TextArea
               className="h-56 min-h-28 resize-y overflow-auto font-mono text-xs [field-sizing:fixed]"
               value={String(value)}
+              onChange={(event) => handleChange(input.name, event.target.value)}
+            />
+          ) : isSecretInput(input) ? (
+            <PasswordInput
+              value={String(value)}
+              placeholder="Choose a password"
               onChange={(event) => handleChange(input.name, event.target.value)}
             />
           ) : (
