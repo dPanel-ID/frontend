@@ -1491,8 +1491,8 @@
       }
     },
     "loadBalancersCreate": {
-      "headerTitle": "Buat Load Balancer",
-      "headerDesc": "Tentukan gateway, aturan routing, dan perilaku protokol sebelum membuat load balancer.",
+      "headerTitle": "Buat load balancer",
+      "headerDesc": "Pilih server yang menjawab trafik publik, arahkan domain ke sana, lalu tentukan tujuan tiap path.",
       "loading": "Memuat...",
       "progress": {
         "title": "Progres pembuatan",
@@ -1578,6 +1578,37 @@
         "fixRouting": "Lengkapi aturan routing sebelum melanjutkan.",
         "engineLoading": "Tunggu hingga metadata modul engine terpilih selesai dimuat.",
         "engineRequired": "Pilih modul engine infrastruktur dengan kontrak install yang dapat dibaca."
+      },
+      "documentTitle": "Buat load balancer | dNocs",
+      "backToList": "Semua load balancer",
+      "submit": "Buat load balancer",
+      "steps": {
+        "gateway": {
+          "title": "Gateway",
+          "description": "Server yang menjawab trafik publik, dan mesin web server yang dijalankannya."
+        },
+        "domain": {
+          "title": "Domain dan HTTPS",
+          "description": "Nama yang diketik pengunjung. dNocs meminta dan memperbarui sertifikatnya."
+        },
+        "routing": {
+          "title": "Routing",
+          "description": "Tujuan tiap permintaan: aplikasi, port di server, atau berkas statis."
+        }
+      },
+      "review": {
+        "eyebrow": "Load balancer",
+        "title": "Hampir siap",
+        "readyTitle": "Siap dibuat",
+        "server": "Server gateway",
+        "engine": "Mesin",
+        "domain": "Domain",
+        "https": "HTTPS",
+        "httpsOn": "Sertifikat diminta otomatis",
+        "httpsOff": "Mati",
+        "mode": "Mode routing",
+        "routes": "Rute",
+        "footnote": "dNocs memasang mesinnya di server gateway bila belum ada, lalu menerbitkan rutenya."
       }
     },
     "loadBalancersDetail": {

@@ -1499,8 +1499,8 @@
       }
     },
     "loadBalancersCreate": {
-      "headerTitle": "Create Load Balancer",
-      "headerDesc": "Define the gateway, routing rules, and protocol behavior before deploying a load balancer.",
+      "headerTitle": "Create a load balancer",
+      "headerDesc": "Pick the server that answers public traffic, point a domain at it, and say where each path should go.",
       "loading": "Loading...",
       "progress": {
         "title": "Creation progress",
@@ -1586,6 +1586,37 @@
         "fixRouting": "Complete the routing rules before continuing.",
         "engineLoading": "Wait until the selected engine module metadata finishes loading.",
         "engineRequired": "Select an infrastructure engine module with a readable install contract."
+      },
+      "documentTitle": "Create a load balancer | dNocs",
+      "backToList": "All load balancers",
+      "submit": "Create load balancer",
+      "steps": {
+        "gateway": {
+          "title": "Gateway",
+          "description": "The server that answers public traffic, and the web server engine it runs."
+        },
+        "domain": {
+          "title": "Domain and HTTPS",
+          "description": "The name visitors type. dNocs requests and renews the certificate for it."
+        },
+        "routing": {
+          "title": "Routing",
+          "description": "Where each request goes: an application, a port on a server, or static files."
+        }
+      },
+      "review": {
+        "eyebrow": "Load balancer",
+        "title": "Almost ready",
+        "readyTitle": "Ready to create",
+        "server": "Gateway server",
+        "engine": "Engine",
+        "domain": "Domain",
+        "https": "HTTPS",
+        "httpsOn": "Certificate requested for you",
+        "httpsOff": "Off",
+        "mode": "Routing mode",
+        "routes": "Routes",
+        "footnote": "dNocs installs the engine on the gateway server if it is not there yet, then publishes the routes."
       }
     },
     "loadBalancersDetail": {
