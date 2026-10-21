@@ -9,7 +9,6 @@ import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import type { FilterRules } from '../../-rules';
 import type { QueryString } from '../../-rules/qs';
-
 import { useSubscribe } from '../events';
 
 export const [FilterModelProvider, useFilterModel] = buildSelector(
@@ -49,20 +48,26 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
     updateQs('page', newPage < 2 ? 1 : newPage);
   });
 
+  useSubscribe('@cloud-projects/filters/status--change', (newStatus) => {
+    updateQs('status', newStatus || undefined);
+  });
+
   const mappedFilters = useMemo(() => {
     const searchQuery: FilterRules.SearchQuery = qs.q;
     const currentPage: FilterRules.CurrentPage = qs.page;
+    const status: FilterRules.Status = qs.status ?? '';
     const viewMode: FilterRules.ViewMode =
       qs.viewMode != null ? qs.viewMode : 'auto';
 
     const derivedViewMode = iife((): Exclude<FilterRules.ViewMode, 'auto'> => {
       if (viewMode !== 'auto') return viewMode;
-      return isDesktop ? 'table' : 'grid';
+      return isDesktop ? 'list' : 'grid';
     });
 
     return {
       searchQuery,
       currentPage,
+      status,
       viewMode,
       derivedViewMode,
     };
