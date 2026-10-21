@@ -1,9 +1,10 @@
 # Domains & DNS: UI/UX redesign plan
 
 Status: in progress, 2026-10-21. Done so far: the domain list at
-`/backend/domain`, rebuilt on the house style in `UI_UX_STANDARD.md` and the
-blocks the servers module introduced (`SERVERS_UI_REDESIGN_PLAN.md`). Next:
-the add-domain flow at `/backend/domain/create` and the domain detail panel.
+`/backend/domain` and the add-domain flow at `/backend/domain/create`, both
+rebuilt on the house style in `UI_UX_STANDARD.md` and the blocks the servers
+module introduced (`SERVERS_UI_REDESIGN_PLAN.md`). Next: the domain detail
+panel.
 
 ## Who this module is for
 
@@ -72,3 +73,58 @@ test that feeds it an empty string and a space-separated non-domain.
    flow-page anatomy: `StepCard`s and a `ReviewPanel`.
 3. **The domain detail panel**, on the detail anatomy: stat tiles, a "what
    you can do next" strip, the DNS records, and a danger zone last.
+
+## The add-domain flow (`/backend/domain/create`)
+
+### What it was
+
+One file of 1,234 lines. It was already closer to the house shape than most
+— three sections in a main column, an aside, a sticky action bar — but it
+carried its own chrome for all of it:
+
+- `PageHeader` rather than `FlowHero`.
+- A bespoke `SetupProgress` strip plus a bespoke `SectionCard` wrapper, where
+  the standard has one component, `StepCard`, that is both.
+- **Three** aside cards — `ReviewCard`, `ReadinessCard` and `SecurityCard` —
+  the first two saying overlapping things about the same form.
+- **Two** copies of the submit and cancel buttons, one in the header and one
+  in a sticky bottom bar, so "one clear next action per screen" was three.
+
+### What it is now
+
+- `FlowHero` whose description names the registrar/provider split, the same
+  sentence the list page leads with.
+- Three `StepCard`s: Domain, DNS provider, Credentials. The number becomes a
+  check mark as each is satisfied and the first unfinished one takes the
+  accent. The sections no longer wrap themselves; the step is the container.
+- One `ReviewPanel` replacing `ReviewCard` and `ReadinessCard`, holding the
+  three facts and the single primary action, which enables only when all
+  three are done and a provider contract resolved.
+- `SecurityCard` kept, under the panel. It says where the credential is
+  stored, which is the one question this page provokes and nothing else
+  answers.
+- The duplicate action bars are gone.
+
+### The split
+
+| File                             | Holds                                                        |
+| -------------------------------- | ------------------------------------------------------------ |
+| `index.tsx`                      | Route, hero, the three steps, the review panel.              |
+| `-rules/form.ts`                 | The zod schema, its type, domain normalising and validation. |
+| `-lib/providers.ts`              | Provider contracts, credential fields, payload and rules.    |
+| `-usecase/use-create-domain.ts`  | The create request, its toasts and the redirect.             |
+| `-view/SectionDomain.tsx`        | Domain and description fields.                               |
+| `-view/SectionProvider.tsx`      | Provider picker, its options and loading state.              |
+| `-view/SectionCredentials.tsx`   | Per-provider credential inputs.                              |
+| `-view/-presentation/fields.tsx` | `FieldLabel`, `SecurityCard`, the requirement renderer.      |
+
+1,234 lines became 916 across eight files, with the largest at 287.
+
+### Still open on this page
+
+- Nothing here says what happens after the domain is added: dNocs reads the
+  zone, and the records it finds are not shown until the detail panel exists.
+  The review panel's footnote says it; the flow does not show it.
+- The credential fields come from the provider contract, so their labels and
+  help text are the backend's. They have not been read with a beginner in
+  mind, and "API token" means different things at different registrars.
