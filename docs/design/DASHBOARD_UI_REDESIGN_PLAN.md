@@ -68,30 +68,31 @@ workspace-scoped, structured and already joined for display:
 | `GET /api/v2/executions/summary` | The health verdict                     | Status counts in a window. Use it instead of counting rows client-side.                                                                                                                        |
 | `GET /api/v2/agents`             | Agent reachability                     | `last_seen_at` is the heartbeat. Treat quiet for more than `AGENT_STALE_AFTER_MS` (15 min) as out of contact, and an agent that never reported as out of contact too.                          |
 
-**Read host metrics from Uptrace, not from the live per-server endpoints.**
-The agent already ships standard OpenTelemetry host metrics, tagged with the
-`dpanel_machine_id` attribute, and `internal/observability/uptrace_metrics.go`
-already queries them per machine:
+**There is no host-metric history, and the code that looks like it reads one
+does not.** This was checked against production rather than assumed, and the
+finding is the single most important fact for phase 4.
 
-| Metric                                                       | Serves            |
-| ------------------------------------------------------------ | ----------------- |
-| `system.cpu.utilization`                                     | CPU percentage    |
-| `system.memory.usage`, `.total`, `.free`                     | Memory percentage |
-| `system.filesystem.usage`, `.total`, `.free`, `.utilization` | Disk percentage   |
-| `system.cpu.logical.count`                                   | Core count        |
+`internal/observability/uptrace_metrics.go` queries Uptrace for
+`system.cpu.utilization`, `system.memory.usage/total/free` and
+`system.filesystem.usage/total/free`. Those constants exist, the query code
+works, and the Uptrace deployment does expose both
+`/internal/v1/metrics/{project}/gauge` and
+`/internal/v1/metrics/{project}/timeseries` (both verified returning 200).
 
-`QueryMetricGauge` returns a single averaged scalar over a 15-minute lookback
-for one machine. A fleet chart needs a timeseries, aggregated across the
-workspace's machines in one query. Never issue one Uptrace query per machine:
-that rebuilds the N+1 the activity feed was built to remove.
+But **no host metrics are being delivered to Uptrace at all.** The only
+metrics in the instance are Uptrace's own internal telemetry
+(`uptrace_tracing_spans`, `uptrace_billing_*`); no project carries a single
+`system.*` series. Every gauge query therefore fails in production and falls
+through to `collectSystemFromUptraceHeartbeatLog`, which queries the Uptrace
+_log_ stream for `/var/log/dpanel-agent/all.log`, scans the last 80 lines
+inside a 15-minute window, and parses a JSON heartbeat envelope out of a
+matching line.
 
-**The two history stores have different horizons, and that is not a bug.**
-Executions live in this product's own Postgres and are queryable for 30 days.
-Host metrics live in Uptrace on the free tier, where only about three days are
-usable. So the activity chart offers 24h/7d/30d while the utilisation chart
-caps at three days. Do not "fix" the inconsistency by capping executions to
-match: that would throw away history this product owns in order to look tidy
-next to history it rents.
+So today's per-server CPU, memory and disk readings come from **parsing log
+lines**, not from a metrics pipeline. They work, and they are a point reading
+only: there is no series behind them to chart.
+
+Frontend recipes live at `src/shared/api/execution.find.ts`,
 
 Frontend recipes live at `src/shared/api/execution.find.ts`,
 `execution.summary.ts` and `agent.find.ts`; the projection helpers are in
@@ -269,27 +270,49 @@ colour-blindness separation the palette was validated for, and the average
 never appears alone — a fleet mean hides the single machine at 98%, which is
 the failure phase 2 removed from the old telemetry panel.
 
-**The utilisation range caps at three days**, because the free Uptrace tier
-keeps roughly that much. Offer 1h / 24h / 3d. The activity chart keeps its
-24h/7d/30d because executions are stored here, not in Uptrace; see "the two
+**The utilisation range caps at three days** while the series is read from
+Uptrace, because the free tier keeps roughly that much: offer 1h / 24h / 3d.
+If option C below is taken and rollups are stored here instead, that cap no
+longer applies and the range can match the activity chart. The activity chart
+keeps 24h/7d/30d either way, because executions are stored here; see "the two
 history stores" above.
 
 ### Backend work
 
-1. `QueryMetricTimeseries` in `internal/observability`, the timeseries sibling
-   of the existing gauge query.
-2. `GET /api/v2/metrics/fleet-utilisation?since=&bucket=`, workspace-scoped,
-   returning per-bucket average and maximum for CPU, memory and disk plus the
-   peak machine per metric.
-3. One Uptrace query per workspace grouped by machine, never one per machine.
+Band 3 has no data source yet. The Uptrace timeseries API exists and works,
+but nothing writes host metrics into it, so there is nothing to query. Three
+ways forward, and the choice is a real one:
 
-**Validate before building any of band 3.** It is unconfirmed whether this
-Uptrace deployment exposes a timeseries endpoint beside
-`/internal/v1/metrics/{project}/gauge`; confirming it needs the API token.
-If it does not exist, the fallback is writing five-minute rollups to a new
-table on the existing collection path and serving the chart from there — same
-UI, materially more work. Settle this first, because it gates the only part of
-phase 4 with real technical risk.
+**A. Make metrics actually flow.** Configure the agent to export OpenTelemetry
+host metrics to the `agent_otlp_endpoint` that is already configured. Then the
+existing gauge path stops falling back to log parsing, the validated
+timeseries endpoint has data, and per-server readings get more reliable as a
+side effect. This is the correct pipeline. It is work in the agent and its
+deployment, not in this repository, and it still inherits the free tier's
+retention.
+
+**B. Derive the series from heartbeat logs.** Query the agent log stream over
+the window, parse each heartbeat envelope, bucket by time. It works with
+exactly today's data and needs no agent change. It is also one log query per
+machine, bounded by line limits, parsing a text format with no contract — the
+log-scraping this redesign removed from the activity feed in phase 1. Do not
+build the fleet chart this way.
+
+**C. Store rollups in this product's own database.** Write one row per machine
+per five minutes from the heartbeat the backend already receives, and serve
+the chart from Postgres. A new table and a writer, but the data is durable,
+cheap to query, scoped with the same owner rules as executions, and **not
+bound by Uptrace retention at all** — which removes the three-day cap the
+chart would otherwise inherit.
+
+Recommended: **C for the chart, A for the platform.** C is self-contained in
+this repository and gives the dashboard a dependable series; A is the right
+long-term pipeline and fixes the point readings too. B is a trap.
+
+Whichever is chosen, the endpoint shape stays:
+`GET /api/v2/metrics/fleet-utilisation?since=&bucket=`, workspace-scoped,
+per-bucket average and maximum for CPU, memory and disk plus the peak machine
+per metric, aggregated in one query rather than one per machine.
 
 ### Risks
 
