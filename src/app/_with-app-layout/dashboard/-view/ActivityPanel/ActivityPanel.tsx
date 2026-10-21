@@ -180,8 +180,17 @@ function ActivityRow(props: { item: ActivityItem }) {
         </span>
 
         <div className="min-w-0 flex-1">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <h3 className="min-w-0 truncate text-sm font-bold text-primary">
+          {/*
+            Not flex-wrap: a headline too long for the row wrapped onto a
+            line of its own at full content width and ran past the card
+            instead of truncating. It shrinks and ellipsises now, with the
+            whole value on hover, and the status keeps its place.
+          */}
+          <div className="flex min-w-0 items-center gap-2">
+            <h3
+              className="min-w-0 flex-1 truncate text-sm font-bold text-primary"
+              title={headline}
+            >
               {headline}
             </h3>
             <span
