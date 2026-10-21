@@ -39,11 +39,13 @@ export function DocsNav(props: DocsNavProps) {
                     params={{ section: section.slug, page: page.slug }}
                     aria-current={isActive ? 'page' : undefined}
                     className={cn(
-                      'block rounded-lg px-3 py-2 text-sm transition-colors',
+                      'block rounded-lg border-l-2 py-2 pl-3 pr-3 text-sm transition-colors',
                       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50',
                       isActive
-                        ? 'bg-sky-500/10 font-semibold text-sky-700 dark:text-sky-200'
-                        : 'text-primary/75 hover:bg-card hover:text-primary',
+                        ? 'border-sky-500 bg-sky-500/10 font-semibold text-sky-700 dark:text-sky-200'
+                        : // The sidebar is already bg-card, so a card hover is
+                          // invisible; the page background is what reads here.
+                          'border-transparent text-primary/75 hover:bg-background hover:text-primary',
                     )}
                   >
                     {page.title}
