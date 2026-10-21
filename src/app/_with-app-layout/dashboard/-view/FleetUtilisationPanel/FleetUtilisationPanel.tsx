@@ -257,35 +257,37 @@ function FleetResourceCard(props: {
         The same numbers as text: a canvas is unreadable to a screen reader,
         and this also covers print and forced colours.
       */}
-      <table className="sr-only">
-        <caption>
-          {t('tableCaption', { resource: t(`resource.${series.resource}`) })}
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col">{t('tableWhen')}</th>
-            <th scope="col">{t('legend.average')}</th>
-            <th scope="col">{t('legend.peak')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {series.points.map((point) => (
-            <tr key={point.time}>
-              <th scope="row">{labelFor(point.time, 'long')}</th>
-              <td>
-                {point.avg == null
-                  ? t('noReading')
-                  : `${Math.round(point.avg)}%`}
-              </td>
-              <td>
-                {point.max == null
-                  ? t('noReading')
-                  : `${Math.round(point.max)}%`}
-              </td>
+      <div className="sr-only">
+        <table>
+          <caption>
+            {t('tableCaption', { resource: t(`resource.${series.resource}`) })}
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">{t('tableWhen')}</th>
+              <th scope="col">{t('legend.average')}</th>
+              <th scope="col">{t('legend.peak')}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {series.points.map((point) => (
+              <tr key={point.time}>
+                <th scope="row">{labelFor(point.time, 'long')}</th>
+                <td>
+                  {point.avg == null
+                    ? t('noReading')
+                    : `${Math.round(point.avg)}%`}
+                </td>
+                <td>
+                  {point.max == null
+                    ? t('noReading')
+                    : `${Math.round(point.max)}%`}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }
