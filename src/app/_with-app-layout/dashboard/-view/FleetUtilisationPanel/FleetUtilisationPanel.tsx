@@ -115,7 +115,7 @@ export default function FleetUtilisationPanel() {
           }
         />
       ) : isLoading && !series.hasData ? (
-        <div className="grid gap-3 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
           {FLEET_RESOURCES.map((resource) => (
             <div
               key={resource}
@@ -129,7 +129,7 @@ export default function FleetUtilisationPanel() {
           description={t('emptyDescription')}
         />
       ) : (
-        <div className="grid gap-3 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
           {FLEET_RESOURCES.map((resource) => (
             <FleetResourceCard
               key={resource}
