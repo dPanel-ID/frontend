@@ -137,10 +137,13 @@ function ActivityBody(props: {
     );
   }
 
+  // Grid items default to min-width:auto, so a row refuses to shrink below
+  // its content and the whole list outgrows the card however much its text
+  // truncates. min-w-0 on each item is what lets the truncation apply.
   return (
     <ol className="grid gap-2">
       {items.map((item) => (
-        <li key={item.id}>
+        <li key={item.id} className="min-w-0">
           <ActivityRow item={item} />
         </li>
       ))}
