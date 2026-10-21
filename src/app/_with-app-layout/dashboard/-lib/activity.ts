@@ -90,10 +90,10 @@ export function executionTypeKey(type?: string): string | undefined {
   switch (normalized) {
     case 'machine_setup':
       return 'machineSetup';
+    // The agent reports its own create as 'machine_machine.create'; without
+    // that case it humanised to "Machine machine create".
     case 'machine_cloud_origin_create':
     case 'user_machine_create':
-    // The agent reports its own create as 'machine_machine.create'; without
-    // this it humanised to "Machine machine create".
     case 'machine_machine.create':
       return 'machineCreate';
     case 'machine_cloud_origin_delete':

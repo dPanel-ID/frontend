@@ -9,6 +9,7 @@ export * from './deploy';
 export * from './execution';
 export * from './execution-error-detail';
 export * from './machine';
+export * from './metrics';
 export * from './host-group';
 export * from './service';
 export * from './folder';

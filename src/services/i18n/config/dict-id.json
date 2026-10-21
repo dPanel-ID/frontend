@@ -358,6 +358,37 @@
         "unknownStatus": "tidak diketahui",
         "unknownActivity": "Sebuah operasi"
       },
+      "fleet": {
+        "title": "Penggunaan sumber daya",
+        "description": "Seberapa berat kerja server Anda. Tiap grafik menampilkan rata-rata armada dan satu server tersibuk.",
+        "legend": {
+          "average": "Rata-rata armada",
+          "peak": "Server tersibuk"
+        },
+        "range": {
+          "hour": "1 jam",
+          "day": "24 jam",
+          "threeDays": "3 hari"
+        },
+        "resource": {
+          "cpu": "CPU",
+          "memory": "Memori",
+          "disk": "Disk"
+        },
+        "chartAria": "Grafik garis penggunaan {resource} dari waktu ke waktu, rata-rata armada dan server tersibuk",
+        "tableCaption": "Penggunaan {resource} dari waktu ke waktu, rata-rata armada dan server tersibuk",
+        "tableWhen": "Waktu",
+        "noReading": "Tidak ada data",
+        "peakPercent": "Puncak {percent}%",
+        "peakHealthy": "Server tersibuk mencapai {percent}%",
+        "noPeak": "Belum ada puncak tercatat",
+        "unknownServer": "server tanpa nama",
+        "emptyTitle": "Belum ada laporan penggunaan",
+        "emptyDescription": "Server Anda melaporkan penggunaan setiap 30 detik. Setelah server berjalan beberapa menit, penggunaannya akan muncul di sini.",
+        "failedTitle": "Tidak dapat memuat penggunaan sumber daya",
+        "failedDescription": "Grafik penggunaan sedang tidak tersedia. Server Anda tidak terpengaruh.",
+        "retry": "Coba lagi"
+      },
       "activityChart": {
         "title": "Aktivitas platform",
         "description": "Semua yang dilakukan dPanel di ruang kerja ini, pada rentang yang Anda pilih.",
