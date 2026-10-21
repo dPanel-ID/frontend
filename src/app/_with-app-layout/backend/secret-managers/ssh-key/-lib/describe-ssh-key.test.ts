@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { sshKeyAlgorithmLabel, summarizeSshKeys } from '../-model/overview';
+import { summarizeSshKeys } from '../-model/overview';
 
 import { sshKeyAlgorithmLabel, toSshKeyCard } from './describe-ssh-key';
 
