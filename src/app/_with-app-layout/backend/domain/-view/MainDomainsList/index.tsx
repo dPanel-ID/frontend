@@ -1,15 +1,13 @@
-import { useNavigate } from '@tanstack/react-router';
-
-import { useDevetekTranslations } from '@/services/i18n';
-
-import { EmptyState } from '@/shared/presentation/organisms/EmptyState';
 import { buildResponseView } from '@/widgets/response-view-builder';
 
 import { DomainListState } from '../-presentation/DdnsListState';
 import { useDomainDataModel } from '../../-models/domain-data';
+import { useEmit } from '../../-models/events';
 import { useFilterModel } from '../../-models/filters';
 
 import DomainCompactCards from './DomainCompactCards';
+import { DomainRow } from './DomainRow';
+import { DomainsEmptyState } from './DomainsEmptyState';
 import DomainTable from './DomainTable';
 
 export default buildResponseView({
@@ -19,26 +17,38 @@ export default buildResponseView({
   render: function Render(props) {
     const { list } = props;
 
-    const t = useDevetekTranslations();
-    const navigate = useNavigate();
-
-    const [derivedViewMode] = useFilterModel((s) => [s.derivedViewMode]);
+    const emit = useEmit();
+    const [derivedViewMode, searchQuery] = useFilterModel((s) => [
+      s.derivedViewMode,
+      s.searchQuery,
+    ]);
 
     if (list.length < 1) {
       return (
-        <EmptyState
-          title={t('page.domain.emptyState.title')}
-          message={t('page.domain.emptyState.message')}
-          ctaText={t('page.domain.emptyState.cta')}
-          ctaOnClick={() => navigate({ to: '/backend/domain/create' })}
+        <DomainsEmptyState
+          filtered={Boolean(searchQuery)}
+          onClearSearch={() => {
+            emit('@domain-dns/filters/search--input');
+            emit('@domain-dns/filters/pagination--set', 1);
+          }}
         />
       );
     }
 
-    if (derivedViewMode === 'list') {
+    if (derivedViewMode === 'table') {
       return <DomainTable data={list} />;
     }
 
-    return <DomainCompactCards list={list} />;
+    if (derivedViewMode === 'grid') {
+      return <DomainCompactCards list={list} />;
+    }
+
+    return (
+      <div className="flex flex-col gap-3">
+        {list.map((domain) => (
+          <DomainRow key={domain.id} domain={domain} />
+        ))}
+      </div>
+    );
   },
 });

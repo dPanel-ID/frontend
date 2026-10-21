@@ -1638,7 +1638,7 @@
     },
     "domain": {
       "headerTitle": "Domain & DNS",
-      "headerDesc": "Lihat domain dan DNS anda yang telah teregistrasi di sini.",
+      "headerDesc": "Registrar Anda tetap. Beri dNocs akses ke penyedia DNS Anda, lalu dNocs bisa mengarahkan record ke server Anda.",
       "headerFootnote": "Kunjungi <a>kanal YouTube</a> kami untuk panduannya.",
       "docs": "Docs",
       "createDomain": "Tambah domain",
@@ -1659,15 +1659,66 @@
       "table": {
         "headers": {
           "domain": "Domain",
-          "provider": "Provider",
+          "provider": "Penyedia",
           "owner": "Pemilik",
-          "lastModified": "Terakhir Diubah"
-        }
+          "lastModified": "Terakhir diubah"
+        },
+        "domain": "Domain",
+        "provider": "Penyedia DNS",
+        "ownership": "Kepemilikan",
+        "updated": "Terakhir diubah",
+        "actions": "Aksi"
       },
       "sections": {
         "provider": "Provider",
         "dns": "Zona DNS",
         "ownership": "Kepemilikan"
+      },
+      "servers": "Server",
+      "guide": {
+        "title": "Baru mengenal DNS? Yang dibutuhkan penyedianya, bukan registrarnya",
+        "description": "dNocs tidak menjual atau memindahkan domain. Anda tetap membelinya di tempat biasa. Yang dNocs butuhkan adalah akses ke pihak yang menjawab DNS domain tersebut, supaya bisa membuat record yang mengarahkan nama ke server.",
+        "steps": {
+          "connect": {
+            "title": "Tambahkan domainnya",
+            "description": "Sebutkan domainnya dan pilih siapa yang menjalankan DNS-nya, misalnya Cloudflare. Tempel token API penyedia tersebut."
+          },
+          "read": {
+            "title": "dNocs membaca zona-nya",
+            "description": "Semua record yang sudah ada ditampilkan, jadi Anda tahu domain ini mengarah ke mana sebelum mengubah apa pun."
+          },
+          "point": {
+            "title": "Arahkan nama ke server",
+            "description": "Kirim domain, atau subdomain mana pun, ke server atau load balancer tanpa menyunting record secara manual."
+          }
+        },
+        "cta": "Buat server"
+      },
+      "overview": {
+        "total": "Domain",
+        "providers": "Penyedia DNS",
+        "providersHint": "Layanan yang menjawab DNS untuk domain ini",
+        "team": "Dibagikan ke tim",
+        "teamHint": "Domain yang bisa dipakai rekan tim Anda",
+        "personal": "Hanya Anda",
+        "personalHint": "Domain milik akun Anda sendiri",
+        "sampleNote": "Pembagian ini diambil dari {sample} domain terbaru Anda."
+      },
+      "filters": {
+        "searchPlaceholder": "Cari berdasarkan nama domain"
+      },
+      "card": {
+        "personal": "Hanya Anda",
+        "team": "Dibagikan ke {name}"
+      },
+      "empty": {
+        "title": "Tambahkan domain pertama Anda",
+        "message": "Arahkan nama yang sudah Anda miliki ke sebuah server, tanpa menyunting record DNS secara manual. Registrar Anda tetap; dNocs hanya butuh akses ke pihak yang menjawab DNS-nya.",
+        "cta": "Tambah domain",
+        "secondary": "Lihat cara server dibuat",
+        "filteredTitle": "Tidak ada domain yang cocok",
+        "filteredMessage": "Coba nama lain, atau hapus pencarian untuk melihat semua domain.",
+        "clear": "Hapus pencarian"
       }
     },
     "domainCreate": {
@@ -2401,7 +2452,8 @@
         "application": "membuat dan mengatur aplikasi",
         "server": "membuat dan mengatur server",
         "ssh": "membuat dan mengatur kunci SSH",
-        "cloud": "menghubungkan dan mengatur akun cloud"
+        "cloud": "menghubungkan dan mengatur akun cloud",
+        "domain": "domain dan record DNS"
       }
     },
     "helpAndSupportCompact": {

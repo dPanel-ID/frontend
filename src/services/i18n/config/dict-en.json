@@ -1645,11 +1645,11 @@
       }
     },
     "domain": {
-      "headerTitle": "Domain & DNS",
-      "headerDesc": "View your registered domain and DNS here.",
+      "headerTitle": "Domains & DNS",
+      "headerDesc": "Keep your registrar. Give dNocs access to your DNS provider, and it can point records at your servers for you.",
       "headerFootnote": "Visit our <a>YouTube channel</a> for a tutorial.",
       "docs": "Docs",
-      "createDomain": "Add new domain",
+      "createDomain": "Add a domain",
       "emptyState": {
         "title": "No domains found.",
         "message": "Why not add new one to get started?",
@@ -1670,12 +1670,63 @@
           "provider": "Provider",
           "owner": "Owner",
           "lastModified": "Last Modified"
-        }
+        },
+        "domain": "Domain",
+        "provider": "DNS provider",
+        "ownership": "Ownership",
+        "updated": "Last modified",
+        "actions": "Actions"
       },
       "sections": {
         "provider": "Provider",
         "dns": "DNS zone",
         "ownership": "Ownership"
+      },
+      "servers": "Servers",
+      "guide": {
+        "title": "New to DNS? You only need the provider, not the registrar",
+        "description": "dNocs does not sell or move domains. You keep buying them wherever you do today. What dNocs needs is access to whoever answers DNS for the domain, so it can create the records that point a name at a server.",
+        "steps": {
+          "connect": {
+            "title": "Add the domain",
+            "description": "Name the domain and pick who runs its DNS, for example Cloudflare. Paste that provider's API token."
+          },
+          "read": {
+            "title": "dNocs reads the zone",
+            "description": "It lists the records already there, so you can see what the domain points at today before changing anything."
+          },
+          "point": {
+            "title": "Point a name at a server",
+            "description": "Send the domain, or any subdomain, to a server or load balancer without hand-editing records."
+          }
+        },
+        "cta": "Create a server"
+      },
+      "overview": {
+        "total": "Domains",
+        "providers": "DNS providers",
+        "providersHint": "Services answering DNS for them",
+        "team": "Shared with a team",
+        "teamHint": "Domains your teammates can use too",
+        "personal": "Only you",
+        "personalHint": "Domains that belong to your account",
+        "sampleNote": "The split comes from your {sample} most recent domains."
+      },
+      "filters": {
+        "searchPlaceholder": "Search by domain name"
+      },
+      "card": {
+        "personal": "Only you",
+        "team": "Shared with {name}"
+      },
+      "empty": {
+        "title": "Add your first domain",
+        "message": "Point a name you already own at a server, without hand-editing DNS records. You keep your registrar; dNocs only needs access to whoever answers DNS for it.",
+        "cta": "Add a domain",
+        "secondary": "See how servers are created",
+        "filteredTitle": "No domains match",
+        "filteredMessage": "Try another name, or clear the search to see every domain.",
+        "clear": "Clear search"
       }
     },
     "domainCreate": {
@@ -2409,7 +2460,8 @@
         "application": "creating and managing applications",
         "server": "creating and managing servers",
         "ssh": "creating and managing SSH keys",
-        "cloud": "connecting and managing cloud accounts"
+        "cloud": "connecting and managing cloud accounts",
+        "domain": "domains and DNS records"
       }
     },
     "helpAndSupportCompact": {

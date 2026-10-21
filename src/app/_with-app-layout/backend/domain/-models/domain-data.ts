@@ -26,9 +26,13 @@ export const [DomainDataModelProvider, useDomainDataModel] = buildSelector(
 
   return {
     domains: useAdapter(response, (raw) => {
-      const parsed = (raw.domains || []).map((domain) =>
-        AdapterDomainFromDto.toDomainCard(domain).unwrap(),
-      );
+      // One malformed record used to throw here and blank the whole list.
+      // Production data still holds domains the schema rejects, so a bad row
+      // is dropped instead.
+      const parsed = (raw.domains || []).flatMap((domain) => {
+        const card = AdapterDomainFromDto.toDomainCard(domain).okay();
+        return card ? [card] : [];
+      });
 
       return {
         list: parsed,
