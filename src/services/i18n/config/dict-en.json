@@ -247,7 +247,8 @@
         "cloudProjects": "Cloud projects",
         "domains": "Domains",
         "databases": "Databases",
-        "sshKeys": "SSH keys"
+        "sshKeys": "SSH keys",
+        "unavailable": "This count could not be read right now"
       },
       "serverHealth": {
         "title": "Server Health",
@@ -357,6 +358,21 @@
         "unknownServer": "an unnamed server",
         "unknownStatus": "unknown",
         "unknownActivity": "An operation"
+      },
+      "workspaceHero": {
+        "teamWorkspace": "Team workspace",
+        "manage": "Manage team",
+        "members": "Members",
+        "servers": "Servers",
+        "cloudProjects": "Cloud projects",
+        "ref": "ref {ref}",
+        "noRepository": "No IaC repository reported",
+        "iacRepositoryMode": {
+          "custom": "Custom",
+          "managed": "Managed",
+          "shared": "Shared",
+          "unknown": "Unknown mode"
+        }
       },
       "tabs": {
         "ariaLabel": "Dashboard sections",
