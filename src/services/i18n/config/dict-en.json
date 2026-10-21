@@ -158,7 +158,7 @@
       "refresh": "Refresh",
       "rows": "{count} rows",
       "pageOf": "Page {page} of {total}",
-      "loading": "Loading…",
+      "loading": "Loading\u2026",
       "loadFailed": "Could not load this section",
       "retry": "Retry",
       "clearSearch": "Clear search"
@@ -290,7 +290,7 @@
         "technicalDetails": "Technical details",
         "emptyTitle": "No servers to measure",
         "emptyDescription": "Usage appears here once a server is ready.",
-        "loadingTitle": "Reading server usage…",
+        "loadingTitle": "Reading server usage\u2026",
         "failedTitle": "No server reported its usage",
         "failedDescription": "The servers may be busy or out of contact. Your applications are unaffected by this check.",
         "retry": "Try again",
@@ -315,7 +315,7 @@
       },
       "verdict": {
         "ariaLabel": "Infrastructure health",
-        "loading": "Checking your infrastructure…",
+        "loading": "Checking your infrastructure\u2026",
         "healthy": "Everything is running normally",
         "healthyDetail": "No failed operations, no servers down and every agent is reporting in.",
         "attention": "{count, plural, one {# thing needs your attention} other {# things need your attention}}",
@@ -338,8 +338,8 @@
         "title": "Needs your attention",
         "description": "{count} things need a look.",
         "healthyDescription": "Nothing needs a look right now.",
-        "checkingDescription": "Checking your infrastructure…",
-        "checkingTitle": "Checking your infrastructure…",
+        "checkingDescription": "Checking your infrastructure\u2026",
+        "checkingTitle": "Checking your infrastructure\u2026",
         "failedDescription": "Could not check what needs your attention.",
         "failedTitle": "Could not load what needs your attention",
         "failedDetail": "This check is temporarily unavailable. Your infrastructure is unaffected.",
@@ -457,7 +457,7 @@
         "noMetadata": "No further detail reported",
         "technicalDetails": "Technical details",
         "unknownActivity": "An operation",
-        "loadingTitle": "Loading recent activity…",
+        "loadingTitle": "Loading recent activity\u2026",
         "emptyTitle": "Nothing has happened yet",
         "emptyDescription": "Operations such as server setup, module installs and deployments will appear here as they run.",
         "emptyNoServersTitle": "No servers yet",
@@ -1187,28 +1187,26 @@
         }
       },
       "hero": {
-        "refresh": "Refresh",
-        "connectSsh": "Connect over SSH",
-        "sshHint": "ssh {user}@{host} -p {port}",
-        "edit": "Edit connection",
-        "more": "More actions",
-        "reinstall": "Reinstall",
-        "migrateOwnership": "Migrate ownership",
-        "delete": "Delete server",
-        "agent": "Agent {version}",
-        "noAgent": "Agent not installed yet",
-        "created": "Added {when}",
-        "setupRunning": "Setup is running. dPanel is installing its agent and will report back here.",
-        "followLogs": "Open logs",
-        "setupFailed": "Server setup failed",
-        "noErrorDetail": "No error detail was returned.",
-        "viewDetail": "View detail",
-        "closeTerminal": "Close SSH terminal",
-        "terminalTitle": "SSH terminal for {name}"
-      },
-      "hero": {
         "descriptionNamed": "Welcome back, {name}. Here is how your infrastructure is doing.",
-        "description": "Here is how your infrastructure is doing."
+        "description": "Here is how your infrastructure is doing.",
+        "refresh": "Refresh",
+        "edit": "Edit server",
+        "more": "More actions",
+        "connectSsh": "Open terminal",
+        "reinstall": "Reinstall server",
+        "migrateOwnership": "Move to another owner",
+        "delete": "Delete server",
+        "sshHint": "{user}@{host}:{port}",
+        "agent": "Agent {version}",
+        "noAgent": "No agent yet",
+        "created": "Created {when}",
+        "setupRunning": "dPanel is setting this server up. It is ready in about 10 to 20 minutes.",
+        "followLogs": "Follow the logs",
+        "setupFailed": "Setup did not finish",
+        "noErrorDetail": "The provider gave no reason.",
+        "viewDetail": "See what happened",
+        "terminalTitle": "Terminal on {name}",
+        "closeTerminal": "Close terminal"
       },
       "tabs": {
         "ariaLabel": "Server sections",
@@ -1391,7 +1389,7 @@
         "lines": "{count} lines",
         "filterPlaceholder": "Filter log lines",
         "showing": "Showing {shown} of {total} lines",
-        "discovering": "Discovering log files…",
+        "discovering": "Discovering log files\u2026",
         "allLogs": "All VM logs",
         "loading": "Loading log entries",
         "emptyFile": "No entries in the selected range.",
@@ -2084,7 +2082,7 @@
         },
         "documentTitle": "{name} — SSH key | dPanel",
         "fallbackName": "Untitled key",
-        "loading": "Loading key data…",
+        "loading": "Loading key data\u2026",
         "back": "Back to SSH keys",
         "useOnServer": "Create a server with this key",
         "whatNowTitle": "What you can do with this key",
@@ -2209,7 +2207,7 @@
     },
     "teamDetail": {
       "addMember": "Add Member",
-      "loadingData": "Loading team data…",
+      "loadingData": "Loading team data\u2026",
       "memberCount": "{count, plural, one {# member} other {# members}} in this team",
       "memberColumn": "Member",
       "roleColumn": "Role",
@@ -2296,7 +2294,7 @@
         "nameRequired": "Group name is required.",
         "cancel": "Cancel",
         "create": "Create group",
-        "creating": "Creating…"
+        "creating": "Creating\u2026"
       },
       "detail": {
         "tabs": {
@@ -2331,7 +2329,7 @@
             "actions": "Actions"
           },
           "remove": "Remove",
-          "removing": "Removing…",
+          "removing": "Removing\u2026",
           "empty": "This group has no servers yet.",
           "emptyHint": "Add servers to run actions on them together.",
           "noMatch": "No servers match your search.",
@@ -2411,7 +2409,7 @@
             "descriptionLabel": "Description",
             "nameRequired": "Group name is required.",
             "save": "Save",
-            "saving": "Saving…",
+            "saving": "Saving\u2026",
             "cancel": "Cancel"
           },
           "delete": {
@@ -2421,7 +2419,7 @@
             "servers": "Its servers stay as they are; they are simply no longer grouped.",
             "history": "Past operations and their logs are kept.",
             "confirm": "Delete group",
-            "deleting": "Deleting…",
+            "deleting": "Deleting\u2026",
             "cancel": "Cancel"
           },
           "bulk": {
@@ -2448,7 +2446,7 @@
             },
             "targets": "Runs on {count} servers.",
             "queue": "Run",
-            "queueing": "Queueing…",
+            "queueing": "Queueing\u2026",
             "cancel": "Cancel"
           },
           "deploy": {
@@ -2462,7 +2460,7 @@
             "noArtifacts": "No artifacts for this application.",
             "selectBoth": "Select an application and an artifact.",
             "deploy": "Deploy",
-            "queueing": "Queueing…",
+            "queueing": "Queueing\u2026",
             "cancel": "Cancel"
           },
           "retry": {
@@ -2473,7 +2471,7 @@
             "variablesNote": "Redacted variables must be entered again.",
             "refNote": "A pinned ref is required for this retry.",
             "retry": "Retry",
-            "retrying": "Retrying…",
+            "retrying": "Retrying\u2026",
             "cancel": "Cancel"
           },
           "module": {
@@ -2784,7 +2782,7 @@
       "title": "Edit Team",
       "fieldName": "Team Name",
       "namePlaceholder": "My Team",
-      "descPlaceholder": "A short description of this team…"
+      "descPlaceholder": "A short description of this team\u2026"
     },
     "loadBalancerCreation": {
       "title": "Create Load Balancer",
@@ -2897,7 +2895,7 @@
       "manage": "Manage",
       "installed": "Installed",
       "noDescription": "No description available.",
-      "loading": "Loading the module catalog…",
+      "loading": "Loading the module catalog\u2026",
       "failed": "Could not load the catalog",
       "empty": "The module repository did not expose any modules.",
       "noMatch": "No modules match your search."
@@ -2948,9 +2946,9 @@
     "addTeamMember": {
       "title": "Add New People",
       "description": "Select a user and assign workspace roles before adding them.",
-      "selectUser": "Select a user…",
-      "searchByUsername": "Search by username or name…",
-      "loading": "Loading…",
+      "selectUser": "Select a user\u2026",
+      "searchByUsername": "Search by username or name\u2026",
+      "loading": "Loading\u2026",
       "noUsersFound": "No users found",
       "pageInfo": "Page {page} / {totalPage}",
       "rolesTitle": "Workspace roles",
@@ -2964,7 +2962,7 @@
     "manageMemberRoles": {
       "title": "Manage roles",
       "description": "Update access for {name}",
-      "loading": "Loading role catalog…",
+      "loading": "Loading role catalog\u2026",
       "errorTitle": "Failed to load roles",
       "errorMessage": "Role options are unavailable right now. Retry before saving changes.",
       "empty": "No assignable roles are available.",
@@ -3000,7 +2998,7 @@
       "emptySelectionWarning": "Saving with no server selected removes every member from this group.",
       "cancel": "Cancel",
       "confirm": "Confirm",
-      "saving": "Saving…",
+      "saving": "Saving\u2026",
       "submitFailed": "Unable to submit the selection."
     }
   },

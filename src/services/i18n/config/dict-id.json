@@ -149,7 +149,7 @@
       "refresh": "Segarkan",
       "rows": "{count} baris",
       "pageOf": "Halaman {page} dari {total}",
-      "loading": "Memuat…",
+      "loading": "Memuat\u2026",
       "loadFailed": "Bagian ini tidak dapat dimuat",
       "retry": "Coba lagi",
       "clearSearch": "Hapus pencarian"
@@ -281,7 +281,7 @@
         "technicalDetails": "Detail teknis",
         "emptyTitle": "Belum ada server untuk diukur",
         "emptyDescription": "Penggunaan muncul di sini setelah ada server yang siap.",
-        "loadingTitle": "Membaca penggunaan server…",
+        "loadingTitle": "Membaca penggunaan server\u2026",
         "failedTitle": "Tidak ada server yang melaporkan penggunaannya",
         "failedDescription": "Server mungkin sedang sibuk atau tidak terhubung. Aplikasi Anda tidak terpengaruh pemeriksaan ini.",
         "retry": "Coba lagi",
@@ -306,7 +306,7 @@
       },
       "verdict": {
         "ariaLabel": "Kesehatan infrastruktur",
-        "loading": "Memeriksa infrastruktur Anda…",
+        "loading": "Memeriksa infrastruktur Anda\u2026",
         "healthy": "Semuanya berjalan normal",
         "healthyDetail": "Tidak ada operasi yang gagal, tidak ada server yang mati, dan semua agent melapor.",
         "attention": "{count, plural, other {# hal perlu perhatian Anda}}",
@@ -329,8 +329,8 @@
         "title": "Perlu perhatian Anda",
         "description": "{count} hal perlu diperiksa.",
         "healthyDescription": "Tidak ada yang perlu diperiksa saat ini.",
-        "checkingDescription": "Memeriksa infrastruktur Anda…",
-        "checkingTitle": "Memeriksa infrastruktur Anda…",
+        "checkingDescription": "Memeriksa infrastruktur Anda\u2026",
+        "checkingTitle": "Memeriksa infrastruktur Anda\u2026",
         "failedDescription": "Tidak bisa memeriksa hal yang perlu perhatian Anda.",
         "failedTitle": "Tidak bisa memuat hal yang perlu perhatian Anda",
         "failedDetail": "Pemeriksaan ini sedang tidak tersedia. Infrastruktur Anda tidak terpengaruh.",
@@ -448,7 +448,7 @@
         "noMetadata": "Tidak ada detail lain yang dilaporkan",
         "technicalDetails": "Detail teknis",
         "unknownActivity": "Sebuah operasi",
-        "loadingTitle": "Memuat aktivitas terbaru…",
+        "loadingTitle": "Memuat aktivitas terbaru\u2026",
         "emptyTitle": "Belum ada yang terjadi",
         "emptyDescription": "Operasi seperti penyiapan server, pemasangan modul, dan deployment akan muncul di sini saat dijalankan.",
         "emptyNoServersTitle": "Belum ada server",
@@ -1178,28 +1178,26 @@
         }
       },
       "hero": {
-        "refresh": "Segarkan",
-        "connectSsh": "Hubungkan lewat SSH",
-        "sshHint": "ssh {user}@{host} -p {port}",
-        "edit": "Edit koneksi",
-        "more": "Aksi lainnya",
-        "reinstall": "Instal ulang",
-        "migrateOwnership": "Pindahkan kepemilikan",
-        "delete": "Hapus server",
-        "agent": "Agen {version}",
-        "noAgent": "Agen belum terpasang",
-        "created": "Ditambahkan {when}",
-        "setupRunning": "Penyiapan sedang berjalan. dPanel memasang agennya dan akan melapor di sini.",
-        "followLogs": "Buka log",
-        "setupFailed": "Penyiapan server gagal",
-        "noErrorDetail": "Tidak ada detail error yang dikembalikan.",
-        "viewDetail": "Lihat detail",
-        "closeTerminal": "Tutup terminal SSH",
-        "terminalTitle": "Terminal SSH untuk {name}"
-      },
-      "hero": {
         "descriptionNamed": "Selamat datang kembali, {name}. Berikut kondisi infrastruktur Anda.",
-        "description": "Berikut kondisi infrastruktur Anda."
+        "description": "Berikut kondisi infrastruktur Anda.",
+        "refresh": "Muat ulang",
+        "edit": "Ubah server",
+        "more": "Tindakan lain",
+        "connectSsh": "Buka terminal",
+        "reinstall": "Pasang ulang server",
+        "migrateOwnership": "Pindahkan ke pemilik lain",
+        "delete": "Hapus server",
+        "sshHint": "{user}@{host}:{port}",
+        "agent": "Agen {version}",
+        "noAgent": "Belum ada agen",
+        "created": "Dibuat {when}",
+        "setupRunning": "dPanel sedang menyiapkan server ini. Siap dalam sekitar 10 sampai 20 menit.",
+        "followLogs": "Ikuti log",
+        "setupFailed": "Penyiapan tidak selesai",
+        "noErrorDetail": "Penyedia tidak memberi alasan.",
+        "viewDetail": "Lihat penyebabnya",
+        "terminalTitle": "Terminal di {name}",
+        "closeTerminal": "Tutup terminal"
       },
       "tabs": {
         "ariaLabel": "Bagian server",
@@ -1382,7 +1380,7 @@
         "lines": "{count} baris",
         "filterPlaceholder": "Saring baris log",
         "showing": "Menampilkan {shown} dari {total} baris",
-        "discovering": "Mencari berkas log…",
+        "discovering": "Mencari berkas log\u2026",
         "allLogs": "Semua log VM",
         "loading": "Memuat entri log",
         "emptyFile": "Tidak ada entri pada rentang yang dipilih.",
@@ -2076,7 +2074,7 @@
         },
         "documentTitle": "{name} — Kunci SSH | dPanel",
         "fallbackName": "Kunci tanpa nama",
-        "loading": "Memuat data kunci…",
+        "loading": "Memuat data kunci\u2026",
         "back": "Kembali ke kunci SSH",
         "useOnServer": "Buat server dengan kunci ini",
         "whatNowTitle": "Yang bisa Anda lakukan dengan kunci ini",
@@ -2201,7 +2199,7 @@
     },
     "teamDetail": {
       "addMember": "Tambah Anggota",
-      "loadingData": "Memuat data tim…",
+      "loadingData": "Memuat data tim\u2026",
       "memberCount": "{count, plural, one {# anggota} other {# anggota}} dalam tim ini",
       "memberColumn": "Anggota",
       "roleColumn": "Peran",
@@ -2288,7 +2286,7 @@
         "nameRequired": "Nama grup wajib diisi.",
         "cancel": "Batal",
         "create": "Buat grup",
-        "creating": "Membuat…"
+        "creating": "Membuat\u2026"
       },
       "detail": {
         "tabs": {
@@ -2323,7 +2321,7 @@
             "actions": "Aksi"
           },
           "remove": "Keluarkan",
-          "removing": "Mengeluarkan…",
+          "removing": "Mengeluarkan\u2026",
           "empty": "Grup ini belum punya server.",
           "emptyHint": "Tambahkan server untuk menjalankan aksi bersama.",
           "noMatch": "Tidak ada server yang cocok.",
@@ -2403,7 +2401,7 @@
             "descriptionLabel": "Deskripsi",
             "nameRequired": "Nama grup wajib diisi.",
             "save": "Simpan",
-            "saving": "Menyimpan…",
+            "saving": "Menyimpan\u2026",
             "cancel": "Batal"
           },
           "delete": {
@@ -2413,7 +2411,7 @@
             "servers": "Servernya tetap seperti semula; hanya tidak lagi tergrup.",
             "history": "Operasi lama dan lognya tetap disimpan.",
             "confirm": "Hapus grup",
-            "deleting": "Menghapus…",
+            "deleting": "Menghapus\u2026",
             "cancel": "Batal"
           },
           "bulk": {
@@ -2440,7 +2438,7 @@
             },
             "targets": "Berjalan pada {count} server.",
             "queue": "Jalankan",
-            "queueing": "Mengantrekan…",
+            "queueing": "Mengantrekan\u2026",
             "cancel": "Batal"
           },
           "deploy": {
@@ -2454,7 +2452,7 @@
             "noArtifacts": "Tidak ada artefak untuk aplikasi ini.",
             "selectBoth": "Pilih aplikasi dan artefak.",
             "deploy": "Deploy",
-            "queueing": "Mengantrekan…",
+            "queueing": "Mengantrekan\u2026",
             "cancel": "Batal"
           },
           "retry": {
@@ -2465,7 +2463,7 @@
             "variablesNote": "Variabel yang disamarkan harus dimasukkan lagi.",
             "refNote": "Ref terpin diperlukan untuk pengulangan ini.",
             "retry": "Ulangi",
-            "retrying": "Mengulang…",
+            "retrying": "Mengulang\u2026",
             "cancel": "Batal"
           },
           "module": {
@@ -2839,7 +2837,7 @@
       "title": "Ubah Tim",
       "fieldName": "Nama Tim",
       "namePlaceholder": "Tim Saya",
-      "descPlaceholder": "Deskripsi singkat tim ini…"
+      "descPlaceholder": "Deskripsi singkat tim ini\u2026"
     },
     "serverEdit": {
       "title": "Edit server",
@@ -2889,7 +2887,7 @@
       "manage": "Kelola",
       "installed": "Terpasang",
       "noDescription": "Tidak ada deskripsi.",
-      "loading": "Memuat katalog modul…",
+      "loading": "Memuat katalog modul\u2026",
       "failed": "Katalog tidak dapat dimuat",
       "empty": "Repositori modul tidak menyediakan modul apa pun.",
       "noMatch": "Tidak ada modul yang cocok."
@@ -2940,9 +2938,9 @@
     "addTeamMember": {
       "title": "Tambah Anggota Baru",
       "description": "Pilih pengguna dan tetapkan peran workspace sebelum menambahkannya.",
-      "selectUser": "Pilih pengguna…",
-      "searchByUsername": "Cari berdasarkan username atau nama…",
-      "loading": "Memuat…",
+      "selectUser": "Pilih pengguna\u2026",
+      "searchByUsername": "Cari berdasarkan username atau nama\u2026",
+      "loading": "Memuat\u2026",
       "noUsersFound": "Pengguna tidak ditemukan",
       "pageInfo": "Halaman {page} / {totalPage}",
       "rolesTitle": "Peran workspace",
@@ -2956,7 +2954,7 @@
     "manageMemberRoles": {
       "title": "Kelola peran",
       "description": "Perbarui akses untuk {name}",
-      "loading": "Memuat katalog peran…",
+      "loading": "Memuat katalog peran\u2026",
       "errorTitle": "Gagal memuat peran",
       "errorMessage": "Pilihan peran sedang tidak tersedia. Coba lagi sebelum menyimpan perubahan.",
       "empty": "Tidak ada peran yang dapat diberikan.",
@@ -2992,7 +2990,7 @@
       "emptySelectionWarning": "Menyimpan tanpa server terpilih akan mengeluarkan semua anggota grup ini.",
       "cancel": "Batal",
       "confirm": "Konfirmasi",
-      "saving": "Menyimpan…",
+      "saving": "Menyimpan\u2026",
       "submitFailed": "Pilihan tidak dapat dikirim."
     }
   },
