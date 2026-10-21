@@ -150,7 +150,9 @@ export function DocsBlockView(props: { block: DocsBlock }) {
             loading="lazy"
             width={800}
             height={500}
-            className="w-full rounded-xl border bg-card"
+            // Never drawn larger than it was captured: upscaling a screenshot
+            // only makes its text blurrier.
+            className="h-auto w-full max-w-[800px] rounded-xl border bg-card"
           />
           {block.caption && (
             <figcaption className="text-sm leading-6 text-muted-foreground">

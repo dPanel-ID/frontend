@@ -39,58 +39,101 @@ describe('DocsIntroContent', () => {
     expect(screen.getByText(DOCS_INTRO_EN.ownership.lead)).toBeTruthy();
   });
 
-  it('closes by asking for an account', () => {
+  it('asks for an account at the top and at the bottom', () => {
     render(<DocsIntroContent locale="en" />);
 
-    const cta = screen.getByRole('link', {
+    const ctas = screen.getAllByRole('link', {
       name: DOCS_INTRO_EN.hero.primaryCta,
     });
-    expect(cta.getAttribute('href')).toBe('/');
+    expect(ctas).toHaveLength(2);
+    for (const cta of ctas) {
+      expect(cta.getAttribute('href')).toBe('/');
+    }
   });
 
   it('opens the video in a new tab without leaking the referrer', () => {
     render(<DocsIntroContent locale="en" />);
 
-    const link = screen.getByRole('link', {
+    const links = screen.getAllByRole('link', {
       name: DOCS_INTRO_EN.hero.secondaryCta,
     });
-    expect(link.getAttribute('href')).toBe(
-      'https://www.youtube.com/@dpanel_id',
-    );
-    expect(link.getAttribute('target')).toBe('_blank');
-    expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+    expect(links).toHaveLength(2);
+    for (const link of links) {
+      expect(link.getAttribute('href')).toBe(
+        'https://www.youtube.com/@dpanel_id',
+      );
+      expect(link.getAttribute('target')).toBe('_blank');
+      expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+    }
   });
 
-  it('links on to the guides so the introduction is not a dead end', () => {
+  it('shows one card per topic, opening it at its first page', () => {
     render(
       <DocsIntroContent
         locale="en"
-        readMoreHref="/docs/servers/overview"
-        readMoreLabel="What a server is here"
+        sections={[
+          {
+            slug: 'servers',
+            title: 'Servers',
+            summary: 'About servers',
+            pages: [
+              {
+                slug: 'overview',
+                title: 'What a server is here',
+                summary: 'One Linux machine dPanel looks after.',
+                blocks: [],
+              },
+            ],
+          },
+        ]}
       />,
     );
 
-    const link = screen.getByRole('link', { name: /What a server is here/ });
+    // A card stands for the subject, not for every page inside it: the
+    // section's own title and summary, linking to where that subject starts.
+    const link = screen.getByRole('link', { name: /Servers/ });
     expect(link.getAttribute('href')).toBe('/docs/servers/overview');
-  });
-
-  it('omits the guide link when there is no guide to point at', () => {
-    render(<DocsIntroContent locale="en" />);
-
+    expect(screen.getByText('About servers')).toBeTruthy();
     expect(
       screen.queryByRole('link', { name: /What a server is here/ }),
     ).toBeNull();
+  });
+
+  it('omits the guides section when there are no guides yet', () => {
+    render(<DocsIntroContent locale="en" />);
+
+    expect(screen.queryByRole('link', { name: /Servers/ })).toBeNull();
+  });
+
+  it('skips a topic that has no pages written yet', () => {
+    // The grid is waiting on cloud projects, SSH keys, load balancers and the
+    // rest; an empty one must not ship a card that opens nothing.
+    render(
+      <DocsIntroContent
+        locale="en"
+        sections={[
+          {
+            slug: 'domains',
+            title: 'Domains',
+            summary: 'About domains',
+            pages: [],
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.queryByRole('link', { name: /Domains/ })).toBeNull();
   });
 
   it('reads in Indonesian when the app does', () => {
     render(<DocsIntroContent locale="id" />);
 
     expect(
-      screen.getByRole('heading', { name: DOCS_INTRO_ID.ownership.title }),
+      screen.getByRole('heading', { level: 1, name: DOCS_INTRO_ID.hero.title }),
     ).toBeTruthy();
     expect(
-      screen.getByRole('link', { name: DOCS_INTRO_ID.hero.primaryCta }),
-    ).toBeTruthy();
+      screen.getAllByRole('link', { name: DOCS_INTRO_ID.hero.primaryCta }),
+    ).toHaveLength(2);
   });
 
   it.each([undefined, 'en-GB', 'fr', ''])(

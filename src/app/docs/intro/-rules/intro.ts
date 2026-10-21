@@ -43,6 +43,10 @@ export interface DocsIntroCopy {
     lead: string;
     body: string;
   };
+  guides: {
+    badge: string;
+    title: string;
+  };
   providers: {
     title: string;
     /** Named exactly as the product offers them. */
