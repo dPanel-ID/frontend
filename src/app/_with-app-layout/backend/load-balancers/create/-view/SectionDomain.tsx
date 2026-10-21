@@ -104,11 +104,20 @@ export function DomainField(props: {
           )}
         />
       ) : (
-        <div className="grid gap-2">
+        // The two fields are one hostname, so on desktop they sit on one
+        // line with the dot that joins them; they stack on phones.
+        <div className="grid items-center gap-2 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1.3fr)]">
           <Input
             {...internalDomainSubdomain.field}
+            aria-label={t('page.loadBalancersCreate.gateway.subdomain')}
             placeholder={t('page.loadBalancersCreate.gateway.subdomain')}
           />
+          <span
+            aria-hidden
+            className="hidden text-sm font-semibold text-muted-foreground sm:inline"
+          >
+            .
+          </span>
           <Combobox
             classNameButton="w-full"
             items={domainItems}
