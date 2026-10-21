@@ -101,12 +101,12 @@ function Step(props: StepProps) {
         {number}
       </span>
       <div className="min-w-0">
-        <p className="flex items-center gap-1.5 text-sm font-semibold">
+        <p className="flex items-start gap-1.5 text-sm font-semibold">
           <Icon
-            className="size-3.5 shrink-0 text-muted-foreground"
+            className="mt-0.5 size-3.5 shrink-0 text-muted-foreground"
             aria-hidden
           />
-          <span className="truncate">{title}</span>
+          <span>{title}</span>
         </p>
         <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
           {description}
