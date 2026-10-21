@@ -135,7 +135,10 @@ export default function AttentionPanel(props: AttentionPanelProps) {
     >
       <ul className="grid gap-2">
         {unhealthyServers.map((server) => (
-          <li key={`server-${server.id ?? server.hostname}`}>
+          <li
+            key={`server-${server.id ?? server.hostname}`}
+            className="min-w-0"
+          >
             <AttentionRow
               icon={ServerIcon}
               tone="red"
@@ -153,7 +156,7 @@ export default function AttentionPanel(props: AttentionPanelProps) {
         ))}
 
         {unreachableAgents.map((agent) => (
-          <li key={`agent-${agent.machine_id ?? agent.id}`}>
+          <li key={`agent-${agent.machine_id ?? agent.id}`} className="min-w-0">
             <AttentionRow
               icon={WifiOffIcon}
               tone="amber"
@@ -172,7 +175,7 @@ export default function AttentionPanel(props: AttentionPanelProps) {
         ))}
 
         {failures.map((item) => (
-          <li key={`execution-${item.id}`}>
+          <li key={`execution-${item.id}`} className="min-w-0">
             <FailureRow item={item} />
           </li>
         ))}
