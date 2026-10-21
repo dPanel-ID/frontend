@@ -202,10 +202,11 @@ side's edits.
    `AppCard`, `MachineCard`, `SectionWrapper`, `mapAppCardStatus`), and split
    the 1700-line `DashboardView.tsx` per the slice anatomy in `RULES.md` §5.
    No behaviour change. Branch `feat-dashboard-cleanup`.
-4. **Executive overview.** Consolidate the fourteen panels into seven bands and
-   add the fleet utilisation charts. Specified under "Phase 4" below; not yet
-   built. Its first step is validating the Uptrace timeseries API, which gates
-   the rest.
+4. **Executive overview.** Replace the fourteen stacked panels with four tabs
+   and add the fleet utilisation charts. The charts shipped on stored heartbeat
+   rollups (dPanel-ID/backend#64, #65) after the Uptrace route turned out to be
+   a dead end; the tabs and the personal/team split followed. Specified under
+   "Phase 4" below.
 
 Since those three phases, the platform activity chart shipped on
 `GET /api/v2/executions/timeseries`, verified live in production and rendered
@@ -240,20 +241,46 @@ tools.
 
 ### Layout
 
-| Band | Content                                                                                                                                                 | Source                                       |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| 1    | **Status banner** — the verdict sentence and attention count, slim                                                                                      | merges HealthVerdict + AttentionPanel header |
-| 2    | **Estate strip** — Servers, Applications, Cloud projects, Domains, Databases, SSH keys; count plus a status sub-line, each linking to its list          | existing pagination totals                   |
-| 3    | **Fleet utilisation** — three small charts (CPU, memory, disk), each plotting fleet average and peak, with the current value and the worst server named | new Uptrace timeseries endpoint              |
-| 4    | **Platform activity** ∥ **Needs attention**, two columns                                                                                                | shipped ∥ existing                           |
-| 5    | **Recent activity** feed                                                                                                                                | shipped                                      |
-| 6    | **Resources table** — one table (type, name, status, owner, updated) replacing three list panels                                                        | existing endpoints                           |
-| 7    | **Workspace context** — IaC repository, cloud projects, members, demoted                                                                                | existing                                     |
+Seven stacked bands were the first answer, and they were wrong: compacting a
+long page into a shorter long page still leaves every question somewhere down
+a scroll. The page is **four tabs**, each answering one question, so the first
+screen stays short no matter how much the product grows.
 
-Removed: `ResourceMixPanel`, whose domains-against-databases meters answer no
-question anyone asks; `ServerHealthPanel` and `CapacityPanel`, which fold into
-bands 2 and 3; and `ServersList`/`ApplicationsList`/`LoadBalancersList`, which
-fold into band 6.
+Tabs are links carrying a zod-validated `?tab=` search param, matching the
+server detail page, so a section is a shareable URL and a stale bookmark falls
+back to the overview rather than breaking the page.
+
+| Tab           | Content                                                                                                                |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Overview**  | Health verdict; the estate as one block of headline numbers beside the activity trend; needs attention; resource usage |
+| **Activity**  | The operations chart and the full event feed                                                                           |
+| **Resources** | Fleet utilisation, server health, and the server, application and load-balancer lists                                  |
+| **Workspace** | IaC repository, members, cloud projects — **team workspaces only**                                                     |
+
+The Overview's grammar comes from the operations dashboards supplied as
+references: flat bordered cards, a block of headline numbers, one hero chart,
+everything on a single screen. What is deliberately _not_ taken from them is
+the decoration — 3D objects, gradient fills and glassmorphism are what
+`UI_UX_STANDARD.md` forbids in operational tools, however good they look in a
+portfolio shot.
+
+Removed: `EstatePanel` and `ResourceMixPanel`, replaced by the headline-number
+block; `CapacityPanel`, replaced by fleet utilisation. `ServerHealthPanel` and
+the telemetry probes behind it are still on the Resources tab and still due to
+retire.
+
+### Personal and team are different products
+
+A personal workspace has no members and no shared configuration. Treating it
+as a team workspace with empty panels produced visible nonsense: the live page
+reported "+1 more members" beneath a panel explaining that personal
+workspaces have no member list, because the member total defaulted to one.
+
+So the Workspace tab **does not exist** in a personal workspace, and
+`MembersPanel` has no personal mode at all. A personal workspace that reaches
+that tab anyway — a bookmark, a shared link, or switching workspace with the
+tab open — falls back to the overview. The rule to keep: when a mode does not
+have a thing, omit the surface rather than render it with an apology in it.
 
 ### Decisions taken
 
