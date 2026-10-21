@@ -29,7 +29,7 @@ import {
   flowCtaClassName,
 } from '@/shared/presentation/organisms/FlowHero';
 
-import { sshKeyAlgorithmLabel } from '../../-lib/describe-ssh-key';
+import { sshKeyAlgorithmParts } from '../../-lib/describe-ssh-key';
 
 interface SshKeyDetailViewProps {
   sshKey: DTOs.SshKeyV1;
@@ -55,13 +55,10 @@ export default function SshKeyDetailView(props: SshKeyDetailViewProps) {
   const fingerprint = sshKey.data?.fingerprint ?? '';
   // What the key is, in words a person recognises, rather than the secret
   // type the backend stores it under.
-  const algorithmLabel =
-    sshKeyAlgorithmLabel({
-      algorithm: sshKey.data?.algorithm?.trim() || null,
-      length: length.trim() || null,
-    }) ||
-    type ||
-    '';
+  const algorithmParts = sshKeyAlgorithmParts({
+    algorithm: sshKey.data?.algorithm?.trim() || null,
+    length: length.trim() || null,
+  });
 
   const handleDelete = () => {
     openDialog({
@@ -108,7 +105,8 @@ export default function SshKeyDetailView(props: SshKeyDetailViewProps) {
           icon={KeyRoundIcon}
           tone="sky"
           label={t('page.sshKeys.detail.type')}
-          value={algorithmLabel || '—'}
+          value={algorithmParts.name || type || '—'}
+          hint={algorithmParts.detail ?? undefined}
         />
         <StatTile
           icon={CalendarIcon}
