@@ -367,6 +367,37 @@
         "unknownStatus": "unknown",
         "unknownActivity": "An operation"
       },
+      "fleet": {
+        "title": "Resource usage",
+        "description": "How hard your servers are working. Each chart shows the fleet average and the busiest single server.",
+        "legend": {
+          "average": "Fleet average",
+          "peak": "Busiest server"
+        },
+        "range": {
+          "hour": "1 hour",
+          "day": "24 hours",
+          "threeDays": "3 days"
+        },
+        "resource": {
+          "cpu": "CPU",
+          "memory": "Memory",
+          "disk": "Disk"
+        },
+        "chartAria": "Line chart of {resource} usage over time, fleet average and busiest server",
+        "tableCaption": "{resource} usage over time, fleet average and busiest server",
+        "tableWhen": "When",
+        "noReading": "No reading",
+        "peakPercent": "{percent}% peak",
+        "peakHealthy": "Busiest server peaked at {percent}%",
+        "noPeak": "No peak recorded yet",
+        "unknownServer": "an unnamed server",
+        "emptyTitle": "No usage reported yet",
+        "emptyDescription": "Your servers report usage every 30 seconds. Once a server has been running for a few minutes, its usage appears here.",
+        "failedTitle": "Could not load resource usage",
+        "failedDescription": "The usage charts are temporarily unavailable. Your servers are unaffected.",
+        "retry": "Try again"
+      },
       "activityChart": {
         "title": "Platform activity",
         "description": "Everything dPanel has done across this workspace, over the range you pick.",
