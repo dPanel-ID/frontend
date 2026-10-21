@@ -270,46 +270,60 @@ colour-blindness separation the palette was validated for, and the average
 never appears alone — a fleet mean hides the single machine at 98%, which is
 the failure phase 2 removed from the old telemetry panel.
 
-**The utilisation range caps at three days** while the series is read from
-Uptrace, because the free tier keeps roughly that much: offer 1h / 24h / 3d.
-If option C below is taken and rollups are stored here instead, that cap no
-longer applies and the range can match the activity chart. The activity chart
+**The utilisation range caps at three days** only while the series is read
+from Uptrace. Option C stores the rollups here, so that cap does not apply and
+the range can match the activity chart; keep 1h / 24h / 3d as the opening
+offer anyway until there is more than three days of rollup to show. The activity chart
 keeps 24h/7d/30d either way, because executions are stored here; see "the two
 history stores" above.
 
 ### Backend work
 
-Band 3 has no data source yet. The Uptrace timeseries API exists and works,
-but nothing writes host metrics into it, so there is nothing to query. Three
-ways forward, and the choice is a real one:
+Band 3 needs a stored series. Checking production turned up something worth
+stating plainly, because it changes which option is cheap.
 
-**A. Make metrics actually flow.** Configure the agent to export OpenTelemetry
-host metrics to the `agent_otlp_endpoint` that is already configured. Then the
-existing gauge path stops falling back to log parsing, the validated
-timeseries endpoint has data, and per-server readings get more reliable as a
-side effect. This is the correct pipeline. It is work in the agent and its
-deployment, not in this repository, and it still inherits the free tier's
-retention.
+**The agent already exports OpenTelemetry metrics, and Uptrace drops them.**
+`cmd/active-agent/main.go` collects a system snapshot every 30 seconds and
+calls `exportSystemMetrics`, which posts OTLP-JSON gauges for
+`system.cpu.utilization`, `system.memory.usage/total/free/utilization`,
+`system.filesystem.usage/total/free/utilization` and `system.uptime` to the
+derived `/v1/metrics` endpoint with the workspace DSN. That code is complete
+and running. A diagnostic datapoint posted the same way answers `200 {}` and
+then **does not appear in any project**: the only metrics the instance holds
+are Uptrace's own seven `uptrace_*` internal series. Metrics ingestion is
+accepted and silently discarded, so this is an Uptrace-side limitation, not
+missing agent work.
 
-**B. Derive the series from heartbeat logs.** Query the agent log stream over
-the window, parse each heartbeat envelope, bucket by time. It works with
-exactly today's data and needs no agent change. It is also one log query per
-machine, bounded by line limits, parsing a text format with no contract — the
-log-scraping this redesign removed from the activity feed in phase 1. Do not
-build the fleet chart this way.
+**And the backend already receives the same numbers directly.** `emit` in the
+agent delivers every heartbeat to the backend over the WebSocket or the
+callback URL, carrying `cpu.usage_percent`, `memory.used_percent` and
+`disk.used_percent` in its attributes. `upsertAgentFromEventTx` persists only
+`version`, `status`, `last_seen_at`, `nsq_topic` and `otel_resource_id` — the
+system stats are read and thrown away. The per-server usage endpoints then
+recover those same figures by querying Uptrace _logs_ for the agent's log
+file and parsing the heartbeat JSON back out of a text line.
 
-**C. Store rollups in this product's own database.** Write one row per machine
-per five minutes from the heartbeat the backend already receives, and serve
-the chart from Postgres. A new table and a writer, but the data is durable,
-cheap to query, scoped with the same owner rules as executions, and **not
-bound by Uptrace retention at all** — which removes the three-day cap the
-chart would otherwise inherit.
+So the platform receives host stats every 30 seconds, discards them, and later
+scrapes them back out of a log of the same message.
 
-Recommended: **C for the chart, A for the platform.** C is self-contained in
-this repository and gives the dashboard a dependable series; A is the right
-long-term pipeline and fixes the point readings too. B is a trap.
+That makes the choice straightforward:
 
-Whichever is chosen, the endpoint shape stays:
+**C. Persist what already arrives (recommended).** Write a rollup row per
+machine per bucket from the heartbeat the backend already handles, and serve
+the chart from Postgres. No agent change, no Uptrace dependency, no OTLP
+round trip, and **no three-day cap**, because the data is ours. It also lets
+the per-server endpoints stop log-scraping, which removes the last piece of
+log parsing from this product's read path.
+
+**A. Make Uptrace store metrics.** Still worth doing for the observability
+product as a whole, but it is an Uptrace configuration or licensing question
+on an instance whose container config is not readable without the VM's sudo
+password, and it would keep the retention cap. Not a prerequisite for band 3.
+
+**B. Derive the series by parsing heartbeat logs.** Rejected. It is the log
+scraping phase 1 removed, and it is now plainly unnecessary given C.
+
+Endpoint shape, unchanged by the choice:
 `GET /api/v2/metrics/fleet-utilisation?since=&bucket=`, workspace-scoped,
 per-bucket average and maximum for CPU, memory and disk plus the peak machine
 per metric, aggregated in one query rather than one per machine.
