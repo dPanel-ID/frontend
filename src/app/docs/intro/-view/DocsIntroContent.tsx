@@ -1,23 +1,31 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 import {
   ActivityIcon,
   AppWindowIcon,
   ArrowRightIcon,
+  BookOpenIcon,
   CirclePlayIcon,
+  CloudIcon,
   DatabaseIcon,
   GitBranchIcon,
+  GlobeIcon,
+  KeyRoundIcon,
   NetworkIcon,
   ServerIcon,
   UsersIcon,
 } from 'lucide-react';
 
-import { Badge } from '@/shared/presentation/atoms/Badge';
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { cn } from '@/shared/libs/tailwind/cn';
+import {
+  FLOW_ACCENTS,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
 
 import { DOCS_INTRO_EN } from '../-content/intro.en';
 import { DOCS_INTRO_ID } from '../-content/intro.id';
 import type { DocsIntroCapability, DocsIntroCopy } from '../-rules/intro';
+import type { DocsSection } from '../../-rules/content';
 
 const COPY: Record<string, DocsIntroCopy> = {
   en: DOCS_INTRO_EN,
@@ -38,6 +46,60 @@ const CAPABILITY_ICONS: Record<
 
 const YOUTUBE_URL = 'https://www.youtube.com/@dpanel_id';
 
+/**
+ * The guide pages are built from the sky accent, so this page is too: the
+ * same glow, the same icon tile, the same badge and the same call to action.
+ */
+const TONE = FLOW_ACCENTS.sky;
+
+/** A section's eyebrow, in the accent the guide pages use for theirs. */
+function IntroBadge(props: { children: string }) {
+  return (
+    <span
+      className={cn(
+        'inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold',
+        TONE.badge,
+      )}
+    >
+      {props.children}
+    </span>
+  );
+}
+
+/** The icon tile shared with FlowHero and the numbered steps in a guide. */
+function IntroTile(props: { children: ReactNode; className?: string }) {
+  return (
+    <span
+      className={cn(
+        'flex size-9 shrink-0 items-center justify-center rounded-lg border',
+        TONE.icon,
+        props.className,
+      )}
+    >
+      {props.children}
+    </span>
+  );
+}
+
+/** Section headings, one step above a guide's body headings. */
+const SECTION_HEADING =
+  'text-xl font-semibold tracking-tight text-primary sm:text-2xl';
+
+/**
+ * The icon that stands for a dPanel module in the topic grid, by its
+ * documentation slug. Servers is the only module documented today; the rest
+ * are here so their guides land with the right mark rather than a fallback.
+ */
+const MODULE_ICONS: Record<string, ComponentType<{ className?: string }>> = {
+  applications: AppWindowIcon,
+  databases: DatabaseIcon,
+  domains: GlobeIcon,
+  'load-balancers': NetworkIcon,
+  projects: CloudIcon,
+  servers: ServerIcon,
+  'ssh-keys': KeyRoundIcon,
+};
+
 /** The introduction copy for an app locale; unknown locales read in English. */
 export function introCopyFor(locale?: string): DocsIntroCopy {
   const key = (locale ?? 'en').toLowerCase().split('-')[0] ?? 'en';
@@ -47,9 +109,8 @@ export function introCopyFor(locale?: string): DocsIntroCopy {
 export interface DocsIntroContentProps {
   /** App locale; anything unrecognised reads in English. */
   locale?: string;
-  /** Where "read the guide" goes; omitted when there are no guides yet. */
-  readMoreHref?: string;
-  readMoreLabel?: string;
+  /** The guides to send readers on to. */
+  sections?: DocsSection[];
 }
 
 /**
@@ -62,18 +123,123 @@ export interface DocsIntroContentProps {
  */
 export function DocsIntroContent(props: DocsIntroContentProps = {}) {
   const copy = introCopyFor(props.locale);
+  const sections = props.sections ?? [];
 
   return (
     <div className="flex flex-col gap-4">
+      <IntroHero copy={copy} />
       <IntroStart copy={copy} />
       <IntroCapabilities copy={copy} />
       <IntroOwnership copy={copy} />
-      <IntroClosing
-        copy={copy}
-        readMoreHref={props.readMoreHref}
-        readMoreLabel={props.readMoreLabel}
-      />
+      <IntroGuides copy={copy} sections={sections} />
+      <IntroClosing copy={copy} />
     </div>
+  );
+}
+
+/**
+ * The documentation topics, one card each.
+ *
+ * A card stands for a subject a reader came to understand — servers today,
+ * and cloud projects, SSH keys, load balancers, applications, domains and
+ * databases as those guides are written — and opens that subject at its
+ * first page. Listing every page instead would turn the way in to the
+ * documentation into the index rail this page deliberately does without.
+ */
+function IntroGuides(props: { copy: DocsIntroCopy; sections: DocsSection[] }) {
+  const { copy, sections } = props;
+  const topics = sections.flatMap((section) => {
+    const first = section.pages[0];
+    return first ? [{ first, section }] : [];
+  });
+
+  if (!topics.length) return null;
+
+  return (
+    <section aria-labelledby="docs-intro-guides" className="space-y-5">
+      <div className="max-w-2xl space-y-2">
+        <IntroBadge>{copy.guides.badge}</IntroBadge>
+        <h2 id="docs-intro-guides" className={SECTION_HEADING}>
+          {copy.guides.title}
+        </h2>
+      </div>
+
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {topics.map(({ first, section }) => {
+          const ModuleIcon = MODULE_ICONS[section.slug] ?? BookOpenIcon;
+
+          return (
+            <li key={section.slug} className="min-w-0">
+              <a
+                href={`/docs/${section.slug}/${first.slug}`}
+                className={cn(
+                  'flex h-full min-w-0 flex-col rounded-2xl border bg-card p-5 transition-all',
+                  'hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/5',
+                  'focus-visible:outline-none focus-visible:ring-2',
+                  TONE.border,
+                  TONE.ring,
+                )}
+              >
+                <IntroTile>
+                  <ModuleIcon className="size-4" />
+                </IntroTile>
+                <span className="mt-4 flex items-center gap-1.5 text-base font-semibold text-primary">
+                  {section.title}
+                  <ArrowRightIcon className="size-4 shrink-0" aria-hidden />
+                </span>
+                <span className="mt-2 text-sm leading-6 text-muted-foreground">
+                  {section.summary}
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+function IntroHero(props: { copy: DocsIntroCopy }) {
+  const { copy } = props;
+
+  return (
+    <header className="relative overflow-hidden rounded-2xl border bg-card">
+      <div className={cn('pointer-events-none absolute inset-0', TONE.glow)} />
+
+      <div className="relative flex flex-col gap-5 p-5 sm:p-8">
+        <div className="flex flex-wrap items-center gap-3">
+          <IntroTile className="size-12 rounded-xl">
+            <BookOpenIcon className="size-6" />
+          </IntroTile>
+          <IntroBadge>{copy.hero.badge}</IntroBadge>
+        </div>
+
+        <div className="max-w-3xl space-y-3">
+          <h1 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
+            {copy.hero.title}
+          </h1>
+          <p className="max-w-2xl text-base leading-7 text-muted-foreground">
+            {copy.hero.subtitle}
+          </p>
+        </div>
+
+        <IntroActions copy={copy} />
+
+        <ul
+          aria-label={copy.providers.title}
+          className="flex flex-wrap items-center gap-2"
+        >
+          <li className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {copy.providers.title}
+          </li>
+          {copy.providers.items.map((provider) => (
+            <li key={provider}>
+              <IntroBadge>{provider}</IntroBadge>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </header>
   );
 }
 
@@ -82,21 +248,23 @@ function IntroActions(props: { copy: DocsIntroCopy }) {
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-      <Button asChild size="lg" className="sm:w-auto">
-        <a href="/">{copy.hero.primaryCta}</a>
-      </Button>
-      <Button
-        asChild
-        buttonStyle="outline"
-        buttonColor="secondary"
-        size="lg"
-        className="sm:w-auto"
+      <a href="/" className={flowCtaClassName('sky')}>
+        {copy.hero.primaryCta}
+      </a>
+      <a
+        href={YOUTUBE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cn(
+          'inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2',
+          TONE.hover,
+          TONE.ring,
+        )}
       >
-        <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer">
-          <CirclePlayIcon />
-          {copy.hero.secondaryCta}
-        </a>
-      </Button>
+        <CirclePlayIcon className="size-4" />
+        {copy.hero.secondaryCta}
+      </a>
     </div>
   );
 }
@@ -107,11 +275,8 @@ function IntroStart(props: { copy: DocsIntroCopy }) {
   return (
     <section aria-labelledby="docs-intro-start" className="space-y-5">
       <div className="max-w-2xl space-y-2">
-        <Badge variant="outline">{copy.start.badge}</Badge>
-        <h2
-          id="docs-intro-start"
-          className="text-2xl font-semibold tracking-tight text-primary sm:text-3xl"
-        >
+        <IntroBadge>{copy.start.badge}</IntroBadge>
+        <h2 id="docs-intro-start" className={SECTION_HEADING}>
           {copy.start.title}
         </h2>
       </div>
@@ -122,9 +287,9 @@ function IntroStart(props: { copy: DocsIntroCopy }) {
             key={step.title}
             className="min-w-0 rounded-xl border bg-card p-5"
           >
-            <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-sm font-bold tabular-nums text-primary">
+            <IntroTile className="text-sm font-bold tabular-nums">
               {index + 1}
-            </span>
+            </IntroTile>
             <h3 className="mt-4 text-base font-semibold text-primary">
               {step.title}
             </h3>
@@ -144,11 +309,8 @@ function IntroCapabilities(props: { copy: DocsIntroCopy }) {
   return (
     <section aria-labelledby="docs-intro-capabilities" className="space-y-5">
       <div className="max-w-2xl space-y-2">
-        <Badge variant="outline">{copy.capabilities.badge}</Badge>
-        <h2
-          id="docs-intro-capabilities"
-          className="text-2xl font-semibold tracking-tight text-primary sm:text-3xl"
-        >
+        <IntroBadge>{copy.capabilities.badge}</IntroBadge>
+        <h2 id="docs-intro-capabilities" className={SECTION_HEADING}>
           {copy.capabilities.title}
         </h2>
       </div>
@@ -162,9 +324,9 @@ function IntroCapabilities(props: { copy: DocsIntroCopy }) {
               key={item.key}
               className="min-w-0 rounded-xl border bg-card p-5"
             >
-              <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-accent">
+              <IntroTile>
                 <Icon className="size-4" />
-              </span>
+              </IntroTile>
               <h3 className="mt-4 text-base font-semibold text-primary">
                 {item.title}
               </h3>
@@ -188,14 +350,11 @@ function IntroOwnership(props: { copy: DocsIntroCopy }) {
       className="rounded-2xl border bg-card p-5 sm:p-8"
     >
       <div className="max-w-3xl space-y-4">
-        <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-accent">
+        <IntroTile>
           <GitBranchIcon className="size-4" />
-        </span>
-        <Badge variant="outline">{copy.ownership.badge}</Badge>
-        <h2
-          id="docs-intro-ownership"
-          className="text-2xl font-semibold tracking-tight text-primary sm:text-3xl"
-        >
+        </IntroTile>
+        <IntroBadge>{copy.ownership.badge}</IntroBadge>
+        <h2 id="docs-intro-ownership" className={SECTION_HEADING}>
           {copy.ownership.title}
         </h2>
         <p className="text-base leading-7 text-primary">
@@ -209,36 +368,19 @@ function IntroOwnership(props: { copy: DocsIntroCopy }) {
   );
 }
 
-function IntroClosing(props: {
-  copy: DocsIntroCopy;
-  readMoreHref?: string;
-  readMoreLabel?: string;
-}) {
-  const { copy, readMoreHref, readMoreLabel } = props;
+function IntroClosing(props: { copy: DocsIntroCopy }) {
+  const { copy } = props;
 
   return (
     <section className="rounded-2xl border bg-card p-5 sm:p-6">
       <div className="max-w-2xl space-y-4">
         <div className="space-y-2">
-          <h2 className="text-2xl font-semibold tracking-tight text-primary">
-            {copy.closing.title}
-          </h2>
+          <h2 className={SECTION_HEADING}>{copy.closing.title}</h2>
           <p className="text-sm leading-6 text-muted-foreground">
             {copy.closing.text}
           </p>
         </div>
         <IntroActions copy={copy} />
-
-        {/* The way into the guides, so the introduction is not a dead end. */}
-        {readMoreHref && readMoreLabel && (
-          <a
-            href={readMoreHref}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50 dark:text-sky-300"
-          >
-            {readMoreLabel}
-            <ArrowRightIcon className="size-4" aria-hidden />
-          </a>
-        )}
       </div>
     </section>
   );

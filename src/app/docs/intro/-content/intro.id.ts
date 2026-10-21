@@ -5,7 +5,7 @@ export const DOCS_INTRO_ID: DocsIntroCopy = {
     badge: 'Pengenalan',
     title: 'Server, aplikasi, dan domain Anda dalam satu tempat.',
     subtitle:
-      'dPanel menjalankan server baru di penyedia cloud Anda, atau menghubungkan server yang sudah Anda punya, lalu menyiapkannya dan men-deploy aplikasi Anda. Semua yang dibangunnya ditulis sebagai OpenTofu dan Ansible yang tetap menjadi milik Anda.',
+      'dPanel menjalankan server baru di penyedia cloud Anda, atau menghubungkan server yang sudah Anda punya, lalu menyiapkannya dan men-deploy aplikasi Anda. Semua yang dibangunnya dituliskan sebagai Ansible yang tetap menjadi milik Anda.',
     primaryCta: 'Buat akun Anda',
     secondaryCta: 'Tonton dPanel di YouTube',
   },
@@ -71,7 +71,11 @@ export const DOCS_INTRO_ID: DocsIntroCopy = {
     badge: 'Tanpa kunci vendor',
     title: 'Bagian yang baru terasa enam bulan lagi.',
     lead: 'Kebanyakan panel menjadikan infrastruktur Anda milik mereka. dPanel menuliskannya untuk Anda.',
-    body: 'Setiap server yang dibangunnya dijelaskan dalam OpenTofu, dan setiap perubahan diterapkan dengan Ansible. Deskripsi itu milik Anda: baca, tinjau lewat pull request, atau bawa ke tempat lain sepenuhnya. Meninggalkan dPanel berarti memindahkan sebuah repositori, bukan membangun ulang semuanya dari ingatan.',
+    body: 'Setiap server yang dibangunnya, dan setiap perubahan yang dilakukannya, ditulis sebagai Ansible. Itu bukan sekadar catatan, melainkan sumbernya: jalankan lagi dan Anda mendapat mesin yang sama persis, setiap kali. Anda bisa menjalankannya sendiri, tanpa dPanel sama sekali. Repositorinya masih privat untuk saat ini, jadi belum ada pull request yang bisa Anda tinjau — tetapi minta saja, dan infrastruktur Anda kami tuliskan ke repositori milik Anda sendiri, dalam stack lain seperti OpenTofu bila Anda lebih suka.',
+  },
+  guides: {
+    badge: 'Panduan',
+    title: 'Baca cara kerjanya.',
   },
   providers: {
     title: 'Bekerja dengan',

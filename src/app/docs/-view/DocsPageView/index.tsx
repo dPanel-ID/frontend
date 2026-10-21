@@ -29,6 +29,11 @@ interface DocsPageViewProps {
 /**
  * One documentation page: the index on the left on wide screens, the page
  * itself in the middle, and the way onwards at the bottom.
+ *
+ * The whole thing is held to a fixed width rather than filling the display.
+ * The screenshots in these pages are 800px wide, so a content column any
+ * wider than that upscales them into a blur; the measure a reader wants for
+ * long-form prose happens to be about the same width, so one cap serves both.
  */
 export function DocsPageView(props: DocsPageViewProps) {
   const { location, sections } = props;
@@ -36,7 +41,7 @@ export function DocsPageView(props: DocsPageViewProps) {
   const t = useDevetekTranslations('page.docs');
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8">
       <FlowHero
         accent="sky"
         icon={BookOpenIcon}

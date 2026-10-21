@@ -1,19 +1,11 @@
-import { Link, createFileRoute } from '@tanstack/react-router';
-import { BookOpenIcon, ServerIcon } from 'lucide-react';
+import { createFileRoute } from '@tanstack/react-router';
 
-import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
-
-import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
-import {
-  FlowHero,
-  flowCtaClassName,
-} from '@/shared/presentation/organisms/FlowHero';
+import { useDevetekLocale } from '@/services/i18n';
 
 import { docsSections } from '../-lib/registry';
 import { DocsFooter } from '../-view/-presentation/DocsFooter';
-import { DocsNav } from '../-view/-presentation/DocsNav';
 
-import { DocsIntroContent, introCopyFor } from './-view/DocsIntroContent';
+import { DocsIntroContent } from './-view/DocsIntroContent';
 
 export const Route = createFileRoute('/docs/intro/')({
   ssr: true,
@@ -32,12 +24,18 @@ export const Route = createFileRoute('/docs/intro/')({
   component: DocsIntroPage,
 });
 
+/**
+ * The documentation landing page.
+ *
+ * Laid out like a guide page and painted from the same sky accent, so the
+ * documentation reads as one product — but without the index rail, because
+ * nobody arrives here to look something up. This page has to explain what
+ * dPanel is and make someone want to try it, so the article column gives way
+ * to marketing sections and a card grid of the guides themselves.
+ */
 function DocsIntroPage() {
   const locale = useDevetekLocale();
-  const t = useDevetekTranslations('page.docs');
   const sections = docsSections(locale);
-  const copy = introCopyFor(locale);
-  const firstSection = sections[0];
 
   return (
     <>
@@ -53,52 +51,8 @@ function DocsIntroPage() {
         tabIndex={-1}
         className="min-h-svh bg-background text-foreground"
       >
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 lg:px-8">
-          <FlowHero
-            accent="sky"
-            icon={BookOpenIcon}
-            headnote={
-              <Breadcrumb
-                items={[{ text: t('breadcrumb'), url: '/docs/intro' }]}
-              />
-            }
-            badge={copy.hero.badge}
-            title={copy.hero.title}
-            description={copy.hero.subtitle}
-            aside={
-              <Link to="/" className={flowCtaClassName('sky')}>
-                <ServerIcon className="size-4" />
-                {copy.hero.primaryCta}
-              </Link>
-            }
-          />
-
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-            {/*
-              The same index the rest of the documentation carries, so the
-              introduction is a way in to the guides rather than a dead end.
-            */}
-            <aside className="hidden w-64 shrink-0 rounded-2xl border bg-card p-3 lg:block">
-              <DocsNav sections={sections} activeSection="" activePage="" />
-            </aside>
-
-            <div className="flex min-w-0 flex-1 flex-col gap-4">
-              <DocsIntroContent
-                locale={locale}
-                readMoreHref={
-                  firstSection
-                    ? `/docs/${firstSection.slug}/${firstSection.pages[0]?.slug ?? ''}`
-                    : undefined
-                }
-                readMoreLabel={firstSection?.pages[0]?.title}
-              />
-
-              <div className="rounded-2xl border bg-card p-4 lg:hidden">
-                <DocsNav sections={sections} activeSection="" activePage="" />
-              </div>
-            </div>
-          </div>
-
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8">
+          <DocsIntroContent locale={locale} sections={sections} />
           <DocsFooter />
         </div>
       </main>
