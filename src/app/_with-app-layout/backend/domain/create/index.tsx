@@ -32,6 +32,7 @@ import {
   getProviderContracts,
   getProviderLabel,
   hasUsableCredential,
+  isCredentialFieldFilled,
 } from './-lib/providers';
 import { isValidDomain, schemaDomainCreateForm } from './-rules/form';
 import type { DomainCreateForm } from './-rules/form';
@@ -135,10 +136,13 @@ function CreateFlow() {
 
   const domainReady = isValidDomain(values.domain ?? '');
   const credentialsReady = Boolean(
-    selectedProvider && hasUsableCredential(selectedProvider, values),
+    selectedProvider && hasUsableCredential(values, selectedProvider),
   );
+  // How many fields the user actually filled, not how many exist.
   const credentialCount = selectedProvider
-    ? getCredentialFields(selectedProvider).length
+    ? getCredentialFields(selectedProvider).filter((field) =>
+        isCredentialFieldFilled(values.credentials ?? {}, field.key),
+      ).length
     : 0;
 
   const rows: ReviewPanelRow[] = [
@@ -204,8 +208,8 @@ function CreateFlow() {
     {
       key: 'credentials',
       icon: KeyRoundIcon,
-      title: t('page.domainCreate.sections.credential.title'),
-      description: t('page.domainCreate.sections.credential.description'),
+      title: t('page.domainCreate.sections.credentials.title'),
+      description: t('page.domainCreate.sections.credentials.description'),
       done: credentialsReady,
       content: (
         <CredentialSection
