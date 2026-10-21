@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { summarizeSshKeys } from '../-model/overview';
 
-import { toSshKeyCard } from './describe-ssh-key';
+import { sshKeyAlgorithmLabel, toSshKeyCard } from './describe-ssh-key';
 
 describe('toSshKeyCard', () => {
   it('maps a complete key', () => {
@@ -111,5 +111,34 @@ describe('summarizeSshKeys', () => {
       team: 0,
       sampled: false,
     });
+  });
+});
+
+describe('sshKeyAlgorithmLabel', () => {
+  it('names an Ed25519 key without inventing a size', () => {
+    expect(sshKeyAlgorithmLabel({ algorithm: 'ed25519', length: null })).toBe(
+      'Ed25519',
+    );
+  });
+
+  it('puts the size next to RSA, where it means something', () => {
+    expect(sshKeyAlgorithmLabel({ algorithm: 'rsa', length: '4096' })).toBe(
+      'RSA 4096',
+    );
+    expect(sshKeyAlgorithmLabel({ algorithm: 'RSA', length: null })).toBe(
+      'RSA',
+    );
+  });
+
+  it('says nothing for a key whose algorithm the backend could not read', () => {
+    expect(
+      sshKeyAlgorithmLabel({ algorithm: null, length: '4096' }),
+    ).toBeNull();
+  });
+
+  it('passes through an algorithm it does not know', () => {
+    expect(
+      sshKeyAlgorithmLabel({ algorithm: 'ecdsa-sha2-nistp256', length: null }),
+    ).toBe('ecdsa-sha2-nistp256');
   });
 });
