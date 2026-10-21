@@ -2166,7 +2166,8 @@
       "topic": {
         "appCreation": "pembuatan aplikasi",
         "application": "membuat dan mengatur aplikasi",
-        "server": "membuat dan mengatur server"
+        "server": "membuat dan mengatur server",
+        "ssh": "membuat dan mengatur kunci SSH"
       }
     },
     "helpAndSupportCompact": {

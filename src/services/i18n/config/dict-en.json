@@ -2174,7 +2174,8 @@
       "topic": {
         "appCreation": "app creation",
         "application": "creating and managing applications",
-        "server": "creating and managing servers"
+        "server": "creating and managing servers",
+        "ssh": "creating and managing SSH keys"
       }
     },
     "helpAndSupportCompact": {
