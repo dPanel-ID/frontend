@@ -3,32 +3,87 @@ import { useMemo } from 'react';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import type { ResponseErrors } from '@/shared/libs/api-client/rules/types';
 import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
+import { cn } from '@/shared/libs/tailwind/cn';
 import { FailedState } from '@/widgets/failed-state';
-import { ResourceCard } from '@/widgets/resource-card';
 
+import { useFilterModel } from '../../../-models/filters';
+
+/** Placeholders shaped like the view that is loading, so nothing jumps. */
 function Loading() {
   const isDesktop = useBreakpoint('lg');
+  const [viewMode] = useFilterModel((s) => [s.viewMode]);
+  const mode = viewMode === 'auto' ? (isDesktop ? 'list' : 'grid') : viewMode;
 
-  if (isDesktop) {
+  if (mode === 'table') {
     return (
-      <div className="flex flex-col gap-2">
-        <ResourceCard.ShimmerFull />
-        <ResourceCard.ShimmerFull classNameWrapper="opacity-80" />
-        <ResourceCard.ShimmerFull classNameWrapper="opacity-50" />
-        <ResourceCard.ShimmerFull classNameWrapper="opacity-20" />
+      <div className="overflow-hidden rounded-2xl border bg-card">
+        {[0, 1, 2, 3, 4].map((index) => (
+          <div
+            key={index}
+            className="flex items-center gap-3 border-b px-4 py-3 last:border-0"
+            style={{ opacity: 1 - index * 0.18 }}
+          >
+            <Shimmer className="size-9 rounded-lg" />
+            <Shimmer className="h-4 w-44" />
+            <Shimmer className="h-5 w-24 rounded-full" />
+            <Shimmer className="ml-auto h-4 w-24" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (mode === 'grid') {
+    return (
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {[0, 1, 2, 3, 4, 5].map((index) => (
+          <div
+            key={index}
+            className="flex flex-col gap-3 rounded-2xl border bg-card p-3"
+            style={{ opacity: 1 - index * 0.12 }}
+          >
+            <div className="flex items-center gap-3">
+              <Shimmer className="size-9 rounded-lg" />
+              <Shimmer className="h-4 w-32" />
+            </div>
+            <Shimmer className="h-6 w-28 rounded-full" />
+            <Shimmer className="h-3 w-full" />
+          </div>
+        ))}
       </div>
     );
   }
 
   return (
-    <div className="pb-2 grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-col gap-1 sm:gap-2">
-      <ResourceCard.ShimmerCompact />
-      <ResourceCard.ShimmerCompact />
-      <ResourceCard.ShimmerCompact />
-      <ResourceCard.ShimmerCompact />
-      <ResourceCard.ShimmerCompact />
-      <ResourceCard.ShimmerCompact />
+    <div className="flex flex-col gap-3">
+      {[0, 1, 2, 3].map((index) => (
+        <div
+          key={index}
+          className="grid gap-4 rounded-2xl border bg-card p-4 xl:grid-cols-[minmax(0,1fr)_12rem]"
+          style={{ opacity: 1 - index * 0.22 }}
+        >
+          <div className="grid gap-3">
+            <div className="flex items-center gap-3">
+              <Shimmer className="size-11 rounded-xl" />
+              <div className="grid gap-2">
+                <Shimmer className="h-5 w-52" />
+                <Shimmer className="h-3 w-40" />
+              </div>
+            </div>
+            <Shimmer className="h-7 w-3/4 rounded-full" />
+          </div>
+          <Shimmer className="h-10 rounded-xl" />
+        </div>
+      ))}
     </div>
+  );
+}
+
+function Shimmer(props: { className?: string }) {
+  return (
+    <div
+      className={cn('animate-pulse rounded bg-border/60', props.className)}
+    />
   );
 }
 
@@ -47,7 +102,7 @@ function Error(props: ResponseErrors) {
         <Loading />
       </div>
 
-      <div className="absolute left-1/2 top-1/2 -translate-1/2 border p-4 pb-2 rounded-xl shadow-2xl bg-card">
+      <div className="absolute left-1/2 top-1/2 -translate-1/2 rounded-xl border bg-card p-4 pb-2 shadow-2xl">
         <FailedState.WallCentered errorPayload={errorPayload} />
       </div>
     </div>
