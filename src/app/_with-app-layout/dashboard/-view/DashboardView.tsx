@@ -39,6 +39,7 @@ import type { TelemetrySample } from '../-lib/telemetry';
 import { buildWorkspaceIacRepository } from '../-lib/workspace';
 import { useDashboardHealth } from '../-usecase/use-dashboard-health';
 
+import ActivityChart from './ActivityChart/ActivityChart';
 import ActivityPanel from './ActivityPanel/ActivityPanel';
 import ApplicationsList from './ApplicationsList/ApplicationsList';
 import AttentionPanel from './AttentionPanel/AttentionPanel';
@@ -256,7 +257,9 @@ export default function DashboardView() {
           onRetry={health.refresh}
         />
 
-        {/* What changed? */}
+        {/* What changed, and when? */}
+        <ActivityChart />
+
         <ActivityPanel hasServers={servers.length > 0} />
 
         <CapacityPanel

@@ -367,6 +367,35 @@
         "unknownStatus": "unknown",
         "unknownActivity": "An operation"
       },
+      "activityChart": {
+        "title": "Platform activity",
+        "description": "Everything dPanel has done across this workspace, over the range you pick.",
+        "legend": {
+          "succeeded": "Succeeded",
+          "failed": "Failed",
+          "other": "In progress or cancelled"
+        },
+        "range": {
+          "day": "24 hours",
+          "week": "7 days",
+          "month": "30 days"
+        },
+        "rangeTooltip": "Show the last {range}",
+        "totalLabel": "Operations",
+        "totalHint": "In the selected range",
+        "successRateLabel": "Success rate",
+        "successRateHint": "Of operations that finished",
+        "failedLabel": "Failed",
+        "failedHint": "Needed a second attempt",
+        "chartAria": "Bar chart of platform operations over time, split by outcome",
+        "tableCaption": "Platform operations over time, split by outcome",
+        "tableWhen": "When",
+        "emptyTitle": "No activity yet",
+        "emptyDescription": "Once you create a server or install a module, the work dPanel does appears here as a timeline.",
+        "failedTitle": "Could not load activity history",
+        "failedDescription": "The chart is temporarily unavailable. Your infrastructure is unaffected.",
+        "retry": "Try again"
+      },
       "activity": {
         "title": "Recent activity",
         "description": "Everything dPanel has done to your infrastructure in the last two days.",

@@ -358,6 +358,35 @@
         "unknownStatus": "tidak diketahui",
         "unknownActivity": "Sebuah operasi"
       },
+      "activityChart": {
+        "title": "Aktivitas platform",
+        "description": "Semua yang dilakukan dPanel di ruang kerja ini, pada rentang yang Anda pilih.",
+        "legend": {
+          "succeeded": "Berhasil",
+          "failed": "Gagal",
+          "other": "Berjalan atau dibatalkan"
+        },
+        "range": {
+          "day": "24 jam",
+          "week": "7 hari",
+          "month": "30 hari"
+        },
+        "rangeTooltip": "Tampilkan {range} terakhir",
+        "totalLabel": "Operasi",
+        "totalHint": "Dalam rentang terpilih",
+        "successRateLabel": "Tingkat keberhasilan",
+        "successRateHint": "Dari operasi yang selesai",
+        "failedLabel": "Gagal",
+        "failedHint": "Perlu percobaan ulang",
+        "chartAria": "Diagram batang operasi platform dari waktu ke waktu, dipisah menurut hasil",
+        "tableCaption": "Operasi platform dari waktu ke waktu, dipisah menurut hasil",
+        "tableWhen": "Waktu",
+        "emptyTitle": "Belum ada aktivitas",
+        "emptyDescription": "Setelah Anda membuat server atau memasang modul, pekerjaan dPanel akan muncul di sini sebagai linimasa.",
+        "failedTitle": "Tidak dapat memuat riwayat aktivitas",
+        "failedDescription": "Diagram sedang tidak tersedia. Infrastruktur Anda tidak terpengaruh.",
+        "retry": "Coba lagi"
+      },
       "activity": {
         "title": "Aktivitas terbaru",
         "description": "Semua yang dilakukan dPanel pada infrastruktur Anda dalam dua hari terakhir.",
