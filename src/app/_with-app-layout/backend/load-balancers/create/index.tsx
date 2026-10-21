@@ -153,6 +153,14 @@ function CreateFlow() {
   );
   const engineReady = Boolean(resources.selectedEngineRuntimeItem);
 
+  // A managed domain stores the zone in `domain` and the subdomain beside
+  // it, so the zone alone is not the host the load balancer will answer on.
+  const subdomain = formValues.internalDomainMetadata?.subdomain.trim();
+  const fullDomain =
+    subdomain && formValues.domain
+      ? `${subdomain}.${formValues.domain}`
+      : formValues.domain;
+
   const rows: ReviewPanelRow[] = [
     {
       key: 'server',
@@ -169,16 +177,16 @@ function CreateFlow() {
     {
       key: 'domain',
       label: t('page.loadBalancersCreate.review.domain'),
-      value: values.domain,
-      done: Boolean(values.domain) && clean('domain'),
+      value: fullDomain,
+      done: Boolean(formValues.domain) && clean('domain'),
     },
     {
       key: 'https',
       label: t('page.loadBalancersCreate.review.https'),
-      value: values.features?.sslEnabled
+      value: formValues.features?.sslEnabled
         ? t('page.loadBalancersCreate.review.httpsOn')
         : t('page.loadBalancersCreate.review.httpsOff'),
-      done: Boolean(values.domain),
+      done: Boolean(formValues.domain),
     },
     {
       key: 'mode',
