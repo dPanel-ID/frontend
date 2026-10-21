@@ -250,6 +250,7 @@
         "dnsZones": "DNS zones",
         "statefulData": "Stateful data",
         "sshKeys": "SSH keys",
+        "unavailable": "This count could not be read right now",
         "none": "None yet",
         "statusReady": "{count} ready",
         "statusWorking": "{count} in progress",
@@ -367,6 +368,21 @@
         "unknownStatus": "unknown",
         "unknownActivity": "An operation"
       },
+      "workspaceHero": {
+        "teamWorkspace": "Team workspace",
+        "manage": "Manage team",
+        "members": "Members",
+        "servers": "Servers",
+        "cloudProjects": "Cloud projects",
+        "ref": "ref {ref}",
+        "noRepository": "No IaC repository reported",
+        "iacRepositoryMode": {
+          "custom": "Custom",
+          "managed": "Managed",
+          "shared": "Shared",
+          "unknown": "Unknown mode"
+        }
+      },
       "tabs": {
         "ariaLabel": "Dashboard sections",
         "overview": "Overview",
@@ -384,7 +400,8 @@
         "cloudProjects": "Cloud projects",
         "domains": "Domains",
         "databases": "Databases",
-        "sshKeys": "SSH keys"
+        "sshKeys": "SSH keys",
+        "unavailable": "This count could not be read right now"
       },
       "fleet": {
         "title": "Resource usage",
