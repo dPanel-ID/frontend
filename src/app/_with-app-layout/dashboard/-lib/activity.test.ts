@@ -278,3 +278,11 @@ describe('staleAgents', () => {
     expect(staleAgents(agents, now)).toHaveLength(0);
   });
 });
+
+describe('executionTypeKey for agent-reported machine types', () => {
+  it('maps the agent create and delete types rather than humanising them', () => {
+    // Seen in production as "Machine machine create on db-manager".
+    expect(executionTypeKey('machine_machine.create')).toBe('machineCreate');
+    expect(executionTypeKey('machine_machine.delete')).toBe('machineDelete');
+  });
+});
