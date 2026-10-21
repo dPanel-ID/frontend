@@ -152,12 +152,21 @@ export function executionDurationMs(
  */
 export function executionFailureSummary(
   execution: DTOs.ExecutionV2,
+  lifecycle: ExecutionLifecycle = executionLifecycle(execution.status),
 ): string | undefined {
-  const candidate = [
-    execution.first_error_message,
-    execution.error,
-    execution.last_event_message,
-  ].find((value) => Boolean(String(value ?? '').trim()));
+  const candidates = [execution.first_error_message, execution.error];
+
+  // last_event_message is the last thing that happened, not necessarily a
+  // problem: on a successful run it reads "Ansible execution succeeded".
+  // Only reach for it once the execution is known to need attention, or a
+  // success ends up presented as a failure.
+  if (needsAttentionLifecycle(lifecycle)) {
+    candidates.push(execution.last_event_message);
+  }
+
+  const candidate = candidates.find((value) =>
+    Boolean(String(value ?? '').trim()),
+  );
 
   if (!candidate) return undefined;
   return redactSecrets(String(candidate).trim());
@@ -238,7 +247,7 @@ export function toActivityItem(execution: DTOs.ExecutionV2): ActivityItem {
     timestamp: executionTimestamp(execution),
     sortTime: executionSortTime(execution),
     durationMs: executionDurationMs(execution),
-    failureSummary: executionFailureSummary(execution),
+    failureSummary: executionFailureSummary(execution, lifecycle),
     needsAttention: needsAttentionLifecycle(lifecycle),
     inFlight: isInFlightLifecycle(lifecycle),
     errorCount: execution.error_count ?? 0,

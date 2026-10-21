@@ -96,12 +96,22 @@ describe('executionFailureSummary', () => {
     ).toBe('apt lock held');
   });
 
-  it('falls back through error then last event', () => {
+  it('falls back to the error field whatever the lifecycle', () => {
     expect(
       executionFailureSummary(execution({ error: 'playbook failed' })),
     ).toBe('playbook failed');
+  });
+
+  it('only falls back to the last event once the execution is failing', () => {
+    // Without a failing status the last event is just the latest step, so
+    // using it would dress an ordinary run as a failure.
     expect(
       executionFailureSummary(execution({ last_event_message: 'task failed' })),
+    ).toBeUndefined();
+    expect(
+      executionFailureSummary(
+        execution({ status: 'failed', last_event_message: 'task failed' }),
+      ),
     ).toBe('task failed');
   });
 
@@ -284,5 +294,49 @@ describe('executionTypeKey for agent-reported machine types', () => {
     // Seen in production as "Machine machine create on db-manager".
     expect(executionTypeKey('machine_machine.create')).toBe('machineCreate');
     expect(executionTypeKey('machine_machine.delete')).toBe('machineDelete');
+  });
+});
+
+describe('executionFailureSummary does not dress a success as a failure', () => {
+  it('ignores the last event message on a succeeded execution', () => {
+    // Production rendered "Ansible execution succeeded" inside the red
+    // failure block on rows marked Done, because last_event_message is the
+    // last thing that happened, not necessarily a problem.
+    const item = toActivityItem(
+      execution({
+        status: 'succeeded',
+        last_event_message: 'Ansible execution succeeded',
+      }),
+    );
+
+    expect(item.failureSummary).toBeUndefined();
+  });
+
+  it('still reports a real error recorded against a succeeded execution', () => {
+    const item = toActivityItem(
+      execution({
+        status: 'succeeded',
+        first_error_message: 'disk nearly full',
+      }),
+    );
+
+    expect(item.failureSummary).toBe('disk nearly full');
+  });
+
+  it('uses the last event message once the execution needs attention', () => {
+    for (const status of ['failed', 'cancelled']) {
+      const item = toActivityItem(
+        execution({ status, last_event_message: 'task failed' }),
+      );
+      expect(item.failureSummary).toBe('task failed');
+    }
+  });
+
+  it('keeps an in-flight execution free of a failure summary', () => {
+    const item = toActivityItem(
+      execution({ status: 'running', last_event_message: 'task started' }),
+    );
+
+    expect(item.failureSummary).toBeUndefined();
   });
 });

@@ -32,6 +32,7 @@ import {
   FLEET_AVERAGE_COLOR,
   fleetChartOptions,
   fleetPeakColor,
+  isolatedPointRadius,
 } from './chart-options';
 
 /**
@@ -190,6 +191,8 @@ function FleetResourceCard(props: {
           borderColor: peakColor,
           backgroundColor: 'transparent',
           borderDash: [4, 4],
+          pointRadius: isolatedPointRadius,
+          pointBackgroundColor: peakColor,
           // A bucket nobody reported in breaks the line instead of diving to 0.
           spanGaps: false,
         },
@@ -199,6 +202,8 @@ function FleetResourceCard(props: {
           borderColor: FLEET_AVERAGE_COLOR,
           backgroundColor: 'rgba(2, 132, 199, 0.12)',
           fill: true,
+          pointRadius: isolatedPointRadius,
+          pointBackgroundColor: FLEET_AVERAGE_COLOR,
           spanGaps: false,
         },
       ],
