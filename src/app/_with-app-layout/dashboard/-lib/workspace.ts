@@ -38,6 +38,9 @@ export function buildWorkspaceIacRepository(
 /**
  * A recognised mode gets its translated label; anything else is shown as the
  * API reported it rather than being relabelled as something it may not be.
+ *
+ * Keys are relative to the caller's translation scope, which is the panel
+ * rendering the repository.
  */
 export function formatWorkspaceIacMode(
   mode: string,
@@ -45,28 +48,12 @@ export function formatWorkspaceIacMode(
 ) {
   switch (mode) {
     case 'custom':
-      return t('workspace.iacRepositoryMode.custom');
+      return t('iacRepositoryMode.custom');
     case 'managed':
-      return t('workspace.iacRepositoryMode.managed');
+      return t('iacRepositoryMode.managed');
     case 'shared':
-      return t('workspace.iacRepositoryMode.shared');
+      return t('iacRepositoryMode.shared');
     default:
       return mode || undefined;
   }
-}
-
-/** Says only what the repository payload actually reported. */
-export function workspaceIacHelper(
-  repository: WorkspaceIacRepository,
-  t: ReturnType<typeof useDevetekTranslations>,
-) {
-  const mode = formatWorkspaceIacMode(repository.mode, t);
-
-  if (mode && repository.ref) {
-    return t('workspace.iacRepositoryHelp', { mode, ref: repository.ref });
-  }
-  if (repository.ref) {
-    return t('workspace.iacRepositoryRefOnly', { ref: repository.ref });
-  }
-  return mode;
 }

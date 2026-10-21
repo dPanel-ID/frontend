@@ -25,6 +25,7 @@ import { isBrowser } from '@/shared/libs/browser/environment';
 
 import {
   countFromPagination,
+  hasFailedResponse,
   isPendingResponse,
   responseData,
 } from '../-lib/api-response';
@@ -55,7 +56,7 @@ import MembersPanel from './MembersPanel/MembersPanel';
 import ServerHealthPanel from './ServerHealthPanel/ServerHealthPanel';
 import ServersList from './ServersList/ServersList';
 import TabNav from './TabNav';
-import WorkspaceOverview from './WorkspaceOverview/WorkspaceOverview';
+import WorkspaceHero from './WorkspaceHero';
 
 const RECENT_LIST_LIMIT = 3;
 
@@ -291,6 +292,10 @@ export default function DashboardView(props: DashboardViewProps) {
       key: 'databases',
       label: t('page.dashboard.estate.databases'),
       value: totalDatabases,
+      // The v1 database endpoint currently answers 410, so this count never
+      // arrives; shown as unknown rather than loading for the page's life.
+      unavailable: hasFailedResponse(databasesResponse),
+      unavailableHint: t('page.dashboard.estate.unavailable'),
       to: '/backend/database',
     },
     {
@@ -374,12 +379,14 @@ export default function DashboardView(props: DashboardViewProps) {
 
         {activeTab === 'workspace' && (
           <>
-            <WorkspaceOverview
-              workspaceName={activeWorkspaceName}
+            <WorkspaceHero
+              name={activeWorkspaceName}
               workspaceId={activeWorkspaceId ?? undefined}
-              workspaceType={t('page.dashboard.workspace.team')}
               iacRepository={workspaceIacRepository}
               isIacRepositoryLoading={isPendingResponse(iacRepositoryResponse)}
+              memberCount={totalMembers}
+              serverCount={totalServers}
+              cloudProjectCount={totalCloudProjects}
             />
 
             <div className="grid gap-4 xl:grid-cols-2">

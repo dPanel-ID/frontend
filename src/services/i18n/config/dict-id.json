@@ -358,6 +358,21 @@
         "unknownStatus": "tidak diketahui",
         "unknownActivity": "Sebuah operasi"
       },
+      "workspaceHero": {
+        "teamWorkspace": "Ruang kerja tim",
+        "manage": "Kelola tim",
+        "members": "Anggota",
+        "servers": "Server",
+        "cloudProjects": "Proyek cloud",
+        "ref": "ref {ref}",
+        "noRepository": "Tidak ada repositori IaC yang dilaporkan",
+        "iacRepositoryMode": {
+          "custom": "Kustom",
+          "managed": "Terkelola",
+          "shared": "Bersama",
+          "unknown": "Mode tidak diketahui"
+        }
+      },
       "tabs": {
         "ariaLabel": "Bagian dasbor",
         "overview": "Ringkasan",
@@ -375,7 +390,8 @@
         "cloudProjects": "Proyek cloud",
         "domains": "Domain",
         "databases": "Basis data",
-        "sshKeys": "Kunci SSH"
+        "sshKeys": "Kunci SSH",
+        "unavailable": "Jumlah ini sedang tidak dapat dibaca"
       },
       "fleet": {
         "title": "Penggunaan sumber daya",

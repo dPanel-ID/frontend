@@ -7,10 +7,17 @@ export interface KpiItem {
   label: string;
   /** The headline number. Undefined renders a loading placeholder. */
   value?: number;
+  /**
+   * The count could not be read, so it is shown as unknown. Without this a
+   * permanently failing endpoint renders a placeholder that loads forever.
+   */
+  unavailable?: boolean;
   /** Small line under the label, for the status breakdown. */
   hint?: string;
   /** Marks the hint as something to act on rather than reassurance. */
   hintNeedsAttention?: boolean;
+  /** Shown on hover when the count is unavailable. */
+  unavailableHint?: string;
   to?: string;
   search?: Record<string, unknown>;
 }
@@ -41,8 +48,26 @@ export default function KpiBlock(props: KpiBlockProps) {
       {items.map((item) => (
         <KpiCell key={item.key} item={item} />
       ))}
+      {fillerCount(items.length) > 0 &&
+        Array.from({ length: fillerCount(items.length) }, (_, index) => (
+          <div key={`filler-${index}`} aria-hidden className="bg-card" />
+        ))}
     </div>
   );
+}
+
+/**
+ * Blank cells completing the final row. The grid draws its dividers with a
+ * background showing through a one-pixel gap, so a short last row would leave
+ * a visible hole rather than empty card space.
+ *
+ * Counted against the widest column count the grid uses, which is the only
+ * breakpoint where a gap is wide enough to read as a mistake.
+ */
+function fillerCount(count: number) {
+  const columns = 3;
+  const remainder = count % columns;
+  return remainder === 0 ? 0 : columns - remainder;
 }
 
 function KpiCell(props: { item: KpiItem }) {
@@ -50,7 +75,14 @@ function KpiCell(props: { item: KpiItem }) {
 
   const body = (
     <>
-      {item.value == null ? (
+      {item.unavailable ? (
+        <span
+          className="block text-2xl font-bold leading-none text-muted-foreground"
+          title={item.unavailableHint}
+        >
+          —
+        </span>
+      ) : item.value == null ? (
         <span className="block h-7 w-12 animate-pulse rounded bg-border/70" />
       ) : (
         <span className="block text-2xl font-bold leading-none tabular-nums text-primary">
