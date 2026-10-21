@@ -76,3 +76,26 @@ export function sshKeyAlgorithmLabel(
 
   return key.algorithm;
 }
+
+/**
+ * The same facts split for a narrow slot: a short name that always fits, and
+ * the size as a second line. A stat tile truncates its value, and beside the
+ * help aside each tile is about 150px wide, where "RSA 4096" fits with
+ * nothing to spare and an algorithm name the UI does not know would not.
+ */
+export function sshKeyAlgorithmParts(
+  key: Pick<SshKeyCard, 'algorithm' | 'length'>,
+): { name: string | null; detail: string | null } {
+  if (!key.algorithm) return { name: null, detail: null };
+
+  const algorithm = key.algorithm.toLowerCase();
+
+  if (algorithm === 'ed25519') return { name: 'Ed25519', detail: null };
+  if (algorithm === 'rsa') {
+    return { name: 'RSA', detail: key.length ? `${key.length} bits` : null };
+  }
+
+  // An algorithm this build has no name for: the raw value is the detail, so
+  // a long one wraps out of the way instead of being cut in half.
+  return { name: 'SSH key', detail: key.algorithm };
+}

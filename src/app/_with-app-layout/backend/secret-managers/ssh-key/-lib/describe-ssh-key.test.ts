@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import { summarizeSshKeys } from '../-model/overview';
 
-import { sshKeyAlgorithmLabel, toSshKeyCard } from './describe-ssh-key';
+import {
+  sshKeyAlgorithmLabel,
+  sshKeyAlgorithmParts,
+  toSshKeyCard,
+} from './describe-ssh-key';
 
 describe('toSshKeyCard', () => {
   it('maps a complete key', () => {
@@ -140,5 +144,37 @@ describe('sshKeyAlgorithmLabel', () => {
     expect(
       sshKeyAlgorithmLabel({ algorithm: 'ecdsa-sha2-nistp256', length: null }),
     ).toBe('ecdsa-sha2-nistp256');
+  });
+});
+
+describe('sshKeyAlgorithmParts', () => {
+  it('leaves Ed25519 without a second line, because it has no size', () => {
+    expect(
+      sshKeyAlgorithmParts({ algorithm: 'ed25519', length: null }),
+    ).toEqual({ name: 'Ed25519', detail: null });
+  });
+
+  it('moves the RSA size off the value, which is the narrow slot', () => {
+    expect(sshKeyAlgorithmParts({ algorithm: 'rsa', length: '4096' })).toEqual({
+      name: 'RSA',
+      detail: '4096 bits',
+    });
+    expect(sshKeyAlgorithmParts({ algorithm: 'rsa', length: null })).toEqual({
+      name: 'RSA',
+      detail: null,
+    });
+  });
+
+  it('keeps an unknown algorithm out of the value, where it would be cut', () => {
+    expect(
+      sshKeyAlgorithmParts({ algorithm: 'ecdsa-sha2-nistp256', length: null }),
+    ).toEqual({ name: 'SSH key', detail: 'ecdsa-sha2-nistp256' });
+  });
+
+  it('says nothing for a key whose algorithm the backend could not read', () => {
+    expect(sshKeyAlgorithmParts({ algorithm: null, length: '4096' })).toEqual({
+      name: null,
+      detail: null,
+    });
   });
 });
