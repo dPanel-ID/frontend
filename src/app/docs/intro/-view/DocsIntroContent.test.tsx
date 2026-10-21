@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { DOCS_INTRO_EN } from '../-content/intro.en';
@@ -13,60 +13,19 @@ describe('DocsIntroContent', () => {
   // cleanup the earlier trees stay in the document and every count doubles.
   afterEach(cleanup);
 
-  it('names the product in the heading rather than describing a posture', () => {
-    render(<DocsIntroContent locale="en" />);
-
-    expect(
-      screen.getByRole('heading', { level: 1, name: DOCS_INTRO_EN.hero.title }),
-    ).toBeTruthy();
-    // The subtitle has to say what dPanel does, not what the reader should feel.
-    expect(screen.getByText(DOCS_INTRO_EN.hero.subtitle)).toBeTruthy();
-  });
-
-  it('offers the account call to action twice, top and bottom', () => {
-    render(<DocsIntroContent locale="en" />);
-
-    const ctas = screen.getAllByRole('link', {
-      name: DOCS_INTRO_EN.hero.primaryCta,
-    });
-    expect(ctas).toHaveLength(2);
-    for (const cta of ctas) {
-      expect(cta.getAttribute('href')).toBe('/');
-    }
-  });
-
-  it('opens the video in a new tab without leaking the referrer', () => {
-    render(<DocsIntroContent locale="en" />);
-
-    const videoLinks = screen.getAllByRole('link', {
-      name: DOCS_INTRO_EN.hero.secondaryCta,
-    });
-    expect(videoLinks).toHaveLength(2);
-    for (const link of videoLinks) {
-      expect(link.getAttribute('href')).toBe(
-        'https://www.youtube.com/@dpanel_id',
-      );
-      expect(link.getAttribute('target')).toBe('_blank');
-      expect(link.getAttribute('rel')).toBe('noopener noreferrer');
-    }
-  });
-
-  it('lists every provider a reader could start with', () => {
-    render(<DocsIntroContent locale="en" />);
-
-    const providers = screen.getByRole('list', {
-      name: DOCS_INTRO_EN.providers.title,
-    });
-    for (const provider of DOCS_INTRO_EN.providers.items) {
-      expect(within(providers).getByText(provider)).toBeTruthy();
-    }
-  });
-
   it('walks the reader from nothing to a running application', () => {
     render(<DocsIntroContent locale="en" />);
 
     for (const step of DOCS_INTRO_EN.start.steps) {
       expect(screen.getByRole('heading', { name: step.title })).toBeTruthy();
+    }
+  });
+
+  it('names every capability rather than describing a feeling', () => {
+    render(<DocsIntroContent locale="en" />);
+
+    for (const item of DOCS_INTRO_EN.capabilities.items) {
+      expect(screen.getByRole('heading', { name: item.title })).toBeTruthy();
     }
   });
 
@@ -80,15 +39,58 @@ describe('DocsIntroContent', () => {
     expect(screen.getByText(DOCS_INTRO_EN.ownership.lead)).toBeTruthy();
   });
 
+  it('closes by asking for an account', () => {
+    render(<DocsIntroContent locale="en" />);
+
+    const cta = screen.getByRole('link', {
+      name: DOCS_INTRO_EN.hero.primaryCta,
+    });
+    expect(cta.getAttribute('href')).toBe('/');
+  });
+
+  it('opens the video in a new tab without leaking the referrer', () => {
+    render(<DocsIntroContent locale="en" />);
+
+    const link = screen.getByRole('link', {
+      name: DOCS_INTRO_EN.hero.secondaryCta,
+    });
+    expect(link.getAttribute('href')).toBe(
+      'https://www.youtube.com/@dpanel_id',
+    );
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+  });
+
+  it('links on to the guides so the introduction is not a dead end', () => {
+    render(
+      <DocsIntroContent
+        locale="en"
+        readMoreHref="/docs/servers/overview"
+        readMoreLabel="What a server is here"
+      />,
+    );
+
+    const link = screen.getByRole('link', { name: /What a server is here/ });
+    expect(link.getAttribute('href')).toBe('/docs/servers/overview');
+  });
+
+  it('omits the guide link when there is no guide to point at', () => {
+    render(<DocsIntroContent locale="en" />);
+
+    expect(
+      screen.queryByRole('link', { name: /What a server is here/ }),
+    ).toBeNull();
+  });
+
   it('reads in Indonesian when the app does', () => {
     render(<DocsIntroContent locale="id" />);
 
     expect(
-      screen.getByRole('heading', { level: 1, name: DOCS_INTRO_ID.hero.title }),
+      screen.getByRole('heading', { name: DOCS_INTRO_ID.ownership.title }),
     ).toBeTruthy();
     expect(
-      screen.getAllByRole('link', { name: DOCS_INTRO_ID.hero.primaryCta }),
-    ).toHaveLength(2);
+      screen.getByRole('link', { name: DOCS_INTRO_ID.hero.primaryCta }),
+    ).toBeTruthy();
   });
 
   it.each([undefined, 'en-GB', 'fr', ''])(
@@ -97,10 +99,7 @@ describe('DocsIntroContent', () => {
       render(<DocsIntroContent locale={locale} />);
 
       expect(
-        screen.getByRole('heading', {
-          level: 1,
-          name: DOCS_INTRO_EN.hero.title,
-        }),
+        screen.getByRole('heading', { name: DOCS_INTRO_EN.ownership.title }),
       ).toBeTruthy();
     },
   );
