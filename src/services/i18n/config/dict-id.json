@@ -1697,11 +1697,11 @@
       "overview": {
         "total": "Domain",
         "providers": "Penyedia DNS",
-        "providersHint": "Layanan yang menjawab DNS untuk domain ini",
+        "providersHint": "Yang menjawab DNS domain ini",
         "team": "Dibagikan ke tim",
-        "teamHint": "Domain yang bisa dipakai rekan tim Anda",
+        "teamHint": "Bisa dipakai rekan tim Anda",
         "personal": "Hanya Anda",
-        "personalHint": "Domain milik akun Anda sendiri",
+        "personalHint": "Hanya di akun Anda",
         "sampleNote": "Pembagian ini diambil dari {sample} domain terbaru Anda."
       },
       "filters": {
