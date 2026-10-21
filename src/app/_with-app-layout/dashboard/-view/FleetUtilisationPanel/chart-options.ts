@@ -7,7 +7,7 @@ import {
   PointElement,
   Tooltip,
 } from 'chart.js';
-import type { ChartOptions } from 'chart.js';
+import type { ChartOptions, ScriptableContext } from 'chart.js';
 
 import type { FleetSeverity } from '../../-lib/fleet-utilisation';
 
@@ -43,6 +43,22 @@ export function fleetPeakColor(severity: FleetSeverity) {
     default:
       return 'rgba(2, 132, 199, 0.45)';
   }
+}
+
+/**
+ * Radius for one plotted point. A line needs two readings to draw anything,
+ * so a series holding a single reading — a freshly started server, or the
+ * first bucket after a gap — would render as an empty chart. Points with no
+ * neighbour are drawn as a dot instead, while runs of readings stay clean
+ * lines.
+ */
+export function isolatedPointRadius(context: ScriptableContext<'line'>) {
+  const data = context.dataset.data as Array<number | null>;
+  const index = context.dataIndex;
+  if (data[index] == null) return 0;
+
+  const hasNeighbour = data[index - 1] != null || data[index + 1] != null;
+  return hasNeighbour ? 0 : 3;
 }
 
 /** Shared y-axis bounds, so the three charts can be compared at a glance. */
