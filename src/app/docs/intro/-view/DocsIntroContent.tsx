@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 import {
   ActivityIcon,
   AppWindowIcon,
+  ArrowRightIcon,
   CirclePlayIcon,
   DatabaseIcon,
   GitBranchIcon,
@@ -37,9 +38,18 @@ const CAPABILITY_ICONS: Record<
 
 const YOUTUBE_URL = 'https://www.youtube.com/@dpanel_id';
 
+/** The introduction copy for an app locale; unknown locales read in English. */
+export function introCopyFor(locale?: string): DocsIntroCopy {
+  const key = (locale ?? 'en').toLowerCase().split('-')[0] ?? 'en';
+  return COPY[key] ?? DOCS_INTRO_EN;
+}
+
 export interface DocsIntroContentProps {
   /** App locale; anything unrecognised reads in English. */
   locale?: string;
+  /** Where "read the guide" goes; omitted when there are no guides yet. */
+  readMoreHref?: string;
+  readMoreLabel?: string;
 }
 
 /**
@@ -51,18 +61,19 @@ export interface DocsIntroContentProps {
  * it gets a section of its own rather than a footnote.
  */
 export function DocsIntroContent(props: DocsIntroContentProps = {}) {
-  const copy =
-    COPY[(props.locale ?? 'en').toLowerCase().split('-')[0] ?? 'en'] ??
-    DOCS_INTRO_EN;
+  const copy = introCopyFor(props.locale);
 
   return (
-    <>
-      <IntroHero copy={copy} />
+    <div className="flex flex-col gap-4">
       <IntroStart copy={copy} />
       <IntroCapabilities copy={copy} />
       <IntroOwnership copy={copy} />
-      <IntroClosing copy={copy} />
-    </>
+      <IntroClosing
+        copy={copy}
+        readMoreHref={props.readMoreHref}
+        readMoreLabel={props.readMoreLabel}
+      />
+    </div>
   );
 }
 
@@ -87,41 +98,6 @@ function IntroActions(props: { copy: DocsIntroCopy }) {
         </a>
       </Button>
     </div>
-  );
-}
-
-function IntroHero(props: { copy: DocsIntroCopy }) {
-  const { copy } = props;
-
-  return (
-    <section className="rounded-xl border bg-card p-5 sm:p-8">
-      <div className="max-w-3xl space-y-5">
-        <Badge variant="secondary">{copy.hero.badge}</Badge>
-        <div className="space-y-3">
-          <h1 className="text-4xl font-semibold tracking-tight text-primary sm:text-5xl">
-            {copy.hero.title}
-          </h1>
-          <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            {copy.hero.subtitle}
-          </p>
-        </div>
-        <IntroActions copy={copy} />
-
-        <ul
-          aria-label={copy.providers.title}
-          className="flex flex-wrap items-center gap-2 pt-1"
-        >
-          <li className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {copy.providers.title}
-          </li>
-          {copy.providers.items.map((provider) => (
-            <li key={provider}>
-              <Badge variant="secondary">{provider}</Badge>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
   );
 }
 
@@ -209,7 +185,7 @@ function IntroOwnership(props: { copy: DocsIntroCopy }) {
   return (
     <section
       aria-labelledby="docs-intro-ownership"
-      className="rounded-xl border bg-card p-5 sm:p-8"
+      className="rounded-2xl border bg-card p-5 sm:p-8"
     >
       <div className="max-w-3xl space-y-4">
         <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-accent">
@@ -233,11 +209,15 @@ function IntroOwnership(props: { copy: DocsIntroCopy }) {
   );
 }
 
-function IntroClosing(props: { copy: DocsIntroCopy }) {
-  const { copy } = props;
+function IntroClosing(props: {
+  copy: DocsIntroCopy;
+  readMoreHref?: string;
+  readMoreLabel?: string;
+}) {
+  const { copy, readMoreHref, readMoreLabel } = props;
 
   return (
-    <section className="rounded-xl border bg-card p-5 sm:p-6">
+    <section className="rounded-2xl border bg-card p-5 sm:p-6">
       <div className="max-w-2xl space-y-4">
         <div className="space-y-2">
           <h2 className="text-2xl font-semibold tracking-tight text-primary">
@@ -248,6 +228,17 @@ function IntroClosing(props: { copy: DocsIntroCopy }) {
           </p>
         </div>
         <IntroActions copy={copy} />
+
+        {/* The way into the guides, so the introduction is not a dead end. */}
+        {readMoreHref && readMoreLabel && (
+          <a
+            href={readMoreHref}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50 dark:text-sky-300"
+          >
+            {readMoreLabel}
+            <ArrowRightIcon className="size-4" aria-hidden />
+          </a>
+        )}
       </div>
     </section>
   );
