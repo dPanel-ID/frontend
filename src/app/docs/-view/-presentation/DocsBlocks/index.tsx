@@ -36,32 +36,48 @@ const CALLOUT: Record<
   },
 };
 
+/**
+ * Prose is held to a comfortable measure. Long-form text is tiring to read
+ * much past the high sixties of characters per line, and the content column
+ * is far wider than that on a desktop. Tables, images and code keep the full
+ * width, since they are scanned rather than read line by line.
+ */
+const MEASURE = 'max-w-[68ch]';
+
 /** One documentation block, rendered with the house blocks and type scale. */
 export function DocsBlockView(props: { block: DocsBlock }) {
   const { block } = props;
 
   switch (block.kind) {
     case 'heading':
+      // A heading needs to outrank the text under it, and to sit closer to
+      // what it introduces than to what it follows.
       return (
-        <h2 className="mt-2 text-base font-bold text-primary">{block.text}</h2>
+        <h2 className="mt-6 text-xl font-semibold tracking-tight text-primary first:mt-0">
+          {block.text}
+        </h2>
       );
 
     case 'paragraph':
       return (
-        <p className="text-sm leading-relaxed text-primary/80">{block.text}</p>
+        <p
+          className={cn(MEASURE, 'text-[0.9375rem] leading-7 text-primary/90')}
+        >
+          {block.text}
+        </p>
       );
 
     case 'list':
       return (
-        <ul className="flex flex-col gap-2">
+        <ul className={cn(MEASURE, 'flex flex-col gap-2.5')}>
           {block.items.map((item) => (
             <li
               key={item}
-              className="flex gap-2 text-sm leading-relaxed text-primary/80"
+              className="flex gap-3 text-[0.9375rem] leading-7 text-primary/90"
             >
               <span
                 aria-hidden
-                className="mt-2 size-1.5 shrink-0 rounded-full bg-sky-500/70"
+                className="mt-3 size-1.5 shrink-0 rounded-full bg-sky-500"
               />
               <span>{item}</span>
             </li>
@@ -71,21 +87,21 @@ export function DocsBlockView(props: { block: DocsBlock }) {
 
     case 'steps':
       return (
-        <ol className="flex flex-col gap-2">
+        <ol className={cn(MEASURE, 'flex flex-col gap-3')}>
           {block.items.map((item, index) => (
             <li
               key={item}
-              className="flex gap-3 text-sm leading-relaxed text-primary/80"
+              className="flex gap-3 text-[0.9375rem] leading-7 text-primary/90"
             >
               <span
                 className={cn(
-                  'flex size-6 shrink-0 items-center justify-center rounded-lg border text-xs font-bold',
+                  'flex size-7 shrink-0 items-center justify-center rounded-lg border text-xs font-bold tabular-nums',
                   FLOW_ACCENTS.sky.icon,
                 )}
               >
                 {index + 1}
               </span>
-              <span className="pt-0.5">{item}</span>
+              <span>{item}</span>
             </li>
           ))}
         </ol>
@@ -109,7 +125,7 @@ export function DocsBlockView(props: { block: DocsBlock }) {
                     <TableCell
                       key={`${cell}-${index}`}
                       className={cn(
-                        'align-top text-xs leading-relaxed',
+                        'align-top text-sm leading-6',
                         index === 0
                           ? 'font-semibold text-primary'
                           : 'text-primary/75',
@@ -127,7 +143,7 @@ export function DocsBlockView(props: { block: DocsBlock }) {
 
     case 'image':
       return (
-        <figure className="flex flex-col gap-2">
+        <figure className="flex flex-col gap-3">
           <img
             src={block.src}
             alt={block.alt}
@@ -137,7 +153,7 @@ export function DocsBlockView(props: { block: DocsBlock }) {
             className="w-full rounded-xl border bg-card"
           />
           {block.caption && (
-            <figcaption className="text-xs text-muted-foreground">
+            <figcaption className="text-sm leading-6 text-muted-foreground">
               {block.caption}
             </figcaption>
           )}
@@ -163,9 +179,7 @@ export function DocsBlockView(props: { block: DocsBlock }) {
           />
           <div className="flex flex-col gap-1">
             <p className={cn('text-sm font-bold', tone.title)}>{block.title}</p>
-            <p className="text-xs leading-relaxed text-primary/75">
-              {block.text}
-            </p>
+            <p className="text-sm leading-6 text-primary/85">{block.text}</p>
           </div>
         </aside>
       );
