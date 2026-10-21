@@ -3,14 +3,19 @@ import { useEffect } from 'react';
 import { ApiServer } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
 
-import { responseData } from '../../-lib/api-response';
+import { isPendingResponse, responseData } from '../../-lib/api-response';
 import { sanitizePercent } from '../../-lib/percent';
 import { TELEMETRY_POLL_MS } from '../../-lib/telemetry';
-import type { TelemetryPoint } from '../../-lib/telemetry';
+import type { TelemetrySample } from '../../-lib/telemetry';
 
+/**
+ * Reads one server's live utilisation. Each probe owns its own requests and
+ * reports the latest reading up, including the case where nothing answered,
+ * so the capacity panel can tell "idle" from "out of contact".
+ */
 export default function DashboardServerTelemetryProbe(props: {
   server: DTOs.MachineV1;
-  onSample: (sample: TelemetryPoint) => void;
+  onSample: (sample: TelemetrySample) => void;
 }) {
   const { onSample, server } = props;
   const serverId = server.id ? String(server.id) : '';
@@ -47,21 +52,25 @@ export default function DashboardServerTelemetryProbe(props: {
     diskData?.total ? (diskData.used / diskData.total) * 100 : undefined,
   );
 
+  const isSettled = [cpuResponse, memoryResponse, diskResponse].every(
+    (response) => !isPendingResponse(response),
+  );
+
   useEffect(() => {
-    if (!shouldFetch) return;
-    if (cpu == null && memory == null && disk == null) return;
+    if (!shouldFetch || !isSettled) return;
 
     onSample({
       serverId,
       serverName: server.hostname || server.address || serverId,
-      time: Date.now(),
       cpu,
       memory,
       disk,
+      unreachable: cpu == null && memory == null && disk == null,
     });
   }, [
     cpu,
     disk,
+    isSettled,
     memory,
     onSample,
     server.address,

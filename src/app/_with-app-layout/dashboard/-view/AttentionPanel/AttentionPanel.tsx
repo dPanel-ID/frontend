@@ -4,6 +4,7 @@ import { Link } from '@tanstack/react-router';
 import {
   AlertTriangleIcon,
   CheckCircle2Icon,
+  RefreshCwIcon,
   ServerIcon,
   WifiOffIcon,
   XCircleIcon,
@@ -12,26 +13,26 @@ import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { ApiAgent, ApiExecution } from '@/shared/api';
+import { ServerManagementState } from '@/features/server-management-sidepanel-ui';
+
 import type { DTOs } from '@/shared/api';
 import { cn } from '@/shared/libs/tailwind/cn';
 
-import {
-  sortActivityItems,
-  staleAgents,
-  toActivityItem,
-} from '../../-lib/activity';
 import type { ActivityItem } from '../../-lib/activity';
 import { toneClass } from '../../-lib/tone';
 import type { Tone } from '../../-lib/tone';
 import { DashboardSection } from '../../-presentation';
 
-/** Failures older than this are history, not something to act on now. */
-const ATTENTION_WINDOW = '24h';
-const ATTENTION_LIMIT = 8;
-
 export interface AttentionPanelProps {
+  /** Used to name the machine behind an agent or execution ID. */
   servers: DTOs.MachineV1[];
+  failures: ActivityItem[];
+  unreachableAgents: DTOs.AgentV2[];
+  unhealthyServers: DTOs.MachineV1[];
+  isLoading: boolean;
+  hasFailed: boolean;
+  isUnauthorized: boolean;
+  onRetry: () => void;
 }
 
 /**
@@ -39,36 +40,17 @@ export interface AttentionPanelProps {
  * when nothing needs doing, so a non-empty panel always means real work.
  */
 export default function AttentionPanel(props: AttentionPanelProps) {
-  const { servers } = props;
+  const {
+    failures,
+    hasFailed,
+    isLoading,
+    isUnauthorized,
+    onRetry,
+    servers,
+    unhealthyServers,
+    unreachableAgents,
+  } = props;
   const t = useDevetekTranslations('page.dashboard.attention');
-
-  const [failuresResponse] = ApiExecution.Find.useGet({
-    status: ['failed', 'cancelled'],
-    since: ATTENTION_WINDOW,
-    limit: ATTENTION_LIMIT,
-  });
-  const [agentsResponse] = ApiAgent.Find.useGet({});
-
-  const failures = useMemo(() => {
-    if (failuresResponse.$status !== 'success') return [];
-    return sortActivityItems(
-      Array.from(failuresResponse).map(toActivityItem),
-    ).slice(0, ATTENTION_LIMIT);
-  }, [failuresResponse]);
-
-  const unreachableAgents = useMemo(() => {
-    if (agentsResponse.$status !== 'success') return [];
-    return staleAgents(Array.from(agentsResponse));
-  }, [agentsResponse]);
-
-  const unhealthyServers = useMemo(
-    () =>
-      servers.filter((server) => {
-        const status = String(server.status || '').toLowerCase();
-        return status === 'failed' || status === 'cancelled';
-      }),
-    [servers],
-  );
 
   const hostnameByMachineId = useMemo(() => {
     const names = new Map<string, string>();
@@ -79,11 +61,42 @@ export default function AttentionPanel(props: AttentionPanelProps) {
     return names;
   }, [servers]);
 
-  const isLoading =
-    failuresResponse.$status === 'initial' ||
-    failuresResponse.$status === 'loading';
   const itemCount =
     failures.length + unreachableAgents.length + unhealthyServers.length;
+
+  if (isUnauthorized) {
+    return (
+      <DashboardSection title={t('title')} description={t('failedDescription')}>
+        <ServerManagementState
+          state="failed"
+          title={t('unauthorizedTitle')}
+          description={t('unauthorizedDescription')}
+        />
+      </DashboardSection>
+    );
+  }
+
+  if (hasFailed) {
+    return (
+      <DashboardSection title={t('title')} description={t('failedDescription')}>
+        <ServerManagementState
+          state="failed"
+          title={t('failedTitle')}
+          description={t('failedDetail')}
+          action={
+            <button
+              type="button"
+              onClick={onRetry}
+              className="inline-flex h-9 items-center gap-2 rounded-lg border bg-background px-3 text-xs font-semibold text-primary transition hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+            >
+              <RefreshCwIcon className="size-3.5" />
+              {t('retry')}
+            </button>
+          }
+        />
+      </DashboardSection>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -91,7 +104,7 @@ export default function AttentionPanel(props: AttentionPanelProps) {
         title={t('title')}
         description={t('checkingDescription')}
       >
-        <div className="h-16 animate-pulse rounded-lg border bg-background" />
+        <ServerManagementState state="loading" title={t('checkingTitle')} />
       </DashboardSection>
     );
   }
