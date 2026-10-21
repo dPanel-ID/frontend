@@ -49,21 +49,31 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
     updateQs('page', newPage < 2 ? 1 : newPage);
   });
 
+  useSubscribe('@load-balancers/filters/status--change', (newStatus) => {
+    updateQs('status', newStatus || undefined);
+  });
+
   const mappedFilters = useMemo(() => {
     const searchQuery: FilterRules.SearchQuery = qs.q;
     const currentPage: FilterRules.CurrentPage = qs.page;
+    const status: FilterRules.Status = qs.status ?? '';
     const viewMode: FilterRules.ViewMode =
       qs.viewMode != null ? qs.viewMode : 'auto';
 
-    const derivedViewMode = iife((): Exclude<FilterRules.ViewMode, 'auto'> => {
-      if (viewMode !== 'auto') return viewMode;
+    // A load balancer row is inherently tabular, so this module offers grid
+    // and table only. `list` stays in the schema so older bookmarked URLs
+    // keep working, and resolves to the dense table.
+    const derivedViewMode = iife((): 'grid' | 'table' => {
+      if (viewMode === 'grid') return 'grid';
+      if (viewMode === 'table' || viewMode === 'list') return 'table';
 
-      return isDesktop ? 'list' : 'grid';
+      return isDesktop ? 'table' : 'grid';
     });
 
     return {
       searchQuery,
       currentPage,
+      status,
       viewMode,
       derivedViewMode,
     };

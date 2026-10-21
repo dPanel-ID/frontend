@@ -1,7 +1,3 @@
-import { useDevetekTranslations } from '@/services/i18n';
-
-import LayoutAutoGridList from '@/shared/presentation/atoms/LayoutAutoGridList';
-import { EmptyState } from '@/shared/presentation/organisms/EmptyState';
 import { buildResponseView } from '@/widgets/response-view-builder';
 
 import { LbListState } from '../-presentation/LbListState';
@@ -10,6 +6,8 @@ import { useFilterModel } from '../../-models/filters';
 import { useLbDataModel } from '../../-models/lb-data';
 
 import LbCard from './LbCard';
+import { LbEmptyState } from './LbEmptyState';
+import LbTable from './LbTable';
 
 export default buildResponseView({
   useResponse: () => useLbDataModel((s) => s.loadBalancers),
@@ -18,65 +16,50 @@ export default buildResponseView({
   render: function Render(props) {
     const { list } = props;
 
-    const t = useDevetekTranslations();
-
     const emit = useEmit();
-
-    const [viewMode, derivedViewMode] = useFilterModel((s) => [
-      s.viewMode,
+    const [derivedViewMode, searchQuery, status] = useFilterModel((s) => [
       s.derivedViewMode,
+      s.searchQuery,
+      s.status,
     ]);
 
     if (list.length < 1) {
       return (
-        <EmptyState
-          title={t('page.loadBalancers.emptyState.title')}
-          message={t('page.loadBalancers.emptyState.message')}
-          ctaText={t('page.loadBalancers.emptyState.cta')}
-          ctaOnClick={() => emit('@load-balancers/open--create', null)}
+        <LbEmptyState
+          filtered={Boolean(searchQuery || status)}
+          onClearFilters={() => {
+            emit('@load-balancers/filters/pagination--set', 1);
+            emit('@load-balancers/filters/search--input');
+            emit('@load-balancers/filters/status--change', '');
+          }}
+          onCreate={() => emit('@load-balancers/open--create', null)}
         />
       );
     }
 
-    const renderLoadBalancerCard = (loadBalancer: (typeof list)[number]) => (
-      <LbCard
-        key={loadBalancer.id}
-        data={loadBalancer}
-        variant={derivedViewMode === 'grid' ? 'compact' : 'full'}
-        onClickDetails={() =>
-          emit('@load-balancers/open--details', loadBalancer)
-        }
-        onClickDelete={() => {
-          emit('@load-balancers/lb--delete', loadBalancer);
-        }}
-        onClickMigrateOwnership={() =>
-          emit('@load-balancers/open--migrate-ownership', loadBalancer)
-        }
-      />
-    );
-
-    if (derivedViewMode === 'list') {
-      return (
-        <div className="pb-2 overflow-x-auto">
-          <div className="min-w-[1080px] overflow-hidden rounded-xl border bg-card/30">
-            <div className="grid grid-cols-[minmax(280px,1.45fr)_minmax(220px,1fr)_minmax(220px,1fr)_minmax(180px,0.85fr)_88px] items-center gap-4 border-b px-4 py-3 text-xs font-bold uppercase text-primary/60">
-              <p>{t('page.loadBalancers.table.loadBalancer')}</p>
-              <p>{t('page.loadBalancers.table.gateway')}</p>
-              <p>{t('page.loadBalancers.table.routing')}</p>
-              <p>{t('common.terms.status')}</p>
-              <p className="text-right">{t('common.terms.actions')}</p>
-            </div>
-
-            <div className="divide-y">{list.map(renderLoadBalancerCard)}</div>
-          </div>
-        </div>
-      );
+    if (derivedViewMode === 'table') {
+      return <LbTable list={list} />;
     }
 
     return (
-      <LayoutAutoGridList viewMode={viewMode}>
-        {list.map(renderLoadBalancerCard)}
-      </LayoutAutoGridList>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {list.map((loadBalancer) => (
+          <LbCard
+            key={loadBalancer.id}
+            data={loadBalancer}
+            variant="compact"
+            onClickDetails={() =>
+              emit('@load-balancers/open--details', loadBalancer)
+            }
+            onClickDelete={() =>
+              emit('@load-balancers/lb--delete', loadBalancer)
+            }
+            onClickMigrateOwnership={() =>
+              emit('@load-balancers/open--migrate-ownership', loadBalancer)
+            }
+          />
+        ))}
+      </div>
     );
   },
 });

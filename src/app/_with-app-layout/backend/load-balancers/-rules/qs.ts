@@ -5,6 +5,9 @@ import { FilterRules } from '.';
 export const schemaQueryString = z.object({
   q: FilterRules.schemaSearchQuery,
   page: FilterRules.schemaCurrentPage,
+  status: z
+    .preprocess((val) => val ?? '', FilterRules.schemaStatus.catch(''))
+    .optional(),
   viewMode: z
     .preprocess(
       (val) => (!val ? 'auto' : val),
