@@ -9,7 +9,7 @@ import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import type { FilterRules } from '../../-rules';
 import type { QueryString } from '../../-rules/qs';
-import { useEmit, useSubscribe } from '../events';
+import { useSubscribe } from '../events';
 
 export const [FilterModelProvider, useFilterModel] = buildSelector(
   'FilterModel',
@@ -56,7 +56,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
 
     const derivedViewMode = iife((): Exclude<FilterRules.ViewMode, 'auto'> => {
       if (viewMode !== 'auto') return viewMode;
-      return isDesktop ? 'table' : 'grid';
+      return isDesktop ? 'list' : 'grid';
     });
 
     return {
@@ -69,26 +69,3 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
 
   return mappedFilters;
 });
-
-export function useFilter() {
-  const emit = useEmit();
-  const [searchQuery, pagination] = useFilterModel((s) => [
-    s.searchQuery,
-    s.currentPage,
-  ]);
-
-  const setSearchQuery = useHandler((value: FilterRules.SearchQuery) => {
-    emit('@ssh-keys/filters/search--input', value);
-  });
-
-  const setPagination = useHandler((value: FilterRules.CurrentPage) => {
-    emit('@ssh-keys/filters/pagination--set', value);
-  });
-
-  return {
-    searchQuery,
-    pagination,
-    setSearchQuery,
-    setPagination,
-  };
-}

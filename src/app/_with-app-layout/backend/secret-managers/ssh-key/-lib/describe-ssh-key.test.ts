@@ -1,0 +1,115 @@
+import { describe, expect, it } from 'vitest';
+
+import { summarizeSshKeys } from '../-model/overview';
+
+import { toSshKeyCard } from './describe-ssh-key';
+
+describe('toSshKeyCard', () => {
+  it('maps a complete key', () => {
+    const card = toSshKeyCard(
+      {
+        id: 7,
+        name: ' work-laptop ',
+        type: 'ssh-key',
+        data: { public: 'ssh-rsa AAAAB3Nza demo@laptop', length: '4096' },
+        user: { fullname: 'Dina', username: 'dina', email: 'dina@example.com' },
+        organization: { id: 'org-1', name: 'Platform' },
+        workspace_type: 'group',
+        workspace_id: 'group-1',
+        created_at: '2026-01-02 03:04:05',
+        updated_at: '2026-02-03 04:05:06',
+      },
+      'Untitled key',
+    );
+
+    expect(card).toMatchObject({
+      id: 7,
+      name: 'work-laptop',
+      type: 'ssh-key',
+      length: '4096',
+      ownerName: 'Dina',
+      teamName: 'Platform',
+      teamId: 'group-1',
+      sharedWithTeam: true,
+    });
+  });
+
+  it('drops records without an ID, which nothing can act on', () => {
+    expect(toSshKeyCard({ name: 'orphan' }, 'Untitled key')).toBeNull();
+  });
+
+  it('falls back to a readable name and reports empty fields as absent', () => {
+    const card = toSshKeyCard(
+      { id: 1, name: '   ', type: '', data: { length: '' } },
+      'Untitled key',
+    );
+
+    expect(card?.name).toBe('Untitled key');
+    expect(card?.type).toBeNull();
+    expect(card?.length).toBeNull();
+    expect(card?.publicKey).toBeNull();
+    expect(card?.sharedWithTeam).toBe(false);
+  });
+
+  it('treats a personal workspace as having no team ID', () => {
+    const card = toSshKeyCard(
+      { id: 2, name: 'home-mac', workspace_type: 'user', workspace_id: '9' },
+      'Untitled key',
+    );
+
+    expect(card?.teamId).toBeNull();
+    expect(card?.sharedWithTeam).toBe(false);
+  });
+
+  it('counts an organization-scoped key as shared even without a name', () => {
+    const card = toSshKeyCard(
+      { id: 3, name: 'ci', organization_id: 'org-9' },
+      'Untitled key',
+    );
+
+    expect(card?.sharedWithTeam).toBe(true);
+    expect(card?.teamName).toBeNull();
+  });
+});
+
+describe('summarizeSshKeys', () => {
+  const pagination = (totalItem: number) =>
+    ({ total_item: totalItem }) as never;
+
+  it('splits the sample into personal and team keys', () => {
+    const overview = summarizeSshKeys({
+      secrets: [
+        { id: 1, name: 'a' },
+        { id: 2, name: 'b', organization: { id: 'o', name: 'Platform' } },
+        { id: 3, name: 'c', organization_id: 'o' },
+      ],
+      pagination: pagination(3),
+    });
+
+    expect(overview).toEqual({
+      total: 3,
+      personal: 1,
+      team: 2,
+      sampled: false,
+    });
+  });
+
+  it('marks the counts as sampled when the workspace holds more keys', () => {
+    const overview = summarizeSshKeys({
+      secrets: [{ id: 1, name: 'a' }],
+      pagination: pagination(120),
+    });
+
+    expect(overview.sampled).toBe(true);
+    expect(overview.total).toBe(120);
+  });
+
+  it('survives a response without any keys', () => {
+    expect(summarizeSshKeys({ pagination: pagination(0) })).toEqual({
+      total: 0,
+      personal: 0,
+      team: 0,
+      sampled: false,
+    });
+  });
+});

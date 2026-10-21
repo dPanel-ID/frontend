@@ -1,101 +1,45 @@
-import type { ComponentProps } from 'react';
+import { Clock3Icon } from 'lucide-react';
 
-import { BuildingIcon, KeyRoundIcon, UserIcon } from 'lucide-react';
+import { useDevetekLocale } from '@/services/i18n';
 
-import { useDevetekTranslations } from '@/services/i18n';
+import { getDistanceFromNow } from '@/shared/libs/browser/date';
 
-import IconSSH from '@/shared/assets/ico-ssh.svg';
-import IconEye from '@/shared/presentation/icons/Eye';
-import IconEyeActive from '@/shared/presentation/icons/EyeActive';
-import IconLastDateActive from '@/shared/presentation/icons/LastDateActive';
-import { ResourceCard } from '@/widgets/resource-card';
-
-import { useEmit } from '../../../-model/events';
-import type { SshTableData } from '../SshTable';
+import type { SshKeyCard } from '../../../-lib/describe-ssh-key';
+import { SshKeyActions } from '../SshKeyActions';
+import { SshKeyAccessPill, SshKeyIdentity } from '../SshKeyIdentity';
+import type { SshKeyHandlers } from '../useSshKeyHandlers';
 
 export interface SshCardProps {
-  data: SshTableData;
+  sshKey: SshKeyCard;
+  handlers: SshKeyHandlers;
 }
 
+/** The grid tile: identity, who can use the key, and when it changed. */
 export default function SshCard(props: SshCardProps) {
-  const { data } = props;
-  const { id, name, type, lastUpdated, ownerName, teamName, teamId } = data;
-
-  const t = useDevetekTranslations();
-
-  const emit = useEmit();
-
-  const handleClickDetails = () =>
-    emit('@ssh-keys/open--details', {
-      sshKeyId: id,
-      sshKeyName: name ?? '',
-    });
-
-  type Actions = ComponentProps<typeof ResourceCard.Compact.Actions>['actions'];
-  const actions: Actions = [
-    {
-      label: t('common.actions.details'),
-      icon: IconEye,
-      iconActive: IconEyeActive,
-      onClick: handleClickDetails,
-    },
-    {
-      label: t('common.actions.migrateOwnership'),
-      onClick: () =>
-        emit('@ssh-keys/open--migrate-ownership', {
-          id,
-          name: name ?? String(id),
-          teamName,
-          teamId,
-        }),
-    },
-    {
-      variant: 'destructive',
-      label: t('common.actions.delete'),
-      onClick: () =>
-        emit('@ssh-keys/ssh-key--delete', {
-          id,
-          name: name ?? String(id),
-        }),
-    },
-  ];
-
-  const ownershipStatus = [
-    !!teamName && { icon: BuildingIcon, text: teamName },
-    !!ownerName && { icon: UserIcon, text: ownerName },
-    !!type && { icon: KeyRoundIcon, text: type },
-  ].filter(Boolean) as Array<{ icon: typeof UserIcon; text: string }>;
+  const { handlers, sshKey } = props;
+  const locale = useDevetekLocale();
 
   return (
-    <ResourceCard.Compact>
-      <ResourceCard.Compact.Main>
-        <button
-          type="button"
-          className="flex items-start gap-x-2 w-full text-left cursor-pointer"
-          onClick={handleClickDetails}
-        >
-          <ResourceCard.Compact.Main.Hero
-            image={IconSSH}
-            tooltipMessage={t('page.sshKeys.table.headers.key')}
-          />
-          <ResourceCard.Compact.Main.Content
-            title={name ?? undefined}
-            status={ownershipStatus}
-          />
-        </button>
-      </ResourceCard.Compact.Main>
-      <ResourceCard.Compact.Actions
-        visibleActionOnlyIcon
-        actions={actions}
-        labelMore={t('common.actions.more')}
+    <article className="group flex flex-col gap-3 rounded-2xl border bg-card p-3 transition-all hover:-translate-y-0.5 hover:border-sky-400/40 hover:shadow-lg hover:shadow-black/5">
+      <SshKeyIdentity
+        sshKey={sshKey}
+        size="sm"
+        onClickName={handlers.openDetails}
       />
-      <ResourceCard.Compact.Footnote>
-        <ResourceCard.Compact.Footnote.Item
-          icon={IconLastDateActive}
-          label={t('common.terms.lastUpdated')}
-          value={lastUpdated ?? undefined}
-        />
-      </ResourceCard.Compact.Footnote>
-    </ResourceCard.Compact>
+
+      <SshKeyAccessPill sshKey={sshKey} className="self-start" />
+
+      <div className="mt-auto flex items-center justify-between gap-2 border-t pt-2">
+        <span className="inline-flex min-w-0 items-center gap-1 text-[0.7rem] text-muted-foreground">
+          <Clock3Icon className="size-3 shrink-0" aria-hidden />
+          <span className="truncate">
+            {sshKey.updatedAt
+              ? getDistanceFromNow(sshKey.updatedAt, locale)
+              : '—'}
+          </span>
+        </span>
+        <SshKeyActions handlers={handlers} layout="menu" />
+      </div>
+    </article>
   );
 }

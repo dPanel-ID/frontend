@@ -1,18 +1,18 @@
-import dayjs from 'dayjs';
-
 import { useDevetekTranslations } from '@/services/i18n';
 
-import LayoutAutoGridList from '@/shared/presentation/atoms/LayoutAutoGridList';
-import { EmptyState } from '@/shared/presentation/organisms/EmptyState';
 import { buildResponseView } from '@/widgets/response-view-builder';
 
 import { SshListState } from '../-presentation/SshListState';
+import { toSshKeyCard } from '../../-lib/describe-ssh-key';
+import { useEmit } from '../../-model/events';
 import { useFilterModel } from '../../-model/filters';
 import { useSshKeyDataModel } from '../../-model/ssh-key-data';
 
 import SshCard from './SshCard';
+import { SshKeyRow } from './SshKeyRow';
+import { SshKeysEmptyState } from './SshKeysEmptyState';
 import SshTable from './SshTable';
-import type { SshTableData } from './SshTable';
+import { useSshKeyHandlers } from './useSshKeyHandlers';
 
 export default buildResponseView({
   useResponse: () => useSshKeyDataModel((s) => s.sshKeys),
@@ -21,57 +21,60 @@ export default buildResponseView({
   render: function Render(props) {
     const { list } = props;
 
-    const [derivedViewMode] = useFilterModel((s) => [s.derivedViewMode]);
     const t = useDevetekTranslations();
+    const emit = useEmit();
+    const handlersFor = useSshKeyHandlers();
+    const [derivedViewMode, searchQuery] = useFilterModel((s) => [
+      s.derivedViewMode,
+      s.searchQuery,
+    ]);
 
-    if (list.length < 1) {
+    const sshKeys = list.flatMap((secret) => {
+      const card = toSshKeyCard(secret, t('page.sshKeys.detail.fallbackName'));
+      return card ? [card] : [];
+    });
+
+    if (sshKeys.length < 1) {
       return (
-        <EmptyState
-          title={t('page.sshKeys.emptyState.title')}
-          message={t('page.sshKeys.emptyState.message')}
-          ctaText={t('page.sshKeys.emptyState.cta')}
+        <SshKeysEmptyState
+          filtered={Boolean(searchQuery)}
+          onClearSearch={() => {
+            emit('@ssh-keys/filters/search--input', undefined);
+            emit('@ssh-keys/filters/pagination--set', 1);
+          }}
+          onCreate={() => emit('@ssh-keys/add-new', undefined)}
         />
       );
     }
 
-    const tableData: SshTableData[] = list.flatMap((sshKey) => {
-      const {
-        id,
-        name,
-        type,
-        updated_at,
-        user,
-        organization,
-        workspace_type,
-        workspace_id,
-      } = sshKey;
-      if (!id) return [];
-
-      return [
-        {
-          id,
-          name,
-          type,
-          lastUpdated: updated_at
-            ? dayjs(updated_at).format('YYYY-MM-DD HH:mm:ss')
-            : null,
-          ownerName: user?.fullname || user?.username || user?.email || null,
-          teamName: organization?.name || null,
-          teamId: workspace_type === 'group' ? workspace_id : null,
-        },
-      ];
-    });
-
     if (derivedViewMode === 'table') {
-      return <SshTable data={tableData} />;
+      return <SshTable sshKeys={sshKeys} handlersFor={handlersFor} />;
+    }
+
+    if (derivedViewMode === 'grid') {
+      return (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {sshKeys.map((sshKey) => (
+            <SshCard
+              key={sshKey.id}
+              sshKey={sshKey}
+              handlers={handlersFor(sshKey)}
+            />
+          ))}
+        </div>
+      );
     }
 
     return (
-      <LayoutAutoGridList viewMode={derivedViewMode as 'grid' | 'list'}>
-        {tableData.map((sshKey) => (
-          <SshCard key={sshKey.id} data={sshKey} />
+      <div className="flex flex-col gap-3">
+        {sshKeys.map((sshKey) => (
+          <SshKeyRow
+            key={sshKey.id}
+            sshKey={sshKey}
+            handlers={handlersFor(sshKey)}
+          />
         ))}
-      </LayoutAutoGridList>
+      </div>
     );
   },
 });
