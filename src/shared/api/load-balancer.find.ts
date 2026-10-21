@@ -16,6 +16,8 @@ export interface RecipeParams {
   domain?: string;
   engine?: string;
   id?: string;
+  /** Backend `installer_status` filter: ready, progress, failed and so on. */
+  installerStatus?: string;
   machineId?: string;
   order?: string;
   page?: number;
@@ -32,6 +34,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     domain,
     engine,
     id,
+    installerStatus,
     machineId,
     order,
     page,
@@ -47,6 +50,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     domain,
     engine,
     id,
+    installer_status: installerStatus || undefined,
     machine_id: machineId,
     name: searchQuery,
     order,

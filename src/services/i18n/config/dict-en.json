@@ -238,25 +238,16 @@
         "empty": "No cloud projects connected yet."
       },
       "estate": {
-        "title": "Your estate",
-        "description": "What this workspace contains. Each tile reports its own health.",
-        "ariaLabel": "Workspace resource counts",
         "servers": "Servers",
+        "serversHint": "{ready} ready, {attention} need a look",
         "applications": "Applications",
+        "applicationsHint": "{ready} ready, {attention} need a look",
         "loadBalancers": "Load balancers",
+        "loadBalancersHint": "{ready} ready, {attention} need a look",
+        "cloudProjects": "Cloud projects",
         "domains": "Domains",
         "databases": "Databases",
-        "secrets": "Secrets",
-        "dnsZones": "DNS zones",
-        "statefulData": "Stateful data",
-        "sshKeys": "SSH keys",
-        "none": "None yet",
-        "statusReady": "{count} ready",
-        "statusWorking": "{count} in progress",
-        "statusAttention": "{count} failed",
-        "statusNoStatus": "{count} with no status",
-        "statusUnknown": "Status not reported",
-        "sampleSuffix": "in the latest {counted}"
+        "sshKeys": "SSH keys"
       },
       "serverHealth": {
         "title": "Server Health",
@@ -373,18 +364,6 @@
         "activity": "Activity",
         "resources": "Resources",
         "workspace": "Workspace"
-      },
-      "estate": {
-        "servers": "Servers",
-        "serversHint": "{ready} ready, {attention} need a look",
-        "applications": "Applications",
-        "applicationsHint": "{ready} ready, {attention} need a look",
-        "loadBalancers": "Load balancers",
-        "loadBalancersHint": "{ready} ready, {attention} need a look",
-        "cloudProjects": "Cloud projects",
-        "domains": "Domains",
-        "databases": "Databases",
-        "sshKeys": "SSH keys"
       },
       "fleet": {
         "title": "Resource usage",
@@ -1405,11 +1384,11 @@
       }
     },
     "loadBalancers": {
-      "headerTitle": "Load Balancers",
-      "headerDesc": "View your load balancers here.",
+      "headerTitle": "Load balancers",
+      "headerDesc": "One public address in front of your servers: it terminates TLS and sends each request to the right place.",
       "headerFootnote": "Visit our <a>YouTube channel</a> for a tutorial.",
       "docs": "Docs",
-      "createLoadBalancer": "Create Load Balancer",
+      "createLoadBalancer": "Create a load balancer",
       "gatewayServer": "Gateway Server",
       "gatewayAddress": "Gateway Address",
       "gatewayServerAndAddress": "Gateway Server & Address",
@@ -1434,7 +1413,11 @@
       "table": {
         "loadBalancer": "Load Balancer",
         "gateway": "Gateway",
-        "routing": "Routing"
+        "routing": "Routing",
+        "status": "Status",
+        "engine": "Engine",
+        "updated": "Last modified",
+        "actions": "Actions"
       },
       "sections": {
         "routingRules": "Routing rules"
@@ -1443,6 +1426,52 @@
         "title": "No load balancers found.",
         "message": "Why not add new one to get started?",
         "cta": "Add new load balancer"
+      },
+      "servers": "Servers",
+      "guide": {
+        "title": "What a load balancer does for you",
+        "description": "It is the front door. A load balancer takes the traffic arriving at your domain, handles the HTTPS certificate, and forwards each request to an application, a server or a folder of files you choose.",
+        "steps": {
+          "gateway": {
+            "title": "Pick a gateway server",
+            "description": "One of your servers answers the public traffic. dNocs installs the web server engine on it for you."
+          },
+          "domain": {
+            "title": "Point a domain at it",
+            "description": "Give it the name visitors will type. The HTTPS certificate is requested and renewed for you."
+          },
+          "routes": {
+            "title": "Send paths where they belong",
+            "description": "Route the whole site, or just one path, to an application, a port on a server, or static files."
+          }
+        },
+        "cta": "Create a load balancer"
+      },
+      "overview": {
+        "total": "Load balancers",
+        "totalHint": "{gateways} gateway servers",
+        "totalHintOne": "1 gateway server",
+        "ready": "Serving traffic",
+        "progress": "Setting up",
+        "failed": "Needs attention",
+        "sampleNote": "Per-state counts come from your {sample} most recent load balancers."
+      },
+      "filters": {
+        "searchPlaceholder": "Search by domain",
+        "status": "Status"
+      },
+      "card": {
+        "personal": "Only you",
+        "team": "Shared with {name}"
+      },
+      "empty": {
+        "title": "Create your first load balancer",
+        "message": "Put one public address in front of your servers, with HTTPS handled for you. You need a server to act as the gateway, and a domain to point at it.",
+        "cta": "Create a load balancer",
+        "secondary": "See how servers are created",
+        "filteredTitle": "No load balancers match",
+        "filteredMessage": "Try another domain, or clear the filters to see every load balancer.",
+        "clear": "Clear filters"
       }
     },
     "loadBalancersCreate": {
@@ -2480,7 +2509,8 @@
         "server": "creating and managing servers",
         "ssh": "creating and managing SSH keys",
         "cloud": "connecting and managing cloud accounts",
-        "domain": "domains and DNS records"
+        "domain": "domains and DNS records",
+        "loadBalancer": "load balancers and routing"
       }
     },
     "helpAndSupportCompact": {

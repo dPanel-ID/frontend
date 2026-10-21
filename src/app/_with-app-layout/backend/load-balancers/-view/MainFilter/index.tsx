@@ -1,9 +1,14 @@
-import { ArrowLeftRightIcon, Grid2X2Icon, RefreshCwIcon, Rows3Icon } from 'lucide-react';
+import {
+  ArrowLeftRightIcon,
+  Grid2X2Icon,
+  RefreshCwIcon,
+  TableIcon,
+  XIcon,
+} from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
-import { Card } from '@/shared/presentation/atoms/Card';
 import SearchCollapsible from '@/shared/presentation/atoms/SearchCollapsible';
 import SearchKeywordBadge from '@/shared/presentation/atoms/SearchKeywordBadge';
 import { buildSegmentedControl } from '@/widgets/ui-atomic-builder/atom-segmented-control';
@@ -20,14 +25,14 @@ const ViewModeSO = buildSegmentedControl<FilterRules.ViewMode>({
       tooltipI18n: 'common.terms.automaticView',
     },
     {
-      id: 'list',
-      icon: Rows3Icon,
-      tooltipI18n: 'common.terms.cardListView',
-    },
-    {
       id: 'grid',
       icon: Grid2X2Icon,
       tooltipI18n: 'common.terms.cardGridView',
+    },
+    {
+      id: 'table',
+      icon: TableIcon,
+      tooltipI18n: 'common.terms.tableView',
     },
   ],
 });
@@ -54,10 +59,12 @@ const SlotSearchCollapsible = () => {
 
   const handleSearch = (input: string) => {
     emit('@load-balancers/filters/search--input', input);
+    emit('@load-balancers/filters/pagination--set', 1);
   };
 
   const handleClear = () => {
     emit('@load-balancers/filters/search--input');
+    emit('@load-balancers/filters/pagination--set', 1);
   };
 
   return (
@@ -65,31 +72,63 @@ const SlotSearchCollapsible = () => {
       initialValue={searchQuery}
       onSubmit={handleSearch}
       onClickClear={handleClear}
-      placeholderText={t('common.terms.searchPlaceholder')}
+      placeholderText={t('page.loadBalancers.filters.searchPlaceholder')}
     />
   );
 };
 
-const SlotKeywordBadge = () => {
+const SlotActiveFilters = () => {
   const emit = useEmit();
-  const [searchQuery] = useFilterModel((s) => [s.searchQuery]);
+  const t = useDevetekTranslations();
+  const [searchQuery, status] = useFilterModel((s) => [
+    s.searchQuery,
+    s.status,
+  ]);
+
+  if (!searchQuery && !status) return null;
 
   return (
-    <SearchKeywordBadge
-      keyword={searchQuery}
-      onClear={() => emit('@load-balancers/filters/search--input')}
-    />
+    <div className="flex flex-wrap items-center gap-2">
+      {searchQuery && (
+        <SearchKeywordBadge
+          keyword={searchQuery}
+          onClear={() => {
+            emit('@load-balancers/filters/search--input');
+            emit('@load-balancers/filters/pagination--set', 1);
+          }}
+        />
+      )}
+      {status && (
+        <button
+          type="button"
+          onClick={() => {
+            emit('@load-balancers/filters/pagination--set', 1);
+            emit('@load-balancers/filters/status--change', '');
+          }}
+          className="inline-flex max-w-fit items-center gap-x-1.5 rounded-md border border-sky-400/30 bg-sky-500/10 px-2 py-1 text-[0.7rem] text-sky-700 transition-colors hover:bg-sky-500/15 dark:text-sky-300"
+        >
+          <span>{t('page.loadBalancers.filters.status')}</span>
+          <span className="font-semibold">
+            {t(`page.loadBalancers.overview.${status}`)}
+          </span>
+          <XIcon className="size-3" />
+        </button>
+      )}
+    </div>
   );
 };
 
 const SlotRefresh = () => {
   const emit = useEmit();
+  const t = useDevetekTranslations();
 
   return (
     <Button
       size="icon-sm"
       buttonColor="secondary"
       buttonStyle="ghost"
+      aria-label={t('common.actions.refresh')}
+      title={t('common.actions.refresh')}
       onClick={() => emit('@load-balancers/data--refresh', null)}
     >
       <RefreshCwIcon />
@@ -100,17 +139,17 @@ const SlotRefresh = () => {
 export default function MainFilter() {
   return (
     <>
-      <Card className="bg-card/30 rounded-xl p-1.5 grid grid-cols-[1fr_auto] gap-x-2">
-        <div className="flex items-center">
+      <div className="grid grid-cols-[1fr_auto] gap-x-2 rounded-xl border bg-card/40 p-1.5">
+        <div className="flex flex-wrap items-center gap-2">
           <SlotSearchCollapsible />
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center gap-x-1">
           <SlotRefresh />
           <SlotViewMode />
         </div>
-      </Card>
-      <SlotKeywordBadge />
+      </div>
+      <SlotActiveFilters />
     </>
   );
 }

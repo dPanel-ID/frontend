@@ -123,9 +123,13 @@ export default function LbCard(props: LbCardProps) {
         onClick={handleCardClick}
         onKeyDown={handleCardKeyDown}
         className={cn(
-          'rounded-lg border bg-card/45 p-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary hover:border-primary/25 hover:bg-card/65',
+          'rounded-2xl border bg-card p-4 transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary hover:-translate-y-0.5 hover:border-sky-400/40 hover:shadow-lg hover:shadow-black/5',
           onClickDetails && 'cursor-pointer',
-          isAnomalousStatus && 'border-dashed',
+          data.state.status === 'failed' && 'border-red-400/40',
+          data.state.status === 'progress' && 'border-sky-400/40',
+          isAnomalousStatus &&
+            !['failed', 'progress'].includes(data.state.status) &&
+            'border-dashed',
         )}
       >
         <div className="flex items-start gap-3">

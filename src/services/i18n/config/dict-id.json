@@ -229,25 +229,16 @@
         "empty": "Belum ada proyek cloud yang terhubung."
       },
       "estate": {
-        "title": "Resource Anda",
-        "description": "Isi ruang kerja ini. Setiap kartu melaporkan kesehatannya sendiri.",
-        "ariaLabel": "Jumlah resource ruang kerja",
         "servers": "Server",
+        "serversHint": "{ready} siap, {attention} perlu diperiksa",
         "applications": "Aplikasi",
+        "applicationsHint": "{ready} siap, {attention} perlu diperiksa",
         "loadBalancers": "Load balancer",
+        "loadBalancersHint": "{ready} siap, {attention} perlu diperiksa",
+        "cloudProjects": "Proyek cloud",
         "domains": "Domain",
-        "databases": "Database",
-        "secrets": "Secret",
-        "dnsZones": "Zona DNS",
-        "statefulData": "Data stateful",
-        "sshKeys": "SSH key",
-        "none": "Belum ada",
-        "statusReady": "{count} siap",
-        "statusWorking": "{count} sedang berjalan",
-        "statusAttention": "{count} gagal",
-        "statusNoStatus": "{count} tanpa status",
-        "statusUnknown": "Status belum dilaporkan",
-        "sampleSuffix": "dari {counted} terbaru"
+        "databases": "Basis data",
+        "sshKeys": "Kunci SSH"
       },
       "serverHealth": {
         "title": "Kesehatan Server",
@@ -364,18 +355,6 @@
         "activity": "Aktivitas",
         "resources": "Sumber daya",
         "workspace": "Ruang kerja"
-      },
-      "estate": {
-        "servers": "Server",
-        "serversHint": "{ready} siap, {attention} perlu diperiksa",
-        "applications": "Aplikasi",
-        "applicationsHint": "{ready} siap, {attention} perlu diperiksa",
-        "loadBalancers": "Load balancer",
-        "loadBalancersHint": "{ready} siap, {attention} perlu diperiksa",
-        "cloudProjects": "Proyek cloud",
-        "domains": "Domain",
-        "databases": "Basis data",
-        "sshKeys": "Kunci SSH"
       },
       "fleet": {
         "title": "Penggunaan sumber daya",
@@ -1396,11 +1375,11 @@
       }
     },
     "loadBalancers": {
-      "headerTitle": "Load Balancer",
-      "headerDesc": "Lihat load balancer anda di sini.",
+      "headerTitle": "Load balancer",
+      "headerDesc": "Satu alamat publik di depan server Anda: menangani TLS dan meneruskan tiap permintaan ke tempat yang tepat.",
       "headerFootnote": "Kunjungi <a>kanal YouTube</a> kami untuk panduannya.",
       "docs": "Docs",
-      "createLoadBalancer": "Buat Load Balancer",
+      "createLoadBalancer": "Buat load balancer",
       "gatewayServer": "Server Gerbang",
       "gatewayAddress": "Alamat Gerbang",
       "gatewayServerAndAddress": "Server & Alamat Gerbang",
@@ -1426,7 +1405,11 @@
       "table": {
         "loadBalancer": "Load Balancer",
         "gateway": "Gateway",
-        "routing": "Routing"
+        "routing": "Routing",
+        "status": "Status",
+        "engine": "Mesin",
+        "updated": "Terakhir diubah",
+        "actions": "Aksi"
       },
       "sections": {
         "routingRules": "Aturan routing"
@@ -1435,6 +1418,52 @@
         "title": "Belum ada load balancer terdaftar.",
         "message": "Kenapa tidak tambah baru untuk memulai?",
         "cta": "Tambah load balancer"
+      },
+      "servers": "Server",
+      "guide": {
+        "title": "Apa yang dikerjakan load balancer untuk Anda",
+        "description": "Ini pintu depannya. Load balancer menerima trafik yang datang ke domain Anda, mengurus sertifikat HTTPS, lalu meneruskan tiap permintaan ke aplikasi, server, atau folder berkas yang Anda tentukan.",
+        "steps": {
+          "gateway": {
+            "title": "Pilih server gateway",
+            "description": "Salah satu server Anda yang menjawab trafik publik. dNocs memasang mesin web server-nya untuk Anda."
+          },
+          "domain": {
+            "title": "Arahkan domain ke sana",
+            "description": "Beri nama yang akan diketik pengunjung. Sertifikat HTTPS diminta dan diperbarui otomatis."
+          },
+          "routes": {
+            "title": "Kirim tiap path ke tujuannya",
+            "description": "Arahkan seluruh situs, atau satu path saja, ke aplikasi, port di server, atau berkas statis."
+          }
+        },
+        "cta": "Buat load balancer"
+      },
+      "overview": {
+        "total": "Load balancer",
+        "totalHint": "{gateways} server gateway",
+        "totalHintOne": "1 server gateway",
+        "ready": "Melayani trafik",
+        "progress": "Sedang disiapkan",
+        "failed": "Perlu perhatian",
+        "sampleNote": "Hitungan per status diambil dari {sample} load balancer terbaru Anda."
+      },
+      "filters": {
+        "searchPlaceholder": "Cari berdasarkan domain",
+        "status": "Status"
+      },
+      "card": {
+        "personal": "Hanya Anda",
+        "team": "Dibagikan ke {name}"
+      },
+      "empty": {
+        "title": "Buat load balancer pertama Anda",
+        "message": "Letakkan satu alamat publik di depan server Anda, dengan HTTPS yang diurus otomatis. Anda butuh server sebagai gateway dan domain untuk diarahkan ke sana.",
+        "cta": "Buat load balancer",
+        "secondary": "Lihat cara server dibuat",
+        "filteredTitle": "Tidak ada load balancer yang cocok",
+        "filteredMessage": "Coba domain lain, atau hapus filter untuk melihat semuanya.",
+        "clear": "Hapus filter"
       }
     },
     "loadBalancersCreate": {
@@ -2472,7 +2501,8 @@
         "server": "membuat dan mengatur server",
         "ssh": "membuat dan mengatur kunci SSH",
         "cloud": "menghubungkan dan mengatur akun cloud",
-        "domain": "domain dan record DNS"
+        "domain": "domain dan record DNS",
+        "loadBalancer": "load balancer dan routing"
       }
     },
     "helpAndSupportCompact": {

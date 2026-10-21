@@ -14,6 +14,7 @@ type EventsRegistry = Rescope<
     'filters/view-mode--change': FilterRules.ViewMode;
     'filters/search--input': FilterRules.SearchQuery;
     'filters/pagination--set': number;
+    'filters/status--change': FilterRules.Status;
     'data--refresh': null;
     'lb--delete': LbDeletePayload;
     'open--create': null;

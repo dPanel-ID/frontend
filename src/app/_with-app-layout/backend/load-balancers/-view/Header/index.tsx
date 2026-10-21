@@ -1,92 +1,71 @@
-import { FileTextIcon, PlusCircleIcon } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { FileTextIcon, NetworkIcon, PlusIcon, ServerIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { Button } from '@/shared/presentation/atoms/Button';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
-import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
+import {
+  FlowHero,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
 import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
 import { useEmit } from '../../-models/events';
 
-const Headnote = () => {
-  const t = useDevetekTranslations();
-
-  return (
-    <span className="flex items-center justify-between">
-      <Breadcrumb
-        items={[
-          {
-            text: t('sidebar.dashboard'),
-            url: '/dashboard',
-          },
-          {
-            text: t('sidebar.backend'),
-          },
-        ]}
-      />
-    </span>
-  );
-};
-
+/** Page opening in the same visual language as the servers module. */
 export default function Header() {
   const t = useDevetekTranslations();
   const emit = useEmit();
 
   return (
-    <PageHeader
-      headnote={<Headnote />}
+    <FlowHero
+      accent="sky"
+      icon={NetworkIcon}
+      headnote={
+        <Breadcrumb
+          items={[
+            { text: t('sidebar.dashboard'), url: '/dashboard' },
+            { text: t('sidebar.backend') },
+          ]}
+        />
+      }
       title={t('page.loadBalancers.headerTitle')}
-      rightAppend={
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          <HeaderHelpAction
-            icon={FileTextIcon}
-            label={t('page.loadBalancers.docs')}
-            href={LINK__DOCUMENTATION}
-          />
-          <Button
-            buttonStyle="outline"
-            buttonColor="secondary"
-            aria-label={t('page.loadBalancers.createLoadBalancer')}
+      description={t('page.loadBalancers.headerDesc')}
+      aside={
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/servers">
+              <ServerIcon />
+              <span className="hidden sm:inline">
+                {t('page.loadBalancers.servers')}
+              </span>
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <a
+              href={LINK__DOCUMENTATION}
+              aria-label={t('page.loadBalancers.docs')}
+              title={t('page.loadBalancers.docs')}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FileTextIcon />
+              <span className="hidden sm:inline">
+                {t('page.loadBalancers.docs')}
+              </span>
+            </a>
+          </Button>
+          <button
+            type="button"
+            className={flowCtaClassName('sky')}
             onClick={() => emit('@load-balancers/open--create', null)}
           >
-            <PlusCircleIcon /> {t('page.loadBalancers.createLoadBalancer')}
-          </Button>
+            <PlusIcon className="size-4" />
+            {t('page.loadBalancers.createLoadBalancer')}
+          </button>
         </div>
       }
-      description={t('page.loadBalancers.headerDesc')}
-      footnote={t.rich('page.loadBalancers.headerFootnote', {
-        a: (chunks) => (
-          <a className="underline" href="//www.youtube.com/@dpanel_id">
-            {chunks}
-          </a>
-        ),
-      })}
     />
-  );
-}
-
-function HeaderHelpAction(props: {
-  icon: LucideIcon;
-  label: string;
-  href: string;
-}) {
-  const { icon: Icon, label, href } = props;
-  const isMail = href.startsWith('mailto:');
-
-  return (
-    <Button buttonStyle="outline" buttonColor="secondary" asChild>
-      <a
-        href={href}
-        aria-label={label}
-        title={label}
-        target={isMail ? undefined : '_blank'}
-        rel={isMail ? undefined : 'noreferrer'}
-      >
-        <Icon />
-        <span className="hidden sm:inline">{label}</span>
-      </a>
-    </Button>
   );
 }
