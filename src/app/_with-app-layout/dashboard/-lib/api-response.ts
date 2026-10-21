@@ -13,3 +13,7 @@ export function countFromPagination(
 ) {
   return data?.pagination?.total_item ?? fallback;
 }
+
+export function isPendingResponse(response: ApiResponse<unknown>) {
+  return response.$status === 'initial' || response.$status === 'loading';
+}

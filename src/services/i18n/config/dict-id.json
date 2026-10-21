@@ -202,14 +202,14 @@
         "configTitle": "Konfigurasi ruang kerja",
         "iacRepository": "Repositori IaC",
         "iacRepositoryHelp": "{mode}, default ref {ref}",
+        "iacRepositoryRefOnly": "default ref {ref}",
+        "iacRepositoryUnknown": "Belum dilaporkan",
+        "iacRepositoryUnknownHelp": "dPanel tidak melaporkan repositori IaC untuk ruang kerja ini.",
         "iacRepositoryMode": {
           "shared": "Shared",
           "managed": "Managed",
-          "custom": "Custom",
-          "unknown": "Terkonfigurasi"
+          "custom": "Custom"
         },
-        "workerUsed": "Worker yang digunakan",
-        "notReported": "Belum dilaporkan",
         "visibility": {
           "private": "Privat"
         }
@@ -228,20 +228,26 @@
         "notUpdated": "Tidak ada timestamp pembaruan",
         "empty": "Belum ada proyek cloud yang terhubung."
       },
-      "summary": {
-        "ariaLabel": "Ringkasan resource ruang kerja",
+      "estate": {
+        "title": "Resource Anda",
+        "description": "Isi ruang kerja ini. Setiap kartu melaporkan kesehatannya sendiri.",
+        "ariaLabel": "Jumlah resource ruang kerja",
         "servers": "Server",
         "applications": "Aplikasi",
-        "loadBalancers": "Load Balancer",
+        "loadBalancers": "Load balancer",
         "domains": "Domain",
         "databases": "Database",
         "secrets": "Secret",
-        "readyServers": "{count} siap",
-        "attention": "{count} perlu perhatian",
-        "trafficEntry": "Titik masuk trafik",
         "dnsZones": "Zona DNS",
         "statefulData": "Data stateful",
-        "sshKeys": "SSH key"
+        "sshKeys": "SSH key",
+        "none": "Belum ada",
+        "statusReady": "{count} siap",
+        "statusWorking": "{count} sedang berjalan",
+        "statusAttention": "{count} gagal",
+        "statusNoStatus": "{count} tanpa status",
+        "statusUnknown": "Status belum dilaporkan",
+        "sampleSuffix": "dari {counted} terbaru"
       },
       "serverHealth": {
         "title": "Kesehatan Server",
@@ -269,18 +275,29 @@
         "emptyProviders": "Belum ada provider yang dilaporkan.",
         "unknownProvider": "Provider tidak dikenal"
       },
-      "telemetry": {
-        "title": "Utilisasi Server Live",
-        "description": "Rata-rata CPU, memori, dan disk berjalan dari server siap di ruang kerja aktif.",
-        "coverage": "{sampled} dari {total} server siap disampel",
-        "coverageLimited": "{sampled} dari {total} server siap disampel",
-        "backendNote": "Chart ini memakai polling live dari dashboard. Riwayat lintas workspace yang persisten membutuhkan endpoint timeseries agregat dari backend.",
-        "chartTitle": "Rata-rata ruang kerja",
-        "chartAria": "Line chart rata-rata utilisasi CPU, memori, dan disk",
-        "waiting": "Menunggu sampel telemetry...",
-        "cpu": "CPU",
-        "memory": "Memori",
-        "disk": "Disk"
+      "capacity": {
+        "title": "Kapasitas",
+        "description": "Server yang hampir penuh. Yang mencapai {threshold}% atau lebih disebut namanya.",
+        "coverage": "{sampled} dari {total} server siap, setiap {seconds} detik",
+        "coverageNote": "Hanya {sampled} dari {total} server siap yang disampel, jadi bisa ada server lebih sibuk yang belum tercantum.",
+        "pressured": "{count} dari {total} server di atas {threshold}% {metric}",
+        "comfortable": "Semua {total} server yang melapor berada di bawah {threshold}% {metric}",
+        "highest": "Tertinggi: {server} di {value}%",
+        "noReading": "Belum ada pembacaan {metric}",
+        "unreachable": "{count, plural, other {# server tidak melaporkan penggunaan}}",
+        "noReadings": "Tidak ada pembacaan",
+        "technicalDetails": "Detail teknis",
+        "emptyTitle": "Belum ada server untuk diukur",
+        "emptyDescription": "Penggunaan muncul di sini setelah ada server yang siap.",
+        "loadingTitle": "Membaca penggunaan server\u2026",
+        "failedTitle": "Tidak ada server yang melaporkan penggunaannya",
+        "failedDescription": "Server mungkin sedang sibuk atau tidak terhubung. Aplikasi Anda tidak terpengaruh pemeriksaan ini.",
+        "retry": "Coba lagi",
+        "metric": {
+          "memory": "memori",
+          "cpu": "CPU",
+          "disk": "disk"
+        }
       },
       "applicationLogs": {
         "title": "Log Aplikasi Terbaru",
@@ -295,11 +312,39 @@
         "emptyRun": "Belum ada baris log runtime.",
         "emptyRunFile": "File log runtime untuk deployment terbaru tidak ditemukan."
       },
+      "verdict": {
+        "ariaLabel": "Kesehatan infrastruktur",
+        "loading": "Memeriksa infrastruktur Anda\u2026",
+        "healthy": "Semuanya berjalan normal",
+        "healthyDetail": "Tidak ada operasi yang gagal, tidak ada server yang mati, dan semua agent melapor.",
+        "attention": "{count, plural, other {# hal perlu perhatian Anda}}",
+        "attentionDetail": "Buka daftar di bawah untuk melihat apa yang terjadi.",
+        "working": "{count, plural, other {dPanel sedang mengerjakan # hal}}",
+        "workingDetail": "Tidak ada yang gagal. Anda tetap bisa memakai semuanya sambil menunggu.",
+        "unknown": "Kami tidak bisa memastikan kondisi infrastruktur Anda",
+        "unknownDetail": "Tidak satu pun pemeriksaan kesehatan bisa dibaca, jadi halaman ini tidak melaporkan kondisi apa pun.",
+        "degraded": "Sebagian pemeriksaan tidak bisa dijalankan, jadi informasi ini mungkin belum lengkap.",
+        "partServers": "{count, plural, other {# server tidak berjalan}}",
+        "partExecutions": "{count, plural, other {# operasi gagal}}",
+        "partAgents": "{count, plural, other {# server tidak terhubung}}",
+        "failedTitle": "Tidak bisa memeriksa infrastruktur Anda",
+        "failedDescription": "Pemeriksaan kesehatan sedang tidak tersedia. Infrastruktur Anda tidak terpengaruh.",
+        "retry": "Coba lagi",
+        "unauthorizedTitle": "Anda tidak bisa melihat kesehatan ruang kerja ini",
+        "unauthorizedDescription": "Akun Anda tidak punya izin membaca status eksekusi dan agent di sini. Minta akses ke pemilik ruang kerja."
+      },
       "attention": {
         "title": "Perlu perhatian Anda",
         "description": "{count} hal perlu diperiksa.",
         "healthyDescription": "Tidak ada yang perlu diperiksa saat ini.",
         "checkingDescription": "Memeriksa infrastruktur Anda\u2026",
+        "checkingTitle": "Memeriksa infrastruktur Anda\u2026",
+        "failedDescription": "Tidak bisa memeriksa hal yang perlu perhatian Anda.",
+        "failedTitle": "Tidak bisa memuat hal yang perlu perhatian Anda",
+        "failedDetail": "Pemeriksaan ini sedang tidak tersedia. Infrastruktur Anda tidak terpengaruh.",
+        "retry": "Coba lagi",
+        "unauthorizedTitle": "Anda tidak bisa melihat kesehatan ruang kerja ini",
+        "unauthorizedDescription": "Akun Anda tidak punya izin membaca status eksekusi dan agent di sini. Minta akses ke pemilik ruang kerja.",
         "healthy": "Semuanya berjalan normal.",
         "serverUnhealthy": "{server} tidak berjalan",
         "serverUnhealthyDetail": "Server melaporkan status \"{status}\". Buka untuk melihat penyebabnya.",

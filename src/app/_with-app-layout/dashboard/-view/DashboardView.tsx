@@ -23,37 +23,36 @@ import {
 } from '@/shared/libs/api-client/config';
 import { isBrowser } from '@/shared/libs/browser/environment';
 
-import { countFromPagination, responseData } from '../-lib/api-response';
+import {
+  countFromPagination,
+  isPendingResponse,
+  responseData,
+} from '../-lib/api-response';
 import {
   buildApplicationStats,
   buildLoadBalancerStats,
   buildServerStats,
+  toEstateStatus,
 } from '../-lib/stats';
-import {
-  MAX_HISTORY_POINTS,
-  TELEMETRY_LIMIT,
-  buildAggregatedTelemetry,
-  buildLatestTelemetry,
-} from '../-lib/telemetry';
-import type { TelemetryPoint } from '../-lib/telemetry';
-import {
-  DEFAULT_WORKSPACE_IAC_REPOSITORY,
-  buildWorkspaceIacRepository,
-} from '../-lib/workspace';
+import { TELEMETRY_LIMIT, TELEMETRY_POLL_SECONDS } from '../-lib/telemetry';
+import type { TelemetrySample } from '../-lib/telemetry';
+import { buildWorkspaceIacRepository } from '../-lib/workspace';
+import { useDashboardHealth } from '../-usecase/use-dashboard-health';
 
 import ActivityPanel from './ActivityPanel/ActivityPanel';
 import ApplicationsList from './ApplicationsList/ApplicationsList';
 import AttentionPanel from './AttentionPanel/AttentionPanel';
+import CapacityPanel from './CapacityPanel/CapacityPanel';
+import DashboardServerTelemetryProbe from './CapacityPanel/DashboardServerTelemetryProbe';
 import CloudProjectsPanel from './CloudProjectsPanel/CloudProjectsPanel';
+import EstatePanel from './EstatePanel/EstatePanel';
 import Header from './Header';
+import HealthVerdict from './HealthVerdict/HealthVerdict';
 import LoadBalancersList from './LoadBalancersList/LoadBalancersList';
 import MembersPanel from './MembersPanel/MembersPanel';
 import ResourceMixPanel from './ResourceMixPanel/ResourceMixPanel';
 import ServerHealthPanel from './ServerHealthPanel/ServerHealthPanel';
 import ServersList from './ServersList/ServersList';
-import SummaryGrid from './SummaryGrid/SummaryGrid';
-import DashboardServerTelemetryProbe from './TelemetryPanel/DashboardServerTelemetryProbe';
-import TelemetryPanel from './TelemetryPanel/TelemetryPanel';
 import WorkspaceOverview from './WorkspaceOverview/WorkspaceOverview';
 
 const RECENT_LIST_LIMIT = 3;
@@ -98,9 +97,7 @@ export default function DashboardView() {
     page: 1,
     pageSize: 6,
   });
-  const [iacRepositoryResponse] = ApiModule.Repository.useGet({
-    ref: DEFAULT_WORKSPACE_IAC_REPOSITORY.ref,
-  });
+  const [iacRepositoryResponse] = ApiModule.Repository.useGet();
 
   const profile = responseData(profileResponse);
   const serversData = responseData(serversResponse);
@@ -162,35 +159,44 @@ export default function DashboardView() {
   const applicationStats = buildApplicationStats(applications);
   const loadBalancerStats = buildLoadBalancerStats(loadBalancers);
 
+  const health = useDashboardHealth({
+    servers,
+    serversUnavailable: serversResponse.$status === 'failed',
+  });
+
   const telemetryServers = servers
     .filter((server) => server.id != null && server.status === 'ready')
     .slice(0, TELEMETRY_LIMIT);
-  const [telemetryHistory, setTelemetryHistory] = useState<
-    Record<string, TelemetryPoint[]>
+
+  // Only the latest reading per server is kept: the capacity panel reports
+  // worst case now, so a per-visit history would buy nothing and show nothing
+  // until it filled up.
+  const [samplesByServerId, setSamplesByServerId] = useState<
+    Record<string, TelemetrySample>
   >({});
+  const [probeGeneration, setProbeGeneration] = useState(0);
 
-  const handleTelemetrySample = useCallback((sample: TelemetryPoint) => {
-    setTelemetryHistory((current) => {
-      const nextServerHistory = [
-        ...(current[sample.serverId] ?? []),
-        sample,
-      ].slice(-MAX_HISTORY_POINTS);
-
-      return {
-        ...current,
-        [sample.serverId]: nextServerHistory,
-      };
-    });
+  const handleTelemetrySample = useCallback((sample: TelemetrySample) => {
+    setSamplesByServerId((current) => ({
+      ...current,
+      [sample.serverId]: sample,
+    }));
   }, []);
 
-  const aggregatedTelemetry = useMemo(
-    () => buildAggregatedTelemetry(telemetryHistory),
-    [telemetryHistory],
+  // Remounting the probes is how a retry refetches: each one owns its own
+  // requests, so there is no single refresh handle to call.
+  const handleTelemetryRetry = useCallback(() => {
+    setSamplesByServerId({});
+    setProbeGeneration((generation) => generation + 1);
+  }, []);
+
+  const samples = useMemo(
+    () => Object.values(samplesByServerId),
+    [samplesByServerId],
   );
-  const latestTelemetry = useMemo(
-    () => buildLatestTelemetry(telemetryHistory),
-    [telemetryHistory],
-  );
+  const reportingServerCount = samples.filter(
+    (sample) => !sample.unreachable,
+  ).length;
 
   const totalServers = countFromPagination(
     serversData,
@@ -230,39 +236,53 @@ export default function DashboardView() {
       <Header />
 
       <div className="flex flex-col gap-4">
-        {/* First on the page: whether anything needs the reader's attention. */}
-        <AttentionPanel servers={servers} />
-
-        <WorkspaceOverview
-          workspaceName={activeWorkspaceName}
-          workspaceId={activeWorkspaceId ?? undefined}
-          workspaceType={
-            isTeamWorkspace
-              ? t('page.dashboard.workspace.team')
-              : t('page.dashboard.workspace.personal')
-          }
-          iacRepository={workspaceIacRepository}
+        {/* Is anything wrong? */}
+        <HealthVerdict
+          verdict={health.verdict}
+          isLoading={health.isLoading}
+          hasFailed={health.hasFailed}
+          isUnauthorized={health.isUnauthorized}
+          onRetry={health.refresh}
         />
 
-        <CloudProjectsPanel
-          cloudProjects={cloudProjects}
+        <AttentionPanel
           servers={servers}
-          totalCloudProjects={totalCloudProjects}
+          failures={health.failures}
+          unreachableAgents={health.unreachableAgents}
+          unhealthyServers={health.unhealthyServers}
+          isLoading={health.isLoading}
+          hasFailed={health.hasFailed}
+          isUnauthorized={health.isUnauthorized}
+          onRetry={health.refresh}
         />
 
-        <SummaryGrid
-          totalServers={totalServers}
-          totalApplications={totalApplications}
-          totalLoadBalancers={totalLoadBalancers}
+        {/* What changed? */}
+        <ActivityPanel hasServers={servers.length > 0} />
+
+        <CapacityPanel
+          samples={samples}
+          sampledServerCount={telemetryServers.length}
+          totalReadyServers={serverStats.ready}
+          pollSeconds={TELEMETRY_POLL_SECONDS}
+          onRetry={handleTelemetryRetry}
+        />
+
+        {/* What do I have? */}
+        <EstatePanel
+          servers={toEstateStatus(serverStats, servers.length, totalServers)}
+          applications={toEstateStatus(
+            applicationStats,
+            applications.length,
+            totalApplications,
+          )}
+          loadBalancers={toEstateStatus(
+            loadBalancerStats,
+            loadBalancers.length,
+            totalLoadBalancers,
+          )}
           totalDomains={totalDomains}
           totalDatabases={totalDatabases}
           totalSshKeys={totalSshKeys}
-          readyServers={serverStats.ready}
-          riskyResources={
-            serverStats.attention +
-            applicationStats.attention +
-            loadBalancerStats.attention
-          }
         />
 
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.75fr)]">
@@ -271,17 +291,27 @@ export default function DashboardView() {
               totalServers={totalServers}
               stats={serverStats}
               servers={servers}
-              latestTelemetry={latestTelemetry}
+              reportingServerCount={reportingServerCount}
             />
 
-            <TelemetryPanel
-              points={aggregatedTelemetry}
-              telemetryServers={telemetryServers}
-              sampledServerCount={Object.keys(telemetryHistory).length}
-              totalReadyServers={serverStats.ready}
+            {/* Configuration, not status: it sits below everything that is. */}
+            <WorkspaceOverview
+              workspaceName={activeWorkspaceName}
+              workspaceId={activeWorkspaceId ?? undefined}
+              workspaceType={
+                isTeamWorkspace
+                  ? t('page.dashboard.workspace.team')
+                  : t('page.dashboard.workspace.personal')
+              }
+              iacRepository={workspaceIacRepository}
+              isIacRepositoryLoading={isPendingResponse(iacRepositoryResponse)}
             />
 
-            <ActivityPanel hasServers={servers.length > 0} />
+            <CloudProjectsPanel
+              cloudProjects={cloudProjects}
+              servers={servers}
+              totalCloudProjects={totalCloudProjects}
+            />
           </div>
 
           <div className="flex min-w-0 flex-col gap-4">
@@ -316,7 +346,7 @@ export default function DashboardView() {
       <div aria-hidden className="hidden">
         {telemetryServers.map((server) => (
           <DashboardServerTelemetryProbe
-            key={server.id}
+            key={`${server.id}:${probeGeneration}`}
             server={server}
             onSample={handleTelemetrySample}
           />
