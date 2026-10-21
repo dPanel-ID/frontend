@@ -2,8 +2,9 @@
 
 Status: in progress, 2026-10-21. Done so far: phase 1, the execution-backed
 activity feed and the needs-attention panel; phase 3, the module cleanup and
-the per-file split; and phase 2, the information architecture — all on the
-house style in `UI_UX_STANDARD.md`.
+the per-file split; phase 2, the information architecture; and the platform
+activity chart — all on the house style in `UI_UX_STANDARD.md`. Phase 4, the
+executive overview, is specified below and not yet built.
 The dashboard was explicitly out of scope for `SERVERS_UI_REDESIGN_PLAN.md`;
 this plan reuses the blocks that plan introduced.
 
@@ -66,6 +67,31 @@ workspace-scoped, structured and already joined for display:
 | `GET /api/v2/executions`         | The activity feed and the failure rows | Carries `machine_hostname`/`machine_address` joined in, so a row can name its server with no second request. Supports `since` (RFC3339 or `24h`, capped 30 days) and comma-separated `status`. |
 | `GET /api/v2/executions/summary` | The health verdict                     | Status counts in a window. Use it instead of counting rows client-side.                                                                                                                        |
 | `GET /api/v2/agents`             | Agent reachability                     | `last_seen_at` is the heartbeat. Treat quiet for more than `AGENT_STALE_AFTER_MS` (15 min) as out of contact, and an agent that never reported as out of contact too.                          |
+
+**Read host metrics from Uptrace, not from the live per-server endpoints.**
+The agent already ships standard OpenTelemetry host metrics, tagged with the
+`dpanel_machine_id` attribute, and `internal/observability/uptrace_metrics.go`
+already queries them per machine:
+
+| Metric                                                       | Serves            |
+| ------------------------------------------------------------ | ----------------- |
+| `system.cpu.utilization`                                     | CPU percentage    |
+| `system.memory.usage`, `.total`, `.free`                     | Memory percentage |
+| `system.filesystem.usage`, `.total`, `.free`, `.utilization` | Disk percentage   |
+| `system.cpu.logical.count`                                   | Core count        |
+
+`QueryMetricGauge` returns a single averaged scalar over a 15-minute lookback
+for one machine. A fleet chart needs a timeseries, aggregated across the
+workspace's machines in one query. Never issue one Uptrace query per machine:
+that rebuilds the N+1 the activity feed was built to remove.
+
+**The two history stores have different horizons, and that is not a bug.**
+Executions live in this product's own Postgres and are queryable for 30 days.
+Host metrics live in Uptrace on the free tier, where only about three days are
+usable. So the activity chart offers 24h/7d/30d while the utilisation chart
+caps at three days. Do not "fix" the inconsistency by capping executions to
+match: that would throw away history this product owns in order to look tidy
+next to history it rents.
 
 Frontend recipes live at `src/shared/api/execution.find.ts`,
 `execution.summary.ts` and `agent.find.ts`; the projection helpers are in
@@ -175,8 +201,14 @@ side's edits.
    `AppCard`, `MachineCard`, `SectionWrapper`, `mapAppCardStatus`), and split
    the 1700-line `DashboardView.tsx` per the slice anatomy in `RULES.md` §5.
    No behaviour change. Branch `feat-dashboard-cleanup`.
+4. **Executive overview.** Consolidate the fourteen panels into seven bands and
+   add the fleet utilisation charts. Specified under "Phase 4" below; not yet
+   built. Its first step is validating the Uptrace timeseries API, which gates
+   the rest.
 
-Phase 1 was verified with typecheck, lint, unit tests and a production build,
+Since those three phases, the platform activity chart shipped on
+`GET /api/v2/executions/timeseries`, verified live in production and rendered
+in both themes. Phase 1 was verified with typecheck, lint, unit tests and a production build,
 but **not** in a browser: the route needs authentication and a live backend.
 Phase 2 was verified the same way, also without a browser. It must still be
 checked in a local preview at 1440, 1024 and 375, light and dark, against real
@@ -186,6 +218,89 @@ endpoints it reads were confirmed live in production, and
 `/api/v2/executions/summary` returns `window_start`, `window_end`, `total`,
 `pending`, `queued`, `running`, `succeeded`, `failed`, `cancelled` and
 `other`.
+
+## Phase 4: the executive overview
+
+The page answers the right questions but does not look like an overview. It is
+fourteen stacked panels — ActivityChart, ActivityPanel, ApplicationsList,
+AttentionPanel, CapacityPanel, CloudProjectsPanel, EstatePanel, HealthVerdict,
+LoadBalancersList, MembersPanel, ResourceMixPanel, ServerHealthPanel,
+ServersList, WorkspaceOverview — which reads as a long scroll of medium-interest
+cards. An executive dashboard is dense and short. **Phase 4 consolidates before
+it adds.** Seven bands replace fourteen panels.
+
+References supplied for this phase were a license-manager dashboard and a
+vendor-management dashboard. The second is the model: flat bordered cards, KPI
+tiles, one hero timeseries, legend pills, a data table. From the first, take the
+dense KPI strip and the delta-against-previous-period idea, and **reject its
+visual language** — neon radial dials, gradient fills and decorative glow are
+precisely what §"Visual language" of `UI_UX_STANDARD.md` forbids in operational
+tools.
+
+### Layout
+
+| Band | Content                                                                                                                                                 | Source                                       |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| 1    | **Status banner** — the verdict sentence and attention count, slim                                                                                      | merges HealthVerdict + AttentionPanel header |
+| 2    | **Estate strip** — Servers, Applications, Cloud projects, Domains, Databases, SSH keys; count plus a status sub-line, each linking to its list          | existing pagination totals                   |
+| 3    | **Fleet utilisation** — three small charts (CPU, memory, disk), each plotting fleet average and peak, with the current value and the worst server named | new Uptrace timeseries endpoint              |
+| 4    | **Platform activity** ∥ **Needs attention**, two columns                                                                                                | shipped ∥ existing                           |
+| 5    | **Recent activity** feed                                                                                                                                | shipped                                      |
+| 6    | **Resources table** — one table (type, name, status, owner, updated) replacing three list panels                                                        | existing endpoints                           |
+| 7    | **Workspace context** — IaC repository, cloud projects, members, demoted                                                                                | existing                                     |
+
+Removed: `ResourceMixPanel`, whose domains-against-databases meters answer no
+question anyone asks; `ServerHealthPanel` and `CapacityPanel`, which fold into
+bands 2 and 3; and `ServersList`/`ApplicationsList`/`LoadBalancersList`, which
+fold into band 6.
+
+### Decisions taken
+
+**Count tiles carry no sparkline.** Reference 2 puts a mini chart under every
+KPI, but counts have no history stored anywhere — they are pagination totals,
+a number and not a series. A tile shows its count and a real status breakdown
+("12 servers · 11 ready, 1 failed") instead. Drawing a trend line from data
+that does not exist is the one thing this plan will not do. Revisit only if
+daily resource-count rollups are ever stored.
+
+**Utilisation is three charts, not one.** One chart per resource, each with two
+series: fleet average and worst server. Two series per chart stays within the
+colour-blindness separation the palette was validated for, and the average
+never appears alone — a fleet mean hides the single machine at 98%, which is
+the failure phase 2 removed from the old telemetry panel.
+
+**The utilisation range caps at three days**, because the free Uptrace tier
+keeps roughly that much. Offer 1h / 24h / 3d. The activity chart keeps its
+24h/7d/30d because executions are stored here, not in Uptrace; see "the two
+history stores" above.
+
+### Backend work
+
+1. `QueryMetricTimeseries` in `internal/observability`, the timeseries sibling
+   of the existing gauge query.
+2. `GET /api/v2/metrics/fleet-utilisation?since=&bucket=`, workspace-scoped,
+   returning per-bucket average and maximum for CPU, memory and disk plus the
+   peak machine per metric.
+3. One Uptrace query per workspace grouped by machine, never one per machine.
+
+**Validate before building any of band 3.** It is unconfirmed whether this
+Uptrace deployment exposes a timeseries endpoint beside
+`/internal/v1/metrics/{project}/gauge`; confirming it needs the API token.
+If it does not exist, the fallback is writing five-minute rollups to a new
+table on the existing collection path and serving the chart from there — same
+UI, materially more work. Settle this first, because it gates the only part of
+phase 4 with real technical risk.
+
+### Risks
+
+- **One server.** The data-bearing workspace holds a single machine, so the
+  fleet charts will plot one flat line. The design pays off at ten servers; it
+  will look thin until then, and no styling changes that.
+- **The empty-workspace default.** The dashboard opens on the personal
+  workspace, which has no resources, so a first impression is zeroes
+  regardless of what this phase builds. Worth fixing alongside it.
+- Three days of retention means no month-over-month comparison; a delta can
+  compare at most the previous 24 hours.
 
 ## What phase 2 built
 
