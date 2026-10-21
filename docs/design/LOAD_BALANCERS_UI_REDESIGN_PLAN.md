@@ -1,9 +1,10 @@
 # Load balancers: UI/UX redesign plan
 
 Status: in progress, 2026-10-21. Done so far: the load balancer list at
-`/backend/load-balancers`, rebuilt on the house style in `UI_UX_STANDARD.md`
-and the blocks the servers module introduced (`SERVERS_UI_REDESIGN_PLAN.md`).
-Next: the create flow and the detail route.
+`/backend/load-balancers` and the create flow at
+`/backend/load-balancers/create`, both rebuilt on the house style in
+`UI_UX_STANDARD.md` and the blocks the servers module introduced
+(`SERVERS_UI_REDESIGN_PLAN.md`). Next: the detail route.
 
 `AGENTS.md` singles this module out: it "MUST not be treated as a secondary
 or simplified module", and the list must expose gateway machine, public
@@ -81,3 +82,64 @@ row, as the overview does. This is the same defect the domains module had.
 3. **The detail route**, on the detail anatomy: stat tiles, a "what you can
    do next" strip, the routing rules, access and error signals, and a danger
    zone last.
+
+## The create flow (`/backend/load-balancers/create`)
+
+### What it was
+
+One file of 2,657 lines holding a three-step wizard — gateway, routing,
+preview — plus every picker, every rule builder, and about thirty helper
+functions. `RULES.md` asks for a slice anatomy and the standard forbids a
+numbered wizard that hides what is missing; this was both problems at once.
+
+Worse for the user: the wizard gated progress. You could not see what the
+routing step wanted until the gateway step validated, and the preview step
+existed only to show you what you had already typed.
+
+### What it is now
+
+The flow-page anatomy from the standard, the same shape as
+`/servers/create/vm-instant`:
+
+- `FlowHero` instead of `PageHeader`, with the breadcrumb and the docs link.
+- **Three `StepCard`s, all visible at once**: Gateway (server and engine),
+  Domain and HTTPS, Routing. The number becomes a check mark as each one is
+  satisfied, and the first unfinished card carries the accent.
+- A sticky **`ReviewPanel`** holding the six facts that matter — gateway
+  server, engine, domain, HTTPS, routing mode, routes — and the one primary
+  action, enabled only when the form parses and an engine runtime resolved.
+- The preview step is gone. It said nothing the review panel does not say
+  continuously, and it cost a click.
+
+One validation pass over the whole form drives every "done" mark, so the
+panel can never disagree with what submit will accept — the same technique
+the cloud VM flow uses.
+
+### The split
+
+| File                             | Holds                                                            |
+| -------------------------------- | ---------------------------------------------------------------- |
+| `index.tsx`                      | Route, hero, the three steps and the review panel.               |
+| `-model/form.ts`                 | Form types, `DEFAULT_VALUES`, page size.                         |
+| `-model/resources.ts`            | `useLoadBalancerCreateResources` and its `CreateResources` type. |
+| `-lib/modules.ts`                | Module catalog, inventory merge, engine metadata, runtime item.  |
+| `-lib/payload.ts`                | Route preview rows and `toCreateLoadBalancerPayload`.            |
+| `-usecase/use-create.ts`         | The create request, its toasts and the redirect.                 |
+| `-view/SectionGateway.tsx`       | Server picker, engine picker and their option cards.             |
+| `-view/SectionDomain.tsx`        | Domain field, external and managed.                              |
+| `-view/SectionRouting.tsx`       | Mode picker, protocol and TLS, L7 and L4 rule builders.          |
+| `-view/-presentation/fields.tsx` | `SectionIntro`, `FormField`, `ChoiceButton`, `StateBlock`.       |
+
+The pickers and rule builders were kept as they were. They are the part
+`AGENTS.md` cares about — they already expose upstreams, applications,
+static paths, engine modules and their installation state — and rewriting
+them would have risked that detail for no gain.
+
+### Still open on this page
+
+- The engine picker can install an infrastructure module as part of
+  creation. That is a long-running action, and the flow says nothing about
+  how long it takes or what happens if it fails mid-way; the standard asks
+  every long-running action to say what happens next.
+- `-view/SectionRouting.tsx` is still 540 lines. The L7 rule builder and its
+  destinations want their own files once someone touches them again.
