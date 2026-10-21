@@ -1705,11 +1705,11 @@
       "overview": {
         "total": "Domains",
         "providers": "DNS providers",
-        "providersHint": "Services answering DNS for them",
+        "providersHint": "Who answers DNS for them",
         "team": "Shared with a team",
-        "teamHint": "Domains your teammates can use too",
+        "teamHint": "Your teammates can use these",
         "personal": "Only you",
-        "personalHint": "Domains that belong to your account",
+        "personalHint": "On your account only",
         "sampleNote": "The split comes from your {sample} most recent domains."
       },
       "filters": {
