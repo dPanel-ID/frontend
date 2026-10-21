@@ -374,6 +374,10 @@
           "unknown": "Unknown mode"
         }
       },
+      "hero": {
+        "descriptionNamed": "Welcome back, {name}. Here is how your infrastructure is doing.",
+        "description": "Here is how your infrastructure is doing."
+      },
       "tabs": {
         "ariaLabel": "Dashboard sections",
         "overview": "Overview",
@@ -1202,6 +1206,10 @@
         "closeTerminal": "Close SSH terminal",
         "terminalTitle": "SSH terminal for {name}"
       },
+      "hero": {
+        "descriptionNamed": "Welcome back, {name}. Here is how your infrastructure is doing.",
+        "description": "Here is how your infrastructure is doing."
+      },
       "tabs": {
         "ariaLabel": "Server sections",
         "overview": "Overview",
@@ -1592,6 +1600,10 @@
         "gateway": "Gateway"
       },
       "backendUpdateRequired": "Save changes",
+      "hero": {
+        "descriptionNamed": "Welcome back, {name}. Here is how your infrastructure is doing.",
+        "description": "Here is how your infrastructure is doing."
+      },
       "tabs": {
         "graph": "Graph",
         "graphDesc": "Topology map",
@@ -3041,6 +3053,10 @@
       "pageInfo": "Page {page} of {totalPage} - {totalItem} teams",
       "previousPage": "Previous workspaces page",
       "nextPage": "Next workspaces page",
+      "hero": {
+        "descriptionNamed": "Welcome back, {name}. Here is how your infrastructure is doing.",
+        "description": "Here is how your infrastructure is doing."
+      },
       "tabs": {
         "recent": "Recent",
         "all": "All",
