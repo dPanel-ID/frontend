@@ -55,7 +55,9 @@ describe('docs registry', () => {
     for (const locale of DOCS_LOCALES) {
       for (const section of docsSections(locale)) {
         for (const page of section.pages) {
-          expect(page.title.length, `${locale}/${page.slug}`).toBeGreaterThan(0);
+          expect(page.title.length, `${locale}/${page.slug}`).toBeGreaterThan(
+            0,
+          );
           expect(page.summary.length, `${locale}/${page.slug}`).toBeGreaterThan(
             0,
           );
