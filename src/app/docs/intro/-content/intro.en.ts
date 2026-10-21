@@ -5,7 +5,7 @@ export const DOCS_INTRO_EN: DocsIntroCopy = {
     badge: 'Introduction',
     title: 'Your servers, applications and domains, in one place.',
     subtitle:
-      'dPanel launches a server at your cloud provider, or connects one you already run, then sets it up and deploys your application. Everything it builds is written as OpenTofu and Ansible that stays yours.',
+      'dPanel launches a server at your cloud provider, or connects one you already run, then sets it up and deploys your application. Everything it builds is written down as Ansible that stays yours.',
     primaryCta: 'Create your account',
     secondaryCta: 'Watch dPanel on YouTube',
   },
@@ -71,7 +71,11 @@ export const DOCS_INTRO_EN: DocsIntroCopy = {
     badge: 'No lock-in',
     title: 'The part that matters six months from now.',
     lead: 'Most panels make your infrastructure theirs. dPanel writes yours down.',
-    body: 'Every server it builds is described in OpenTofu, and every change is applied with Ansible. That description belongs to you: read it, review it in a pull request, or take it somewhere else entirely. Leaving dPanel means moving a repository, not rebuilding your estate from memory.',
+    body: 'Every server it builds, and every change it makes, is written as Ansible. That is the real thing, not a record of it: run it again and you get the same machine, every time. You can run it yourself, with dPanel out of the loop entirely. The repository it lives in is private for now, so there is no pull request for you to read — but ask, and we will write your infrastructure to a repository you own, in another stack such as OpenTofu if you would rather.',
+  },
+  guides: {
+    badge: 'Guides',
+    title: 'Read how it works.',
   },
   providers: {
     title: 'Works with',
