@@ -211,14 +211,14 @@
         "configTitle": "Workspace configuration",
         "iacRepository": "IaC repository",
         "iacRepositoryHelp": "{mode}, default ref {ref}",
+        "iacRepositoryRefOnly": "default ref {ref}",
+        "iacRepositoryUnknown": "Not reported",
+        "iacRepositoryUnknownHelp": "dPanel did not report an IaC repository for this workspace.",
         "iacRepositoryMode": {
           "shared": "Shared",
           "managed": "Managed",
-          "custom": "Custom",
-          "unknown": "Configured"
+          "custom": "Custom"
         },
-        "workerUsed": "Worker used",
-        "notReported": "Not reported",
         "visibility": {
           "private": "Private"
         }
@@ -237,20 +237,26 @@
         "notUpdated": "No update timestamp",
         "empty": "No cloud projects connected yet."
       },
-      "summary": {
-        "ariaLabel": "Workspace resource summary",
+      "estate": {
+        "title": "Your estate",
+        "description": "What this workspace contains. Each tile reports its own health.",
+        "ariaLabel": "Workspace resource counts",
         "servers": "Servers",
         "applications": "Applications",
-        "loadBalancers": "Load Balancers",
+        "loadBalancers": "Load balancers",
         "domains": "Domains",
         "databases": "Databases",
         "secrets": "Secrets",
-        "readyServers": "{count} ready",
-        "attention": "{count} need attention",
-        "trafficEntry": "Traffic entry points",
         "dnsZones": "DNS zones",
         "statefulData": "Stateful data",
-        "sshKeys": "SSH keys"
+        "sshKeys": "SSH keys",
+        "none": "None yet",
+        "statusReady": "{count} ready",
+        "statusWorking": "{count} in progress",
+        "statusAttention": "{count} failed",
+        "statusNoStatus": "{count} with no status",
+        "statusUnknown": "Status not reported",
+        "sampleSuffix": "in the latest {counted}"
       },
       "serverHealth": {
         "title": "Server Health",
@@ -278,18 +284,29 @@
         "emptyProviders": "No providers reported yet.",
         "unknownProvider": "Unknown provider"
       },
-      "telemetry": {
-        "title": "Live Server Utilization",
-        "description": "Rolling CPU, memory, and disk averages from ready servers in the active workspace.",
-        "coverage": "{sampled} of {total} ready servers sampled",
-        "coverageLimited": "{sampled} of {total} ready servers sampled",
-        "backendNote": "This chart uses live dashboard polling. Persisted workspace-wide history requires a backend aggregate timeseries endpoint.",
-        "chartTitle": "Workspace average",
-        "chartAria": "Line chart of averaged CPU, memory, and disk utilization",
-        "waiting": "Waiting for telemetry samples...",
-        "cpu": "CPU",
-        "memory": "Memory",
-        "disk": "Disk"
+      "capacity": {
+        "title": "Capacity",
+        "description": "Servers running close to full. Anything at or above {threshold}% is listed by name.",
+        "coverage": "{sampled} of {total} ready servers, every {seconds}s",
+        "coverageNote": "Only {sampled} of {total} ready servers are sampled, so a busier server may not be listed.",
+        "pressured": "{count} of {total} servers above {threshold}% {metric}",
+        "comfortable": "All {total} reporting servers are below {threshold}% {metric}",
+        "highest": "Highest: {server} at {value}%",
+        "noReading": "No {metric} reading yet",
+        "unreachable": "{count, plural, one {# server did not report any usage} other {# servers did not report any usage}}",
+        "noReadings": "No readings",
+        "technicalDetails": "Technical details",
+        "emptyTitle": "No servers to measure",
+        "emptyDescription": "Usage appears here once a server is ready.",
+        "loadingTitle": "Reading server usage\u2026",
+        "failedTitle": "No server reported its usage",
+        "failedDescription": "The servers may be busy or out of contact. Your applications are unaffected by this check.",
+        "retry": "Try again",
+        "metric": {
+          "memory": "memory",
+          "cpu": "CPU",
+          "disk": "disk"
+        }
       },
       "applicationLogs": {
         "title": "Latest Application Logs",
@@ -304,11 +321,39 @@
         "emptyRun": "No runtime log lines are available yet.",
         "emptyRunFile": "No runtime log file was found for the latest deployment."
       },
+      "verdict": {
+        "ariaLabel": "Infrastructure health",
+        "loading": "Checking your infrastructure\u2026",
+        "healthy": "Everything is running normally",
+        "healthyDetail": "No failed operations, no servers down and every agent is reporting in.",
+        "attention": "{count, plural, one {# thing needs your attention} other {# things need your attention}}",
+        "attentionDetail": "Open the list below to see what happened.",
+        "working": "{count, plural, one {dPanel is working on # thing} other {dPanel is working on # things}}",
+        "workingDetail": "Nothing has failed. You can keep using everything while this finishes.",
+        "unknown": "We cannot confirm how your infrastructure is doing",
+        "unknownDetail": "None of the health checks could be read, so this page is not reporting a state.",
+        "degraded": "Some checks could not run, so this may be incomplete.",
+        "partServers": "{count, plural, one {# server is not running} other {# servers are not running}}",
+        "partExecutions": "{count, plural, one {# operation failed} other {# operations failed}}",
+        "partAgents": "{count, plural, one {# server is out of contact} other {# servers are out of contact}}",
+        "failedTitle": "Could not check your infrastructure",
+        "failedDescription": "The health checks are temporarily unavailable. Your infrastructure is unaffected.",
+        "retry": "Try again",
+        "unauthorizedTitle": "You cannot see this workspace's health",
+        "unauthorizedDescription": "Your account does not have permission to read execution and agent status here. Ask a workspace owner for access."
+      },
       "attention": {
         "title": "Needs your attention",
         "description": "{count} things need a look.",
         "healthyDescription": "Nothing needs a look right now.",
         "checkingDescription": "Checking your infrastructure\u2026",
+        "checkingTitle": "Checking your infrastructure\u2026",
+        "failedDescription": "Could not check what needs your attention.",
+        "failedTitle": "Could not load what needs your attention",
+        "failedDetail": "This check is temporarily unavailable. Your infrastructure is unaffected.",
+        "retry": "Try again",
+        "unauthorizedTitle": "You cannot see this workspace's health",
+        "unauthorizedDescription": "Your account does not have permission to read execution and agent status here. Ask a workspace owner for access.",
         "healthy": "Everything is running normally.",
         "serverUnhealthy": "{server} is not running",
         "serverUnhealthyDetail": "The server reported status \"{status}\". Open it to see what happened.",
@@ -2235,7 +2280,8 @@
       "topic": {
         "appCreation": "app creation",
         "application": "creating and managing applications",
-        "server": "creating and managing servers"
+        "server": "creating and managing servers",
+        "ssh": "creating and managing SSH keys"
       }
     },
     "helpAndSupportCompact": {

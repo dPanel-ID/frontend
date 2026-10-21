@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { CalendarIcon, Clock3Icon, UserIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -40,15 +41,19 @@ export function SshKeyRow(props: SshKeyRowProps) {
           {sshKey.createdAt && (
             <Fact
               icon={CalendarIcon}
-              label={t('page.sshKeys.table.created')}
+              label={t('common.terms.createdAt')}
               value={getDistanceFromNow(sshKey.createdAt, locale)}
+              showLabel
             />
           )}
-          {sshKey.updatedAt && (
+          {/* A key that was never edited carries the same two timestamps, and
+              two identical dates in a row read as a rendering mistake. */}
+          {sshKey.updatedAt && wasEdited(sshKey) && (
             <Fact
               icon={Clock3Icon}
               label={t('common.terms.lastUpdated')}
               value={getDistanceFromNow(sshKey.updatedAt, locale)}
+              showLabel
             />
           )}
         </div>
@@ -59,19 +64,33 @@ export function SshKeyRow(props: SshKeyRowProps) {
   );
 }
 
+/** True when the key changed after it was created, give or take a minute. */
+function wasEdited(sshKey: SshKeyCard) {
+  if (!sshKey.createdAt || !sshKey.updatedAt) return true;
+  return (
+    Math.abs(dayjs(sshKey.updatedAt).diff(sshKey.createdAt, 'minute')) >= 1
+  );
+}
+
 interface FactProps {
   icon: LucideIcon;
   label: string;
   value: string;
+  /** Renders the label beside the value instead of only for screen readers. */
+  showLabel?: boolean;
 }
 
 function Fact(props: FactProps) {
-  const { icon: Icon, label, value } = props;
+  const { icon: Icon, label, showLabel = false, value } = props;
 
   return (
     <span className="inline-flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
       <Icon className="size-3.5 shrink-0" aria-hidden />
-      <span className="sr-only">{label}: </span>
+      {showLabel ? (
+        <span className="shrink-0">{label}</span>
+      ) : (
+        <span className="sr-only">{label}: </span>
+      )}
       <span className="truncate font-medium text-primary/80">{value}</span>
     </span>
   );
