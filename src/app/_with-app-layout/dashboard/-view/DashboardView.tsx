@@ -51,24 +51,18 @@ import { cn } from '@/shared/libs/tailwind/cn';
 import { Badge } from '@/shared/presentation/atoms/Badge';
 import Shimmer from '@/shared/presentation/atoms/Shimmer';
 
-import {
-  DASHBOARD_AGENT_EVENT_LINE_COUNT,
-  DASHBOARD_AGENT_EVENT_LOG_FILE,
-  dedupeAgentEvents,
-  formatEventTimestamp,
-  formatEventType,
-  formatJson,
-  parseAgentEventsFromLines,
-} from '../-lib/agent-events';
-import type { DashboardAgentEvent } from '../-lib/agent-events';
+import { statusTone, toneClass } from '../-lib/tone';
+import type { Tone } from '../-lib/tone';
+import { DashboardSection } from '../-presentation';
 
+import ActivityPanel from './ActivityPanel/ActivityPanel';
+import AttentionPanel from './AttentionPanel/AttentionPanel';
 import Header from './Header';
 
 const TELEMETRY_LIMIT = 8;
 const TELEMETRY_POLL_MS = 15_000;
 const MAX_HISTORY_POINTS = 24;
 const RECENT_LIST_LIMIT = 3;
-const AGENT_EVENT_LIMIT = 3;
 const DEFAULT_WORKSPACE_IAC_REPOSITORY = {
   owner: 'dPanel-ID',
   repo: 'dpanel-iac-ansible-shared',
@@ -99,8 +93,6 @@ interface AggregatedTelemetryPoint {
   memory?: number;
   disk?: number;
 }
-
-type Tone = 'blue' | 'green' | 'amber' | 'red' | 'violet' | 'slate';
 
 const EMPTY_SERVERS: DTOs.MachineV1[] = [];
 const EMPTY_APPLICATIONS: DTOs.ApplicationV1[] = [];
@@ -274,6 +266,9 @@ export default function DashboardView() {
       <Header />
 
       <div className="flex flex-col gap-4">
+        {/* First on the page: whether anything needs the reader's attention. */}
+        <AttentionPanel servers={servers} />
+
         <WorkspaceOverview
           workspaceName={activeWorkspaceName}
           workspaceId={activeWorkspaceId ?? undefined}
@@ -322,7 +317,7 @@ export default function DashboardView() {
               totalReadyServers={serverStats.ready}
             />
 
-            <AgentEventsPanel servers={servers} />
+            <ActivityPanel hasServers={servers.length > 0} />
           </div>
 
           <div className="flex min-w-0 flex-col gap-4">
@@ -1066,263 +1061,6 @@ function TelemetryLegend(props: {
   );
 }
 
-interface AgentEventProbeState {
-  events?: DashboardAgentEvent[];
-  status: ApiResponse<string[]>['$status'];
-}
-
-function AgentEventsPanel(props: { servers: DTOs.MachineV1[] }) {
-  const { servers } = props;
-  const t = useDevetekTranslations('page.dashboard.agentEvents');
-  const [refreshToken, setRefreshToken] = useState(0);
-  const [probeStates, setProbeStates] = useState<
-    Record<string, AgentEventProbeState>
-  >({});
-
-  const eventServers = useMemo(
-    () => servers.filter((server) => server.id != null),
-    [servers],
-  );
-  const activeServerIds = useMemo(
-    () => new Set(eventServers.map((server) => String(server.id))),
-    [eventServers],
-  );
-  const events = useMemo(
-    () =>
-      dedupeAgentEvents(
-        Object.values(probeStates)
-          .flatMap((state) => state.events ?? [])
-          .filter((event) => activeServerIds.has(event.serverId)),
-      )
-        .sort((left, right) => right.sortTime - left.sortTime)
-        .slice(0, AGENT_EVENT_LIMIT),
-    [activeServerIds, probeStates],
-  );
-  const hasPendingProbe = eventServers.some((server) => {
-    const state = probeStates[String(server.id)];
-    return !state || state.status === 'initial' || state.status === 'loading';
-  });
-  const failedProbeCount = eventServers.filter((server) => {
-    return probeStates[String(server.id)]?.status === 'failed';
-  }).length;
-
-  const handleProbeUpdate = useCallback(
-    (serverId: string, nextState: AgentEventProbeState) => {
-      setProbeStates((current) => {
-        const currentState = current[serverId];
-
-        return {
-          ...current,
-          [serverId]: {
-            status: nextState.status,
-            events: nextState.events ?? currentState?.events ?? [],
-          },
-        };
-      });
-    },
-    [],
-  );
-  const handleRefresh = useCallback(() => {
-    setRefreshToken((current) => current + 1);
-  }, []);
-
-  return (
-    <DashboardSection
-      title={t('title')}
-      description={t('description')}
-      action={
-        <button
-          type="button"
-          className="inline-flex h-9 items-center gap-2 rounded-lg border bg-background px-3 text-xs font-semibold text-primary transition hover:border-primary/40 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
-          disabled={!eventServers.length}
-          onClick={handleRefresh}
-          title={t('refresh')}
-          aria-label={t('refreshAria')}
-        >
-          <RefreshCwIcon
-            className={cn('size-3.5', hasPendingProbe && 'animate-spin')}
-          />
-          {t('refresh')}
-        </button>
-      }
-    >
-      <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <Badge variant="outline" className="font-semibold">
-          {t('showing', {
-            count: events.length,
-            limit: AGENT_EVENT_LIMIT,
-          })}
-        </Badge>
-        {failedProbeCount > 0 && (
-          <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/25 bg-amber-500/10 px-2 py-0.5 font-medium text-amber-600 dark:text-amber-400">
-            <AlertTriangleIcon className="size-3" />
-            {t('partialFailure', {
-              count: failedProbeCount,
-            })}
-          </span>
-        )}
-      </div>
-
-      {hasPendingProbe && !events.length ? (
-        <div className="grid gap-2">
-          <AgentEventSkeleton />
-          <AgentEventSkeleton />
-          <AgentEventSkeleton />
-        </div>
-      ) : events.length ? (
-        <div className="grid gap-2">
-          {events.map((event) => (
-            <AgentEventRow key={event.id} event={event} />
-          ))}
-        </div>
-      ) : (
-        <div className="rounded-lg border bg-background p-6 text-center text-sm text-muted-foreground">
-          {eventServers.length ? t('empty') : t('emptyServers')}
-        </div>
-      )}
-
-      {eventServers.map((server) => (
-        <AgentEventsProbe
-          key={server.id}
-          refreshToken={refreshToken}
-          server={server}
-          onUpdate={handleProbeUpdate}
-        />
-      ))}
-    </DashboardSection>
-  );
-}
-
-function AgentEventsProbe(props: {
-  onUpdate: (serverId: string, state: AgentEventProbeState) => void;
-  refreshToken: number;
-  server: DTOs.MachineV1;
-}) {
-  const { onUpdate, refreshToken, server } = props;
-  const serverId = String(server.id ?? '');
-  const [response, refresh] = ApiServer.Detail.$Id.Log.useGet({
-    serverId,
-    file: DASHBOARD_AGENT_EVENT_LOG_FILE,
-    line: DASHBOARD_AGENT_EVENT_LINE_COUNT,
-    options: {
-      skip: !serverId,
-    },
-  });
-
-  const logData = responseData(response);
-  const lines = logViewerLines(logData);
-  const events = useMemo(
-    () => parseAgentEventsFromLines(lines, server),
-    [lines, server],
-  );
-
-  useEffect(() => {
-    if (refreshToken <= 0) return;
-    refresh();
-  }, [refresh, refreshToken]);
-
-  useEffect(() => {
-    onUpdate(serverId, {
-      status: response.$status,
-      events: response.$status === 'failed' ? undefined : events,
-    });
-  }, [events, onUpdate, response.$status, serverId]);
-
-  return null;
-}
-
-function AgentEventRow(props: { event: DashboardAgentEvent }) {
-  const { event } = props;
-  const t = useDevetekTranslations('page.dashboard.agentEvents');
-  const tone = agentEventTone(event.level, event.status);
-
-  return (
-    <article className="rounded-lg border bg-background p-3">
-      <div className="flex min-w-0 items-start gap-3">
-        <span
-          className={cn(
-            'mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-md border',
-            toneClass(tone),
-          )}
-          aria-hidden
-        >
-          {event.level === 'error' ? (
-            <AlertTriangleIcon className="size-4" />
-          ) : (
-            <ActivityIcon className="size-4" />
-          )}
-        </span>
-
-        <div className="min-w-0 flex-1">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <h3 className="truncate text-sm font-bold text-primary">
-              {formatEventType(event.eventType) || t('unknownEvent')}
-            </h3>
-            <span
-              className={cn(
-                'rounded-full border px-2 py-0.5 text-xs font-semibold',
-                toneClass(tone),
-              )}
-            >
-              {event.status || event.level}
-            </span>
-          </div>
-
-          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-            {event.message}
-          </p>
-
-          <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
-            <AgentEventMeta label={t('server')} value={event.serverName} />
-            <AgentEventMeta label={t('eventId')} value={event.eventId} />
-            <AgentEventMeta label={t('sequence')} value={event.sequence} />
-            <AgentEventMeta
-              label={t('time')}
-              value={formatEventTimestamp(event.timestamp)}
-            />
-          </div>
-
-          <details className="mt-2 rounded-md border bg-card px-3 py-2">
-            <summary className="cursor-pointer text-xs font-semibold text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35">
-              {t('details')}
-            </summary>
-            <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words font-mono text-xs leading-5 text-primary">
-              {formatJson(event.details)}
-            </pre>
-          </details>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function AgentEventMeta(props: { label: string; value?: string }) {
-  const { label, value } = props;
-  if (!value) return null;
-
-  return (
-    <span className="inline-flex min-w-0 items-center gap-1 rounded-full border bg-card px-2 py-0.5">
-      <span className="shrink-0 font-medium">{label}</span>
-      <span className="min-w-0 truncate text-primary">{value}</span>
-    </span>
-  );
-}
-
-function AgentEventSkeleton() {
-  return (
-    <div className="rounded-lg border bg-background p-3">
-      <div className="flex gap-3">
-        <Shimmer className="size-9 shrink-0 rounded-md" />
-        <div className="grid flex-1 gap-2">
-          <Shimmer className="h-4 w-1/3" />
-          <Shimmer className="h-3 w-full" />
-          <Shimmer className="h-3 w-2/3" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function ResourceMixPanel(props: {
   applicationStats: ReturnType<typeof buildApplicationStats>;
   loadBalancerStats: ReturnType<typeof buildLoadBalancerStats>;
@@ -1645,30 +1383,6 @@ function CompactResourceRow(props: {
   );
 }
 
-function DashboardSection(props: {
-  title: string;
-  description?: string;
-  action?: ReactNode;
-  children: ReactNode;
-}) {
-  const { action, children, description, title } = props;
-
-  return (
-    <section className="rounded-lg border bg-card p-4">
-      <div className="mb-4 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <h2 className="truncate text-base font-bold text-primary">{title}</h2>
-          {description && (
-            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-          )}
-        </div>
-        {action && <div className="shrink-0">{action}</div>}
-      </div>
-      {children}
-    </section>
-  );
-}
-
 function MeterRow(props: { label: string; value?: number; total?: number }) {
   const { label, total, value } = props;
   const safeValue = value ?? 0;
@@ -1934,37 +1648,10 @@ function formatWorkspaceIacMode(
   }
 }
 
-function agentEventTone(
-  level: DashboardAgentEvent['level'],
-  status?: string,
-): Tone {
-  const normalizedStatus = String(status ?? '').toLowerCase();
-  if (normalizedStatus) return statusTone(normalizedStatus);
-
-  if (level === 'error') return 'red';
-  if (level === 'warn') return 'amber';
-  if (level === 'notice') return 'violet';
-  if (level === 'debug') return 'slate';
-  return 'green';
-}
-
 function responseData<T>(response: ApiResponse<T>): T | undefined {
   if (response.$status === 'success') return response;
   if (response.$status === 'loading') return response.prevData;
   return undefined;
-}
-
-function logViewerLines(data?: DTOs.ServerLogViewerV1 | string[]) {
-  if (!data) return [];
-  if (Array.isArray(data)) return data;
-
-  if (data.lines?.length) return data.lines;
-
-  return (
-    data.entries
-      ?.map((entry) => entry.line)
-      .filter((line): line is string => Boolean(line)) ?? []
-  );
 }
 
 function countFromPagination(
@@ -2016,31 +1703,4 @@ function clampPercent(value: number) {
 function formatPercent(value?: number) {
   if (value == null) return '—';
   return `${Math.round(value)}%`;
-}
-
-function statusTone(status?: string): Tone {
-  const normalized = String(status || '').toLowerCase();
-
-  if (normalized === 'ready' || normalized === 'running') return 'green';
-  if (normalized === 'progress' || normalized === 'deleting') return 'blue';
-  if (normalized === 'failed' || normalized === 'cancelled') return 'red';
-  if (normalized === 'dead' || normalized === 'exited') return 'amber';
-  return 'slate';
-}
-
-function toneClass(tone: Tone) {
-  switch (tone) {
-    case 'blue':
-      return 'border-blue-500/25 bg-blue-500/10 text-blue-600 dark:text-blue-400';
-    case 'green':
-      return 'border-emerald-500/25 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400';
-    case 'amber':
-      return 'border-amber-500/25 bg-amber-500/10 text-amber-600 dark:text-amber-400';
-    case 'red':
-      return 'border-destructive/25 bg-destructive/10 text-destructive';
-    case 'violet':
-      return 'border-violet-500/25 bg-violet-500/10 text-violet-600 dark:text-violet-400';
-    default:
-      return 'border-border bg-background text-muted-foreground';
-  }
 }
