@@ -8,10 +8,10 @@ import {
   CalendarIcon,
   CheckIcon,
   ClipboardIcon,
+  FingerprintIcon,
   GlobeIcon,
   KeyRoundIcon,
   LockIcon,
-  RulerIcon,
   ServerIcon,
   Trash2Icon,
 } from 'lucide-react';
@@ -29,6 +29,8 @@ import {
   FLOW_ACCENTS,
   flowCtaClassName,
 } from '@/shared/presentation/organisms/FlowHero';
+
+import { sshKeyAlgorithmLabel } from '../../-lib/describe-ssh-key';
 
 interface SshKeyDetailViewProps {
   sshKey: DTOs.SshKeyV1;
@@ -50,6 +52,17 @@ export default function SshKeyDetailView(props: SshKeyDetailViewProps) {
   const publicKey = sshKey.data?.public ?? '';
   const length = sshKey.data?.length ?? '';
   const type = sshKey.type ?? '';
+  const comment = sshKey.data?.comment ?? '';
+  const fingerprint = sshKey.data?.fingerprint ?? '';
+  // What the key is, in words a person recognises, rather than the secret
+  // type the backend stores it under.
+  const algorithmLabel =
+    sshKeyAlgorithmLabel({
+      algorithm: sshKey.data?.algorithm?.trim() || null,
+      length: length.trim() || null,
+    }) ||
+    type ||
+    '';
 
   const handleDelete = () => {
     openDialog({
@@ -93,13 +106,13 @@ export default function SshKeyDetailView(props: SshKeyDetailViewProps) {
           icon={KeyRoundIcon}
           tone="sky"
           label={t('page.sshKeys.detail.type')}
-          value={type || '—'}
+          value={algorithmLabel || '—'}
         />
         <StatTile
-          icon={RulerIcon}
+          icon={FingerprintIcon}
           tone="neutral"
-          label={t('page.sshKeys.detail.bitLength')}
-          value={length || '—'}
+          label={t('page.sshKeys.detail.owner')}
+          value={comment || '—'}
         />
         <StatTile
           icon={CalendarIcon}
@@ -166,6 +179,19 @@ export default function SshKeyDetailView(props: SshKeyDetailViewProps) {
             )}
           </pre>
         </div>
+        {fingerprint && (
+          <footer className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t px-4 py-3">
+            <span className="text-xs font-semibold text-primary/80">
+              {t('page.sshKeys.detail.fingerprint')}
+            </span>
+            <code className="break-all font-mono text-xs text-muted-foreground">
+              {fingerprint}
+            </code>
+            <span className="text-xs text-muted-foreground">
+              {t('page.sshKeys.detail.fingerprintHint')}
+            </span>
+          </footer>
+        )}
       </section>
 
       <section className="overflow-hidden rounded-2xl border border-amber-500/30 bg-card">

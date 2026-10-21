@@ -6,6 +6,7 @@ import { cn } from '@/shared/libs/tailwind/cn';
 import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 import { FLOW_ACCENTS } from '@/shared/presentation/organisms/FlowHero';
 
+import { sshKeyAlgorithmLabel } from '../../-lib/describe-ssh-key';
 import type { SshKeyCard } from '../../-lib/describe-ssh-key';
 
 interface SshKeyIdentityProps {
@@ -90,13 +91,16 @@ export function SshKeyAccessPill(props: SshKeyAccessPillProps) {
 
 type Translate = ReturnType<typeof useDevetekTranslations>;
 
-/** "ssh-key · 4096 bits", skipping whatever the backend did not report. */
+/**
+ * "Ed25519 · pat@example.com". The algorithm is what a person can act on; the
+ * secret type ("ssh-key") only appears for a key whose algorithm is unknown.
+ */
 export function describeKey(sshKey: SshKeyCard, t: Translate) {
   return [
-    sshKey.type ?? t('page.sshKeys.card.noType'),
-    sshKey.length
-      ? t('page.sshKeys.card.bits', { length: sshKey.length })
-      : null,
+    sshKeyAlgorithmLabel(sshKey) ??
+      sshKey.type ??
+      t('page.sshKeys.card.noType'),
+    sshKey.comment,
   ]
     .filter(Boolean)
     .join(' · ');
