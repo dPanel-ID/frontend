@@ -2520,7 +2520,8 @@
       "goToServers": "Buka halaman server",
       "previous": "Sebelumnya",
       "next": "Berikutnya",
-      "switchLanguage": "Ganti bahasa"
+      "switchLanguage": "Ganti bahasa",
+      "switchTheme": "Ganti mode terang atau gelap"
     }
   },
   "widget": {

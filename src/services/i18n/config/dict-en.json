@@ -2528,7 +2528,8 @@
       "goToServers": "Go to servers",
       "previous": "Previous",
       "next": "Next",
-      "switchLanguage": "Switch language"
+      "switchLanguage": "Switch language",
+      "switchTheme": "Switch light or dark mode"
     }
   },
   "widget": {
