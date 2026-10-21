@@ -116,7 +116,7 @@ function IntroStart(props: { copy: DocsIntroCopy }) {
         </h2>
       </div>
 
-      <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <ol className="grid gap-3 sm:grid-cols-2">
         {copy.start.steps.map((step, index) => (
           <li
             key={step.title}
@@ -153,7 +153,7 @@ function IntroCapabilities(props: { copy: DocsIntroCopy }) {
         </h2>
       </div>
 
-      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
         {copy.capabilities.items.map((item) => {
           const Icon = CAPABILITY_ICONS[item.key];
 

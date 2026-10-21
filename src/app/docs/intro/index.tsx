@@ -13,7 +13,7 @@ import { docsSections } from '../-lib/registry';
 import { DocsFooter } from '../-view/-presentation/DocsFooter';
 import { DocsNav } from '../-view/-presentation/DocsNav';
 
-import { DocsIntroContent, introCopyFor  } from './-view/DocsIntroContent';
+import { DocsIntroContent, introCopyFor } from './-view/DocsIntroContent';
 
 export const Route = createFileRoute('/docs/intro/')({
   ssr: true,
