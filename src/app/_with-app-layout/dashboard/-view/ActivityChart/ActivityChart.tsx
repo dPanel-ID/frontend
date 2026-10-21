@@ -105,7 +105,7 @@ export default function ActivityChart() {
           }
         />
       ) : (
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(180px,0.26fr)]">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(208px,0.3fr)]">
           <ActivityPlot series={series} isLoading={isLoading} />
           <ActivityHeadlines series={series} isLoading={isLoading} />
         </div>

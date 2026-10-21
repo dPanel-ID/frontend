@@ -92,8 +92,12 @@ export function executionTypeKey(type?: string): string | undefined {
       return 'machineSetup';
     case 'machine_cloud_origin_create':
     case 'user_machine_create':
+    // The agent reports its own create as 'machine_machine.create'; without
+    // this it humanised to "Machine machine create".
+    case 'machine_machine.create':
       return 'machineCreate';
     case 'machine_cloud_origin_delete':
+    case 'machine_machine.delete':
     case 'user_machine_delete':
       return 'machineDelete';
     case 'cloud_orphan_vm_delete':
