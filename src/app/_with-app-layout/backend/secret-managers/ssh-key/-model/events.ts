@@ -3,6 +3,7 @@ import type { Rescope } from '@/shared/libs/events/models/registerEvents';
 
 import type { FilterRules } from '../-rules';
 import type {
+  SshKeyCopyPublicKeyPayload,
   SshKeyDeletePayload,
   SshKeyDetailsPayload,
   SshKeyMigrateOwnershipPayload,
@@ -17,6 +18,7 @@ type EventsRegistry = Rescope<
     'filters/pagination--set': number;
     'data--refresh': null;
     'ssh-key--delete': SshKeyDeletePayload;
+    'ssh-key--copy-public-key': SshKeyCopyPublicKeyPayload;
     'open--details': SshKeyDetailsPayload;
     'open--migrate-ownership': SshKeyMigrateOwnershipPayload;
   }

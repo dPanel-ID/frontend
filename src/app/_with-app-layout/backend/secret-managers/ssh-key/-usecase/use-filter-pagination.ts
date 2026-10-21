@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
-import { useSshKeyDataModel } from '../-model/ssh-key-data';
 import { useEmit } from '../-model/events';
 import { useFilterModel } from '../-model/filters';
+import { useSshKeyDataModel } from '../-model/ssh-key-data';
 
 export function useFilterPagination() {
   const { sshKeys } = useSshKeyDataModel();

@@ -1,48 +1,73 @@
-import { KeyRoundIcon, PlusCircleIcon } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { FileTextIcon, KeyRoundIcon, PlusIcon, ServerIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
+
+import { Button } from '@/shared/presentation/atoms/Button';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
-import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
+import {
+  FlowHero,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
+import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
 import { useEmit } from '../../-model/events';
 
-const Headnote = () => {
-  return (
-    <span className="flex items-center justify-between">
-      <Breadcrumb
-        items={[
-          {
-            text: 'Dashboard',
-            url: '/dashboard',
-          },
-          {
-            text: 'Backend',
-          },
-        ]}
-      />
-    </span>
-  );
-};
-
+/** Page opening in the same visual language as the servers module. */
 export default function Header() {
   const emit = useEmit();
   const t = useDevetekTranslations();
 
   return (
-    <PageHeader
-      heroIcon={KeyRoundIcon}
-      headnote={<Headnote />}
+    <FlowHero
+      accent="sky"
+      icon={KeyRoundIcon}
+      headnote={
+        <Breadcrumb
+          items={[
+            {
+              text: t('sidebar.dashboard'),
+              url: '/dashboard',
+            },
+            {
+              text: t('sidebar.backend'),
+            },
+          ]}
+        />
+      }
       title={t('page.sshKeys.headerTitle')}
       description={t('page.sshKeys.headerDesc')}
-      rightAppend={
-        <Button
-          buttonStyle="outline"
-          buttonColor="secondary"
-          onClick={() => emit('@ssh-keys/add-new', undefined)}
-        >
-          <PlusCircleIcon /> {t('page.sshKeys.addKey')}
-        </Button>
+      aside={
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/servers">
+              <ServerIcon />
+              <span className="hidden sm:inline">
+                {t('page.sshKeys.hero.servers')}
+              </span>
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <a
+              href={LINK__DOCUMENTATION}
+              aria-label={t('page.sshKeys.docs')}
+              title={t('page.sshKeys.docs')}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FileTextIcon />
+              <span className="hidden sm:inline">{t('page.sshKeys.docs')}</span>
+            </a>
+          </Button>
+          <button
+            type="button"
+            className={flowCtaClassName('sky')}
+            onClick={() => emit('@ssh-keys/add-new', undefined)}
+          >
+            <PlusIcon className="size-4" />
+            {t('page.sshKeys.createKey')}
+          </button>
+        </div>
       }
     />
   );
