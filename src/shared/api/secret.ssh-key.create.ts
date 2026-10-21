@@ -7,21 +7,25 @@ import { apiDoPost } from '../libs/api-client';
 // =============================================================================
 
 export interface RecipeParams {
-  keyLength: number;
+  /** "ed25519" or "rsa". Omitted lets the backend pick its default. */
+  algorithm?: string;
+  /** RSA only: Ed25519 has no size to choose. */
+  keyLength?: number;
   displayName: string;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
-  const { displayName, keyLength } = params;
+  const { algorithm, displayName, keyLength } = params;
 
   return {
     method: 'POST',
     url: `/v1/secret/ssh-key/create`,
     data: {
-      key_size: keyLength,
       name: displayName,
       type: 'ssh-key',
       key_prefix: '',
+      ...(algorithm ? { algorithm } : {}),
+      ...(keyLength ? { key_size: keyLength } : {}),
     },
   };
 }

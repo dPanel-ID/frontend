@@ -158,7 +158,7 @@
       "refresh": "Refresh",
       "rows": "{count} rows",
       "pageOf": "Page {page} of {total}",
-      "loading": "Loading…",
+      "loading": "Loading\u2026",
       "loadFailed": "Could not load this section",
       "retry": "Retry",
       "clearSearch": "Clear search"
@@ -1264,7 +1264,7 @@
         "lines": "{count} lines",
         "filterPlaceholder": "Filter log lines",
         "showing": "Showing {shown} of {total} lines",
-        "discovering": "Discovering log files…",
+        "discovering": "Discovering log files\u2026",
         "allLogs": "All VM logs",
         "loading": "Loading log entries",
         "emptyFile": "No entries in the selected range.",
@@ -1786,11 +1786,14 @@
         },
         "documentTitle": "{name} — SSH key | dPanel",
         "fallbackName": "Untitled key",
-        "loading": "Loading key data…",
+        "loading": "Loading key data\u2026",
         "back": "Back to SSH keys",
         "useOnServer": "Create a server with this key",
         "whatNowTitle": "What you can do with this key",
-        "whatNow": "Pick it on the create-server page and dPanel signs in for you. To authorise it on a server by hand, copy the public key below into that server's authorized_keys file."
+        "whatNow": "Pick it on the create-server page and dPanel signs in for you. To authorise it on a server by hand, copy the public key below into that server's authorized_keys file.",
+        "owner": "Labelled for",
+        "fingerprint": "Fingerprint",
+        "fingerprintHint": "Compare this with the key your server reports."
       },
       "emptyState": {
         "title": "Create your first SSH key",
@@ -1883,7 +1886,15 @@
         "next": "dPanel generates the key and stores the private half encrypted. Pick the key on the create-server page and dPanel signs in with it for you.",
         "submit": "Generate SSH key",
         "errorTitle": "Error while creating SSH key with name {name}",
-        "successMessage": "Successfully created SSH key with name {name}"
+        "successMessage": "Successfully created SSH key with name {name}",
+        "typeLabel": "Key type",
+        "typeHint": "Pick the first one unless a server refuses it",
+        "types": {
+          "modern": "For current servers",
+          "modernDesc": "Short, fast and the safest choice today. Works with servers set up in the last few years.",
+          "compatible": "For older servers",
+          "compatibleDesc": "Pick this only if a server will not accept the first option. You then choose a size."
+        }
       }
     },
     "teams": {
@@ -1899,7 +1910,7 @@
     },
     "teamDetail": {
       "addMember": "Add Member",
-      "loadingData": "Loading team data…",
+      "loadingData": "Loading team data\u2026",
       "memberCount": "{count, plural, one {# member} other {# members}} in this team",
       "memberColumn": "Member",
       "roleColumn": "Role",
@@ -1986,7 +1997,7 @@
         "nameRequired": "Group name is required.",
         "cancel": "Cancel",
         "create": "Create group",
-        "creating": "Creating…"
+        "creating": "Creating\u2026"
       },
       "detail": {
         "tabs": {
@@ -2021,7 +2032,7 @@
             "actions": "Actions"
           },
           "remove": "Remove",
-          "removing": "Removing…",
+          "removing": "Removing\u2026",
           "empty": "This group has no servers yet.",
           "emptyHint": "Add servers to run actions on them together.",
           "noMatch": "No servers match your search.",
@@ -2101,7 +2112,7 @@
             "descriptionLabel": "Description",
             "nameRequired": "Group name is required.",
             "save": "Save",
-            "saving": "Saving…",
+            "saving": "Saving\u2026",
             "cancel": "Cancel"
           },
           "delete": {
@@ -2111,7 +2122,7 @@
             "servers": "Its servers stay as they are; they are simply no longer grouped.",
             "history": "Past operations and their logs are kept.",
             "confirm": "Delete group",
-            "deleting": "Deleting…",
+            "deleting": "Deleting\u2026",
             "cancel": "Cancel"
           },
           "bulk": {
@@ -2138,7 +2149,7 @@
             },
             "targets": "Runs on {count} servers.",
             "queue": "Run",
-            "queueing": "Queueing…",
+            "queueing": "Queueing\u2026",
             "cancel": "Cancel"
           },
           "deploy": {
@@ -2152,7 +2163,7 @@
             "noArtifacts": "No artifacts for this application.",
             "selectBoth": "Select an application and an artifact.",
             "deploy": "Deploy",
-            "queueing": "Queueing…",
+            "queueing": "Queueing\u2026",
             "cancel": "Cancel"
           },
           "retry": {
@@ -2163,7 +2174,7 @@
             "variablesNote": "Redacted variables must be entered again.",
             "refNote": "A pinned ref is required for this retry.",
             "retry": "Retry",
-            "retrying": "Retrying…",
+            "retrying": "Retrying\u2026",
             "cancel": "Cancel"
           },
           "module": {
@@ -2470,7 +2481,7 @@
       "title": "Edit Team",
       "fieldName": "Team Name",
       "namePlaceholder": "My Team",
-      "descPlaceholder": "A short description of this team…"
+      "descPlaceholder": "A short description of this team\u2026"
     },
     "loadBalancerCreation": {
       "title": "Create Load Balancer",
@@ -2583,7 +2594,7 @@
       "manage": "Manage",
       "installed": "Installed",
       "noDescription": "No description available.",
-      "loading": "Loading the module catalog…",
+      "loading": "Loading the module catalog\u2026",
       "failed": "Could not load the catalog",
       "empty": "The module repository did not expose any modules.",
       "noMatch": "No modules match your search."
@@ -2634,9 +2645,9 @@
     "addTeamMember": {
       "title": "Add New People",
       "description": "Select a user and assign workspace roles before adding them.",
-      "selectUser": "Select a user…",
-      "searchByUsername": "Search by username or name…",
-      "loading": "Loading…",
+      "selectUser": "Select a user\u2026",
+      "searchByUsername": "Search by username or name\u2026",
+      "loading": "Loading\u2026",
       "noUsersFound": "No users found",
       "pageInfo": "Page {page} / {totalPage}",
       "rolesTitle": "Workspace roles",
@@ -2650,7 +2661,7 @@
     "manageMemberRoles": {
       "title": "Manage roles",
       "description": "Update access for {name}",
-      "loading": "Loading role catalog…",
+      "loading": "Loading role catalog\u2026",
       "errorTitle": "Failed to load roles",
       "errorMessage": "Role options are unavailable right now. Retry before saving changes.",
       "empty": "No assignable roles are available.",
@@ -2686,7 +2697,7 @@
       "emptySelectionWarning": "Saving with no server selected removes every member from this group.",
       "cancel": "Cancel",
       "confirm": "Confirm",
-      "saving": "Saving…",
+      "saving": "Saving\u2026",
       "submitFailed": "Unable to submit the selection."
     }
   },

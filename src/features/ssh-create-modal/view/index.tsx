@@ -3,18 +3,29 @@ import { KeyRoundIcon, ServerIcon } from 'lucide-react';
 import { useDevetekTranslations } from '@/services/i18n';
 import { ModalLayoutGeneral } from '@/services/modal/ui/presentation';
 
-import { SSHCreateProvider } from '../model';
+import { SSHCreateProvider, useSSHCreateContext } from '../model';
 import type { SSHCreateModalProps as Props } from '../model/types';
 
 import { DisplayName } from './DisplayName';
 import { KeyLength } from './KeyLength';
+import { KeyType } from './KeyType';
 import { SubmitButton } from './SubmitButton';
 
 export default function SSHKeyCreateModal(props: Props) {
-  const t = useDevetekTranslations();
-
   return (
     <SSHCreateProvider {...props}>
+      <ModalBody />
+    </SSHCreateProvider>
+  );
+}
+
+/** Inside the provider, so the size step can follow the chosen key type. */
+function ModalBody() {
+  const t = useDevetekTranslations();
+  const { algorithm } = useSSHCreateContext();
+
+  return (
+    <>
       <ModalLayoutGeneral>
         <ModalLayoutGeneral.Title
           canClickClose
@@ -33,8 +44,14 @@ export default function SSHKeyCreateModal(props: Props) {
           </section>
 
           <section className="mt-5 flex flex-col gap-1.5">
-            <KeyLength />
+            <KeyType />
           </section>
+
+          {algorithm === 'rsa' && (
+            <section className="mt-5 flex flex-col gap-1.5">
+              <KeyLength />
+            </section>
+          )}
 
           <section className="mt-5">
             <Note
@@ -49,7 +66,7 @@ export default function SSHKeyCreateModal(props: Props) {
           </section>
         </ModalLayoutGeneral.Content>
       </ModalLayoutGeneral>
-    </SSHCreateProvider>
+    </>
   );
 }
 
