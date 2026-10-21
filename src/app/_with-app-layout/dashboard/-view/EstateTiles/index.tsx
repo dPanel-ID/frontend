@@ -69,8 +69,11 @@ const TILES: TileSpec[] = [
 export default function EstateTiles(props: EstateTilesProps) {
   const t = useDevetekTranslations('page.dashboard.estate');
 
+  // Four columns at most, matching the servers list. Seven across fits on a
+  // wide screen but leaves each tile too narrow for its label and status
+  // line, which then truncate; wrapping to a second row keeps them whole.
   return (
-    <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4 xl:grid-cols-7">
+    <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
       {TILES.map(({ icon, key, search, to }) => {
         const count = props[key];
 

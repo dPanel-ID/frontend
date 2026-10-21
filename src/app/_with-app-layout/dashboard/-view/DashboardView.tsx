@@ -305,20 +305,33 @@ export default function DashboardView(props: DashboardViewProps) {
             {/* What is here, then how it has been behaving. */}
             <EstateTiles {...estate} />
 
-            <ActivityChart />
+            {/*
+              Two columns rather than one stack: the trend and the usage
+              charts want width, while what needs attention and what just
+              happened read as a narrow rail beside them. A single column
+              left most of a tall screen empty.
+            */}
+            <div className="grid gap-4 xl:grid-cols-[minmax(0,1.9fr)_minmax(320px,1fr)]">
+              <div className="flex min-w-0 flex-col gap-4">
+                <ActivityChart />
+                <FleetUtilisationPanel />
+              </div>
 
-            <AttentionPanel
-              servers={servers}
-              failures={health.failures}
-              unreachableAgents={health.unreachableAgents}
-              unhealthyServers={health.unhealthyServers}
-              isLoading={health.isLoading}
-              hasFailed={health.hasFailed}
-              isUnauthorized={health.isUnauthorized}
-              onRetry={health.refresh}
-            />
+              <div className="flex min-w-0 flex-col gap-4">
+                <AttentionPanel
+                  servers={servers}
+                  failures={health.failures}
+                  unreachableAgents={health.unreachableAgents}
+                  unhealthyServers={health.unhealthyServers}
+                  isLoading={health.isLoading}
+                  hasFailed={health.hasFailed}
+                  isUnauthorized={health.isUnauthorized}
+                  onRetry={health.refresh}
+                />
 
-            <FleetUtilisationPanel />
+                <ActivityPanel hasServers={servers.length > 0} />
+              </div>
+            </div>
           </>
         )}
 
