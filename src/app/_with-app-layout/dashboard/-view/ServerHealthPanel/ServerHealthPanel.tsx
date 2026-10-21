@@ -14,7 +14,6 @@ import { useDevetekTranslations } from '@/services/i18n';
 import type { DTOs } from '@/shared/api';
 
 import type { buildServerStats } from '../../-lib/stats';
-import type { TelemetryPoint } from '../../-lib/telemetry';
 import {
   DashboardSection,
   EmptyLine,
@@ -26,9 +25,10 @@ export default function ServerHealthPanel(props: {
   totalServers?: number;
   stats: ReturnType<typeof buildServerStats>;
   servers: DTOs.MachineV1[];
-  latestTelemetry: Record<string, TelemetryPoint>;
+  /** Probed servers that answered with at least one reading. */
+  reportingServerCount: number;
 }) {
-  const { latestTelemetry, servers, stats, totalServers } = props;
+  const { reportingServerCount, servers, stats, totalServers } = props;
   const t = useDevetekTranslations('page.dashboard.serverHealth');
 
   const providerBreakdown = useMemo(() => {
@@ -42,7 +42,6 @@ export default function ServerHealthPanel(props: {
       .sort((left, right) => right[1] - left[1])
       .slice(0, 5);
   }, [servers, t]);
-  const telemetryCount = Object.keys(latestTelemetry).length;
   const primaryProvider = providerBreakdown[0];
   const readinessPercent = totalServers
     ? Math.round((stats.ready / totalServers) * 100)
@@ -58,7 +57,7 @@ export default function ServerHealthPanel(props: {
       : t('insightNoProgress'),
     stats.ready > 0
       ? t('insightTelemetry', {
-          sampled: telemetryCount,
+          sampled: reportingServerCount,
           total: stats.ready,
         })
       : t('insightNoTelemetry'),
@@ -116,7 +115,7 @@ export default function ServerHealthPanel(props: {
               icon={ActivityIcon}
               label={t('withTelemetry')}
               helper={t('telemetryHelp')}
-              value={telemetryCount}
+              value={reportingServerCount}
               tone="violet"
               total={stats.ready}
             />
