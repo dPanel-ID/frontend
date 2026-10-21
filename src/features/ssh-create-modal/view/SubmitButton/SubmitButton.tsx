@@ -9,24 +9,34 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { useSSHCreateContext } from '../../model';
 
 export default function SubmitButton() {
-  const { displayName, keyLength, props, isMutating, setIsMutating } =
-    useSSHCreateContext();
+  const {
+    algorithm,
+    displayName,
+    keyLength,
+    props,
+    isMutating,
+    setIsMutating,
+  } = useSSHCreateContext();
   const t = useDevetekTranslations();
 
   const [openToaster] = useToaster();
   const emitModal = useModalEmit();
 
-  const canSubmit = Boolean(displayName && keyLength);
+  const needsKeyLength = algorithm === 'rsa';
+  const canSubmit =
+    Boolean(displayName) && (!needsKeyLength || Boolean(keyLength));
 
   const handleClick = async () => {
-    if (!displayName || !keyLength) return;
+    if (!canSubmit) return;
 
     setIsMutating(true);
     emitModal('%%modal/allow-trivial-close', false);
 
     const response = await ApiSecret.SshKey.Create.doPost({
-      keyLength,
+      algorithm,
       displayName,
+      // Ed25519 has no size, and sending one would be meaningless.
+      keyLength: needsKeyLength ? keyLength : undefined,
     });
 
     if (response.$status === 'failed') {
