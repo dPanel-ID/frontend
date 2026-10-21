@@ -1,22 +1,27 @@
-import { FileTextIcon } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { FileTextIcon, LayoutDashboardIcon } from 'lucide-react';
 
 import { useAuthLoggedIn } from '@/services/auth';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
-import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
+import { FlowHero } from '@/shared/presentation/organisms/FlowHero';
 import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
+/**
+ * Page opening in the same visual language as the rest of the product: the
+ * accent glow, icon tile and action row the servers and create pages use.
+ */
 export default function Header() {
   const t = useDevetekTranslations();
   const { userProfile } = useAuthLoggedIn();
 
-  const displayName = userProfile.fullname || userProfile.username || 'there';
+  const displayName = userProfile.fullname || userProfile.username || '';
 
   return (
-    <PageHeader
+    <FlowHero
+      accent="sky"
+      icon={LayoutDashboardIcon}
       headnote={
         <Breadcrumb
           items={[
@@ -28,46 +33,29 @@ export default function Header() {
         />
       }
       title={t('page.dashboard.headerTitle')}
-      rightAppend={
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          <HeaderHelpAction
-            icon={FileTextIcon}
-            label={t('page.dashboard.docs')}
-            href={LINK__DOCUMENTATION}
-          />
+      description={
+        displayName
+          ? t('page.dashboard.hero.descriptionNamed', { name: displayName })
+          : t('page.dashboard.hero.description')
+      }
+      aside={
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <Button variant="outline" size="sm" asChild>
+            <a
+              href={LINK__DOCUMENTATION}
+              aria-label={t('page.dashboard.docs')}
+              title={t('page.dashboard.docs')}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FileTextIcon />
+              <span className="hidden sm:inline">
+                {t('page.dashboard.docs')}
+              </span>
+            </a>
+          </Button>
         </div>
       }
-      description={
-        <span>
-          {t('page.dashboard.headerWelcome')}{' '}
-          <span className="text-primary font-semibold">{displayName}</span>!
-          {` ${t('page.dashboard.headerOverview')}`}
-        </span>
-      }
     />
-  );
-}
-
-function HeaderHelpAction(props: {
-  icon: LucideIcon;
-  label: string;
-  href: string;
-}) {
-  const { icon: Icon, label, href } = props;
-  const isMail = href.startsWith('mailto:');
-
-  return (
-    <Button variant="outline" size="sm" asChild>
-      <a
-        href={href}
-        aria-label={label}
-        title={label}
-        target={isMail ? undefined : '_blank'}
-        rel={isMail ? undefined : 'noreferrer'}
-      >
-        <Icon />
-        <span className="hidden sm:inline">{label}</span>
-      </a>
-    </Button>
   );
 }
