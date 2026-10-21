@@ -367,6 +367,25 @@
         "unknownStatus": "unknown",
         "unknownActivity": "An operation"
       },
+      "tabs": {
+        "ariaLabel": "Dashboard sections",
+        "overview": "Overview",
+        "activity": "Activity",
+        "resources": "Resources",
+        "workspace": "Workspace"
+      },
+      "estate": {
+        "servers": "Servers",
+        "serversHint": "{ready} ready, {attention} need a look",
+        "applications": "Applications",
+        "applicationsHint": "{ready} ready, {attention} need a look",
+        "loadBalancers": "Load balancers",
+        "loadBalancersHint": "{ready} ready, {attention} need a look",
+        "cloudProjects": "Cloud projects",
+        "domains": "Domains",
+        "databases": "Databases",
+        "sshKeys": "SSH keys"
+      },
       "fleet": {
         "title": "Resource usage",
         "description": "How hard your servers are working. Each chart shows the fleet average and the busiest single server.",

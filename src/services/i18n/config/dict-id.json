@@ -358,6 +358,25 @@
         "unknownStatus": "tidak diketahui",
         "unknownActivity": "Sebuah operasi"
       },
+      "tabs": {
+        "ariaLabel": "Bagian dasbor",
+        "overview": "Ringkasan",
+        "activity": "Aktivitas",
+        "resources": "Sumber daya",
+        "workspace": "Ruang kerja"
+      },
+      "estate": {
+        "servers": "Server",
+        "serversHint": "{ready} siap, {attention} perlu diperiksa",
+        "applications": "Aplikasi",
+        "applicationsHint": "{ready} siap, {attention} perlu diperiksa",
+        "loadBalancers": "Load balancer",
+        "loadBalancersHint": "{ready} siap, {attention} perlu diperiksa",
+        "cloudProjects": "Proyek cloud",
+        "domains": "Domain",
+        "databases": "Basis data",
+        "sshKeys": "Kunci SSH"
+      },
       "fleet": {
         "title": "Penggunaan sumber daya",
         "description": "Seberapa berat kerja server Anda. Tiap grafik menampilkan rata-rata armada dan satu server tersibuk.",
