@@ -1,6 +1,8 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
 import { BookOpenIcon } from 'lucide-react';
 
+import { useDevetekLocale } from '@/services/i18n';
+
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 
 import { DocsIntroContent } from './-view/DocsIntroContent';
@@ -23,6 +25,8 @@ export const Route = createFileRoute('/docs/intro/')({
 });
 
 function DocsIntroPage() {
+  const locale = useDevetekLocale();
+
   return (
     <>
       <a
@@ -39,7 +43,7 @@ function DocsIntroPage() {
         <DocsHeader />
 
         <div className="mx-auto w-full max-w-7xl space-y-5 px-4 py-5 sm:px-6 lg:px-8">
-          <DocsIntroContent />
+          <DocsIntroContent locale={locale} />
         </div>
       </main>
     </>

@@ -1,56 +1,78 @@
 import type { ComponentType } from 'react';
 
 import {
+  ActivityIcon,
+  AppWindowIcon,
   CirclePlayIcon,
-  CloudIcon,
-  CompassIcon,
-  FlaskConicalIcon,
+  DatabaseIcon,
   GitBranchIcon,
-  ScaleIcon,
+  NetworkIcon,
+  ServerIcon,
+  UsersIcon,
 } from 'lucide-react';
 
 import { Badge } from '@/shared/presentation/atoms/Badge';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 
-type TryFirstStep = {
-  title: string;
-  description: string;
-  Icon: ComponentType<{ className?: string }>;
+import { DOCS_INTRO_EN } from '../-content/intro.en';
+import { DOCS_INTRO_ID } from '../-content/intro.id';
+import type { DocsIntroCapability, DocsIntroCopy } from '../-rules/intro';
+
+const COPY: Record<string, DocsIntroCopy> = {
+  en: DOCS_INTRO_EN,
+  id: DOCS_INTRO_ID,
 };
 
-const tryFirstSteps = [
-  {
-    title: 'Learn in minutes',
-    description:
-      'Start with a short product walkthrough before you change anything.',
-    Icon: CompassIcon,
-  },
-  {
-    title: 'Test with confidence',
-    description:
-      'Try your application in an environment that fits the experiment.',
-    Icon: FlaskConicalIcon,
-  },
-  {
-    title: 'Choose what fits',
-    description: 'Use what the test showed to make the next choice clearer.',
-    Icon: ScaleIcon,
-  },
-] as const satisfies readonly TryFirstStep[];
+const CAPABILITY_ICONS: Record<
+  DocsIntroCapability['key'],
+  ComponentType<{ className?: string }>
+> = {
+  servers: ServerIcon,
+  applications: AppWindowIcon,
+  traffic: NetworkIcon,
+  data: DatabaseIcon,
+  activity: ActivityIcon,
+  teams: UsersIcon,
+};
 
-const availableProviders = [
-  'IDCloudHost',
-  'AWS',
-  'GCP',
-  'Vultr',
-  'Manual SSH Access',
-] as const;
+const YOUTUBE_URL = 'https://www.youtube.com/@dpanel_id';
 
-function TryFirstActions() {
+export interface DocsIntroContentProps {
+  /** App locale; anything unrecognised reads in English. */
+  locale?: string;
+}
+
+/**
+ * The product introduction a first-time visitor lands on.
+ *
+ * Written to answer, in order, the questions someone actually arrives with:
+ * what is this, what would I do first, what is in it, and what happens to my
+ * work if I leave. The last one is the one a sceptical reader cares about, so
+ * it gets a section of its own rather than a footnote.
+ */
+export function DocsIntroContent(props: DocsIntroContentProps = {}) {
+  const copy =
+    COPY[(props.locale ?? 'en').toLowerCase().split('-')[0] ?? 'en'] ??
+    DOCS_INTRO_EN;
+
+  return (
+    <>
+      <IntroHero copy={copy} />
+      <IntroStart copy={copy} />
+      <IntroCapabilities copy={copy} />
+      <IntroOwnership copy={copy} />
+      <IntroClosing copy={copy} />
+    </>
+  );
+}
+
+function IntroActions(props: { copy: DocsIntroCopy }) {
+  const { copy } = props;
+
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
       <Button asChild size="lg" className="sm:w-auto">
-        <a href="/docs/servers/overview">Read the server guide</a>
+        <a href="/">{copy.hero.primaryCta}</a>
       </Button>
       <Button
         asChild
@@ -59,72 +81,79 @@ function TryFirstActions() {
         size="lg"
         className="sm:w-auto"
       >
-        <a href="/">Try dPanel</a>
-      </Button>
-      <Button
-        asChild
-        buttonStyle="outline"
-        buttonColor="secondary"
-        size="lg"
-        className="sm:w-auto"
-      >
-        <a
-          href="https://www.youtube.com/@dpanel_id"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer">
           <CirclePlayIcon />
-          Watch dPanel on YouTube
+          {copy.hero.secondaryCta}
         </a>
       </Button>
     </div>
   );
 }
 
-function TryFirstHero() {
+function IntroHero(props: { copy: DocsIntroCopy }) {
+  const { copy } = props;
+
   return (
     <section className="rounded-xl border bg-card p-5 sm:p-8">
       <div className="max-w-3xl space-y-5">
-        <Badge variant="secondary">Try dPanel first</Badge>
+        <Badge variant="secondary">{copy.hero.badge}</Badge>
         <div className="space-y-3">
-          <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-primary sm:text-5xl">
-            Try your application before you commit your infrastructure.
+          <h1 className="text-4xl font-semibold tracking-tight text-primary sm:text-5xl">
+            {copy.hero.title}
           </h1>
           <p className="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            dPanel helps you learn the product, try your application, and
-            compare the result before making the next infrastructure choice.
+            {copy.hero.subtitle}
           </p>
         </div>
-        <TryFirstActions />
+        <IntroActions copy={copy} />
+
+        <ul
+          aria-label={copy.providers.title}
+          className="flex flex-wrap items-center gap-2 pt-1"
+        >
+          <li className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {copy.providers.title}
+          </li>
+          {copy.providers.items.map((provider) => (
+            <li key={provider}>
+              <Badge variant="secondary">{provider}</Badge>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
 }
 
-function TryFirstOutcomeStrip() {
+function IntroStart(props: { copy: DocsIntroCopy }) {
+  const { copy } = props;
+
   return (
-    <section aria-labelledby="try-first-outcomes" className="space-y-5">
+    <section aria-labelledby="docs-intro-start" className="space-y-5">
       <div className="max-w-2xl space-y-2">
-        <Badge variant="outline">Learn, try, compare</Badge>
+        <Badge variant="outline">{copy.start.badge}</Badge>
         <h2
-          id="try-first-outcomes"
+          id="docs-intro-start"
           className="text-2xl font-semibold tracking-tight text-primary sm:text-3xl"
         >
-          Take the next step with a clearer view.
+          {copy.start.title}
         </h2>
       </div>
 
-      <ol className="grid gap-3 md:grid-cols-3">
-        {tryFirstSteps.map((step) => (
-          <li key={step.title} className="rounded-xl border bg-card p-5">
-            <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-accent">
-              <step.Icon className="size-4" />
+      <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {copy.start.steps.map((step, index) => (
+          <li
+            key={step.title}
+            className="min-w-0 rounded-xl border bg-card p-5"
+          >
+            <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-sm font-bold tabular-nums text-primary">
+              {index + 1}
             </span>
-            <h3 className="mt-4 text-lg font-semibold text-primary">
+            <h3 className="mt-4 text-base font-semibold text-primary">
               {step.title}
             </h3>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              {step.description}
+              {step.text}
             </p>
           </li>
         ))}
@@ -133,91 +162,93 @@ function TryFirstOutcomeStrip() {
   );
 }
 
-function TryFirstReasons() {
+function IntroCapabilities(props: { copy: DocsIntroCopy }) {
+  const { copy } = props;
+
   return (
-    <section aria-labelledby="try-first-reasons" className="space-y-5">
+    <section aria-labelledby="docs-intro-capabilities" className="space-y-5">
       <div className="max-w-2xl space-y-2">
-        <Badge variant="outline">Why try it with dPanel</Badge>
+        <Badge variant="outline">{copy.capabilities.badge}</Badge>
         <h2
-          id="try-first-reasons"
+          id="docs-intro-capabilities"
           className="text-2xl font-semibold tracking-tight text-primary sm:text-3xl"
         >
-          Compare providers. Keep your IaC.
+          {copy.capabilities.title}
         </h2>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2">
-        <section className="rounded-xl border bg-card p-5">
-          <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-accent">
-            <CloudIcon className="size-4" />
-          </span>
-          <div className="mt-4 space-y-2">
-            <Badge variant="outline">Compare your options</Badge>
-            <h3 className="text-lg font-semibold text-primary">
-              Try providers. Compare the fit.
-            </h3>
-            <p className="text-sm leading-6 text-muted-foreground">
-              Run your application with the provider you want to evaluate, then
-              use the result to choose what fits your requirements.
-            </p>
-          </div>
-          <ul
-            aria-label="Available providers"
-            className="mt-4 flex flex-wrap gap-2"
-          >
-            {availableProviders.map((provider) => (
-              <li key={provider}>
-                <Badge variant="secondary">{provider}</Badge>
-              </li>
-            ))}
-          </ul>
-        </section>
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {copy.capabilities.items.map((item) => {
+          const Icon = CAPABILITY_ICONS[item.key];
 
-        <section className="rounded-xl border bg-card p-5">
-          <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-accent">
-            <GitBranchIcon className="size-4" />
-          </span>
-          <div className="mt-4 space-y-2">
-            <Badge variant="outline">Your infrastructure, documented</Badge>
-            <h3 className="text-lg font-semibold text-primary">
-              Keep your IaC in your hands.
-            </h3>
-            <p className="text-sm leading-6 text-muted-foreground">
-              Every change is tracked with OpenTofu and Ansible, so you can keep
-              using the same IaC in your own platform later.
-            </p>
-          </div>
-        </section>
+          return (
+            <li
+              key={item.key}
+              className="min-w-0 rounded-xl border bg-card p-5"
+            >
+              <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-accent">
+                <Icon className="size-4" />
+              </span>
+              <h3 className="mt-4 text-base font-semibold text-primary">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                {item.text}
+              </p>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+function IntroOwnership(props: { copy: DocsIntroCopy }) {
+  const { copy } = props;
+
+  return (
+    <section
+      aria-labelledby="docs-intro-ownership"
+      className="rounded-xl border bg-card p-5 sm:p-8"
+    >
+      <div className="max-w-3xl space-y-4">
+        <span className="flex size-9 items-center justify-center rounded-lg border bg-background text-accent">
+          <GitBranchIcon className="size-4" />
+        </span>
+        <Badge variant="outline">{copy.ownership.badge}</Badge>
+        <h2
+          id="docs-intro-ownership"
+          className="text-2xl font-semibold tracking-tight text-primary sm:text-3xl"
+        >
+          {copy.ownership.title}
+        </h2>
+        <p className="text-base leading-7 text-primary">
+          {copy.ownership.lead}
+        </p>
+        <p className="text-sm leading-6 text-muted-foreground">
+          {copy.ownership.body}
+        </p>
       </div>
     </section>
   );
 }
 
-function TryFirstInvitation() {
+function IntroClosing(props: { copy: DocsIntroCopy }) {
+  const { copy } = props;
+
   return (
     <section className="rounded-xl border bg-card p-5 sm:p-6">
       <div className="max-w-2xl space-y-4">
         <div className="space-y-2">
           <h2 className="text-2xl font-semibold tracking-tight text-primary">
-            See what fits your application.
+            {copy.closing.title}
           </h2>
           <p className="text-sm leading-6 text-muted-foreground">
-            Start with a walkthrough or try dPanel when you are ready.
+            {copy.closing.text}
           </p>
         </div>
-        <TryFirstActions />
+        <IntroActions copy={copy} />
       </div>
     </section>
-  );
-}
-
-export function DocsIntroContent() {
-  return (
-    <>
-      <TryFirstHero />
-      <TryFirstOutcomeStrip />
-      <TryFirstReasons />
-      <TryFirstInvitation />
-    </>
   );
 }
