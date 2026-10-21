@@ -106,12 +106,14 @@ export default function SshKeyDetailView(props: SshKeyDetailViewProps) {
           tone="neutral"
           label={t('common.terms.createdAt')}
           value={formatDate(sshKey.created_at)}
+          hint={formatDateTime(sshKey.created_at)}
         />
         <StatTile
           icon={CalendarIcon}
           tone="neutral"
           label={t('common.terms.lastUpdated')}
           value={formatDate(sshKey.updated_at)}
+          hint={formatDateTime(sshKey.updated_at)}
         />
       </section>
 
@@ -253,7 +255,13 @@ function CopyPublicKeyButton(props: { publicKey: string }) {
   );
 }
 
+/** Short enough for a quarter-width tile; the hint carries the full date. */
 function formatDate(value?: string) {
   if (!value) return '—';
-  return dayjs(value).format('YYYY-MM-DD');
+  return dayjs(value).format('D MMM');
+}
+
+function formatDateTime(value?: string) {
+  if (!value) return undefined;
+  return dayjs(value).format('YYYY-MM-DD HH:mm');
 }
