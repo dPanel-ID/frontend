@@ -3,12 +3,12 @@ import {
   Grid2X2Icon,
   RefreshCwIcon,
   Rows3Icon,
+  TableIcon,
 } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
-import { Card } from '@/shared/presentation/atoms/Card';
 import SearchCollapsible from '@/shared/presentation/atoms/SearchCollapsible';
 import SearchKeywordBadge from '@/shared/presentation/atoms/SearchKeywordBadge';
 import { buildSegmentedControl } from '@/widgets/ui-atomic-builder/atom-segmented-control';
@@ -24,16 +24,9 @@ const ViewModeSO = buildSegmentedControl<FilterRules.ViewMode>({
       icon: ArrowLeftRightIcon,
       tooltipI18n: 'common.terms.automaticView',
     },
-    {
-      id: 'list',
-      icon: Rows3Icon,
-      tooltipI18n: 'common.terms.cardListView',
-    },
-    {
-      id: 'grid',
-      icon: Grid2X2Icon,
-      tooltipI18n: 'common.terms.cardGridView',
-    },
+    { id: 'list', icon: Rows3Icon, tooltipI18n: 'common.terms.cardListView' },
+    { id: 'grid', icon: Grid2X2Icon, tooltipI18n: 'common.terms.cardGridView' },
+    { id: 'table', icon: TableIcon, tooltipI18n: 'common.terms.tableView' },
   ],
 });
 
@@ -51,50 +44,38 @@ const SlotViewMode = () => {
   );
 };
 
-const SlotSearchCollapsible = () => {
+const SlotSearch = () => {
   const t = useDevetekTranslations();
-
   const emit = useEmit();
   const [searchQuery] = useFilterModel((s) => [s.searchQuery]);
-
-  const handleSearch = (input: string) => {
-    emit('@domain-dns/filters/search--input', input);
-  };
-
-  const handleClear = () => {
-    emit('@domain-dns/filters/search--input');
-  };
 
   return (
     <SearchCollapsible
       initialValue={searchQuery}
-      onSubmit={handleSearch}
-      onClickClear={handleClear}
-      placeholderText={t('common.terms.searchPlaceholder')}
-    />
-  );
-};
-
-const SlotKeywordBadge = () => {
-  const emit = useEmit();
-  const [searchQuery] = useFilterModel((s) => [s.searchQuery]);
-
-  return (
-    <SearchKeywordBadge
-      keyword={searchQuery}
-      onClear={() => emit('@domain-dns/filters/search--input')}
+      onSubmit={(input) => {
+        emit('@domain-dns/filters/search--input', input);
+        emit('@domain-dns/filters/pagination--set', 1);
+      }}
+      onClickClear={() => {
+        emit('@domain-dns/filters/search--input');
+        emit('@domain-dns/filters/pagination--set', 1);
+      }}
+      placeholderText={t('page.domain.filters.searchPlaceholder')}
     />
   );
 };
 
 const SlotRefresh = () => {
   const emit = useEmit();
+  const t = useDevetekTranslations();
 
   return (
     <Button
       size="icon-sm"
       buttonColor="secondary"
       buttonStyle="ghost"
+      aria-label={t('common.actions.refresh')}
+      title={t('common.actions.refresh')}
       onClick={() => emit('@domain-dns/data--refresh', null)}
     >
       <RefreshCwIcon />
@@ -102,19 +83,36 @@ const SlotRefresh = () => {
   );
 };
 
+const SlotKeywordBadge = () => {
+  const emit = useEmit();
+  const [searchQuery] = useFilterModel((s) => [s.searchQuery]);
+
+  if (!searchQuery) return null;
+
+  return (
+    <SearchKeywordBadge
+      keyword={searchQuery}
+      onClear={() => {
+        emit('@domain-dns/filters/search--input');
+        emit('@domain-dns/filters/pagination--set', 1);
+      }}
+    />
+  );
+};
+
 export default function MainFilter() {
   return (
     <>
-      <Card className="bg-card/30 rounded-xl p-1.5 grid grid-cols-[1fr_auto] gap-x-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          <SlotSearchCollapsible />
+      <div className="grid grid-cols-[1fr_auto] gap-x-2 rounded-xl border bg-card/40 p-1.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <SlotSearch />
         </div>
 
         <div className="flex items-center gap-x-1">
           <SlotRefresh />
           <SlotViewMode />
         </div>
-      </Card>
+      </div>
       <SlotKeywordBadge />
     </>
   );

@@ -1,95 +1,62 @@
-import { useNavigate } from '@tanstack/react-router';
-import { FileTextIcon, PlusCircleIcon } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { FileTextIcon, GlobeIcon, PlusIcon, ServerIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { Button } from '@/shared/presentation/atoms/Button';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
-import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
+import {
+  FlowHero,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
 import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
-const Headnote = () => {
-  const t = useDevetekTranslations();
-
-  return (
-    <span className="flex items-center justify-between">
-      <Breadcrumb
-        items={[
-          {
-            text: t('sidebar.dashboard'),
-            url: '/dashboard',
-          },
-          {
-            text: t('sidebar.backend'),
-          },
-        ]}
-      />
-    </span>
-  );
-};
-
+/** Page opening in the same visual language as the servers module. */
 export default function Header() {
   const t = useDevetekTranslations();
-  const navigate = useNavigate();
-
-  const handleClickAddNew = () => {
-    navigate({ to: '/backend/domain/create' });
-  };
 
   return (
-    <PageHeader
-      headnote={<Headnote />}
+    <FlowHero
+      accent="sky"
+      icon={GlobeIcon}
+      headnote={
+        <Breadcrumb
+          items={[
+            { text: t('sidebar.dashboard'), url: '/dashboard' },
+            { text: t('sidebar.backend') },
+          ]}
+        />
+      }
       title={t('page.domain.headerTitle')}
-      rightAppend={
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          <HeaderHelpAction
-            icon={FileTextIcon}
-            label={t('page.domain.docs')}
-            href={LINK__DOCUMENTATION}
-          />
-          <Button
-            buttonStyle="outline"
-            buttonColor="secondary"
-            aria-label={t('page.domain.createDomain')}
-            onClick={handleClickAddNew}
-          >
-            <PlusCircleIcon /> {t('page.domain.createDomain')}
+      description={t('page.domain.headerDesc')}
+      aside={
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/servers">
+              <ServerIcon />
+              <span className="hidden sm:inline">
+                {t('page.domain.servers')}
+              </span>
+            </Link>
           </Button>
+          <Button variant="outline" size="sm" asChild>
+            <a
+              href={LINK__DOCUMENTATION}
+              aria-label={t('page.domain.docs')}
+              title={t('page.domain.docs')}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FileTextIcon />
+              <span className="hidden sm:inline">{t('page.domain.docs')}</span>
+            </a>
+          </Button>
+          <Link to="/backend/domain/create" className={flowCtaClassName('sky')}>
+            <PlusIcon className="size-4" />
+            {t('page.domain.createDomain')}
+          </Link>
         </div>
       }
-      description={t('page.domain.headerDesc')}
-      footnote={t.rich('page.domain.headerFootnote', {
-        a: (chunks) => (
-          <a className="underline" href="//www.youtube.com/@dpanel_id">
-            {chunks}
-          </a>
-        ),
-      })}
     />
-  );
-}
-
-function HeaderHelpAction(props: {
-  icon: LucideIcon;
-  label: string;
-  href: string;
-}) {
-  const { href, icon: Icon, label } = props;
-  const isMail = href.startsWith('mailto:');
-
-  return (
-    <Button buttonStyle="outline" buttonColor="secondary" asChild>
-      <a
-        href={href}
-        aria-label={label}
-        title={label}
-        target={isMail ? undefined : '_blank'}
-        rel={isMail ? undefined : 'noreferrer'}
-      >
-        <Icon />
-        <span className="hidden sm:inline">{label}</span>
-      </a>
-    </Button>
   );
 }
