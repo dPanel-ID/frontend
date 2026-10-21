@@ -14,12 +14,14 @@ import { Route as WithAppLayoutRouteRouteImport } from './app/_with-app-layout/r
 import { Route as IndexRouteImport } from './app/index'
 import { Route as DocsIndexRouteImport } from './app/docs/index'
 import { Route as DocsIntroIndexRouteImport } from './app/docs/intro/index'
+import { Route as DocsSectionIndexRouteImport } from './app/docs/$section/index'
 import { Route as AuthCallbackIndexRouteImport } from './app/auth/callback/index'
 import { Route as WithAppLayoutTeamsIndexRouteImport } from './app/_with-app-layout/teams/index'
 import { Route as WithAppLayoutServersIndexRouteImport } from './app/_with-app-layout/servers/index'
 import { Route as WithAppLayoutProfileIndexRouteImport } from './app/_with-app-layout/profile/index'
 import { Route as WithAppLayoutDashboardIndexRouteImport } from './app/_with-app-layout/dashboard/index'
 import { Route as WithAppLayoutApplicationsIndexRouteImport } from './app/_with-app-layout/applications/index'
+import { Route as DocsSectionPageIndexRouteImport } from './app/docs/$section/$page/index'
 import { Route as WithAppLayoutTeamsIdIndexRouteImport } from './app/_with-app-layout/teams/$id/index'
 import { Route as WithAppLayoutServersGroupsIndexRouteImport } from './app/_with-app-layout/servers/groups/index'
 import { Route as WithAppLayoutServersCreateIndexRouteImport } from './app/_with-app-layout/servers/create/index'
@@ -66,6 +68,11 @@ const DocsIntroIndexRoute = DocsIntroIndexRouteImport.update({
   path: '/docs/intro/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsSectionIndexRoute = DocsSectionIndexRouteImport.update({
+  id: '/docs/$section/',
+  path: '/docs/$section/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthCallbackIndexRoute = AuthCallbackIndexRouteImport.update({
   id: '/auth/callback/',
   path: '/auth/callback/',
@@ -100,6 +107,11 @@ const WithAppLayoutApplicationsIndexRoute =
     path: '/applications/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
+const DocsSectionPageIndexRoute = DocsSectionPageIndexRouteImport.update({
+  id: '/docs/$section/$page/',
+  path: '/docs/$section/$page/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WithAppLayoutTeamsIdIndexRoute =
   WithAppLayoutTeamsIdIndexRouteImport.update({
     id: '/teams/$id/',
@@ -243,6 +255,7 @@ export interface FileRoutesByFullPath {
   '/servers': typeof WithAppLayoutServersIndexRoute
   '/teams': typeof WithAppLayoutTeamsIndexRoute
   '/auth/callback': typeof AuthCallbackIndexRoute
+  '/docs/$section': typeof DocsSectionIndexRoute
   '/docs/intro': typeof DocsIntroIndexRoute
   '/applications/$id': typeof WithAppLayoutApplicationsIdIndexRoute
   '/applications/create': typeof WithAppLayoutApplicationsCreateIndexRoute
@@ -254,6 +267,7 @@ export interface FileRoutesByFullPath {
   '/servers/create': typeof WithAppLayoutServersCreateIndexRoute
   '/servers/groups': typeof WithAppLayoutServersGroupsIndexRoute
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
+  '/docs/$section/$page': typeof DocsSectionPageIndexRoute
   '/applications/$id/update': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/backend/domain/create': typeof WithAppLayoutBackendDomainCreateIndexRoute
   '/backend/load-balancers/$id': typeof WithAppLayoutBackendLoadBalancersIdIndexRoute
@@ -276,6 +290,7 @@ export interface FileRoutesByTo {
   '/servers': typeof WithAppLayoutServersIndexRoute
   '/teams': typeof WithAppLayoutTeamsIndexRoute
   '/auth/callback': typeof AuthCallbackIndexRoute
+  '/docs/$section': typeof DocsSectionIndexRoute
   '/docs/intro': typeof DocsIntroIndexRoute
   '/applications/$id': typeof WithAppLayoutApplicationsIdIndexRoute
   '/applications/create': typeof WithAppLayoutApplicationsCreateIndexRoute
@@ -287,6 +302,7 @@ export interface FileRoutesByTo {
   '/servers/create': typeof WithAppLayoutServersCreateIndexRoute
   '/servers/groups': typeof WithAppLayoutServersGroupsIndexRoute
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
+  '/docs/$section/$page': typeof DocsSectionPageIndexRoute
   '/applications/$id/update': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/backend/domain/create': typeof WithAppLayoutBackendDomainCreateIndexRoute
   '/backend/load-balancers/$id': typeof WithAppLayoutBackendLoadBalancersIdIndexRoute
@@ -311,6 +327,7 @@ export interface FileRoutesById {
   '/_with-app-layout/servers/': typeof WithAppLayoutServersIndexRoute
   '/_with-app-layout/teams/': typeof WithAppLayoutTeamsIndexRoute
   '/auth/callback/': typeof AuthCallbackIndexRoute
+  '/docs/$section/': typeof DocsSectionIndexRoute
   '/docs/intro/': typeof DocsIntroIndexRoute
   '/_with-app-layout/applications/$id/': typeof WithAppLayoutApplicationsIdIndexRoute
   '/_with-app-layout/applications/create/': typeof WithAppLayoutApplicationsCreateIndexRoute
@@ -322,6 +339,7 @@ export interface FileRoutesById {
   '/_with-app-layout/servers/create/': typeof WithAppLayoutServersCreateIndexRoute
   '/_with-app-layout/servers/groups/': typeof WithAppLayoutServersGroupsIndexRoute
   '/_with-app-layout/teams/$id/': typeof WithAppLayoutTeamsIdIndexRoute
+  '/docs/$section/$page/': typeof DocsSectionPageIndexRoute
   '/_with-app-layout/applications/$id/update/': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/_with-app-layout/backend/domain/create/': typeof WithAppLayoutBackendDomainCreateIndexRoute
   '/_with-app-layout/backend/load-balancers/$id/': typeof WithAppLayoutBackendLoadBalancersIdIndexRoute
@@ -346,6 +364,7 @@ export interface FileRouteTypes {
     | '/servers'
     | '/teams'
     | '/auth/callback'
+    | '/docs/$section'
     | '/docs/intro'
     | '/applications/$id'
     | '/applications/create'
@@ -357,6 +376,7 @@ export interface FileRouteTypes {
     | '/servers/create'
     | '/servers/groups'
     | '/teams/$id'
+    | '/docs/$section/$page'
     | '/applications/$id/update'
     | '/backend/domain/create'
     | '/backend/load-balancers/$id'
@@ -379,6 +399,7 @@ export interface FileRouteTypes {
     | '/servers'
     | '/teams'
     | '/auth/callback'
+    | '/docs/$section'
     | '/docs/intro'
     | '/applications/$id'
     | '/applications/create'
@@ -390,6 +411,7 @@ export interface FileRouteTypes {
     | '/servers/create'
     | '/servers/groups'
     | '/teams/$id'
+    | '/docs/$section/$page'
     | '/applications/$id/update'
     | '/backend/domain/create'
     | '/backend/load-balancers/$id'
@@ -413,6 +435,7 @@ export interface FileRouteTypes {
     | '/_with-app-layout/servers/'
     | '/_with-app-layout/teams/'
     | '/auth/callback/'
+    | '/docs/$section/'
     | '/docs/intro/'
     | '/_with-app-layout/applications/$id/'
     | '/_with-app-layout/applications/create/'
@@ -424,6 +447,7 @@ export interface FileRouteTypes {
     | '/_with-app-layout/servers/create/'
     | '/_with-app-layout/servers/groups/'
     | '/_with-app-layout/teams/$id/'
+    | '/docs/$section/$page/'
     | '/_with-app-layout/applications/$id/update/'
     | '/_with-app-layout/backend/domain/create/'
     | '/_with-app-layout/backend/load-balancers/$id/'
@@ -443,7 +467,9 @@ export interface RootRouteChildren {
   SplatRoute: typeof SplatRoute
   DocsIndexRoute: typeof DocsIndexRoute
   AuthCallbackIndexRoute: typeof AuthCallbackIndexRoute
+  DocsSectionIndexRoute: typeof DocsSectionIndexRoute
   DocsIntroIndexRoute: typeof DocsIntroIndexRoute
+  DocsSectionPageIndexRoute: typeof DocsSectionPageIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -481,6 +507,13 @@ declare module '@tanstack/react-router' {
       path: '/docs/intro'
       fullPath: '/docs/intro'
       preLoaderRoute: typeof DocsIntroIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/$section/': {
+      id: '/docs/$section/'
+      path: '/docs/$section'
+      fullPath: '/docs/$section'
+      preLoaderRoute: typeof DocsSectionIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/callback/': {
@@ -524,6 +557,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/applications'
       preLoaderRoute: typeof WithAppLayoutApplicationsIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/docs/$section/$page/': {
+      id: '/docs/$section/$page/'
+      path: '/docs/$section/$page'
+      fullPath: '/docs/$section/$page'
+      preLoaderRoute: typeof DocsSectionPageIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_with-app-layout/teams/$id/': {
       id: '/_with-app-layout/teams/$id/'
@@ -757,7 +797,9 @@ const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   DocsIndexRoute: DocsIndexRoute,
   AuthCallbackIndexRoute: AuthCallbackIndexRoute,
+  DocsSectionIndexRoute: DocsSectionIndexRoute,
   DocsIntroIndexRoute: DocsIntroIndexRoute,
+  DocsSectionPageIndexRoute: DocsSectionPageIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -2515,6 +2515,15 @@
           }
         }
       }
+    },
+    "docs": {
+      "navLabel": "Documentation sections",
+      "pagerLabel": "Documentation pages",
+      "breadcrumb": "Documentation",
+      "goToServers": "Go to servers",
+      "previous": "Previous",
+      "next": "Next",
+      "switchLanguage": "Switch language"
     }
   },
   "widget": {
