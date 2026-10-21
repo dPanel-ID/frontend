@@ -66,7 +66,9 @@ export function StatTile(props: StatTileProps) {
       >
         <Icon className={size === 'md' ? 'size-5' : 'size-4'} />
       </span>
-      <span className="min-w-0 flex-1">
+      {/* max-w-full: in the stacked phone layout the column axis gives this
+          span an auto width, so a long hint would push past the tile. */}
+      <span className="min-w-0 max-w-full flex-1">
         {loading ? (
           <span
             className={cn(
