@@ -4,13 +4,14 @@ import { BookOpenIcon } from 'lucide-react';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { DocsLanguageToggle } from '../DocsLanguageToggle';
+import { DocsThemeToggle } from '../DocsThemeToggle';
 
 /**
  * The foot of every documentation page.
  *
- * It carries the language control, which otherwise has nowhere to live on
- * these pages: they sit outside the app shell, and the introduction had no
- * way to switch language at all.
+ * It carries the language and theme controls, which otherwise have nowhere
+ * to live on these pages: they sit outside the app shell, so without this
+ * there is no way to switch language or to leave dark mode.
  */
 export function DocsFooter() {
   const t = useDevetekTranslations('page.docs');
@@ -25,7 +26,10 @@ export function DocsFooter() {
         <span className="truncate">{t('breadcrumb')}</span>
       </Link>
 
-      <DocsLanguageToggle />
+      <div className="flex items-center gap-2">
+        <DocsLanguageToggle />
+        <DocsThemeToggle />
+      </div>
     </footer>
   );
 }
