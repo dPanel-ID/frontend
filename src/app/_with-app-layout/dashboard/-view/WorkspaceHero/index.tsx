@@ -64,8 +64,13 @@ export default function WorkspaceHero(props: WorkspaceHeroProps) {
     <header className="flex flex-col gap-4 rounded-lg border bg-card p-4">
       <div className="flex min-w-0 flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <h2 className="truncate text-xl font-bold text-primary">{name}</h2>
+          <div className="flex min-w-0 items-center gap-2">
+            <h2
+              className="min-w-0 flex-1 truncate text-xl font-bold text-primary"
+              title={name}
+            >
+              {name}
+            </h2>
             <StatusPill tone="info" label={t('teamWorkspace')} />
           </div>
 
