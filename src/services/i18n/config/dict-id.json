@@ -149,7 +149,7 @@
       "refresh": "Segarkan",
       "rows": "{count} baris",
       "pageOf": "Halaman {page} dari {total}",
-      "loading": "Memuat\u2026",
+      "loading": "Memuat…",
       "loadFailed": "Bagian ini tidak dapat dimuat",
       "retry": "Coba lagi",
       "clearSearch": "Hapus pencarian"
@@ -281,7 +281,7 @@
         "technicalDetails": "Detail teknis",
         "emptyTitle": "Belum ada server untuk diukur",
         "emptyDescription": "Penggunaan muncul di sini setelah ada server yang siap.",
-        "loadingTitle": "Membaca penggunaan server\u2026",
+        "loadingTitle": "Membaca penggunaan server…",
         "failedTitle": "Tidak ada server yang melaporkan penggunaannya",
         "failedDescription": "Server mungkin sedang sibuk atau tidak terhubung. Aplikasi Anda tidak terpengaruh pemeriksaan ini.",
         "retry": "Coba lagi",
@@ -306,7 +306,7 @@
       },
       "verdict": {
         "ariaLabel": "Kesehatan infrastruktur",
-        "loading": "Memeriksa infrastruktur Anda\u2026",
+        "loading": "Memeriksa infrastruktur Anda…",
         "healthy": "Semuanya berjalan normal",
         "healthyDetail": "Tidak ada operasi yang gagal, tidak ada server yang mati, dan semua agent melapor.",
         "attention": "{count, plural, other {# hal perlu perhatian Anda}}",
@@ -329,8 +329,8 @@
         "title": "Perlu perhatian Anda",
         "description": "{count} hal perlu diperiksa.",
         "healthyDescription": "Tidak ada yang perlu diperiksa saat ini.",
-        "checkingDescription": "Memeriksa infrastruktur Anda\u2026",
-        "checkingTitle": "Memeriksa infrastruktur Anda\u2026",
+        "checkingDescription": "Memeriksa infrastruktur Anda…",
+        "checkingTitle": "Memeriksa infrastruktur Anda…",
         "failedDescription": "Tidak bisa memeriksa hal yang perlu perhatian Anda.",
         "failedTitle": "Tidak bisa memuat hal yang perlu perhatian Anda",
         "failedDetail": "Pemeriksaan ini sedang tidak tersedia. Infrastruktur Anda tidak terpengaruh.",
@@ -448,7 +448,7 @@
         "noMetadata": "Tidak ada detail lain yang dilaporkan",
         "technicalDetails": "Detail teknis",
         "unknownActivity": "Sebuah operasi",
-        "loadingTitle": "Memuat aktivitas terbaru\u2026",
+        "loadingTitle": "Memuat aktivitas terbaru…",
         "emptyTitle": "Belum ada yang terjadi",
         "emptyDescription": "Operasi seperti penyiapan server, pemasangan modul, dan deployment akan muncul di sini saat dijalankan.",
         "emptyNoServersTitle": "Belum ada server",
@@ -1380,7 +1380,7 @@
         "lines": "{count} baris",
         "filterPlaceholder": "Saring baris log",
         "showing": "Menampilkan {shown} dari {total} baris",
-        "discovering": "Mencari berkas log\u2026",
+        "discovering": "Mencari berkas log…",
         "allLogs": "Semua log VM",
         "loading": "Memuat entri log",
         "emptyFile": "Tidak ada entri pada rentang yang dipilih.",
@@ -1829,7 +1829,7 @@
     "domainCreate": {
       "documentTitle": "Tambah Domain",
       "headerTitle": "Tambah Domain",
-      "headerDesc": "Hubungkan provider DNS dan daftarkan zona terkelola untuk routing aplikasi.",
+      "headerDesc": "Registrar Anda tetap. dNocs butuh akses ke pihak yang menjawab DNS domain ini, supaya bisa mengarahkan record ke server Anda.",
       "backToDomains": "Kembali ke domain",
       "docs": "Docs",
       "progress": {
@@ -1923,14 +1923,17 @@
         "noCredentialDesc": "Kontrak provider ini tidak membutuhkan input kredensial untuk registrasi."
       },
       "review": {
-        "title": "Review aman",
+        "title": "Hampir siap",
         "description": "Nilai sensitif sengaja disamarkan dari ringkasan ini.",
         "domain": "Domain",
-        "provider": "Provider",
+        "provider": "Penyedia DNS",
         "credentials": "Kredensial",
-        "credentialsReady": "Token tersedia",
+        "credentialsReady": "{count} kolom terisi",
         "pending": "Belum lengkap",
-        "ready": "Siap"
+        "ready": "Siap",
+        "eyebrow": "Domain",
+        "readyTitle": "Siap ditambahkan",
+        "footnote": "dNocs membaca zona-nya dulu dan menampilkan record yang sudah ada sebelum mengubah apa pun."
       },
       "checklist": {
         "title": "Sebelum membuat",
@@ -1952,7 +1955,9 @@
         "success": "Domain berhasil didaftarkan.",
         "errorTitle": "Gagal mendaftarkan domain.",
         "fixCredentials": "Lengkapi field kredensial provider yang wajib sebelum mendaftarkan domain."
-      }
+      },
+      "backToList": "Semua domain",
+      "submit": "Tambah domain"
     },
     "cloudProjects": {
       "headerTitle": "Akun cloud",
@@ -2105,7 +2110,7 @@
         },
         "documentTitle": "{name} — Kunci SSH | dPanel",
         "fallbackName": "Kunci tanpa nama",
-        "loading": "Memuat data kunci\u2026",
+        "loading": "Memuat data kunci…",
         "back": "Kembali ke kunci SSH",
         "useOnServer": "Buat server dengan kunci ini",
         "whatNowTitle": "Yang bisa Anda lakukan dengan kunci ini",
@@ -2230,7 +2235,7 @@
     },
     "teamDetail": {
       "addMember": "Tambah Anggota",
-      "loadingData": "Memuat data tim\u2026",
+      "loadingData": "Memuat data tim…",
       "memberCount": "{count, plural, one {# anggota} other {# anggota}} dalam tim ini",
       "memberColumn": "Anggota",
       "roleColumn": "Peran",
@@ -2317,7 +2322,7 @@
         "nameRequired": "Nama grup wajib diisi.",
         "cancel": "Batal",
         "create": "Buat grup",
-        "creating": "Membuat\u2026"
+        "creating": "Membuat…"
       },
       "detail": {
         "tabs": {
@@ -2352,7 +2357,7 @@
             "actions": "Aksi"
           },
           "remove": "Keluarkan",
-          "removing": "Mengeluarkan\u2026",
+          "removing": "Mengeluarkan…",
           "empty": "Grup ini belum punya server.",
           "emptyHint": "Tambahkan server untuk menjalankan aksi bersama.",
           "noMatch": "Tidak ada server yang cocok.",
@@ -2432,7 +2437,7 @@
             "descriptionLabel": "Deskripsi",
             "nameRequired": "Nama grup wajib diisi.",
             "save": "Simpan",
-            "saving": "Menyimpan\u2026",
+            "saving": "Menyimpan…",
             "cancel": "Batal"
           },
           "delete": {
@@ -2442,7 +2447,7 @@
             "servers": "Servernya tetap seperti semula; hanya tidak lagi tergrup.",
             "history": "Operasi lama dan lognya tetap disimpan.",
             "confirm": "Hapus grup",
-            "deleting": "Menghapus\u2026",
+            "deleting": "Menghapus…",
             "cancel": "Batal"
           },
           "bulk": {
@@ -2469,7 +2474,7 @@
             },
             "targets": "Berjalan pada {count} server.",
             "queue": "Jalankan",
-            "queueing": "Mengantrekan\u2026",
+            "queueing": "Mengantrekan…",
             "cancel": "Batal"
           },
           "deploy": {
@@ -2483,7 +2488,7 @@
             "noArtifacts": "Tidak ada artefak untuk aplikasi ini.",
             "selectBoth": "Pilih aplikasi dan artefak.",
             "deploy": "Deploy",
-            "queueing": "Mengantrekan\u2026",
+            "queueing": "Mengantrekan…",
             "cancel": "Batal"
           },
           "retry": {
@@ -2494,7 +2499,7 @@
             "variablesNote": "Variabel yang disamarkan harus dimasukkan lagi.",
             "refNote": "Ref terpin diperlukan untuk pengulangan ini.",
             "retry": "Ulangi",
-            "retrying": "Mengulang\u2026",
+            "retrying": "Mengulang…",
             "cancel": "Batal"
           },
           "module": {
@@ -2868,7 +2873,7 @@
       "title": "Ubah Tim",
       "fieldName": "Nama Tim",
       "namePlaceholder": "Tim Saya",
-      "descPlaceholder": "Deskripsi singkat tim ini\u2026"
+      "descPlaceholder": "Deskripsi singkat tim ini…"
     },
     "serverEdit": {
       "title": "Edit server",
@@ -2918,7 +2923,7 @@
       "manage": "Kelola",
       "installed": "Terpasang",
       "noDescription": "Tidak ada deskripsi.",
-      "loading": "Memuat katalog modul\u2026",
+      "loading": "Memuat katalog modul…",
       "failed": "Katalog tidak dapat dimuat",
       "empty": "Repositori modul tidak menyediakan modul apa pun.",
       "noMatch": "Tidak ada modul yang cocok."
@@ -2969,9 +2974,9 @@
     "addTeamMember": {
       "title": "Tambah Anggota Baru",
       "description": "Pilih pengguna dan tetapkan peran workspace sebelum menambahkannya.",
-      "selectUser": "Pilih pengguna\u2026",
-      "searchByUsername": "Cari berdasarkan username atau nama\u2026",
-      "loading": "Memuat\u2026",
+      "selectUser": "Pilih pengguna…",
+      "searchByUsername": "Cari berdasarkan username atau nama…",
+      "loading": "Memuat…",
       "noUsersFound": "Pengguna tidak ditemukan",
       "pageInfo": "Halaman {page} / {totalPage}",
       "rolesTitle": "Peran workspace",
@@ -2985,7 +2990,7 @@
     "manageMemberRoles": {
       "title": "Kelola peran",
       "description": "Perbarui akses untuk {name}",
-      "loading": "Memuat katalog peran\u2026",
+      "loading": "Memuat katalog peran…",
       "errorTitle": "Gagal memuat peran",
       "errorMessage": "Pilihan peran sedang tidak tersedia. Coba lagi sebelum menyimpan perubahan.",
       "empty": "Tidak ada peran yang dapat diberikan.",
@@ -3021,7 +3026,7 @@
       "emptySelectionWarning": "Menyimpan tanpa server terpilih akan mengeluarkan semua anggota grup ini.",
       "cancel": "Batal",
       "confirm": "Konfirmasi",
-      "saving": "Menyimpan\u2026",
+      "saving": "Menyimpan…",
       "submitFailed": "Pilihan tidak dapat dikirim."
     }
   },

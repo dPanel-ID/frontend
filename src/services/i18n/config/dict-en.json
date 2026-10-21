@@ -158,7 +158,7 @@
       "refresh": "Refresh",
       "rows": "{count} rows",
       "pageOf": "Page {page} of {total}",
-      "loading": "Loading\u2026",
+      "loading": "Loading…",
       "loadFailed": "Could not load this section",
       "retry": "Retry",
       "clearSearch": "Clear search"
@@ -290,7 +290,7 @@
         "technicalDetails": "Technical details",
         "emptyTitle": "No servers to measure",
         "emptyDescription": "Usage appears here once a server is ready.",
-        "loadingTitle": "Reading server usage\u2026",
+        "loadingTitle": "Reading server usage…",
         "failedTitle": "No server reported its usage",
         "failedDescription": "The servers may be busy or out of contact. Your applications are unaffected by this check.",
         "retry": "Try again",
@@ -315,7 +315,7 @@
       },
       "verdict": {
         "ariaLabel": "Infrastructure health",
-        "loading": "Checking your infrastructure\u2026",
+        "loading": "Checking your infrastructure…",
         "healthy": "Everything is running normally",
         "healthyDetail": "No failed operations, no servers down and every agent is reporting in.",
         "attention": "{count, plural, one {# thing needs your attention} other {# things need your attention}}",
@@ -338,8 +338,8 @@
         "title": "Needs your attention",
         "description": "{count} things need a look.",
         "healthyDescription": "Nothing needs a look right now.",
-        "checkingDescription": "Checking your infrastructure\u2026",
-        "checkingTitle": "Checking your infrastructure\u2026",
+        "checkingDescription": "Checking your infrastructure…",
+        "checkingTitle": "Checking your infrastructure…",
         "failedDescription": "Could not check what needs your attention.",
         "failedTitle": "Could not load what needs your attention",
         "failedDetail": "This check is temporarily unavailable. Your infrastructure is unaffected.",
@@ -457,7 +457,7 @@
         "noMetadata": "No further detail reported",
         "technicalDetails": "Technical details",
         "unknownActivity": "An operation",
-        "loadingTitle": "Loading recent activity\u2026",
+        "loadingTitle": "Loading recent activity…",
         "emptyTitle": "Nothing has happened yet",
         "emptyDescription": "Operations such as server setup, module installs and deployments will appear here as they run.",
         "emptyNoServersTitle": "No servers yet",
@@ -1389,7 +1389,7 @@
         "lines": "{count} lines",
         "filterPlaceholder": "Filter log lines",
         "showing": "Showing {shown} of {total} lines",
-        "discovering": "Discovering log files\u2026",
+        "discovering": "Discovering log files…",
         "allLogs": "All VM logs",
         "loading": "Loading log entries",
         "emptyFile": "No entries in the selected range.",
@@ -1837,7 +1837,7 @@
     "domainCreate": {
       "documentTitle": "Add Domain",
       "headerTitle": "Add Domain",
-      "headerDesc": "Connect a DNS provider and register a managed zone for application routing.",
+      "headerDesc": "Keep your registrar. dNocs needs access to whoever answers DNS for the domain, so it can point records at your servers.",
       "backToDomains": "Back to domains",
       "docs": "Docs",
       "progress": {
@@ -1931,14 +1931,17 @@
         "noCredentialDesc": "This provider contract does not require credential inputs for registration."
       },
       "review": {
-        "title": "Safe review",
+        "title": "Almost ready",
         "description": "Sensitive values are intentionally redacted from this summary.",
         "domain": "Domain",
-        "provider": "Provider",
+        "provider": "DNS provider",
         "credentials": "Credentials",
-        "credentialsReady": "Token provided",
+        "credentialsReady": "{count} field(s) provided",
         "pending": "Pending",
-        "ready": "Ready"
+        "ready": "Ready",
+        "eyebrow": "Domain",
+        "readyTitle": "Ready to add",
+        "footnote": "dNocs reads the zone first and shows you the records already there before changing anything."
       },
       "checklist": {
         "title": "Before creating",
@@ -1960,7 +1963,9 @@
         "success": "Domain registered successfully.",
         "errorTitle": "Failed to register domain.",
         "fixCredentials": "Complete the required provider credential fields before registering the domain."
-      }
+      },
+      "backToList": "All domains",
+      "submit": "Add domain"
     },
     "cloudProjects": {
       "headerTitle": "Cloud accounts",
@@ -2113,7 +2118,7 @@
         },
         "documentTitle": "{name} — SSH key | dPanel",
         "fallbackName": "Untitled key",
-        "loading": "Loading key data\u2026",
+        "loading": "Loading key data…",
         "back": "Back to SSH keys",
         "useOnServer": "Create a server with this key",
         "whatNowTitle": "What you can do with this key",
@@ -2238,7 +2243,7 @@
     },
     "teamDetail": {
       "addMember": "Add Member",
-      "loadingData": "Loading team data\u2026",
+      "loadingData": "Loading team data…",
       "memberCount": "{count, plural, one {# member} other {# members}} in this team",
       "memberColumn": "Member",
       "roleColumn": "Role",
@@ -2325,7 +2330,7 @@
         "nameRequired": "Group name is required.",
         "cancel": "Cancel",
         "create": "Create group",
-        "creating": "Creating\u2026"
+        "creating": "Creating…"
       },
       "detail": {
         "tabs": {
@@ -2360,7 +2365,7 @@
             "actions": "Actions"
           },
           "remove": "Remove",
-          "removing": "Removing\u2026",
+          "removing": "Removing…",
           "empty": "This group has no servers yet.",
           "emptyHint": "Add servers to run actions on them together.",
           "noMatch": "No servers match your search.",
@@ -2440,7 +2445,7 @@
             "descriptionLabel": "Description",
             "nameRequired": "Group name is required.",
             "save": "Save",
-            "saving": "Saving\u2026",
+            "saving": "Saving…",
             "cancel": "Cancel"
           },
           "delete": {
@@ -2450,7 +2455,7 @@
             "servers": "Its servers stay as they are; they are simply no longer grouped.",
             "history": "Past operations and their logs are kept.",
             "confirm": "Delete group",
-            "deleting": "Deleting\u2026",
+            "deleting": "Deleting…",
             "cancel": "Cancel"
           },
           "bulk": {
@@ -2477,7 +2482,7 @@
             },
             "targets": "Runs on {count} servers.",
             "queue": "Run",
-            "queueing": "Queueing\u2026",
+            "queueing": "Queueing…",
             "cancel": "Cancel"
           },
           "deploy": {
@@ -2491,7 +2496,7 @@
             "noArtifacts": "No artifacts for this application.",
             "selectBoth": "Select an application and an artifact.",
             "deploy": "Deploy",
-            "queueing": "Queueing\u2026",
+            "queueing": "Queueing…",
             "cancel": "Cancel"
           },
           "retry": {
@@ -2502,7 +2507,7 @@
             "variablesNote": "Redacted variables must be entered again.",
             "refNote": "A pinned ref is required for this retry.",
             "retry": "Retry",
-            "retrying": "Retrying\u2026",
+            "retrying": "Retrying…",
             "cancel": "Cancel"
           },
           "module": {
@@ -2813,7 +2818,7 @@
       "title": "Edit Team",
       "fieldName": "Team Name",
       "namePlaceholder": "My Team",
-      "descPlaceholder": "A short description of this team\u2026"
+      "descPlaceholder": "A short description of this team…"
     },
     "loadBalancerCreation": {
       "title": "Create Load Balancer",
@@ -2926,7 +2931,7 @@
       "manage": "Manage",
       "installed": "Installed",
       "noDescription": "No description available.",
-      "loading": "Loading the module catalog\u2026",
+      "loading": "Loading the module catalog…",
       "failed": "Could not load the catalog",
       "empty": "The module repository did not expose any modules.",
       "noMatch": "No modules match your search."
@@ -2977,9 +2982,9 @@
     "addTeamMember": {
       "title": "Add New People",
       "description": "Select a user and assign workspace roles before adding them.",
-      "selectUser": "Select a user\u2026",
-      "searchByUsername": "Search by username or name\u2026",
-      "loading": "Loading\u2026",
+      "selectUser": "Select a user…",
+      "searchByUsername": "Search by username or name…",
+      "loading": "Loading…",
       "noUsersFound": "No users found",
       "pageInfo": "Page {page} / {totalPage}",
       "rolesTitle": "Workspace roles",
@@ -2993,7 +2998,7 @@
     "manageMemberRoles": {
       "title": "Manage roles",
       "description": "Update access for {name}",
-      "loading": "Loading role catalog\u2026",
+      "loading": "Loading role catalog…",
       "errorTitle": "Failed to load roles",
       "errorMessage": "Role options are unavailable right now. Retry before saving changes.",
       "empty": "No assignable roles are available.",
@@ -3029,7 +3034,7 @@
       "emptySelectionWarning": "Saving with no server selected removes every member from this group.",
       "cancel": "Cancel",
       "confirm": "Confirm",
-      "saving": "Saving\u2026",
+      "saving": "Saving…",
       "submitFailed": "Unable to submit the selection."
     }
   },
