@@ -12,19 +12,22 @@ import type { DTOs } from '.';
 
 export interface RecipeParams {
   provider?: string;
+  /** Backend `installer_status` filter: ready, progress, failed and so on. */
+  installerStatus?: string;
   searchQuery?: string;
   page?: number;
   pageSize?: number;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { provider, page, pageSize, searchQuery } = params;
+  const { installerStatus, provider, page, pageSize, searchQuery } = params;
 
   const queryParams = createQueryParams({
     name: searchQuery,
     page,
     limit: pageSize,
     provider,
+    installer_status: installerStatus || undefined,
   });
 
   return {

@@ -1,52 +1,70 @@
-import { CloudIcon, PlusCircleIcon } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { CloudIcon, FileTextIcon, PlusIcon, ServerIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
+
+import { Button } from '@/shared/presentation/atoms/Button';
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
-import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
+import {
+  FlowHero,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
+import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
 import { useEmit } from '../../-model/events';
 
-const Headnote = () => (
-  <span className="flex items-center justify-between">
-    <Breadcrumb
-      items={[
-        { text: 'Dashboard', url: '/dashboard' },
-        { text: 'Backend' },
-      ]}
-    />
-  </span>
-);
-
+/** Page opening in the same visual language as the servers module. */
 export default function Header() {
   const emit = useEmit();
   const t = useDevetekTranslations();
 
   return (
-    <PageHeader
-      heroIcon={CloudIcon}
-      headnote={<Headnote />}
+    <FlowHero
+      accent="sky"
+      icon={CloudIcon}
+      headnote={
+        <Breadcrumb
+          items={[
+            { text: t('sidebar.dashboard'), url: '/dashboard' },
+            { text: t('sidebar.backend') },
+          ]}
+        />
+      }
       title={t('page.cloudProjects.headerTitle')}
       description={t('page.cloudProjects.headerDesc')}
-      footnote={
-        <>
-          Supported providers: <strong>IDCloudHost</strong>,{' '}
-          <strong>Google Cloud Platform</strong>, and{' '}
-          <strong>Proxmox VE</strong>. More providers coming soon. Visit our{' '}
-          <a className="underline" href="//www.youtube.com/@dpanel_id">
-            YouTube channel
-          </a>{' '}
-          for a step-by-step tutorial.
-        </>
-      }
-      rightAppend={
-        <Button
-          buttonStyle="outline"
-          buttonColor="secondary"
-          onClick={() => emit('@cloud-projects/add-new', undefined)}
-        >
-          <PlusCircleIcon /> {t('page.cloudProjects.connectAccount')}
-        </Button>
+      aside={
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/servers">
+              <ServerIcon />
+              <span className="hidden sm:inline">
+                {t('page.cloudProjects.servers')}
+              </span>
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" asChild>
+            <a
+              href={LINK__DOCUMENTATION}
+              aria-label={t('page.cloudProjects.docs')}
+              title={t('page.cloudProjects.docs')}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FileTextIcon />
+              <span className="hidden sm:inline">
+                {t('page.cloudProjects.docs')}
+              </span>
+            </a>
+          </Button>
+          <button
+            type="button"
+            className={flowCtaClassName('sky')}
+            onClick={() => emit('@cloud-projects/add-new', undefined)}
+          >
+            <PlusIcon className="size-4" />
+            {t('page.cloudProjects.connectAccount')}
+          </button>
+        </div>
       }
     />
   );

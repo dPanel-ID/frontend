@@ -7,8 +7,17 @@ import { AsideHelpSupport } from '@/widgets/aside-help-support';
 import EventController from './-EventController';
 import { CloudDataModelProvider } from './-model/cloud-data';
 import { FilterModelProvider } from './-model/filters';
+import { CloudOverviewModelProvider } from './-model/overview';
 import { schemaQueryString } from './-rules/qs';
-import { Header, Layout, MainBottomActions, MainFilter, MainList } from './-view';
+import {
+  Guide,
+  Header,
+  Layout,
+  MainBottomActions,
+  MainFilter,
+  MainList,
+  Overview,
+} from './-view';
 
 export const Route = createFileRoute(
   '/_with-app-layout/backend/cloud-projects/',
@@ -20,26 +29,31 @@ export const Route = createFileRoute(
 function CloudProjectsPage() {
   return (
     <FilterModelProvider>
-      <CloudDataModelProvider>
-        <EventController />
+      <CloudOverviewModelProvider>
+        <CloudDataModelProvider>
+          <EventController />
 
-        <Header />
+          <div className="flex flex-col gap-4">
+            <Header />
+            <Guide />
+            <Overview />
 
-        <Layout>
-          <Layout.Main>
-            <MainFilter />
-            <MainList />
-            <MainBottomActions />
-          </Layout.Main>
+            <Layout>
+              <Layout.Main>
+                <MainFilter />
+                <MainList />
+                <MainBottomActions />
+              </Layout.Main>
 
-          <Layout.Aside>
-            <Card className="rounded-2xl">
-              <AsideHelpSupport.Complete topic="cloud" />
-            </Card>
-          </Layout.Aside>
-        </Layout>
-      </CloudDataModelProvider>
+              <Layout.Aside>
+                <Card className="rounded-2xl">
+                  <AsideHelpSupport.Complete topic="cloud" />
+                </Card>
+              </Layout.Aside>
+            </Layout>
+          </div>
+        </CloudDataModelProvider>
+      </CloudOverviewModelProvider>
     </FilterModelProvider>
   );
 }
-

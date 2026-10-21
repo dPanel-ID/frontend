@@ -149,7 +149,7 @@
       "refresh": "Segarkan",
       "rows": "{count} baris",
       "pageOf": "Halaman {page} dari {total}",
-      "loading": "Memuat\u2026",
+      "loading": "Memuat…",
       "loadFailed": "Bagian ini tidak dapat dimuat",
       "retry": "Coba lagi",
       "clearSearch": "Hapus pencarian"
@@ -289,7 +289,7 @@
         "technicalDetails": "Detail teknis",
         "emptyTitle": "Belum ada server untuk diukur",
         "emptyDescription": "Penggunaan muncul di sini setelah ada server yang siap.",
-        "loadingTitle": "Membaca penggunaan server\u2026",
+        "loadingTitle": "Membaca penggunaan server…",
         "failedTitle": "Tidak ada server yang melaporkan penggunaannya",
         "failedDescription": "Server mungkin sedang sibuk atau tidak terhubung. Aplikasi Anda tidak terpengaruh pemeriksaan ini.",
         "retry": "Coba lagi",
@@ -314,7 +314,7 @@
       },
       "verdict": {
         "ariaLabel": "Kesehatan infrastruktur",
-        "loading": "Memeriksa infrastruktur Anda\u2026",
+        "loading": "Memeriksa infrastruktur Anda…",
         "healthy": "Semuanya berjalan normal",
         "healthyDetail": "Tidak ada operasi yang gagal, tidak ada server yang mati, dan semua agent melapor.",
         "attention": "{count, plural, other {# hal perlu perhatian Anda}}",
@@ -337,8 +337,8 @@
         "title": "Perlu perhatian Anda",
         "description": "{count} hal perlu diperiksa.",
         "healthyDescription": "Tidak ada yang perlu diperiksa saat ini.",
-        "checkingDescription": "Memeriksa infrastruktur Anda\u2026",
-        "checkingTitle": "Memeriksa infrastruktur Anda\u2026",
+        "checkingDescription": "Memeriksa infrastruktur Anda…",
+        "checkingTitle": "Memeriksa infrastruktur Anda…",
         "failedDescription": "Tidak bisa memeriksa hal yang perlu perhatian Anda.",
         "failedTitle": "Tidak bisa memuat hal yang perlu perhatian Anda",
         "failedDetail": "Pemeriksaan ini sedang tidak tersedia. Infrastruktur Anda tidak terpengaruh.",
@@ -399,7 +399,7 @@
         "noMetadata": "Tidak ada detail lain yang dilaporkan",
         "technicalDetails": "Detail teknis",
         "unknownActivity": "Sebuah operasi",
-        "loadingTitle": "Memuat aktivitas terbaru\u2026",
+        "loadingTitle": "Memuat aktivitas terbaru…",
         "emptyTitle": "Belum ada yang terjadi",
         "emptyDescription": "Operasi seperti penyiapan server, pemasangan modul, dan deployment akan muncul di sini saat dijalankan.",
         "emptyNoServersTitle": "Belum ada server",
@@ -1329,7 +1329,7 @@
         "lines": "{count} baris",
         "filterPlaceholder": "Saring baris log",
         "showing": "Menampilkan {shown} dari {total} baris",
-        "discovering": "Mencari berkas log\u2026",
+        "discovering": "Mencari berkas log…",
         "allLogs": "Semua log VM",
         "loading": "Memuat entri log",
         "emptyFile": "Tidak ada entri pada rentang yang dipilih.",
@@ -1768,31 +1768,97 @@
       }
     },
     "cloudProjects": {
-      "headerTitle": "Akun Cloud",
-      "headerDesc": "Hubungkan penyedia cloud Anda untuk mengelola VM dan jaringan langsung dari dNocs.",
-      "connectAccount": "Hubungkan Akun",
+      "headerTitle": "Akun cloud",
+      "headerDesc": "Hubungkan akun penyedia cloud yang sudah Anda bayar, lalu dNocs bisa meluncurkan server di dalamnya untuk Anda.",
+      "connectAccount": "Hubungkan akun cloud",
       "actions": {
-        "viewRegions": "Lihat Wilayah"
+        "viewRegions": "Lihat region",
+        "openDetails": "Buka akun",
+        "useOnServer": "Buat server di sini"
       },
       "table": {
         "headers": {
-          "project": "Proyek Cloud",
+          "project": "Akun cloud",
           "owner": "Pemilik",
-          "lastModified": "Terakhir Diubah"
-        }
+          "lastModified": "Terakhir diubah"
+        },
+        "account": "Akun cloud",
+        "provider": "Penyedia",
+        "status": "Status",
+        "owner": "Pemilik",
+        "updated": "Terakhir diubah",
+        "actions": "Aksi"
       },
       "deleteDialog": {
-        "title": "Hapus Proyek Cloud",
-        "message": "Apakah Anda yakin ingin menghapus \"{name}\" ({id})?"
+        "title": "Putuskan akun cloud",
+        "message": "Putuskan \"{name}\" ({id})? dNocs berhenti mengelolanya dan melupakan kunci API-nya. Server yang sudah berjalan di penyedia tetap berjalan dan tetap menagih Anda."
       },
       "toaster": {
-        "deleteSuccess": "Berhasil menghapus proyek cloud \"{name}\"",
-        "deleteError": "Gagal menghapus proyek cloud \"{name}\""
+        "deleteSuccess": "Akun cloud \"{name}\" diputuskan",
+        "deleteError": "Gagal memutuskan akun cloud \"{name}\""
       },
       "emptyState": {
-        "title": "Belum ada akun cloud terhubung",
-        "message": "Hubungkan penyedia cloud untuk mulai mengelola sumber daya Anda di sini.",
-        "cta": "Hubungkan Akun"
+        "title": "Hubungkan akun cloud pertama Anda",
+        "message": "dNocs butuh kunci akun penyedia sebelum bisa meluncurkan server untuk Anda.",
+        "cta": "Hubungkan akun cloud"
+      },
+      "docs": "Dokumentasi",
+      "servers": "Server",
+      "guide": {
+        "title": "Untuk apa akun cloud?",
+        "description": "dNocs tidak menjual server. Anda menghubungkan akun penyedia yang sudah Anda miliki, lalu dNocs memakainya untuk membuat mesin atas nama Anda — ditagih oleh penyedia Anda, dikendalikan dari sini.",
+        "steps": {
+          "connect": {
+            "title": "Hubungkan penyedia Anda",
+            "description": "Pilih penyedia dan tempel kunci API yang diberikannya. dNocs menyimpannya terenkripsi dan tidak pernah menampilkannya lagi."
+          },
+          "read": {
+            "title": "dNocs membaca yang bisa Anda pakai",
+            "description": "Daftar region, ukuran, dan image yang boleh diluncurkan akun Anda, sehingga pilihannya nyata."
+          },
+          "launch": {
+            "title": "Luncurkan server",
+            "description": "Pilih akun ini di halaman buat server, lalu dNocs membangun mesinnya di cloud Anda sendiri."
+          }
+        },
+        "cta": "Buat server"
+      },
+      "overview": {
+        "total": "Akun cloud",
+        "ready": "Siap dipakai",
+        "progress": "Menghubungkan",
+        "failed": "Perlu perhatian",
+        "totalHintOne": "di satu penyedia",
+        "totalHintMany": "di {providers} penyedia",
+        "sampleNote": "Hitungan per status diambil dari {sample} akun terbaru Anda."
+      },
+      "filters": {
+        "searchPlaceholder": "Cari berdasarkan nama akun",
+        "status": "Status"
+      },
+      "status": {
+        "ready": "Siap",
+        "pending": "Menunggu koneksi",
+        "progress": "Menghubungkan",
+        "deleting": "Menghapus",
+        "failed": "Gagal terhubung",
+        "cancelled": "Dibatalkan",
+        "deleted": "Terhapus",
+        "unknown": "Tidak diketahui"
+      },
+      "card": {
+        "personal": "Hanya Anda",
+        "team": "Dibagikan ke {name}",
+        "unknownProvider": "Penyedia tidak dikenal"
+      },
+      "empty": {
+        "title": "Hubungkan akun cloud pertama Anda",
+        "message": "dNocs butuh kunci akun penyedia sebelum bisa meluncurkan server untuk Anda. dNocs tidak menagih apa pun — penyedia Anda menagih seperti biasa.",
+        "cta": "Hubungkan akun cloud",
+        "secondary": "Lihat cara server dibuat",
+        "filteredTitle": "Tidak ada akun yang cocok",
+        "filteredMessage": "Coba nama lain, atau hapus filter untuk melihat semua akun.",
+        "clear": "Hapus filter"
       }
     },
     "sshKeys": {
@@ -1852,7 +1918,7 @@
         },
         "documentTitle": "{name} — Kunci SSH | dPanel",
         "fallbackName": "Kunci tanpa nama",
-        "loading": "Memuat data kunci\u2026",
+        "loading": "Memuat data kunci…",
         "back": "Kembali ke kunci SSH",
         "useOnServer": "Buat server dengan kunci ini",
         "whatNowTitle": "Yang bisa Anda lakukan dengan kunci ini",
@@ -1977,7 +2043,7 @@
     },
     "teamDetail": {
       "addMember": "Tambah Anggota",
-      "loadingData": "Memuat data tim\u2026",
+      "loadingData": "Memuat data tim…",
       "memberCount": "{count, plural, one {# anggota} other {# anggota}} dalam tim ini",
       "memberColumn": "Anggota",
       "roleColumn": "Peran",
@@ -2064,7 +2130,7 @@
         "nameRequired": "Nama grup wajib diisi.",
         "cancel": "Batal",
         "create": "Buat grup",
-        "creating": "Membuat\u2026"
+        "creating": "Membuat…"
       },
       "detail": {
         "tabs": {
@@ -2099,7 +2165,7 @@
             "actions": "Aksi"
           },
           "remove": "Keluarkan",
-          "removing": "Mengeluarkan\u2026",
+          "removing": "Mengeluarkan…",
           "empty": "Grup ini belum punya server.",
           "emptyHint": "Tambahkan server untuk menjalankan aksi bersama.",
           "noMatch": "Tidak ada server yang cocok.",
@@ -2179,7 +2245,7 @@
             "descriptionLabel": "Deskripsi",
             "nameRequired": "Nama grup wajib diisi.",
             "save": "Simpan",
-            "saving": "Menyimpan\u2026",
+            "saving": "Menyimpan…",
             "cancel": "Batal"
           },
           "delete": {
@@ -2189,7 +2255,7 @@
             "servers": "Servernya tetap seperti semula; hanya tidak lagi tergrup.",
             "history": "Operasi lama dan lognya tetap disimpan.",
             "confirm": "Hapus grup",
-            "deleting": "Menghapus\u2026",
+            "deleting": "Menghapus…",
             "cancel": "Batal"
           },
           "bulk": {
@@ -2216,7 +2282,7 @@
             },
             "targets": "Berjalan pada {count} server.",
             "queue": "Jalankan",
-            "queueing": "Mengantrekan\u2026",
+            "queueing": "Mengantrekan…",
             "cancel": "Batal"
           },
           "deploy": {
@@ -2230,7 +2296,7 @@
             "noArtifacts": "Tidak ada artefak untuk aplikasi ini.",
             "selectBoth": "Pilih aplikasi dan artefak.",
             "deploy": "Deploy",
-            "queueing": "Mengantrekan\u2026",
+            "queueing": "Mengantrekan…",
             "cancel": "Batal"
           },
           "retry": {
@@ -2241,7 +2307,7 @@
             "variablesNote": "Variabel yang disamarkan harus dimasukkan lagi.",
             "refNote": "Ref terpin diperlukan untuk pengulangan ini.",
             "retry": "Ulangi",
-            "retrying": "Mengulang\u2026",
+            "retrying": "Mengulang…",
             "cancel": "Batal"
           },
           "module": {
@@ -2303,7 +2369,8 @@
         "appCreation": "pembuatan aplikasi",
         "application": "membuat dan mengatur aplikasi",
         "server": "membuat dan mengatur server",
-        "ssh": "membuat dan mengatur kunci SSH"
+        "ssh": "membuat dan mengatur kunci SSH",
+        "cloud": "menghubungkan dan mengatur akun cloud"
       }
     },
     "helpAndSupportCompact": {
@@ -2612,7 +2679,7 @@
       "title": "Ubah Tim",
       "fieldName": "Nama Tim",
       "namePlaceholder": "Tim Saya",
-      "descPlaceholder": "Deskripsi singkat tim ini\u2026"
+      "descPlaceholder": "Deskripsi singkat tim ini…"
     },
     "serverEdit": {
       "title": "Edit server",
@@ -2662,7 +2729,7 @@
       "manage": "Kelola",
       "installed": "Terpasang",
       "noDescription": "Tidak ada deskripsi.",
-      "loading": "Memuat katalog modul\u2026",
+      "loading": "Memuat katalog modul…",
       "failed": "Katalog tidak dapat dimuat",
       "empty": "Repositori modul tidak menyediakan modul apa pun.",
       "noMatch": "Tidak ada modul yang cocok."
@@ -2713,9 +2780,9 @@
     "addTeamMember": {
       "title": "Tambah Anggota Baru",
       "description": "Pilih pengguna dan tetapkan peran workspace sebelum menambahkannya.",
-      "selectUser": "Pilih pengguna\u2026",
-      "searchByUsername": "Cari berdasarkan username atau nama\u2026",
-      "loading": "Memuat\u2026",
+      "selectUser": "Pilih pengguna…",
+      "searchByUsername": "Cari berdasarkan username atau nama…",
+      "loading": "Memuat…",
       "noUsersFound": "Pengguna tidak ditemukan",
       "pageInfo": "Halaman {page} / {totalPage}",
       "rolesTitle": "Peran workspace",
@@ -2729,7 +2796,7 @@
     "manageMemberRoles": {
       "title": "Kelola peran",
       "description": "Perbarui akses untuk {name}",
-      "loading": "Memuat katalog peran\u2026",
+      "loading": "Memuat katalog peran…",
       "errorTitle": "Gagal memuat peran",
       "errorMessage": "Pilihan peran sedang tidak tersedia. Coba lagi sebelum menyimpan perubahan.",
       "empty": "Tidak ada peran yang dapat diberikan.",
@@ -2765,7 +2832,7 @@
       "emptySelectionWarning": "Menyimpan tanpa server terpilih akan mengeluarkan semua anggota grup ini.",
       "cancel": "Batal",
       "confirm": "Konfirmasi",
-      "saving": "Menyimpan\u2026",
+      "saving": "Menyimpan…",
       "submitFailed": "Pilihan tidak dapat dikirim."
     }
   },

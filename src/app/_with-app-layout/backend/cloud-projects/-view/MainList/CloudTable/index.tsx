@@ -1,239 +1,101 @@
-import type { ComponentProps } from 'react';
-
 import dayjs from 'dayjs';
-import { BuildingIcon, CloudIcon, EyeIcon, UserIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
-import IconBiznetGio from '@/shared/assets/biznetgio.png';
-import IconGoogleCloudPlatform from '@/shared/assets/ico-gcloud.png';
-import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
-import IconProxmox from '@/shared/assets/ico-proxmox.png';
-import IconDigitalOcean from '@/shared/assets/logo-digitalocean.png';
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
-import { Tooltip } from '@/shared/presentation/atoms/Tooltip';
-import IconThreeDots from '@/shared/presentation/icons/ThreeDots';
-import ActionPopover from '@/shared/presentation/molecules/ActionPopover';
-import { buildResourceTable } from '@/widgets/resource-table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/shared/presentation/atoms/Table';
 
-import { useEmit } from '../../../-model/events';
-
-export interface CloudTableData {
-  id: string;
-  name?: string | null;
-  provider?: string | null;
-  ownerName?: string | null;
-  teamName?: string | null;
-  teamId?: string | null;
-  lastUpdated?: string | null;
-  installerStatus?: string | null;
-}
+import type { CloudProjectCard } from '../../../-lib/describe-cloud-project';
+import { CloudProjectActions } from '../CloudProjectActions';
+import {
+  CloudProjectAccessPill,
+  CloudProjectIdentity,
+  CloudProjectStatusPill,
+} from '../CloudProjectIdentity';
+import type { CloudProjectHandlers } from '../useCloudProjectHandlers';
 
 export interface CloudTableProps {
-  data: CloudTableData[];
+  cloudProjects: CloudProjectCard[];
+  handlersFor: (cloudProject: CloudProjectCard) => CloudProjectHandlers;
 }
 
-const PROVIDER_META: Record<
-  string,
-  {
-    src?: string;
-    label: string;
-    icon?: React.ComponentType<{ className?: string }>;
-  }
-> = {
-  biznetgio: { src: IconBiznetGio, label: 'Biznet Gio' },
-  biznetgioneolite: { src: IconBiznetGio, label: 'Biznet Gio' },
-  digitalocean: { src: IconDigitalOcean, label: 'DigitalOcean' },
-  idcloudhost: { src: IconIDCloudHost, label: 'IDCloudHost' },
-  gcp: { src: IconGoogleCloudPlatform, label: 'Google Cloud' },
-  googlecloud: { src: IconGoogleCloudPlatform, label: 'Google Cloud' },
-  proxmox: { src: IconProxmox, label: 'Proxmox VE' },
-};
-
-const Table = buildResourceTable<CloudTableData>({
-  columns: [
-    {
-      key: 'provider',
-      width: '32px',
-      header: (
-        <div className="flex items-center justify-center w-8">
-          <CloudIcon className="size-4 text-primary/70" />
-        </div>
-      ),
-      content: function Content({ row }) {
-        const t = useDevetekTranslations();
-
-        const meta =
-          PROVIDER_META[row.provider?.toLocaleLowerCase() ?? ''] ?? null;
-
-        if (meta?.src) {
-          return (
-            <Tooltip message={meta.label}>
-              <img
-                src={meta.src}
-                className="size-8 object-contain"
-                alt={meta.label}
-              />
-            </Tooltip>
-          );
-        }
-
-        return (
-          <Tooltip message={row.provider ?? t('common.terms.unknown')}>
-            <CloudIcon className="size-6 text-primary/60" />
-          </Tooltip>
-        );
-      },
-    },
-    {
-      key: 'name',
-      width: '2fr',
-      header: '@page.cloudProjects.table.headers.project',
-      content: function Content({ row }) {
-        const emit = useEmit();
-        const providerKey = row.provider?.toLocaleLowerCase() ?? '';
-        const providerLabel = PROVIDER_META[providerKey]?.label ?? row.provider;
-
-        return (
-          <button
-            type="button"
-            className="leading-2.5 flex flex-col justify-center w-full text-left cursor-pointer"
-            onClick={() =>
-              emit('@cloud-projects/open--details', {
-                cloudProjectId: String(row.id),
-                cloudProjectName: row.name ?? '',
-              })
-            }
-          >
-            <p className="text-primary tracking-tight text-sm font-medium hover:underline">
-              {row.name ?? '—'}
-            </p>
-            {providerLabel && (
-              <em className="text-primary/70 text-[0.6rem]">{providerLabel}</em>
-            )}
-          </button>
-        );
-      },
-    },
-    {
-      key: 'owner',
-      width: '1.5fr',
-      header: '@page.cloudProjects.table.headers.owner',
-      content: function Content({ row }) {
-        const t = useDevetekTranslations();
-
-        return (
-          <div className="flex flex-col justify-center">
-            {row.ownerName ? (
-              <p className="text-primary text-xs flex items-center gap-x-1">
-                <UserIcon className="size-3 shrink-0" />
-                {row.ownerName}
-              </p>
-            ) : (
-              <p className="text-primary/40 text-xs">—</p>
-            )}
-            {row.teamName && (
-              <p className="text-primary/70 text-[0.675rem] flex items-center mt-0.5">
-                <span>{t('common.terms.partOf')}</span>
-                <BuildingIcon className="size-2.5 ml-1 mr-0.5" />
-                <span>{row.teamName}</span>
-              </p>
-            )}
-          </div>
-        );
-      },
-    },
-    {
-      key: 'lastUpdated',
-      header: '@page.cloudProjects.table.headers.lastModified',
-      content: function Content({ row }) {
-        const locale = useDevetekLocale();
-
-        if (!row.lastUpdated) {
-          return <p className="text-primary/40 text-xs">—</p>;
-        }
-
-        const relative = getDistanceFromNow(row.lastUpdated, locale);
-
-        return (
-          <div className="flex flex-col justify-center">
-            <p className="text-primary text-sm">{relative}</p>
-            <p className="text-primary/70 text-[0.6rem]">
-              {dayjs(row.lastUpdated).format('YYYY/MM/DD HH:mm')}
-            </p>
-          </div>
-        );
-      },
-    },
-    {
-      key: 'actions',
-      content: function Content({ row }) {
-        const emit = useEmit();
-        const t = useDevetekTranslations();
-
-        type Actions = ComponentProps<typeof ActionPopover>['actions'];
-        const actions: Actions = [
-          {
-            label: t('common.actions.migrateOwnership'),
-            onClick: () => {
-              emit('@cloud-projects/open--migrate-ownership', {
-                id: row.id,
-                name: row.name ?? String(row.id),
-                teamName: row.teamName,
-                teamId: row.teamId,
-              });
-            },
-          },
-          {
-            variant: 'danger',
-            label: t('common.actions.delete'),
-            onClick: () => {
-              emit('@cloud-projects/project--delete', {
-                id: row.id,
-                name: row.name ?? String(row.id),
-              });
-            },
-          },
-        ];
-
-        return (
-          <div className="flex justify-end items-center gap-x-1">
-            <Button
-              size="icon-sm"
-              buttonColor="secondary"
-              buttonStyle="ghost"
-              onClick={() => {
-                emit('@cloud-projects/open--details', {
-                  cloudProjectId: String(row.id),
-                  cloudProjectName: row.name ?? '',
-                });
-              }}
-            >
-              <EyeIcon />
-            </Button>
-            <ActionPopover actions={actions}>
-              <Button
-                size="icon-sm"
-                buttonColor="secondary"
-                buttonStyle="ghost"
-              >
-                <IconThreeDots />
-              </Button>
-            </ActionPopover>
-          </div>
-        );
-      },
-    },
-  ],
-});
-
+/** The dense view: one line per account, for workspaces with many of them. */
 export default function CloudTable(props: CloudTableProps) {
-  const { data } = props;
+  const { cloudProjects, handlersFor } = props;
+  const t = useDevetekTranslations();
+  const locale = useDevetekLocale();
 
   return (
-    <div className="overflow-hidden overflow-x-auto -mt-1 pt-1 -mb-2 pb-2 -mx-2 px-2">
-      <Table className="min-w-[560px]" data={data} />
+    <div className="overflow-x-auto rounded-2xl border bg-card">
+      <Table className="min-w-[680px]">
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="px-4">
+              {t('page.cloudProjects.table.account')}
+            </TableHead>
+            <TableHead>{t('page.cloudProjects.table.status')}</TableHead>
+            <TableHead>{t('page.cloudProjects.table.owner')}</TableHead>
+            <TableHead>{t('page.cloudProjects.table.updated')}</TableHead>
+            <TableHead className="px-4 text-right">
+              {t('page.cloudProjects.table.actions')}
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {cloudProjects.map((cloudProject) => {
+            const handlers = handlersFor(cloudProject);
+
+            return (
+              <TableRow key={cloudProject.id}>
+                <TableCell className="px-4">
+                  <CloudProjectIdentity
+                    cloudProject={cloudProject}
+                    size="sm"
+                    onClickName={handlers.openDetails}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CloudProjectStatusPill cloudProject={cloudProject} />
+                </TableCell>
+                <TableCell>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-primary/80">
+                      {cloudProject.ownerName ?? '—'}
+                    </span>
+                    <CloudProjectAccessPill cloudProject={cloudProject} />
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {cloudProject.updatedAt ? (
+                    <div className="flex flex-col">
+                      <span className="text-xs text-primary/80">
+                        {getDistanceFromNow(cloudProject.updatedAt, locale)}
+                      </span>
+                      <span className="text-[0.65rem] text-muted-foreground">
+                        {dayjs(cloudProject.updatedAt).format(
+                          'YYYY/MM/DD HH:mm',
+                        )}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-primary/40">—</span>
+                  )}
+                </TableCell>
+                <TableCell className="px-4">
+                  <CloudProjectActions handlers={handlers} layout="menu" />
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
     </div>
   );
 }
