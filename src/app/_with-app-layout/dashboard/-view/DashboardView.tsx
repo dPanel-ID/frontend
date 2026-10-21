@@ -32,11 +32,13 @@ import {
   buildApplicationStats,
   buildLoadBalancerStats,
   buildServerStats,
-  toEstateStatus,
 } from '../-lib/stats';
 import { TELEMETRY_LIMIT } from '../-lib/telemetry';
 import type { TelemetrySample } from '../-lib/telemetry';
 import { buildWorkspaceIacRepository } from '../-lib/workspace';
+import { KpiBlock } from '../-presentation';
+import { resolveDashboardTab } from '../-rules/tabs';
+import type { DashboardTab } from '../-rules/tabs';
 import { useDashboardHealth } from '../-usecase/use-dashboard-health';
 
 import ActivityChart from './ActivityChart/ActivityChart';
@@ -45,15 +47,14 @@ import ApplicationsList from './ApplicationsList/ApplicationsList';
 import AttentionPanel from './AttentionPanel/AttentionPanel';
 import DashboardServerTelemetryProbe from './CapacityPanel/DashboardServerTelemetryProbe';
 import CloudProjectsPanel from './CloudProjectsPanel/CloudProjectsPanel';
-import EstatePanel from './EstatePanel/EstatePanel';
 import FleetUtilisationPanel from './FleetUtilisationPanel/FleetUtilisationPanel';
 import Header from './Header';
 import HealthVerdict from './HealthVerdict/HealthVerdict';
 import LoadBalancersList from './LoadBalancersList/LoadBalancersList';
 import MembersPanel from './MembersPanel/MembersPanel';
-import ResourceMixPanel from './ResourceMixPanel/ResourceMixPanel';
 import ServerHealthPanel from './ServerHealthPanel/ServerHealthPanel';
 import ServersList from './ServersList/ServersList';
+import TabNav from './TabNav';
 import WorkspaceOverview from './WorkspaceOverview/WorkspaceOverview';
 
 const RECENT_LIST_LIMIT = 3;
@@ -64,7 +65,12 @@ const EMPTY_LOAD_BALANCERS: DTOs.LoadBalancerV2[] = [];
 const EMPTY_MEMBERS: DTOs.OrganizationPeopleV1[] = [];
 const EMPTY_CLOUD_PROJECTS: DTOs.CloudProjectV1[] = [];
 
-export default function DashboardView() {
+export interface DashboardViewProps {
+  /** The tab from the URL. A tab this workspace does not have falls back. */
+  tab: DashboardTab;
+}
+
+export default function DashboardView(props: DashboardViewProps) {
   const t = useDevetekTranslations();
   const { userProfile } = useAuthLoggedIn();
 
@@ -230,59 +236,121 @@ export default function DashboardView() {
   );
   const workspaceIacRepository = buildWorkspaceIacRepository(iacRepositoryData);
 
+  const activeTab = resolveDashboardTab(props.tab, isTeamWorkspace);
+
+  // The estate as headline numbers. Counts are totals, not series, so each
+  // carries its own status breakdown rather than an invented trend line.
+  const estateItems = [
+    {
+      key: 'servers',
+      label: t('page.dashboard.estate.servers'),
+      value: totalServers,
+      hint: t('page.dashboard.estate.serversHint', {
+        ready: serverStats.ready,
+        attention: serverStats.attention,
+      }),
+      hintNeedsAttention: serverStats.attention > 0,
+      to: '/servers',
+    },
+    {
+      key: 'applications',
+      label: t('page.dashboard.estate.applications'),
+      value: totalApplications,
+      hint: t('page.dashboard.estate.applicationsHint', {
+        ready: applicationStats.ready,
+        attention: applicationStats.attention,
+      }),
+      hintNeedsAttention: applicationStats.attention > 0,
+      to: '/applications',
+    },
+    {
+      key: 'loadBalancers',
+      label: t('page.dashboard.estate.loadBalancers'),
+      value: totalLoadBalancers,
+      hint: t('page.dashboard.estate.loadBalancersHint', {
+        ready: loadBalancerStats.ready,
+        attention: loadBalancerStats.attention,
+      }),
+      hintNeedsAttention: loadBalancerStats.attention > 0,
+      to: '/backend/load-balancers',
+    },
+    {
+      key: 'cloudProjects',
+      label: t('page.dashboard.estate.cloudProjects'),
+      value: totalCloudProjects,
+      to: '/backend/cloud-projects',
+      search: { page: 1, viewMode: 'auto' as const },
+    },
+    {
+      key: 'domains',
+      label: t('page.dashboard.estate.domains'),
+      value: totalDomains,
+      to: '/backend/domain',
+    },
+    {
+      key: 'databases',
+      label: t('page.dashboard.estate.databases'),
+      value: totalDatabases,
+      to: '/backend/database',
+    },
+    {
+      key: 'sshKeys',
+      label: t('page.dashboard.estate.sshKeys'),
+      value: totalSshKeys,
+      to: '/backend/secret-managers/ssh-key',
+    },
+  ];
+
   return (
     <>
       <Header />
 
       <div className="flex flex-col gap-4">
-        {/* Is anything wrong? */}
-        <HealthVerdict
-          verdict={health.verdict}
-          isLoading={health.isLoading}
-          hasFailed={health.hasFailed}
-          isUnauthorized={health.isUnauthorized}
-          onRetry={health.refresh}
-        />
+        <TabNav active={activeTab} isTeamWorkspace={isTeamWorkspace} />
 
-        <AttentionPanel
-          servers={servers}
-          failures={health.failures}
-          unreachableAgents={health.unreachableAgents}
-          unhealthyServers={health.unhealthyServers}
-          isLoading={health.isLoading}
-          hasFailed={health.hasFailed}
-          isUnauthorized={health.isUnauthorized}
-          onRetry={health.refresh}
-        />
+        {activeTab === 'overview' && (
+          <>
+            {/* Is anything wrong? */}
+            <HealthVerdict
+              verdict={health.verdict}
+              isLoading={health.isLoading}
+              hasFailed={health.hasFailed}
+              isUnauthorized={health.isUnauthorized}
+              onRetry={health.refresh}
+            />
 
-        {/* What changed, and when? */}
-        <ActivityChart />
+            {/* The estate as one block of numbers, beside the trend. */}
+            <div className="grid gap-4 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+              <KpiBlock items={estateItems} className="self-start" />
+              <ActivityChart />
+            </div>
 
-        <ActivityPanel hasServers={servers.length > 0} />
+            <AttentionPanel
+              servers={servers}
+              failures={health.failures}
+              unreachableAgents={health.unreachableAgents}
+              unhealthyServers={health.unhealthyServers}
+              isLoading={health.isLoading}
+              hasFailed={health.hasFailed}
+              isUnauthorized={health.isUnauthorized}
+              onRetry={health.refresh}
+            />
 
-        {/* How hard is it working? */}
-        <FleetUtilisationPanel />
+            <FleetUtilisationPanel />
+          </>
+        )}
 
-        {/* What do I have? */}
-        <EstatePanel
-          servers={toEstateStatus(serverStats, servers.length, totalServers)}
-          applications={toEstateStatus(
-            applicationStats,
-            applications.length,
-            totalApplications,
-          )}
-          loadBalancers={toEstateStatus(
-            loadBalancerStats,
-            loadBalancers.length,
-            totalLoadBalancers,
-          )}
-          totalDomains={totalDomains}
-          totalDatabases={totalDatabases}
-          totalSshKeys={totalSshKeys}
-        />
+        {activeTab === 'activity' && (
+          <>
+            <ActivityChart />
+            <ActivityPanel hasServers={servers.length > 0} />
+          </>
+        )}
 
-        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(360px,0.75fr)]">
-          <div className="flex min-w-0 flex-col gap-4">
+        {activeTab === 'resources' && (
+          <>
+            <FleetUtilisationPanel />
+
             <ServerHealthPanel
               totalServers={totalServers}
               stats={serverStats}
@@ -290,53 +358,40 @@ export default function DashboardView() {
               reportingServerCount={reportingServerCount}
             />
 
-            {/* Configuration, not status: it sits below everything that is. */}
+            <div className="grid gap-4 xl:grid-cols-3">
+              <ServersList servers={servers} limit={RECENT_LIST_LIMIT} />
+              <ApplicationsList
+                applications={applications}
+                limit={RECENT_LIST_LIMIT}
+              />
+              <LoadBalancersList
+                loadBalancers={loadBalancers}
+                limit={RECENT_LIST_LIMIT}
+              />
+            </div>
+          </>
+        )}
+
+        {activeTab === 'workspace' && (
+          <>
             <WorkspaceOverview
               workspaceName={activeWorkspaceName}
               workspaceId={activeWorkspaceId ?? undefined}
-              workspaceType={
-                isTeamWorkspace
-                  ? t('page.dashboard.workspace.team')
-                  : t('page.dashboard.workspace.personal')
-              }
+              workspaceType={t('page.dashboard.workspace.team')}
               iacRepository={workspaceIacRepository}
               isIacRepositoryLoading={isPendingResponse(iacRepositoryResponse)}
             />
 
-            <CloudProjectsPanel
-              cloudProjects={cloudProjects}
-              servers={servers}
-              totalCloudProjects={totalCloudProjects}
-            />
-          </div>
-
-          <div className="flex min-w-0 flex-col gap-4">
-            <ResourceMixPanel
-              applicationStats={applicationStats}
-              loadBalancerStats={loadBalancerStats}
-              totalApplications={totalApplications}
-              totalLoadBalancers={totalLoadBalancers}
-              totalDomains={totalDomains}
-              totalDatabases={totalDatabases}
-            />
-
-            <MembersPanel
-              members={members}
-              isTeamWorkspace={isTeamWorkspace}
-              totalMembers={totalMembers}
-            />
-
-            <ServersList servers={servers} limit={RECENT_LIST_LIMIT} />
-            <ApplicationsList
-              applications={applications}
-              limit={RECENT_LIST_LIMIT}
-            />
-            <LoadBalancersList
-              loadBalancers={loadBalancers}
-              limit={RECENT_LIST_LIMIT}
-            />
-          </div>
-        </div>
+            <div className="grid gap-4 xl:grid-cols-2">
+              <MembersPanel members={members} totalMembers={totalMembers} />
+              <CloudProjectsPanel
+                cloudProjects={cloudProjects}
+                servers={servers}
+                totalCloudProjects={totalCloudProjects}
+              />
+            </div>
+          </>
+        )}
       </div>
 
       <div aria-hidden className="hidden">

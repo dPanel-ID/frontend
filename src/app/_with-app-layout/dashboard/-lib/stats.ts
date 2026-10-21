@@ -80,18 +80,3 @@ export interface EstateStatus {
   attention: number;
   unknown: number;
 }
-
-export function toEstateStatus(
-  stats: ResourceStats,
-  counted: number,
-  total?: number,
-): EstateStatus {
-  return {
-    total,
-    counted,
-    ready: stats.ready,
-    working: stats.progress,
-    attention: stats.attention,
-    unknown: stats.unknown,
-  };
-}
