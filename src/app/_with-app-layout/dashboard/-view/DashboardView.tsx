@@ -37,7 +37,6 @@ import {
 import { TELEMETRY_LIMIT } from '../-lib/telemetry';
 import type { TelemetrySample } from '../-lib/telemetry';
 import { buildWorkspaceIacRepository } from '../-lib/workspace';
-import { KpiBlock } from '../-presentation';
 import { resolveDashboardTab } from '../-rules/tabs';
 import type { DashboardTab } from '../-rules/tabs';
 import { useDashboardHealth } from '../-usecase/use-dashboard-health';
@@ -48,6 +47,7 @@ import ApplicationsList from './ApplicationsList/ApplicationsList';
 import AttentionPanel from './AttentionPanel/AttentionPanel';
 import DashboardServerTelemetryProbe from './CapacityPanel/DashboardServerTelemetryProbe';
 import CloudProjectsPanel from './CloudProjectsPanel/CloudProjectsPanel';
+import EstateTiles from './EstateTiles';
 import FleetUtilisationPanel from './FleetUtilisationPanel/FleetUtilisationPanel';
 import Header from './Header';
 import HealthVerdict from './HealthVerdict/HealthVerdict';
@@ -239,72 +239,50 @@ export default function DashboardView(props: DashboardViewProps) {
 
   const activeTab = resolveDashboardTab(props.tab, isTeamWorkspace);
 
-  // The estate as headline numbers. Counts are totals, not series, so each
-  // carries its own status breakdown rather than an invented trend line.
-  const estateItems = [
-    {
-      key: 'servers',
-      label: t('page.dashboard.estate.servers'),
+  // What this workspace contains, as the product's standard stat tiles.
+  // Counts are totals rather than series, so each carries its real status
+  // line instead of a trend that would have to be invented.
+  const estate = {
+    servers: {
       value: totalServers,
       hint: t('page.dashboard.estate.serversHint', {
         ready: serverStats.ready,
         attention: serverStats.attention,
       }),
-      hintNeedsAttention: serverStats.attention > 0,
-      to: '/servers',
+      tone: serverStats.attention > 0 ? ('red' as const) : ('sky' as const),
     },
-    {
-      key: 'applications',
-      label: t('page.dashboard.estate.applications'),
+    applications: {
       value: totalApplications,
       hint: t('page.dashboard.estate.applicationsHint', {
         ready: applicationStats.ready,
         attention: applicationStats.attention,
       }),
-      hintNeedsAttention: applicationStats.attention > 0,
-      to: '/applications',
+      tone:
+        applicationStats.attention > 0
+          ? ('red' as const)
+          : ('neutral' as const),
     },
-    {
-      key: 'loadBalancers',
-      label: t('page.dashboard.estate.loadBalancers'),
+    loadBalancers: {
       value: totalLoadBalancers,
       hint: t('page.dashboard.estate.loadBalancersHint', {
         ready: loadBalancerStats.ready,
         attention: loadBalancerStats.attention,
       }),
-      hintNeedsAttention: loadBalancerStats.attention > 0,
-      to: '/backend/load-balancers',
+      tone:
+        loadBalancerStats.attention > 0
+          ? ('red' as const)
+          : ('neutral' as const),
     },
-    {
-      key: 'cloudProjects',
-      label: t('page.dashboard.estate.cloudProjects'),
-      value: totalCloudProjects,
-      to: '/backend/cloud-projects',
-      search: { page: 1, viewMode: 'auto' as const },
-    },
-    {
-      key: 'domains',
-      label: t('page.dashboard.estate.domains'),
-      value: totalDomains,
-      to: '/backend/domain',
-    },
-    {
-      key: 'databases',
-      label: t('page.dashboard.estate.databases'),
+    cloudProjects: { value: totalCloudProjects },
+    domains: { value: totalDomains },
+    databases: {
       value: totalDatabases,
       // The v1 database endpoint currently answers 410, so this count never
       // arrives; shown as unknown rather than loading for the page's life.
       unavailable: hasFailedResponse(databasesResponse),
-      unavailableHint: t('page.dashboard.estate.unavailable'),
-      to: '/backend/database',
     },
-    {
-      key: 'sshKeys',
-      label: t('page.dashboard.estate.sshKeys'),
-      value: totalSshKeys,
-      to: '/backend/secret-managers/ssh-key',
-    },
-  ];
+    sshKeys: { value: totalSshKeys },
+  };
 
   return (
     <>
@@ -324,11 +302,10 @@ export default function DashboardView(props: DashboardViewProps) {
               onRetry={health.refresh}
             />
 
-            {/* The estate as one block of numbers, beside the trend. */}
-            <div className="grid gap-4 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
-              <KpiBlock items={estateItems} className="self-start" />
-              <ActivityChart />
-            </div>
+            {/* What is here, then how it has been behaving. */}
+            <EstateTiles {...estate} />
+
+            <ActivityChart />
 
             <AttentionPanel
               servers={servers}

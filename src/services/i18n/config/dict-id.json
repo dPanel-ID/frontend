@@ -373,6 +373,10 @@
           "unknown": "Mode tidak diketahui"
         }
       },
+      "hero": {
+        "descriptionNamed": "Selamat datang kembali, {name}. Berikut kondisi infrastruktur Anda.",
+        "description": "Berikut kondisi infrastruktur Anda."
+      },
       "tabs": {
         "ariaLabel": "Bagian dasbor",
         "overview": "Ringkasan",
@@ -1214,6 +1218,10 @@
         "closeTerminal": "Tutup terminal SSH",
         "terminalTitle": "Terminal SSH untuk {name}"
       },
+      "hero": {
+        "descriptionNamed": "Selamat datang kembali, {name}. Berikut kondisi infrastruktur Anda.",
+        "description": "Berikut kondisi infrastruktur Anda."
+      },
       "tabs": {
         "ariaLabel": "Bagian server",
         "overview": "Ringkasan",
@@ -1555,6 +1563,10 @@
         "gateway": "Gateway"
       },
       "backendUpdateRequired": "Simpan perubahan",
+      "hero": {
+        "descriptionNamed": "Selamat datang kembali, {name}. Berikut kondisi infrastruktur Anda.",
+        "description": "Berikut kondisi infrastruktur Anda."
+      },
       "tabs": {
         "graph": "Graf",
         "graphDesc": "Peta topologi",
@@ -3003,6 +3015,10 @@
       "pageInfo": "Halaman {page} dari {totalPage} - {totalItem} tim",
       "previousPage": "Halaman ruang kerja sebelumnya",
       "nextPage": "Halaman ruang kerja berikutnya",
+      "hero": {
+        "descriptionNamed": "Selamat datang kembali, {name}. Berikut kondisi infrastruktur Anda.",
+        "description": "Berikut kondisi infrastruktur Anda."
+      },
       "tabs": {
         "recent": "Terbaru",
         "all": "Semua",
