@@ -34,7 +34,7 @@ import {
   buildServerStats,
   toEstateStatus,
 } from '../-lib/stats';
-import { TELEMETRY_LIMIT, TELEMETRY_POLL_SECONDS } from '../-lib/telemetry';
+import { TELEMETRY_LIMIT } from '../-lib/telemetry';
 import type { TelemetrySample } from '../-lib/telemetry';
 import { buildWorkspaceIacRepository } from '../-lib/workspace';
 import { useDashboardHealth } from '../-usecase/use-dashboard-health';
@@ -43,10 +43,10 @@ import ActivityChart from './ActivityChart/ActivityChart';
 import ActivityPanel from './ActivityPanel/ActivityPanel';
 import ApplicationsList from './ApplicationsList/ApplicationsList';
 import AttentionPanel from './AttentionPanel/AttentionPanel';
-import CapacityPanel from './CapacityPanel/CapacityPanel';
 import DashboardServerTelemetryProbe from './CapacityPanel/DashboardServerTelemetryProbe';
 import CloudProjectsPanel from './CloudProjectsPanel/CloudProjectsPanel';
 import EstatePanel from './EstatePanel/EstatePanel';
+import FleetUtilisationPanel from './FleetUtilisationPanel/FleetUtilisationPanel';
 import Header from './Header';
 import HealthVerdict from './HealthVerdict/HealthVerdict';
 import LoadBalancersList from './LoadBalancersList/LoadBalancersList';
@@ -175,7 +175,9 @@ export default function DashboardView() {
   const [samplesByServerId, setSamplesByServerId] = useState<
     Record<string, TelemetrySample>
   >({});
-  const [probeGeneration, setProbeGeneration] = useState(0);
+  // The probes stay only to count servers answering telemetry for the server
+  // health panel; they retire with that panel in the consolidation pass.
+  const probeGeneration = 0;
 
   const handleTelemetrySample = useCallback((sample: TelemetrySample) => {
     setSamplesByServerId((current) => ({
@@ -186,10 +188,6 @@ export default function DashboardView() {
 
   // Remounting the probes is how a retry refetches: each one owns its own
   // requests, so there is no single refresh handle to call.
-  const handleTelemetryRetry = useCallback(() => {
-    setSamplesByServerId({});
-    setProbeGeneration((generation) => generation + 1);
-  }, []);
 
   const samples = useMemo(
     () => Object.values(samplesByServerId),
@@ -262,13 +260,8 @@ export default function DashboardView() {
 
         <ActivityPanel hasServers={servers.length > 0} />
 
-        <CapacityPanel
-          samples={samples}
-          sampledServerCount={telemetryServers.length}
-          totalReadyServers={serverStats.ready}
-          pollSeconds={TELEMETRY_POLL_SECONDS}
-          onRetry={handleTelemetryRetry}
-        />
+        {/* How hard is it working? */}
+        <FleetUtilisationPanel />
 
         {/* What do I have? */}
         <EstatePanel
