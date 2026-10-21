@@ -4,6 +4,7 @@ import { zodValidator } from '@tanstack/zod-adapter';
 import EventController from './-EventController';
 import { FilterModelProvider } from './-models/filters';
 import { LbDataModelProvider } from './-models/lb-data';
+import { LbOverviewModelProvider } from './-models/overview';
 import { schemaQueryString } from './-rules/qs';
 import View from './-view';
 
@@ -17,10 +18,12 @@ export const Route = createFileRoute(
 function RouteComponent() {
   return (
     <FilterModelProvider>
-      <LbDataModelProvider>
-        <EventController />
-        <View />
-      </LbDataModelProvider>
+      <LbOverviewModelProvider>
+        <LbDataModelProvider>
+          <EventController />
+          <View />
+        </LbDataModelProvider>
+      </LbOverviewModelProvider>
     </FilterModelProvider>
   );
 }

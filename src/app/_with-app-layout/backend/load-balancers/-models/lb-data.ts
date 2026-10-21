@@ -10,12 +10,13 @@ import { useFilterModel } from './filters';
 export const [LbDataModelProvider, useLbDataModel] = buildSelector(
   'LbDataModel',
 )(() => {
-  const { currentPage, searchQuery } = useFilterModel();
+  const { currentPage, searchQuery, status } = useFilterModel();
 
   const [response, refresh] = ApiLoadBalancer.Find.useGet({
     page: currentPage,
     pageSize: 10,
     searchQuery,
+    installerStatus: status || undefined,
   });
 
   useSubscribe('@load-balancers/data--refresh', () => {
@@ -24,9 +25,14 @@ export const [LbDataModelProvider, useLbDataModel] = buildSelector(
 
   return {
     loadBalancers: useAdapter(response, (raw) => {
-      const parsed = (raw.routers || []).map((loadBalancer) =>
-        AdapterLoadBalancerFromDto.toLoadBalancerCard(loadBalancer).unwrap(),
-      );
+      // One malformed record used to throw here and blank the whole list.
+      // Production data still holds routers the schema rejects, so a bad row
+      // is dropped instead.
+      const parsed = (raw.routers || []).flatMap((loadBalancer) => {
+        const card =
+          AdapterLoadBalancerFromDto.toLoadBalancerCard(loadBalancer).okay();
+        return card ? [card] : [];
+      });
 
       return {
         list: parsed,
