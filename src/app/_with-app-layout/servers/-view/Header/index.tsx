@@ -14,7 +14,7 @@ import {
   FlowHero,
   flowCtaClassName,
 } from '@/shared/presentation/organisms/FlowHero';
-import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
+import { LINK__DOCS_SERVERS } from '@/widgets/aside-help-support/config/links';
 
 /** Page opening in the same visual language as the create flows. */
 export default function Header() {
@@ -48,7 +48,7 @@ export default function Header() {
           </Button>
           <Button variant="outline" size="sm" asChild>
             <a
-              href={LINK__DOCUMENTATION}
+              href={LINK__DOCS_SERVERS}
               aria-label={t('page.servers.docs')}
               title={t('page.servers.docs')}
               target="_blank"

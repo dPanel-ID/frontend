@@ -50,6 +50,15 @@ function TryFirstActions() {
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
       <Button asChild size="lg" className="sm:w-auto">
+        <a href="/docs/servers/overview">Read the server guide</a>
+      </Button>
+      <Button
+        asChild
+        buttonStyle="outline"
+        buttonColor="secondary"
+        size="lg"
+        className="sm:w-auto"
+      >
         <a href="/">Try dPanel</a>
       </Button>
       <Button
