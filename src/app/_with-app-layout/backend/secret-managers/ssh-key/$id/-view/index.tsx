@@ -8,7 +8,6 @@ import {
   CalendarIcon,
   CheckIcon,
   ClipboardIcon,
-  FingerprintIcon,
   GlobeIcon,
   KeyRoundIcon,
   LockIcon,
@@ -101,18 +100,15 @@ export default function SshKeyDetailView(props: SshKeyDetailViewProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <section className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+      {/* Only facts short enough to read at a glance: a tile value truncates,
+          and beside the help aside each tile is about 113px wide. The key's
+          label is an email, so it sits on the full-width line below instead. */}
+      <section className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
         <StatTile
           icon={KeyRoundIcon}
           tone="sky"
           label={t('page.sshKeys.detail.type')}
           value={algorithmLabel || '—'}
-        />
-        <StatTile
-          icon={FingerprintIcon}
-          tone="neutral"
-          label={t('page.sshKeys.detail.owner')}
-          value={comment || '—'}
         />
         <StatTile
           icon={CalendarIcon}
@@ -179,17 +175,34 @@ export default function SshKeyDetailView(props: SshKeyDetailViewProps) {
             )}
           </pre>
         </div>
-        {fingerprint && (
-          <footer className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t px-4 py-3">
-            <span className="text-xs font-semibold text-primary/80">
-              {t('page.sshKeys.detail.fingerprint')}
-            </span>
-            <code className="break-all font-mono text-xs text-muted-foreground">
-              {fingerprint}
-            </code>
-            <span className="text-xs text-muted-foreground">
-              {t('page.sshKeys.detail.fingerprintHint')}
-            </span>
+        {(comment || fingerprint) && (
+          <footer className="flex flex-col gap-2 border-t px-4 py-3">
+            {comment && (
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <span className="text-xs font-semibold text-primary/80">
+                  {t('page.sshKeys.detail.owner')}
+                </span>
+                <span className="break-all text-xs text-muted-foreground">
+                  {comment}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {t('page.sshKeys.detail.ownerHint')}
+                </span>
+              </div>
+            )}
+            {fingerprint && (
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <span className="text-xs font-semibold text-primary/80">
+                  {t('page.sshKeys.detail.fingerprint')}
+                </span>
+                <code className="break-all font-mono text-xs text-muted-foreground">
+                  {fingerprint}
+                </code>
+                <span className="text-xs text-muted-foreground">
+                  {t('page.sshKeys.detail.fingerprintHint')}
+                </span>
+              </div>
+            )}
           </footer>
         )}
       </section>

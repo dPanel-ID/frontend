@@ -1859,7 +1859,8 @@
         "whatNow": "Pilih kunci ini di halaman buat server dan dPanel akan masuk untuk Anda. Untuk mengizinkannya secara manual, salin kunci publik di bawah ke berkas authorized_keys server tersebut.",
         "owner": "Diberi label untuk",
         "fingerprint": "Sidik jari",
-        "fingerprintHint": "Bandingkan dengan kunci yang dilaporkan server Anda."
+        "fingerprintHint": "Bandingkan dengan kunci yang dilaporkan server Anda.",
+        "ownerHint": "Tertulis pada kunci, sehingga kunci yang ditemukan di server bisa ditelusuri."
       },
       "emptyState": {
         "title": "Buat kunci SSH pertama Anda",

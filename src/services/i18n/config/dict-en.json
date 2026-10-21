@@ -1867,7 +1867,8 @@
         "whatNow": "Pick it on the create-server page and dPanel signs in for you. To authorise it on a server by hand, copy the public key below into that server's authorized_keys file.",
         "owner": "Labelled for",
         "fingerprint": "Fingerprint",
-        "fingerprintHint": "Compare this with the key your server reports."
+        "fingerprintHint": "Compare this with the key your server reports.",
+        "ownerHint": "Written on the key, so a key found on a server can be traced back."
       },
       "emptyState": {
         "title": "Create your first SSH key",
