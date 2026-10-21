@@ -1,122 +1,60 @@
-import type { ComponentProps } from 'react';
+import { Clock3Icon } from 'lucide-react';
 
-import { BuildingIcon, CloudIcon, UserIcon } from 'lucide-react';
+import { useDevetekLocale } from '@/services/i18n';
 
-import { useDevetekTranslations } from '@/services/i18n';
+import { getDistanceFromNow } from '@/shared/libs/browser/date';
+import { cn } from '@/shared/libs/tailwind/cn';
 
-import IconBiznetGio from '@/shared/assets/biznetgio.png';
-import IconGoogleCloudPlatform from '@/shared/assets/ico-gcloud.png';
-import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
-import IconProxmox from '@/shared/assets/ico-proxmox.png';
-import IconDigitalOcean from '@/shared/assets/logo-digitalocean.png';
-import IconEye from '@/shared/presentation/icons/Eye';
-import IconEyeActive from '@/shared/presentation/icons/EyeActive';
-import IconLastDateActive from '@/shared/presentation/icons/LastDateActive';
-import { ResourceCard } from '@/widgets/resource-card';
-
-import { useEmit } from '../../../-model/events';
-import type { CloudTableData } from '../CloudTable';
+import type { CloudProjectCard } from '../../../-lib/describe-cloud-project';
+import { cloudStatusBucket } from '../../../-lib/describe-cloud-project';
+import { CloudProjectActions } from '../CloudProjectActions';
+import {
+  CloudProjectIdentity,
+  CloudProjectStatusPill,
+} from '../CloudProjectIdentity';
+import type { CloudProjectHandlers } from '../useCloudProjectHandlers';
 
 export interface CloudCardProps {
-  data: CloudTableData;
+  cloudProject: CloudProjectCard;
+  handlers: CloudProjectHandlers;
 }
 
-const PROVIDER_META: Record<string, { src?: string; label: string }> = {
-  biznetgio: { src: IconBiznetGio, label: 'Biznet Gio' },
-  biznetgioneolite: { src: IconBiznetGio, label: 'Biznet Gio' },
-  digitalocean: { src: IconDigitalOcean, label: 'DigitalOcean' },
-  idcloudhost: { src: IconIDCloudHost, label: 'IDCloudHost' },
-  gcp: { src: IconGoogleCloudPlatform, label: 'Google Cloud' },
-  googlecloud: { src: IconGoogleCloudPlatform, label: 'Google Cloud' },
-  proxmox: { src: IconProxmox, label: 'Proxmox VE' },
-};
-
+/** The grid tile: identity, state, and when the account last changed. */
 export default function CloudCard(props: CloudCardProps) {
-  const { data } = props;
-  const { id, name, provider, lastUpdated, ownerName, teamName, teamId } = data;
-
-  const t = useDevetekTranslations();
-
-  const emit = useEmit();
-
-  const meta =
-    PROVIDER_META[provider?.toLocaleLowerCase() ?? ''] ??
-    ({
-      label: provider ?? t('common.terms.unknown'),
-    } as { src?: string; label: string });
-
-  const heroImage: string | typeof CloudIcon = meta.src ?? CloudIcon;
-
-  const handleClickDetails = () =>
-    emit('@cloud-projects/open--details', {
-      cloudProjectId: String(id),
-      cloudProjectName: name ?? '',
-    });
-
-  type Actions = ComponentProps<typeof ResourceCard.Compact.Actions>['actions'];
-  const actions: Actions = [
-    {
-      label: t('page.cloudProjects.actions.viewRegions'),
-      icon: IconEye,
-      iconActive: IconEyeActive,
-      onClick: handleClickDetails,
-    },
-    {
-      label: t('common.actions.migrateOwnership'),
-      onClick: () =>
-        emit('@cloud-projects/open--migrate-ownership', {
-          id,
-          name: name ?? String(id),
-          teamName,
-          teamId,
-        }),
-    },
-    {
-      variant: 'destructive',
-      label: t('common.actions.delete'),
-      onClick: () =>
-        emit('@cloud-projects/project--delete', {
-          id,
-          name: name ?? String(id),
-        }),
-    },
-  ];
-
-  const ownershipStatus = [
-    !!teamName && { icon: BuildingIcon, text: teamName },
-    !!ownerName && { icon: UserIcon, text: ownerName },
-  ].filter(Boolean) as Array<{ icon: typeof UserIcon; text: string }>;
+  const { cloudProject, handlers } = props;
+  const locale = useDevetekLocale();
+  const bucket = cloudStatusBucket(cloudProject.status);
 
   return (
-    <ResourceCard.Compact>
-      <ResourceCard.Compact.Main>
-        <button
-          type="button"
-          className="flex items-start gap-x-2 w-full text-left cursor-pointer"
-          onClick={handleClickDetails}
-        >
-          <ResourceCard.Compact.Main.Hero
-            image={heroImage}
-            tooltipMessage={meta.label}
-          />
-          <ResourceCard.Compact.Main.Content
-            title={name ?? undefined}
-            status={[{ icon: CloudIcon, text: meta.label }, ...ownershipStatus]}
-          />
-        </button>
-      </ResourceCard.Compact.Main>
-      <ResourceCard.Compact.Actions
-        visibleActionOnlyIcon
-        actions={actions}
-        labelMore={t('common.actions.more')}
+    <article
+      className={cn(
+        'group flex flex-col gap-3 rounded-2xl border bg-card p-3 transition-all hover:-translate-y-0.5 hover:border-sky-400/40 hover:shadow-lg hover:shadow-black/5',
+        bucket === 'failed' && 'border-red-400/40',
+        bucket === 'progress' && 'border-sky-400/40',
+      )}
+    >
+      <CloudProjectIdentity
+        cloudProject={cloudProject}
+        size="sm"
+        onClickName={handlers.openDetails}
       />
-      <ResourceCard.Compact.Footnote>
-        <ResourceCard.Compact.Footnote.Item
-          icon={IconLastDateActive}
-          label={t('common.terms.lastUpdated')}
-          value={lastUpdated ?? undefined}
-        />
-      </ResourceCard.Compact.Footnote>
-    </ResourceCard.Compact>
+
+      <CloudProjectStatusPill
+        cloudProject={cloudProject}
+        className="self-start"
+      />
+
+      <div className="mt-auto flex items-center justify-between gap-2 border-t pt-2">
+        <span className="inline-flex min-w-0 items-center gap-1 text-[0.7rem] text-muted-foreground">
+          <Clock3Icon className="size-3 shrink-0" aria-hidden />
+          <span className="truncate">
+            {cloudProject.updatedAt
+              ? getDistanceFromNow(cloudProject.updatedAt, locale)
+              : '—'}
+          </span>
+        </span>
+        <CloudProjectActions handlers={handlers} layout="menu" />
+      </div>
+    </article>
   );
 }

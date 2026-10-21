@@ -158,7 +158,7 @@
       "refresh": "Refresh",
       "rows": "{count} rows",
       "pageOf": "Page {page} of {total}",
-      "loading": "Loading\u2026",
+      "loading": "Loading…",
       "loadFailed": "Could not load this section",
       "retry": "Retry",
       "clearSearch": "Clear search"
@@ -298,7 +298,7 @@
         "technicalDetails": "Technical details",
         "emptyTitle": "No servers to measure",
         "emptyDescription": "Usage appears here once a server is ready.",
-        "loadingTitle": "Reading server usage\u2026",
+        "loadingTitle": "Reading server usage…",
         "failedTitle": "No server reported its usage",
         "failedDescription": "The servers may be busy or out of contact. Your applications are unaffected by this check.",
         "retry": "Try again",
@@ -323,7 +323,7 @@
       },
       "verdict": {
         "ariaLabel": "Infrastructure health",
-        "loading": "Checking your infrastructure\u2026",
+        "loading": "Checking your infrastructure…",
         "healthy": "Everything is running normally",
         "healthyDetail": "No failed operations, no servers down and every agent is reporting in.",
         "attention": "{count, plural, one {# thing needs your attention} other {# things need your attention}}",
@@ -346,8 +346,8 @@
         "title": "Needs your attention",
         "description": "{count} things need a look.",
         "healthyDescription": "Nothing needs a look right now.",
-        "checkingDescription": "Checking your infrastructure\u2026",
-        "checkingTitle": "Checking your infrastructure\u2026",
+        "checkingDescription": "Checking your infrastructure…",
+        "checkingTitle": "Checking your infrastructure…",
         "failedDescription": "Could not check what needs your attention.",
         "failedTitle": "Could not load what needs your attention",
         "failedDetail": "This check is temporarily unavailable. Your infrastructure is unaffected.",
@@ -408,7 +408,7 @@
         "noMetadata": "No further detail reported",
         "technicalDetails": "Technical details",
         "unknownActivity": "An operation",
-        "loadingTitle": "Loading recent activity\u2026",
+        "loadingTitle": "Loading recent activity…",
         "emptyTitle": "Nothing has happened yet",
         "emptyDescription": "Operations such as server setup, module installs and deployments will appear here as they run.",
         "emptyNoServersTitle": "No servers yet",
@@ -1338,7 +1338,7 @@
         "lines": "{count} lines",
         "filterPlaceholder": "Filter log lines",
         "showing": "Showing {shown} of {total} lines",
-        "discovering": "Discovering log files\u2026",
+        "discovering": "Discovering log files…",
         "allLogs": "All VM logs",
         "loading": "Loading log entries",
         "emptyFile": "No entries in the selected range.",
@@ -1776,31 +1776,97 @@
       }
     },
     "cloudProjects": {
-      "headerTitle": "Cloud Accounts",
-      "headerDesc": "Connect your cloud provider to manage VMs and networks directly from dNocs.",
-      "connectAccount": "Connect Account",
+      "headerTitle": "Cloud accounts",
+      "headerDesc": "Connect the cloud provider you already pay for, and dNocs can launch servers in it for you.",
+      "connectAccount": "Connect a cloud account",
       "actions": {
-        "viewRegions": "View Regions"
+        "viewRegions": "View regions",
+        "openDetails": "Open account",
+        "useOnServer": "Create a server here"
       },
       "table": {
         "headers": {
-          "project": "Cloud Project",
+          "project": "Cloud account",
           "owner": "Owner",
-          "lastModified": "Last Modified"
-        }
+          "lastModified": "Last modified"
+        },
+        "account": "Cloud account",
+        "provider": "Provider",
+        "status": "Status",
+        "owner": "Owner",
+        "updated": "Last modified",
+        "actions": "Actions"
       },
       "deleteDialog": {
-        "title": "Delete Cloud Project",
-        "message": "Are you sure you want to delete \"{name}\" ({id})?"
+        "title": "Disconnect cloud account",
+        "message": "Disconnect \"{name}\" ({id})? dNocs stops managing it and forgets the API key. Servers already running at the provider keep running and keep billing you."
       },
       "toaster": {
-        "deleteSuccess": "Successfully deleted cloud project \"{name}\"",
-        "deleteError": "Failed to delete cloud project \"{name}\""
+        "deleteSuccess": "Disconnected cloud account \"{name}\"",
+        "deleteError": "Could not disconnect cloud account \"{name}\""
       },
       "emptyState": {
-        "title": "No cloud accounts connected",
-        "message": "Connect a cloud provider to start managing your resources here.",
-        "cta": "Connect Account"
+        "title": "Connect your first cloud account",
+        "message": "dNocs needs the keys to a provider account before it can launch a server for you.",
+        "cta": "Connect a cloud account"
+      },
+      "docs": "Docs",
+      "servers": "Servers",
+      "guide": {
+        "title": "What is a cloud account for?",
+        "description": "dNocs does not resell servers. You connect the provider account you already have, and dNocs uses it to create machines on your behalf — billed by your provider, controlled from here.",
+        "steps": {
+          "connect": {
+            "title": "Connect your provider",
+            "description": "Pick your provider and paste the API key it gives you. dNocs stores it encrypted and never shows it again."
+          },
+          "read": {
+            "title": "dNocs reads what you can use",
+            "description": "It lists the regions, sizes and images your account is allowed to launch, so you pick from real options."
+          },
+          "launch": {
+            "title": "Launch a server",
+            "description": "Choose this account on the create-server page, and dNocs builds the machine in your own cloud."
+          }
+        },
+        "cta": "Create a server"
+      },
+      "overview": {
+        "total": "Cloud accounts",
+        "ready": "Ready to use",
+        "progress": "Connecting",
+        "failed": "Needs attention",
+        "totalHintOne": "across one provider",
+        "totalHintMany": "across {providers} providers",
+        "sampleNote": "Per-state counts come from your {sample} most recent accounts."
+      },
+      "filters": {
+        "searchPlaceholder": "Search by account name",
+        "status": "Status"
+      },
+      "status": {
+        "ready": "Ready",
+        "pending": "Waiting to connect",
+        "progress": "Connecting",
+        "deleting": "Removing",
+        "failed": "Could not connect",
+        "cancelled": "Cancelled",
+        "deleted": "Removed",
+        "unknown": "Unknown"
+      },
+      "card": {
+        "personal": "Only you",
+        "team": "Shared with {name}",
+        "unknownProvider": "Unknown provider"
+      },
+      "empty": {
+        "title": "Connect your first cloud account",
+        "message": "dNocs needs the keys to a provider account before it can launch a server for you. Nothing is charged by dNocs — your provider bills you as usual.",
+        "cta": "Connect a cloud account",
+        "secondary": "See how servers are created",
+        "filteredTitle": "No accounts match",
+        "filteredMessage": "Try another name, or clear the filters to see every account.",
+        "clear": "Clear filters"
       }
     },
     "sshKeys": {
@@ -1860,7 +1926,7 @@
         },
         "documentTitle": "{name} — SSH key | dPanel",
         "fallbackName": "Untitled key",
-        "loading": "Loading key data\u2026",
+        "loading": "Loading key data…",
         "back": "Back to SSH keys",
         "useOnServer": "Create a server with this key",
         "whatNowTitle": "What you can do with this key",
@@ -1985,7 +2051,7 @@
     },
     "teamDetail": {
       "addMember": "Add Member",
-      "loadingData": "Loading team data\u2026",
+      "loadingData": "Loading team data…",
       "memberCount": "{count, plural, one {# member} other {# members}} in this team",
       "memberColumn": "Member",
       "roleColumn": "Role",
@@ -2072,7 +2138,7 @@
         "nameRequired": "Group name is required.",
         "cancel": "Cancel",
         "create": "Create group",
-        "creating": "Creating\u2026"
+        "creating": "Creating…"
       },
       "detail": {
         "tabs": {
@@ -2107,7 +2173,7 @@
             "actions": "Actions"
           },
           "remove": "Remove",
-          "removing": "Removing\u2026",
+          "removing": "Removing…",
           "empty": "This group has no servers yet.",
           "emptyHint": "Add servers to run actions on them together.",
           "noMatch": "No servers match your search.",
@@ -2187,7 +2253,7 @@
             "descriptionLabel": "Description",
             "nameRequired": "Group name is required.",
             "save": "Save",
-            "saving": "Saving\u2026",
+            "saving": "Saving…",
             "cancel": "Cancel"
           },
           "delete": {
@@ -2197,7 +2263,7 @@
             "servers": "Its servers stay as they are; they are simply no longer grouped.",
             "history": "Past operations and their logs are kept.",
             "confirm": "Delete group",
-            "deleting": "Deleting\u2026",
+            "deleting": "Deleting…",
             "cancel": "Cancel"
           },
           "bulk": {
@@ -2224,7 +2290,7 @@
             },
             "targets": "Runs on {count} servers.",
             "queue": "Run",
-            "queueing": "Queueing\u2026",
+            "queueing": "Queueing…",
             "cancel": "Cancel"
           },
           "deploy": {
@@ -2238,7 +2304,7 @@
             "noArtifacts": "No artifacts for this application.",
             "selectBoth": "Select an application and an artifact.",
             "deploy": "Deploy",
-            "queueing": "Queueing\u2026",
+            "queueing": "Queueing…",
             "cancel": "Cancel"
           },
           "retry": {
@@ -2249,7 +2315,7 @@
             "variablesNote": "Redacted variables must be entered again.",
             "refNote": "A pinned ref is required for this retry.",
             "retry": "Retry",
-            "retrying": "Retrying\u2026",
+            "retrying": "Retrying…",
             "cancel": "Cancel"
           },
           "module": {
@@ -2311,7 +2377,8 @@
         "appCreation": "app creation",
         "application": "creating and managing applications",
         "server": "creating and managing servers",
-        "ssh": "creating and managing SSH keys"
+        "ssh": "creating and managing SSH keys",
+        "cloud": "connecting and managing cloud accounts"
       }
     },
     "helpAndSupportCompact": {
@@ -2557,7 +2624,7 @@
       "title": "Edit Team",
       "fieldName": "Team Name",
       "namePlaceholder": "My Team",
-      "descPlaceholder": "A short description of this team\u2026"
+      "descPlaceholder": "A short description of this team…"
     },
     "loadBalancerCreation": {
       "title": "Create Load Balancer",
@@ -2670,7 +2737,7 @@
       "manage": "Manage",
       "installed": "Installed",
       "noDescription": "No description available.",
-      "loading": "Loading the module catalog\u2026",
+      "loading": "Loading the module catalog…",
       "failed": "Could not load the catalog",
       "empty": "The module repository did not expose any modules.",
       "noMatch": "No modules match your search."
@@ -2721,9 +2788,9 @@
     "addTeamMember": {
       "title": "Add New People",
       "description": "Select a user and assign workspace roles before adding them.",
-      "selectUser": "Select a user\u2026",
-      "searchByUsername": "Search by username or name\u2026",
-      "loading": "Loading\u2026",
+      "selectUser": "Select a user…",
+      "searchByUsername": "Search by username or name…",
+      "loading": "Loading…",
       "noUsersFound": "No users found",
       "pageInfo": "Page {page} / {totalPage}",
       "rolesTitle": "Workspace roles",
@@ -2737,7 +2804,7 @@
     "manageMemberRoles": {
       "title": "Manage roles",
       "description": "Update access for {name}",
-      "loading": "Loading role catalog\u2026",
+      "loading": "Loading role catalog…",
       "errorTitle": "Failed to load roles",
       "errorMessage": "Role options are unavailable right now. Retry before saving changes.",
       "empty": "No assignable roles are available.",
@@ -2773,7 +2840,7 @@
       "emptySelectionWarning": "Saving with no server selected removes every member from this group.",
       "cancel": "Cancel",
       "confirm": "Confirm",
-      "saving": "Saving\u2026",
+      "saving": "Saving…",
       "submitFailed": "Unable to submit the selection."
     }
   },
