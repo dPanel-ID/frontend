@@ -64,3 +64,33 @@ export const schemaExecutionDetailV2 = z.object({
 export type ExecutionV2 = z.infer<typeof schemaExecutionV2>;
 export type ExecutionDetailV2 = z.infer<typeof schemaExecutionDetailV2>;
 export type ExecutionSummaryV2 = z.infer<typeof schemaExecutionSummaryV2>;
+
+/** One bucket of execution outcomes on the activity chart. */
+export const schemaExecutionTimeseriesPointV2 = z.object({
+  timestamp: z.string(),
+  total: z.number().optional(),
+  succeeded: z.number().optional(),
+  failed: z.number().optional(),
+  cancelled: z.number().optional(),
+  running: z.number().optional(),
+  pending: z.number().optional(),
+  other: z.number().optional(),
+});
+
+/**
+ * Execution activity over time. Points are contiguous and ordered oldest
+ * first, with empty buckets included, so a chart can plot them without
+ * filling gaps itself.
+ */
+export const schemaExecutionTimeseriesV2 = z.object({
+  bucket: z.enum(['hour', 'day']).optional(),
+  window_start: z.string().optional(),
+  window_end: z.string().optional(),
+  total: z.number().optional(),
+  points: z.array(schemaExecutionTimeseriesPointV2).optional(),
+});
+
+export type ExecutionTimeseriesPointV2 = z.infer<
+  typeof schemaExecutionTimeseriesPointV2
+>;
+export type ExecutionTimeseriesV2 = z.infer<typeof schemaExecutionTimeseriesV2>;
