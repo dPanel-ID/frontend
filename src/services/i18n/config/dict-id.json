@@ -149,7 +149,7 @@
       "refresh": "Segarkan",
       "rows": "{count} baris",
       "pageOf": "Halaman {page} dari {total}",
-      "loading": "Memuat\u2026",
+      "loading": "Memuat…",
       "loadFailed": "Bagian ini tidak dapat dimuat",
       "retry": "Coba lagi",
       "clearSearch": "Hapus pencarian"
@@ -1205,7 +1205,7 @@
         "lines": "{count} baris",
         "filterPlaceholder": "Saring baris log",
         "showing": "Menampilkan {shown} dari {total} baris",
-        "discovering": "Mencari berkas log\u2026",
+        "discovering": "Mencari berkas log…",
         "allLogs": "Semua log VM",
         "loading": "Memuat entri log",
         "emptyFile": "Tidak ada entri pada rentang yang dipilih.",
@@ -1673,55 +1673,159 @@
     },
     "sshKeys": {
       "headerTitle": "Kunci SSH",
-      "headerDesc": "Kelola kunci SSH Anda untuk mengakses mesin virtual secara aman tanpa harus memasukkan kata sandi setiap saat.",
-      "addKey": "Tambah Kunci SSH",
+      "headerDesc": "Kunci SSH adalah cara masuk ke server tanpa kata sandi. Buat satu di sini, lalu pilih kunci itu saat Anda membuat server.",
+      "addKey": "Buat kunci SSH",
       "table": {
         "headers": {
           "key": "Kunci SSH",
           "owner": "Pemilik",
-          "lastModified": "Terakhir Diubah"
-        }
+          "lastModified": "Terakhir diubah"
+        },
+        "key": "Kunci SSH",
+        "type": "Tipe",
+        "access": "Siapa yang bisa memakai",
+        "created": "Dibuat",
+        "updated": "Terakhir diubah",
+        "actions": "Aksi"
       },
       "deleteDialog": {
-        "title": "Hapus Kunci SSH",
-        "message": "Apakah Anda yakin ingin menghapus \"{name}\" ({id})?"
+        "title": "Hapus kunci SSH",
+        "message": "Yakin ingin menghapus \"{name}\" ({id})?"
       },
       "toaster": {
         "deleteSuccess": "Berhasil menghapus kunci SSH \"{name}\"",
-        "deleteError": "Gagal menghapus kunci SSH \"{name}\""
+        "deleteError": "Gagal menghapus kunci SSH \"{name}\"",
+        "copied": "Kunci publik disalin ke papan klip",
+        "copyFailed": "Tidak bisa menyalin kunci publik. Buka kuncinya untuk menyalin dari halaman detail.",
+        "noPublicKey": "Kunci ini tidak menyertakan kunci publik di daftar. Buka kuncinya untuk melihatnya."
       },
       "detail": {
         "copy": "Salin",
         "copied": "Tersalin!",
-        "keyInformation": "Informasi Kunci",
+        "keyInformation": "Informasi kunci",
         "name": "Nama",
         "type": "Tipe",
-        "bitLength": "Panjang Bit",
-        "publicKey": "Kunci Publik",
+        "bitLength": "Panjang bit",
+        "publicKey": "Kunci publik",
         "safeToShare": "Aman dibagikan ke server",
-        "copyPublicKey": "Salin Kunci Publik",
+        "copyPublicKey": "Salin kunci publik",
         "noPublicKeyData": "Tidak ada data kunci publik",
-        "privateKey": "Kunci Privat",
+        "privateKey": "Kunci privat",
         "notDisplayed": "Tidak ditampilkan",
-        "privateKeyStored": "Kunci privat disimpan terenkripsi dan hanya digunakan oleh backend untuk provisioning, pemulihan, dan browser SSH.",
-        "privateKeyNotDisplayed": "dPanel tidak menampilkan atau menyalin nilai kunci privat dari halaman ini. Gunakan kunci publik di atas saat perlu mengatur authorized_keys secara manual.",
+        "privateKeyStored": "Kunci privat disimpan terenkripsi dan hanya dipakai oleh proses provisioning, pemulihan, dan SSH lewat peramban.",
+        "privateKeyNotDisplayed": "dPanel tidak menampilkan atau menyalin nilai kunci privat dari halaman ini. Gunakan kunci publik di atas bila Anda perlu mengatur authorized_keys secara manual.",
         "hide": "Sembunyikan",
         "reveal": "Tampilkan",
-        "copyPrivateKey": "Salin Kunci Privat",
-        "privateKeyWarning": "Jaga kerahasiaan kunci ini. Jangan pernah membagikan kunci privat Anda kepada siapa pun. Siapa pun yang memiliki kunci ini dapat masuk ke server Anda.",
+        "copyPrivateKey": "Salin kunci privat",
+        "privateKeyWarning": "Rahasiakan kunci ini. Jangan pernah membagikan kunci privat Anda. Siapa pun yang memilikinya bisa masuk ke server Anda.",
         "noPrivateKeyData": "Tidak ada data kunci privat",
-        "dangerZone": "Zona Berbahaya",
+        "dangerZone": "Zona berbahaya",
         "deleteThisKey": "Hapus kunci SSH ini",
-        "deleteThisKeyDescription": "Setelah dihapus, kunci ini tidak dapat dipulihkan. Setiap server yang menggunakan kunci ini harus memakai kunci baru.",
-        "deleteKey": "Hapus Kunci",
+        "deleteThisKeyDescription": "Setelah dihapus, kunci ini tidak bisa dipulihkan. Server yang memakainya akan membutuhkan kunci baru.",
+        "deleteKey": "Hapus kunci",
         "deleteDialog": {
-          "message": "Apakah Anda yakin ingin menghapus \"{name}\"? Tindakan ini tidak dapat dibatalkan."
-        }
+          "message": "Yakin ingin menghapus \"{name}\"? Tindakan ini tidak bisa dibatalkan."
+        },
+        "documentTitle": "{name} — Kunci SSH | dPanel",
+        "fallbackName": "Kunci tanpa nama",
+        "loading": "Memuat data kunci…",
+        "back": "Kembali ke kunci SSH",
+        "useOnServer": "Buat server dengan kunci ini",
+        "whatNowTitle": "Yang bisa Anda lakukan dengan kunci ini",
+        "whatNow": "Pilih kunci ini di halaman buat server dan dPanel akan masuk untuk Anda. Untuk mengizinkannya secara manual, salin kunci publik di bawah ke berkas authorized_keys server tersebut."
       },
       "emptyState": {
-        "title": "Belum ada kunci SSH ditambahkan",
-        "message": "Tambahkan kunci SSH untuk mengakses mesin virtual Anda secara aman tanpa memasukkan kata sandi setiap kali.",
-        "cta": "Tambah Kunci SSH"
+        "title": "Buat kunci SSH pertama Anda",
+        "message": "dPanel butuh satu kunci sebelum bisa meluncurkan server cloud atau menghubungkan server yang sudah Anda jalankan.",
+        "cta": "Buat kunci SSH"
+      },
+      "docs": "Dokumentasi",
+      "createKey": "Buat kunci SSH",
+      "hero": {
+        "servers": "Server"
+      },
+      "overview": {
+        "total": "Kunci SSH",
+        "totalHint": "{personal} pribadi · {team} dibagikan",
+        "personal": "Hanya Anda",
+        "personalHint": "Kunci milik akun Anda sendiri",
+        "team": "Dibagikan ke tim",
+        "teamHint": "Kunci yang bisa dipakai rekan tim Anda",
+        "sampleNote": "Dihitung dari {sample} kunci terbaru Anda."
+      },
+      "guide": {
+        "title": "Baru pertama kali? Membuat kunci SSH hanya sebentar",
+        "description": "Anda butuh satu kunci sebelum dPanel bisa membuat atau menghubungkan server. Anda tidak perlu membuka terminal — dPanel yang membuat dan menyimpan kuncinya.",
+        "steps": {
+          "create": {
+            "title": "Buat kunci",
+            "description": "Beri nama yang mudah Anda kenali, misalnya laptop-kerja. dPanel membuat pasangan kuncinya untuk Anda."
+          },
+          "store": {
+            "title": "dPanel menyimpannya dengan aman",
+            "description": "Bagian privat tersimpan terenkripsi di dPanel. Nilainya tidak pernah ditampilkan, disalin, atau dikirim ke mana pun."
+          },
+          "use": {
+            "title": "Pilih kunci saat membuat server",
+            "description": "Di halaman buat server Anda memilih kunci ini, lalu dPanel memakainya untuk masuk."
+          }
+        },
+        "cta": "Buat server",
+        "learn": "Apa itu kunci SSH?"
+      },
+      "filters": {
+        "searchPlaceholder": "Cari berdasarkan nama kunci"
+      },
+      "card": {
+        "bits": "{length} bit",
+        "noType": "Kunci SSH",
+        "personal": "Hanya Anda",
+        "team": "Dibagikan ke {name}",
+        "createdOn": "Dibuat {date}"
+      },
+      "actions": {
+        "copyPublicKey": "Salin kunci publik",
+        "useOnServer": "Buat server dengan kunci ini",
+        "openDetails": "Buka kunci"
+      },
+      "empty": {
+        "title": "Buat kunci SSH pertama Anda",
+        "message": "dPanel butuh satu kunci sebelum bisa meluncurkan server cloud atau menghubungkan server yang sudah Anda jalankan. Hanya perlu sekitar satu menit, tanpa terminal.",
+        "cta": "Buat kunci SSH",
+        "secondary": "Lihat cara server dibuat",
+        "filteredTitle": "Tidak ada kunci yang cocok",
+        "filteredMessage": "Coba nama lain, atau hapus pencarian untuk melihat semua kunci.",
+        "clear": "Hapus pencarian"
+      },
+      "next": {
+        "title": "Kunci Anda siap dipakai",
+        "description": "Luncurkan server cloud atau hubungkan server yang sudah ada — dPanel akan menawarkan kunci ini saat masuk.",
+        "cta": "Buat server"
+      },
+      "create": {
+        "title": "Buat kunci SSH",
+        "introTitle": "Apa itu kunci SSH?",
+        "intro": "Kunci SSH adalah kredensial aman yang membuat dPanel bisa masuk ke server Anda tanpa kata sandi. dPanel membuat pasangannya untuk Anda: bagian privat tersimpan terenkripsi di sini, dan bagian publik yang dipercaya server.",
+        "nameLabel": "Nama kunci",
+        "nameDescription": "Label agar Anda mengenali kunci ini nanti, misalnya laptop-kerja atau mac-rumah.",
+        "namePlaceholder": "mis. laptop-kerja",
+        "nameTooLong": "Maksimal 100 karakter",
+        "lengthLabel": "Panjang kunci (bit)",
+        "lengthHint": "Makin panjang makin aman",
+        "levels": {
+          "standard": "Standar",
+          "standardDesc": "Kompatibel dengan semua sistem. Cukup untuk kebanyakan kebutuhan.",
+          "strong": "Kuat",
+          "strongDesc": "Keseimbangan yang baik antara keamanan dan performa.",
+          "maximum": "Maksimum",
+          "maximumDesc": "Keamanan tertinggi. Disarankan untuk lingkungan sensitif.",
+          "recommended": "Disarankan"
+        },
+        "nextTitle": "Apa yang terjadi berikutnya",
+        "next": "dPanel membuat kunci dan menyimpan bagian privatnya terenkripsi. Pilih kunci ini di halaman buat server, lalu dPanel masuk memakai kunci tersebut.",
+        "submit": "Buat kunci SSH",
+        "errorTitle": "Gagal membuat kunci SSH dengan nama {name}",
+        "successMessage": "Berhasil membuat kunci SSH dengan nama {name}"
       }
     },
     "teams": {
@@ -1737,7 +1841,7 @@
     },
     "teamDetail": {
       "addMember": "Tambah Anggota",
-      "loadingData": "Memuat data tim\u2026",
+      "loadingData": "Memuat data tim…",
       "memberCount": "{count, plural, one {# anggota} other {# anggota}} dalam tim ini",
       "memberColumn": "Anggota",
       "roleColumn": "Peran",
@@ -1824,7 +1928,7 @@
         "nameRequired": "Nama grup wajib diisi.",
         "cancel": "Batal",
         "create": "Buat grup",
-        "creating": "Membuat\u2026"
+        "creating": "Membuat…"
       },
       "detail": {
         "tabs": {
@@ -1859,7 +1963,7 @@
             "actions": "Aksi"
           },
           "remove": "Keluarkan",
-          "removing": "Mengeluarkan\u2026",
+          "removing": "Mengeluarkan…",
           "empty": "Grup ini belum punya server.",
           "emptyHint": "Tambahkan server untuk menjalankan aksi bersama.",
           "noMatch": "Tidak ada server yang cocok.",
@@ -1939,7 +2043,7 @@
             "descriptionLabel": "Deskripsi",
             "nameRequired": "Nama grup wajib diisi.",
             "save": "Simpan",
-            "saving": "Menyimpan\u2026",
+            "saving": "Menyimpan…",
             "cancel": "Batal"
           },
           "delete": {
@@ -1949,7 +2053,7 @@
             "servers": "Servernya tetap seperti semula; hanya tidak lagi tergrup.",
             "history": "Operasi lama dan lognya tetap disimpan.",
             "confirm": "Hapus grup",
-            "deleting": "Menghapus\u2026",
+            "deleting": "Menghapus…",
             "cancel": "Batal"
           },
           "bulk": {
@@ -1976,7 +2080,7 @@
             },
             "targets": "Berjalan pada {count} server.",
             "queue": "Jalankan",
-            "queueing": "Mengantrekan\u2026",
+            "queueing": "Mengantrekan…",
             "cancel": "Batal"
           },
           "deploy": {
@@ -1990,7 +2094,7 @@
             "noArtifacts": "Tidak ada artefak untuk aplikasi ini.",
             "selectBoth": "Pilih aplikasi dan artefak.",
             "deploy": "Deploy",
-            "queueing": "Mengantrekan\u2026",
+            "queueing": "Mengantrekan…",
             "cancel": "Batal"
           },
           "retry": {
@@ -2001,7 +2105,7 @@
             "variablesNote": "Variabel yang disamarkan harus dimasukkan lagi.",
             "refNote": "Ref terpin diperlukan untuk pengulangan ini.",
             "retry": "Ulangi",
-            "retrying": "Mengulang\u2026",
+            "retrying": "Mengulang…",
             "cancel": "Batal"
           },
           "module": {
@@ -2371,7 +2475,7 @@
       "title": "Ubah Tim",
       "fieldName": "Nama Tim",
       "namePlaceholder": "Tim Saya",
-      "descPlaceholder": "Deskripsi singkat tim ini\u2026"
+      "descPlaceholder": "Deskripsi singkat tim ini…"
     },
     "serverEdit": {
       "title": "Edit server",
@@ -2421,7 +2525,7 @@
       "manage": "Kelola",
       "installed": "Terpasang",
       "noDescription": "Tidak ada deskripsi.",
-      "loading": "Memuat katalog modul\u2026",
+      "loading": "Memuat katalog modul…",
       "failed": "Katalog tidak dapat dimuat",
       "empty": "Repositori modul tidak menyediakan modul apa pun.",
       "noMatch": "Tidak ada modul yang cocok."
@@ -2472,9 +2576,9 @@
     "addTeamMember": {
       "title": "Tambah Anggota Baru",
       "description": "Pilih pengguna dan tetapkan peran workspace sebelum menambahkannya.",
-      "selectUser": "Pilih pengguna\u2026",
-      "searchByUsername": "Cari berdasarkan username atau nama\u2026",
-      "loading": "Memuat\u2026",
+      "selectUser": "Pilih pengguna…",
+      "searchByUsername": "Cari berdasarkan username atau nama…",
+      "loading": "Memuat…",
       "noUsersFound": "Pengguna tidak ditemukan",
       "pageInfo": "Halaman {page} / {totalPage}",
       "rolesTitle": "Peran workspace",
@@ -2488,7 +2592,7 @@
     "manageMemberRoles": {
       "title": "Kelola peran",
       "description": "Perbarui akses untuk {name}",
-      "loading": "Memuat katalog peran\u2026",
+      "loading": "Memuat katalog peran…",
       "errorTitle": "Gagal memuat peran",
       "errorMessage": "Pilihan peran sedang tidak tersedia. Coba lagi sebelum menyimpan perubahan.",
       "empty": "Tidak ada peran yang dapat diberikan.",
@@ -2524,7 +2628,7 @@
       "emptySelectionWarning": "Menyimpan tanpa server terpilih akan mengeluarkan semua anggota grup ini.",
       "cancel": "Batal",
       "confirm": "Konfirmasi",
-      "saving": "Menyimpan\u2026",
+      "saving": "Menyimpan…",
       "submitFailed": "Pilihan tidak dapat dikirim."
     }
   },

@@ -1,3 +1,4 @@
+import { useDevetekTranslations } from '@/services/i18n';
 import { useModalEmit } from '@/services/modal/model/event';
 import { useToaster } from '@/services/toaster';
 
@@ -10,11 +11,12 @@ import { useSSHCreateContext } from '../../model';
 export default function SubmitButton() {
   const { displayName, keyLength, props, isMutating, setIsMutating } =
     useSSHCreateContext();
+  const t = useDevetekTranslations();
 
   const [openToaster] = useToaster();
   const emitModal = useModalEmit();
 
-  const canSubmit = displayName && keyLength;
+  const canSubmit = Boolean(displayName && keyLength);
 
   const handleClick = async () => {
     if (!displayName || !keyLength) return;
@@ -29,18 +31,13 @@ export default function SubmitButton() {
 
     if (response.$status === 'failed') {
       openToaster({
-        title: (
-          <>
-            Error while creating SSH key with name <code>{displayName}</code>
-          </>
-        ),
+        title: t('page.sshKeys.create.errorTitle', { name: displayName }),
         message: response.error.message,
         variant: 'error',
         duration: 5000,
       });
 
       setIsMutating(false);
-
       emitModal('%%modal/allow-trivial-close', true);
       return;
     }
@@ -49,11 +46,7 @@ export default function SubmitButton() {
 
     openToaster({
       variant: 'success',
-      message: (
-        <>
-          Successfully created SSH key with name <code>{displayName}</code>
-        </>
-      ),
+      message: t('page.sshKeys.create.successMessage', { name: displayName }),
     });
 
     props.onSubmitSuccess?.();
@@ -65,7 +58,11 @@ export default function SubmitButton() {
       disabled={!canSubmit || isMutating}
       onClick={handleClick}
     >
-      {isMutating ? <Spinner className="text-white" /> : 'Generate SSH Key'}
+      {isMutating ? (
+        <Spinner className="text-white" />
+      ) : (
+        t('page.sshKeys.create.submit')
+      )}
     </Button>
   );
 }

@@ -158,7 +158,7 @@
       "refresh": "Refresh",
       "rows": "{count} rows",
       "pageOf": "Page {page} of {total}",
-      "loading": "Loading\u2026",
+      "loading": "Loading…",
       "loadFailed": "Could not load this section",
       "retry": "Retry",
       "clearSearch": "Clear search"
@@ -1214,7 +1214,7 @@
         "lines": "{count} lines",
         "filterPlaceholder": "Filter log lines",
         "showing": "Showing {shown} of {total} lines",
-        "discovering": "Discovering log files\u2026",
+        "discovering": "Discovering log files…",
         "allLogs": "All VM logs",
         "loading": "Loading log entries",
         "emptyFile": "No entries in the selected range.",
@@ -1680,56 +1680,160 @@
       }
     },
     "sshKeys": {
-      "headerTitle": "SSH Keys",
-      "headerDesc": "Manage your SSH keys to securely access virtual machines without entering a password each time.",
-      "addKey": "Add SSH Key",
+      "headerTitle": "SSH keys",
+      "headerDesc": "An SSH key is the password-free way to sign in to a server. Create one here, then pick it when you launch a server.",
+      "addKey": "Create SSH key",
       "table": {
         "headers": {
-          "key": "SSH Key",
+          "key": "SSH key",
           "owner": "Owner",
-          "lastModified": "Last Modified"
-        }
+          "lastModified": "Last modified"
+        },
+        "key": "SSH key",
+        "type": "Type",
+        "access": "Who can use it",
+        "created": "Created",
+        "updated": "Last modified",
+        "actions": "Actions"
       },
       "deleteDialog": {
-        "title": "Delete SSH Key",
+        "title": "Delete SSH key",
         "message": "Are you sure you want to delete \"{name}\" ({id})?"
       },
       "toaster": {
         "deleteSuccess": "Successfully deleted SSH key \"{name}\"",
-        "deleteError": "Failed to delete SSH key \"{name}\""
+        "deleteError": "Failed to delete SSH key \"{name}\"",
+        "copied": "Public key copied to your clipboard",
+        "copyFailed": "Could not copy the public key. Open the key to copy it from its detail page.",
+        "noPublicKey": "This key does not expose a public key in the list. Open the key to see it."
       },
       "detail": {
         "copy": "Copy",
         "copied": "Copied!",
-        "keyInformation": "Key Information",
+        "keyInformation": "Key information",
         "name": "Name",
         "type": "Type",
-        "bitLength": "Bit Length",
-        "publicKey": "Public Key",
+        "bitLength": "Bit length",
+        "publicKey": "Public key",
         "safeToShare": "Safe to share with servers",
-        "copyPublicKey": "Copy Public Key",
+        "copyPublicKey": "Copy public key",
         "noPublicKeyData": "No public key data",
-        "privateKey": "Private Key",
+        "privateKey": "Private key",
         "notDisplayed": "Not displayed",
         "privateKeyStored": "The private key is stored encrypted and used only by backend provisioning, recovery, and browser SSH workflows.",
         "privateKeyNotDisplayed": "dPanel does not display or copy private key values from this page. Use the public key above when you need to configure authorized_keys manually.",
         "hide": "Hide",
         "reveal": "Reveal",
-        "copyPrivateKey": "Copy Private Key",
+        "copyPrivateKey": "Copy private key",
         "privateKeyWarning": "Keep this key secret. Never share your private key with anyone. Anyone with access to this key can log in to your servers.",
         "noPrivateKeyData": "No private key data",
-        "dangerZone": "Danger Zone",
+        "dangerZone": "Danger zone",
         "deleteThisKey": "Delete this SSH key",
         "deleteThisKeyDescription": "Once deleted, this key cannot be recovered. Any server configured to use it will require a new key.",
-        "deleteKey": "Delete Key",
+        "deleteKey": "Delete key",
         "deleteDialog": {
           "message": "Are you sure you want to delete \"{name}\"? This action cannot be undone."
-        }
+        },
+        "documentTitle": "{name} — SSH key | dPanel",
+        "fallbackName": "Untitled key",
+        "loading": "Loading key data…",
+        "back": "Back to SSH keys",
+        "useOnServer": "Create a server with this key",
+        "whatNowTitle": "What you can do with this key",
+        "whatNow": "Pick it on the create-server page and dPanel signs in for you. To authorise it on a server by hand, copy the public key below into that server's authorized_keys file."
       },
       "emptyState": {
-        "title": "No SSH keys added yet",
-        "message": "Add an SSH key to securely access your virtual machines without entering a password each time.",
-        "cta": "Add SSH Key"
+        "title": "Create your first SSH key",
+        "message": "dPanel needs one key before it can launch a cloud server or connect a server you already run.",
+        "cta": "Create SSH key"
+      },
+      "docs": "Docs",
+      "createKey": "Create SSH key",
+      "hero": {
+        "servers": "Servers"
+      },
+      "overview": {
+        "total": "SSH keys",
+        "totalHint": "{personal} personal · {team} shared",
+        "personal": "Only you",
+        "personalHint": "Keys that belong to your account",
+        "team": "Shared with a team",
+        "teamHint": "Keys your teammates can use too",
+        "sampleNote": "Counted from your {sample} most recent keys."
+      },
+      "guide": {
+        "title": "First time here? An SSH key takes a minute",
+        "description": "You need one key before dPanel can create or connect a server for you. You never have to open a terminal — dPanel generates and stores the key for you.",
+        "steps": {
+          "create": {
+            "title": "Create a key",
+            "description": "Give it a name you will recognise, like work-laptop. dPanel generates the key pair for you."
+          },
+          "store": {
+            "title": "dPanel keeps it safe",
+            "description": "The private half stays encrypted in dPanel. It is never shown, copied or sent anywhere."
+          },
+          "use": {
+            "title": "Pick it when you create a server",
+            "description": "On the create-server page you choose this key, and dPanel uses it to sign in for you."
+          }
+        },
+        "cta": "Create a server",
+        "learn": "What is an SSH key?"
+      },
+      "filters": {
+        "searchPlaceholder": "Search by key name"
+      },
+      "card": {
+        "bits": "{length} bits",
+        "noType": "SSH key",
+        "personal": "Only you",
+        "team": "Shared with {name}",
+        "createdOn": "Created {date}"
+      },
+      "actions": {
+        "copyPublicKey": "Copy public key",
+        "useOnServer": "Create a server with this key",
+        "openDetails": "Open key"
+      },
+      "empty": {
+        "title": "Create your first SSH key",
+        "message": "dPanel needs one key before it can launch a cloud server or connect a server you already run. It takes about a minute, and you never touch a terminal.",
+        "cta": "Create SSH key",
+        "secondary": "See how servers are created",
+        "filteredTitle": "No keys match",
+        "filteredMessage": "Try another name, or clear the search to see every key.",
+        "clear": "Clear search"
+      },
+      "next": {
+        "title": "Your key is ready",
+        "description": "Launch a cloud server or connect one you already run — dPanel will offer this key when it signs in.",
+        "cta": "Create a server"
+      },
+      "create": {
+        "title": "Create SSH key",
+        "introTitle": "What is an SSH key?",
+        "intro": "An SSH key is a secure credential that lets dPanel log in to your servers without a password. dPanel generates the pair for you: the private half stays encrypted here, and the public half is what a server trusts.",
+        "nameLabel": "Key name",
+        "nameDescription": "A label to help you recognise this key later, for example work-laptop or home-mac.",
+        "namePlaceholder": "e.g. work-laptop",
+        "nameTooLong": "Must be 100 characters or less",
+        "lengthLabel": "Key length (bits)",
+        "lengthHint": "Longer is more secure",
+        "levels": {
+          "standard": "Standard",
+          "standardDesc": "Compatible with all systems. Enough for most use cases.",
+          "strong": "Strong",
+          "strongDesc": "A good balance of security and performance.",
+          "maximum": "Maximum",
+          "maximumDesc": "Highest security. Recommended for sensitive environments.",
+          "recommended": "Recommended"
+        },
+        "nextTitle": "What happens next",
+        "next": "dPanel generates the key and stores the private half encrypted. Pick the key on the create-server page and dPanel signs in with it for you.",
+        "submit": "Generate SSH key",
+        "errorTitle": "Error while creating SSH key with name {name}",
+        "successMessage": "Successfully created SSH key with name {name}"
       }
     },
     "teams": {
@@ -1745,7 +1849,7 @@
     },
     "teamDetail": {
       "addMember": "Add Member",
-      "loadingData": "Loading team data\u2026",
+      "loadingData": "Loading team data…",
       "memberCount": "{count, plural, one {# member} other {# members}} in this team",
       "memberColumn": "Member",
       "roleColumn": "Role",
@@ -1832,7 +1936,7 @@
         "nameRequired": "Group name is required.",
         "cancel": "Cancel",
         "create": "Create group",
-        "creating": "Creating\u2026"
+        "creating": "Creating…"
       },
       "detail": {
         "tabs": {
@@ -1867,7 +1971,7 @@
             "actions": "Actions"
           },
           "remove": "Remove",
-          "removing": "Removing\u2026",
+          "removing": "Removing…",
           "empty": "This group has no servers yet.",
           "emptyHint": "Add servers to run actions on them together.",
           "noMatch": "No servers match your search.",
@@ -1947,7 +2051,7 @@
             "descriptionLabel": "Description",
             "nameRequired": "Group name is required.",
             "save": "Save",
-            "saving": "Saving\u2026",
+            "saving": "Saving…",
             "cancel": "Cancel"
           },
           "delete": {
@@ -1957,7 +2061,7 @@
             "servers": "Its servers stay as they are; they are simply no longer grouped.",
             "history": "Past operations and their logs are kept.",
             "confirm": "Delete group",
-            "deleting": "Deleting\u2026",
+            "deleting": "Deleting…",
             "cancel": "Cancel"
           },
           "bulk": {
@@ -1984,7 +2088,7 @@
             },
             "targets": "Runs on {count} servers.",
             "queue": "Run",
-            "queueing": "Queueing\u2026",
+            "queueing": "Queueing…",
             "cancel": "Cancel"
           },
           "deploy": {
@@ -1998,7 +2102,7 @@
             "noArtifacts": "No artifacts for this application.",
             "selectBoth": "Select an application and an artifact.",
             "deploy": "Deploy",
-            "queueing": "Queueing\u2026",
+            "queueing": "Queueing…",
             "cancel": "Cancel"
           },
           "retry": {
@@ -2009,7 +2113,7 @@
             "variablesNote": "Redacted variables must be entered again.",
             "refNote": "A pinned ref is required for this retry.",
             "retry": "Retry",
-            "retrying": "Retrying\u2026",
+            "retrying": "Retrying…",
             "cancel": "Cancel"
           },
           "module": {
@@ -2316,7 +2420,7 @@
       "title": "Edit Team",
       "fieldName": "Team Name",
       "namePlaceholder": "My Team",
-      "descPlaceholder": "A short description of this team\u2026"
+      "descPlaceholder": "A short description of this team…"
     },
     "loadBalancerCreation": {
       "title": "Create Load Balancer",
@@ -2429,7 +2533,7 @@
       "manage": "Manage",
       "installed": "Installed",
       "noDescription": "No description available.",
-      "loading": "Loading the module catalog\u2026",
+      "loading": "Loading the module catalog…",
       "failed": "Could not load the catalog",
       "empty": "The module repository did not expose any modules.",
       "noMatch": "No modules match your search."
@@ -2480,9 +2584,9 @@
     "addTeamMember": {
       "title": "Add New People",
       "description": "Select a user and assign workspace roles before adding them.",
-      "selectUser": "Select a user\u2026",
-      "searchByUsername": "Search by username or name\u2026",
-      "loading": "Loading\u2026",
+      "selectUser": "Select a user…",
+      "searchByUsername": "Search by username or name…",
+      "loading": "Loading…",
       "noUsersFound": "No users found",
       "pageInfo": "Page {page} / {totalPage}",
       "rolesTitle": "Workspace roles",
@@ -2496,7 +2600,7 @@
     "manageMemberRoles": {
       "title": "Manage roles",
       "description": "Update access for {name}",
-      "loading": "Loading role catalog\u2026",
+      "loading": "Loading role catalog…",
       "errorTitle": "Failed to load roles",
       "errorMessage": "Role options are unavailable right now. Retry before saving changes.",
       "empty": "No assignable roles are available.",
@@ -2532,7 +2636,7 @@
       "emptySelectionWarning": "Saving with no server selected removes every member from this group.",
       "cancel": "Cancel",
       "confirm": "Confirm",
-      "saving": "Saving\u2026",
+      "saving": "Saving…",
       "submitFailed": "Unable to submit the selection."
     }
   },
