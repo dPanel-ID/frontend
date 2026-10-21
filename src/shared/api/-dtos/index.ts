@@ -3,6 +3,7 @@ export * from './application';
 export * from './database';
 export * from './domain';
 export * from './artifact';
+export * from './agent';
 export * from './agent-command';
 export * from './deploy';
 export * from './execution';
