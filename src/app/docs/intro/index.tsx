@@ -1,11 +1,19 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
-import { BookOpenIcon } from 'lucide-react';
+import { BookOpenIcon, ServerIcon } from 'lucide-react';
 
-import { useDevetekLocale } from '@/services/i18n';
+import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
+import {
+  FlowHero,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
 
-import { DocsIntroContent } from './-view/DocsIntroContent';
+import { docsSections } from '../-lib/registry';
+import { DocsFooter } from '../-view/-presentation/DocsFooter';
+import { DocsNav } from '../-view/-presentation/DocsNav';
+
+import { DocsIntroContent, introCopyFor  } from './-view/DocsIntroContent';
 
 export const Route = createFileRoute('/docs/intro/')({
   ssr: true,
@@ -17,7 +25,7 @@ export const Route = createFileRoute('/docs/intro/')({
       {
         name: 'description',
         content:
-          'Learn dPanel, try your application, and use the result to choose the infrastructure that fits your next step.',
+          'dPanel launches a server at your cloud provider, or connects one you already run, then sets it up and deploys your application.',
       },
     ],
   }),
@@ -26,6 +34,10 @@ export const Route = createFileRoute('/docs/intro/')({
 
 function DocsIntroPage() {
   const locale = useDevetekLocale();
+  const t = useDevetekTranslations('page.docs');
+  const sections = docsSections(locale);
+  const copy = introCopyFor(locale);
+  const firstSection = sections[0];
 
   return (
     <>
@@ -35,48 +47,61 @@ function DocsIntroPage() {
       >
         Skip to content
       </a>
+
       <main
         id="docs-intro-content"
         tabIndex={-1}
         className="min-h-svh bg-background text-foreground"
       >
-        <DocsHeader />
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-5 sm:px-6 lg:px-8">
+          <FlowHero
+            accent="sky"
+            icon={BookOpenIcon}
+            headnote={
+              <Breadcrumb
+                items={[{ text: t('breadcrumb'), url: '/docs/intro' }]}
+              />
+            }
+            badge={copy.hero.badge}
+            title={copy.hero.title}
+            description={copy.hero.subtitle}
+            aside={
+              <Link to="/" className={flowCtaClassName('sky')}>
+                <ServerIcon className="size-4" />
+                {copy.hero.primaryCta}
+              </Link>
+            }
+          />
 
-        <div className="mx-auto w-full max-w-7xl space-y-5 px-4 py-5 sm:px-6 lg:px-8">
-          <DocsIntroContent locale={locale} />
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+            {/*
+              The same index the rest of the documentation carries, so the
+              introduction is a way in to the guides rather than a dead end.
+            */}
+            <aside className="hidden w-64 shrink-0 rounded-2xl border bg-card p-3 lg:block">
+              <DocsNav sections={sections} activeSection="" activePage="" />
+            </aside>
+
+            <div className="flex min-w-0 flex-1 flex-col gap-4">
+              <DocsIntroContent
+                locale={locale}
+                readMoreHref={
+                  firstSection
+                    ? `/docs/${firstSection.slug}/${firstSection.pages[0]?.slug ?? ''}`
+                    : undefined
+                }
+                readMoreLabel={firstSection?.pages[0]?.title}
+              />
+
+              <div className="rounded-2xl border bg-card p-4 lg:hidden">
+                <DocsNav sections={sections} activeSection="" activePage="" />
+              </div>
+            </div>
+          </div>
+
+          <DocsFooter />
         </div>
       </main>
     </>
-  );
-}
-
-function DocsHeader() {
-  return (
-    <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur">
-      <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        <Link
-          to="/docs/intro"
-          className="flex min-w-0 items-center gap-2 rounded-md focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          aria-label="dPanel documentation introduction"
-        >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border bg-card text-primary">
-            <BookOpenIcon className="size-4" />
-          </span>
-          <span className="hidden text-sm font-semibold text-primary sm:inline">
-            dPanel Docs
-          </span>
-        </Link>
-
-        <Button
-          asChild
-          buttonStyle="outline"
-          buttonColor="secondary"
-          size="sm"
-          className="inline-flex"
-        >
-          <Link to="/">Open app</Link>
-        </Button>
-      </div>
-    </header>
   );
 }
