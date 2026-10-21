@@ -2512,6 +2512,15 @@
           }
         }
       }
+    },
+    "docs": {
+      "navLabel": "Bagian dokumentasi",
+      "pagerLabel": "Halaman dokumentasi",
+      "breadcrumb": "Dokumentasi",
+      "goToServers": "Buka halaman server",
+      "previous": "Sebelumnya",
+      "next": "Berikutnya",
+      "switchLanguage": "Ganti bahasa"
     }
   },
   "widget": {

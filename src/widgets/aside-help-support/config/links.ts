@@ -1,4 +1,6 @@
 export const LINK__DOCUMENTATION = '/docs/intro';
+/** The server guide, for the pages that are about servers. */
+export const LINK__DOCS_SERVERS = '/docs/servers/overview';
 export const LINK__CHAT_TEAM =
   'https://wa.me/6282113468822/?text=Hello%2C%20I%27d%20like%20to%20inquire%20about%20dPanel';
 export const LINK__MAIL_US = 'mailto: prakasa@devetek.com';
