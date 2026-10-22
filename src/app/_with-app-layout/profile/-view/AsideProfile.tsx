@@ -31,8 +31,6 @@ import {
   WorkspaceRoleDetailRow,
 } from '../-view/-presentation/fields';
 
-
-
 export type Workspace = NonNullable<UserProfileDto['workspaces']>[number];
 
 export function ProfileSidebar() {

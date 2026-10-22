@@ -8,6 +8,9 @@ import { docsSections, findDocsPage } from '../../-lib/registry';
 import { DocsPageView } from '../../-view/DocsPageView';
 
 export const Route = createFileRoute('/docs/$section/$page/')({
+  head: () => ({
+    meta: [{ title: 'Documentation | dnocs' }],
+  }),
   component: DocsPage,
   notFoundComponent: () => <FailedState.WallCentered />,
 });

@@ -32,6 +32,9 @@ import { MainWizard } from '../../create/-view/MainWizard';
 export const Route = createFileRoute(
   '/_with-app-layout/applications/$id/update/',
 )({
+  head: () => ({
+    meta: [{ title: 'Update application | dnocs' }],
+  }),
   component: ApplicationUpdatePage,
 });
 

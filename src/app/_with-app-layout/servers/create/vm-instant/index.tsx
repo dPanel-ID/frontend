@@ -50,6 +50,9 @@ import { SectionSpecs } from './-view/SectionSpecs';
 export const Route = createFileRoute(
   '/_with-app-layout/servers/create/vm-instant/',
 )({
+  head: () => ({
+    meta: [{ title: 'Launch a cloud server | dnocs' }],
+  }),
   component: LaunchCloudServerPage,
   // ?provider=aws preselects a provider, for example from /servers/create.
   validateSearch: zodValidator(
@@ -60,7 +63,7 @@ export const Route = createFileRoute(
 function LaunchCloudServerPage() {
   return (
     <>
-      <title>Launch a cloud server | dPanel</title>
+      <title>Launch a cloud server | dnocs</title>
 
       <FlowHero
         accent="sky"

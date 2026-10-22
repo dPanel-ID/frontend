@@ -74,7 +74,8 @@ export default function LogViewer(props: LogViewerProps) {
             )}
             {(queryErrors?.length ?? 0) > 0 && (
               <span className="rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-1 text-amber-200">
-                {queryErrors!.length} query warning{queryErrors!.length > 1 ? 's' : ''}
+                {queryErrors!.length} query warning
+                {queryErrors!.length > 1 ? 's' : ''}
               </span>
             )}
           </div>
@@ -102,31 +103,32 @@ export default function LogViewer(props: LogViewerProps) {
           <div className="min-w-max py-2 font-mono text-xs leading-6">
             {(renderedEntries ?? lines).map((item, index) => {
               const line = typeof item === 'string' ? item : item.line;
-              const severity = typeof item === 'string' ? undefined : item.severity;
+              const severity =
+                typeof item === 'string' ? undefined : item.severity;
               const time = typeof item === 'string' ? undefined : item.time;
 
               return (
-              <div
-                key={`${index}:${line}`}
-                className={cn(
-                  'grid grid-cols-[4.25rem_minmax(0,1fr)] border-b border-white/5 last:border-b-0 hover:bg-white/5',
-                  severity && 'bg-white/1',
-                )}
-              >
-                <div className="sticky left-0 flex select-none flex-col justify-center gap-0.5 bg-slate-950 px-3 py-1.5 text-right text-slate-500">
-                  <span>{index + 1}</span>
-                  {severity || time ? (
-                    <span className="text-[10px] uppercase tracking-wide text-slate-400">
-                      {severity || ''}
-                      {severity && time ? ' · ' : ''}
-                      {time || ''}
-                    </span>
-                  ) : null}
+                <div
+                  key={`${index}:${line}`}
+                  className={cn(
+                    'grid grid-cols-[4.25rem_minmax(0,1fr)] border-b border-white/5 last:border-b-0 hover:bg-white/5',
+                    severity && 'bg-white/1',
+                  )}
+                >
+                  <div className="sticky left-0 flex select-none flex-col justify-center gap-0.5 bg-slate-950 px-3 py-1.5 text-right text-slate-500">
+                    <span>{index + 1}</span>
+                    {severity || time ? (
+                      <span className="text-[10px] uppercase tracking-wide text-slate-400">
+                        {severity || ''}
+                        {severity && time ? ' · ' : ''}
+                        {time || ''}
+                      </span>
+                    ) : null}
+                  </div>
+                  <code className="whitespace-pre-wrap wrap-break-word px-3 py-1.5 text-slate-100">
+                    {line || ' '}
+                  </code>
                 </div>
-                <code className="whitespace-pre-wrap wrap-break-word px-3 py-1.5 text-slate-100">
-                  {line || ' '}
-                </code>
-              </div>
               );
             })}
           </div>

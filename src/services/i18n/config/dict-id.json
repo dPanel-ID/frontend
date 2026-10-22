@@ -1541,7 +1541,7 @@
         "engineLoading": "Tunggu hingga metadata modul engine terpilih selesai dimuat.",
         "engineRequired": "Pilih modul engine infrastruktur dengan kontrak install yang dapat dibaca."
       },
-      "documentTitle": "Buat load balancer | dNocs",
+      "documentTitle": "Buat load balancer | dnocs",
       "backToList": "Semua load balancer",
       "submit": "Buat load balancer",
       "steps": {
@@ -1791,7 +1791,7 @@
       }
     },
     "domainCreate": {
-      "documentTitle": "Tambah Domain",
+      "documentTitle": "Tambah domain | dnocs",
       "headerTitle": "Tambah Domain",
       "headerDesc": "Registrar Anda tetap. dNocs butuh akses ke pihak yang menjawab DNS domain ini, supaya bisa mengarahkan record ke server Anda.",
       "backToDomains": "Kembali ke domain",
@@ -2072,7 +2072,7 @@
         "deleteDialog": {
           "message": "Yakin ingin menghapus \"{name}\"? Tindakan ini tidak bisa dibatalkan."
         },
-        "documentTitle": "{name} — Kunci SSH | dPanel",
+        "documentTitle": "{name} — Kunci SSH | dnocs",
         "fallbackName": "Kunci tanpa nama",
         "loading": "Memuat data kunci…",
         "back": "Kembali ke kunci SSH",

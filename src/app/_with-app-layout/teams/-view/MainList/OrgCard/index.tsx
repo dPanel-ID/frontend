@@ -25,7 +25,9 @@ export default function OrgCard(props: OrgCardProps) {
   const t = useDevetekTranslations();
   const locale = useDevetekLocale();
 
-  const createdAtRelative = createdAt ? getDistanceFromNow(createdAt, locale) : null;
+  const createdAtRelative = createdAt
+    ? getDistanceFromNow(createdAt, locale)
+    : null;
 
   const handleClickDetails = () =>
     emit('@teams/open--details', {
@@ -82,7 +84,11 @@ export default function OrgCard(props: OrgCardProps) {
         <ResourceCard.Compact.Footnote.Item
           icon={IconLastDateActive}
           label={t('common.terms.createdAt')}
-          value={createdAtRelative ? `${t('common.terms.createdAt')}: ${createdAtRelative}` : undefined}
+          value={
+            createdAtRelative
+              ? `${t('common.terms.createdAt')}: ${createdAtRelative}`
+              : undefined
+          }
         />
       </ResourceCard.Compact.Footnote>
     </ResourceCard.Compact>

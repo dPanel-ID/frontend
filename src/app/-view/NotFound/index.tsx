@@ -50,9 +50,16 @@ export default function NotFoundView() {
 
         {/* Action buttons */}
         <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
-          <Button buttonStyle="flat" buttonColor="primary" size="lg" onClick={handleBack}>
+          <Button
+            buttonStyle="flat"
+            buttonColor="primary"
+            size="lg"
+            onClick={handleBack}
+          >
             <ArrowLeftIcon />
-            {canGoBack ? t('common.actions.back') : t('common.actions.backToDashboard')}
+            {canGoBack
+              ? t('common.actions.back')
+              : t('common.actions.backToDashboard')}
           </Button>
 
           {canGoBack && (

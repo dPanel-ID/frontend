@@ -45,6 +45,9 @@ import { ProviderSection } from './-view/SectionProvider';
 export const Route = createFileRoute(
   '/_with-app-layout/backend/domain/create/',
 )({
+  head: () => ({
+    meta: [{ title: 'Add a domain | dnocs' }],
+  }),
   component: DomainCreatePage,
 });
 

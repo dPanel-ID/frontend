@@ -14,6 +14,9 @@ import { FallbackState } from '@/widgets/fallback-state';
 export const Route = createFileRoute(
   '/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/',
 )({
+  head: () => ({
+    meta: [{ title: 'Execution | dnocs' }],
+  }),
   component: ExecutionDetailPage,
 });
 
@@ -77,16 +80,12 @@ function ExecutionDetailPage() {
           rows={[
             {
               label: 'Operation ID',
-              value: (
-                <span className="font-mono text-xs">{operationId}</span>
-              ),
+              value: <span className="font-mono text-xs">{operationId}</span>,
             },
             {
               label: 'Execution ID',
               value: (
-                <span className="font-mono text-xs">
-                  {execution.id ?? '-'}
-                </span>
+                <span className="font-mono text-xs">{execution.id ?? '-'}</span>
               ),
             },
             {

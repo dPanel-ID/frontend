@@ -40,7 +40,9 @@ export default function Step5Env() {
       >
         <label className="grid gap-1.5">
           <span className="text-sm font-semibold">{t('buildTitle')}</span>
-          <span className="text-xs text-muted-foreground">{t('buildDesc')}</span>
+          <span className="text-xs text-muted-foreground">
+            {t('buildDesc')}
+          </span>
           <TextArea
             className="min-h-36 font-mono text-sm"
             placeholder={'NODE_ENV=production\nCI=true'}

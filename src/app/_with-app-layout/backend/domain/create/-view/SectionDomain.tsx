@@ -9,7 +9,6 @@ import { TextArea } from '@/shared/presentation/atoms/TextArea';
 import type { DomainCreateForm } from '../-rules/form';
 import { FieldLabel } from '../-view/-presentation/fields';
 
-
 export function DomainIdentitySection(props: {
   form: ReturnType<typeof useForm<DomainCreateForm>>;
   isSubmitting: boolean;

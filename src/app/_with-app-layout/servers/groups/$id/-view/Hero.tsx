@@ -43,7 +43,7 @@ export default function Hero() {
     useGroupDetailModel();
   const { openMembersPicker } = useMembersPicker();
 
-  useMetaTags({ title: `${group?.name ?? ''} | dPanel` }, [group?.name]);
+  useMetaTags({ title: `${group?.name ?? ''} | dnocs` }, [group?.name]);
 
   if (!group) return null;
 

@@ -139,7 +139,11 @@ const Table = buildResourceTable<OrgTableData>({
             </Button>
 
             <ActionPopover actions={actions}>
-              <Button size="icon-sm" buttonColor="secondary" buttonStyle="ghost">
+              <Button
+                size="icon-sm"
+                buttonColor="secondary"
+                buttonStyle="ghost"
+              >
                 <IconThreeDots className="size-4" />
               </Button>
             </ActionPopover>

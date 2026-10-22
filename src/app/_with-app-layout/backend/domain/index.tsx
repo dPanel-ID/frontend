@@ -9,6 +9,9 @@ import { schemaQueryString } from './-rules/qs';
 import View from './-view';
 
 export const Route = createFileRoute('/_with-app-layout/backend/domain/')({
+  head: () => ({
+    meta: [{ title: 'Domains and DNS | dnocs' }],
+  }),
   component: RouteComponent,
   validateSearch: zodValidator(schemaQueryString),
 });

@@ -6,6 +6,9 @@ import { FilterModelProvider } from './-model/filters';
 import View from './-view';
 
 export const Route = createFileRoute('/_with-app-layout/applications/')({
+  head: () => ({
+    meta: [{ title: 'Applications | dnocs' }],
+  }),
   component: ApplicationsPage,
 });
 

@@ -23,7 +23,6 @@ export default function ArtifactsSection(props: ArtifactsSectionProps) {
   return (
     <Card className="rounded-2xl">
       <div className="px-4 py-3 flex items-center justify-end gap-4">
-
         <div className="flex items-center gap-2">
           <Button
             disabled={!!ctaNewState}
@@ -49,7 +48,9 @@ export default function ArtifactsSection(props: ArtifactsSectionProps) {
         <div className="flex items-start gap-2 rounded-md border border-yellow-400/50 bg-yellow-50 dark:bg-yellow-950/30 px-3 py-2 text-yellow-800 dark:text-yellow-300">
           <TriangleAlertIcon className="size-4 shrink-0 mt-0.5" />
           <p className="text-xs leading-relaxed">
-            {t('page.applicationDetail.artifactsHistory.distributedStorageWarning')}
+            {t(
+              'page.applicationDetail.artifactsHistory.distributedStorageWarning',
+            )}
           </p>
         </div>
       </div>

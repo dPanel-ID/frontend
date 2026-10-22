@@ -7,6 +7,9 @@ import { FailedState } from '@/widgets/failed-state';
 import { firstDocsPageSlug } from '../-lib/registry';
 
 export const Route = createFileRoute('/docs/$section/')({
+  head: () => ({
+    meta: [{ title: 'Documentation | dnocs' }],
+  }),
   component: DocsSectionRedirect,
 });
 
