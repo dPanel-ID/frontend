@@ -17,15 +17,15 @@ export const formSchema = z
     fullname: z //
       .string()
       .trim()
-      .min(1, 'page.profile.modal.validation.fullNameRequired')
-      .max(120, 'page.profile.modal.validation.fullNameTooLong'),
+      .min(1, 'sidepanel.userEdit.validation.fullNameRequired')
+      .max(120, 'sidepanel.userEdit.validation.fullNameTooLong'),
     avatar_url: z //
       .string()
       .trim()
-      .max(2048, 'page.profile.modal.validation.avatarUrlTooLong')
+      .max(2048, 'sidepanel.userEdit.validation.avatarUrlTooLong')
       .refine(
         isEmptyOrHttpUrl,
-        'page.profile.modal.validation.avatarUrlInvalid',
+        'sidepanel.userEdit.validation.avatarUrlInvalid',
       )
       .optional(),
     password: z.string().optional(),
@@ -42,13 +42,13 @@ export const formSchema = z
     if (!hasPassword) {
       ctx.addIssue({
         code: 'custom',
-        message: 'page.profile.modal.validation.passwordRequired',
+        message: 'sidepanel.userEdit.validation.passwordRequired',
         path: ['password'],
       });
     } else if (password.length < 8) {
       ctx.addIssue({
         code: 'custom',
-        message: 'page.profile.modal.validation.passwordTooShort',
+        message: 'sidepanel.userEdit.validation.passwordTooShort',
         path: ['password'],
       });
     }
@@ -56,13 +56,13 @@ export const formSchema = z
     if (!hasConfirmPassword) {
       ctx.addIssue({
         code: 'custom',
-        message: 'page.profile.modal.validation.confirmPasswordRequired',
+        message: 'sidepanel.userEdit.validation.confirmPasswordRequired',
         path: ['confirmPassword'],
       });
     } else if (hasPassword && password !== confirmPassword) {
       ctx.addIssue({
         code: 'custom',
-        message: 'page.profile.modal.validation.confirmPasswordMismatch',
+        message: 'sidepanel.userEdit.validation.confirmPasswordMismatch',
         path: ['confirmPassword'],
       });
     }

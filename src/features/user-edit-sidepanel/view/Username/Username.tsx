@@ -10,7 +10,7 @@ export default function Username(props: UsernameProps) {
   return (
     <section className="flex flex-col gap-1.5">
       <span className="text-sm font-medium">
-        {t('page.profile.modal.username')}
+        {t('sidepanel.userEdit.username')}
       </span>
       <p
         id="profile-username"
@@ -19,7 +19,7 @@ export default function Username(props: UsernameProps) {
         @{props.value}
       </p>
       <p className="text-xs text-muted-foreground">
-        {t('page.profile.modal.usernameReadonly')}
+        {t('sidepanel.userEdit.usernameReadonly')}
       </p>
     </section>
   );

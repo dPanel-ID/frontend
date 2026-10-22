@@ -26,10 +26,10 @@ export default function PasswordFields() {
         <LockKeyholeIcon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
         <div className="min-w-0">
           <p className="text-sm font-medium">
-            {t('page.profile.modal.passwordSectionTitle')}
+            {t('sidepanel.userEdit.passwordSectionTitle')}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {t('page.profile.modal.passwordSectionDescription')}
+            {t('sidepanel.userEdit.passwordSectionDescription')}
           </p>
         </div>
       </div>
@@ -37,7 +37,7 @@ export default function PasswordFields() {
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div className="flex min-w-0 flex-col gap-1.5">
           <label htmlFor="password" className="text-sm font-medium">
-            {t('page.profile.modal.newPassword')}
+            {t('sidepanel.userEdit.newPassword')}
           </label>
           <div className="relative">
             <Input
@@ -45,7 +45,7 @@ export default function PasswordFields() {
               type={showPassword ? 'text' : 'password'}
               autoComplete="new-password"
               className="pr-10"
-              placeholder={t('page.profile.modal.newPasswordPlaceholder')}
+              placeholder={t('sidepanel.userEdit.newPasswordPlaceholder')}
               aria-invalid={Boolean(passwordError)}
               aria-describedby={passwordError ? passwordErrorId : undefined}
               {...form.register('password')}
@@ -62,13 +62,13 @@ export default function PasswordFields() {
                 type="button"
                 aria-label={t(
                   showPassword
-                    ? 'page.profile.modal.hidePassword'
-                    : 'page.profile.modal.showPassword',
+                    ? 'sidepanel.userEdit.hidePassword'
+                    : 'sidepanel.userEdit.showPassword',
                 )}
                 title={t(
                   showPassword
-                    ? 'page.profile.modal.hidePassword'
-                    : 'page.profile.modal.showPassword',
+                    ? 'sidepanel.userEdit.hidePassword'
+                    : 'sidepanel.userEdit.showPassword',
                 )}
               >
                 {showPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -80,7 +80,7 @@ export default function PasswordFields() {
 
         <div className="flex min-w-0 flex-col gap-1.5">
           <label htmlFor="confirmPassword" className="text-sm font-medium">
-            {t('page.profile.modal.confirmPassword')}
+            {t('sidepanel.userEdit.confirmPassword')}
           </label>
           <div className="relative">
             <Input
@@ -88,7 +88,7 @@ export default function PasswordFields() {
               type={showConfirmPassword ? 'text' : 'password'}
               autoComplete="new-password"
               className="pr-10"
-              placeholder={t('page.profile.modal.confirmPasswordPlaceholder')}
+              placeholder={t('sidepanel.userEdit.confirmPasswordPlaceholder')}
               aria-invalid={Boolean(confirmPasswordError)}
               aria-describedby={
                 confirmPasswordError ? confirmPasswordErrorId : undefined
@@ -107,13 +107,13 @@ export default function PasswordFields() {
                 type="button"
                 aria-label={t(
                   showConfirmPassword
-                    ? 'page.profile.modal.hideConfirmPassword'
-                    : 'page.profile.modal.showConfirmPassword',
+                    ? 'sidepanel.userEdit.hideConfirmPassword'
+                    : 'sidepanel.userEdit.showConfirmPassword',
                 )}
                 title={t(
                   showConfirmPassword
-                    ? 'page.profile.modal.hideConfirmPassword'
-                    : 'page.profile.modal.showConfirmPassword',
+                    ? 'sidepanel.userEdit.hideConfirmPassword'
+                    : 'sidepanel.userEdit.showConfirmPassword',
                 )}
               >
                 {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
