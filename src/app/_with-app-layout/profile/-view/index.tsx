@@ -5,6 +5,7 @@ import { useUserFormModal } from '@/features/user-form-modal';
 
 import Layout from './-presentation/Layout';
 import { Header } from './Header';
+import Overview from './Overview';
 import { Personal, ProfileSidebar } from './Personal';
 
 export default function ProfileView() {
@@ -29,8 +30,9 @@ export default function ProfileView() {
   };
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       <Header onEditProfile={handleEditProfile} />
+      <Overview />
 
       <Layout>
         <Layout.Main>
@@ -41,6 +43,6 @@ export default function ProfileView() {
           <ProfileSidebar />
         </Layout.Aside>
       </Layout>
-    </>
+    </div>
   );
 }
