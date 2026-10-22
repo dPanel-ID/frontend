@@ -7,6 +7,9 @@ import { ArtifactHistoryModelProvider } from './-model/artifact-history';
 import View from './-view';
 
 export const Route = createFileRoute('/_with-app-layout/applications/$id/')({
+  head: () => ({
+    meta: [{ title: 'Application | dnocs' }],
+  }),
   component: ApplicationDetailPage,
 });
 

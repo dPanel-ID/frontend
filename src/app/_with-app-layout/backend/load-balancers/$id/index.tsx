@@ -67,6 +67,9 @@ import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 export const Route = createFileRoute(
   '/_with-app-layout/backend/load-balancers/$id/',
 )({
+  head: () => ({
+    meta: [{ title: 'Load balancer | dnocs' }],
+  }),
   component: LoadBalancerDetailPage,
 });
 

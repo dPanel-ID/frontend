@@ -23,6 +23,9 @@ const View = () => {
 };
 
 export const Route = createFileRoute('/_with-app-layout/backend/database/')({
+  head: () => ({
+    meta: [{ title: 'Databases | dnocs' }],
+  }),
   component: DatabasePage,
 });
 

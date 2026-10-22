@@ -1,4 +1,9 @@
-import { ArrowLeftRightIcon, Grid2X2Icon, RefreshCwIcon, Rows3Icon } from 'lucide-react';
+import {
+  ArrowLeftRightIcon,
+  Grid2X2Icon,
+  RefreshCwIcon,
+  Rows3Icon,
+} from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 

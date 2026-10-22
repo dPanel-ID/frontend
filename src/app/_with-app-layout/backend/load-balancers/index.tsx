@@ -11,6 +11,9 @@ import View from './-view';
 export const Route = createFileRoute(
   '/_with-app-layout/backend/load-balancers/',
 )({
+  head: () => ({
+    meta: [{ title: 'Load balancers | dnocs' }],
+  }),
   component: RouteComponent,
   validateSearch: zodValidator(schemaQueryString),
 });

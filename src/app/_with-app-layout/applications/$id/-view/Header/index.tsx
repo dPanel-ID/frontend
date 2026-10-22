@@ -63,7 +63,7 @@ const AppTitle = () => {
 
   useMetaTags(
     {
-      title: `${appName} | dPanel`,
+      title: `${appName} | dnocs`,
     },
     [appName],
   );

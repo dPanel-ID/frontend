@@ -22,6 +22,9 @@ import {
 export const Route = createFileRoute(
   '/_with-app-layout/backend/secret-managers/ssh-key/',
 )({
+  head: () => ({
+    meta: [{ title: 'SSH keys | dnocs' }],
+  }),
   component: SshKeyPage,
   validateSearch: zodValidator(schemaQueryString),
 });

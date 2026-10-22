@@ -22,6 +22,9 @@ import {
 export const Route = createFileRoute(
   '/_with-app-layout/backend/cloud-projects/',
 )({
+  head: () => ({
+    meta: [{ title: 'Cloud accounts | dnocs' }],
+  }),
   component: CloudProjectsPage,
   validateSearch: zodValidator(schemaQueryString),
 });

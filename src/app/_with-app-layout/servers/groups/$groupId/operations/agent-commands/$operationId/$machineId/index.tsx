@@ -14,6 +14,9 @@ import { FallbackState } from '@/widgets/fallback-state';
 export const Route = createFileRoute(
   '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/',
 )({
+  head: () => ({
+    meta: [{ title: 'Agent command | dnocs' }],
+  }),
   component: AgentCommandDetailPage,
 });
 
@@ -77,9 +80,7 @@ function AgentCommandDetailPage() {
           rows={[
             {
               label: 'Operation ID',
-              value: (
-                <span className="font-mono text-xs">{operationId}</span>
-              ),
+              value: <span className="font-mono text-xs">{operationId}</span>,
             },
             {
               label: 'Command ID',

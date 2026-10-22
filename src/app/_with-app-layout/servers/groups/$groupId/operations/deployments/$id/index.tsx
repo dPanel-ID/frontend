@@ -15,6 +15,9 @@ import { FallbackState } from '@/widgets/fallback-state';
 export const Route = createFileRoute(
   '/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/',
 )({
+  head: () => ({
+    meta: [{ title: 'Deployment | dnocs' }],
+  }),
   component: DeploymentDetailPage,
 });
 
@@ -75,7 +78,9 @@ function DeploymentDetailPage() {
           rows={[
             {
               label: 'Deployment ID',
-              value: <span className="font-mono text-xs">{detail.id ?? id}</span>,
+              value: (
+                <span className="font-mono text-xs">{detail.id ?? id}</span>
+              ),
             },
             {
               label: 'Status',
