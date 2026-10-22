@@ -1,1 +1,2 @@
-export { default as Personal, ProfileSidebar } from './Personal';
+export { default as Personal } from './Personal';
+export { ProfileSidebar } from '../AsideProfile';
