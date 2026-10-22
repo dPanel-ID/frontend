@@ -5,10 +5,10 @@ import { buildContext } from '@/shared/libs/react-factories/buildContext';
 
 import { formSchema } from './form';
 import type { FormSchema } from './form';
-import type { UserFormModalProps as Props } from './types';
+import type { UserEditSidepanelProps as Props } from './types';
 
 export const [DcProvider, useDcContext] = buildContext(
-  'UserFormModal',
+  'UserEditSidepanel',
   (props: Props) => {
     const form = useForm<FormSchema>({
       resolver: zodResolver(formSchema),

@@ -1,7 +1,7 @@
 import { useAuthLoggedIn } from '@/services/auth';
 import { useAuthEmit } from '@/services/auth/model/events';
 
-import { useUserFormModal } from '@/features/user-form-modal';
+import { useUserEditSidepanel } from '@/features/user-edit-sidepanel';
 
 import Layout from './-presentation/Layout';
 import { Header } from './Header';
@@ -11,10 +11,10 @@ import { Personal, ProfileSidebar } from './Personal';
 export default function ProfileView() {
   const { userProfile } = useAuthLoggedIn();
   const authEmit = useAuthEmit();
-  const [userForm] = useUserFormModal();
+  const [openUserEdit] = useUserEditSidepanel();
 
   const handleEditProfile = () => {
-    userForm({
+    openUserEdit({
       action: 'update',
       user: {
         id: userProfile.id,
