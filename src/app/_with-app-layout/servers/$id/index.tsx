@@ -8,6 +8,9 @@ import { schemaServerDetailSearch } from './-rules/tabs';
 import ServerDetailView from './-view';
 
 export const Route = createFileRoute('/_with-app-layout/servers/$id/')({
+  head: () => ({
+    meta: [{ title: 'Server | dnocs' }],
+  }),
   component: ServerDetailPage,
   validateSearch: zodValidator(schemaServerDetailSearch),
 });

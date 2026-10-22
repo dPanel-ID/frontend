@@ -14,6 +14,9 @@ import { CreateChooser } from './-view/create-chooser';
 import { ManualConnect } from './-view/manual-connect';
 
 export const Route = createFileRoute('/_with-app-layout/servers/create/')({
+  head: () => ({
+    meta: [{ title: 'Add a server | dnocs' }],
+  }),
   component: CreateNewServerPage,
   validateSearch: zodValidator(schemaCreateServerSearch),
 });

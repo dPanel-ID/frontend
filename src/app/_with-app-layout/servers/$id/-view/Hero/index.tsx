@@ -87,7 +87,7 @@ export default guard(function Hero() {
     port: server.ssh.port || 22,
   });
 
-  useMetaTags({ title: `${name} | dPanel` }, [name]);
+  useMetaTags({ title: `${name} | dnocs` }, [name]);
 
   const handleClickRefresh = () => {
     setIsRefreshing(true);

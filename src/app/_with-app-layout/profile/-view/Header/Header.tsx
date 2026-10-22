@@ -22,7 +22,7 @@ export default function Header(props: HeaderProps) {
   const displayName = userProfile.fullname || userProfile.username;
 
   useMetaTags(
-    { title: `${t('page.profile.metaTitle', { name: displayName })} | dPanel` },
+    { title: `${t('page.profile.metaTitle', { name: displayName })} | dnocs` },
     [displayName],
   );
 

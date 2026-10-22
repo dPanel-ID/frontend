@@ -30,7 +30,10 @@ import { ServiceState } from '@/entities/os-service/ui/presentation/ServiceState
 import usePushServiceActivityUsecase from '@/entities/os-service/usecase/push-activity';
 
 import { ApiService } from '@/shared/api';
-import { getDistanceFromNow, humanizeSeconds } from '@/shared/libs/browser/date';
+import {
+  getDistanceFromNow,
+  humanizeSeconds,
+} from '@/shared/libs/browser/date';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Card } from '@/shared/presentation/atoms/Card';
@@ -110,21 +113,21 @@ function DeploymentServiceState(props: {
   fallbackInstallerStatus?: string;
 }) {
   const { serverId, serviceName, fallbackInstallerStatus } = props;
-  const [responseServiceDetail] = ApiService.Origin.$ServerId.Detail.$ServiceName.useGet(
-    {
+  const [responseServiceDetail] =
+    ApiService.Origin.$ServerId.Detail.$ServiceName.useGet({
       serverId,
       serviceName,
       options: {
         skip: !serverId || !serviceName,
         refreshIntervalMs: 3000,
       },
-    },
-  );
+    });
 
   const serviceDetail =
     responseServiceDetail.$status === 'success'
       ? responseServiceDetail
-      : responseServiceDetail.$status === 'loading' && responseServiceDetail.prevData
+      : responseServiceDetail.$status === 'loading' &&
+          responseServiceDetail.prevData
         ? responseServiceDetail.prevData
         : undefined;
 
@@ -148,8 +151,15 @@ function DeploymentServiceState(props: {
 
   return (
     <>
-      <ServiceState.Badge className="size-3 ml-0.5" serviceState={serviceState} />
-      <ServiceState.Label as="span" className="text-xs" serviceState={serviceState} />
+      <ServiceState.Badge
+        className="size-3 ml-0.5"
+        serviceState={serviceState}
+      />
+      <ServiceState.Label
+        as="span"
+        className="text-xs"
+        serviceState={serviceState}
+      />
       {installerStatus && installerStatus !== 'unknown' && (
         <span className="ml-2 flex items-center gap-1">
           <span className="text-[10px] uppercase tracking-wide text-primary/45">
@@ -159,7 +169,10 @@ function DeploymentServiceState(props: {
         </span>
       )}
       {serviceError && (
-        <span className="ml-2 text-[11px] text-red-400" title={serviceDetailLines.join('\n')}>
+        <span
+          className="ml-2 text-[11px] text-red-400"
+          title={serviceDetailLines.join('\n')}
+        >
           {serviceError}
         </span>
       )}
@@ -217,11 +230,20 @@ interface DeploymentCardProps {
   onClickRestore: () => void;
 }
 
-function DeploymentCard({ data, artifact, onClickActivity, onClickDelete, onClickRestore }: DeploymentCardProps) {
+function DeploymentCard({
+  data,
+  artifact,
+  onClickActivity,
+  onClickDelete,
+  onClickRestore,
+}: DeploymentCardProps) {
   const locale = useDevetekLocale();
   const updatedAt = getDistanceFromNow(data.timestamp.updated, locale);
   const router = useRouter();
-  const serverHref = router.buildLocation({ to: '/servers/$id', params: { id: data.serverSnapshot.id } }).href;
+  const serverHref = router.buildLocation({
+    to: '/servers/$id',
+    params: { id: data.serverSnapshot.id },
+  }).href;
 
   const cnCard = cn('shadow-none rounded-lg', {
     'border-green-600/40': data.state.status === 'ready',
@@ -281,7 +303,9 @@ function DeploymentCard({ data, artifact, onClickActivity, onClickDelete, onClic
             </p>
           </div>
         ) : (
-          <p className="text-xs text-muted-foreground italic">Artifact not found</p>
+          <p className="text-xs text-muted-foreground italic">
+            Artifact not found
+          </p>
         )}
 
         <div className="flex items-center flex-wrap gap-x-4 gap-y-1">
@@ -331,18 +355,26 @@ function DeploymentCard({ data, artifact, onClickActivity, onClickDelete, onClic
             {artifact.configSnapshot.lifecycle.setup.languages.length > 0 && (
               <div className="flex items-center gap-1">
                 <CodeIcon className="size-3 text-muted-foreground shrink-0" />
-                {artifact.configSnapshot.lifecycle.setup.languages.map((lang, i) => (
-                  <span key={i} className="text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono leading-none">
-                    {lang.name} {lang.version}
-                  </span>
-                ))}
+                {artifact.configSnapshot.lifecycle.setup.languages.map(
+                  (lang, i) => (
+                    <span
+                      key={i}
+                      className="text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono leading-none"
+                    >
+                      {lang.name} {lang.version}
+                    </span>
+                  ),
+                )}
               </div>
             )}
 
             {artifact.configSnapshot.lifecycle.build.steps.length > 0 && (
               <p className="text-xs text-primary/70 flex items-center gap-0.5">
                 <HammerIcon className="size-3 shrink-0" />
-                {artifact.configSnapshot.lifecycle.build.steps.length} step{artifact.configSnapshot.lifecycle.build.steps.length !== 1 ? 's' : ''}
+                {artifact.configSnapshot.lifecycle.build.steps.length} step
+                {artifact.configSnapshot.lifecycle.build.steps.length !== 1
+                  ? 's'
+                  : ''}
               </p>
             )}
           </div>
@@ -385,11 +417,7 @@ function DeploymentCard({ data, artifact, onClickActivity, onClickDelete, onClic
 
         <div className="flex justify-end gap-2">
           {data.state.status === 'deleted' && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onClickRestore}
-            >
+            <Button variant="outline" size="sm" onClick={onClickRestore}>
               <UndoIcon className="size-3" />
               Restore
             </Button>
@@ -436,7 +464,8 @@ export function DeploymentList({ list, artifactList }: DeploymentListProps) {
   const emit = useEmit();
 
   const [handleActivity] = usePushServiceActivityUsecase({
-    onSuccess: () => emit('@applications::detail/deployment-history-refresh', null),
+    onSuccess: () =>
+      emit('@applications::detail/deployment-history-refresh', null),
   });
 
   return (

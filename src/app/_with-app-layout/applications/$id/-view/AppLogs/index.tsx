@@ -12,12 +12,12 @@ import LogViewer from './_presentation/LogViewer';
 const LogView = () => {
   const [log, logEntries, logQuery, logQueryErrors, refreshLog, timeFilter] =
     useAppLogsModel((s) => [
-    s.log,
-    s.logEntries,
-    s.logQuery,
-    s.logQueryErrors,
-    s.refreshLog,
-    s.timeFilter,
+      s.log,
+      s.logEntries,
+      s.logQuery,
+      s.logQueryErrors,
+      s.refreshLog,
+      s.timeFilter,
     ]);
   const t = useDevetekTranslations('page.applicationDetail.appLogs');
   const logBuffer =
@@ -41,7 +41,13 @@ const LogView = () => {
         ariaLabel={t('runtimeLogOutput')}
         emptyLabel={t('emptyLog')}
         emptyDescription="Try widening the time range or selecting another deployment. Runtime logs now follow the active deployment when available."
-        entries={log.$status === 'success' ? logEntries : log.$status === 'loading' && log.prevData ? logEntries : undefined}
+        entries={
+          log.$status === 'success'
+            ? logEntries
+            : log.$status === 'loading' && log.prevData
+              ? logEntries
+              : undefined
+        }
         query={log.$status === 'success' ? logQuery : undefined}
         queryErrors={log.$status === 'success' ? logQueryErrors : undefined}
         lines={logBuffer}

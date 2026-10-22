@@ -5,9 +5,18 @@ import EventController from './-EventController';
 import { FilterModelProvider } from './-model/filters';
 import { MembersDataModelProvider } from './-model/members-data';
 import { schemaQueryString } from './-rules/qs';
-import { Header, Layout, MainBottomActions, MainFilter, MainList } from './-view';
+import {
+  Header,
+  Layout,
+  MainBottomActions,
+  MainFilter,
+  MainList,
+} from './-view';
 
 export const Route = createFileRoute('/_with-app-layout/teams/$id/')({
+  head: () => ({
+    meta: [{ title: 'Team | dnocs' }],
+  }),
   component: TeamDetailPage,
   validateSearch: zodValidator(schemaQueryString),
 });

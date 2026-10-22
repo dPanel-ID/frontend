@@ -88,7 +88,10 @@ export default function EventController() {
 
   useSubscribe('@applications::detail/github-login', handleGithubLogin);
 
-  useSubscribe('@applications::detail/application-delete', handleApplicationDelete);
+  useSubscribe(
+    '@applications::detail/application-delete',
+    handleApplicationDelete,
+  );
 
   useSubscribe('@applications::detail/application-edit', handleApplicationEdit);
 

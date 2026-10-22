@@ -6,6 +6,9 @@ import { schemaGroupDetailSearch } from './-rules/search';
 import ServerGroupDetailView from './-view';
 
 export const Route = createFileRoute('/_with-app-layout/servers/groups/$id/')({
+  head: () => ({
+    meta: [{ title: 'Server group | dnocs' }],
+  }),
   component: ServerGroupDetailPage,
   validateSearch: zodValidator(schemaGroupDetailSearch),
 });

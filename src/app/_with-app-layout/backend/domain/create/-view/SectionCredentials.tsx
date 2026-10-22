@@ -17,7 +17,6 @@ import { getCredentialFields, shouldRenderTextarea } from '../-lib/providers';
 import type { DomainCreateForm } from '../-rules/form';
 import { FieldLabel } from '../-view/-presentation/fields';
 
-
 export function CredentialSection(props: {
   form: ReturnType<typeof useForm<DomainCreateForm>>;
   isSubmitting: boolean;

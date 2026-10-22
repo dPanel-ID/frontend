@@ -48,6 +48,9 @@ import {
 export const Route = createFileRoute(
   '/_with-app-layout/backend/load-balancers/create/',
 )({
+  head: () => ({
+    meta: [{ title: 'Create a load balancer | dnocs' }],
+  }),
   component: CreateLoadBalancerPage,
 });
 

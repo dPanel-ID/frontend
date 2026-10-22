@@ -16,6 +16,9 @@ import SshKeyDetailView from './-view';
 export const Route = createFileRoute(
   '/_with-app-layout/backend/secret-managers/ssh-key/$id/',
 )({
+  head: () => ({
+    meta: [{ title: 'SSH key | dnocs' }],
+  }),
   component: SshKeyDetailPage,
 });
 

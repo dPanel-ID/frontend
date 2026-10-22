@@ -20,6 +20,9 @@ import { AsideProgress } from './-view/AsideProgress';
 import { MainWizard } from './-view/MainWizard';
 
 export const Route = createFileRoute('/_with-app-layout/applications/create/')({
+  head: () => ({
+    meta: [{ title: 'Create an application | dnocs' }],
+  }),
   component: ApplicationsPage,
 });
 

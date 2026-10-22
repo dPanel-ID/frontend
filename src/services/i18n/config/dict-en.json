@@ -1549,7 +1549,7 @@
         "engineLoading": "Wait until the selected engine module metadata finishes loading.",
         "engineRequired": "Select an infrastructure engine module with a readable install contract."
       },
-      "documentTitle": "Create a load balancer | dNocs",
+      "documentTitle": "Create a load balancer | dnocs",
       "backToList": "All load balancers",
       "submit": "Create load balancer",
       "steps": {
@@ -1799,7 +1799,7 @@
       }
     },
     "domainCreate": {
-      "documentTitle": "Add Domain",
+      "documentTitle": "Add a domain | dnocs",
       "headerTitle": "Add Domain",
       "headerDesc": "Keep your registrar. dNocs needs access to whoever answers DNS for the domain, so it can point records at your servers.",
       "backToDomains": "Back to domains",
@@ -2080,7 +2080,7 @@
         "deleteDialog": {
           "message": "Are you sure you want to delete \"{name}\"? This action cannot be undone."
         },
-        "documentTitle": "{name} — SSH key | dPanel",
+        "documentTitle": "{name} — SSH key | dnocs",
         "fallbackName": "Untitled key",
         "loading": "Loading key data…",
         "back": "Back to SSH keys",

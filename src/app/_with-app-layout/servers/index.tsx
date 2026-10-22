@@ -7,6 +7,9 @@ import { ServersModelProvider } from './-model/servers';
 import ServersView from './-view';
 
 export const Route = createFileRoute('/_with-app-layout/servers/')({
+  head: () => ({
+    meta: [{ title: 'Servers | dnocs' }],
+  }),
   component: ServersPage,
 });
 

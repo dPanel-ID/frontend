@@ -7,7 +7,6 @@ import { Card } from '@/shared/presentation/atoms/Card';
 
 import { getCredentialFields } from '../../-lib/providers';
 
-
 export function SecurityCard() {
   const t = useDevetekTranslations();
 
