@@ -14,18 +14,18 @@ export default function AvatarUrl() {
   return (
     <section className="flex flex-col gap-1.5">
       <label htmlFor="avatar_url" className="text-sm font-medium">
-        {t('page.profile.modal.avatarUrl')}
+        {t('sidepanel.userEdit.avatarUrl')}
       </label>
       <Input
         id="avatar_url"
         type="url"
-        placeholder={t('page.profile.modal.avatarUrlPlaceholder')}
+        placeholder={t('sidepanel.userEdit.avatarUrlPlaceholder')}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         {...form.register('avatar_url')}
       />
       <p className="text-xs text-muted-foreground">
-        {t('page.profile.modal.avatarUrlHelp')}
+        {t('sidepanel.userEdit.avatarUrlHelp')}
       </p>
       <ErrorInline id={errorId} message={error} t={t} />
     </section>

@@ -14,11 +14,11 @@ export default function Fullname() {
   return (
     <section className="flex flex-col gap-1.5">
       <label htmlFor="fullname" className="text-sm font-medium">
-        {t('page.profile.modal.fullName')}
+        {t('sidepanel.userEdit.fullName')}
       </label>
       <Input
         id="fullname"
-        placeholder={t('page.profile.modal.fullNamePlaceholder')}
+        placeholder={t('sidepanel.userEdit.fullNamePlaceholder')}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         {...form.register('fullname')}
