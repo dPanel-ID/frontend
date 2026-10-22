@@ -12,7 +12,7 @@ export const Route = createFileRoute('/docs/intro/')({
   head: () => ({
     meta: [
       {
-        title: 'dPanel Documentation | Introduction',
+        title: 'Introduction | Documentation | dnocs',
       },
       {
         name: 'description',
