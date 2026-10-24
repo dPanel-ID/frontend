@@ -14,7 +14,7 @@ export const [AppsDataModelProvider, useAppsDataModel] = buildSelector(
 
   const [response, refresh] = ApiApplication.Find.useGet({
     page: pagination,
-    limit: 4,
+    limit: 8,
     name: searchQuery,
   });
 
@@ -22,9 +22,14 @@ export const [AppsDataModelProvider, useAppsDataModel] = buildSelector(
 
   return {
     applications: useAdapter(response, (raw) => {
-      const parsed = (raw.applications || []).map((application) =>
-        AdapterApplicationFromDto.toApplicationCard(application).unwrap(),
-      );
+      // One malformed record used to throw here and blank the whole list.
+      // Production data still holds applications the schema rejects, so a
+      // bad row is dropped instead.
+      const parsed = (raw.applications || []).flatMap((application) => {
+        const card =
+          AdapterApplicationFromDto.toApplicationCard(application).okay();
+        return card ? [card] : [];
+      });
 
       return {
         list: parsed,

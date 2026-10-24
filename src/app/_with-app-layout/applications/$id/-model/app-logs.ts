@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import type { DTOs } from '@/shared/api';
 import type { SchemaCommon } from '@/entities/shared/rules/schema';
 
+import type { DTOs } from '@/shared/api';
 import { ApiApplication } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
@@ -146,7 +146,9 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
 function normalizeLogView(raw: DTOs.ApplicationLogsResponseV1): AppLogView {
   const query = typeof raw.query === 'string' ? raw.query : '';
   const queryErrors = Array.isArray(raw.query_errors)
-    ? raw.query_errors.filter((queryError): queryError is string => Boolean(queryError))
+    ? raw.query_errors.filter((queryError): queryError is string =>
+        Boolean(queryError),
+      )
     : [];
 
   return {
@@ -156,7 +158,9 @@ function normalizeLogView(raw: DTOs.ApplicationLogsResponseV1): AppLogView {
   };
 }
 
-function normalizeLogEntries(raw: DTOs.ApplicationLogsResponseV1): AppLogEntryView[] {
+function normalizeLogEntries(
+  raw: DTOs.ApplicationLogsResponseV1,
+): AppLogEntryView[] {
   if (Array.isArray(raw)) {
     return raw
       .filter((line): line is string => typeof line === 'string')
@@ -167,9 +171,14 @@ function normalizeLogEntries(raw: DTOs.ApplicationLogsResponseV1): AppLogEntryVi
 
   if (entries.length > 0) {
     return entries
-      .filter((entry): entry is NonNullable<(typeof entries)[number]> => Boolean(entry))
+      .filter((entry): entry is NonNullable<(typeof entries)[number]> =>
+        Boolean(entry),
+      )
       .map((entry) => ({
-        line: typeof entry.line === 'string' && entry.line.trim() ? entry.line : ' ',
+        line:
+          typeof entry.line === 'string' && entry.line.trim()
+            ? entry.line
+            : ' ',
         severity: entry.severity,
         time:
           typeof entry.time === 'string' || typeof entry.time === 'number'
