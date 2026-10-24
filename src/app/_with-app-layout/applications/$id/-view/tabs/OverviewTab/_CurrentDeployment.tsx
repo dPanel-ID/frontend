@@ -1,7 +1,9 @@
 import { Link, useParams } from '@tanstack/react-router';
 import {
+  ExternalLinkIcon,
   GitBranchIcon,
   GitCommitHorizontalIcon,
+  GlobeIcon,
   RocketIcon,
   ScrollTextIcon,
   ServerIcon,
@@ -27,6 +29,9 @@ import { deploymentTone, isMovingStatus } from '../../../-lib/describe-detail';
 interface CurrentDeploymentProps {
   deployment?: CicdDeployment;
   artifact?: CicdArtifact;
+  /** The load balancer address people reach this application on. */
+  href?: string;
+  domain?: string;
   onDeploy: () => void;
   canDeploy: boolean;
 }
@@ -39,7 +44,7 @@ interface CurrentDeploymentProps {
  * that is serving, where it is serving from, and the way in are one block.
  */
 export default function CurrentDeployment(props: CurrentDeploymentProps) {
-  const { artifact, canDeploy, deployment, onDeploy } = props;
+  const { artifact, canDeploy, deployment, domain, href, onDeploy } = props;
 
   const t = useDevetekTranslations('page.applicationDetail.current');
   const locale = useDevetekLocale();
@@ -108,6 +113,12 @@ export default function CurrentDeployment(props: CurrentDeploymentProps) {
                   <ServerIcon className="size-3.5 shrink-0" />
                   {deployment.serverSnapshot.hostName}
                 </span>
+                {domain && (
+                  <span className="inline-flex min-w-0 items-center gap-1">
+                    <GlobeIcon className="size-3.5 shrink-0" />
+                    <span className="truncate">{domain}</span>
+                  </span>
+                )}
                 <span>
                   {getDistanceFromNow(deployment.timestamp.updated, locale)}
                 </span>
@@ -115,6 +126,18 @@ export default function CurrentDeployment(props: CurrentDeploymentProps) {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
+              {href && (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={flowCtaClassName('sky')}
+                >
+                  <ExternalLinkIcon className="size-4" />
+                  {t('visit')}
+                </a>
+              )}
+
               <Button variant="outline" size="sm" asChild>
                 <Link
                   to="/applications/$id"

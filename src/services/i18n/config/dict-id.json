@@ -754,7 +754,8 @@
         "recentBuilds": "Build terbaru",
         "recentBuildsHint": "Beberapa percobaan terakhir, terbaru lebih dulu",
         "viewAll": "Lihat semua",
-        "noBuilds": "Belum ada yang dibangun."
+        "noBuilds": "Belum ada yang dibangun.",
+        "address": "Alamat"
       },
       "buildStatus": {
         "ready": "Berhasil",
