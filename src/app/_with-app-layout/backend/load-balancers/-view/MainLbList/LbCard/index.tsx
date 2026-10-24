@@ -218,8 +218,11 @@ export default function LbCard(props: LbCardProps) {
           'border-dashed border-amber-400/50',
       )}
     >
-      {/* Columns collapse to a stack before they start truncating. */}
-      <div className="grid items-center gap-4 p-4 xl:grid-cols-[minmax(260px,1.45fr)_minmax(200px,1fr)_minmax(200px,1fr)_minmax(150px,0.8fr)_88px]">
+      {/* The minimums have to fit the content column, not the viewport:
+          `xl` matches at a 1280px window, where the sidebar and the help
+          aside leave this row about 1030px. The old 280/220/220/180/88
+          needed more than that, so the first column truncated. */}
+      <div className="grid items-center gap-4 p-4 xl:grid-cols-[minmax(230px,1.5fr)_minmax(170px,1fr)_minmax(170px,1fr)_minmax(130px,0.7fr)_88px]">
         <div className="flex min-w-0 items-center gap-3">
           <LoadBalancerIcon icon={webserver.icon} badge={RouteIcon} />
           <div className="min-w-0">
