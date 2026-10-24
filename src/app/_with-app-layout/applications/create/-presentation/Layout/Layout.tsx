@@ -5,18 +5,15 @@ interface BaseProps {
 }
 
 /**
- * A single readable column. The flow walks one section at a time, so there
- * is nothing to put beside it, and a bounded width keeps form rows from
- * stretching across a wide monitor.
+ * The same full-width column every other page in the product uses. An
+ * earlier version capped this at `max-w-4xl`, which left the page floating
+ * in empty gutters while the list and detail pages beside it ran edge to
+ * edge.
  */
 export default function ApplicationsCreateLayout(props: BaseProps) {
   const { children } = props;
 
-  return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4">
-      {children}
-    </div>
-  );
+  return <div className="flex flex-col gap-4">{children}</div>;
 }
 
 ApplicationsCreateLayout.Main = function Main(props: BaseProps) {
