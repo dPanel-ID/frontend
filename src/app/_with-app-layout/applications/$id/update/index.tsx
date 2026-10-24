@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { FileTextIcon } from 'lucide-react';
 
 import { useAuthLoggedIn } from '@/services/auth';
 import { useDevetekTranslations } from '@/services/i18n';
@@ -9,12 +8,8 @@ import { titleizeModuleValue } from '@/entities/server-modules/lib/catalog';
 
 import { ApiApplication } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
-import { Button as HeaderButton } from '@/shared/presentation/atoms/Button';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
-import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
-import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
-import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
 import GithubSessionBanner from '../../-view/GithubSessionBanner';
 import { FormStoreProvider } from '../../create/-model/store/form';
@@ -26,8 +21,9 @@ import type {
 import { ServersStoreProvider } from '../../create/-model/store/servers';
 import type { ApplicationCreateServerOption } from '../../create/-model/store/servers';
 import { ApplicationsCreateLayout as Layout } from '../../create/-presentation/Layout';
-import { AsideProgress } from '../../create/-view/AsideProgress';
-import { MainWizard } from '../../create/-view/MainWizard';
+import Hero from '../../create/-view/Hero';
+import MainFlow from '../../create/-view/MainFlow';
+import ReviewAside from '../../create/-view/ReviewAside';
 
 export const Route = createFileRoute(
   '/_with-app-layout/applications/$id/update/',
@@ -43,48 +39,20 @@ function ApplicationUpdatePage() {
   const t = useDevetekTranslations();
 
   return (
-    <>
-      <PageHeader
-        headnote={
-          <Breadcrumb
-            items={[
-              {
-                text: t('sidebar.dashboard'),
-                url: '/dashboard',
-              },
-              {
-                text: t('sidebar.applications'),
-                url: '/applications',
-              },
-              {
-                text: t('page.applicationsUpdate.detailBreadcrumb'),
-                url: `/applications/${id}`,
-              },
-            ]}
-          />
-        }
+    <div className="flex flex-col gap-4">
+      <Hero
         title={t('page.applicationsUpdate.headerTitle')}
         description={t('page.applicationsUpdate.headerDesc')}
-        rightAppend={
-          <HeaderButton variant="outline" size="sm" asChild>
-            <a
-              href={LINK__DOCUMENTATION}
-              aria-label={t('page.applicationsCreate.docs')}
-              title={t('page.applicationsCreate.docs')}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <FileTextIcon className="size-4" />
-              <span className="hidden sm:inline">
-                {t('page.applicationsCreate.docs')}
-              </span>
-            </a>
-          </HeaderButton>
-        }
+        breadcrumbExtra={{
+          text: t('page.applicationsUpdate.detailBreadcrumb'),
+          url: `/applications/${id}`,
+        }}
       />
-      <GithubSessionBanner className="mb-6 mt-6" />
+
+      <GithubSessionBanner />
+
       <ApplicationUpdateBootstrap applicationId={id} />
-    </>
+    </div>
   );
 }
 
@@ -172,10 +140,13 @@ function ApplicationUpdateBootstrap(props: { applicationId: string }) {
     <ServersStoreProvider initialServers={initialServers}>
       <FormStoreProvider {...initialForm}>
         <Layout>
-          <AsideProgress />
           <Layout.Main>
-            <MainWizard />
+            <MainFlow />
           </Layout.Main>
+
+          <Layout.Aside>
+            <ReviewAside />
+          </Layout.Aside>
         </Layout>
       </FormStoreProvider>
     </ServersStoreProvider>

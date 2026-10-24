@@ -41,12 +41,10 @@ import {
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { TextArea } from '@/shared/presentation/atoms/TextArea';
 
-import useProgressCta from '../../../-model/progress-cta';
 import { useFormStore } from '../../../-model/store/form';
 import type { DependencyConfig } from '../../../-model/store/form.types';
 import type { ApplicationCreateServerOption } from '../../../-model/store/servers';
 import { useServersStore } from '../../../-model/store/servers';
-import { CtaBar } from '../../../-presentation/CtaBar';
 
 type FieldValue = unknown;
 
@@ -1333,28 +1331,10 @@ const SectionDependencies = () => {
 };
 
 export default function Step2Details() {
-  const { goToNext, goToPrevious, isPreviousHidden, isNextDisabled } =
-    useProgressCta();
-
   return (
     <div className="flex flex-col gap-4">
-      <CtaBar
-        placement="top"
-        goToNext={goToNext}
-        goToPrevious={goToPrevious}
-        isNextDisabled={isNextDisabled}
-        isPreviousHidden={isPreviousHidden}
-      />
-
       <SectionServer />
       <SectionDependencies />
-
-      <CtaBar
-        goToNext={goToNext}
-        goToPrevious={goToPrevious}
-        isNextDisabled={isNextDisabled}
-        isPreviousHidden={isPreviousHidden}
-      />
     </div>
   );
 }

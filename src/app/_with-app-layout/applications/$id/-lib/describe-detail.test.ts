@@ -59,7 +59,10 @@ describe('releaseStatusOfArtifact', () => {
 
   it('calls a finished build that was never released inactive', () => {
     expect(
-      releaseStatusOfArtifact({ artifact: artifact('ready'), lastDeployment: null }),
+      releaseStatusOfArtifact({
+        artifact: artifact('ready'),
+        lastDeployment: null,
+      }),
     ).toBe('inactive');
   });
 });
