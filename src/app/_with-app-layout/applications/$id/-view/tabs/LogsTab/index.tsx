@@ -4,10 +4,9 @@ import { ScrollTextIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { ApiLoadBalancer } from '@/shared/api';
 import { cn } from '@/shared/libs/tailwind/cn';
 
-import { useAppDataModel } from '../../../-model/app-data';
+import { usePublicEndpoint } from '../../../-usecase/public-url';
 import AppLogs from '../../AppLogs';
 
 import LoadBalancerLogs from './LoadBalancerLogs';
@@ -23,17 +22,9 @@ type LogSource = 'runtime' | 'loadBalancer';
 export default function LogsTab() {
   const t = useDevetekTranslations('page.applicationDetail.logs');
 
-  const [applicationId] = useAppDataModel((s) => [s.applicationId]);
   const [source, setSource] = useState<LogSource>('runtime');
 
-  const [response] = ApiLoadBalancer.Find.useGet({
-    applicationId: String(applicationId),
-    page: 1,
-    limit: 1,
-  });
-
-  const loadBalancer =
-    response.$status === 'success' ? response.routers?.[0] : undefined;
+  const loadBalancer = usePublicEndpoint();
 
   const sources: LogSource[] = loadBalancer
     ? ['runtime', 'loadBalancer']
@@ -74,7 +65,7 @@ export default function LogsTab() {
 
       {source === 'loadBalancer' && loadBalancer ? (
         <LoadBalancerLogs
-          loadBalancerId={String(loadBalancer.id)}
+          loadBalancerId={loadBalancer.id}
           domain={loadBalancer.domain}
         />
       ) : (
