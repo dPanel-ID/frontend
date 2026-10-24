@@ -350,17 +350,24 @@ export default function LbCard(props: LbCardProps) {
           <DetailItem
             icon={BuildingIcon}
             label={t('common.terms.team')}
-            value={data.ownership.team || t('page.loadBalancers.personalScope')}
+            value={
+              data.ownership.team ||
+              (data.ownership.teamId
+                ? t('page.loadBalancers.unnamedTeam')
+                : t('page.loadBalancers.personalScope'))
+            }
           />
           <DetailItem
             icon={CalendarIcon}
             label={t('common.terms.createdAt')}
-            value={formatDate(data.timestamp.created)}
+            value={getDistanceFromNow(data.timestamp.created, locale)}
+            title={formatDate(data.timestamp.created)}
           />
           <DetailItem
             icon={Clock3Icon}
             label={t('common.terms.lastUpdated')}
-            value={formatDate(data.timestamp.updated)}
+            value={lastUpdated}
+            title={formatDate(data.timestamp.updated)}
           />
         </DetailGroup>
       </div>
@@ -530,8 +537,10 @@ function DetailItem(props: {
   icon: IconComponent;
   label: string;
   value?: ReactNode;
+  /** The exact value, for a relative one that hides it. */
+  title?: string;
 }) {
-  const { icon: Icon, label, value } = props;
+  const { icon: Icon, label, title, value } = props;
   const t = useDevetekTranslations();
 
   return (
@@ -540,7 +549,10 @@ function DetailItem(props: {
         <Icon className="size-3.5 shrink-0" />
         <span className="truncate">{label}</span>
       </span>
-      <span className="min-w-0 break-words font-semibold text-primary">
+      <span
+        className="min-w-0 break-words font-semibold text-primary"
+        title={title}
+      >
         {value || t('common.terms.unknown')}
       </span>
     </div>

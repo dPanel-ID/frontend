@@ -1686,7 +1686,8 @@
         "filteredTitle": "No load balancers match",
         "filteredMessage": "Try another domain, or clear the filters to see every load balancer.",
         "clear": "Clear filters"
-      }
+      },
+      "unnamedTeam": "Team workspace"
     },
     "loadBalancersCreate": {
       "headerTitle": "Create a load balancer",
