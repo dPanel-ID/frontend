@@ -4,6 +4,7 @@ import {
   FolderIcon,
   GitBranchIcon,
   GithubIcon,
+  GlobeIcon,
   HammerIcon,
   LayersIcon,
   PlugZapIcon,
@@ -33,6 +34,7 @@ import { useHistoryLists } from '../../../-lib/use-history-lists';
 import { useAppDataModel } from '../../../-model/app-data';
 import { useArtifactHistoryModel } from '../../../-model/artifact-history';
 import { useDeployNewBuild } from '../../../-usecase/deploy-new-build';
+import { usePublicEndpoint } from '../../../-usecase/public-url';
 
 import CurrentDeployment from './_CurrentDeployment';
 import { Row, Section } from './_Partials';
@@ -84,6 +86,7 @@ export default guard(function OverviewTab() {
   ]);
 
   const deploy = useDeployNewBuild();
+  const endpoint = usePublicEndpoint();
 
   const run = configDefs.lifecycle?.run;
   const live = liveServerCount(deployments);
@@ -117,6 +120,8 @@ export default guard(function OverviewTab() {
       <CurrentDeployment
         deployment={current}
         artifact={currentArtifact}
+        href={endpoint?.href}
+        domain={endpoint?.domain}
         canDeploy={identity.source === 'repository' && deploy.state == null}
         onDeploy={deploy.open}
       />
@@ -187,6 +192,22 @@ export default guard(function OverviewTab() {
                 icon={GitBranchIcon}
                 label={t('branch')}
                 value={currentArtifact.commitMetadata.fromBranch}
+              />
+            )}
+            {endpoint?.domain && (
+              <Row
+                icon={GlobeIcon}
+                label={t('address')}
+                value={
+                  <a
+                    href={endpoint.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline-offset-2 hover:underline"
+                  >
+                    {endpoint.domain}
+                  </a>
+                }
               />
             )}
             <Row

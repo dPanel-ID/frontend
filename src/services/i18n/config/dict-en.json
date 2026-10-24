@@ -763,7 +763,8 @@
         "recentBuilds": "Recent builds",
         "recentBuildsHint": "The last few attempts, newest first",
         "viewAll": "View all",
-        "noBuilds": "Nothing has been built yet."
+        "noBuilds": "Nothing has been built yet.",
+        "address": "Address"
       },
       "buildStatus": {
         "ready": "Passed",
