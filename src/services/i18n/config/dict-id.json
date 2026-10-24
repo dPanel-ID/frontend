@@ -611,12 +611,10 @@
       },
       "appCard": {
         "noDeployments": "Belum ada deployment",
-        "loadBalancers": {
-          "title": "Load Balancer",
-          "emptyMessage": "Tidak ada load balancer yang terhubung ke aplikasi ini.",
-          "expand": "Tampilkan load balancer",
-          "collapse": "Sembunyikan load balancer"
-        }
+        "loadBalancers": "Load balancer",
+        "servers": "Server",
+        "deployments": "Rilis",
+        "noDomain": "Belum ada alamat publik"
       },
       "servers": "Server",
       "guide": {
@@ -660,7 +658,8 @@
         "source": "Sumber",
         "servers": "Server",
         "updated": "Terakhir diubah",
-        "actions": "Aksi"
+        "actions": "Aksi",
+        "address": "Alamat"
       },
       "empty": {
         "title": "Pasang aplikasi pertama Anda",
