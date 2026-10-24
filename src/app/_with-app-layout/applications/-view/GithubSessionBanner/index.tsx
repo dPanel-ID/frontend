@@ -1,19 +1,15 @@
 import { SiGithub } from '@icons-pack/react-simple-icons';
 import { AlertTriangleIcon } from 'lucide-react';
 
-import { useAuthLoggedIn } from '@/services/auth';
-import { useAuthModel } from '@/services/auth/model';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { isGithubAuthFailure } from '@/shared/libs/api-client/is-github-auth-failure';
 import type { Response } from '@/shared/libs/api-client/rules/types';
-import {
-  buildFrontendReturnUrl,
-  buildGithubAuthUrl,
-} from '@/shared/libs/browser/oauth';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Card } from '@/shared/presentation/atoms/Card';
+
+import { useGithubConnection } from '../../-lib/github-connection';
 
 interface GithubSessionBannerProps {
   className?: string;
@@ -23,24 +19,21 @@ interface GithubSessionBannerProps {
 export default function GithubSessionBanner(props: GithubSessionBannerProps) {
   const { className, extraResponses = [] } = props;
 
-  const { gitProfile } = useAuthLoggedIn();
-  const { resGitUser } = useAuthModel();
-
   const t = useDevetekTranslations();
+  const connection = useGithubConnection();
 
+  // A stored token that GitHub will not confirm is just as broken as no
+  // token at all, so `unverified` raises the banner too; it used to need an
+  // error whose wording the failure matcher happened to recognise.
   const shouldReloginGithub =
-    !gitProfile ||
-    isGithubAuthFailure(resGitUser) ||
+    connection.state === 'disconnected' ||
+    connection.state === 'unverified' ||
     extraResponses.some(isGithubAuthFailure);
 
   if (!shouldReloginGithub) return null;
 
-  const handleClickLoginGithub = () => {
-    localStorage.setItem('auth:provider', 'github');
-    window.location.href = buildGithubAuthUrl(
-      buildFrontendReturnUrl(window.location.pathname, window.location.search),
-    );
-  };
+  const gitProfile = connection.state !== 'disconnected';
+  const handleClickLoginGithub = connection.connect;
 
   return (
     <Card

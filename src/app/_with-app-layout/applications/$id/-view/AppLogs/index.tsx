@@ -5,6 +5,7 @@ import { FailedState } from '@/widgets/failed-state';
 import { useAppDataModel } from '../../-model/app-data';
 import { useAppLogsModel } from '../../-model/app-logs';
 import { useEmit } from '../../-model/events';
+import { LOGS_ANCHOR_ID } from '../NextSteps';
 
 import AppLogsSection from './_presentation/AppLogsSection';
 import LogViewer from './_presentation/LogViewer';
@@ -112,17 +113,19 @@ export default function AppLogs() {
   };
 
   return (
-    <AppLogsSection
-      activeTimeFilter={timeFilter}
-      selectedLogs={logFilename}
-      ctaLogsDisabled={!canSelectLogs}
-      lineCount={logLines.length}
-      lineLimit={lineLimit}
-      onClickLogs={handleClickLogs}
-      onClickDownloadLog={handleClickDownloadLog}
-      onSelectTimeFilter={selectTimeFilter}
-    >
-      <LogView />
-    </AppLogsSection>
+    <div id={LOGS_ANCHOR_ID} className="scroll-mt-20">
+      <AppLogsSection
+        activeTimeFilter={timeFilter}
+        selectedLogs={logFilename}
+        ctaLogsDisabled={!canSelectLogs}
+        lineCount={logLines.length}
+        lineLimit={lineLimit}
+        onClickLogs={handleClickLogs}
+        onClickDownloadLog={handleClickDownloadLog}
+        onSelectTimeFilter={selectTimeFilter}
+      >
+        <LogView />
+      </AppLogsSection>
+    </div>
   );
 }

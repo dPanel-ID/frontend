@@ -23,7 +23,7 @@ export default function LogViewer(props: LogViewerProps) {
     lines,
     maxVisibleLines = DEFAULT_MAX_VISIBLE_LINES,
   } = props;
-  const t = useDevetekTranslations('page.applicationDetail.artifactsHistory');
+  const t = useDevetekTranslations('page.applicationDetail.releases');
   const viewportRef = useRef<HTMLDivElement>(null);
   const hasAutoScrolledRef = useRef(false);
   const shouldStickToEndRef = useRef(true);
