@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import { AlertTriangleIcon, GitBranchIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
@@ -7,10 +9,8 @@ import { isGithubAuthFailure } from '@/shared/libs/api-client/is-github-auth-fai
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { ComboboxWithSearch } from '@/shared/presentation/molecules/ComboboxWithSearch';
 
-export interface BranchChoice {
-  name: string;
-  commitHead: string;
-}
+import { toBranchChoices } from '../../../../-lib/git-branches';
+import type { BranchChoice } from '../../../../-lib/git-branches';
 
 interface BranchPickerProps {
   repoOrganization: string;
@@ -46,7 +46,22 @@ export default function BranchPicker(props: BranchPickerProps) {
     },
   });
 
-  if (response.$status === 'loading' && !response.prevData) {
+  const branches = toBranchChoices(response);
+
+  if (branches == null) {
+    if (response.$status === 'failed') {
+      return (
+        <Row>
+          <AlertTriangleIcon className="size-4 shrink-0 text-amber-500" />
+          <span className="text-muted-foreground">
+            {isGithubAuthFailure(response)
+              ? t('branchesGithubAuthError')
+              : t('branchesError', { branch: defaultBranch ?? '' })}
+          </span>
+        </Row>
+      );
+    }
+
     return (
       <Row>
         <Spinner className="size-3.5" />
@@ -55,36 +70,10 @@ export default function BranchPicker(props: BranchPickerProps) {
     );
   }
 
-  if (response.$status === 'failed') {
-    return (
-      <Row>
-        <AlertTriangleIcon className="size-4 text-amber-500" />
-        <span className="text-muted-foreground">
-          {isGithubAuthFailure(response)
-            ? t('branchesGithubAuthError')
-            : t('branchesError', { branch: defaultBranch ?? '' })}
-        </span>
-      </Row>
-    );
-  }
-
-  const raw = response.$status === 'loading' ? response.prevData! : response;
-
-  const branches = (
-    raw as unknown as Array<{ name?: string; commit?: { sha?: string } }>
-  ).flatMap((branch) => {
-    const name = branch.name;
-    const commitHead = branch.commit?.sha;
-
-    if (!name || !commitHead) return [];
-
-    return [{ name, commitHead }];
-  });
-
   if (branches.length === 0) {
     return (
       <Row>
-        <AlertTriangleIcon className="size-4 text-amber-500" />
+        <AlertTriangleIcon className="size-4 shrink-0 text-amber-500" />
         <span className="text-muted-foreground">{t('branchesEmpty')}</span>
       </Row>
     );
@@ -114,7 +103,7 @@ export default function BranchPicker(props: BranchPickerProps) {
   );
 }
 
-function Row({ children }: { children: React.ReactNode }) {
+function Row({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-primary/5 px-3 py-2 text-xs text-primary">
       <GitBranchIcon className="size-4 shrink-0" />
