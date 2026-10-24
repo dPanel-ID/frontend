@@ -95,10 +95,10 @@ export default function MainFlow() {
   return (
     <div className="flex flex-col gap-4">
       <FlowStepper
-        items={nav.steps.map((key) => ({
+        items={nav.steps.map((key, index) => ({
           key,
           label: t(STEPS[key].labelKey),
-          done: nav.byStep[key],
+          done: nav.byStep[key] && index < nav.index,
           reachable: nav.canGoToStep(key),
         }))}
         activeKey={nav.current}
@@ -129,15 +129,7 @@ export default function MainFlow() {
           </span>
 
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {t('position', {
-                step: nav.index + 1,
-                total: nav.steps.length,
-              })}
-            </p>
-            <h2 className="mt-0.5 text-lg font-bold sm:text-xl">
-              {t(meta.labelKey)}
-            </h2>
+            <h2 className="text-lg font-bold sm:text-xl">{t(meta.labelKey)}</h2>
             <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
               {t(meta.descKey)}
             </p>

@@ -66,7 +66,14 @@ export default function FlowActions(props: FlowActionsProps) {
 
         <button
           type="button"
-          className={cn(flowCtaClassName('sky'), 'flex-1 justify-center')}
+          className={cn(
+            flowCtaClassName('sky'),
+            'flex-1 justify-center',
+            // `disabled:opacity-50` alone still reads as a live button
+            // against a dark surface, so drop the accent entirely.
+            (isNextDisabled || isNextLoading) &&
+              'bg-muted text-muted-foreground hover:bg-muted',
+          )}
           disabled={isNextDisabled || isNextLoading}
           aria-busy={isNextLoading}
           onClick={onNext}
