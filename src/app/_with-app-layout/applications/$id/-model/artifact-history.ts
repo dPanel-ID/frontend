@@ -92,11 +92,16 @@ export const [ArtifactHistoryModelProvider, useArtifactHistoryModel] =
       artifactHistory: useAdapter(responseArtifactHistory, (raw) => {
         const { pagination, artifacts } = raw;
 
+        // One unparseable artifact used to take the whole page down with
+        // it; skip the row instead and keep the rest of the history.
         return {
           pagination,
-          list: (artifacts ?? []).map((artifact) =>
-            AdapterCicdArtifactFromDto.toCicdArtifact(artifact).unwrap(),
-          ),
+          list: (artifacts ?? []).flatMap((artifact) => {
+            const parsed =
+              AdapterCicdArtifactFromDto.toCicdArtifact(artifact).okay();
+
+            return parsed ? [parsed] : [];
+          }),
         };
       }),
       deploymentHistory,

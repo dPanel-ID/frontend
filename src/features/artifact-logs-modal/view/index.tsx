@@ -13,7 +13,7 @@ const BUILD_LOG_LINE_LIMIT = 100;
 
 const Content = (props: ArtifactLogsModalProps) => {
   const { applicationId, artifactId, serverId } = props;
-  const t = useDevetekTranslations('page.applicationDetail.artifactsHistory');
+  const t = useDevetekTranslations('page.applicationDetail.releases');
 
   const [responseLog, refreshLog] = ApiApplication.Logs.$Id.useGet({
     applicationId,
@@ -52,7 +52,7 @@ const Content = (props: ArtifactLogsModalProps) => {
 
 export default function ArtifactLogsModal(props: ArtifactLogsModalProps) {
   const { commitHead } = props;
-  const t = useDevetekTranslations('page.applicationDetail.artifactsHistory');
+  const t = useDevetekTranslations('page.applicationDetail.releases');
 
   return (
     <ModalLayoutGeneral maxWidth="1280px">

@@ -679,6 +679,14 @@
         "filteredTitle": "No applications match",
         "filteredMessage": "Try another name, or clear the search to see every application.",
         "clear": "Clear search"
+      },
+      "github": {
+        "connect": "Connect GitHub",
+        "connectHint": "Link a GitHub account so dNocs can read your repositories and build them.",
+        "reconnect": "Reconnect GitHub",
+        "reconnectHint": "GitHub would not confirm the saved account. Sign in again to restore access to your repositories.",
+        "connectedTo": "Connected to GitHub as {login}",
+        "checking": "Checking GitHub"
       }
     },
     "applicationDetail": {
@@ -692,27 +700,6 @@
         "reloginTitle": "GitHub session expired",
         "reloginSubtitle": "Reconnect your GitHub account so dPanel can read repository data again.",
         "reloginCta": "Relogin GitHub"
-      },
-      "artifactsHistory": {
-        "title": "Artifacts History",
-        "subtitle": "Recent artifacts and rollback options",
-        "emptyMessage": "No artifacts available.",
-        "unsupportedMessage": "Artifacts are not supported for this app.",
-        "distributedStorageWarning": "This application does not use distributed storage for build artifacts. Builds and deployments are executed individually on each machine where the application is running.",
-        "logs": "Logs",
-        "artifactLogsTitle": "Artifact Logs",
-        "artifactLogsDescription": "Commit {commit}",
-        "artifactLogOutput": "Artifact log output",
-        "artifactLogLatestLines": "Latest build output",
-        "artifactLogLineWindow": "{count}/{limit} lines",
-        "artifactLogEmpty": "No build logs yet."
-      },
-      "usageStats": {
-        "title": "Usage Stats",
-        "unavailablePlaceholder": "Corresponding usage stats are unavailable for this application."
-      },
-      "serviceActions": {
-        "unavailablePlaceholder": "Corresponding service is unavailable for this application."
       },
       "appLogs": {
         "title": "Application Logs",
@@ -732,9 +719,146 @@
         "emptyLog": "No runtime logs in this window."
       },
       "dangerZone": {
-        "title": "Danger Zone",
-        "deleteThisApp": "Delete Application",
-        "deleteThisAppDescription": "Permanently remove this application and all its data. This action cannot be undone."
+        "title": "Danger zone",
+        "deleteThisApp": "Delete this application",
+        "deleteThisAppDescription": "Permanently remove this application and all its data. This action cannot be undone.",
+        "consequences": {
+          "removes": "Removes the application, its builds and its release history from dNocs.",
+          "stops": "Stops the service on every server it runs on.",
+          "keeps": "Leaves your server and your Git repository untouched."
+        }
+      },
+      "headline": {
+        "live": "Live",
+        "building": "Working",
+        "attention": "Needs attention",
+        "idle": "Not running"
+      },
+      "hero": {
+        "descriptionRepo": "Built from {repo}. dNocs turns each commit into a build, then puts that build on your server.",
+        "descriptionRepoOnServer": "Built from {repo} and running on {server}.",
+        "descriptionBundle": "Installed by dNocs on a server you own.",
+        "descriptionBundleOnServer": "Installed by dNocs on {server}.",
+        "openRepository": "Repository",
+        "editSettings": "Edit settings"
+      },
+      "overview": {
+        "liveServers": "Serving now",
+        "liveServersHint": "of {total} connected",
+        "lastBuild": "Last build",
+        "buildsKept": "Builds kept",
+        "buildsKeptHint": "newest first",
+        "port": "Port",
+        "portUnknownHint": "not configured",
+        "never": "None yet",
+        "neverHint": "nothing built so far"
+      },
+      "buildStatus": {
+        "ready": "Passed",
+        "progress": "Building",
+        "failed": "Failed",
+        "cancelled": "Cancelled",
+        "deleted": "Deleted",
+        "deleting": "Deleting",
+        "unknown": "Unknown"
+      },
+      "releaseStatus": {
+        "pending": "Waiting",
+        "progress": "Releasing",
+        "deployed": "On the server",
+        "failed": "Failed",
+        "cancelled": "Cancelled",
+        "inactive": "Not released"
+      },
+      "deployStatus": {
+        "pending": "Waiting",
+        "ready": "Running",
+        "progress": "Releasing",
+        "failed": "Failed",
+        "deleted": "Deleted",
+        "cancelled": "Cancelled",
+        "deleting": "Deleting",
+        "unknown": "Unknown"
+      },
+      "nextSteps": {
+        "title": "What you can do here",
+        "description": "Two things happen when you ship: dNocs builds your code once, then puts that build on each of your servers. The list below shows both halves.",
+        "deploy": {
+          "title": "Build and release",
+          "description": "Take the latest commit, build it, and put it on your server."
+        },
+        "logs": {
+          "title": "See what it is doing",
+          "description": "Read the running application's own output."
+        },
+        "settings": {
+          "title": "Change how it builds",
+          "description": "Branch, build steps, run command, environment variables."
+        },
+        "server": {
+          "title": "Open the server",
+          "description": "Look at the machine this application runs on."
+        }
+      },
+      "releases": {
+        "title": "Builds and releases",
+        "description": "A build is your code packaged once. A release is that build placed on one server.",
+        "tabsLabel": "Show builds or servers",
+        "tabs": {
+          "builds": "Builds",
+          "servers": "On servers"
+        },
+        "newBuild": "Build and release",
+        "logs": "Logs",
+        "rollback": "Roll back",
+        "buildId": "Build ID",
+        "releaseId": "Release ID",
+        "buildTime": "How long the build took",
+        "noDescription": "No description",
+        "stepCount": "{count} build steps",
+        "buildNotFound": "The build behind this release is no longer kept",
+        "deleteForever": "Delete permanently",
+        "checkingService": "Checking the service",
+        "installer": "Installer",
+        "pageOf": "Page {page} of {total}",
+        "storageNote": "Builds are not shared between machines. Each server builds and installs the application on its own.",
+        "notEligibleTitle": "This application is not built from a repository",
+        "notEligibleDescription": "dNocs installed it directly, so there are no builds to show. Use the server page to start, stop or reinstall it.",
+        "emptyBuildsTitle": "Nothing built yet",
+        "emptyBuildsDescription": "Build the latest commit and dNocs will install it on your server. The first build usually takes a few minutes.",
+        "emptyServersTitle": "Not on any server yet",
+        "emptyServersDescription": "Once a build is released, the server it runs on appears here with its service state.",
+        "artifactLogsTitle": "Artifact Logs",
+        "artifactLogsDescription": "Commit {commit}",
+        "artifactLogOutput": "Artifact log output",
+        "artifactLogLatestLines": "Latest build output",
+        "artifactLogLineWindow": "{count}/{limit} lines",
+        "artifactLogEmpty": "No build logs yet."
+      },
+      "configuration": {
+        "title": "How this application is set up",
+        "description": "The repository it comes from, how it is built, and how it is run.",
+        "sections": {
+          "repository": "Repository",
+          "build": "Build",
+          "run": "Run"
+        },
+        "labels": {
+          "repository": "Repository",
+          "language": "Language",
+          "framework": "Framework",
+          "serviceName": "Service name",
+          "port": "Port",
+          "command": "Start command",
+          "buildSteps": "Build steps",
+          "envVars": "Environment variables"
+        },
+        "empty": {
+          "repository": "No repository linked",
+          "envVars": "No environment variables",
+          "buildSteps": "No build steps",
+          "configuration": "No configuration available"
+        }
       }
     },
     "applicationsCreate": {

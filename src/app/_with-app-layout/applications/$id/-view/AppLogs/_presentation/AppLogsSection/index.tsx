@@ -47,11 +47,13 @@ export default function AppLogsSection(props: AppLogsSectionProps) {
   const logActionLabel = selectedLogs ? t('refreshLog') : t('loadLog');
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden rounded-2xl">
       <div className="flex flex-col gap-3 border-b px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
-          <h3 className="text-lg font-semibold">{t('title')}</h3>
-          <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
+          <h2 className="text-base font-bold">{t('title')}</h2>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {t('subtitle')}
+          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 lg:justify-end">
