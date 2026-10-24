@@ -11,8 +11,9 @@ export const ADD_GITHUB_ACCOUNT_VALUE = 'https://github.com/apps/dnocs-id';
 export const [GithubReposStoreProvider, useGithubReposStore] = buildContext(
   'ApplicationsCreateGithubReposStore',
   () => {
+    // gitProfile is null unless GitHub is linked, which is all this store
+    // needs to know; the token lives on the server.
     const { gitProfile } = useAuthLoggedIn();
-    const { githubAccessToken } = gitProfile || {};
 
     const [page, setPage] = useState(1);
     const [query, setQuery] = useState('');
@@ -37,12 +38,12 @@ export const [GithubReposStoreProvider, useGithubReposStore] = buildContext(
       gitOrganization: githubOrg,
       query,
       options: {
-        skip: !gitProfile || !githubAccessToken,
+        skip: !gitProfile,
       },
     });
 
     const githubRepos = useMemo(() => {
-      if (!githubAccessToken || !gitProfile)
+      if (!gitProfile)
         return {
           $status: 'logged-out' as const,
         };
@@ -85,7 +86,7 @@ export const [GithubReposStoreProvider, useGithubReposStore] = buildContext(
           })
           .filter(excludeNully),
       };
-    }, [gitProfile, githubAccessToken, responseGitRepositories]);
+    }, [gitProfile, responseGitRepositories]);
 
     return {
       githubRepos,

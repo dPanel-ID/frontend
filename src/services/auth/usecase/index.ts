@@ -69,7 +69,9 @@ export function useAuthBase() {
       createAt: created_at,
     };
 
-    if (!github?.access_token) {
+    // A linked account is reported as a flag: the access token stays on the
+    // server, which is the only place that needs it.
+    if (!github?.connected) {
       return {
         userProfile,
         gitProfile: null,
@@ -82,7 +84,6 @@ export function useAuthBase() {
         id: Number(github.subject) || 0,
         login: github.nickname || '',
         organizations: [],
-        githubAccessToken: github.access_token,
       },
     };
   });
@@ -111,7 +112,6 @@ export function useAuthBase() {
         id,
         login,
         organizations,
-        githubAccessToken: mappedResponse.gitProfile.githubAccessToken,
       };
     }),
   } as const;

@@ -32,11 +32,9 @@ export interface ProviderData {
   provider?: string;
   subject?: string;
   nickname?: string;
-  access_token?: string;
-  access_token_secret?: string;
-  refresh_token?: string;
+  /** Whether the account is linked. The tokens themselves stay on the server. */
+  connected?: boolean;
   expires_at?: string;
-  id_token?: string;
   groups?: string[];
   permissions?: string[];
   roles?: string[];

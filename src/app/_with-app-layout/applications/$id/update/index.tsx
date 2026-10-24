@@ -161,7 +161,8 @@ function ApplicationUpdateBootstrap(props: { applicationId: string }) {
     applicationResponse,
     {
       gitNickname: gitProfile?.login || '',
-      gitToken: gitProfile?.githubAccessToken || '',
+      // The server mints the repository token itself.
+      gitToken: '',
     },
     iacConfigResponse,
   );
