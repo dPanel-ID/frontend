@@ -1,5 +1,6 @@
-import { useArtifactNewSidepanel } from '@/features/artifact-new-sidepanel';
 import { useNavigate } from '@tanstack/react-router';
+
+import { useArtifactNewSidepanel } from '@/features/artifact-new-sidepanel';
 
 import { iife } from '@/shared/libs/browser/fn';
 import {

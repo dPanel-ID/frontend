@@ -10,7 +10,7 @@ export default function Layout(props: BaseProps) {
   const { children } = props;
 
   return (
-    <div className="flex flex-col-reverse xl:grid xl:grid-cols-[minmax(0,1fr)_0.4fr] gap-4">
+    <div className="flex flex-col-reverse gap-4 xl:grid xl:grid-cols-[minmax(0,1fr)_0.4fr]">
       {children}
     </div>
   );

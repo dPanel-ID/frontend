@@ -40,6 +40,7 @@ import { Card } from '@/shared/presentation/atoms/Card';
 import Shimmer from '@/shared/presentation/atoms/Shimmer';
 
 import { useEmit } from '../../-model/events';
+
 import { ArtifactCardPartials as Partials } from './_presentation/ArtifactCard/_Partials';
 
 type DeployStatus = CicdDeployment['state']['status'];

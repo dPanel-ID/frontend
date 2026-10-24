@@ -609,7 +609,7 @@
     },
     "applications": {
       "headerTitle": "Applications",
-      "headerDesc": "View your deployed applications here.",
+      "headerDesc": "Your code, running on your servers. dNocs builds each application from its repository and deploys it for you.",
       "headerFootnote": "You can use your own resources or a public resource to create application. Visit our <a>YouTube channel</a> for a tutorial.",
       "docs": "Docs",
       "createApplication": "Create Application",
@@ -626,6 +626,59 @@
           "expand": "Show load balancers",
           "collapse": "Hide load balancers"
         }
+      },
+      "servers": "Servers",
+      "guide": {
+        "title": "How an application gets onto a server",
+        "description": "dNocs does not host your code. It reads the repository you point it at, builds it into an artifact, and installs that artifact on a server you already have.",
+        "steps": {
+          "connect": {
+            "title": "Point at a repository",
+            "description": "Connect GitHub and pick the repo and branch dNocs should build from."
+          },
+          "build": {
+            "title": "dNocs builds an artifact",
+            "description": "Each build is kept, so you can see what shipped and roll back to an earlier one."
+          },
+          "deploy": {
+            "title": "Deploy to a server",
+            "description": "Choose which of your servers runs it. dNocs installs the artifact and keeps the service running."
+          }
+        },
+        "cta": "Create an application"
+      },
+      "overview": {
+        "total": "Applications",
+        "running": "Running",
+        "building": "Building",
+        "attention": "Needs attention",
+        "sampleNote": "Per-state counts come from your {sample} most recent applications."
+      },
+      "status": {
+        "running": "Running",
+        "building": "Building",
+        "attention": "Needs attention",
+        "other": "Not running"
+      },
+      "filters": {
+        "searchPlaceholder": "Search by application name"
+      },
+      "table": {
+        "application": "Application",
+        "status": "Status",
+        "source": "Source",
+        "servers": "Servers",
+        "updated": "Last modified",
+        "actions": "Actions"
+      },
+      "empty": {
+        "title": "Deploy your first application",
+        "message": "Point dNocs at a repository and it will build your code and install it on one of your servers. You need a server first; creating one takes a few minutes.",
+        "cta": "Create an application",
+        "secondary": "See how servers are created",
+        "filteredTitle": "No applications match",
+        "filteredMessage": "Try another name, or clear the search to see every application.",
+        "clear": "Clear search"
       }
     },
     "applicationDetail": {
