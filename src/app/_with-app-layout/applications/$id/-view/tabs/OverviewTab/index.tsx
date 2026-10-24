@@ -27,6 +27,7 @@ import {
   buildTone,
   isMovingStatus,
   liveServerCount,
+  serversOf,
 } from '../../../-lib/describe-detail';
 import { useHistoryLists } from '../../../-lib/use-history-lists';
 import { useAppDataModel } from '../../../-model/app-data';
@@ -87,7 +88,8 @@ export default guard(function OverviewTab() {
   const run = configDefs.lifecycle?.run;
   const live = liveServerCount(deployments);
   const lastBuild = artifacts[0];
-  const server = deploymentTargets[0];
+  const servers = serversOf(deployments, deploymentTargets);
+  const server = servers[0];
 
   const current = lastDeployment ?? deployments[0];
   const currentArtifact = current
@@ -125,7 +127,7 @@ export default guard(function OverviewTab() {
           tone={live > 0 ? 'emerald' : 'neutral'}
           label={t('liveServers')}
           value={live}
-          hint={t('liveServersHint', { total: deploymentTargets.length })}
+          hint={t('liveServersHint', { total: servers.length })}
           loading={loading}
         />
         <StatTile
@@ -197,7 +199,7 @@ export default guard(function OverviewTab() {
                     params={{ id: server.id }}
                     className="underline-offset-2 hover:underline"
                   >
-                    {server.name || server.id}
+                    {server.name}
                   </Link>
                 ) : undefined
               }
