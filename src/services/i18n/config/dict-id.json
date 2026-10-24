@@ -882,7 +882,8 @@
         "step5": {
           "title": "Pratinjau",
           "desc": "Tinjau dan deploy"
-        }
+        },
+        "blockedBy": "Selesaikan langkah {number}, {step}, terlebih dahulu."
       },
       "wizard": {
         "step1": {
@@ -1079,6 +1080,16 @@
             "branch": "Branch"
           }
         }
+      },
+      "heroDuration": "Biasanya siap dalam 5–15 menit",
+      "review": {
+        "eyebrow": "Aplikasi baru",
+        "eyebrowUpdate": "Perbarui aplikasi",
+        "title": "Selesaikan ini untuk merilis",
+        "ready": "Siap dirilis",
+        "readyUpdate": "Siap diperbarui",
+        "footnote": "dNocs membangun kode Anda dan memasangnya di server yang Anda pilih. Tidak ada yang berjalan sebelum Anda menekan tombol ini.",
+        "footnoteUpdate": "dNocs menyimpan pengaturan baru. Aplikasi yang berjalan hanya dibangun ulang jika Anda memintanya."
       }
     },
     "applicationsUpdate": {

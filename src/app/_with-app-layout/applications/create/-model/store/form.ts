@@ -52,6 +52,7 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
       gitRepoConfig: null,
 
       dynamicConfig: null,
+      portConflict: false,
       selectedDependencyIds: [],
       dependencyConfigs: {},
       selectedRequiredBinaryIds: [],
@@ -69,6 +70,9 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
       },
       setAppName: (appName) => {
         set({ appName });
+      },
+      setPortConflict: (portConflict) => {
+        set({ portConflict });
       },
       setAppProgLang: (appProgLang) => {
         set({ appProgLang });
