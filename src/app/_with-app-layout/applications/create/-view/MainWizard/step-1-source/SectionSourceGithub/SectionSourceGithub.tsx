@@ -91,8 +91,10 @@ export default function SectionSourceGithub() {
     },
   });
 
-  const { githubAccessToken: gitToken = '', login: gitNickname = '' } =
-    gitProfile || {};
+  // The build reaches the repository with the dPanel GitHub App's own
+  // installation token, minted server side, so no token travels from here.
+  const gitToken = '';
+  const { login: gitNickname = '' } = gitProfile || {};
 
   useEffect(() => {
     if (repositoryDetail.$status !== 'success' || !githubRepoUrl) return;
