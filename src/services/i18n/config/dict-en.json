@@ -926,7 +926,14 @@
             "noDescription": "No repository description available.",
             "previous": "Previous",
             "next": "Next",
-            "page": "Page {page}"
+            "page": "Page {page}",
+            "branchLabel": "Branch",
+            "branchPlaceholder": "Choose a branch",
+            "branchDefaultOption": "{branch} (default)",
+            "loadingBranches": "Loading branches…",
+            "branchesEmpty": "This repository has no branches dNocs can read.",
+            "branchesError": "Could not load the branch list. dNocs will build {branch}.",
+            "branchesGithubAuthError": "GitHub would not confirm your account, so the branch list is unavailable. Reconnect GitHub to choose a branch."
           }
         },
         "step2": {
@@ -1077,7 +1084,8 @@
             "deployNote": "dPanel will create an application-specific playbook, ensure dependency playbooks exist, then queue the deployment.",
             "updateNote": "dPanel will update the application definition and submit the selected playbook inputs for this application.",
             "deploy": "Deploy",
-            "update": "Update application"
+            "update": "Update application",
+            "branch": "Branch"
           }
         }
       }

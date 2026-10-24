@@ -917,7 +917,14 @@
             "noDescription": "Tidak ada deskripsi repositori.",
             "previous": "Sebelumnya",
             "next": "Berikutnya",
-            "page": "Halaman {page}"
+            "page": "Halaman {page}",
+            "branchLabel": "Branch",
+            "branchPlaceholder": "Pilih branch",
+            "branchDefaultOption": "{branch} (bawaan)",
+            "loadingBranches": "Memuat daftar branch…",
+            "branchesEmpty": "Repositori ini tidak memiliki branch yang dapat dibaca dNocs.",
+            "branchesError": "Daftar branch gagal dimuat. dNocs akan membangun {branch}.",
+            "branchesGithubAuthError": "GitHub tidak dapat memverifikasi akun Anda, sehingga daftar branch tidak tersedia. Hubungkan ulang GitHub untuk memilih branch."
           }
         },
         "step2": {
@@ -1068,7 +1075,8 @@
             "deployNote": "dPanel akan membuat playbook khusus aplikasi, memastikan playbook dependency tersedia, lalu memasukkan deployment ke antrean.",
             "updateNote": "dPanel akan mengupdate definisi aplikasi dan mengirim input playbook terpilih untuk aplikasi ini.",
             "deploy": "Deploy",
-            "update": "Update aplikasi"
+            "update": "Update aplikasi",
+            "branch": "Branch"
           }
         }
       }

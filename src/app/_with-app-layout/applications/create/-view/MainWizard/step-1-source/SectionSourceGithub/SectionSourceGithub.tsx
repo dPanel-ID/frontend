@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   CheckCircle2Icon,
@@ -32,6 +32,8 @@ import {
 } from '../../../../-model/store/github-repos';
 import GithubLoginWall from '../_presentation/GithubLoginWall/GithubLoginWall';
 
+import BranchPicker from './BranchPicker';
+
 type RepoItem = {
   repoName: string;
   repoUrl: string;
@@ -60,12 +62,17 @@ export default function SectionSourceGithub() {
 
   const { gitProfile } = useAuthLoggedIn();
 
-  const [setAppSourceGithubRepo, setAppSourceBundleIdent, setGitRepoConfig] =
-    useFormStore((s) => [
-      s.setAppSourceGithubRepo,
-      s.setAppSourceBundleIdent,
-      s.setGitRepoConfig,
-    ]);
+  const [
+    setAppSourceGithubRepo,
+    setAppSourceBundleIdent,
+    setGitRepoConfig,
+    gitRepoConfig,
+  ] = useFormStore((s) => [
+    s.setAppSourceGithubRepo,
+    s.setAppSourceBundleIdent,
+    s.setGitRepoConfig,
+    s.gitRepoConfig,
+  ]);
 
   const {
     githubRepos,
@@ -96,6 +103,11 @@ export default function SectionSourceGithub() {
   const gitToken = '';
   const { login: gitNickname = '' } = gitProfile || {};
 
+  // The last repository this effect seeded config for. Seeding once per
+  // repository keeps a branch the user picked from being reset every time
+  // the detail response is refetched.
+  const seededRepoRef = useRef<string | undefined>(undefined);
+
   useEffect(() => {
     if (repositoryDetail.$status !== 'success' || !githubRepoUrl) return;
 
@@ -105,6 +117,9 @@ export default function SectionSourceGithub() {
       commit_id: commitID = '',
       commit_message: commitMessage = '',
     } = repositoryDetail;
+
+    if (seededRepoRef.current === githubRepoUrl) return;
+    seededRepoRef.current = githubRepoUrl;
 
     setAppSourceGithubRepo(githubRepoUrl);
     setAppSourceBundleIdent(repoFramework);
@@ -224,13 +239,35 @@ export default function SectionSourceGithub() {
         )}
 
         {githubRepoUrl && repositoryDetail.$status === 'success' && (
-          <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-primary/5 px-3 py-2 text-xs text-primary">
-            <CheckCircle2Icon className="size-4 text-emerald-500" />
-            <span className="font-semibold">{t('selectedRepo')}</span>
-            <span className="min-w-0 truncate text-muted-foreground">
-              {repoOrganization}/{repoName}
-            </span>
-          </div>
+          <>
+            <div className="flex flex-wrap items-center gap-2 rounded-lg border bg-primary/5 px-3 py-2 text-xs text-primary">
+              <CheckCircle2Icon className="size-4 text-emerald-500" />
+              <span className="font-semibold">{t('selectedRepo')}</span>
+              <span className="min-w-0 truncate text-muted-foreground">
+                {repoOrganization}/{repoName}
+              </span>
+            </div>
+
+            <BranchPicker
+              repoOrganization={repoOrganization}
+              repoName={repoName}
+              value={gitRepoConfig?.gitBranch}
+              defaultBranch={gitRepoConfig?.gitDefaultBranch}
+              onChange={(picked) => {
+                setGitRepoConfig({
+                  ...(gitRepoConfig ?? {}),
+                  gitBranch: picked.name,
+                  gitHead: picked.commitHead,
+                  // The branch list carries no commit message, and the one
+                  // held here belongs to the default branch's head.
+                  gitHeadDescription:
+                    picked.name === gitRepoConfig?.gitDefaultBranch
+                      ? (gitRepoConfig.gitHeadDescription ?? '')
+                      : '',
+                });
+              }}
+            />
+          </>
         )}
 
         <div className="flex items-center justify-between">
