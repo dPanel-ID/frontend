@@ -751,7 +751,19 @@
         "port": "Port",
         "portUnknownHint": "not configured",
         "never": "None yet",
-        "neverHint": "nothing built so far"
+        "neverHint": "nothing built so far",
+        "details": "Details",
+        "repository": "Repository",
+        "branch": "Branch",
+        "server": "Server",
+        "service": "Service",
+        "workdir": "Working directory",
+        "ownership": "Owner",
+        "created": "Created",
+        "recentBuilds": "Recent builds",
+        "recentBuildsHint": "The last few attempts, newest first",
+        "viewAll": "View all",
+        "noBuilds": "Nothing has been built yet."
       },
       "buildStatus": {
         "ready": "Passed",
@@ -779,26 +791,6 @@
         "cancelled": "Cancelled",
         "deleting": "Deleting",
         "unknown": "Unknown"
-      },
-      "nextSteps": {
-        "title": "What you can do here",
-        "description": "Two things happen when you ship: dNocs builds your code once, then puts that build on each of your servers. The list below shows both halves.",
-        "deploy": {
-          "title": "Build and release",
-          "description": "Take the latest commit, build it, and put it on your server."
-        },
-        "logs": {
-          "title": "See what it is doing",
-          "description": "Read the running application's own output."
-        },
-        "settings": {
-          "title": "Change how it builds",
-          "description": "Branch, build steps, run command, environment variables."
-        },
-        "server": {
-          "title": "Open the server",
-          "description": "Look at the machine this application runs on."
-        }
       },
       "releases": {
         "title": "Builds and releases",
@@ -841,7 +833,9 @@
         "sections": {
           "repository": "Repository",
           "build": "Build",
-          "run": "Run"
+          "run": "Run",
+          "buildHint": "How your code is turned into something installable",
+          "runHint": "How the installed application is started and kept running"
         },
         "labels": {
           "repository": "Repository",
@@ -859,6 +853,43 @@
           "buildSteps": "No build steps",
           "configuration": "No configuration available"
         }
+      },
+      "tabs": {
+        "ariaLabel": "Application sections",
+        "overview": "Overview",
+        "deployments": "Deployments",
+        "logs": "Logs",
+        "settings": "Settings"
+      },
+      "current": {
+        "title": "Current deployment",
+        "subtitle": "What is serving right now",
+        "unknownCommit": "Build no longer kept",
+        "visit": "Visit",
+        "viewLogs": "View logs",
+        "redeploy": "Redeploy",
+        "deployNow": "Build and release",
+        "emptyTitle": "Nothing is running yet",
+        "emptyDescription": "Build the latest commit and dNocs will install it on your server. The first build usually takes a few minutes.",
+        "status": {
+          "pending": "Waiting",
+          "ready": "Running",
+          "progress": "Releasing",
+          "failed": "Failed",
+          "deleted": "Deleted",
+          "cancelled": "Cancelled",
+          "deleting": "Deleting",
+          "unknown": "Unknown"
+        }
+      },
+      "logs": {
+        "sourceLabel": "Log source",
+        "runtime": "Runtime",
+        "loadBalancer": "Load balancer",
+        "loadBalancerTitle": "Load balancer requests",
+        "loadBalancerSubtitle": "Requests reaching the load balancer in front of this application",
+        "loadBalancerEmpty": "No requests in this window.",
+        "loadBalancerEmptyHint": "Try a wider time range, or send a request to the domain above."
       }
     },
     "applicationsCreate": {
