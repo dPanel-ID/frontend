@@ -29,26 +29,21 @@ interface FlowStepperProps {
 export default function FlowStepper(props: FlowStepperProps) {
   const { activeIndex, activeKey, items, onSelect, positionLabel } = props;
 
-  const active = items[activeIndex];
   const percent =
     items.length > 0 ? ((activeIndex + 1) / items.length) * 100 : 0;
 
   return (
-    <nav className="rounded-2xl border bg-card p-4" aria-label={positionLabel}>
-      {/* Phone: position, current section, progress bar. */}
+    <nav
+      className="rounded-2xl border bg-card px-4 py-3"
+      aria-label={positionLabel}
+    >
+      {/* Phone: position and a bar. The card below names the section. */}
       <div className="sm:hidden">
-        <div className="flex items-baseline justify-between gap-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {positionLabel}
-          </p>
-          <p className="shrink-0 text-xs tabular-nums text-muted-foreground">
-            {items.filter((item) => item.done).length}/{items.length}
-          </p>
-        </div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          {positionLabel}
+        </p>
 
-        <p className="mt-1 truncate text-sm font-bold">{active?.label}</p>
-
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-border">
+        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-border">
           <div
             className="h-full rounded-full bg-sky-500 transition-all"
             style={{ width: `${percent}%` }}
