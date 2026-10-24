@@ -178,3 +178,38 @@ export function liveServerCount(deployments: CicdDeployment[]) {
 
   return ids.size;
 }
+
+export interface ServerRef {
+  id: string;
+  name: string;
+}
+
+/**
+ * The servers this application is on.
+ *
+ * `ApplicationDetail.deploymentTargets` comes from `deploys[].machine`,
+ * which `/v1/application/detail/{id}` does not populate — it returns a
+ * `machine_id` and nothing else, so that array is always empty and the
+ * page showed "of 0 connected" next to a running service. The deployment
+ * records carry a `serverSnapshot`, so take it from there and fall back to
+ * the detail's own list when it ever starts arriving.
+ */
+export function serversOf(
+  deployments: CicdDeployment[],
+  fallback: ReadonlyArray<{ id: string; name?: string }> = [],
+): ServerRef[] {
+  const byId = new Map<string, ServerRef>();
+
+  for (const entry of fallback) {
+    if (!entry.id) continue;
+    byId.set(entry.id, { id: entry.id, name: entry.name || entry.id });
+  }
+
+  for (const deployment of deployments) {
+    const { hostName, id } = deployment.serverSnapshot;
+    if (!id) continue;
+    byId.set(id, { id, name: hostName || id });
+  }
+
+  return [...byId.values()];
+}
