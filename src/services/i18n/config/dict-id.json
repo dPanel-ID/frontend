@@ -1678,7 +1678,8 @@
         "filteredTitle": "Tidak ada load balancer yang cocok",
         "filteredMessage": "Coba domain lain, atau hapus filter untuk melihat semuanya.",
         "clear": "Hapus filter"
-      }
+      },
+      "unnamedTeam": "Workspace tim"
     },
     "loadBalancersCreate": {
       "headerTitle": "Buat load balancer",
