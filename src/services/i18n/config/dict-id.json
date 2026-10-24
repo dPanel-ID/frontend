@@ -600,7 +600,7 @@
     },
     "applications": {
       "headerTitle": "Aplikasi",
-      "headerDesc": "Lihat aplikasi yang telah Anda deploy di sini.",
+      "headerDesc": "Kode Anda, berjalan di server Anda. dNocs membangun tiap aplikasi dari repositorinya lalu memasangnya untuk Anda.",
       "headerFootnote": "Anda dapat menggunakan <i>resource</i> sendiri atau <i>resource</i> publik untuk membuat aplikasi. Kunjungi <a>kanal YouTube</a> kami untuk panduannya.",
       "docs": "Docs",
       "createApplication": "Buat Aplikasi",
@@ -617,6 +617,59 @@
           "expand": "Tampilkan load balancer",
           "collapse": "Sembunyikan load balancer"
         }
+      },
+      "servers": "Server",
+      "guide": {
+        "title": "Bagaimana aplikasi sampai ke server",
+        "description": "dNocs tidak meng-host kode Anda. dNocs membaca repositori yang Anda tunjuk, membangunnya menjadi artifact, lalu memasang artifact itu di server yang sudah Anda miliki.",
+        "steps": {
+          "connect": {
+            "title": "Tunjuk repositorinya",
+            "description": "Hubungkan GitHub dan pilih repo serta branch yang akan dibangun dNocs."
+          },
+          "build": {
+            "title": "dNocs membangun artifact",
+            "description": "Tiap build disimpan, jadi Anda tahu apa yang dirilis dan bisa kembali ke versi sebelumnya."
+          },
+          "deploy": {
+            "title": "Pasang ke server",
+            "description": "Pilih server mana yang menjalankannya. dNocs memasang artifact-nya dan menjaga servicenya tetap jalan."
+          }
+        },
+        "cta": "Buat aplikasi"
+      },
+      "overview": {
+        "total": "Aplikasi",
+        "running": "Berjalan",
+        "building": "Sedang dibangun",
+        "attention": "Perlu perhatian",
+        "sampleNote": "Hitungan per status diambil dari {sample} aplikasi terbaru Anda."
+      },
+      "status": {
+        "running": "Berjalan",
+        "building": "Sedang dibangun",
+        "attention": "Perlu perhatian",
+        "other": "Tidak berjalan"
+      },
+      "filters": {
+        "searchPlaceholder": "Cari berdasarkan nama aplikasi"
+      },
+      "table": {
+        "application": "Aplikasi",
+        "status": "Status",
+        "source": "Sumber",
+        "servers": "Server",
+        "updated": "Terakhir diubah",
+        "actions": "Aksi"
+      },
+      "empty": {
+        "title": "Pasang aplikasi pertama Anda",
+        "message": "Tunjuk dNocs ke sebuah repositori, lalu dNocs membangun kode Anda dan memasangnya di salah satu server Anda. Anda butuh server dulu; membuatnya hanya beberapa menit.",
+        "cta": "Buat aplikasi",
+        "secondary": "Lihat cara server dibuat",
+        "filteredTitle": "Tidak ada aplikasi yang cocok",
+        "filteredMessage": "Coba nama lain, atau hapus pencarian untuk melihat semua aplikasi.",
+        "clear": "Hapus pencarian"
       }
     },
     "applicationDetail": {
