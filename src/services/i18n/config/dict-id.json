@@ -857,7 +857,10 @@
       "headerDesc": "Deploy aplikasi web baru ke server Anda hanya dalam beberapa langkah.",
       "docs": "Docs",
       "actions": {
-        "continue": "Lanjutkan"
+        "continue": "Lanjut",
+        "back": "Kembali",
+        "deploy": "Rilis aplikasi",
+        "update": "Simpan perubahan"
       },
       "progress": {
         "title": "Kemajuan",
@@ -883,7 +886,14 @@
           "title": "Pratinjau",
           "desc": "Tinjau dan deploy"
         },
-        "blockedBy": "Selesaikan langkah {number}, {step}, terlebih dahulu."
+        "position": "Langkah {step} dari {total}",
+        "blocked": {
+          "source": "Pilih repositori dan branch yang akan dibangun, atau pilih aplikasi siap pakai.",
+          "server": "Pilih server tempat pemasangan, lalu atur setiap dependensi yang Anda pilih.",
+          "details": "Nama, bahasa, perintah build, perintah jalan, dan port yang bebas semuanya diperlukan.",
+          "env": "",
+          "preview": "Selesaikan langkah sebelumnya terlebih dahulu."
+        }
       },
       "wizard": {
         "step1": {
@@ -1081,16 +1091,7 @@
           }
         }
       },
-      "heroDuration": "Biasanya siap dalam 5–15 menit",
-      "review": {
-        "eyebrow": "Aplikasi baru",
-        "eyebrowUpdate": "Perbarui aplikasi",
-        "title": "Selesaikan ini untuk merilis",
-        "ready": "Siap dirilis",
-        "readyUpdate": "Siap diperbarui",
-        "footnote": "dNocs membangun kode Anda dan memasangnya di server yang Anda pilih. Tidak ada yang berjalan sebelum Anda menekan tombol ini.",
-        "footnoteUpdate": "dNocs menyimpan pengaturan baru. Aplikasi yang berjalan hanya dibangun ulang jika Anda memintanya."
-      }
+      "heroDuration": "Biasanya siap dalam 5–15 menit"
     },
     "applicationsUpdate": {
       "headerTitle": "Update Aplikasi",

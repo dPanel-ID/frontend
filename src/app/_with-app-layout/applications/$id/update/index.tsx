@@ -23,7 +23,6 @@ import type { ApplicationCreateServerOption } from '../../create/-model/store/se
 import { ApplicationsCreateLayout as Layout } from '../../create/-presentation/Layout';
 import Hero from '../../create/-view/Hero';
 import MainFlow from '../../create/-view/MainFlow';
-import ReviewAside from '../../create/-view/ReviewAside';
 
 export const Route = createFileRoute(
   '/_with-app-layout/applications/$id/update/',
@@ -39,7 +38,7 @@ function ApplicationUpdatePage() {
   const t = useDevetekTranslations();
 
   return (
-    <div className="flex flex-col gap-4">
+    <Layout>
       <Hero
         title={t('page.applicationsUpdate.headerTitle')}
         description={t('page.applicationsUpdate.headerDesc')}
@@ -52,7 +51,7 @@ function ApplicationUpdatePage() {
       <GithubSessionBanner />
 
       <ApplicationUpdateBootstrap applicationId={id} />
-    </div>
+    </Layout>
   );
 }
 
@@ -139,15 +138,9 @@ function ApplicationUpdateBootstrap(props: { applicationId: string }) {
   return (
     <ServersStoreProvider initialServers={initialServers}>
       <FormStoreProvider {...initialForm}>
-        <Layout>
-          <Layout.Main>
-            <MainFlow />
-          </Layout.Main>
-
-          <Layout.Aside>
-            <ReviewAside />
-          </Layout.Aside>
-        </Layout>
+        <Layout.Main>
+          <MainFlow />
+        </Layout.Main>
       </FormStoreProvider>
     </ServersStoreProvider>
   );
