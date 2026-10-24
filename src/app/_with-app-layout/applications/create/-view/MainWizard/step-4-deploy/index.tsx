@@ -86,6 +86,7 @@ export function useCommandPortState() {
     updateOriginalPort,
     updateOriginalServerID,
     setAppPort,
+    setPortConflict,
   ] = useFormStore((s) => [
     s.hostedServerID,
     s.appPort,
@@ -93,6 +94,7 @@ export function useCommandPortState() {
     s.updateOriginalPort,
     s.updateOriginalServerID,
     s.setAppPort,
+    s.setPortConflict,
   ]);
   const [isPortTouched, setIsPortTouched] = useState(false);
 
@@ -121,6 +123,10 @@ export function useCommandPortState() {
     usedPorts.has(normalizedPort) &&
     !isOriginalApplicationPort,
   );
+
+  useEffect(() => {
+    setPortConflict(isPortUsed);
+  }, [isPortUsed, setPortConflict]);
 
   useEffect(() => {
     if (
@@ -222,7 +228,6 @@ export function CommandSettingsSection(props: { portState: CommandPortState }) {
   return (
     <>
       <Sectioned
-        withinCard
         sectionIcon={SquareTerminalIcon}
         sectionTitle={t('title')}
         sectionDescription={t('desc')}

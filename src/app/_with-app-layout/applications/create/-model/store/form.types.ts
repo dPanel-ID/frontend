@@ -34,6 +34,8 @@ export interface FormStore {
   appBuildCommand: string[];
   appRunCommand: string;
   appPort: string;
+  /** Set by the port field: the chosen port is already taken on the server. */
+  portConflict: boolean;
   buildEnvText: string;
   runtimeEnvText: string;
 
@@ -64,6 +66,7 @@ export interface FormActions {
   setAppBuildCommand: (appBuildCommand: string[]) => void;
   setAppRunCommand: (appRunCommand: string) => void;
   setAppPort: (appPort: string) => void;
+  setPortConflict: (portConflict: boolean) => void;
   setBuildEnvText: (buildEnvText: string) => void;
   setRuntimeEnvText: (runtimeEnvText: string) => void;
   setUpdateTriggerBootstrap: (updateTriggerBootstrap: boolean) => void;

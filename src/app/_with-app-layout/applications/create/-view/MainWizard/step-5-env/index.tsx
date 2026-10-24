@@ -4,15 +4,11 @@ import { useDevetekTranslations } from '@/services/i18n';
 
 import { TextArea } from '@/shared/presentation/atoms/TextArea';
 
-import useProgressCta from '../../../-model/progress-cta';
 import { useFormStore } from '../../../-model/store/form';
-import { CtaBar } from '../../../-presentation/CtaBar';
 import { Sectioned } from '../../../-presentation/Sectioned';
 
 export default function Step5Env() {
   const t = useDevetekTranslations('page.applicationsCreate.wizard.step5.env');
-  const { goToNext, goToPrevious, isPreviousHidden, isNextDisabled } =
-    useProgressCta();
   const [buildEnvText, runtimeEnvText, setBuildEnvText, setRuntimeEnvText] =
     useFormStore((s) => [
       s.buildEnvText,
@@ -23,16 +19,7 @@ export default function Step5Env() {
 
   return (
     <div className="flex flex-col gap-4">
-      <CtaBar
-        placement="top"
-        goToNext={goToNext}
-        goToPrevious={goToPrevious}
-        isNextDisabled={isNextDisabled}
-        isPreviousHidden={isPreviousHidden}
-      />
-
       <Sectioned
-        withinCard
         sectionIcon={BracesIcon}
         sectionTitle={t('title')}
         sectionDescription={t('desc')}
@@ -64,13 +51,6 @@ export default function Step5Env() {
           />
         </label>
       </Sectioned>
-
-      <CtaBar
-        goToNext={goToNext}
-        goToPrevious={goToPrevious}
-        isNextDisabled={isNextDisabled}
-        isPreviousHidden={isPreviousHidden}
-      />
     </div>
   );
 }

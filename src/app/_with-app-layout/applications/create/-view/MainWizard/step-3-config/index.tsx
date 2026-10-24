@@ -18,13 +18,11 @@ import {
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Input } from '@/shared/presentation/atoms/Input';
 
-import useProgressCta from '../../../-model/progress-cta';
 import { useFormStore } from '../../../-model/store/form';
 import type {
   DependencyConfig,
   RequiredBinaryConfig,
 } from '../../../-model/store/form.types';
-import { CtaBar } from '../../../-presentation/CtaBar';
 import { Sectioned } from '../../../-presentation/Sectioned';
 import { CommandSettingsSection, useCommandPortState } from '../step-4-deploy';
 
@@ -543,24 +541,12 @@ export default function Step3Config() {
   const t = useDevetekTranslations(
     'page.applicationsCreate.wizard.step3.sectionDetails',
   );
-  const { goToNext, goToPrevious, isNextDisabled, isPreviousHidden } =
-    useProgressCta();
   const [appName, setAppName] = useFormStore((s) => [s.appName, s.setAppName]);
   const portState = useCommandPortState();
-  const isContinueDisabled = isNextDisabled || portState.isPortUsed;
 
   return (
     <div className="flex flex-col gap-4">
-      <CtaBar
-        placement="top"
-        goToNext={goToNext}
-        goToPrevious={goToPrevious}
-        isNextDisabled={isContinueDisabled}
-        isPreviousHidden={isPreviousHidden}
-      />
-
       <Sectioned
-        withinCard
         sectionIcon={PencilLineIcon}
         sectionTitle={t('title')}
         sectionDescription={t('desc')}
@@ -579,13 +565,6 @@ export default function Step3Config() {
       </Sectioned>
 
       <CommandSettingsSection portState={portState} />
-
-      <CtaBar
-        goToNext={goToNext}
-        goToPrevious={goToPrevious}
-        isNextDisabled={isContinueDisabled}
-        isPreviousHidden={isPreviousHidden}
-      />
     </div>
   );
 }

@@ -1,19 +1,13 @@
-import { useState } from 'react';
-
 import { RocketIcon, WarehouseIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import useHandler from '@/shared/libs/react-hooks/useHandler';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 
-import useHandleDeploy from '../../../-model/handle-deploy';
-import useHandleUpdateApplication from '../../../-model/handle-update';
-import useProgressCta from '../../../-model/progress-cta';
 import { useFormStore } from '../../../-model/store/form';
 import { useServersStore } from '../../../-model/store/servers';
-import { CtaBar } from '../../../-presentation/CtaBar';
 import { Sectioned } from '../../../-presentation/Sectioned';
+import { useSubmitFlow } from '../../../-usecase/submit-flow';
 
 function SummaryRow(props: { label: string; value?: string | number | null }) {
   return (
@@ -32,27 +26,8 @@ export default function Step6Preview() {
   const t = useDevetekTranslations(
     'page.applicationsCreate.wizard.step6.preview',
   );
-  const { goToPrevious, isPreviousHidden } = useProgressCta();
   const [flowMode] = useFormStore((s) => [s.flowMode]);
-  const { handleDeploy } = useHandleDeploy();
-  const { handleUpdate } = useHandleUpdateApplication();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const submitAction = flowMode === 'update' ? handleUpdate : handleDeploy;
-  const handleSubmit = useHandler(async () => {
-    if (isSubmitting) return;
-
-    setIsSubmitting(true);
-
-    try {
-      const isSubmitted = await submitAction();
-      if (!isSubmitted) {
-        setIsSubmitting(false);
-      }
-    } catch (error) {
-      setIsSubmitting(false);
-      throw error;
-    }
-  });
+  const { isSubmitting } = useSubmitFlow();
   const [
     appName,
     appSourceGithubRepo,
@@ -105,18 +80,7 @@ export default function Step6Preview() {
 
   return (
     <div className="flex flex-col gap-4 overflow-hidden">
-      <CtaBar
-        placement="top"
-        goToNext={handleSubmit}
-        goToPrevious={goToPrevious}
-        isPreviousHidden={isPreviousHidden}
-        isPreviousDisabled={isSubmitting}
-        isNextLoading={isSubmitting}
-        labelNext={flowMode === 'update' ? t('update') : t('deploy')}
-      />
-
       <Sectioned
-        withinCard
         sectionTitle={t('title')}
         sectionDescription={t('desc')}
         sectionIcon={WarehouseIcon}
@@ -198,15 +162,6 @@ export default function Step6Preview() {
           {flowMode === 'update' ? t('updateNote') : t('deployNote')}
         </div>
       </Sectioned>
-
-      <CtaBar
-        goToNext={handleSubmit}
-        goToPrevious={goToPrevious}
-        isPreviousHidden={isPreviousHidden}
-        isPreviousDisabled={isSubmitting}
-        isNextLoading={isSubmitting}
-        labelNext={flowMode === 'update' ? t('update') : t('deploy')}
-      />
     </div>
   );
 }

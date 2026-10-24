@@ -22,7 +22,6 @@ import {
   flowCtaClassName,
 } from '@/shared/presentation/organisms/FlowHero';
 
-
 import { headlineState, headlineTone } from '../../-lib/describe-detail';
 import { useHistoryLists } from '../../-lib/use-history-lists';
 import { useAppDataModel } from '../../-model/app-data';

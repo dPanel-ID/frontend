@@ -20,7 +20,6 @@ import {
 } from '@/shared/libs/browser/oauth';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/Button';
-import { Card, CardContent } from '@/shared/presentation/atoms/Card';
 import { SearchInput } from '@/shared/presentation/atoms/SearchInput';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { Combobox } from '@/shared/presentation/molecules/Combobox';
@@ -297,13 +296,7 @@ export default function SectionSourceGithub() {
     );
   }
 
-  return (
-    <Card className="rounded-2xl shadow-none">
-      <CardContent className="flex flex-col gap-4 p-3 sm:p-5">
-        {elContent}
-      </CardContent>
-    </Card>
-  );
+  return <div className="flex flex-col gap-4">{elContent}</div>;
 }
 
 function RepositoryPicker(props: {

@@ -212,11 +212,77 @@ list degrades honestly: a failed call says dNocs will build the default
 branch, and a GitHub auth failure says to reconnect rather than showing an
 empty list.
 
+---
+
+# The create flow and the update page
+
+Third pull request. These two routes share one set of files —
+`MainWizard`, `Layout`, the stores, `handle-deploy`, `handle-update` — so
+they are redesigned together.
+
+## What was wrong
+
+The flow was a six-step wizard: one step on screen, Back and Continue at
+the top and bottom of every step, a progress strip above. Principle 2 of
+the standard argues against exactly this — _show readiness, not steps_.
+Three concrete costs:
+
+- A beginner could not see the shape of the job. You learn there is a
+  dependency step when you arrive at it.
+- Deploy lived inside the last step and was reachable only after walking
+  four screens.
+- Going back to check something meant losing your place.
+
+## What it is now
+
+Hero, every section visible as a `StepCard`, and a sticky `ReviewPanel`
+holding the single primary action — the flow anatomy from the standard, and
+the same shape as the load-balancer create flow.
+
+| Before                                   | After                                                                                        |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `PageHeader`                             | `FlowHero`, accent `sky`, with the GitHub control and a duration line.                       |
+| `AsideProgress` strip                    | Gone. The review panel is the progress.                                                      |
+| One step visible, `MainWizard` switching | All five `StepCard`s, numbered, each turning to a check when satisfied.                      |
+| Ten `CtaBar`s (two per step)             | One primary action, in the review panel, disabled until the sections it depends on are done. |
+| Deploy inside step 6                     | `-usecase/submit-flow.ts`, owned by the review panel.                                        |
+| `canClickNext()` gating Continue         | `-model/flow-readiness`, the same rules, now reporting rather than gating.                   |
+| `Sectioned withinCard` inside each step  | Unwrapped — a card inside a `StepCard` is a nested card, which the standard forbids.         |
+
+A section whose prerequisites are not met still appears, with its body held
+back and a line naming the section to finish first. The job is visible from
+the start; only the parts that genuinely depend on earlier answers wait.
+
+## The rule that nearly got lost
+
+Step 3 computed `isNextDisabled || portState.isPortUsed`. The port check
+lived in the view, in a hook that also fetches the server's used ports and
+auto-picks a free one — so it could not simply be called again from the
+readiness model without running that fetch and that side effect twice.
+
+`useCommandPortState` now publishes the conflict into the form store
+(`portConflict`), and `evaluateFlowReadiness` reads it. One writer, many
+readers, one fetch. Without this the review panel would have offered a
+deploy that fails at install time. It has a test of its own.
+
+## Tests
+
+`-model/flow-readiness/index.test.ts`, 9 cases: that a branch _and_ a head
+are both required, that a bundle source needs no git config at all, that
+the port conflict blocks the details section, and that the update flow
+drops the source section.
+
+## Honest gaps
+
+- `step-2-details` is 1,360 lines and `handle-deploy/config.ts` is 817.
+  Neither was touched; they are re-hosted, not rewritten.
+- The branch list is whatever `/v1/git-branch/find` returns, which is
+  GitHub's first page — 30 branches on the dnocs repositories. A repository
+  with more will not show them all. The combobox has search, but it filters
+  what was fetched. Paging that endpoint is a backend change.
+
 ## Next
 
-1. **The create flow shell** (`/applications/create`), a six-step wizard of
-   about 6,900 lines shared with the update page. The standard asks for all
-   steps visible with a sticky `ReviewPanel` rather than a wizard that hides
-   what is missing; the step bodies would be re-hosted, not rewritten.
-2. **The update page** (`/applications/$id/update`), which reuses that
-   shell and largely follows from it.
+The module's four routes are done. What remains is cross-cutting: four
+modules have now shipped the same `.unwrap()` crash, and a shared mapper
+helper or a lint rule would be cheaper than finding the fifth.

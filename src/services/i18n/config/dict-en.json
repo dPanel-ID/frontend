@@ -891,7 +891,8 @@
         "step5": {
           "title": "Preview",
           "desc": "Review and deploy"
-        }
+        },
+        "blockedBy": "Finish step {number}, {step}, first."
       },
       "wizard": {
         "step1": {
@@ -1088,6 +1089,16 @@
             "branch": "Branch"
           }
         }
+      },
+      "heroDuration": "Usually ready in 5–15 minutes",
+      "review": {
+        "eyebrow": "New application",
+        "eyebrowUpdate": "Update application",
+        "title": "Finish these to deploy",
+        "ready": "Ready to deploy",
+        "readyUpdate": "Ready to update",
+        "footnote": "dNocs builds your code and installs it on the server you picked. Nothing runs until you press this.",
+        "footnoteUpdate": "dNocs saves the new settings. Your running application is only rebuilt if you asked for it."
       }
     },
     "applicationsUpdate": {
