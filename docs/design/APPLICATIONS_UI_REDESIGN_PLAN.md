@@ -179,8 +179,44 @@ with two releases is counted once.
 - `AppCard`'s dead `full` variant is still there; this pull request did not
   touch that file.
 
+---
+
+# Choosing a branch in the create flow
+
+Reported after the detail page shipped: the GitHub step offers no branch.
+
+`SectionSourceGithub` wrote `gitBranch: defaultBranch` both when a
+repository was picked and when its detail response arrived, and nothing
+could change it afterwards. Anyone whose work sits on `develop`, on a
+release branch or on anything other than the repository default had to
+create the application against the wrong branch and then edit it.
+
+`BranchPicker` lists the repository's branches from
+`/v1/git-branch/find` — the same endpoint the artifact sidepanel already
+uses — under the "repository selected" strip, with the default marked as
+such. Three details worth keeping:
+
+- **The commit head moves with the branch.** `gitBranch` without `gitHead`
+  would build the default branch's commit under another branch's name. The
+  picker sets both, from the branch's own `commit.sha`.
+- **The stale commit message is dropped.** `gitHeadDescription` holds the
+  default branch's head message; the branch list carries no message, so
+  picking another branch clears it rather than labelling the artifact with
+  the wrong commit.
+- **Config is seeded once per repository.** The detail response arrives
+  again on every refetch, and re-seeding would have reset a branch the user
+  had just picked. A ref records which repository has been seeded.
+
+The preview step now names the branch that will be built, and the branch
+list degrades honestly: a failed call says dNocs will build the default
+branch, and a GitHub auth failure says to reconnect rather than showing an
+empty list.
+
 ## Next
 
-1. **The create flow** (`/applications/create`), a six-step wizard of about
-   4,000 lines — the largest single piece left in the product.
-2. **The update page** (`/applications/$id/update`).
+1. **The create flow shell** (`/applications/create`), a six-step wizard of
+   about 6,900 lines shared with the update page. The standard asks for all
+   steps visible with a sticky `ReviewPanel` rather than a wizard that hides
+   what is missing; the step bodies would be re-hosted, not rewritten.
+2. **The update page** (`/applications/$id/update`), which reuses that
+   shell and largely follows from it.
