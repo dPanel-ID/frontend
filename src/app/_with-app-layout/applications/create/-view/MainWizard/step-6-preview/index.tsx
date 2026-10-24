@@ -56,6 +56,7 @@ export default function Step6Preview() {
   const [
     appName,
     appSourceGithubRepo,
+    gitRepoConfig,
     hostedServerID,
     appBuildCommand,
     appRunCommand,
@@ -69,6 +70,7 @@ export default function Step6Preview() {
   ] = useFormStore((s) => [
     s.appName,
     s.appSourceGithubRepo,
+    s.gitRepoConfig,
     s.hostedServerID,
     s.appBuildCommand,
     s.appRunCommand,
@@ -123,6 +125,9 @@ export default function Step6Preview() {
         <div className="overflow-hidden rounded-lg border bg-background">
           <SummaryRow label={t('application')} value={appName} />
           <SummaryRow label={t('repository')} value={appSourceGithubRepo} />
+          {gitRepoConfig?.gitBranch && (
+            <SummaryRow label={t('branch')} value={gitRepoConfig.gitBranch} />
+          )}
           <SummaryRow label={t('server')} value={selectedServer?.hostname} />
           <SummaryRow
             label={t('buildCommand')}
