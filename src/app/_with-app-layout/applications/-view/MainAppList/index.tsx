@@ -1,11 +1,13 @@
-import { useRouter } from '@tanstack/react-router';
+import { useMemo } from 'react';
 
 import type { ApplicationCard } from '@/entities/application/rules/schema';
 
+import { ApiLoadBalancer } from '@/shared/api';
 import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
 import { buildResponseView } from '@/widgets/response-view-builder';
 
 import { AppListState } from '../-presentation/AppListState';
+import { indexLoadBalancersByApplication } from '../../-lib/load-balancer-index';
 import { useAppsDataModel } from '../../-model/apps-data';
 import { useEmit } from '../../-model/events';
 import { useFilterModel } from '../../-model/filters';
@@ -22,9 +24,28 @@ export default buildResponseView({
   render: function Render(props) {
     const { list } = props;
 
-    const router = useRouter();
     const emit = useEmit();
     const isDesktop = useBreakpoint('lg');
+
+    // One lookup for the page, the way the servers list counts
+    // applications. A router has no application id of its own, so the
+    // mapping comes from its rules.
+    const [loadBalancersResponse] = ApiLoadBalancer.Find.useGet({
+      page: 1,
+      limit: 100,
+      options: { skip: list.length < 1 },
+    });
+
+    const loadBalancersByApp = useMemo(() => {
+      const routers =
+        loadBalancersResponse.$status === 'success'
+          ? loadBalancersResponse.routers
+          : loadBalancersResponse.$status === 'loading'
+            ? loadBalancersResponse.prevData?.routers
+            : undefined;
+
+      return indexLoadBalancersByApplication(routers);
+    }, [loadBalancersResponse]);
     const { searchQuery, setSearchQuery, setPagination, viewMode } =
       useFilterModel();
 
@@ -38,13 +59,6 @@ export default buildResponseView({
             : 'grid';
 
     const handlersFor = (application: ApplicationCard): AppTableHandlers => ({
-      openDetails: () => {
-        const href = router.buildLocation({
-          to: '/applications/$id',
-          params: { id: String(application.id) },
-        }).href;
-        window.open(href, '_blank', 'noopener,noreferrer');
-      },
       edit: () => emit('@applications/application-edit', application),
       migrateOwnership: () =>
         emit('@applications/open--migrate-ownership', application),
@@ -68,7 +82,13 @@ export default buildResponseView({
     }
 
     if (derivedViewMode === 'table') {
-      return <AppTable list={list} handlersFor={handlersFor} />;
+      return (
+        <AppTable
+          list={list}
+          handlersFor={handlersFor}
+          loadBalancersByApp={loadBalancersByApp}
+        />
+      );
     }
 
     return (
@@ -79,10 +99,9 @@ export default buildResponseView({
           return (
             <AppCard
               key={application.id}
-              variant="compact"
               data={application}
+              loadBalancers={loadBalancersByApp.get(String(application.id))}
               onClickEdit={handlers.edit}
-              onClickDetails={handlers.openDetails}
               onClickMigrateOwnership={handlers.migrateOwnership}
               onClickDelete={handlers.remove}
             />
