@@ -2,6 +2,7 @@ import {
   ArrowLeftRightIcon,
   Grid2X2Icon,
   RefreshCwIcon,
+  Rows3Icon,
   TableIcon,
 } from 'lucide-react';
 
@@ -15,12 +16,17 @@ import { buildSegmentedControl } from '@/widgets/ui-atomic-builder/atom-segmente
 import { useEmit } from '../../-model/events';
 import { useFilterModel } from '../../-model/filters';
 
-const ViewModeSO = buildSegmentedControl<'auto' | 'grid' | 'table'>({
+const ViewModeSO = buildSegmentedControl<'auto' | 'list' | 'grid' | 'table'>({
   options: [
     {
       id: 'auto',
       icon: ArrowLeftRightIcon,
       tooltipI18n: 'common.terms.automaticView',
+    },
+    {
+      id: 'list',
+      icon: Rows3Icon,
+      tooltipI18n: 'common.terms.cardListView',
     },
     {
       id: 'grid',

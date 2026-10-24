@@ -13,6 +13,7 @@ import { useEmit } from '../../-model/events';
 import { useFilterModel } from '../../-model/filters';
 
 import AppCard from './AppCard';
+import AppRow from './AppRow';
 import { AppsEmptyState } from './AppsEmptyState';
 import AppTable from './AppTable';
 import type { AppTableHandlers } from './AppTable';
@@ -50,13 +51,7 @@ export default buildResponseView({
       useFilterModel();
 
     const derivedViewMode =
-      viewMode === 'grid'
-        ? 'grid'
-        : viewMode === 'table'
-          ? 'table'
-          : isDesktop
-            ? 'table'
-            : 'grid';
+      viewMode === 'auto' ? (isDesktop ? 'list' : 'grid') : viewMode;
 
     const handlersFor = (application: ApplicationCard): AppTableHandlers => ({
       edit: () => emit('@applications/application-edit', application),
@@ -91,13 +86,34 @@ export default buildResponseView({
       );
     }
 
+    if (derivedViewMode === 'grid') {
+      return (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {list.map((application) => {
+            const handlers = handlersFor(application);
+
+            return (
+              <AppCard
+                key={application.id}
+                data={application}
+                loadBalancers={loadBalancersByApp.get(String(application.id))}
+                onClickEdit={handlers.edit}
+                onClickMigrateOwnership={handlers.migrateOwnership}
+                onClickDelete={handlers.remove}
+              />
+            );
+          })}
+        </div>
+      );
+    }
+
     return (
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="flex flex-col gap-3">
         {list.map((application) => {
           const handlers = handlersFor(application);
 
           return (
-            <AppCard
+            <AppRow
               key={application.id}
               data={application}
               loadBalancers={loadBalancersByApp.get(String(application.id))}

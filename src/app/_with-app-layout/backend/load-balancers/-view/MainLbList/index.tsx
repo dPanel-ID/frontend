@@ -41,13 +41,36 @@ export default buildResponseView({
       return <LbTable list={list} />;
     }
 
+    if (derivedViewMode === 'grid') {
+      return (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {list.map((loadBalancer) => (
+            <LbCard
+              key={loadBalancer.id}
+              data={loadBalancer}
+              variant="compact"
+              onClickDetails={() =>
+                emit('@load-balancers/open--details', loadBalancer)
+              }
+              onClickDelete={() =>
+                emit('@load-balancers/lb--delete', loadBalancer)
+              }
+              onClickMigrateOwnership={() =>
+                emit('@load-balancers/open--migrate-ownership', loadBalancer)
+              }
+            />
+          ))}
+        </div>
+      );
+    }
+
     return (
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="flex flex-col gap-3">
         {list.map((loadBalancer) => (
           <LbCard
             key={loadBalancer.id}
             data={loadBalancer}
-            variant="compact"
+            variant="full"
             onClickDetails={() =>
               emit('@load-balancers/open--details', loadBalancer)
             }
