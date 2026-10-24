@@ -742,7 +742,19 @@
         "port": "Port",
         "portUnknownHint": "belum diatur",
         "never": "Belum ada",
-        "neverHint": "belum pernah dibangun"
+        "neverHint": "belum pernah dibangun",
+        "details": "Detail",
+        "repository": "Repositori",
+        "branch": "Branch",
+        "server": "Server",
+        "service": "Layanan",
+        "workdir": "Direktori kerja",
+        "ownership": "Pemilik",
+        "created": "Dibuat",
+        "recentBuilds": "Build terbaru",
+        "recentBuildsHint": "Beberapa percobaan terakhir, terbaru lebih dulu",
+        "viewAll": "Lihat semua",
+        "noBuilds": "Belum ada yang dibangun."
       },
       "buildStatus": {
         "ready": "Berhasil",
@@ -770,26 +782,6 @@
         "cancelled": "Dibatalkan",
         "deleting": "Menghapus",
         "unknown": "Tidak diketahui"
-      },
-      "nextSteps": {
-        "title": "Yang bisa Anda lakukan di sini",
-        "description": "Ada dua tahap saat merilis: dNocs membangun kode Anda sekali, lalu memasang hasilnya di tiap server Anda. Daftar di bawah menampilkan keduanya.",
-        "deploy": {
-          "title": "Bangun dan rilis",
-          "description": "Ambil commit terbaru, bangun, lalu pasang di server Anda."
-        },
-        "logs": {
-          "title": "Lihat apa yang terjadi",
-          "description": "Baca keluaran dari aplikasi yang sedang berjalan."
-        },
-        "settings": {
-          "title": "Ubah cara membangunnya",
-          "description": "Branch, langkah build, perintah jalan, variabel lingkungan."
-        },
-        "server": {
-          "title": "Buka server",
-          "description": "Lihat mesin tempat aplikasi ini berjalan."
-        }
       },
       "releases": {
         "title": "Build dan rilis",
@@ -832,7 +824,9 @@
         "sections": {
           "repository": "Repositori",
           "build": "Build",
-          "run": "Jalan"
+          "run": "Jalan",
+          "buildHint": "Cara kode Anda diubah menjadi sesuatu yang bisa dipasang",
+          "runHint": "Cara aplikasi yang terpasang dijalankan dan dijaga tetap hidup"
         },
         "labels": {
           "repository": "Repositori",
@@ -850,6 +844,43 @@
           "buildSteps": "Tidak ada langkah build",
           "configuration": "Tidak ada konfigurasi"
         }
+      },
+      "tabs": {
+        "ariaLabel": "Bagian aplikasi",
+        "overview": "Ringkasan",
+        "deployments": "Rilis",
+        "logs": "Log",
+        "settings": "Pengaturan"
+      },
+      "current": {
+        "title": "Rilis yang aktif",
+        "subtitle": "Yang sedang melayani saat ini",
+        "unknownCommit": "Build sudah tidak tersimpan",
+        "visit": "Kunjungi",
+        "viewLogs": "Lihat log",
+        "redeploy": "Rilis ulang",
+        "deployNow": "Bangun dan rilis",
+        "emptyTitle": "Belum ada yang berjalan",
+        "emptyDescription": "Bangun commit terbaru dan dNocs akan memasangnya di server Anda. Build pertama biasanya butuh beberapa menit.",
+        "status": {
+          "pending": "Menunggu",
+          "ready": "Berjalan",
+          "progress": "Merilis",
+          "failed": "Gagal",
+          "deleted": "Dihapus",
+          "cancelled": "Dibatalkan",
+          "deleting": "Menghapus",
+          "unknown": "Tidak diketahui"
+        }
+      },
+      "logs": {
+        "sourceLabel": "Sumber log",
+        "runtime": "Runtime",
+        "loadBalancer": "Load balancer",
+        "loadBalancerTitle": "Permintaan load balancer",
+        "loadBalancerSubtitle": "Permintaan yang masuk ke load balancer di depan aplikasi ini",
+        "loadBalancerEmpty": "Tidak ada permintaan pada rentang ini.",
+        "loadBalancerEmptyHint": "Coba perlebar rentang waktu, atau kirim permintaan ke domain di atas."
       }
     },
     "applicationsCreate": {

@@ -303,3 +303,58 @@ drops the source section.
 The module's four routes are done. What remains is cross-cutting: four
 modules have now shipped the same `.unwrap()` crash, and a shared mapper
 helper or a lint rule would be cheaper than finding the fifth.
+
+---
+
+# The detail page, on tabs
+
+The one-page detail view was wrong for the same reason the one-page create
+flow was: five sections stacked make a wall. The page now works like the
+server detail page, and like Vercel's project view — a hero that stays, and
+four tabs, each a shareable URL (`?tab=deployments`).
+
+| Tab             | What is in it                                                                                         |
+| --------------- | ----------------------------------------------------------------------------------------------------- |
+| **Overview**    | The current deployment, four stat tiles, Details, and the last five builds.                           |
+| **Deployments** | The builds / on-servers section, full width.                                                          |
+| **Logs**        | Runtime logs, plus load-balancer requests when one is attached.                                       |
+| **Settings**    | Repository, Build (language, steps, env), Runtime (service, port, command, env), and the danger zone. |
+
+## Overview, designed around the first question
+
+The first thing anyone opening an application wants to know is _what is
+live_. The old page made you read a list of build cards to work it out.
+
+`CurrentDeployment` answers it in one block: the commit title, its branch
+and short sha, who pushed it, which server it is on, how long ago, and a
+status pill — then the actions that follow from it (view logs, redeploy).
+When nothing has been released it becomes an empty state that explains the
+first build rather than showing an empty card.
+
+Under it: the four tiles, a Details list (repository, branch, server,
+service, working directory, owner, created) and the last five builds with a
+link into the Deployments tab.
+
+## Load-balancer logs
+
+`/v2/load-balancer/{id}/logs` existed in the API client and had no caller.
+The Logs tab uses it, in the same `LogViewer` the runtime logs use, with
+the same time-range control — but the source toggle only appears when a
+load balancer is actually attached to the application. There are none in
+this workspace today, so for now the tab shows runtime logs alone, which is
+what it should do.
+
+## Environment values are no longer rendered
+
+The old configuration panel printed env values and fell back to `••••••`
+only when a value was absent. An environment variable is as likely to hold
+a token as a feature flag, so values are masked unconditionally now.
+
+## Honest gaps
+
+- **No domain on the detail response.** `ApplicationCard` carries
+  `additionalInfo.domain`; `ApplicationDetail` does not, so the current
+  deployment card has no "Visit" button. Adding `domain` to the detail
+  response would give the overview its most obviously missing link.
+- The hero's status pill is still derived from release history rather than
+  a live service state, as noted above.
