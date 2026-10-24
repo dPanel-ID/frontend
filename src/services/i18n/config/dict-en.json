@@ -866,7 +866,10 @@
       "headerDesc": "Deploy a new web application to your server in just a few steps.",
       "docs": "Docs",
       "actions": {
-        "continue": "Continue"
+        "continue": "Continue",
+        "back": "Back",
+        "deploy": "Deploy application",
+        "update": "Save changes"
       },
       "progress": {
         "title": "Progress",
@@ -892,7 +895,14 @@
           "title": "Preview",
           "desc": "Review and deploy"
         },
-        "blockedBy": "Finish step {number}, {step}, first."
+        "position": "Step {step} of {total}",
+        "blocked": {
+          "source": "Choose a repository and the branch to build from, or pick a ready-made application.",
+          "server": "Choose the server to install on, and set up each dependency you picked.",
+          "details": "A name, a language, a build command, a start command and a free port are all needed.",
+          "env": "",
+          "preview": "Finish the earlier steps first."
+        }
       },
       "wizard": {
         "step1": {
@@ -1090,16 +1100,7 @@
           }
         }
       },
-      "heroDuration": "Usually ready in 5–15 minutes",
-      "review": {
-        "eyebrow": "New application",
-        "eyebrowUpdate": "Update application",
-        "title": "Finish these to deploy",
-        "ready": "Ready to deploy",
-        "readyUpdate": "Ready to update",
-        "footnote": "dNocs builds your code and installs it on the server you picked. Nothing runs until you press this.",
-        "footnoteUpdate": "dNocs saves the new settings. Your running application is only rebuilt if you asked for it."
-      }
+      "heroDuration": "Usually ready in 5–15 minutes"
     },
     "applicationsUpdate": {
       "headerTitle": "Update Application",

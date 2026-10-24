@@ -233,11 +233,28 @@ Three concrete costs:
   four screens.
 - Going back to check something meant losing your place.
 
+## First attempt: all sections visible — reverted
+
+The first rebuild put every section on screen at once as `StepCard`s with a
+sticky `ReviewPanel`, following the flow anatomy literally. It was wrong
+here and was reverted the same day.
+
+The load-balancer flow has three short sections. This one has five, and two
+of them — the server-and-dependency picker and the build configuration —
+are long on their own. Stacked, the page became a very long scroll, and on
+a phone, where the review panel drops below all five sections, the primary
+action ended up further from the user than it had been in the wizard. The
+standard's own responsive rule (checked at 1440, 1024 **and 375**) is what
+caught it.
+
+The lesson is worth recording: _show readiness, not steps_ is about making
+what is missing visible, not about putting every field on one page. A
+stepper that marks finished sections and a Continue button that says why it
+is disabled satisfy the principle at a fraction of the height.
+
 ## What it is now
 
-Hero, every section visible as a `StepCard`, and a sticky `ReviewPanel`
-holding the single primary action — the flow anatomy from the standard, and
-the same shape as the load-balancer create flow.
+Hero, a stepper, one section at a time, and a single sticky action row.
 
 | Before                                   | After                                                                                        |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------- |

@@ -10,7 +10,6 @@ import { ServersStoreProvider } from './-model/store/servers';
 import { ApplicationsCreateLayout as Layout } from './-presentation/Layout';
 import Hero from './-view/Hero';
 import MainFlow from './-view/MainFlow';
-import ReviewAside from './-view/ReviewAside';
 
 export const Route = createFileRoute('/_with-app-layout/applications/create/')({
   head: () => ({
@@ -23,7 +22,7 @@ export default function ApplicationsCreatePage() {
   const t = useDevetekTranslations();
 
   return (
-    <div className="flex flex-col gap-4">
+    <Layout>
       <Hero
         title={t('page.applicationsCreate.headerTitle')}
         description={t('page.applicationsCreate.headerDesc')}
@@ -34,18 +33,12 @@ export default function ApplicationsCreatePage() {
       <ServersStoreProvider>
         <GithubReposStoreProvider>
           <FormStoreProvider>
-            <Layout>
-              <Layout.Main>
-                <MainFlow />
-              </Layout.Main>
-
-              <Layout.Aside>
-                <ReviewAside />
-              </Layout.Aside>
-            </Layout>
+            <Layout.Main>
+              <MainFlow />
+            </Layout.Main>
           </FormStoreProvider>
         </GithubReposStoreProvider>
       </ServersStoreProvider>
-    </div>
+    </Layout>
   );
 }
