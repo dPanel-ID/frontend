@@ -670,6 +670,14 @@
         "filteredTitle": "Tidak ada aplikasi yang cocok",
         "filteredMessage": "Coba nama lain, atau hapus pencarian untuk melihat semua aplikasi.",
         "clear": "Hapus pencarian"
+      },
+      "github": {
+        "connect": "Hubungkan GitHub",
+        "connectHint": "Hubungkan akun GitHub agar dNocs dapat membaca dan membangun repositori Anda.",
+        "reconnect": "Hubungkan ulang GitHub",
+        "reconnectHint": "GitHub tidak dapat memverifikasi akun yang tersimpan. Masuk kembali untuk memulihkan akses ke repositori Anda.",
+        "connectedTo": "Terhubung ke GitHub sebagai {login}",
+        "checking": "Memeriksa GitHub"
       }
     },
     "applicationDetail": {
@@ -683,27 +691,6 @@
         "reloginTitle": "Sesi GitHub kedaluwarsa",
         "reloginSubtitle": "Hubungkan ulang akun GitHub agar dPanel dapat membaca data repositori lagi.",
         "reloginCta": "Login ulang GitHub"
-      },
-      "artifactsHistory": {
-        "title": "Riwayat Artefak",
-        "subtitle": "Artefak terkini dan opsi rollback",
-        "emptyMessage": "Belum ada artefak tersedia.",
-        "unsupportedMessage": "Artefak tidak didukung untuk jenis aplikasi ini.",
-        "distributedStorageWarning": "Aplikasi ini tidak menggunakan distributed storage untuk menyimpan hasil build. Build dan deployment dijalankan secara terpisah di setiap mesin tempat aplikasi berjalan.",
-        "logs": "Log",
-        "artifactLogsTitle": "Log Artefak",
-        "artifactLogsDescription": "Commit {commit}",
-        "artifactLogOutput": "Output log artefak",
-        "artifactLogLatestLines": "Output build terbaru",
-        "artifactLogLineWindow": "{count}/{limit} baris",
-        "artifactLogEmpty": "Belum ada log build."
-      },
-      "usageStats": {
-        "title": "Statistik Penggunaan",
-        "unavailablePlaceholder": "Statistik penggunaan terkait sedang tidak tersedia untuk aplikasi ini."
-      },
-      "serviceActions": {
-        "unavailablePlaceholder": "Layanan terkait sedang tidak tersedia untuk aplikasi ini."
       },
       "appLogs": {
         "title": "Log Aplikasi",
@@ -723,9 +710,146 @@
         "emptyLog": "Tidak ada log runtime pada rentang ini."
       },
       "dangerZone": {
-        "title": "Danger Zone",
-        "deleteThisApp": "Hapus Aplikasi",
-        "deleteThisAppDescription": "Hapus aplikasi ini beserta seluruh datanya secara permanen. Tindakan ini tidak dapat dibatalkan."
+        "title": "Zona berbahaya",
+        "deleteThisApp": "Hapus aplikasi ini",
+        "deleteThisAppDescription": "Hapus permanen aplikasi ini beserta seluruh datanya. Tindakan ini tidak bisa dibatalkan.",
+        "consequences": {
+          "removes": "Menghapus aplikasi, build, dan riwayat rilisnya dari dNocs.",
+          "stops": "Menghentikan layanan di setiap server tempatnya berjalan.",
+          "keeps": "Tidak mengubah server maupun repositori Git Anda."
+        }
+      },
+      "headline": {
+        "live": "Aktif",
+        "building": "Sedang berjalan",
+        "attention": "Perlu perhatian",
+        "idle": "Tidak berjalan"
+      },
+      "hero": {
+        "descriptionRepo": "Dibangun dari {repo}. dNocs mengubah tiap commit menjadi build, lalu memasang build itu di server Anda.",
+        "descriptionRepoOnServer": "Dibangun dari {repo} dan berjalan di {server}.",
+        "descriptionBundle": "Dipasang oleh dNocs di server milik Anda.",
+        "descriptionBundleOnServer": "Dipasang oleh dNocs di {server}.",
+        "openRepository": "Repositori",
+        "editSettings": "Ubah pengaturan"
+      },
+      "overview": {
+        "liveServers": "Sedang melayani",
+        "liveServersHint": "dari {total} server terhubung",
+        "lastBuild": "Build terakhir",
+        "buildsKept": "Build tersimpan",
+        "buildsKeptHint": "terbaru lebih dulu",
+        "port": "Port",
+        "portUnknownHint": "belum diatur",
+        "never": "Belum ada",
+        "neverHint": "belum pernah dibangun"
+      },
+      "buildStatus": {
+        "ready": "Berhasil",
+        "progress": "Membangun",
+        "failed": "Gagal",
+        "cancelled": "Dibatalkan",
+        "deleted": "Dihapus",
+        "deleting": "Menghapus",
+        "unknown": "Tidak diketahui"
+      },
+      "releaseStatus": {
+        "pending": "Menunggu",
+        "progress": "Merilis",
+        "deployed": "Sudah di server",
+        "failed": "Gagal",
+        "cancelled": "Dibatalkan",
+        "inactive": "Belum dirilis"
+      },
+      "deployStatus": {
+        "pending": "Menunggu",
+        "ready": "Berjalan",
+        "progress": "Merilis",
+        "failed": "Gagal",
+        "deleted": "Dihapus",
+        "cancelled": "Dibatalkan",
+        "deleting": "Menghapus",
+        "unknown": "Tidak diketahui"
+      },
+      "nextSteps": {
+        "title": "Yang bisa Anda lakukan di sini",
+        "description": "Ada dua tahap saat merilis: dNocs membangun kode Anda sekali, lalu memasang hasilnya di tiap server Anda. Daftar di bawah menampilkan keduanya.",
+        "deploy": {
+          "title": "Bangun dan rilis",
+          "description": "Ambil commit terbaru, bangun, lalu pasang di server Anda."
+        },
+        "logs": {
+          "title": "Lihat apa yang terjadi",
+          "description": "Baca keluaran dari aplikasi yang sedang berjalan."
+        },
+        "settings": {
+          "title": "Ubah cara membangunnya",
+          "description": "Branch, langkah build, perintah jalan, variabel lingkungan."
+        },
+        "server": {
+          "title": "Buka server",
+          "description": "Lihat mesin tempat aplikasi ini berjalan."
+        }
+      },
+      "releases": {
+        "title": "Build dan rilis",
+        "description": "Build adalah kode Anda yang dikemas sekali. Rilis adalah build itu yang dipasang di satu server.",
+        "tabsLabel": "Tampilkan build atau server",
+        "tabs": {
+          "builds": "Build",
+          "servers": "Di server"
+        },
+        "newBuild": "Bangun dan rilis",
+        "logs": "Log",
+        "rollback": "Kembalikan",
+        "buildId": "ID build",
+        "releaseId": "ID rilis",
+        "buildTime": "Lama proses build",
+        "noDescription": "Tanpa deskripsi",
+        "stepCount": "{count} langkah build",
+        "buildNotFound": "Build untuk rilis ini sudah tidak tersimpan",
+        "deleteForever": "Hapus permanen",
+        "checkingService": "Memeriksa layanan",
+        "installer": "Pemasang",
+        "pageOf": "Halaman {page} dari {total}",
+        "storageNote": "Build tidak dibagikan antar mesin. Setiap server membangun dan memasang aplikasi secara terpisah.",
+        "notEligibleTitle": "Aplikasi ini tidak dibangun dari repositori",
+        "notEligibleDescription": "dNocs memasangnya secara langsung, jadi tidak ada build yang bisa ditampilkan. Gunakan halaman server untuk menjalankan, menghentikan, atau memasang ulang.",
+        "emptyBuildsTitle": "Belum ada yang dibangun",
+        "emptyBuildsDescription": "Bangun commit terbaru dan dNocs akan memasangnya di server Anda. Build pertama biasanya butuh beberapa menit.",
+        "emptyServersTitle": "Belum ada di server mana pun",
+        "emptyServersDescription": "Setelah sebuah build dirilis, server tempatnya berjalan akan muncul di sini beserta status layanannya.",
+        "artifactLogsTitle": "Log Artefak",
+        "artifactLogsDescription": "Commit {commit}",
+        "artifactLogOutput": "Output log artefak",
+        "artifactLogLatestLines": "Output build terbaru",
+        "artifactLogLineWindow": "{count}/{limit} baris",
+        "artifactLogEmpty": "Belum ada log build."
+      },
+      "configuration": {
+        "title": "Cara aplikasi ini disiapkan",
+        "description": "Repositori asalnya, cara membangunnya, dan cara menjalankannya.",
+        "sections": {
+          "repository": "Repositori",
+          "build": "Build",
+          "run": "Jalan"
+        },
+        "labels": {
+          "repository": "Repositori",
+          "language": "Bahasa",
+          "framework": "Framework",
+          "serviceName": "Nama layanan",
+          "port": "Port",
+          "command": "Perintah jalan",
+          "buildSteps": "Langkah build",
+          "envVars": "Variabel lingkungan"
+        },
+        "empty": {
+          "repository": "Belum ada repositori terhubung",
+          "envVars": "Tidak ada variabel lingkungan",
+          "buildSteps": "Tidak ada langkah build",
+          "configuration": "Tidak ada konfigurasi"
+        }
       }
     },
     "applicationsCreate": {

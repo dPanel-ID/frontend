@@ -16,6 +16,8 @@ import {
 } from '@/shared/presentation/organisms/FlowHero';
 import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
+import GithubAccountButton from '../GithubAccountButton';
+
 /** Page opening in the same visual language as the servers module. */
 export default function Header() {
   const t = useDevetekTranslations();
@@ -33,6 +35,7 @@ export default function Header() {
       description={t('page.applications.headerDesc')}
       aside={
         <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <GithubAccountButton />
           <Button variant="outline" size="sm" asChild>
             <Link to="/servers">
               <ServerIcon />

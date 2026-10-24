@@ -10,6 +10,7 @@ import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
 import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
+import GithubAccountButton from '../-view/GithubAccountButton';
 import GithubSessionBanner from '../-view/GithubSessionBanner';
 
 import { FormStoreProvider } from './-model/store/form';
@@ -49,11 +50,14 @@ export default function ApplicationsPage() {
         title={t('page.applicationsCreate.headerTitle')}
         description={t('page.applicationsCreate.headerDesc')}
         rightAppend={
-          <HeaderHelpAction
-            icon={FileTextIcon}
-            label={t('page.applicationsCreate.docs')}
-            href={LINK__DOCUMENTATION}
-          />
+          <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+            <GithubAccountButton />
+            <HeaderHelpAction
+              icon={FileTextIcon}
+              label={t('page.applicationsCreate.docs')}
+              href={LINK__DOCUMENTATION}
+            />
+          </div>
         }
       />
       <GithubSessionBanner className="mb-6 mt-6" />
