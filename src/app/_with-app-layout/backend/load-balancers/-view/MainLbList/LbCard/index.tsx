@@ -68,14 +68,6 @@ export default function LbCard(props: LbCardProps) {
     domain: data.domain.fqdn,
   });
   const isAnomalousStatus = !['ready', 'pending'].includes(data.state.status);
-  const rowTone = cn({
-    'border-l-red-500': data.state.status === 'failed',
-    'border-l-orange-500': ['deleted', 'deleting', 'cancelled'].includes(
-      data.state.status,
-    ),
-    'border-l-cyan-500': data.state.status === 'progress',
-  });
-
   const actions = [
     {
       label: t('common.actions.details'),
@@ -218,12 +210,16 @@ export default function LbCard(props: LbCardProps) {
       onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}
       className={cn(
-        'border-l-2 border-l-transparent bg-card/20 transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary hover:bg-card/50',
+        'overflow-hidden rounded-2xl border bg-card transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary hover:-translate-y-0.5 hover:border-sky-400/40 hover:shadow-lg hover:shadow-black/5',
         onClickDetails && 'cursor-pointer',
-        rowTone,
+        data.state.status === 'failed' && 'border-red-400/40',
+        data.state.status === 'progress' && 'border-sky-400/40',
+        ['deleted', 'deleting', 'cancelled'].includes(data.state.status) &&
+          'border-dashed border-amber-400/50',
       )}
     >
-      <div className="grid grid-cols-[minmax(280px,1.45fr)_minmax(220px,1fr)_minmax(220px,1fr)_minmax(180px,0.85fr)_88px] items-center gap-4 px-4 py-3">
+      {/* Columns collapse to a stack before they start truncating. */}
+      <div className="grid items-center gap-4 p-4 xl:grid-cols-[minmax(260px,1.45fr)_minmax(200px,1fr)_minmax(200px,1fr)_minmax(150px,0.8fr)_88px]">
         <div className="flex min-w-0 items-center gap-3">
           <LoadBalancerIcon icon={webserver.icon} badge={RouteIcon} />
           <div className="min-w-0">

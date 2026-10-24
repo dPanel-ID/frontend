@@ -12,6 +12,7 @@ const app = (
   service: string,
   build: string,
   identity?: Partial<ApplicationCard['identity']>,
+  deployStatuses: string[] = [],
 ): ApplicationCard =>
   ({
     id: '1',
@@ -22,7 +23,13 @@ const app = (
       ...identity,
     },
     state: { service, lastArtifact: { status: build } },
-    additionalInfo: { deploymentCount: 0, servers: [] },
+    additionalInfo: {
+      deploymentCount: deployStatuses.length,
+      servers: deployStatuses.map((deployStatus, index) => ({
+        id: String(index),
+        deployStatus,
+      })),
+    },
   }) as unknown as ApplicationCard;
 
 describe('applicationBucket', () => {
@@ -76,5 +83,44 @@ describe('applicationSource', () => {
 
   it('falls back to the bundle type', () => {
     expect(applicationSource(app('running', 'ready'))).toBe('docker');
+  });
+});
+
+// `/v1/application/find` returns no service state and no artifact status,
+// so every application read as "Not running" whatever it was doing. What
+// it does return is how each release installed.
+describe('applicationBucket, falling back to the release', () => {
+  it('calls an installed release running', () => {
+    expect(applicationBucket(app('unknown', 'unknown', {}, ['ready']))).toBe(
+      'running',
+    );
+  });
+
+  it('lets an installing release outrank an installed one', () => {
+    expect(
+      applicationBucket(app('unknown', 'unknown', {}, ['ready', 'progress'])),
+    ).toBe('building');
+    expect(
+      applicationBucket(app('unknown', 'unknown', {}, ['ready', 'pending'])),
+    ).toBe('building');
+  });
+
+  it('raises a failed release only when nothing is installed', () => {
+    expect(
+      applicationBucket(app('unknown', 'unknown', {}, ['ready', 'failed'])),
+    ).toBe('running');
+    expect(applicationBucket(app('unknown', 'unknown', {}, ['failed']))).toBe(
+      'attention',
+    );
+  });
+
+  it('is still other with no releases at all', () => {
+    expect(applicationBucket(app('unknown', 'unknown', {}, []))).toBe('other');
+  });
+
+  it('never overrides what the service itself says', () => {
+    expect(applicationBucket(app('dead', 'unknown', {}, ['ready']))).toBe(
+      'attention',
+    );
   });
 });

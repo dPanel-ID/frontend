@@ -9,6 +9,11 @@ export type AppBucket = 'running' | 'building' | 'attention' | 'other';
  * An application carries two states: the last build and the running
  * service. What people want to know first is whether it is serving, so the
  * service wins, and a failed build only counts when nothing is running.
+ *
+ * `/v1/application/find` returns neither today — `deploys[].service` and
+ * `artifacts[].installer_status` are both absent, so every application
+ * read as "Not running" however healthy it was. What the response does
+ * carry is how each release installed, which is the fallback below.
  */
 export function applicationBucket(application: ApplicationCard): AppBucket {
   const service = application.state.service;
@@ -24,6 +29,28 @@ export function applicationBucket(application: ApplicationCard): AppBucket {
   ) {
     return 'building';
   }
+
+  return deploymentBucket(application);
+}
+
+/**
+ * How the releases installed, for when nothing better is known. Anything
+ * still moving outranks a finished one, and a failure only shows when
+ * nothing else is installed.
+ */
+function deploymentBucket(application: ApplicationCard): AppBucket {
+  const statuses = application.additionalInfo.servers
+    .map((server) => server.deployStatus)
+    .filter((status): status is string => Boolean(status));
+
+  if (statuses.length === 0) return 'other';
+
+  if (statuses.some((one) => one === 'progress' || one === 'pending')) {
+    return 'building';
+  }
+
+  if (statuses.some((one) => one === 'ready')) return 'running';
+  if (statuses.some((one) => one === 'failed')) return 'attention';
 
   return 'other';
 }
