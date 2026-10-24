@@ -60,14 +60,15 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
     const viewMode: FilterRules.ViewMode =
       qs.viewMode != null ? qs.viewMode : 'auto';
 
-    // A load balancer row is inherently tabular, so this module offers grid
-    // and table only. `list` stays in the schema so older bookmarked URLs
-    // keep working, and resolves to the dense table.
-    const derivedViewMode = iife((): 'grid' | 'table' => {
+    // The same four modes as every other list. This module used to map
+    // `list` onto the table and resolve `auto` to it as well, leaving it
+    // without the full-width row view the rest of the product has.
+    const derivedViewMode = iife((): 'list' | 'grid' | 'table' => {
+      if (viewMode === 'list') return 'list';
       if (viewMode === 'grid') return 'grid';
-      if (viewMode === 'table' || viewMode === 'list') return 'table';
+      if (viewMode === 'table') return 'table';
 
-      return isDesktop ? 'table' : 'grid';
+      return isDesktop ? 'list' : 'grid';
     });
 
     return {
