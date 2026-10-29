@@ -699,7 +699,6 @@
       "appLogs": {
         "title": "Log Aplikasi",
         "subtitle": "Log aplikasi dan error terkini",
-        "downloadLog": "Download log terpilih",
         "timeRangeLabel": "Rentang waktu log runtime",
         "emptyLog": "Tidak ada log runtime pada rentang ini.",
         "timeRange": "Rentang waktu",
@@ -730,8 +729,8 @@
         "emptyHint": "Coba rentang waktu yang lebih lebar. Log runtime mengikuti deployment aktif.",
         "unavailable": "Aplikasi ini belum punya perintah run atau server, jadi belum ada log runtime.",
         "runtime": "Runtime",
-        "filterPlaceholder": "Saring baris log",
-        "showing": "Menampilkan {shown} dari {total} baris ({limit} terbaru)",
+        "filterPlaceholder": "Saring halaman ini",
+        "showing": "Menampilkan {shown} dari {total} baris di halaman ini",
         "loading": "Memuat entri log",
         "failed": "Gagal memuat log",
         "noMatch": "Tidak ada baris log yang cocok dengan filter.",
@@ -743,6 +742,30 @@
           "level": "Level",
           "source": "Sumber",
           "message": "Pesan"
+        },
+        "query": "Query",
+        "download": {
+          "label": "Unduh",
+          "menuTitle": "Unduh sebagai file .log",
+          "page": "Halaman ini",
+          "pageHint": "{lines} baris di halaman {page}",
+          "all": "Semua di rentang waktu ini",
+          "allHint": "{lines, number} baris, diambil per halaman",
+          "allHintUnknown": "Semua halaman, diambil satu per satu",
+          "allTooLarge": "Lebih dari {max, number} baris. Persempit rentang atau unduh per halaman.",
+          "progress": "Mengunduh {fetched, number} / {total, number} baris",
+          "progressUnknown": "Mengunduh {fetched, number} baris",
+          "cancel": "Batalkan unduhan",
+          "tooLargeTitle": "Terlalu banyak baris untuk diunduh sekaligus",
+          "tooLarge": "Rentang ini berisi lebih dari {lines, number} baris. Persempit rentang waktu, atau unduh per halaman.",
+          "failedTitle": "Unduhan gagal"
+        },
+        "pager": {
+          "range": "Baris {first, number}–{last, number} dari {total, number}, terbaru dulu",
+          "rangeUnknown": "Baris {first, number}–{last, number}, terbaru dulu",
+          "newer": "Lebih baru",
+          "older": "Lebih lama",
+          "page": "Halaman {page}"
         }
       },
       "dangerZone": {

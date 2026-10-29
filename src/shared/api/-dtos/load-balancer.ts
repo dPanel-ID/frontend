@@ -99,6 +99,11 @@ export interface LoadBalancerLogsV2 {
   time_gte: string;
   time_lt: string;
   limit: number;
+  /** 1-based page within the window, newest first. */
+  page?: number;
+  /** Lines in the whole window, when the log store reports it. */
+  total?: number;
+  has_more?: boolean;
   lines?: Array<string | null> | null;
   entries?: LoadBalancerLogEntryV2[] | null;
   query?: string;

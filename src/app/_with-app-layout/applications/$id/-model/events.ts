@@ -33,7 +33,6 @@ type EventsRegistry = Rescope<
     'git-detail-refresh': null;
     'server-usage-retry-all': null;
     'github-login': null;
-    'logs-download': null;
   }
 >;
 
