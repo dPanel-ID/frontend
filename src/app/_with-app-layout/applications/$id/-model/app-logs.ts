@@ -123,6 +123,8 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     refreshLog,
     timeRange,
     selectTimeRange,
+    /** When the current window was requested; "now" for relative times. */
+    fetchedAt: requestAnchor,
     lineLimit: limit,
     logMetadata,
     logFilename: logSelection?.filename,
