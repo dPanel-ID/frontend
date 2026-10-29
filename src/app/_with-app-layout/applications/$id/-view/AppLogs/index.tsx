@@ -78,8 +78,9 @@ export default function AppLogs() {
         fallbackSource: runName ?? t('runtime'),
         locale,
         nowMs: fetchedAt,
+        lineOffset: (logPagination.page - 1) * lineLimit,
       }),
-    [entryInputs, fetchedAt, locale, runName, t],
+    [entryInputs, fetchedAt, lineLimit, locale, logPagination.page, runName, t],
   );
 
   const download = useLogDownload({

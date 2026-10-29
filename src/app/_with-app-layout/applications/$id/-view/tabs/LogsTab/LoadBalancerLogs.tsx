@@ -73,8 +73,9 @@ export default function LoadBalancerLogs(props: LoadBalancerLogsProps) {
         fallbackSource: tLogs('loadBalancer'),
         locale,
         nowMs: anchor,
+        lineOffset: (page - 1) * limit,
       }),
-    [anchor, entryInputs, locale, tLogs],
+    [anchor, entryInputs, limit, locale, page, tLogs],
   );
 
   const fetchPage = useCallback(

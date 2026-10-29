@@ -13,11 +13,12 @@ import type { LogPageResult } from './log-download';
 
 function pages(...contents: string[][]) {
   return vi.fn(
-    async (page: number): Promise<LogPageResult> => ({
-      entries: (contents[page - 1] ?? []).map((line) => ({ line })),
-      hasMore: page < contents.length,
-      total: contents.flat().length,
-    }),
+    (page: number): Promise<LogPageResult> =>
+      Promise.resolve({
+        entries: (contents[page - 1] ?? []).map((line) => ({ line })),
+        hasMore: page < contents.length,
+        total: contents.flat().length,
+      }),
   );
 }
 
@@ -50,7 +51,8 @@ describe('fetchAllLogPages', () => {
 
   it('stops on an empty page even if more were promised', async () => {
     const fetchPage = vi.fn(
-      async (): Promise<LogPageResult> => ({ entries: [], hasMore: true }),
+      (): Promise<LogPageResult> =>
+        Promise.resolve({ entries: [], hasMore: true }),
     );
 
     await fetchAllLogPages({
@@ -63,11 +65,12 @@ describe('fetchAllLogPages', () => {
 
   it('refuses a window larger than one download fetches', async () => {
     const fetchPage = vi.fn(
-      async (): Promise<LogPageResult> => ({
-        entries: [{ line: 'x' }],
-        hasMore: true,
-        total: LOG_DOWNLOAD_MAX_LINES + 1,
-      }),
+      (): Promise<LogPageResult> =>
+        Promise.resolve({
+          entries: [{ line: 'x' }],
+          hasMore: true,
+          total: LOG_DOWNLOAD_MAX_LINES + 1,
+        }),
     );
 
     await expect(
@@ -78,10 +81,11 @@ describe('fetchAllLogPages', () => {
 
   it('stops at the cap when the total is unknown', async () => {
     const fetchPage = vi.fn(
-      async (): Promise<LogPageResult> => ({
-        entries: Array.from({ length: 50_000 }, () => ({ line: 'x' })),
-        hasMore: true,
-      }),
+      (): Promise<LogPageResult> =>
+        Promise.resolve({
+          entries: Array.from({ length: 50_000 }, () => ({ line: 'x' })),
+          hasMore: true,
+        }),
     );
 
     await expect(
@@ -92,9 +96,12 @@ describe('fetchAllLogPages', () => {
 
   it('stops fetching once cancelled', async () => {
     const controller = new AbortController();
-    const fetchPage = vi.fn(async (page: number): Promise<LogPageResult> => {
+    const fetchPage = vi.fn((page: number): Promise<LogPageResult> => {
       if (page === 2) controller.abort();
-      return { entries: [{ line: `p${page}` }], hasMore: true };
+      return Promise.resolve({
+        entries: [{ line: `p${page}` }],
+        hasMore: true,
+      });
     });
 
     await expect(

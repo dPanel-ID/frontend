@@ -100,9 +100,15 @@ export function formatLogTime(ms: number, nowMs: number, locale: string) {
 /** Turns API entries into the rows the server log viewer renders. */
 export function toParsedLogLines(
   entries: LogEntryInput[],
-  options: { fallbackSource: string; locale: string; nowMs: number },
+  options: {
+    fallbackSource: string;
+    locale: string;
+    nowMs: number;
+    /** Lines before this page, so row numbers match the page's line range. */
+    lineOffset?: number;
+  },
 ): ParsedLogLine[] {
-  const { fallbackSource, locale, nowMs } = options;
+  const { fallbackSource, lineOffset = 0, locale, nowMs } = options;
   const occurrences = new Map<string, number>();
 
   return entries.map((entry, index) => {
@@ -128,6 +134,7 @@ export function toParsedLogLines(
     return {
       ...parsed,
       id: `${baseId}|${seen}`,
+      lineNumber: lineOffset + index + 1,
       raw: entry.line,
       level,
       timestamp,
