@@ -1,11 +1,6 @@
 import type { ReactNode } from 'react';
 
-import {
-  Clock3Icon,
-  DownloadIcon,
-  RefreshCwIcon,
-  TerminalIcon,
-} from 'lucide-react';
+import { DownloadIcon, RefreshCwIcon, TerminalIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -13,26 +8,24 @@ import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Card } from '@/shared/presentation/atoms/Card';
 
-import type { AppLogTimeFilter } from '../../../../-model/app-logs';
+import type { LogTimeRange } from '../../../../-lib/log-time-range';
+import LogTimeRangeMenu from '../LogTimeRangeMenu';
 
 interface AppLogsSectionProps {
   children?: ReactNode;
   selectedLogs?: string;
   ctaLogsDisabled?: boolean;
-  activeTimeFilter: AppLogTimeFilter;
+  timeRange: LogTimeRange;
   lineCount: number;
   lineLimit: number;
 
   onClickLogs?: () => void;
   onClickDownloadLog?: () => void;
-  onSelectTimeFilter?: (timeFilter: AppLogTimeFilter) => void;
+  onSelectTimeRange: (timeRange: LogTimeRange) => void;
 }
-
-const TIME_FILTERS: AppLogTimeFilter[] = ['10m', '1h'];
 
 export default function AppLogsSection(props: AppLogsSectionProps) {
   const {
-    activeTimeFilter,
     children,
     lineCount,
     lineLimit,
@@ -40,7 +33,8 @@ export default function AppLogsSection(props: AppLogsSectionProps) {
     ctaLogsDisabled,
     onClickDownloadLog,
     onClickLogs,
-    onSelectTimeFilter,
+    onSelectTimeRange,
+    timeRange,
   } = props;
 
   const t = useDevetekTranslations('page.applicationDetail.appLogs');
@@ -68,35 +62,7 @@ export default function AppLogsSection(props: AppLogsSectionProps) {
             <span className="truncate">{selectedLogs || t('placeholder')}</span>
           </div>
 
-          <div
-            aria-label={t('timeRangeLabel')}
-            className="inline-flex h-8 items-center rounded-md border bg-background p-0.5"
-            role="group"
-          >
-            <Clock3Icon className="mx-2 size-4 text-muted-foreground" />
-            {TIME_FILTERS.map((timeFilter) => {
-              const isActive = activeTimeFilter === timeFilter;
-
-              return (
-                <button
-                  key={timeFilter}
-                  type="button"
-                  aria-pressed={isActive}
-                  className={cn(
-                    'h-6 rounded-sm px-2 text-xs font-medium transition-colors',
-                    'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
-                    isActive
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
-                  )}
-                  onClick={() => onSelectTimeFilter?.(timeFilter)}
-                  title={t(timeFilter === '10m' ? 'last10Minutes' : 'lastHour')}
-                >
-                  {timeFilter === '10m' ? t('tenMinutes') : t('oneHour')}
-                </button>
-              );
-            })}
-          </div>
+          <LogTimeRangeMenu value={timeRange} onChange={onSelectTimeRange} />
 
           <span className="h-8 rounded-md border bg-background px-2 text-xs font-medium leading-8 text-muted-foreground">
             {t('lineWindow', { count: lineCount, limit: lineLimit })}
