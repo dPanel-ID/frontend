@@ -694,14 +694,8 @@
       "appLogs": {
         "title": "Log Aplikasi",
         "subtitle": "Log aplikasi dan error terkini",
-        "placeholder": "Log runtime",
-        "loadLog": "Muat log runtime",
-        "refreshLog": "Muat ulang log runtime",
-        "selectLog": "Pilih log aplikasi",
         "downloadLog": "Download log terpilih",
-        "runtimeLogOutput": "Output log runtime",
         "timeRangeLabel": "Rentang waktu log runtime",
-        "lineWindow": "{count}/{limit} baris",
         "emptyLog": "Tidak ada log runtime pada rentang ini.",
         "timeRange": "Rentang waktu",
         "timeRangeHint": "Pilih periode terkini atau rentang khusus hingga {days} hari ke belakang. Waktu ditampilkan dalam zona waktu Anda ({offset}).",
@@ -727,7 +721,24 @@
         "rangeTo": "Sampai",
         "applyRange": "Terapkan",
         "cancel": "Batal",
-        "backToPresets": "Kembali ke rentang waktu"
+        "backToPresets": "Kembali ke rentang waktu",
+        "emptyHint": "Coba rentang waktu yang lebih lebar. Log runtime mengikuti deployment aktif.",
+        "unavailable": "Aplikasi ini belum punya perintah run atau server, jadi belum ada log runtime.",
+        "runtime": "Runtime",
+        "filterPlaceholder": "Saring baris log",
+        "showing": "Menampilkan {shown} dari {total} baris ({limit} terbaru)",
+        "loading": "Memuat entri log",
+        "failed": "Gagal memuat log",
+        "noMatch": "Tidak ada baris log yang cocok dengan filter.",
+        "levelFilter": "Saring berdasarkan level",
+        "allLevels": "Semua",
+        "table": {
+          "n": "#",
+          "time": "Waktu",
+          "level": "Level",
+          "source": "Sumber",
+          "message": "Pesan"
+        }
       },
       "dangerZone": {
         "title": "Zona berbahaya",
