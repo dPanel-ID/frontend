@@ -11,6 +11,7 @@ import {
   executionTypeKey,
   humanizeIdentifier,
   redactSecrets,
+  shortHostLabel,
   sortActivityItems,
   staleAgents,
   toActivityItem,
@@ -45,6 +46,12 @@ describe('executionTypeKey', () => {
     expect(executionTypeKey('machine_setup')).toBe('machineSetup');
     expect(executionTypeKey('iac_module_install')).toBe('moduleInstall');
     expect(executionTypeKey('module.install')).toBe('moduleInstall');
+    expect(executionTypeKey('deployment_deployment.create')).toBe(
+      'deploymentCreate',
+    );
+    expect(executionTypeKey('deployment_deployment.delete')).toBe(
+      'deploymentDelete',
+    );
   });
 
   it('returns undefined for unknown types so the caller can fall back', () => {
@@ -60,6 +67,12 @@ describe('humanizeIdentifier', () => {
       'Iac custom playbook',
     );
     expect(humanizeIdentifier('module.install')).toBe('Module install');
+  });
+
+  it('drops the repeated module prefix of a module-scoped type', () => {
+    expect(humanizeIdentifier('deployment_deployment.redeploy')).toBe(
+      'Deployment redeploy',
+    );
   });
 
   it('is empty for missing input', () => {
@@ -88,6 +101,7 @@ describe('executionFailureSummary', () => {
     expect(
       executionFailureSummary(
         execution({
+          status: 'failed',
           first_error_message: 'apt lock held',
           error: 'playbook failed',
           last_event_message: 'task failed',
@@ -115,16 +129,46 @@ describe('executionFailureSummary', () => {
     ).toBe('task failed');
   });
 
+  it("does not take git's remote notice for an error", () => {
+    // git writes "From <remote>" to stderr on every fetch, so a successful
+    // deployment recorded it as its first error and showed a red box.
+    expect(
+      executionFailureSummary(
+        execution({
+          status: 'succeeded',
+          first_error_message: 'From https://github.com/acme/app',
+        }),
+      ),
+    ).toBeUndefined();
+  });
+
+  it("skips git's remote notice for the real cause", () => {
+    expect(
+      executionFailureSummary(
+        execution({
+          status: 'failed',
+          first_error_message: 'From https://github.com/acme/app',
+          error:
+            'Deployment create failed. Ansible executor error: context deadline exceeded.',
+        }),
+      ),
+    ).toBe(
+      'Deployment create failed. Ansible executor error: context deadline exceeded.',
+    );
+  });
+
   it('is undefined when nothing is reported', () => {
     expect(executionFailureSummary(execution())).toBeUndefined();
     expect(
-      executionFailureSummary(execution({ error: '   ' })),
+      executionFailureSummary(execution({ status: 'failed', error: '   ' })),
     ).toBeUndefined();
   });
 
   it('redacts secrets in the summary it returns', () => {
     expect(
-      executionFailureSummary(execution({ error: 'auth failed token=abc' })),
+      executionFailureSummary(
+        execution({ status: 'failed', error: 'auth failed token=abc' }),
+      ),
     ).toBe('auth failed token=[redacted]');
   });
 });
@@ -181,6 +225,20 @@ describe('executionTarget', () => {
 
   it('is undefined when the machine could not be resolved', () => {
     expect(executionTarget(execution({ machine_id: '42' }))).toBeUndefined();
+  });
+});
+
+describe('shortHostLabel', () => {
+  it.each([
+    [
+      'queue-consumer-01.asia-southeast2-a.c.example-project.internal',
+      'queue-consumer-01',
+    ],
+    ['web-01', 'web-01'],
+    ['203.0.113.175', '203.0.113.175'],
+    ['2001:db8::1', '2001:db8::1'],
+  ])('%s → %s', (target, expected) => {
+    expect(shortHostLabel(target)).toBe(expected);
   });
 });
 

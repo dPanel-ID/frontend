@@ -113,6 +113,12 @@ export function executionTypeKey(type?: string): string | undefined {
     case 'agent_rpc':
     case 'agent_command':
       return 'agentCommand';
+    // Deployments report as '<module>_<action>', which humanised to
+    // "Deployment deployment create".
+    case 'deployment_deployment.create':
+      return 'deploymentCreate';
+    case 'deployment_deployment.delete':
+      return 'deploymentDelete';
     default:
       return undefined;
   }
@@ -127,7 +133,9 @@ export function humanizeIdentifier(value?: string) {
   const normalized = String(value ?? '')
     .trim()
     .replace(/[._-]+/g, ' ')
-    .replace(/\s+/g, ' ');
+    .replace(/\s+/g, ' ')
+    // A module-prefixed type repeats itself: "deployment deployment create".
+    .replace(/\b(\w+)( \1\b)+/gi, '$1');
   if (!normalized) return '';
 
   return normalized.charAt(0).toUpperCase() + normalized.slice(1).toLowerCase();
@@ -144,6 +152,10 @@ export function executionDurationMs(
   const duration = finished - started;
   return duration >= 0 ? duration : undefined;
 }
+
+// git prints "From <remote>" / "To <remote>" on stderr for every fetch and
+// push, so the agent records it as an error even when nothing went wrong.
+const GIT_REMOTE_NOTICE_PATTERN = /^(From|To) [a-z][\w+.-]*:\/\/\S+$/i;
 
 /**
  * The most specific failure text available, redacted. Prefers the first
@@ -164,9 +176,10 @@ export function executionFailureSummary(
     candidates.push(execution.last_event_message);
   }
 
-  const candidate = candidates.find((value) =>
-    Boolean(String(value ?? '').trim()),
-  );
+  const candidate = candidates.find((value) => {
+    const text = String(value ?? '').trim();
+    return Boolean(text) && !GIT_REMOTE_NOTICE_PATTERN.test(text);
+  });
 
   if (!candidate) return undefined;
   return redactSecrets(String(candidate).trim());
@@ -180,6 +193,15 @@ export function executionTarget(
     (value) => Boolean(String(value ?? '').trim()),
   );
   return label ? String(label).trim() : undefined;
+}
+
+/**
+ * The first label of a host name, e.g. "web-01" for
+ * "web-01.asia-southeast2-a.c.example.internal". Addresses stay whole.
+ */
+export function shortHostLabel(target: string) {
+  if (/^[\d.]+$/.test(target) || target.includes(':')) return target;
+  return target.split('.')[0] || target;
 }
 
 /** Sort key, newest first, tolerant of missing timestamps. */

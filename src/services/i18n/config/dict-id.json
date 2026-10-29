@@ -463,7 +463,10 @@
           "machineId": "Mesin",
           "traceId": "Trace",
           "executionId": "Eksekusi"
-        }
+        },
+        "byYou": "oleh Anda",
+        "showMore": "Tampilkan {count} lagi",
+        "showLess": "Tampilkan lebih sedikit"
       },
       "lifecycle": {
         "pending": "Menunggu dimulai",
@@ -482,7 +485,9 @@
         "moduleInstall": "Pemasangan modul",
         "customPlaybook": "Playbook khusus",
         "ansible": "Proses konfigurasi",
-        "agentCommand": "Perintah agen"
+        "agentCommand": "Perintah agen",
+        "deploymentCreate": "Deployment",
+        "deploymentDelete": "Penghapusan deployment"
       },
       "resourceMix": {
         "title": "Komposisi Resource Bisnis",

@@ -472,7 +472,10 @@
           "machineId": "Machine",
           "traceId": "Trace",
           "executionId": "Execution"
-        }
+        },
+        "byYou": "by you",
+        "showMore": "Show {count} more",
+        "showLess": "Show less"
       },
       "lifecycle": {
         "pending": "Waiting to start",
@@ -491,7 +494,9 @@
         "moduleInstall": "Module install",
         "customPlaybook": "Custom playbook",
         "ansible": "Configuration run",
-        "agentCommand": "Agent command"
+        "agentCommand": "Agent command",
+        "deploymentCreate": "Deployment",
+        "deploymentDelete": "Deployment removal"
       },
       "resourceMix": {
         "title": "Business Resource Mix",

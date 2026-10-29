@@ -115,11 +115,11 @@ export default function FleetUtilisationPanel() {
           }
         />
       ) : isLoading && !series.hasData ? (
-        <div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
+        <div className="grid gap-3">
           {FLEET_RESOURCES.map((resource) => (
             <div
               key={resource}
-              className="h-44 animate-pulse rounded-lg border bg-background"
+              className="h-64 animate-pulse rounded-lg border bg-background"
             />
           ))}
         </div>
@@ -129,7 +129,7 @@ export default function FleetUtilisationPanel() {
           description={t('emptyDescription')}
         />
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
+        <div className="grid gap-3">
           {FLEET_RESOURCES.map((resource) => (
             <FleetResourceCard
               key={resource}
@@ -241,7 +241,8 @@ function FleetResourceCard(props: {
         </p>
       </div>
 
-      <div className="mt-3 h-28">
+      {/* One resource per row, so each chart gets the panel's full width. */}
+      <div className="mt-3 h-48">
         <Line
           data={data}
           options={options}

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   AlertTriangleIcon,
@@ -21,7 +21,11 @@ import {
 } from '@/shared/libs/browser/date';
 import { cn } from '@/shared/libs/tailwind/cn';
 
-import { sortActivityItems, toActivityItem } from '../../-lib/activity';
+import {
+  shortHostLabel,
+  sortActivityItems,
+  toActivityItem,
+} from '../../-lib/activity';
 import type { ActivityItem, ExecutionLifecycle } from '../../-lib/activity';
 import { toneClass } from '../../-lib/tone';
 import type { Tone } from '../../-lib/tone';
@@ -30,10 +34,14 @@ import { DashboardSection } from '../../-presentation';
 /** How far back the feed looks. */
 const ACTIVITY_WINDOW = '48h';
 const ACTIVITY_LIMIT = 12;
+/** Rows shown before "Show more", so the rail stays beside the charts. */
+const COLLAPSED_COUNT = 5;
 
 export interface ActivityPanelProps {
   /** Shown when the workspace has no servers at all, which explains an empty feed. */
   hasServers: boolean;
+  /** The signed-in user's subject, so their own runs read "by you". */
+  currentUserId?: string;
 }
 
 /**
@@ -42,7 +50,7 @@ export interface ActivityPanelProps {
  * who ran it and how long it took.
  */
 export default function ActivityPanel(props: ActivityPanelProps) {
-  const { hasServers } = props;
+  const { currentUserId, hasServers } = props;
   const t = useDevetekTranslations('page.dashboard.activity');
 
   const [response, refresh] = ApiExecution.Find.useGet({
@@ -86,6 +94,7 @@ export default function ActivityPanel(props: ActivityPanelProps) {
         isLoading={isLoading}
         hasFailed={hasFailed}
         hasServers={hasServers}
+        currentUserId={currentUserId}
         onRetry={() => refresh()}
       />
     </DashboardSection>
@@ -97,10 +106,13 @@ function ActivityBody(props: {
   isLoading: boolean;
   hasFailed: boolean;
   hasServers: boolean;
+  currentUserId?: string;
   onRetry: () => void;
 }) {
-  const { hasFailed, hasServers, isLoading, items, onRetry } = props;
+  const { currentUserId, hasFailed, hasServers, isLoading, items, onRetry } =
+    props;
   const t = useDevetekTranslations('page.dashboard.activity');
+  const [expanded, setExpanded] = useState(false);
 
   if (hasFailed) {
     return (
@@ -140,19 +152,34 @@ function ActivityBody(props: {
   // Grid items default to min-width:auto, so a row refuses to shrink below
   // its content and the whole list outgrows the card however much its text
   // truncates. min-w-0 on each item is what lets the truncation apply.
+  const visibleItems = expanded ? items : items.slice(0, COLLAPSED_COUNT);
+  const hiddenCount = items.length - visibleItems.length;
+
   return (
-    <ol className="grid gap-2">
-      {items.map((item) => (
-        <li key={item.id} className="min-w-0">
-          <ActivityRow item={item} />
-        </li>
-      ))}
-    </ol>
+    <div className="grid gap-2">
+      <ol className="grid gap-2">
+        {visibleItems.map((item) => (
+          <li key={item.id} className="min-w-0">
+            <ActivityRow item={item} currentUserId={currentUserId} />
+          </li>
+        ))}
+      </ol>
+      {(hiddenCount > 0 || expanded) && items.length > COLLAPSED_COUNT && (
+        <button
+          type="button"
+          aria-expanded={expanded}
+          onClick={() => setExpanded((value) => !value)}
+          className="h-8 rounded-lg border border-dashed text-xs font-semibold text-muted-foreground transition hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+        >
+          {expanded ? t('showLess') : t('showMore', { count: hiddenCount })}
+        </button>
+      )}
+    </div>
   );
 }
 
-function ActivityRow(props: { item: ActivityItem }) {
-  const { item } = props;
+function ActivityRow(props: { item: ActivityItem; currentUserId?: string }) {
+  const { currentUserId, item } = props;
   const t = useDevetekTranslations('page.dashboard.activity');
   const tStatus = useDevetekTranslations('page.dashboard.lifecycle');
   const tType = useDevetekTranslations('page.dashboard.activityType');
@@ -165,21 +192,29 @@ function ActivityRow(props: { item: ActivityItem }) {
 
   // "Set up web-01" reads as a sentence; without a resolvable machine the
   // activity label stands alone rather than naming an opaque ID.
+  // Cloud host names run long ("web-01.asia-southeast2-a.c.acme.internal");
+  // the first label names the server, and the whole name is on hover.
   const headline = item.target
+    ? t('headline', {
+        activity: typeLabel,
+        target: shortHostLabel(item.target),
+      })
+    : typeLabel;
+  const fullHeadline = item.target
     ? t('headline', { activity: typeLabel, target: item.target })
     : typeLabel;
 
   return (
-    <article className="rounded-lg border bg-background p-3">
-      <div className="flex min-w-0 items-start gap-3">
+    <article className="rounded-lg border bg-background px-3 py-2.5">
+      <div className="flex min-w-0 items-start gap-2.5">
         <span
           aria-hidden
           className={cn(
-            'mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-md border',
+            'mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md border',
             toneClass(tone),
           )}
         >
-          <Icon className={cn('size-4', item.inFlight && 'animate-spin')} />
+          <Icon className={cn('size-3.5', item.inFlight && 'animate-spin')} />
         </span>
 
         <div className="min-w-0 flex-1">
@@ -192,7 +227,7 @@ function ActivityRow(props: { item: ActivityItem }) {
           <div className="flex min-w-0 items-center gap-2">
             <h3
               className="min-w-0 flex-1 truncate text-sm font-bold text-primary"
-              title={headline}
+              title={fullHeadline}
             >
               {headline}
             </h3>
@@ -206,18 +241,21 @@ function ActivityRow(props: { item: ActivityItem }) {
             </span>
           </div>
 
-          <p className="mt-1 text-xs text-muted-foreground">
-            {activityMeta(item, t, locale)}
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+            {activityMeta(item, t, locale, currentUserId)}
           </p>
 
           {item.failureSummary && (
-            <p className="mt-2 rounded-md border border-destructive/25 bg-destructive/5 px-2 py-1.5 text-xs text-destructive">
+            <p
+              className="mt-1.5 line-clamp-2 break-words rounded-md border border-destructive/25 bg-destructive/5 px-2 py-1 text-xs text-destructive"
+              title={item.failureSummary}
+            >
               {item.failureSummary}
             </p>
           )}
 
-          <details className="mt-2">
-            <summary className="cursor-pointer text-xs font-semibold text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35">
+          <details className="mt-1">
+            <summary className="cursor-pointer text-[11px] font-semibold text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35">
               {t('technicalDetails')}
             </summary>
             <dl className="mt-2 grid gap-1 rounded-md border bg-card px-3 py-2 text-xs">
@@ -255,10 +293,18 @@ function activityMeta(
   item: ActivityItem,
   t: ReturnType<typeof useDevetekTranslations>,
   locale: Locale,
+  currentUserId?: string,
 ) {
   const parts: string[] = [];
 
-  if (item.actor) parts.push(t('byActor', { actor: item.actor }));
+  // Actors are account subjects: the signed-in user's own runs read "by
+  // you", and another opaque numeric subject is left out rather than shown
+  // as "by 7897268911411869309".
+  if (item.actor && item.actor === currentUserId) {
+    parts.push(t('byYou'));
+  } else if (item.actor && !/^\d+$/.test(item.actor)) {
+    parts.push(t('byActor', { actor: item.actor }));
+  }
 
   // getDistanceFromNow strict-parses strings in a legacy format, so hand it a
   // Date: execution timestamps are RFC3339 and would not survive that parse.
