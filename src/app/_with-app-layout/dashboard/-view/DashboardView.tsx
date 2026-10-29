@@ -108,6 +108,9 @@ export default function DashboardView(props: DashboardViewProps) {
   const [iacRepositoryResponse] = ApiModule.Repository.useGet();
 
   const profile = responseData(profileResponse);
+  const profileUserId = profile?.user?.id;
+  const currentUserId =
+    profileUserId == null ? undefined : String(profileUserId);
   const serversData = responseData(serversResponse);
   const applicationsData = responseData(applicationsResponse);
   const loadBalancersData = responseData(loadBalancersResponse);
@@ -329,7 +332,10 @@ export default function DashboardView(props: DashboardViewProps) {
                   onRetry={health.refresh}
                 />
 
-                <ActivityPanel hasServers={servers.length > 0} />
+                <ActivityPanel
+                  hasServers={servers.length > 0}
+                  currentUserId={currentUserId}
+                />
               </div>
             </div>
           </>
@@ -338,7 +344,10 @@ export default function DashboardView(props: DashboardViewProps) {
         {activeTab === 'activity' && (
           <>
             <ActivityChart />
-            <ActivityPanel hasServers={servers.length > 0} />
+            <ActivityPanel
+              hasServers={servers.length > 0}
+              currentUserId={currentUserId}
+            />
           </>
         )}
 
