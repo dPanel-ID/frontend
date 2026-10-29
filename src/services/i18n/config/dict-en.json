@@ -708,7 +708,6 @@
       "appLogs": {
         "title": "Application Logs",
         "subtitle": "Real-time application logs and errors",
-        "downloadLog": "Download selected log",
         "timeRangeLabel": "Runtime log time range",
         "emptyLog": "No runtime logs in this window.",
         "timeRange": "Time range",
@@ -739,8 +738,8 @@
         "emptyHint": "Try a wider time range. Runtime logs follow the active deployment.",
         "unavailable": "This application has no run command or server yet, so there are no runtime logs.",
         "runtime": "Runtime",
-        "filterPlaceholder": "Filter log lines",
-        "showing": "Showing {shown} of {total} lines (newest {limit})",
+        "filterPlaceholder": "Filter this page",
+        "showing": "Showing {shown} of {total} lines on this page",
         "loading": "Loading log entries",
         "failed": "Unable to load logs",
         "noMatch": "No log lines match the filters.",
@@ -752,6 +751,30 @@
           "level": "Level",
           "source": "Source",
           "message": "Message"
+        },
+        "query": "Query",
+        "download": {
+          "label": "Download",
+          "menuTitle": "Download as a .log file",
+          "page": "This page",
+          "pageHint": "{lines, plural, one {# line} other {# lines}} on page {page}",
+          "all": "Everything in this time range",
+          "allHint": "{lines, plural, one {# line} other {# lines}}, fetched page by page",
+          "allHintUnknown": "Every page, fetched one at a time",
+          "allTooLarge": "More than {max, number} lines. Narrow the range or download page by page.",
+          "progress": "Downloading {fetched, number} / {total, number} lines",
+          "progressUnknown": "Downloading {fetched, number} lines",
+          "cancel": "Cancel download",
+          "tooLargeTitle": "Too many lines to download at once",
+          "tooLarge": "This range holds over {lines, number} lines. Narrow the time range, or download it page by page.",
+          "failedTitle": "Download failed"
+        },
+        "pager": {
+          "range": "Lines {first, number}–{last, number} of {total, number}, newest first",
+          "rangeUnknown": "Lines {first, number}–{last, number}, newest first",
+          "newer": "Newer",
+          "older": "Older",
+          "page": "Page {page}"
         }
       },
       "dangerZone": {

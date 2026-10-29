@@ -4,45 +4,53 @@ import { TerminalIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
+import { canDownloadAllLogs } from '../../-lib/log-download';
 import { toParsedLogLines } from '../../-lib/log-entries';
-import type { LogEntryInput } from '../../-lib/log-entries';
 import { formatUtcOffset, logTimeRangeKey } from '../../-lib/log-time-range';
 import { useAppDataModel } from '../../-model/app-data';
-import { useAppLogsModel } from '../../-model/app-logs';
-import type { AppLogEntryView } from '../../-model/app-logs';
-import { useEmit } from '../../-model/events';
+import { toLogEntryInput, useAppLogsModel } from '../../-model/app-logs';
+import { useLogDownload } from '../../-usecase/log-download';
 
 import LogsPanel, { toLogsPanelStatus } from './_presentation/LogsPanel';
 
 export default function AppLogs() {
   const [
     fetchedAt,
+    fetchLogPage,
     lineLimit,
     log,
     logEntries,
     logFilename,
+    logPagination,
     logQuery,
     logQueryErrors,
     refreshLog,
     selectTimeRange,
     setLogSelection,
+    setPage,
+    timeGte,
+    timeLt,
     timeRange,
   ] = useAppLogsModel((s) => [
     s.fetchedAt,
+    s.fetchLogPage,
     s.lineLimit,
     s.log,
     s.logEntries,
     s.logFilename,
+    s.logPagination,
     s.logQuery,
     s.logQueryErrors,
     s.refreshLog,
     s.selectTimeRange,
     s.setLogSelection,
+    s.setPage,
+    s.timeGte,
+    s.timeLt,
     s.timeRange,
   ]);
   const [appDetailResponse] = useAppDataModel((s) => [s.appDetail]);
   const [selectedServerId] = useAppDataModel((s) => [s.selectedServerId]);
-  const emit = useEmit();
   const t = useDevetekTranslations('page.applicationDetail.appLogs');
   const locale = useDevetekLocale();
   const [timeZoneLabel] = useState(() => formatUtcOffset(Date.now()));
@@ -60,15 +68,27 @@ export default function AppLogs() {
     setLogSelection({ filename: runName, serverId: String(machineId) });
   }, [canLoadLogs, logFilename, machineId, runName, setLogSelection]);
 
+  const entryInputs = useMemo(
+    () => logEntries.map(toLogEntryInput),
+    [logEntries],
+  );
   const entries = useMemo(
     () =>
-      toParsedLogLines(logEntries.map(toLogEntryInput), {
+      toParsedLogLines(entryInputs, {
         fallbackSource: runName ?? t('runtime'),
         locale,
         nowMs: fetchedAt,
+        lineOffset: (logPagination.page - 1) * lineLimit,
       }),
-    [fetchedAt, locale, logEntries, runName, t],
+    [entryInputs, fetchedAt, lineLimit, locale, logPagination.page, runName, t],
   );
+
+  const download = useLogDownload({
+    name: runName ?? 'runtime',
+    timeGte,
+    timeLt,
+    fetchPage: fetchLogPage,
+  });
 
   if (!appDetail) return null;
 
@@ -89,7 +109,21 @@ export default function AppLogs() {
       }
       status={canLoadLogs ? toLogsPanelStatus(log) : 'unavailable'}
       entries={entries}
-      lineLimit={lineLimit}
+      pagination={{
+        page: logPagination.page,
+        pageSize: lineLimit,
+        hasMore: logPagination.hasMore,
+        totalLines: logPagination.total,
+        onPageChange: setPage,
+      }}
+      download={{
+        progress: download.progress,
+        canDownloadAll: canDownloadAllLogs(logPagination.total),
+        onDownloadPage: () =>
+          download.downloadPage(entryInputs, logPagination.page),
+        onDownloadAll: download.downloadAll,
+        onCancel: download.cancel,
+      }}
       timeRange={timeRange}
       timeZoneLabel={timeZoneLabel}
       query={log.$status === 'success' ? logQuery : undefined}
@@ -98,21 +132,9 @@ export default function AppLogs() {
       emptyTitle={t('emptyLog')}
       emptyDescription={t('emptyHint')}
       unavailableTitle={t('unavailable')}
-      scrollResetKey={logTimeRangeKey(timeRange)}
+      scrollResetKey={`${logTimeRangeKey(timeRange)}:${logPagination.page}`}
       onRefresh={refreshLog}
       onTimeRangeChange={selectTimeRange}
-      onDownload={() => emit('@applications::detail/logs-download', null)}
     />
   );
-}
-
-function toLogEntryInput(entry: AppLogEntryView): LogEntryInput {
-  const hostName = entry.attributes?.host_name;
-
-  return {
-    line: entry.line,
-    severity: entry.severity,
-    time: entry.time,
-    source: typeof hostName === 'string' ? hostName : undefined,
-  };
 }

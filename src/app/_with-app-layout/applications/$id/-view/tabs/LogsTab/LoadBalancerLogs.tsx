@@ -1,11 +1,17 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { GlobeIcon, NetworkIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import { ApiLoadBalancer } from '@/shared/api';
+import type { DTOs } from '@/shared/api';
 
+import {
+  LOG_DOWNLOAD_PAGE_SIZE,
+  canDownloadAllLogs,
+} from '../../../-lib/log-download';
+import type { LogPageResult } from '../../../-lib/log-download';
 import { toParsedLogLines } from '../../../-lib/log-entries';
 import type { LogEntryInput } from '../../../-lib/log-entries';
 import {
@@ -15,6 +21,7 @@ import {
   resolveLogTimeRange,
 } from '../../../-lib/log-time-range';
 import type { LogTimeRange } from '../../../-lib/log-time-range';
+import { useLogDownload } from '../../../-usecase/log-download';
 import LogsPanel, {
   toLogsPanelStatus,
 } from '../../AppLogs/_presentation/LogsPanel';
@@ -37,7 +44,9 @@ export default function LoadBalancerLogs(props: LoadBalancerLogsProps) {
   const [timeRange, setTimeRange] = useState<LogTimeRange>(
     DEFAULT_LOG_TIME_RANGE,
   );
+  // Pages are offsets into the window; the anchor stays put while paging.
   const [anchor, setAnchor] = useState(() => Date.now());
+  const [page, setPage] = useState(1);
   const [timeZoneLabel] = useState(() => formatUtcOffset(Date.now()));
 
   const { limit, timeGte, timeLt } = resolveLogTimeRange(timeRange, anchor);
@@ -45,6 +54,7 @@ export default function LoadBalancerLogs(props: LoadBalancerLogsProps) {
   const [response, refresh] = ApiLoadBalancer.Logs.$Id.useGet({
     loadBalancerId,
     limit,
+    page,
     timeGte,
     timeLt,
   });
@@ -56,26 +66,51 @@ export default function LoadBalancerLogs(props: LoadBalancerLogsProps) {
         ? response.prevData
         : undefined;
 
-  const entries = useMemo(() => {
-    const inputs: LogEntryInput[] = data?.entries?.length
-      ? data.entries.map((entry) => ({
-          line: entry.line ?? '',
-          severity: entry.severity ?? undefined,
-          time: entry.time == null ? undefined : String(entry.time),
-        }))
-      : (data?.lines ?? [])
-          .filter((line): line is string => typeof line === 'string')
-          .map((line) => ({ line }));
+  const entryInputs = useMemo(() => toLogEntryInputs(data), [data]);
+  const entries = useMemo(
+    () =>
+      toParsedLogLines(entryInputs, {
+        fallbackSource: tLogs('loadBalancer'),
+        locale,
+        nowMs: anchor,
+        lineOffset: (page - 1) * limit,
+      }),
+    [anchor, entryInputs, limit, locale, page, tLogs],
+  );
 
-    return toParsedLogLines(inputs, {
-      fallbackSource: tLogs('loadBalancer'),
-      locale,
-      nowMs: anchor,
-    });
-  }, [anchor, data, locale, tLogs]);
+  const fetchPage = useCallback(
+    async (pageNumber: number, signal: AbortSignal): Promise<LogPageResult> => {
+      const pageResponse = await ApiLoadBalancer.Logs.$Id.get(
+        {
+          loadBalancerId,
+          limit: LOG_DOWNLOAD_PAGE_SIZE,
+          page: pageNumber,
+          timeGte,
+          timeLt,
+        },
+        { signal },
+      );
+      if (pageResponse.$status === 'failed') throw pageResponse.error;
+
+      return {
+        entries: toLogEntryInputs(pageResponse),
+        hasMore: pageResponse.has_more === true,
+        total: pageResponse.total,
+      };
+    },
+    [loadBalancerId, timeGte, timeLt],
+  );
+
+  const download = useLogDownload({
+    name: domain ?? 'load-balancer',
+    timeGte,
+    timeLt,
+    fetchPage,
+  });
 
   const handleRefresh = () => {
     setAnchor(Date.now());
+    setPage(1);
     refresh();
   };
 
@@ -97,7 +132,20 @@ export default function LoadBalancerLogs(props: LoadBalancerLogsProps) {
       }
       status={toLogsPanelStatus(response)}
       entries={entries}
-      lineLimit={limit}
+      pagination={{
+        page,
+        pageSize: limit,
+        hasMore: data?.has_more === true,
+        totalLines: data?.total,
+        onPageChange: setPage,
+      }}
+      download={{
+        progress: download.progress,
+        canDownloadAll: canDownloadAllLogs(data?.total),
+        onDownloadPage: () => download.downloadPage(entryInputs, page),
+        onDownloadAll: download.downloadAll,
+        onCancel: download.cancel,
+      }}
       timeRange={timeRange}
       timeZoneLabel={timeZoneLabel}
       query={data?.query}
@@ -105,12 +153,29 @@ export default function LoadBalancerLogs(props: LoadBalancerLogsProps) {
       isRefreshing={response.$status === 'loading'}
       emptyTitle={tLogs('loadBalancerEmpty')}
       emptyDescription={tLogs('loadBalancerEmptyHint')}
-      scrollResetKey={logTimeRangeKey(timeRange)}
+      scrollResetKey={`${logTimeRangeKey(timeRange)}:${page}`}
       onRefresh={handleRefresh}
       onTimeRangeChange={(next) => {
         setTimeRange(next);
         setAnchor(Date.now());
+        setPage(1);
       }}
     />
   );
+}
+
+function toLogEntryInputs(
+  data: DTOs.LoadBalancerLogsV2 | undefined,
+): LogEntryInput[] {
+  if (data?.entries?.length) {
+    return data.entries.map((entry) => ({
+      line: entry.line ?? '',
+      severity: entry.severity ?? undefined,
+      time: entry.time == null ? undefined : String(entry.time),
+    }));
+  }
+
+  return (data?.lines ?? [])
+    .filter((line): line is string => typeof line === 'string')
+    .map((line) => ({ line }));
 }

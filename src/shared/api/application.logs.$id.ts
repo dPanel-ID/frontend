@@ -1,10 +1,17 @@
-import { createQueryParams, useApiGet } from '@/shared/libs/api-client';
+import {
+  apiDoGet,
+  createQueryParams,
+  useApiGet,
+} from '@/shared/libs/api-client';
 import type {
   GetRequestRecipe,
   WithApiGetOptions,
 } from '@/shared/libs/api-client/rules/types';
 
-import type { ApplicationLogsResponseV1 } from './-dtos/application';
+import type {
+  ApplicationLogsResponseV1,
+  ApplicationLogsV1,
+} from './-dtos/application';
 
 // =============================================================================
 //   Recipe
@@ -17,6 +24,8 @@ export interface RecipeParams {
   machineId?: string;
   line?: number;
   limit?: number;
+  /** 1-based, newest first; keep timeGte/timeLt fixed while paging. */
+  page?: number;
   timeGte?: string;
   timeLt?: string;
 }
@@ -29,6 +38,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     machineId,
     line,
     limit,
+    page,
     timeGte,
     timeLt,
   } = params;
@@ -38,6 +48,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     machine_id: machineId,
     line,
     limit,
+    page: page && page > 1 ? page : undefined,
     time_gte: timeGte,
     time_lt: timeLt,
   });
@@ -53,6 +64,11 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
 
 export function useGet(params: WithApiGetOptions<RecipeParams>) {
   return useApiGet<ApplicationLogsResponseV1>(recipe(params), params.options);
+}
+
+/** One page outside a hook, e.g. while downloading every page. */
+export function get(params: RecipeParams, options?: { signal?: AbortSignal }) {
+  return apiDoGet<ApplicationLogsV1>(recipe(params), options);
 }
 
 export function normalizeLogLines(raw: ApplicationLogsResponseV1): string[] {

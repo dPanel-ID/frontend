@@ -1,8 +1,10 @@
 import { AxiosError } from 'axios';
+import type { AxiosRequestConfig } from 'axios';
 
 import type {
   BaseResponse,
   DoRequestRecipe,
+  GetRequestRecipe,
   PureResponse,
 } from '../rules/types';
 
@@ -13,8 +15,25 @@ import {
   normalizeApiError,
 } from './error';
 
-export async function apiDoPost<D>(
+export function apiDoPost<D>(
   config: DoRequestRecipe,
+): Promise<PureResponse<D>> {
+  return apiRequest<D>(config);
+}
+
+/**
+ * A one-off GET outside a hook, e.g. to walk through pages in a loop. Abort
+ * the signal to stop a request that is no longer wanted.
+ */
+export function apiDoGet<D>(
+  recipe: GetRequestRecipe,
+  options: { signal?: AbortSignal } = {},
+): Promise<PureResponse<D>> {
+  return apiRequest<D>({ method: 'GET', url: recipe.url, ...options });
+}
+
+async function apiRequest<D>(
+  config: AxiosRequestConfig,
 ): Promise<PureResponse<D>> {
   try {
     const axiosResponse = await axiosClient<BaseResponse<D>>({

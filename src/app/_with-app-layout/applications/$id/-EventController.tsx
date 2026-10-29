@@ -10,7 +10,6 @@ import useArtifactRollbackUsecase from './-usecase/artifact-rollback';
 import useDeploymentDeleteUsecase from './-usecase/deployment-delete';
 import useDeploymentRestoreUsecase from './-usecase/deployment-restore';
 import useGithubLoginUsecase from './-usecase/github-login';
-import useLogsDownloadUsecase from './-usecase/logs-download';
 
 export default function EventController() {
   const emit = useEmit();
@@ -19,8 +18,6 @@ export default function EventController() {
     emit('@applications::detail/artifact-history-refresh', null);
     emit('@applications::detail/deployment-history-refresh', null);
   };
-
-  const [handleLogsDownload] = useLogsDownloadUsecase();
 
   const [handleApplicationDelete] = useApplicationDeleteUsecase();
 
@@ -61,8 +58,6 @@ export default function EventController() {
   });
 
   const [handleGithubLogin] = useGithubLoginUsecase();
-
-  useSubscribe('@applications::detail/logs-download', handleLogsDownload);
 
   useSubscribe('@applications::detail/artifact-delete', handleArtifactDelete);
 

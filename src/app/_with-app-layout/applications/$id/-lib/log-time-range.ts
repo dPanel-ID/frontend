@@ -10,20 +10,18 @@ export const LOG_TIME_RANGE_MAX_LOOKBACK_MS =
 // Ranges up to this long refresh on their own; longer ones are refreshed by
 // hand so a multi-day Uptrace scan does not repeat every few seconds.
 const LIVE_REFRESH_MAX_DURATION_MS = HOUR_MS;
-// Wide windows get a larger page so they are not mostly empty. Uptrace takes
-// ~2-3s for 500 lines over 10 days but ~10s for 1000, which reaches the API's
-// upstream timeout, so wide pages stop at 500.
-const WIDE_RANGE_LIMIT = 500;
+/** Lines per page in the viewer; older lines are a page away. */
+export const LOG_PAGE_SIZE = 200;
 
 export const LOG_TIME_RANGE_PRESETS = {
-  '10m': { durationMs: 10 * MINUTE_MS, limit: 10 },
-  '1h': { durationMs: HOUR_MS, limit: 100 },
-  '6h': { durationMs: 6 * HOUR_MS, limit: 200 },
-  '24h': { durationMs: DAY_MS, limit: WIDE_RANGE_LIMIT },
-  '3d': { durationMs: 3 * DAY_MS, limit: WIDE_RANGE_LIMIT },
-  '7d': { durationMs: 7 * DAY_MS, limit: WIDE_RANGE_LIMIT },
-  '10d': { durationMs: 10 * DAY_MS, limit: WIDE_RANGE_LIMIT },
-} satisfies Record<string, { durationMs: number; limit: number }>;
+  '10m': { durationMs: 10 * MINUTE_MS },
+  '1h': { durationMs: HOUR_MS },
+  '6h': { durationMs: 6 * HOUR_MS },
+  '24h': { durationMs: DAY_MS },
+  '3d': { durationMs: 3 * DAY_MS },
+  '7d': { durationMs: 7 * DAY_MS },
+  '10d': { durationMs: 10 * DAY_MS },
+} satisfies Record<string, { durationMs: number }>;
 
 export type LogTimeRangePreset = keyof typeof LOG_TIME_RANGE_PRESETS;
 
@@ -55,7 +53,7 @@ export function resolveLogTimeRange(
     return {
       timeGte: new Date(range.fromMs).toISOString(),
       timeLt: new Date(range.toMs).toISOString(),
-      limit: WIDE_RANGE_LIMIT,
+      limit: LOG_PAGE_SIZE,
     };
   }
 
@@ -64,7 +62,7 @@ export function resolveLogTimeRange(
   return {
     timeGte: new Date(anchorMs - preset.durationMs).toISOString(),
     timeLt: new Date(anchorMs).toISOString(),
-    limit: preset.limit,
+    limit: LOG_PAGE_SIZE,
   };
 }
 

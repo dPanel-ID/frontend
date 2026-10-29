@@ -125,4 +125,13 @@ describe('toParsedLogLines', () => {
 
     expect(Object.fromEntries(counts)).toEqual({ info: 2, warn: 1 });
   });
+
+  it('numbers rows from the start of their page', () => {
+    const lines = toParsedLogLines([{ line: 'a' }, { line: 'b' }], {
+      ...OPTIONS,
+      lineOffset: 200,
+    });
+
+    expect(lines.map((line) => line.lineNumber)).toEqual([201, 202]);
+  });
 });
