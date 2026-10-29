@@ -1,14 +1,12 @@
 import type { ReactNode } from 'react';
 
-import { RefreshCwIcon, ScrollTextIcon } from 'lucide-react';
+import { ScrollTextIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
 import type { ParsedLogLine } from '@/features/server-log-viewer-sidepanel/view';
 
-import { cn } from '@/shared/libs/tailwind/cn';
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import {
   DataPanel,
   DataPanelMeta,
@@ -19,10 +17,12 @@ import {
 
 import { maxLogPage } from '../../lib/log-download';
 import type { LogTimeRange } from '../../lib/log-time-range';
+import { useAutoRefresh } from '../../usecase/use-auto-refresh';
 import { useLogFilters } from '../../usecase/use-log-filters';
 import LogDownloadMenu from '../LogDownloadMenu';
 import type { LogDownloadMenuProps } from '../LogDownloadMenu';
 import LogPager from '../LogPager';
+import LogRefreshControl from '../LogRefreshControl';
 import LogResults from '../LogResults';
 import LogTimeRangeMenu from '../LogTimeRangeMenu';
 
@@ -99,8 +99,12 @@ export default function LogsPanel(props: LogsPanelProps) {
   } = props;
 
   const t = useDevetekTranslations('common.logViewer');
-  const tCommon = useDevetekTranslations('common.dataPanel');
   const filters = useLogFilters(entries);
+  // A refresh re-anchors the window and returns to page 1, so it waits while
+  // the reader is on an older page.
+  const autoRefresh = useAutoRefresh(onRefresh, {
+    paused: status === 'unavailable' || pagination.page > 1,
+  });
 
   return (
     <DataPanel
@@ -115,16 +119,12 @@ export default function LogsPanel(props: LogsPanelProps) {
             pageLines={entries.length}
             totalLines={pagination.totalLines}
           />
-          <Button
-            size="sm"
-            buttonColor="secondary"
-            buttonStyle="outline"
-            disabled={status === 'unavailable' || isRefreshing}
-            onClick={onRefresh}
-          >
-            <RefreshCwIcon className={cn(isRefreshing && 'animate-spin')} />
-            {tCommon('refresh')}
-          </Button>
+          <LogRefreshControl
+            state={autoRefresh}
+            isRefreshing={isRefreshing}
+            disabled={status === 'unavailable'}
+            onRefresh={onRefresh}
+          />
         </>
       }
       toolbar={

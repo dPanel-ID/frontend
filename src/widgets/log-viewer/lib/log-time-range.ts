@@ -7,9 +7,6 @@ export const LOG_TIME_RANGE_MAX_LOOKBACK_DAYS = 10;
 export const LOG_TIME_RANGE_MAX_LOOKBACK_MS =
   LOG_TIME_RANGE_MAX_LOOKBACK_DAYS * DAY_MS;
 
-// Ranges up to this long refresh on their own; longer ones are refreshed by
-// hand so a multi-day Uptrace scan does not repeat every few seconds.
-const LIVE_REFRESH_MAX_DURATION_MS = HOUR_MS;
 /** Lines per page in the viewer; older lines are a page away. */
 export const LOG_PAGE_SIZE = 200;
 
@@ -64,15 +61,6 @@ export function resolveLogTimeRange(
     timeLt: new Date(anchorMs).toISOString(),
     limit: LOG_PAGE_SIZE,
   };
-}
-
-/** Whether the range follows "now" closely enough to refresh on a timer. */
-export function isLiveLogTimeRange(range: LogTimeRange) {
-  return (
-    range.kind === 'relative' &&
-    LOG_TIME_RANGE_PRESETS[range.preset].durationMs <=
-      LIVE_REFRESH_MAX_DURATION_MS
-  );
 }
 
 /** A stable identity for a range, e.g. to reset scroll when it changes. */

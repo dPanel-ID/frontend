@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import type { SchemaCommon } from '@/entities/shared/rules/schema';
 
@@ -9,7 +9,6 @@ import buildSelector from '@/shared/libs/react-factories/buildSelector';
 import {
   DEFAULT_LOG_TIME_RANGE,
   LOG_DOWNLOAD_PAGE_SIZE,
-  isLiveLogTimeRange,
   resolveLogTimeRange,
 } from '@/widgets/log-viewer';
 import type {
@@ -81,7 +80,6 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     timeRange,
     requestAnchor,
   );
-  const isLive = isLiveLogTimeRange(timeRange);
 
   const selectLog = useCallback((nextSelection: LogSelection) => {
     setLogSelection(nextSelection);
@@ -99,21 +97,6 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     setRequestAnchor(Date.now());
     setPage(1);
   }, []);
-
-  // Only short, rolling windows on their newest page tail on a timer; wider,
-  // fixed or older pages are refreshed by hand.
-  useEffect(() => {
-    if (!isLive || page !== 1) return;
-    if (!logSelection?.filename || !logSelection.serverId) return;
-
-    const interval = window.setInterval(() => {
-      setRequestAnchor(Date.now());
-    }, 5000);
-
-    return () => {
-      window.clearInterval(interval);
-    };
-  }, [isLive, logSelection?.filename, logSelection?.serverId, page]);
 
   const machineId = deploymentId ? undefined : logMetadata?.serverId;
 
