@@ -28,12 +28,12 @@ import {
   fromDateTimeLocalValue,
   toDateTimeLocalValue,
   validateCustomLogTimeRange,
-} from '../../../../-lib/log-time-range';
+} from '../../lib/log-time-range';
 import type {
   CustomLogTimeRangeError,
   LogTimeRange,
   LogTimeRangePreset,
-} from '../../../../-lib/log-time-range';
+} from '../../lib/log-time-range';
 
 interface LogTimeRangeMenuProps {
   value: LogTimeRange;
@@ -66,7 +66,7 @@ const DEFAULT_CUSTOM_RANGE_MS = 60 * 60 * 1000;
 export default function LogTimeRangeMenu(props: LogTimeRangeMenuProps) {
   const { onChange, value } = props;
 
-  const t = useDevetekTranslations('page.applicationDetail.appLogs');
+  const t = useDevetekTranslations('common.logViewer');
   const locale = useDevetekLocale();
 
   const [open, setOpen] = useState(false);
@@ -135,7 +135,7 @@ function PresetView(props: {
 }) {
   const { onOpenCustom, onSelect, value } = props;
 
-  const t = useDevetekTranslations('page.applicationDetail.appLogs');
+  const t = useDevetekTranslations('common.logViewer');
   const [offset] = useState(() => formatUtcOffset(Date.now()));
 
   return (
@@ -214,7 +214,7 @@ function CustomRangeView(props: {
 }) {
   const { onApply, onBack, value } = props;
 
-  const t = useDevetekTranslations('page.applicationDetail.appLogs');
+  const t = useDevetekTranslations('common.logViewer');
 
   // The bounds are fixed when the view opens; validation re-reads the clock.
   const [nowMs] = useState(() => Date.now());

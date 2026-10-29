@@ -13,8 +13,8 @@ import {
 } from '@/shared/presentation/atoms/DropdownMenu';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 
-import { LOG_DOWNLOAD_MAX_LINES } from '../../../../-lib/log-download';
-import type { LogDownloadProgress } from '../../../../-lib/log-download';
+import { LOG_DOWNLOAD_MAX_LINES } from '../../lib/log-download';
+import type { LogDownloadProgress } from '../../lib/log-download';
 
 export interface LogDownloadMenuProps {
   page: number;
@@ -45,7 +45,7 @@ export default function LogDownloadMenu(props: LogDownloadMenuProps) {
     totalLines,
   } = props;
 
-  const t = useDevetekTranslations('page.applicationDetail.appLogs.download');
+  const t = useDevetekTranslations('common.logViewer.download');
 
   if (progress) {
     return (

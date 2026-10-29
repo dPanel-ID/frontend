@@ -6,25 +6,23 @@ import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import { ApiLoadBalancer } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
-
-import {
-  LOG_DOWNLOAD_PAGE_SIZE,
-  canDownloadAllLogs,
-} from '../../../-lib/log-download';
-import type { LogPageResult } from '../../../-lib/log-download';
-import { toParsedLogLines } from '../../../-lib/log-entries';
-import type { LogEntryInput } from '../../../-lib/log-entries';
 import {
   DEFAULT_LOG_TIME_RANGE,
+  LOG_DOWNLOAD_PAGE_SIZE,
+  LogsPanel,
+  canDownloadAllLogs,
   formatUtcOffset,
   logTimeRangeKey,
   resolveLogTimeRange,
-} from '../../../-lib/log-time-range';
-import type { LogTimeRange } from '../../../-lib/log-time-range';
-import { useLogDownload } from '../../../-usecase/log-download';
-import LogsPanel, {
   toLogsPanelStatus,
-} from '../../AppLogs/_presentation/LogsPanel';
+  toParsedLogLines,
+  useLogDownload,
+} from '@/widgets/log-viewer';
+import type {
+  LogEntryInput,
+  LogPageResult,
+  LogTimeRange,
+} from '@/widgets/log-viewer';
 
 interface LoadBalancerLogsProps {
   loadBalancerId: string;
@@ -35,7 +33,7 @@ interface LoadBalancerLogsProps {
  * Requests reaching the load balancer in front of this application, in the
  * same panel the runtime logs use so the two read alike.
  */
-export default function LoadBalancerLogs(props: LoadBalancerLogsProps) {
+export function LoadBalancerLogs(props: LoadBalancerLogsProps) {
   const { domain, loadBalancerId } = props;
 
   const tLogs = useDevetekTranslations('page.applicationDetail.logs');
@@ -168,11 +166,15 @@ function toLogEntryInputs(
   data: DTOs.LoadBalancerLogsV2 | undefined,
 ): LogEntryInput[] {
   if (data?.entries?.length) {
-    return data.entries.map((entry) => ({
-      line: entry.line ?? '',
-      severity: entry.severity ?? undefined,
-      time: entry.time == null ? undefined : String(entry.time),
-    }));
+    return data.entries.map((entry) => {
+      const stream = entry.attributes?.dpanel_attr_stream;
+      return {
+        line: entry.line ?? '',
+        severity: entry.severity ?? undefined,
+        time: entry.time == null ? undefined : String(entry.time),
+        stream: typeof stream === 'string' ? stream : undefined,
+      };
+    });
   }
 
   return (data?.lines ?? [])

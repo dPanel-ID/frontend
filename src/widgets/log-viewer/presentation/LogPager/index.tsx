@@ -37,7 +37,7 @@ export default function LogPager(props: LogPagerProps) {
     totalLines,
   } = props;
 
-  const t = useDevetekTranslations('page.applicationDetail.appLogs.pager');
+  const t = useDevetekTranslations('common.logViewer.pager');
 
   const first = pageLines === 0 ? 0 : (page - 1) * pageSize + 1;
   const last = (page - 1) * pageSize + pageLines;

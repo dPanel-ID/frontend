@@ -162,6 +162,74 @@
       "loadFailed": "Could not load this section",
       "retry": "Retry",
       "clearSearch": "Clear search"
+    },
+    "logViewer": {
+      "timeRangeLabel": "Runtime log time range",
+      "timeRange": "Time range",
+      "timeRangeHint": "Choose a recent period or a custom range up to {days} days back. Times are in your time zone ({offset}).",
+      "timeRangePresets": {
+        "last10m": "Last 10 minutes",
+        "last1h": "Last 1 hour",
+        "last6h": "Last 6 hours",
+        "last24h": "Last 24 hours",
+        "last3d": "Last 3 days",
+        "last7d": "Last 7 days",
+        "last10d": "Last 10 days"
+      },
+      "customRange": "Custom range",
+      "customRangeHint": "Choose up to {days} days back",
+      "customRangeTimezone": "Times are in your time zone ({offset}).",
+      "customRangeErrors": {
+        "invalid": "Enter both a start and an end.",
+        "startAfterEnd": "The start must be before the end.",
+        "tooOld": "Logs are only kept for the last {days} days.",
+        "inFuture": "The end can't be in the future."
+      },
+      "rangeFrom": "From",
+      "rangeTo": "To",
+      "applyRange": "Apply",
+      "cancel": "Cancel",
+      "backToPresets": "Back to time ranges",
+      "filterPlaceholder": "Filter this page",
+      "showing": "Showing {shown} of {total} lines on this page",
+      "loading": "Loading log entries",
+      "failed": "Unable to load logs",
+      "noMatch": "No log lines match the filters.",
+      "levelFilter": "Filter by level",
+      "allLevels": "All",
+      "table": {
+        "n": "#",
+        "time": "Time",
+        "level": "Level",
+        "source": "Source",
+        "message": "Message",
+        "openEntry": "Open entry",
+        "json": "JSON"
+      },
+      "query": "Query",
+      "download": {
+        "label": "Download",
+        "menuTitle": "Download as a .log file",
+        "page": "This page",
+        "pageHint": "{lines, plural, one {# line} other {# lines}} on page {page}",
+        "all": "Everything in this time range",
+        "allHint": "{lines, plural, one {# line} other {# lines}}, fetched page by page",
+        "allHintUnknown": "Every page, fetched one at a time",
+        "allTooLarge": "More than {max, number} lines. Narrow the range or download page by page.",
+        "progress": "Downloading {fetched, number} / {total, number} lines",
+        "progressUnknown": "Downloading {fetched, number} lines",
+        "cancel": "Cancel download",
+        "tooLargeTitle": "Too many lines to download at once",
+        "tooLarge": "This range holds over {lines, number} lines. Narrow the time range, or download it page by page.",
+        "failedTitle": "Download failed"
+      },
+      "pager": {
+        "range": "Lines {first, number}–{last, number} of {total, number}, newest first",
+        "rangeUnknown": "Lines {first, number}–{last, number}, newest first",
+        "newer": "Newer",
+        "older": "Older",
+        "page": "Page {page}"
+      }
     }
   },
   "page": {
@@ -708,74 +776,10 @@
       "appLogs": {
         "title": "Application Logs",
         "subtitle": "Real-time application logs and errors",
-        "timeRangeLabel": "Runtime log time range",
         "emptyLog": "No runtime logs in this window.",
-        "timeRange": "Time range",
-        "timeRangeHint": "Choose a recent period or a custom range up to {days} days back. Times are in your time zone ({offset}).",
-        "timeRangePresets": {
-          "last10m": "Last 10 minutes",
-          "last1h": "Last 1 hour",
-          "last6h": "Last 6 hours",
-          "last24h": "Last 24 hours",
-          "last3d": "Last 3 days",
-          "last7d": "Last 7 days",
-          "last10d": "Last 10 days"
-        },
-        "customRange": "Custom range",
-        "customRangeHint": "Choose up to {days} days back",
-        "customRangeTimezone": "Times are in your time zone ({offset}).",
-        "customRangeErrors": {
-          "invalid": "Enter both a start and an end.",
-          "startAfterEnd": "The start must be before the end.",
-          "tooOld": "Logs are only kept for the last {days} days.",
-          "inFuture": "The end can't be in the future."
-        },
-        "rangeFrom": "From",
-        "rangeTo": "To",
-        "applyRange": "Apply",
-        "cancel": "Cancel",
-        "backToPresets": "Back to time ranges",
         "emptyHint": "Try a wider time range. Runtime logs follow the active deployment.",
         "unavailable": "This application has no run command or server yet, so there are no runtime logs.",
-        "runtime": "Runtime",
-        "filterPlaceholder": "Filter this page",
-        "showing": "Showing {shown} of {total} lines on this page",
-        "loading": "Loading log entries",
-        "failed": "Unable to load logs",
-        "noMatch": "No log lines match the filters.",
-        "levelFilter": "Filter by level",
-        "allLevels": "All",
-        "table": {
-          "n": "#",
-          "time": "Time",
-          "level": "Level",
-          "source": "Source",
-          "message": "Message"
-        },
-        "query": "Query",
-        "download": {
-          "label": "Download",
-          "menuTitle": "Download as a .log file",
-          "page": "This page",
-          "pageHint": "{lines, plural, one {# line} other {# lines}} on page {page}",
-          "all": "Everything in this time range",
-          "allHint": "{lines, plural, one {# line} other {# lines}}, fetched page by page",
-          "allHintUnknown": "Every page, fetched one at a time",
-          "allTooLarge": "More than {max, number} lines. Narrow the range or download page by page.",
-          "progress": "Downloading {fetched, number} / {total, number} lines",
-          "progressUnknown": "Downloading {fetched, number} lines",
-          "cancel": "Cancel download",
-          "tooLargeTitle": "Too many lines to download at once",
-          "tooLarge": "This range holds over {lines, number} lines. Narrow the time range, or download it page by page.",
-          "failedTitle": "Download failed"
-        },
-        "pager": {
-          "range": "Lines {first, number}–{last, number} of {total, number}, newest first",
-          "rangeUnknown": "Lines {first, number}–{last, number}, newest first",
-          "newer": "Newer",
-          "older": "Older",
-          "page": "Page {page}"
-        }
+        "runtime": "Runtime"
       },
       "dangerZone": {
         "title": "Danger zone",
@@ -883,9 +887,9 @@
         "artifactLogsTitle": "Artifact Logs",
         "artifactLogsDescription": "Commit {commit}",
         "artifactLogOutput": "Artifact log output",
-        "artifactLogLatestLines": "Latest build output",
         "artifactLogLineWindow": "{count}/{limit} lines",
-        "artifactLogEmpty": "No build logs yet."
+        "artifactLogEmpty": "No build logs yet.",
+        "artifactLogSource": "Build"
       },
       "configuration": {
         "title": "How this application is set up",

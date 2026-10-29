@@ -5,11 +5,10 @@ import { ScrollTextIcon } from 'lucide-react';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { cn } from '@/shared/libs/tailwind/cn';
+import { LoadBalancerLogs } from '@/widgets/load-balancer-logs';
 
 import { usePublicEndpoint } from '../../../-usecase/public-url';
 import AppLogs from '../../AppLogs';
-
-import LoadBalancerLogs from './LoadBalancerLogs';
 
 type LogSource = 'runtime' | 'loadBalancer';
 
