@@ -4,14 +4,18 @@ import { TerminalIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
-import { canDownloadAllLogs } from '../../-lib/log-download';
-import { toParsedLogLines } from '../../-lib/log-entries';
-import { formatUtcOffset, logTimeRangeKey } from '../../-lib/log-time-range';
+import {
+  LogsPanel,
+  canDownloadAllLogs,
+  formatUtcOffset,
+  logTimeRangeKey,
+  toLogsPanelStatus,
+  toParsedLogLines,
+  useLogDownload,
+} from '@/widgets/log-viewer';
+
 import { useAppDataModel } from '../../-model/app-data';
 import { toLogEntryInput, useAppLogsModel } from '../../-model/app-logs';
-import { useLogDownload } from '../../-usecase/log-download';
-
-import LogsPanel, { toLogsPanelStatus } from './_presentation/LogsPanel';
 
 export default function AppLogs() {
   const [

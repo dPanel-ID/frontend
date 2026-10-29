@@ -9,9 +9,9 @@ import {
   formatLogFile,
   logFileName,
   saveLogFile,
-} from '../-lib/log-download';
-import type { LogDownloadProgress, LogPageResult } from '../-lib/log-download';
-import type { LogEntryInput } from '../-lib/log-entries';
+} from '../lib/log-download';
+import type { LogDownloadProgress, LogPageResult } from '../lib/log-download';
+import type { LogEntryInput } from '../lib/log-entries';
 
 interface UseLogDownloadParams {
   /** Names the file, e.g. the service or domain. */
@@ -28,7 +28,7 @@ interface UseLogDownloadParams {
 export function useLogDownload(params: UseLogDownloadParams) {
   const { fetchPage, name, timeGte, timeLt } = params;
 
-  const t = useDevetekTranslations('page.applicationDetail.appLogs.download');
+  const t = useDevetekTranslations('common.logViewer.download');
   const [openToaster] = useToaster();
   const [progress, setProgress] = useState<LogDownloadProgress | null>(null);
   const abortRef = useRef<AbortController | null>(null);

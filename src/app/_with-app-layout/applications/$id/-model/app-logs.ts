@@ -6,16 +6,17 @@ import type { DTOs } from '@/shared/api';
 import { ApiApplication } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
-
-import { LOG_DOWNLOAD_PAGE_SIZE } from '../-lib/log-download';
-import type { LogPageResult } from '../-lib/log-download';
-import type { LogEntryInput } from '../-lib/log-entries';
 import {
   DEFAULT_LOG_TIME_RANGE,
+  LOG_DOWNLOAD_PAGE_SIZE,
   isLiveLogTimeRange,
   resolveLogTimeRange,
-} from '../-lib/log-time-range';
-import type { LogTimeRange } from '../-lib/log-time-range';
+} from '@/widgets/log-viewer';
+import type {
+  LogEntryInput,
+  LogPageResult,
+  LogTimeRange,
+} from '@/widgets/log-viewer';
 
 import { useArtifactHistoryModel } from './artifact-history';
 
@@ -194,12 +195,14 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
 /** An entry as the log helpers read it; the source is the host that wrote it. */
 export function toLogEntryInput(entry: AppLogEntryView): LogEntryInput {
   const hostName = entry.attributes?.host_name;
+  const stream = entry.attributes?.dpanel_attr_stream;
 
   return {
     line: entry.line,
     severity: entry.severity,
     time: entry.time,
     source: typeof hostName === 'string' ? hostName : undefined,
+    stream: typeof stream === 'string' ? stream : undefined,
   };
 }
 

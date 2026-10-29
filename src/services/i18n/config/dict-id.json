@@ -153,6 +153,74 @@
       "loadFailed": "Bagian ini tidak dapat dimuat",
       "retry": "Coba lagi",
       "clearSearch": "Hapus pencarian"
+    },
+    "logViewer": {
+      "timeRangeLabel": "Rentang waktu log runtime",
+      "timeRange": "Rentang waktu",
+      "timeRangeHint": "Pilih periode terkini atau rentang khusus hingga {days} hari ke belakang. Waktu ditampilkan dalam zona waktu Anda ({offset}).",
+      "timeRangePresets": {
+        "last10m": "10 menit terakhir",
+        "last1h": "1 jam terakhir",
+        "last6h": "6 jam terakhir",
+        "last24h": "24 jam terakhir",
+        "last3d": "3 hari terakhir",
+        "last7d": "7 hari terakhir",
+        "last10d": "10 hari terakhir"
+      },
+      "customRange": "Rentang khusus",
+      "customRangeHint": "Pilih hingga {days} hari ke belakang",
+      "customRangeTimezone": "Waktu dalam zona waktu Anda ({offset}).",
+      "customRangeErrors": {
+        "invalid": "Isi waktu mulai dan selesai.",
+        "startAfterEnd": "Waktu mulai harus sebelum waktu selesai.",
+        "tooOld": "Log hanya disimpan untuk {days} hari terakhir.",
+        "inFuture": "Waktu selesai tidak boleh di masa depan."
+      },
+      "rangeFrom": "Dari",
+      "rangeTo": "Sampai",
+      "applyRange": "Terapkan",
+      "cancel": "Batal",
+      "backToPresets": "Kembali ke rentang waktu",
+      "filterPlaceholder": "Saring halaman ini",
+      "showing": "Menampilkan {shown} dari {total} baris di halaman ini",
+      "loading": "Memuat entri log",
+      "failed": "Gagal memuat log",
+      "noMatch": "Tidak ada baris log yang cocok dengan filter.",
+      "levelFilter": "Saring berdasarkan level",
+      "allLevels": "Semua",
+      "table": {
+        "n": "#",
+        "time": "Waktu",
+        "level": "Level",
+        "source": "Sumber",
+        "message": "Pesan",
+        "openEntry": "Buka entri",
+        "json": "JSON"
+      },
+      "query": "Query",
+      "download": {
+        "label": "Unduh",
+        "menuTitle": "Unduh sebagai file .log",
+        "page": "Halaman ini",
+        "pageHint": "{lines} baris di halaman {page}",
+        "all": "Semua di rentang waktu ini",
+        "allHint": "{lines, number} baris, diambil per halaman",
+        "allHintUnknown": "Semua halaman, diambil satu per satu",
+        "allTooLarge": "Lebih dari {max, number} baris. Persempit rentang atau unduh per halaman.",
+        "progress": "Mengunduh {fetched, number} / {total, number} baris",
+        "progressUnknown": "Mengunduh {fetched, number} baris",
+        "cancel": "Batalkan unduhan",
+        "tooLargeTitle": "Terlalu banyak baris untuk diunduh sekaligus",
+        "tooLarge": "Rentang ini berisi lebih dari {lines, number} baris. Persempit rentang waktu, atau unduh per halaman.",
+        "failedTitle": "Unduhan gagal"
+      },
+      "pager": {
+        "range": "Baris {first, number}–{last, number} dari {total, number}, terbaru dulu",
+        "rangeUnknown": "Baris {first, number}–{last, number}, terbaru dulu",
+        "newer": "Lebih baru",
+        "older": "Lebih lama",
+        "page": "Halaman {page}"
+      }
     }
   },
   "page": {
@@ -699,74 +767,10 @@
       "appLogs": {
         "title": "Log Aplikasi",
         "subtitle": "Log aplikasi dan error terkini",
-        "timeRangeLabel": "Rentang waktu log runtime",
         "emptyLog": "Tidak ada log runtime pada rentang ini.",
-        "timeRange": "Rentang waktu",
-        "timeRangeHint": "Pilih periode terkini atau rentang khusus hingga {days} hari ke belakang. Waktu ditampilkan dalam zona waktu Anda ({offset}).",
-        "timeRangePresets": {
-          "last10m": "10 menit terakhir",
-          "last1h": "1 jam terakhir",
-          "last6h": "6 jam terakhir",
-          "last24h": "24 jam terakhir",
-          "last3d": "3 hari terakhir",
-          "last7d": "7 hari terakhir",
-          "last10d": "10 hari terakhir"
-        },
-        "customRange": "Rentang khusus",
-        "customRangeHint": "Pilih hingga {days} hari ke belakang",
-        "customRangeTimezone": "Waktu dalam zona waktu Anda ({offset}).",
-        "customRangeErrors": {
-          "invalid": "Isi waktu mulai dan selesai.",
-          "startAfterEnd": "Waktu mulai harus sebelum waktu selesai.",
-          "tooOld": "Log hanya disimpan untuk {days} hari terakhir.",
-          "inFuture": "Waktu selesai tidak boleh di masa depan."
-        },
-        "rangeFrom": "Dari",
-        "rangeTo": "Sampai",
-        "applyRange": "Terapkan",
-        "cancel": "Batal",
-        "backToPresets": "Kembali ke rentang waktu",
         "emptyHint": "Coba rentang waktu yang lebih lebar. Log runtime mengikuti deployment aktif.",
         "unavailable": "Aplikasi ini belum punya perintah run atau server, jadi belum ada log runtime.",
-        "runtime": "Runtime",
-        "filterPlaceholder": "Saring halaman ini",
-        "showing": "Menampilkan {shown} dari {total} baris di halaman ini",
-        "loading": "Memuat entri log",
-        "failed": "Gagal memuat log",
-        "noMatch": "Tidak ada baris log yang cocok dengan filter.",
-        "levelFilter": "Saring berdasarkan level",
-        "allLevels": "Semua",
-        "table": {
-          "n": "#",
-          "time": "Waktu",
-          "level": "Level",
-          "source": "Sumber",
-          "message": "Pesan"
-        },
-        "query": "Query",
-        "download": {
-          "label": "Unduh",
-          "menuTitle": "Unduh sebagai file .log",
-          "page": "Halaman ini",
-          "pageHint": "{lines} baris di halaman {page}",
-          "all": "Semua di rentang waktu ini",
-          "allHint": "{lines, number} baris, diambil per halaman",
-          "allHintUnknown": "Semua halaman, diambil satu per satu",
-          "allTooLarge": "Lebih dari {max, number} baris. Persempit rentang atau unduh per halaman.",
-          "progress": "Mengunduh {fetched, number} / {total, number} baris",
-          "progressUnknown": "Mengunduh {fetched, number} baris",
-          "cancel": "Batalkan unduhan",
-          "tooLargeTitle": "Terlalu banyak baris untuk diunduh sekaligus",
-          "tooLarge": "Rentang ini berisi lebih dari {lines, number} baris. Persempit rentang waktu, atau unduh per halaman.",
-          "failedTitle": "Unduhan gagal"
-        },
-        "pager": {
-          "range": "Baris {first, number}–{last, number} dari {total, number}, terbaru dulu",
-          "rangeUnknown": "Baris {first, number}–{last, number}, terbaru dulu",
-          "newer": "Lebih baru",
-          "older": "Lebih lama",
-          "page": "Halaman {page}"
-        }
+        "runtime": "Runtime"
       },
       "dangerZone": {
         "title": "Zona berbahaya",
@@ -874,9 +878,9 @@
         "artifactLogsTitle": "Log Artefak",
         "artifactLogsDescription": "Commit {commit}",
         "artifactLogOutput": "Output log artefak",
-        "artifactLogLatestLines": "Output build terbaru",
         "artifactLogLineWindow": "{count}/{limit} baris",
-        "artifactLogEmpty": "Belum ada log build."
+        "artifactLogEmpty": "Belum ada log build.",
+        "artifactLogSource": "Build"
       },
       "configuration": {
         "title": "Cara aplikasi ini disiapkan",

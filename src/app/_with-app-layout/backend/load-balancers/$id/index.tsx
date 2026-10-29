@@ -63,6 +63,7 @@ import {
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
 import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
 import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
+import { LoadBalancerLogs } from '@/widgets/load-balancer-logs';
 
 export const Route = createFileRoute(
   '/_with-app-layout/backend/load-balancers/$id/',
@@ -74,37 +75,9 @@ export const Route = createFileRoute(
 });
 
 type IconComponent = ComponentType<LucideProps>;
-type LogContext = {
-  filePath?: string;
-  queryErrors?: string[];
-};
-type LogDateRange = {
-  from: string;
-  to: string;
-};
-type LogMode = 'all' | 'errors';
 type LoadBalancerTab = 'graph' | 'upstreams' | 'logs' | 'config';
 type AddBackendMode = 'application' | 'address';
-type JsonRecord = Record<string, unknown>;
 type RawLoadBalancerDetailsDto = DTOs.RouterV1 | DTOs.LoadBalancerV2;
-
-const LOAD_BALANCER_LOG_LIMIT = 10;
-const DEFAULT_LOG_LOOKBACK_MINUTES = 10;
-
-interface AccessLogEntry {
-  bytes?: number;
-  durationMs?: number;
-  host: string;
-  id: string;
-  method: string;
-  protocol: string;
-  path: string;
-  remoteIp: string;
-  status: number;
-  timestamp?: string;
-  userAgent: string;
-  raw: string;
-}
 
 interface UpstreamDraft {
   applicationId?: string;
@@ -128,9 +101,6 @@ function LoadBalancerDetailPage() {
   const { id } = Route.useParams();
   const t = useDevetekTranslations();
   const navigate = useNavigate();
-  const [logDateRange, setLogDateRange] = useState<LogDateRange>(
-    getDefaultLogDateRange,
-  );
 
   const [responseDetails, refreshDetails] = ApiLoadBalancer.Detail.$Id.useGet({
     loadBalancerId: id,
@@ -140,28 +110,8 @@ function LoadBalancerDetailPage() {
     AdapterLoadBalancerFromDto.toLoadBalancerDetails(raw).unwrap(),
   );
 
-  const [responseAccessLog, refreshAccessLog] = ApiLoadBalancer.Logs.$Id.useGet(
-    {
-      loadBalancerId: id,
-      limit: LOAD_BALANCER_LOG_LIMIT,
-      timeGte: toDateTimeQueryParam(logDateRange.from),
-      timeLt: toDateTimeQueryParam(logDateRange.to),
-      options: {
-        skip: responseDetails.$status !== 'success',
-      },
-    },
-  );
-  const logContext = getLogContext(responseAccessLog);
-
-  const accessLogs = useAdapter(
-    responseAccessLog,
-    parseLoadBalancerLogResponse,
-  );
-  const errorLogs = selectAccessErrors(accessLogs);
-
   const refreshAll = () => {
     refreshDetails();
-    refreshAccessLog();
   };
 
   const goBack = () => {
@@ -260,14 +210,7 @@ function LoadBalancerDetailPage() {
                 ? responseDetails
                 : undefined
             }
-            logContext={logContext}
-            dateRange={logDateRange}
-            accessLogs={accessLogs}
-            errorLogs={errorLogs}
-            onDateRangeChange={setLogDateRange}
             onDetailsRefresh={refreshDetails}
-            onResetDateRange={() => setLogDateRange(getDefaultLogDateRange())}
-            onRefreshAccess={refreshAccessLog}
           />
         </>
       ) : null}
@@ -357,29 +300,11 @@ function Overview(props: { details: LoadBalancerDetails }) {
 }
 
 function DetailTabs(props: {
-  accessLogs: Response<AccessLogEntry[]>;
-  dateRange: LogDateRange;
   details: LoadBalancerDetails;
-  errorLogs: Response<AccessLogEntry[]>;
-  logContext?: LogContext;
   rawDetails?: RawLoadBalancerDetailsDto;
-  onDateRangeChange: (dateRange: LogDateRange) => void;
   onDetailsRefresh: () => void;
-  onResetDateRange: () => void;
-  onRefreshAccess: () => void;
 }) {
-  const {
-    accessLogs,
-    dateRange,
-    details,
-    errorLogs,
-    logContext,
-    onDateRangeChange,
-    onDetailsRefresh,
-    onResetDateRange,
-    onRefreshAccess,
-    rawDetails,
-  } = props;
+  const { details, onDetailsRefresh, rawDetails } = props;
   const t = useDevetekTranslations();
   const [activeTab, setActiveTab] = useState<LoadBalancerTab>('graph');
   const tabItems: Array<{
@@ -433,14 +358,10 @@ function DetailTabs(props: {
         <UpstreamsTab details={details} onSaved={onDetailsRefresh} />
       </TabsContent>
       <TabsContent value="logs" className="mt-0">
-        <LogsTab
-          accessLogs={accessLogs}
-          dateRange={dateRange}
-          errorLogs={errorLogs}
-          logContext={logContext}
-          onDateRangeChange={onDateRangeChange}
-          onRefreshAccess={onRefreshAccess}
-          onResetDateRange={onResetDateRange}
+        {/* The same request log as the application's Logs tab. */}
+        <LoadBalancerLogs
+          loadBalancerId={String(details.id)}
+          domain={details.domain.fqdn}
         />
       </TabsContent>
       <TabsContent value="config" className="mt-0">
@@ -1447,246 +1368,6 @@ function ReadOnlyRouteValue(props: {
   );
 }
 
-function LogsTab(props: {
-  accessLogs: Response<AccessLogEntry[]>;
-  dateRange: LogDateRange;
-  errorLogs: Response<AccessLogEntry[]>;
-  logContext?: LogContext;
-  onDateRangeChange: (dateRange: LogDateRange) => void;
-  onRefreshAccess: () => void;
-  onResetDateRange: () => void;
-}) {
-  const {
-    accessLogs,
-    dateRange,
-    errorLogs,
-    logContext,
-    onDateRangeChange,
-    onRefreshAccess,
-    onResetDateRange,
-  } = props;
-  const t = useDevetekTranslations();
-  const [mode, setMode] = useState<LogMode>('all');
-  const visibleLogs =
-    mode === 'errors' && errorLogs.$status === 'success'
-      ? errorLogs
-      : accessLogs;
-  const totalCount = getResponseRows(accessLogs).length;
-  const errorCount = getResponseRows(errorLogs).length;
-
-  return (
-    <DetailSurface
-      icon={TerminalSquareIcon}
-      title={t('page.loadBalancersDetail.sections.logs')}
-      description={t('page.loadBalancersDetail.sections.logsDesc')}
-    >
-      <LogDateRangeFilter
-        dateRange={dateRange}
-        limit={LOAD_BALANCER_LOG_LIMIT}
-        onChange={onDateRangeChange}
-        onRefresh={onRefreshAccess}
-        onReset={onResetDateRange}
-      />
-      <RequestLogPanel
-        activeMode={mode}
-        errorCount={errorCount}
-        filePath={logContext?.filePath}
-        logs={visibleLogs}
-        onModeChange={setMode}
-        onRefresh={onRefreshAccess}
-        totalCount={totalCount}
-      />
-    </DetailSurface>
-  );
-}
-
-function LogDateRangeFilter(props: {
-  dateRange: LogDateRange;
-  limit: number;
-  onChange: (dateRange: LogDateRange) => void;
-  onRefresh: () => void;
-  onReset: () => void;
-}) {
-  const { dateRange, limit, onChange, onRefresh, onReset } = props;
-  const t = useDevetekTranslations();
-
-  return (
-    <div className="mb-4 rounded-lg border bg-background p-4">
-      <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-        <div className="min-w-0">
-          <h4 className="font-bold">
-            {t('page.loadBalancersDetail.logs.filterTitle')}
-          </h4>
-          <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-            {t('page.loadBalancersDetail.logs.filterDesc')}
-          </p>
-        </div>
-        <Badge variant="secondary" className="w-fit shrink-0">
-          {t('page.loadBalancersDetail.logs.limitLabel', { count: limit })}
-        </Badge>
-      </div>
-
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(210px,1fr)_minmax(210px,1fr)_auto_auto] xl:items-end">
-        <label className="grid min-w-0 gap-1.5 text-sm font-semibold">
-          <span>{t('page.loadBalancersDetail.logs.fromLabel')}</span>
-          <Input
-            type="datetime-local"
-            inputSize="sm"
-            value={dateRange.from}
-            max={dateRange.to || undefined}
-            aria-label={t('page.loadBalancersDetail.logs.fromLabel')}
-            onChange={(event) =>
-              onChange({ ...dateRange, from: event.target.value })
-            }
-          />
-        </label>
-        <label className="grid min-w-0 gap-1.5 text-sm font-semibold">
-          <span>{t('page.loadBalancersDetail.logs.toLabel')}</span>
-          <Input
-            type="datetime-local"
-            inputSize="sm"
-            value={dateRange.to}
-            min={dateRange.from || undefined}
-            aria-label={t('page.loadBalancersDetail.logs.toLabel')}
-            onChange={(event) =>
-              onChange({ ...dateRange, to: event.target.value })
-            }
-          />
-        </label>
-        <Button
-          size="sm"
-          buttonStyle="outline"
-          buttonColor="secondary"
-          onClick={onRefresh}
-          aria-label={t('common.actions.refresh')}
-          title={t('common.actions.refresh')}
-          className="w-full justify-center whitespace-nowrap xl:w-auto"
-        >
-          <RefreshCwIcon />
-          {t('common.actions.refresh')}
-        </Button>
-        <Button
-          size="sm"
-          buttonStyle="outline"
-          buttonColor="secondary"
-          onClick={onReset}
-          className="w-full justify-center whitespace-nowrap xl:w-auto"
-        >
-          {t('page.loadBalancersDetail.logs.resetRange')}
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-function RequestLogPanel(props: {
-  activeMode: LogMode;
-  errorCount: number;
-  logs: Response<AccessLogEntry[]>;
-  filePath?: string;
-  onModeChange: (mode: LogMode) => void;
-  onRefresh: () => void;
-  totalCount: number;
-}) {
-  const {
-    activeMode,
-    errorCount,
-    filePath,
-    logs,
-    onModeChange,
-    onRefresh,
-    totalCount,
-  } = props;
-  const t = useDevetekTranslations();
-  const logStatus = logs.$status;
-  const rows = getResponseRows(logs);
-  const emptyMessage =
-    activeMode === 'errors'
-      ? t('page.loadBalancersDetail.logs.emptyError')
-      : t('page.loadBalancersDetail.logs.emptyAccess');
-
-  return (
-    <LogPanelFrame
-      description={
-        filePath ?? t('page.loadBalancersDetail.logs.telemetrySource')
-      }
-      errorCount={errorCount}
-      mode={activeMode}
-      onModeChange={onModeChange}
-      onRefresh={onRefresh}
-      totalCount={totalCount}
-    >
-      {logStatus === 'loading' || logStatus === 'initial' ? (
-        <LogLoading />
-      ) : null}
-      {logStatus === 'failed' ? (
-        <LogFailed message={logs.error.message} />
-      ) : null}
-      {logStatus === 'success' && rows.length < 1 ? (
-        <EmptyInline>{emptyMessage}</EmptyInline>
-      ) : null}
-      {logStatus === 'success' && rows.length > 0 ? (
-        <LogTable logs={rows} />
-      ) : null}
-    </LogPanelFrame>
-  );
-}
-
-function LogTable(props: { logs: AccessLogEntry[] }) {
-  const { logs } = props;
-  const t = useDevetekTranslations();
-
-  return (
-    <div className="max-h-[640px] overflow-auto">
-      <div className="min-w-[920px]">
-        <div className="grid grid-cols-[148px_80px_84px_minmax(220px,1fr)_150px_96px_86px] gap-3 border-b bg-muted/40 px-3 py-2 text-xs font-bold uppercase text-muted-foreground">
-          <span>{t('page.loadBalancersDetail.logs.table.time')}</span>
-          <span>{t('page.loadBalancersDetail.logs.table.method')}</span>
-          <span>{t('page.loadBalancersDetail.logs.table.status')}</span>
-          <span>{t('page.loadBalancersDetail.logs.table.request')}</span>
-          <span>{t('page.loadBalancersDetail.logs.table.remote')}</span>
-          <span>{t('page.loadBalancersDetail.logs.table.duration')}</span>
-          <span>{t('page.loadBalancersDetail.logs.table.size')}</span>
-        </div>
-        <div className="divide-y">
-          {logs.map((log) => (
-            <div
-              key={log.id}
-              className="grid grid-cols-[148px_80px_84px_minmax(220px,1fr)_150px_96px_86px] gap-3 px-3 py-2.5 text-sm"
-            >
-              <span className="whitespace-nowrap text-muted-foreground">
-                {formatTime(log.timestamp)}
-              </span>
-              <span className="font-mono font-bold">{log.method}</span>
-              <StatusCode status={log.status} />
-              <span className="min-w-0">
-                <span className="block truncate font-mono font-semibold">
-                  {log.path}
-                </span>
-                <span className="block truncate text-xs text-muted-foreground">
-                  {log.host}
-                  {log.protocol && log.protocol !== '-'
-                    ? ` · ${log.protocol}`
-                    : ''}
-                </span>
-              </span>
-              <span className="truncate font-mono text-muted-foreground">
-                {log.remoteIp}
-              </span>
-              <span className="font-mono text-muted-foreground">
-                {formatDuration(log.durationMs)}
-              </span>
-              <span className="font-mono text-muted-foreground">
-                {formatBytes(log.bytes)}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function ConfigTab(props: {
   details: LoadBalancerDetails;
   onSaved: () => void;
@@ -1914,108 +1595,6 @@ function InlineMetric(props: {
   );
 }
 
-function LogPanelFrame(props: {
-  description: string;
-  errorCount: number;
-  mode: LogMode;
-  onModeChange: (mode: LogMode) => void;
-  onRefresh: () => void;
-  totalCount: number;
-  children: ReactNode;
-}) {
-  const {
-    children,
-    description,
-    errorCount,
-    mode,
-    onModeChange,
-    onRefresh,
-    totalCount,
-  } = props;
-  const t = useDevetekTranslations();
-
-  return (
-    <div className="overflow-hidden rounded-lg border bg-background">
-      <div className="flex flex-col gap-4 border-b p-3 lg:flex-row lg:items-start lg:justify-between">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h4 className="font-bold">
-              {t('page.loadBalancersDetail.logs.requestsTitle')}
-            </h4>
-            <Badge variant="secondary">
-              {t('page.loadBalancersDetail.logs.requestsCount', {
-                count: totalCount,
-              })}
-            </Badge>
-            <Badge variant="outline">
-              {t('page.loadBalancersDetail.logs.errorCount', {
-                count: errorCount,
-              })}
-            </Badge>
-          </div>
-          <code className="mt-1 block truncate text-xs text-muted-foreground">
-            {description}
-          </code>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <div
-            className="inline-flex rounded-lg border bg-card p-1"
-            role="group"
-            aria-label={t('page.loadBalancersDetail.logs.modeLabel')}
-          >
-            <LogModeButton
-              active={mode === 'all'}
-              label={t('page.loadBalancersDetail.logs.allRequests')}
-              onClick={() => onModeChange('all')}
-            />
-            <LogModeButton
-              active={mode === 'errors'}
-              label={t('page.loadBalancersDetail.logs.errorsOnly')}
-              onClick={() => onModeChange('errors')}
-            />
-          </div>
-          <Button
-            size="sm"
-            buttonStyle="outline"
-            buttonColor="secondary"
-            onClick={onRefresh}
-            aria-label={t('common.actions.refresh')}
-            title={t('common.actions.refresh')}
-          >
-            <RefreshCwIcon />
-            {t('common.actions.refresh')}
-          </Button>
-        </div>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function LogModeButton(props: {
-  active: boolean;
-  label: string;
-  onClick: () => void;
-}) {
-  const { active, label, onClick } = props;
-
-  return (
-    <button
-      type="button"
-      aria-pressed={active}
-      className={cn(
-        'rounded-md px-3 py-1.5 text-sm font-bold transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
-        active
-          ? 'bg-primary text-primary-foreground'
-          : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-      )}
-      onClick={onClick}
-    >
-      {label}
-    </button>
-  );
-}
-
 function StatusPill(props: {
   icon: IconComponent;
   label: string;
@@ -2030,24 +1609,6 @@ function StatusPill(props: {
     >
       <Icon className="size-4" />
       {label}
-    </span>
-  );
-}
-
-function StatusCode(props: { status: number }) {
-  const { status } = props;
-
-  return (
-    <span
-      className={cn(
-        'w-fit rounded-md border px-2 py-0.5 font-mono text-xs font-bold',
-        status > 0 && status < 300 && 'border-emerald-500/40 text-emerald-600',
-        status >= 300 && status < 400 && 'border-blue-500/40 text-blue-600',
-        status >= 400 && status < 500 && 'border-amber-500/40 text-amber-600',
-        status >= 500 && 'border-destructive text-destructive',
-      )}
-    >
-      {Number.isFinite(status) && status > 0 ? status : '-'}
     </span>
   );
 }
@@ -2086,25 +1647,6 @@ function LoadingState() {
         {t('page.loadBalancersDetail.state.loading')}
       </span>
     </Card>
-  );
-}
-
-function LogLoading() {
-  const t = useDevetekTranslations();
-
-  return (
-    <div className="flex min-h-56 items-center justify-center gap-2 p-4 text-sm text-muted-foreground">
-      <Spinner />
-      {t('page.loadBalancersDetail.logs.loading')}
-    </div>
-  );
-}
-
-function LogFailed(props: { message: string }) {
-  return (
-    <div className="flex min-h-40 items-center justify-center p-4 text-center text-sm text-destructive">
-      {props.message}
-    </div>
   );
 }
 
@@ -2437,210 +1979,6 @@ function toLoadBalancerConfigPayload(
   };
 }
 
-function getLogContext(
-  responseLog: Response<DTOs.LoadBalancerLogsV2>,
-): LogContext | undefined {
-  if (responseLog.$status !== 'success') {
-    return undefined;
-  }
-
-  return {
-    filePath: responseLog.file_path,
-    queryErrors: responseLog.query_errors ?? undefined,
-  };
-}
-
-function parseLoadBalancerLogResponse(response: DTOs.LoadBalancerLogsV2) {
-  const responseEntries = Array.isArray(response.entries)
-    ? response.entries
-    : [];
-  const responseLines = Array.isArray(response.lines) ? response.lines : [];
-  const entries =
-    responseEntries.length > 0
-      ? responseEntries
-      : responseLines
-          .filter((line): line is string => typeof line === 'string')
-          .map((line) => ({ line }));
-
-  return entries
-    .map((entry, index) => parseAccessLogEntry(entry, index))
-    .filter((entry): entry is AccessLogEntry => Boolean(entry))
-    .reverse();
-}
-
-function parseAccessLogEntry(
-  entry: DTOs.LoadBalancerLogEntryV2,
-  index: number,
-): AccessLogEntry | null {
-  try {
-    const line = typeof entry.line === 'string' ? entry.line : '';
-    const attributes = asRecord(entry.attributes);
-    const parsed = parseJsonRecord(line);
-    const record = parsed ?? attributes;
-
-    if (!record) return null;
-
-    const request = asRecord(record.request);
-    const headers = asRecord(request?.headers);
-    const timestamp =
-      normalizeLogTime(record.ts) ??
-      normalizeLogTime(entry.time) ??
-      normalizeLogTime(record.time);
-    const status =
-      asNumber(record.status) ??
-      asNumber(record.http_response_status_code) ??
-      asNumber(record.status_code) ??
-      0;
-
-    return {
-      bytes:
-        asNumber(record.size) ??
-        asNumber(record.bytes_written) ??
-        asNumber(record.response_size),
-      durationMs: normalizeDurationMs(record.duration),
-      host: asString(request?.host, asString(record.host_name, '-')),
-      id: `${index}-${String(record.ts ?? entry.time ?? line.slice(0, 24))}`,
-      method: asString(
-        request?.method,
-        asString(record.method, 'UNKNOWN'),
-      ).toUpperCase(),
-      path: asString(
-        request?.uri,
-        asString(record.uri, asString(record.path, '-')),
-      ),
-      protocol: asString(request?.proto, asString(record.proto, '-')),
-      remoteIp: asString(
-        request?.remote_ip,
-        asString(record.remote_ip, asString(record.client_ip, '-')),
-      ),
-      status,
-      timestamp,
-      userAgent:
-        firstString(headers?.['User-Agent']) ??
-        firstString(headers?.['user-agent']) ??
-        asString(record.user_agent),
-      raw: line,
-    };
-  } catch {
-    return null;
-  }
-}
-
-function parseJsonRecord(value: string): JsonRecord | null {
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-
-  const start = trimmed.indexOf('{');
-  const end = trimmed.lastIndexOf('}');
-  const json =
-    start >= 0 && end > start ? trimmed.slice(start, end + 1) : trimmed;
-  try {
-    const parsed: unknown = JSON.parse(json);
-    return asRecord(parsed);
-  } catch {
-    return null;
-  }
-}
-
-function normalizeLogTime(value?: unknown) {
-  if (value == null || value === '') return undefined;
-
-  const numericValue = asNumber(value);
-  if (numericValue != null) {
-    const milliseconds =
-      numericValue > 1_000_000_000_000 ? numericValue : numericValue * 1000;
-    const numericDate = new Date(milliseconds);
-    if (!Number.isNaN(numericDate.getTime())) {
-      return numericDate.toISOString();
-    }
-  }
-
-  if (typeof value !== 'string') return undefined;
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return undefined;
-
-  return date.toISOString();
-}
-
-function normalizeDurationMs(value: unknown) {
-  const duration = asNumber(value);
-  if (duration == null) return undefined;
-
-  return duration < 60 ? duration * 1000 : duration;
-}
-
-function getDefaultLogDateRange(): LogDateRange {
-  const to = new Date();
-  const from = new Date(to.getTime() - DEFAULT_LOG_LOOKBACK_MINUTES * 60_000);
-
-  return {
-    from: toDateTimeLocalValue(from),
-    to: toDateTimeLocalValue(to),
-  };
-}
-
-function toDateTimeLocalValue(value: Date) {
-  const localDate = new Date(
-    value.getTime() - value.getTimezoneOffset() * 60000,
-  );
-  return localDate.toISOString().slice(0, 16);
-}
-
-function toDateTimeQueryParam(value: string) {
-  if (!value) return undefined;
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return undefined;
-
-  return date.toISOString();
-}
-
-function asRecord(value: unknown): JsonRecord | null {
-  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
-    return null;
-  }
-
-  return value as JsonRecord;
-}
-
-function asString(value: unknown, fallback = '') {
-  return typeof value === 'string' ? value : fallback;
-}
-
-function asNumber(value: unknown) {
-  if (typeof value === 'number') return value;
-
-  if (typeof value === 'string' && value.trim()) {
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : undefined;
-  }
-
-  return undefined;
-}
-
-function firstString(value: unknown) {
-  if (!Array.isArray(value)) return undefined;
-
-  const [first] = value;
-  return typeof first === 'string' ? first : undefined;
-}
-
-function selectAccessErrors(
-  response: Response<AccessLogEntry[]>,
-): Response<AccessLogEntry[]> {
-  if (response.$status !== 'success') return response;
-
-  const errors = getResponseRows(response).filter((log) => log.status >= 400);
-  return Object.assign(errors, { $status: 'success' as const });
-}
-
-function getResponseRows(response: Response<AccessLogEntry[]>) {
-  return response.$status === 'success' && Array.isArray(response)
-    ? response
-    : [];
-}
-
 function formatDate(value?: Date | string) {
   if (!value) return '-';
 
@@ -2651,38 +1989,4 @@ function formatDate(value?: Date | string) {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(date);
-}
-
-function formatTime(value?: string) {
-  if (!value) return '-';
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '-';
-
-  return new Intl.DateTimeFormat(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    month: 'short',
-    day: 'numeric',
-  }).format(date);
-}
-
-function formatDuration(value?: number) {
-  if (value == null || !Number.isFinite(value)) return '-';
-
-  if (value < 1000) {
-    return `${Math.round(value)}ms`;
-  }
-
-  return `${(value / 1000).toFixed(2)}s`;
-}
-
-function formatBytes(value?: number) {
-  if (value == null || !Number.isFinite(value)) return '-';
-
-  if (value < 1024) return `${Math.round(value)}B`;
-  if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)}KB`;
-
-  return `${(value / (1024 * 1024)).toFixed(1)}MB`;
 }
