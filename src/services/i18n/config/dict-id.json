@@ -220,6 +220,23 @@
         "newer": "Lebih baru",
         "older": "Lebih lama",
         "page": "Halaman {page}"
+      },
+      "autoRefresh": {
+        "label": "Muat ulang otomatis",
+        "aria": "Muat ulang otomatis: {value}",
+        "paused": "Muat ulang otomatis dijeda di halaman lama",
+        "option": {
+          "off": "Mati",
+          "30s": "Setiap 30 detik",
+          "1m": "Setiap menit",
+          "5m": "Setiap 5 menit"
+        },
+        "short": {
+          "off": "Mati",
+          "30s": "30d",
+          "1m": "1m",
+          "5m": "5m"
+        }
       }
     }
   },

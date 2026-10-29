@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest';
 import {
   LOG_TIME_RANGE_MAX_LOOKBACK_MS,
   fromDateTimeLocalValue,
-  isLiveLogTimeRange,
   logTimeRangeKey,
   resolveLogTimeRange,
   toDateTimeLocalValue,
@@ -45,18 +44,6 @@ describe('resolveLogTimeRange', () => {
       timeLt: '2026-10-29T11:00:00.000Z',
       limit: 200,
     });
-  });
-});
-
-describe('isLiveLogTimeRange', () => {
-  it.each([
-    [{ kind: 'relative', preset: '10m' } as const, true],
-    [{ kind: 'relative', preset: '1h' } as const, true],
-    [{ kind: 'relative', preset: '6h' } as const, false],
-    [{ kind: 'relative', preset: '10d' } as const, false],
-    [{ kind: 'absolute', fromMs: NOW - HOUR, toMs: NOW } as const, false],
-  ])('%o refreshes on a timer: %s', (range, expected) => {
-    expect(isLiveLogTimeRange(range)).toBe(expected);
   });
 });
 

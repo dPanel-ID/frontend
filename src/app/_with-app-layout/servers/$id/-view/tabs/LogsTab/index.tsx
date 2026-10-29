@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { RefreshCwIcon, ScrollTextIcon } from 'lucide-react';
+import { ScrollTextIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -18,8 +18,6 @@ import {
 } from '@/features/server-log-viewer-sidepanel/view';
 
 import { ApiServer } from '@/shared/api';
-import { cn } from '@/shared/libs/tailwind/cn';
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import {
   Select,
   SelectContent,
@@ -36,7 +34,12 @@ import {
   DataPanelSearch,
   DataPanelState,
 } from '@/shared/presentation/organisms/DataPanel';
-import { LogResults, useLogFilters } from '@/widgets/log-viewer';
+import {
+  LogRefreshControl,
+  LogResults,
+  useAutoRefresh,
+  useLogFilters,
+} from '@/widgets/log-viewer';
 
 import { useServerDataModel } from '../../../-model/server-data';
 
@@ -51,7 +54,6 @@ const DEFAULT_SOURCE_ID = 'auth';
  */
 export default function LogsTab() {
   const t = useDevetekTranslations('page.serverDetail.logs');
-  const tCommon = useDevetekTranslations('common.dataPanel');
   const [serverId] = useServerDataModel((s) => [String(s.serverId)]);
 
   const [selectedSourceId, setSelectedSourceId] = useState(DEFAULT_SOURCE_ID);
@@ -97,6 +99,9 @@ export default function LogsTab() {
     if (!selectedSource) return;
     fetchLog({ serverId, file: selectedSource.path, line: lineCount });
   };
+  const autoRefresh = useAutoRefresh(handleRefresh, {
+    paused: !selectedSource,
+  });
 
   return (
     <DataPanel
@@ -104,16 +109,12 @@ export default function LogsTab() {
       title={t('title')}
       description={t('description')}
       actions={
-        <Button
-          buttonStyle="outline"
-          buttonColor="secondary"
-          size="sm"
-          disabled={isLoading || !selectedSource}
-          onClick={handleRefresh}
-        >
-          <RefreshCwIcon className={cn(isLoading && 'animate-spin')} />
-          {tCommon('refresh')}
-        </Button>
+        <LogRefreshControl
+          state={autoRefresh}
+          isRefreshing={isLoading}
+          disabled={!selectedSource}
+          onRefresh={handleRefresh}
+        />
       }
       toolbar={
         <>
