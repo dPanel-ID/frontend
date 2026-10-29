@@ -20,7 +20,7 @@ describe('resolveLogTimeRange', () => {
     ).toEqual({
       timeGte: '2026-10-28T12:00:00.000Z',
       timeLt: '2026-10-29T12:00:00.000Z',
-      limit: 500,
+      limit: 200,
     });
   });
 
@@ -30,7 +30,7 @@ describe('resolveLogTimeRange', () => {
     expect(Date.parse(range.timeGte)).toBe(
       NOW - LOG_TIME_RANGE_MAX_LOOKBACK_MS,
     );
-    expect(range.limit).toBe(500);
+    expect(range.limit).toBe(200);
   });
 
   it('keeps a custom range fixed whatever the anchor', () => {
@@ -43,7 +43,7 @@ describe('resolveLogTimeRange', () => {
     expect(resolveLogTimeRange(range, NOW + 5 * HOUR)).toEqual({
       timeGte: '2026-10-29T09:00:00.000Z',
       timeLt: '2026-10-29T11:00:00.000Z',
-      limit: 500,
+      limit: 200,
     });
   });
 });

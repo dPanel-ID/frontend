@@ -7,6 +7,9 @@ import { ApiApplication } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
 
+import { LOG_DOWNLOAD_PAGE_SIZE } from '../-lib/log-download';
+import type { LogPageResult } from '../-lib/log-download';
+import type { LogEntryInput } from '../-lib/log-entries';
 import {
   DEFAULT_LOG_TIME_RANGE,
   isLiveLogTimeRange,
@@ -32,11 +35,26 @@ export interface AppLogEntryView {
   attributes?: Record<string, unknown> | null;
 }
 
-interface AppLogView {
+interface AppLogView extends AppLogPagination {
   entries: AppLogEntryView[];
   query: string;
   queryErrors: string[];
 }
+
+export interface AppLogPagination {
+  page: number;
+  hasMore: boolean;
+  /** Lines in the whole window, when the API reports it. */
+  total?: number;
+}
+
+const EMPTY_LOG_VIEW: AppLogView = {
+  entries: [],
+  query: '',
+  queryErrors: [],
+  page: 1,
+  hasMore: false,
+};
 
 export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
   'AppLogsModel',
@@ -47,6 +65,9 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     DEFAULT_LOG_TIME_RANGE,
   );
   const [requestAnchor, setRequestAnchor] = useState(() => Date.now());
+  // Pages are offsets into the window [timeGte, timeLt); the anchor stays put
+  // while paging so new lines cannot shift them.
+  const [page, setPage] = useState(1);
   const [lastDeployment] = useArtifactHistoryModel((s) => [s.lastDeployment]);
   const deploymentId = lastDeployment?.id;
   const logMetadata = logSelection
@@ -64,21 +85,24 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
   const selectLog = useCallback((nextSelection: LogSelection) => {
     setLogSelection(nextSelection);
     setRequestAnchor(Date.now());
+    setPage(1);
   }, []);
 
   const selectTimeRange = useCallback((nextTimeRange: LogTimeRange) => {
     setTimeRange(nextTimeRange);
     setRequestAnchor(Date.now());
+    setPage(1);
   }, []);
 
   const refreshLog = useCallback(() => {
     setRequestAnchor(Date.now());
+    setPage(1);
   }, []);
 
-  // Only short, rolling windows tail on a timer; wider or fixed ranges are
-  // refreshed by hand.
+  // Only short, rolling windows on their newest page tail on a timer; wider,
+  // fixed or older pages are refreshed by hand.
   useEffect(() => {
-    if (!isLive) return;
+    if (!isLive || page !== 1) return;
     if (!logSelection?.filename || !logSelection.serverId) return;
 
     const interval = window.setInterval(() => {
@@ -88,24 +112,22 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     return () => {
       window.clearInterval(interval);
     };
-  }, [isLive, logSelection?.filename, logSelection?.serverId]);
+  }, [isLive, logSelection?.filename, logSelection?.serverId, page]);
+
+  const machineId = deploymentId ? undefined : logMetadata?.serverId;
 
   const [responseLog] = ApiApplication.Logs.$Id.useGet({
     applicationId,
     line: limit,
+    page,
     deploymentId,
-    machineId: deploymentId ? undefined : logMetadata?.serverId,
+    machineId,
     timeGte,
     timeLt,
     options: {
       skip: !logSelection?.serverId || !logSelection.filename,
     },
   });
-  const responseLogLines = useAdapter(
-    responseLog,
-    ApiApplication.Logs.$Id.normalizeLogLines,
-  );
-
   const responseLogView = useAdapter(responseLog, normalizeLogView);
 
   const logView =
@@ -113,43 +135,91 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
       ? responseLogView
       : responseLogView.$status === 'loading' && responseLogView.prevData
         ? responseLogView.prevData
-        : { entries: [], query: '', queryErrors: [] };
+        : EMPTY_LOG_VIEW;
+
+  /** Fetches one download page of the current window, outside the view. */
+  const fetchLogPage = useCallback(
+    async (pageNumber: number, signal: AbortSignal): Promise<LogPageResult> => {
+      const response = await ApiApplication.Logs.$Id.get(
+        {
+          applicationId,
+          line: LOG_DOWNLOAD_PAGE_SIZE,
+          page: pageNumber,
+          deploymentId,
+          machineId,
+          timeGte,
+          timeLt,
+        },
+        { signal },
+      );
+      if (response.$status === 'failed') throw response.error;
+
+      const view = normalizeLogView(response);
+      return {
+        entries: view.entries.map(toLogEntryInput),
+        hasMore: view.hasMore,
+        total: view.total,
+      };
+    },
+    [applicationId, deploymentId, machineId, timeGte, timeLt],
+  );
 
   return {
-    log: responseLogLines,
+    log: responseLog,
     logEntries: logView.entries,
     logQuery: logView.query,
     logQueryErrors: logView.queryErrors,
+    logPagination: {
+      page: logView.page,
+      hasMore: logView.hasMore,
+      total: logView.total,
+    } satisfies AppLogPagination,
+    page,
+    setPage,
+    fetchLogPage,
     refreshLog,
     timeRange,
     selectTimeRange,
     /** When the current window was requested; "now" for relative times. */
     fetchedAt: requestAnchor,
+    timeGte,
+    timeLt,
     lineLimit: limit,
     logMetadata,
     logFilename: logSelection?.filename,
-    logLines:
-      responseLogLines.$status === 'success'
-        ? responseLogLines
-        : responseLogLines.$status === 'loading' && responseLogLines.prevData
-          ? responseLogLines.prevData
-          : [],
     setLogSelection: selectLog,
   };
 });
 
-function normalizeLogView(raw: DTOs.ApplicationLogsResponseV1): AppLogView {
-  const query = typeof raw.query === 'string' ? raw.query : '';
-  const queryErrors = Array.isArray(raw.query_errors)
-    ? raw.query_errors.filter((queryError): queryError is string =>
-        Boolean(queryError),
-      )
-    : [];
+/** An entry as the log helpers read it; the source is the host that wrote it. */
+export function toLogEntryInput(entry: AppLogEntryView): LogEntryInput {
+  const hostName = entry.attributes?.host_name;
 
   return {
-    entries: normalizeLogEntries(raw),
-    query,
-    queryErrors,
+    line: entry.line,
+    severity: entry.severity,
+    time: entry.time,
+    source: typeof hostName === 'string' ? hostName : undefined,
+  };
+}
+
+function normalizeLogView(raw: DTOs.ApplicationLogsResponseV1): AppLogView {
+  const entries = normalizeLogEntries(raw);
+  if (Array.isArray(raw)) {
+    return { ...EMPTY_LOG_VIEW, entries };
+  }
+
+  return {
+    entries,
+    query: typeof raw.query === 'string' ? raw.query : '',
+    queryErrors: Array.isArray(raw.query_errors)
+      ? raw.query_errors.filter((queryError): queryError is string =>
+          Boolean(queryError),
+        )
+      : [],
+    page: typeof raw.page === 'number' && raw.page > 0 ? raw.page : 1,
+    hasMore: raw.has_more === true,
+    total: typeof raw.total === 'number' ? raw.total : undefined,
   };
 }
 

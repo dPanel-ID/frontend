@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 
-import { DownloadIcon, RefreshCwIcon, ScrollTextIcon } from 'lucide-react';
+import { RefreshCwIcon, ScrollTextIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
@@ -21,8 +21,12 @@ import {
   DataPanelState,
 } from '@/shared/presentation/organisms/DataPanel';
 
+import { maxLogPage } from '../../../../-lib/log-download';
 import { LOG_LEVEL_ORDER, countLogLevels } from '../../../../-lib/log-entries';
 import type { LogTimeRange } from '../../../../-lib/log-time-range';
+import LogDownloadMenu from '../LogDownloadMenu';
+import type { LogDownloadMenuProps } from '../LogDownloadMenu';
+import LogPager from '../LogPager';
 import LogTimeRangeMenu from '../LogTimeRangeMenu';
 import LogViewer from '../LogViewer';
 
@@ -50,7 +54,17 @@ interface LogsPanelProps {
   source?: ReactNode;
   status: LogsPanelStatus;
   entries: ParsedLogLine[];
-  lineLimit: number;
+  pagination: {
+    page: number;
+    pageSize: number;
+    hasMore: boolean;
+    totalLines?: number;
+    onPageChange: (page: number) => void;
+  };
+  download: Omit<
+    LogDownloadMenuProps,
+    'page' | 'pageLines' | 'totalLines' | 'canDownloadAll'
+  > & { canDownloadAll: boolean };
   timeRange: LogTimeRange;
   timeZoneLabel: string;
   query?: string;
@@ -62,7 +76,6 @@ interface LogsPanelProps {
   scrollResetKey?: string;
   onRefresh: () => void;
   onTimeRangeChange: (range: LogTimeRange) => void;
-  onDownload?: () => void;
 }
 
 type LevelFilter = LogLevel | 'all';
@@ -75,10 +88,10 @@ export default function LogsPanel(props: LogsPanelProps) {
     emptyTitle,
     entries,
     icon = ScrollTextIcon,
+    download,
     isRefreshing,
-    lineLimit,
-    onDownload,
     onRefresh,
+    pagination,
     onTimeRangeChange,
     query,
     queryErrors = [],
@@ -126,19 +139,12 @@ export default function LogsPanel(props: LogsPanelProps) {
       description={description}
       actions={
         <>
-          {onDownload && (
-            <Button
-              size="icon-sm"
-              buttonColor="secondary"
-              buttonStyle="outline"
-              disabled={entries.length === 0}
-              onClick={onDownload}
-              aria-label={t('downloadLog')}
-              title={t('downloadLog')}
-            >
-              <DownloadIcon />
-            </Button>
-          )}
+          <LogDownloadMenu
+            {...download}
+            page={pagination.page}
+            pageLines={entries.length}
+            totalLines={pagination.totalLines}
+          />
           <Button
             size="sm"
             buttonColor="secondary"
@@ -166,30 +172,23 @@ export default function LogsPanel(props: LogsPanelProps) {
             {t('showing', {
               shown: filteredEntries.length,
               total: entries.length,
-              limit: lineLimit,
             })}
           </DataPanelMeta>
         </>
       }
       footer={
-        (query || queryErrors.length > 0) && (
-          <>
-            {query && (
-              <DataPanelMeta>
-                <span className="break-all font-mono" title={query}>
-                  {query}
-                </span>
-              </DataPanelMeta>
-            )}
-            {queryErrors.map((warning, index) => (
-              <p
-                key={`${index}:${warning}`}
-                className="text-xs text-amber-600 dark:text-amber-300"
-              >
-                {warning}
-              </p>
-            ))}
-          </>
+        status === 'ready' &&
+        (entries.length > 0 || pagination.page > 1) && (
+          <LogPager
+            page={pagination.page}
+            pageSize={pagination.pageSize}
+            pageLines={entries.length}
+            hasMore={pagination.hasMore}
+            totalLines={pagination.totalLines}
+            maxPage={maxLogPage(pagination.pageSize)}
+            disabled={isRefreshing}
+            onPageChange={pagination.onPageChange}
+          />
         )
       }
     >
@@ -211,6 +210,28 @@ export default function LogsPanel(props: LogsPanelProps) {
         />
       ) : (
         <>
+          {(query || queryErrors.length > 0) && (
+            <div className="grid gap-1 border-b px-3 py-2 text-xs">
+              {query && (
+                <details className="text-muted-foreground">
+                  <summary className="cursor-pointer select-none font-medium">
+                    {t('query')}
+                  </summary>
+                  <code className="mt-1 block break-all font-mono text-[11px]">
+                    {query}
+                  </code>
+                </details>
+              )}
+              {queryErrors.map((warning, index) => (
+                <p
+                  key={`${index}:${warning}`}
+                  className="text-amber-600 dark:text-amber-300"
+                >
+                  {warning}
+                </p>
+              ))}
+            </div>
+          )}
           {presentLevels.length > 1 && (
             <div
               role="group"
