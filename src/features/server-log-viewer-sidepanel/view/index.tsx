@@ -149,9 +149,10 @@ function truncateLogText(value: string, limit: number) {
 function isJsonLikeLogText(value: string) {
   const trimmed = value.trim();
 
+  // A bracketed tag such as "[postRequestJSON] ..." is not a JSON array.
   return (
     trimmed.startsWith('{') ||
-    trimmed.startsWith('[') ||
+    /^\[\s*(?:[[{"\]\d-]|true\b|false\b|null\b)/.test(trimmed) ||
     /(?:^|\s)(event|payload|data|attributes)=["']?[{[]/.test(trimmed)
   );
 }
