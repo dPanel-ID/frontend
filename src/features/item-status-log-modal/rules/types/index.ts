@@ -1,9 +1,8 @@
-import type { ReactNode } from 'react';
-
 export interface ItemStatusLogModalProps {
   logTopicTitle: string;
   logTopicMessage: string;
 
-  mainLogs: ReactNode;
-  additionalLogs?: ReactNode;
+  /** Plain text; each line becomes a row in the log table. */
+  mainLogs: string;
+  additionalLogs?: string;
 }

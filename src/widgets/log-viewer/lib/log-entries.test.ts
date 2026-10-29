@@ -4,6 +4,8 @@ import {
   countLogLevels,
   formatLogTime,
   parseLogEntryTime,
+  readableLogTimestamp,
+  summarizeHttpAccessLog,
   toParsedLogLines,
 } from './log-entries';
 
@@ -133,5 +135,109 @@ describe('toParsedLogLines', () => {
     });
 
     expect(lines.map((line) => line.lineNumber)).toEqual([201, 202]);
+  });
+});
+
+describe('readableLogTimestamp', () => {
+  it('reads an ISO time as local time', () => {
+    const at = new Date(2026, 9, 29, 15, 24, 12).toISOString();
+    expect(readableLogTimestamp(at, NOW, 'en-US')).toBe('Today 15:24:12');
+  });
+
+  it.each([
+    ['a syslog time without a year', 'Oct 29 14:00:01'],
+    ['an already readable time', 'Today 15:24:12'],
+    ['nothing', undefined],
+  ])('leaves %s alone', (_, value) => {
+    expect(readableLogTimestamp(value, NOW, 'en-US')).toBe(value);
+  });
+});
+
+describe('stderr severity', () => {
+  it('reads the level from the text for lines stamped by their stream', () => {
+    const lines = toParsedLogLines(
+      [
+        {
+          line: '#29 exporting layers done',
+          severity: 'ERROR',
+          stream: 'stderr',
+        },
+        {
+          line: 'ERROR: failed to solve: process did not complete',
+          severity: 'ERROR',
+          stream: 'stderr',
+        },
+        { line: 'worker stopped', severity: 'ERROR', stream: 'stdout' },
+      ],
+      OPTIONS,
+    );
+
+    expect(lines.map((line) => line.level)).toEqual(['info', 'error', 'error']);
+  });
+});
+
+describe('summarizeHttpAccessLog', () => {
+  it('reads a Caddy access log line', () => {
+    expect(
+      summarizeHttpAccessLog({
+        msg: 'handled request',
+        request: { method: 'get', host: 'api.example.com', uri: '/v1/users' },
+        status: 502,
+        duration: 1.2371,
+      }),
+    ).toEqual({
+      message: 'GET api.example.com/v1/users → 502 · 1.24 s',
+      level: 'error',
+      host: 'api.example.com',
+    });
+  });
+
+  it.each([
+    [200, 'info'],
+    [304, 'info'],
+    [404, 'warn'],
+    [503, 'error'],
+  ])('levels status %i as %s', (status, level) => {
+    expect(
+      summarizeHttpAccessLog({
+        request: { method: 'GET', uri: '/' },
+        status,
+        duration: 0.0042,
+      })?.level,
+    ).toBe(level);
+  });
+
+  it('shows sub-second durations in milliseconds', () => {
+    expect(
+      summarizeHttpAccessLog({
+        request: { method: 'POST', uri: '/hook' },
+        status: 204,
+        duration: 0.0042,
+      })?.message,
+    ).toBe('POST /hook → 204 · 4 ms');
+  });
+
+  it.each([
+    ['plain JSON', { message: 'hello' }],
+    ['no status', { request: { method: 'GET', uri: '/' } }],
+    ['not an object', 'GET / 200'],
+  ])('leaves %s alone', (_, payload) => {
+    expect(summarizeHttpAccessLog(payload)).toBeUndefined();
+  });
+
+  it('summarises access lines in the parsed rows', () => {
+    const [line] = toParsedLogLines(
+      [
+        {
+          line: '{"level":"info","msg":"handled request","request":{"method":"GET","host":"app.example.com","uri":"/health"},"status":404,"duration":0.01}',
+        },
+      ],
+      OPTIONS,
+    );
+
+    expect(line?.message).toBe('GET app.example.com/health → 404 · 10 ms');
+    expect(line?.level).toBe('warn');
+    expect(line?.sourceLabel).toBe('app.example.com');
+    expect(line?.jsonLabel).toBe('HTTP');
   });
 });

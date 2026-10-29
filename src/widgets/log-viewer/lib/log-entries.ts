@@ -12,6 +12,8 @@ export interface LogEntryInput {
   time?: string;
   /** Where the line came from, e.g. the host that wrote it. */
   source?: string;
+  /** The output stream the line was read from, e.g. "stderr". */
+  stream?: string;
 }
 
 /** Most severe first; also the order the level filters are shown in. */
@@ -97,6 +99,24 @@ export function formatLogTime(ms: number, nowMs: number, locale: string) {
   return `${date}, ${time}`;
 }
 
+// Only full ISO 8601 date-times: a syslog "Oct 29 14:00:01" has no year,
+// and Date would quietly guess one.
+const ISO_DATE_TIME = /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/;
+
+/**
+ * A parsed ISO timestamp as readable local time ("Today 22:24:12"); any
+ * other text is returned unchanged.
+ */
+export function readableLogTimestamp(
+  value: string | undefined,
+  nowMs: number,
+  locale: string,
+) {
+  if (!value || !ISO_DATE_TIME.test(value)) return value;
+  const ms = Date.parse(value);
+  return Number.isNaN(ms) ? value : formatLogTime(ms, nowMs, locale);
+}
+
 /** Turns API entries into the rows the server log viewer renders. */
 export function toParsedLogLines(
   entries: LogEntryInput[],
@@ -118,12 +138,21 @@ export function toParsedLogLines(
         ? entry.line
         : entry.line.replace(GO_LOG_TIMESTAMP, '');
     const parsed = parseLogLine(line, index, undefined);
-    const level = moreSevere(levelFromSeverity(entry.severity), parsed.level);
+    const access = summarizeHttpAccessLog(parsed.jsonPayload);
+    // A line read from stderr is stamped ERROR, but tools such as Docker
+    // BuildKit write all their progress there; only the text can tell.
+    const stamped =
+      entry.stream?.trim().toLowerCase() === 'stderr'
+        ? undefined
+        : levelFromSeverity(entry.severity);
+    const level = access
+      ? moreSevere(access.level, stamped ?? 'info')
+      : moreSevere(stamped, parsed.level);
     const timestamp =
       timeMs === undefined
         ? parsed.timestamp
         : formatLogTime(timeMs, nowMs, locale);
-    const source = entry.source?.trim() || fallbackSource;
+    const source = access?.host || entry.source?.trim() || fallbackSource;
 
     // Identical lines can share a timestamp, so count repeats to keep ids
     // unique and stable across refreshes (expanded rows stay expanded).
@@ -136,12 +165,45 @@ export function toParsedLogLines(
       id: `${baseId}|${seen}`,
       lineNumber: lineOffset + index + 1,
       raw: entry.line,
+      ...(access && { message: access.message, jsonLabel: 'HTTP' }),
       level,
       timestamp,
       sourceLabel: source,
       searchText: `${parsed.searchText} ${timestamp ?? ''} ${source}`,
     };
   });
+}
+
+/**
+ * Reads a JSON HTTP access log line (Caddy, and similar shapes) as
+ * "GET example.com/path → 502 · 1.24 s", leveled by its status: 5xx is an
+ * error and 4xx a warning. Anything without a request and a status is not an
+ * access log and is left alone.
+ */
+export function summarizeHttpAccessLog(
+  payload: unknown,
+): { message: string; level: LogLevel; host?: string } | undefined {
+  if (!isRecord(payload)) return undefined;
+
+  const request = isRecord(payload.request) ? payload.request : payload;
+  const method = textOf(request.method);
+  const path = textOf(request.uri) ?? textOf(request.path);
+  const status =
+    numberOf(payload.status) ??
+    numberOf(payload.status_code) ??
+    numberOf(payload.http_response_status_code);
+  if (!method || !path || status === undefined) return undefined;
+
+  const host = textOf(request.host);
+  const duration = numberOf(payload.duration);
+  const parts = [`${method.toUpperCase()} ${host ?? ''}${path} → ${status}`];
+  if (duration !== undefined) parts.push(formatDurationSeconds(duration));
+
+  return {
+    message: parts.join(' · '),
+    level: status >= 500 ? 'error' : status >= 400 ? 'warn' : 'info',
+    host,
+  };
 }
 
 /** How many lines each level has, for the level filter. */
@@ -169,4 +231,26 @@ function startOfDay(ms: number) {
   const date = new Date(ms);
   date.setHours(0, 0, 0, 0);
   return date.getTime();
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value != null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function textOf(value: unknown) {
+  return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+}
+
+function numberOf(value: unknown) {
+  const number = typeof value === 'string' ? Number(value) : value;
+  return typeof number === 'number' && Number.isFinite(number)
+    ? number
+    : undefined;
+}
+
+// Caddy reports durations in seconds.
+function formatDurationSeconds(seconds: number) {
+  return seconds < 1
+    ? `${Math.round(seconds * 1000)} ms`
+    : `${seconds.toFixed(2)} s`;
 }
