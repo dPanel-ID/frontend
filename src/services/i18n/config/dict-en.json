@@ -710,12 +710,33 @@
         "downloadLog": "Download selected log",
         "runtimeLogOutput": "Runtime log output",
         "timeRangeLabel": "Runtime log time range",
-        "tenMinutes": "10m",
-        "oneHour": "1h",
-        "last10Minutes": "Last 10 minutes",
-        "lastHour": "Last hour",
         "lineWindow": "{count}/{limit} lines",
-        "emptyLog": "No runtime logs in this window."
+        "emptyLog": "No runtime logs in this window.",
+        "timeRange": "Time range",
+        "timeRangeHint": "Choose a recent period or a custom range up to {days} days back. Times are in your time zone ({offset}).",
+        "timeRangePresets": {
+          "last10m": "Last 10 minutes",
+          "last1h": "Last 1 hour",
+          "last6h": "Last 6 hours",
+          "last24h": "Last 24 hours",
+          "last3d": "Last 3 days",
+          "last7d": "Last 7 days",
+          "last10d": "Last 10 days"
+        },
+        "customRange": "Custom range",
+        "customRangeHint": "Choose up to {days} days back",
+        "customRangeTimezone": "Times are in your time zone ({offset}).",
+        "customRangeErrors": {
+          "invalid": "Enter both a start and an end.",
+          "startAfterEnd": "The start must be before the end.",
+          "tooOld": "Logs are only kept for the last {days} days.",
+          "inFuture": "The end can't be in the future."
+        },
+        "rangeFrom": "From",
+        "rangeTo": "To",
+        "applyRange": "Apply",
+        "cancel": "Cancel",
+        "backToPresets": "Back to time ranges"
       },
       "dangerZone": {
         "title": "Danger zone",

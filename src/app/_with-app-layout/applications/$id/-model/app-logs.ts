@@ -7,6 +7,13 @@ import { ApiApplication } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
 
+import {
+  DEFAULT_LOG_TIME_RANGE,
+  isLiveLogTimeRange,
+  resolveLogTimeRange,
+} from '../-lib/log-time-range';
+import type { LogTimeRange } from '../-lib/log-time-range';
+
 import { useArtifactHistoryModel } from './artifact-history';
 
 interface AppLogsModelProps {
@@ -31,34 +38,16 @@ interface AppLogView {
   queryErrors: string[];
 }
 
-export type AppLogTimeFilter = '10m' | '1h';
-
-export const APP_LOG_TIME_FILTERS = {
-  '10m': {
-    durationMs: 10 * 60 * 1000,
-    limit: 10,
-  },
-  '1h': {
-    durationMs: 60 * 60 * 1000,
-    limit: 100,
-  },
-} satisfies Record<
-  AppLogTimeFilter,
-  {
-    durationMs: number;
-    limit: number;
-  }
->;
-
 export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
   'AppLogsModel',
 )((props: AppLogsModelProps) => {
   const { applicationId } = props;
   const [logSelection, setLogSelection] = useState<LogSelection>();
-  const [timeFilter, setTimeFilter] = useState<AppLogTimeFilter>('10m');
+  const [timeRange, setTimeRange] = useState<LogTimeRange>(
+    DEFAULT_LOG_TIME_RANGE,
+  );
   const [requestAnchor, setRequestAnchor] = useState(() => Date.now());
   const [lastDeployment] = useArtifactHistoryModel((s) => [s.lastDeployment]);
-  const timeFilterConfig = APP_LOG_TIME_FILTERS[timeFilter];
   const deploymentId = lastDeployment?.id;
   const logMetadata = logSelection
     ? {
@@ -66,18 +55,19 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
         serverId: logSelection.serverId,
       }
     : undefined;
-  const timeGte = new Date(
-    requestAnchor - timeFilterConfig.durationMs,
-  ).toISOString();
-  const timeLt = new Date(requestAnchor).toISOString();
+  const { limit, timeGte, timeLt } = resolveLogTimeRange(
+    timeRange,
+    requestAnchor,
+  );
+  const isLive = isLiveLogTimeRange(timeRange);
 
   const selectLog = useCallback((nextSelection: LogSelection) => {
     setLogSelection(nextSelection);
     setRequestAnchor(Date.now());
   }, []);
 
-  const selectTimeFilter = useCallback((nextTimeFilter: AppLogTimeFilter) => {
-    setTimeFilter(nextTimeFilter);
+  const selectTimeRange = useCallback((nextTimeRange: LogTimeRange) => {
+    setTimeRange(nextTimeRange);
     setRequestAnchor(Date.now());
   }, []);
 
@@ -85,7 +75,10 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     setRequestAnchor(Date.now());
   }, []);
 
+  // Only short, rolling windows tail on a timer; wider or fixed ranges are
+  // refreshed by hand.
   useEffect(() => {
+    if (!isLive) return;
     if (!logSelection?.filename || !logSelection.serverId) return;
 
     const interval = window.setInterval(() => {
@@ -95,11 +88,11 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     return () => {
       window.clearInterval(interval);
     };
-  }, [logSelection?.filename, logSelection?.serverId]);
+  }, [isLive, logSelection?.filename, logSelection?.serverId]);
 
   const [responseLog] = ApiApplication.Logs.$Id.useGet({
     applicationId,
-    line: timeFilterConfig.limit,
+    line: limit,
     deploymentId,
     machineId: deploymentId ? undefined : logMetadata?.serverId,
     timeGte,
@@ -128,9 +121,9 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     logQuery: logView.query,
     logQueryErrors: logView.queryErrors,
     refreshLog,
-    timeFilter,
-    selectTimeFilter,
-    lineLimit: timeFilterConfig.limit,
+    timeRange,
+    selectTimeRange,
+    lineLimit: limit,
     logMetadata,
     logFilename: logSelection?.filename,
     logLines:

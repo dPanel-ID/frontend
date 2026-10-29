@@ -701,12 +701,33 @@
         "downloadLog": "Download log terpilih",
         "runtimeLogOutput": "Output log runtime",
         "timeRangeLabel": "Rentang waktu log runtime",
-        "tenMinutes": "10m",
-        "oneHour": "1j",
-        "last10Minutes": "10 menit terakhir",
-        "lastHour": "1 jam terakhir",
         "lineWindow": "{count}/{limit} baris",
-        "emptyLog": "Tidak ada log runtime pada rentang ini."
+        "emptyLog": "Tidak ada log runtime pada rentang ini.",
+        "timeRange": "Rentang waktu",
+        "timeRangeHint": "Pilih periode terkini atau rentang khusus hingga {days} hari ke belakang. Waktu ditampilkan dalam zona waktu Anda ({offset}).",
+        "timeRangePresets": {
+          "last10m": "10 menit terakhir",
+          "last1h": "1 jam terakhir",
+          "last6h": "6 jam terakhir",
+          "last24h": "24 jam terakhir",
+          "last3d": "3 hari terakhir",
+          "last7d": "7 hari terakhir",
+          "last10d": "10 hari terakhir"
+        },
+        "customRange": "Rentang khusus",
+        "customRangeHint": "Pilih hingga {days} hari ke belakang",
+        "customRangeTimezone": "Waktu dalam zona waktu Anda ({offset}).",
+        "customRangeErrors": {
+          "invalid": "Isi waktu mulai dan selesai.",
+          "startAfterEnd": "Waktu mulai harus sebelum waktu selesai.",
+          "tooOld": "Log hanya disimpan untuk {days} hari terakhir.",
+          "inFuture": "Waktu selesai tidak boleh di masa depan."
+        },
+        "rangeFrom": "Dari",
+        "rangeTo": "Sampai",
+        "applyRange": "Terapkan",
+        "cancel": "Batal",
+        "backToPresets": "Kembali ke rentang waktu"
       },
       "dangerZone": {
         "title": "Zona berbahaya",

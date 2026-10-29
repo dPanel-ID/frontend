@@ -2,6 +2,7 @@ import { useDevetekTranslations } from '@/services/i18n';
 
 import { FailedState } from '@/widgets/failed-state';
 
+import { logTimeRangeKey } from '../../-lib/log-time-range';
 import { useAppDataModel } from '../../-model/app-data';
 import { useAppLogsModel } from '../../-model/app-logs';
 import { useEmit } from '../../-model/events';
@@ -10,14 +11,14 @@ import AppLogsSection from './_presentation/AppLogsSection';
 import LogViewer from './_presentation/LogViewer';
 
 const LogView = () => {
-  const [log, logEntries, logQuery, logQueryErrors, refreshLog, timeFilter] =
+  const [log, logEntries, logQuery, logQueryErrors, refreshLog, timeRange] =
     useAppLogsModel((s) => [
       s.log,
       s.logEntries,
       s.logQuery,
       s.logQueryErrors,
       s.refreshLog,
-      s.timeFilter,
+      s.timeRange,
     ]);
   const t = useDevetekTranslations('page.applicationDetail.appLogs');
   const logBuffer =
@@ -51,7 +52,7 @@ const LogView = () => {
         query={log.$status === 'success' ? logQuery : undefined}
         queryErrors={log.$status === 'success' ? logQueryErrors : undefined}
         lines={logBuffer}
-        scrollResetKey={`${timeFilter}:${logBuffer.length}:${logBuffer[0] ?? ''}`}
+        scrollResetKey={`${logTimeRangeKey(timeRange)}:${logBuffer.length}:${logBuffer[0] ?? ''}`}
       />
     </div>
   );
@@ -63,17 +64,17 @@ export default function AppLogs() {
     logFilename,
     logLines,
     refreshLog,
-    selectTimeFilter,
+    selectTimeRange,
     setLogSelection,
-    timeFilter,
+    timeRange,
   ] = useAppLogsModel((s) => [
     s.lineLimit,
     s.logFilename,
     s.logLines,
     s.refreshLog,
-    s.selectTimeFilter,
+    s.selectTimeRange,
     s.setLogSelection,
-    s.timeFilter,
+    s.timeRange,
   ]);
 
   const [appDetailResponse] = useAppDataModel((s) => [s.appDetail]);
@@ -113,14 +114,14 @@ export default function AppLogs() {
 
   return (
     <AppLogsSection
-      activeTimeFilter={timeFilter}
+      timeRange={timeRange}
       selectedLogs={logFilename}
       ctaLogsDisabled={!canSelectLogs}
       lineCount={logLines.length}
       lineLimit={lineLimit}
       onClickLogs={handleClickLogs}
       onClickDownloadLog={handleClickDownloadLog}
-      onSelectTimeFilter={selectTimeFilter}
+      onSelectTimeRange={selectTimeRange}
     >
       <LogView />
     </AppLogsSection>
