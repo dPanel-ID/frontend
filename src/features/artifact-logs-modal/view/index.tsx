@@ -15,11 +15,13 @@ import {
 } from '@/shared/presentation/organisms/DataPanel';
 import { FailedState } from '@/widgets/failed-state';
 import {
+  LogRefreshControl,
   LogResults,
   formatLogFile,
   formatUtcOffset,
   saveLogFile,
   toParsedLogLines,
+  useAutoRefresh,
   useLogFilters,
 } from '@/widgets/log-viewer';
 import type { LogEntryInput } from '@/widgets/log-viewer';
@@ -28,7 +30,6 @@ import type { ArtifactLogsModalProps } from '../rules/types';
 
 /** Enough for a whole typical build; older output is a scroll away. */
 const BUILD_LOG_LINE_LIMIT = 500;
-const BUILD_LOG_REFRESH_MS = 3000;
 
 const Content = (props: ArtifactLogsModalProps) => {
   const { applicationId, artifactId, commitHead, serverId } = props;
@@ -42,10 +43,8 @@ const Content = (props: ArtifactLogsModalProps) => {
     artifactId,
     line: BUILD_LOG_LINE_LIMIT,
     machineId: serverId,
-    options: {
-      refreshIntervalMs: BUILD_LOG_REFRESH_MS,
-    },
   });
+  const autoRefresh = useAutoRefresh(refreshLog);
 
   const data =
     responseLog.$status === 'success'
@@ -102,6 +101,11 @@ const Content = (props: ArtifactLogsModalProps) => {
             <DownloadIcon />
             {tLog('download.label')}
           </Button>
+          <LogRefreshControl
+            state={autoRefresh}
+            isRefreshing={responseLog.$status === 'loading'}
+            onRefresh={refreshLog}
+          />
         </div>
       </div>
 

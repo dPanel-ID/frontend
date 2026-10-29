@@ -229,6 +229,23 @@
         "newer": "Newer",
         "older": "Older",
         "page": "Page {page}"
+      },
+      "autoRefresh": {
+        "label": "Auto-refresh",
+        "aria": "Auto-refresh: {value}",
+        "paused": "Auto-refresh is paused on older pages",
+        "option": {
+          "off": "Off",
+          "30s": "Every 30 seconds",
+          "1m": "Every minute",
+          "5m": "Every 5 minutes"
+        },
+        "short": {
+          "off": "Off",
+          "30s": "30s",
+          "1m": "1m",
+          "5m": "5m"
+        }
       }
     }
   },
