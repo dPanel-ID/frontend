@@ -6,10 +6,10 @@ import {
 } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
-import { Card } from '@/shared/presentation/atoms/Card';
+
+import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import SearchCollapsible from '@/shared/presentation/atoms/SearchCollapsible';
 import SearchKeywordBadge from '@/shared/presentation/atoms/SearchKeywordBadge';
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { buildSegmentedControl } from '@/widgets/ui-atomic-builder/atom-segmented-control';
 
 import { useEmit } from '../../-model/events';
@@ -65,11 +65,15 @@ const SlotSearch = () => {
 
 const SlotRefresh = () => {
   const emit = useEmit();
+  const t = useDevetekTranslations();
+
   return (
     <Button
       size="icon-sm"
       buttonColor="secondary"
       buttonStyle="ghost"
+      aria-label={t('common.actions.refresh')}
+      title={t('common.actions.refresh')}
       onClick={() => emit('@teams/data--refresh', null)}
     >
       <RefreshCwIcon />
@@ -95,15 +99,15 @@ const SlotKeywordBadge = () => {
 export default function MainFilter() {
   return (
     <>
-      <Card className="bg-card/30 rounded-xl p-1.5 grid grid-cols-[1fr_auto] gap-x-2">
-        <div className="flex items-center">
+      <div className="grid grid-cols-[1fr_auto] gap-x-2 rounded-xl border bg-card/40 p-1.5">
+        <div className="flex flex-wrap items-center gap-2">
           <SlotSearch />
         </div>
         <div className="flex items-center gap-x-1">
           <SlotRefresh />
           <SlotViewMode />
         </div>
-      </Card>
+      </div>
       <SlotKeywordBadge />
     </>
   );

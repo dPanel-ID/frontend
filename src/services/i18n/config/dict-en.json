@@ -2524,6 +2524,43 @@
         "title": "No teams found",
         "message": "Create a team to organize resources and applications.",
         "cta": "Add Team"
+      },
+      "hero": {
+        "description": "Teams share servers, applications and cloud accounts. Everyone in a team works in the same workspace, with the roles you give them."
+      },
+      "overview": {
+        "teams": "Teams",
+        "teamsHint": "Teams you belong to",
+        "owned": "Owned by you",
+        "ownedHint": "You can delete these",
+        "shared": "Shared with you",
+        "sharedHint": "Teams others own",
+        "active": "Active workspace",
+        "activeHint": "Where new resources go",
+        "personal": "Personal"
+      },
+      "card": {
+        "activeWorkspace": "Active workspace",
+        "members": "Members",
+        "yourRole": "Your role",
+        "created": "Created {when}",
+        "updated": "Updated {when}"
+      },
+      "table": {
+        "team": "Team",
+        "status": "Status",
+        "yourRole": "Your role",
+        "members": "Members",
+        "created": "Created",
+        "updated": "Updated",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Active",
+        "pending": "Pending",
+        "suspended": "Suspended",
+        "inactive": "Inactive",
+        "deleted": "Deleted"
       }
     },
     "teamDetail": {
@@ -2554,7 +2591,23 @@
         "title": "No members yet",
         "message": "Add members to this team to get started.",
         "cta": "Add Member"
-      }
+      },
+      "hero": {
+        "description": "Everyone here shares this workspace: its servers, applications and cloud accounts, within the roles they hold."
+      },
+      "tiles": {
+        "members": "Members",
+        "membersHint": "Everyone in this team",
+        "yourRole": "Your role",
+        "yourRoleHint": "What you can do here",
+        "status": "Status",
+        "created": "Created"
+      },
+      "membersTitle": "Members",
+      "membersDescription": "Who is in this team and what each of them can do.",
+      "showing": "Showing {shown} of {total, plural, one {# member} other {# members}}",
+      "actionsColumn": "Actions",
+      "joinedAgo": "Joined {when}"
     },
     "notFound": {
       "title": "Page Not Found",
