@@ -49,9 +49,13 @@ The discovery calls come straight from dPanel's code. The launch and delete call
 5. Paste **SecretId** and **SecretKey**.
 6. Press **Connect cloud account**.
 
+![The Connect Cloud Account form with Tencent Cloud selected and the SecretId and SecretKey fields empty](../../../assets/servers/cloud-account-connect-tencent.webp)
+
 dPanel saves the account as **Ready** straight away. It does not test the key on save. The first real test is the launch form: if **Region** stays empty or shows an error, the key or its permissions are wrong.
 
 ## 3. Tencent Cloud fields in the launch form
+
+![The launch form with Tencent Cloud selected](../../../assets/servers/create-provider-tencent.webp)
 
 | Field              | What to pick                                                                           |
 | ------------------ | -------------------------------------------------------------------------------------- |
