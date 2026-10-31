@@ -1,5 +1,15 @@
 import { z } from 'zod';
 
+/** A change the assistant proposed, waiting for the user's decision. */
+export const ChatActionSchema = z.object({
+  id: z.string(),
+  tool: z.string(),
+  summary: z.string(),
+  status: z.enum(['pending', 'deciding', 'executed', 'rejected', 'failed']),
+});
+
+export type ChatAction = z.infer<typeof ChatActionSchema>;
+
 /** One visible line of the conversation. */
 export const ChatEntrySchema = z.object({
   id: z.string(),
@@ -12,6 +22,8 @@ export const ChatEntrySchema = z.object({
   error: z.string().optional(),
   /** The user message to resend when a failed answer is retried. */
   retryText: z.string().optional(),
+  /** Changes proposed in this answer. */
+  actions: z.array(ChatActionSchema).optional(),
 });
 
 export type ChatEntry = z.infer<typeof ChatEntrySchema>;

@@ -1,4 +1,11 @@
-import { CircleAlertIcon, RotateCcwIcon, WrenchIcon } from 'lucide-react';
+import {
+  CheckIcon,
+  CircleAlertIcon,
+  RotateCcwIcon,
+  ShieldQuestionIcon,
+  WrenchIcon,
+  XIcon,
+} from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -18,12 +25,14 @@ import {
 } from '@/shared/presentation/atoms/Table';
 
 import { toolLabel } from '../../../lib/tool-label';
-import type { ChatEntry } from '../../../rules/types';
+import type { ChatAction, ChatEntry } from '../../../rules/types';
 
 interface Props {
   entry: ChatEntry;
   onRetry?: (entry: ChatEntry) => void;
   retryDisabled?: boolean;
+  onDecide?: (action: ChatAction, approve: boolean) => void;
+  decideDisabled?: boolean;
 }
 
 /** Markdown elements mapped onto the product's primitives. Raw HTML is never rendered. */
@@ -72,7 +81,7 @@ const MARKDOWN: Components = {
 };
 
 export default function MessageBubble(props: Props) {
-  const { entry, onRetry, retryDisabled } = props;
+  const { entry, onRetry, retryDisabled, onDecide, decideDisabled } = props;
 
   const t = useDevetekTranslations();
 
@@ -135,6 +144,14 @@ export default function MessageBubble(props: Props) {
           {entry.content || t('sidepanel.aiAssistant.emptyAnswer')}
         </ReactMarkdown>
       </div>
+      {(entry.actions ?? []).map((action) => (
+        <ActionCard
+          key={action.id}
+          action={action}
+          onDecide={onDecide}
+          disabled={decideDisabled}
+        />
+      ))}
       {entry.tools.length > 0 && (
         <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <WrenchIcon className="size-3 shrink-0" aria-hidden />
@@ -144,6 +161,74 @@ export default function MessageBubble(props: Props) {
             })}
           </span>
         </p>
+      )}
+    </div>
+  );
+}
+
+const ACTION_STATUS_TONE: Record<ChatAction['status'], string> = {
+  pending: 'border-amber-400/40 bg-amber-500/10',
+  deciding: 'border-sky-400/40 bg-sky-500/10',
+  executed: 'border-emerald-400/40 bg-emerald-500/10',
+  rejected: 'border-neutral-400/40 bg-neutral-500/10',
+  failed: 'border-red-400/40 bg-red-500/10',
+};
+
+interface ActionCardProps {
+  action: ChatAction;
+  onDecide?: (action: ChatAction, approve: boolean) => void;
+  disabled?: boolean;
+}
+
+/** A change the assistant proposed; nothing happens until it is approved. */
+function ActionCard(props: ActionCardProps) {
+  const { action, onDecide, disabled } = props;
+
+  const t = useDevetekTranslations();
+
+  return (
+    <div
+      className={cn(
+        'mt-1 flex flex-col gap-2 rounded-xl border px-3 py-2 text-sm',
+        ACTION_STATUS_TONE[action.status],
+      )}
+    >
+      <p className="flex items-start gap-2">
+        <ShieldQuestionIcon className="mt-0.5 size-4 shrink-0" aria-hidden />
+        <span className="font-medium">
+          {t(`sidepanel.aiAssistant.action.${action.status}`)}
+        </span>
+      </p>
+      <p className="break-words text-primary">{action.summary}</p>
+      {action.status === 'pending' && onDecide && (
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            disabled={disabled}
+            onClick={() => onDecide(action, true)}
+          >
+            <CheckIcon aria-hidden />
+            {t('sidepanel.aiAssistant.action.approve')}
+          </Button>
+          <Button
+            size="sm"
+            buttonColor="secondary"
+            disabled={disabled}
+            onClick={() => onDecide(action, false)}
+          >
+            <XIcon aria-hidden />
+            {t('sidepanel.aiAssistant.action.reject')}
+          </Button>
+        </div>
+      )}
+      {action.status === 'deciding' && (
+        <span
+          className="flex items-center gap-2 text-muted-foreground"
+          role="status"
+        >
+          <Spinner classNameWrapper="w-max size-4" />
+          {t('sidepanel.aiAssistant.action.working')}
+        </span>
       )}
     </div>
   );

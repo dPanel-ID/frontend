@@ -26,7 +26,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
 //   Method
 // =============================================================================
 
-export type Dto = DTOs.AiChatResultV1;
+export type Dto = DTOs.AiTurnStartedV1;
 
 export function doPost(params: RecipeParams) {
   return apiDoPost<Dto>({
