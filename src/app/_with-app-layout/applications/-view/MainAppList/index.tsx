@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 
 import type { ApplicationCard } from '@/entities/application/rules/schema';
 
+import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
+
 import { ApiLoadBalancer } from '@/shared/api';
 import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
 import { buildResponseView } from '@/widgets/response-view-builder';
@@ -55,8 +57,9 @@ export default buildResponseView({
 
     const handlersFor = (application: ApplicationCard): AppTableHandlers => ({
       edit: () => emit('@applications/application-edit', application),
-      migrateOwnership: () =>
-        emit('@applications/open--migrate-ownership', application),
+      migrateOwnership: isMigrateOwnershipVisible()
+        ? () => emit('@applications/open--migrate-ownership', application)
+        : undefined,
       remove: () =>
         emit('@applications/application-delete', {
           appName: application.identity.name,
