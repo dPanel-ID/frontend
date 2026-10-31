@@ -76,12 +76,15 @@ describe('DocsIntroContent', () => {
             slug: 'servers',
             title: 'Servers',
             summary: 'About servers',
+            position: 1,
             pages: [
               {
                 slug: 'overview',
                 title: 'What a server is here',
                 summary: 'One Linux machine dPanel looks after.',
-                blocks: [],
+                position: 1,
+                file: '/src/documentations/en/servers/overview.md',
+                markdown: 'Body',
               },
             ],
           },
@@ -116,6 +119,7 @@ describe('DocsIntroContent', () => {
             slug: 'domains',
             title: 'Domains',
             summary: 'About domains',
+            position: 1,
             pages: [],
           },
         ]}

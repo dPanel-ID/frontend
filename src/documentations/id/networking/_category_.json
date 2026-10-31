@@ -1,0 +1,9 @@
+{
+  "label": "Jaringan dan domain",
+  "position": 4,
+  "description": "Pasang load balancer ber-HTTPS di depan aplikasi Anda, dan biarkan dPanel mengelola DNS domain milik Anda.",
+  "app": {
+    "label": "Buka load balancer",
+    "href": "/backend/load-balancers"
+  }
+}

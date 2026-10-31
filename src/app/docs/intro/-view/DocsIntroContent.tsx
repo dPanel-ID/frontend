@@ -11,7 +11,10 @@ import {
   GitBranchIcon,
   GlobeIcon,
   KeyRoundIcon,
+  LifeBuoyIcon,
   NetworkIcon,
+  RocketIcon,
+  ScrollTextIcon,
   ServerIcon,
   UsersIcon,
 } from 'lucide-react';
@@ -86,18 +89,23 @@ const SECTION_HEADING =
   'text-xl font-semibold tracking-tight text-primary sm:text-2xl';
 
 /**
- * The icon that stands for a dPanel module in the topic grid, by its
- * documentation slug. Servers is the only module documented today; the rest
- * are here so their guides land with the right mark rather than a fallback.
+ * The icon that stands for a documentation section in the topic grid, by its
+ * folder name under `src/documentations/<locale>/`. A section without an
+ * entry here still gets a card, with the book mark.
  */
 const MODULE_ICONS: Record<string, ComponentType<{ className?: string }>> = {
+  'getting-started': RocketIcon,
   applications: AppWindowIcon,
   databases: DatabaseIcon,
   domains: GlobeIcon,
+  logs: ScrollTextIcon,
   'load-balancers': NetworkIcon,
+  networking: NetworkIcon,
   projects: CloudIcon,
   servers: ServerIcon,
   'ssh-keys': KeyRoundIcon,
+  teams: UsersIcon,
+  troubleshooting: LifeBuoyIcon,
 };
 
 /** The introduction copy for an app locale; unknown locales read in English. */
@@ -140,10 +148,9 @@ export function DocsIntroContent(props: DocsIntroContentProps = {}) {
 /**
  * The documentation topics, one card each.
  *
- * A card stands for a subject a reader came to understand — servers today,
- * and cloud projects, SSH keys, load balancers, applications, domains and
- * databases as those guides are written — and opens that subject at its
- * first page. Listing every page instead would turn the way in to the
+ * A card stands for a subject a reader came to understand — servers,
+ * applications, networking and the rest — and opens that subject at its
+ * first page. New sections appear here as soon as their folder exists. Listing every page instead would turn the way in to the
  * documentation into the index rail this page deliberately does without.
  */
 function IntroGuides(props: { copy: DocsIntroCopy; sections: DocsSection[] }) {

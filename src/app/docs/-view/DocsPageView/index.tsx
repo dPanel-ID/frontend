@@ -1,10 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  BookOpenIcon,
-  ServerIcon,
-} from 'lucide-react';
+import { ArrowLeftIcon, ArrowRightIcon, BookOpenIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -15,10 +10,11 @@ import {
   flowCtaClassName,
 } from '@/shared/presentation/organisms/FlowHero';
 
-import { DocsBlockView } from '../-presentation/DocsBlocks';
 import { DocsFooter } from '../-presentation/DocsFooter';
+import { DocsMarkdown } from '../-presentation/DocsMarkdown';
 import { DocsNav } from '../-presentation/DocsNav';
 import type { DocsPageLocation } from '../../-lib/registry';
+import { docsImageUrl, docsLinkTarget } from '../../-lib/registry';
 import type { DocsSection } from '../../-rules/content';
 
 interface DocsPageViewProps {
@@ -31,9 +27,9 @@ interface DocsPageViewProps {
  * itself in the middle, and the way onwards at the bottom.
  *
  * The whole thing is held to a fixed width rather than filling the display.
- * The screenshots in these pages are 800px wide, so a content column any
- * wider than that upscales them into a blur; the measure a reader wants for
- * long-form prose happens to be about the same width, so one cap serves both.
+ * Prose keeps its own reading measure inside the article; the screenshots
+ * are captured at twice the column's width, so they stay sharp on a retina
+ * display at any width up to this cap.
  */
 export function DocsPageView(props: DocsPageViewProps) {
   const { location, sections } = props;
@@ -59,10 +55,13 @@ export function DocsPageView(props: DocsPageViewProps) {
         title={page.title}
         description={page.summary}
         aside={
-          <Link to="/servers" className={flowCtaClassName('sky')}>
-            <ServerIcon className="size-4" />
-            {t('goToServers')}
-          </Link>
+          section.app && (
+            // A path from the section's _category_.json, not a typed route.
+            <a href={section.app.href} className={flowCtaClassName('sky')}>
+              {section.app.label}
+              <ArrowRightIcon className="size-4" aria-hidden />
+            </a>
+          )
         }
       />
 
@@ -77,9 +76,11 @@ export function DocsPageView(props: DocsPageViewProps) {
 
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           <article className="flex flex-col gap-4 rounded-2xl border bg-card p-5 sm:p-6">
-            {page.blocks.map((block, index) => (
-              <DocsBlockView key={`${block.kind}-${index}`} block={block} />
-            ))}
+            <DocsMarkdown
+              markdown={page.markdown}
+              resolveLink={(href) => docsLinkTarget(href, page.file)}
+              resolveImage={(src) => docsImageUrl(src, page.file)}
+            />
           </article>
 
           {(previous ?? next) && (

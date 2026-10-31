@@ -1,17 +1,42 @@
-import { SERVERS_SECTION_EN } from '../-content/servers.en';
-import { SERVERS_SECTION_ID } from '../-content/servers.id';
 import type { DocsLocale, DocsPage, DocsSection } from '../-rules/content';
 import { isDocsLocale } from '../-rules/content';
 
-/**
- * Every documentation section, per language. The two trees carry the same
- * slugs in the same order, so switching language keeps the reader on the page
- * they were reading.
+import type { DocsLinkTarget } from './links';
+import { indexDocsFiles, resolveDocsImage, resolveDocsLink } from './links';
+import { buildDocsTree } from './tree';
+
+/*
+ * The documentation is read at build time. Vite inlines every page and
+ * category file into the bundle, and fingerprints every image, so nothing is
+ * fetched at runtime and the pages render on the server like any other.
  */
-const SECTIONS: Record<DocsLocale, DocsSection[]> = {
-  en: [SERVERS_SECTION_EN],
-  id: [SERVERS_SECTION_ID],
-};
+const PAGE_FILES = import.meta.glob<string>('/src/documentations/*/*/*.md', {
+  eager: true,
+  query: '?raw',
+  import: 'default',
+});
+
+const CATEGORY_FILES = import.meta.glob<unknown>(
+  '/src/documentations/*/*/_category_.json',
+  { eager: true, import: 'default' },
+);
+
+const IMAGE_URLS = import.meta.glob<string>(
+  '/src/documentations/assets/**/*.{webp,png,jpg,jpeg,gif,svg}',
+  { eager: true, query: '?url', import: 'default' },
+);
+
+/**
+ * Every documentation section, per language. The trees carry the same slugs
+ * in the same order — a test holds them to it — so switching language keeps
+ * the reader on the page they were reading.
+ */
+const TREE = buildDocsTree({
+  pages: PAGE_FILES,
+  categories: CATEGORY_FILES,
+});
+
+const FILES = indexDocsFiles(TREE);
 
 /** The language the documentation is written in, for an app locale. */
 export function docsLocaleFor(locale: string): DocsLocale {
@@ -21,7 +46,7 @@ export function docsLocaleFor(locale: string): DocsLocale {
 }
 
 export function docsSections(locale: string): DocsSection[] {
-  return SECTIONS[docsLocaleFor(locale)];
+  return TREE[docsLocaleFor(locale)];
 }
 
 export function findDocsSection(
@@ -63,4 +88,14 @@ export function findDocsPage(
 /** The first page of a section, where a bare section link lands. */
 export function firstDocsPageSlug(locale: string, sectionSlug: string) {
   return findDocsSection(locale, sectionSlug)?.pages[0]?.slug;
+}
+
+/** Where a link written in the page at `fromFile` goes. */
+export function docsLinkTarget(href: string, fromFile: string): DocsLinkTarget {
+  return resolveDocsLink(href, fromFile, FILES);
+}
+
+/** The served URL of an image written in the page at `fromFile`. */
+export function docsImageUrl(src: string, fromFile: string) {
+  return resolveDocsImage(src, fromFile, IMAGE_URLS);
 }
