@@ -3354,7 +3354,7 @@
     "aiAssistant": {
       "launcher": "Tanya dPanel",
       "title": "Asisten dPanel",
-      "subtitle": "Mencari informasi di workspace Anda saat ini. Belum bisa melakukan perubahan.",
+      "subtitle": "Bekerja di workspace Anda saat ini. Perubahan hanya dijalankan setelah Anda setujui.",
       "introTitle": "Tanyakan tentang infrastruktur Anda",
       "introBody": "Asisten membaca server, aplikasi, domain, load balancer, SSH key, cloud project, dan job terbaru Anda melalui dPanel, dengan akses Anda sendiri. Coba salah satu ini:",
       "exampleServers": "Server mana saja yang sedang berhenti?",

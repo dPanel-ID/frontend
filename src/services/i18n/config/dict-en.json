@@ -3362,7 +3362,7 @@
     "aiAssistant": {
       "launcher": "Ask dPanel",
       "title": "dPanel assistant",
-      "subtitle": "Looks things up in your current workspace. It can't make changes yet.",
+      "subtitle": "Works in your current workspace. Changes run only after you approve them.",
       "introTitle": "Ask about your infrastructure",
       "introBody": "The assistant reads your servers, applications, domains, load balancers, SSH keys, cloud projects and recent jobs through dPanel, with your own access. Try one of these:",
       "exampleServers": "Which of my servers are stopped?",
