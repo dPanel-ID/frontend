@@ -43,7 +43,8 @@ import type { AppLoadBalancer } from '../../-lib/load-balancer-index';
 
 export interface AppTableHandlers {
   edit: () => void;
-  migrateOwnership: () => void;
+  /** Absent while Migrate Ownership is hidden. */
+  migrateOwnership?: () => void;
   remove: () => void;
 }
 
@@ -177,10 +178,12 @@ export default function AppTable(props: AppTableProps) {
                           <PencilIcon className="size-4" />
                           {t('common.actions.edit')}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={handlers.migrateOwnership}>
-                          <BuildingIcon className="size-4" />
-                          {t('common.actions.migrateOwnership')}
-                        </DropdownMenuItem>
+                        {handlers.migrateOwnership && (
+                          <DropdownMenuItem onClick={handlers.migrateOwnership}>
+                            <BuildingIcon className="size-4" />
+                            {t('common.actions.migrateOwnership')}
+                          </DropdownMenuItem>
+                        )}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           variant="destructive"

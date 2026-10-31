@@ -32,6 +32,8 @@ import { ServerErrorDialog } from '@/entities/server/ui/ServerErrorDialog';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
 
+import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
+
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import {
   couple,
@@ -175,14 +177,16 @@ export default guard(function Hero() {
                     {t('reinstall')}
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem
-                  onClick={() =>
-                    emit('@servers::detail/server-migrate-ownership', null)
-                  }
-                >
-                  <BuildingIcon className="size-4" />
-                  {t('migrateOwnership')}
-                </DropdownMenuItem>
+                {isMigrateOwnershipVisible() && (
+                  <DropdownMenuItem
+                    onClick={() =>
+                      emit('@servers::detail/server-migrate-ownership', null)
+                    }
+                  >
+                    <BuildingIcon className="size-4" />
+                    {t('migrateOwnership')}
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   variant="destructive"

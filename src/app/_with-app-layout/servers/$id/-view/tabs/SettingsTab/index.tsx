@@ -13,6 +13,8 @@ import { useDevetekTranslations } from '@/services/i18n';
 
 import { canReinstallServer } from '@/entities/server/lib/describeServer';
 
+import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
+
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { DataPanel } from '@/shared/presentation/organisms/DataPanel';
@@ -70,26 +72,28 @@ export default function SettingsTab() {
             }
           />
         )}
-        <SettingCard
-          icon={BuildingIcon}
-          title={t('ownership.title')}
-          description={t('ownership.description', {
-            owner: server?.ownership.team || server?.ownership.owner || '-',
-          })}
-          action={
-            <Button
-              buttonStyle="outline"
-              buttonColor="secondary"
-              size="sm"
-              onClick={() =>
-                emit('@servers::detail/server-migrate-ownership', null)
-              }
-            >
-              <BuildingIcon />
-              {t('ownership.action')}
-            </Button>
-          }
-        />
+        {isMigrateOwnershipVisible() && (
+          <SettingCard
+            icon={BuildingIcon}
+            title={t('ownership.title')}
+            description={t('ownership.description', {
+              owner: server?.ownership.team || server?.ownership.owner || '-',
+            })}
+            action={
+              <Button
+                buttonStyle="outline"
+                buttonColor="secondary"
+                size="sm"
+                onClick={() =>
+                  emit('@servers::detail/server-migrate-ownership', null)
+                }
+              >
+                <BuildingIcon />
+                {t('ownership.action')}
+              </Button>
+            }
+          />
+        )}
         <SettingCard
           icon={Trash2Icon}
           tone="danger"

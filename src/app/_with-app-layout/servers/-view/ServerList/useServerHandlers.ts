@@ -3,13 +3,16 @@ import { useNavigate } from '@tanstack/react-router';
 import { canReinstallServer } from '@/entities/server/lib/describeServer';
 import type { ServerCard } from '@/entities/server/rules/schema';
 
+import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
+
 import { useEmit } from '../../-model/events';
 
 /** Everything a row or card can do with one server. */
 export interface ServerHandlers {
   openDetails: () => void;
   showStatus: () => void;
-  migrateOwnership: () => void;
+  /** Absent while Migrate Ownership is hidden. */
+  migrateOwnership?: () => void;
   remove: () => void;
   /**
    * Absent while setup is running, where it would collide, and for a
@@ -33,14 +36,16 @@ export function useServerHandlers() {
         navigate({ to: '/servers/$id', params: { id: server.id } }),
       showStatus: () =>
         emit('@resources::servers/server-status-info-dialog', server),
-      migrateOwnership: () =>
-        // Own servers often have no hostname; fall back to the address.
-        emit('@resources::servers/server-migrate-ownership', {
-          serverId: server.id,
-          serverName: server.host.name || server.host.address || server.id,
-          serverTeam: server.ownership.team,
-          serverTeamId: server.ownership.teamId,
-        }),
+      migrateOwnership: isMigrateOwnershipVisible()
+        ? () =>
+            // Own servers often have no hostname; fall back to the address.
+            emit('@resources::servers/server-migrate-ownership', {
+              serverId: server.id,
+              serverName: server.host.name || server.host.address || server.id,
+              serverTeam: server.ownership.team,
+              serverTeamId: server.ownership.teamId,
+            })
+        : undefined,
       remove: () =>
         emit('@resources::servers/machine-delete', {
           serverId: server.id,

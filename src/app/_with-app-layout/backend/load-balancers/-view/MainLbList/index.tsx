@@ -1,3 +1,5 @@
+import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
+
 import { buildResponseView } from '@/widgets/response-view-builder';
 
 import { LbListState } from '../-presentation/LbListState';
@@ -55,8 +57,14 @@ export default buildResponseView({
               onClickDelete={() =>
                 emit('@load-balancers/lb--delete', loadBalancer)
               }
-              onClickMigrateOwnership={() =>
-                emit('@load-balancers/open--migrate-ownership', loadBalancer)
+              onClickMigrateOwnership={
+                isMigrateOwnershipVisible()
+                  ? () =>
+                      emit(
+                        '@load-balancers/open--migrate-ownership',
+                        loadBalancer,
+                      )
+                  : undefined
               }
             />
           ))}
@@ -77,8 +85,14 @@ export default buildResponseView({
             onClickDelete={() =>
               emit('@load-balancers/lb--delete', loadBalancer)
             }
-            onClickMigrateOwnership={() =>
-              emit('@load-balancers/open--migrate-ownership', loadBalancer)
+            onClickMigrateOwnership={
+              isMigrateOwnershipVisible()
+                ? () =>
+                    emit(
+                      '@load-balancers/open--migrate-ownership',
+                      loadBalancer,
+                    )
+                : undefined
             }
           />
         ))}

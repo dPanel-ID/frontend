@@ -12,6 +12,8 @@ import { useDevetekTranslations } from '@/services/i18n';
 
 import type { LoadBalancerCard } from '@/entities/load-balancer/rules/schema';
 
+import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
+
 import { cn } from '@/shared/libs/tailwind/cn';
 import {
   DropdownMenu,
@@ -51,11 +53,13 @@ export function LbActions(props: LbActionsProps) {
           title={t('common.actions.details')}
           onClick={openDetails}
         />
-        <ActionIcon
-          icon={BuildingIcon}
-          title={t('common.actions.migrateOwnership')}
-          onClick={migrateOwnership}
-        />
+        {isMigrateOwnershipVisible() && (
+          <ActionIcon
+            icon={BuildingIcon}
+            title={t('common.actions.migrateOwnership')}
+            onClick={migrateOwnership}
+          />
+        )}
         <ActionIcon
           icon={Trash2Icon}
           title={t('common.actions.delete')}
@@ -86,11 +90,15 @@ export function LbActions(props: LbActionsProps) {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" onClick={stop}>
-          <DropdownMenuItem onClick={migrateOwnership}>
-            <BuildingIcon className="size-4" />
-            {t('common.actions.migrateOwnership')}
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          {isMigrateOwnershipVisible() && (
+            <>
+              <DropdownMenuItem onClick={migrateOwnership}>
+                <BuildingIcon className="size-4" />
+                {t('common.actions.migrateOwnership')}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
           <DropdownMenuItem variant="destructive" onClick={remove}>
             <Trash2Icon className="size-4" />
             {t('common.actions.delete')}
