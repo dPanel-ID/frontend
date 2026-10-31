@@ -16,14 +16,8 @@ import { ChoiceTile } from '@/shared/presentation/molecules/ChoiceTile';
 import { Combobox } from '@/shared/presentation/molecules/Combobox';
 import { ComboboxWithSearchCb } from '@/shared/presentation/molecules/ComboboxWithSearchCb';
 
-import {
-  OPTS_ALIBABA_CLOUD_DISK_GB,
-  OPTS_CPU_CORE,
-  OPTS_DISK_GB,
-  OPTS_RAM_GB,
-} from '../../-config';
+import { OPTS_CPU_CORE, OPTS_DISK_GB, OPTS_RAM_GB } from '../../-config';
 import { useForm } from '../../-model';
-import { ALIBABA_CLOUD_DISK_GB } from '../../-model/form';
 import {
   isAlibabaCloudProvider,
   isAwsProvider,
@@ -33,6 +27,8 @@ import {
   isTencentProvider,
 } from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
+
+import SizeSliders from './SizeSliders';
 
 function InlineState(props: {
   action?: ReactNode;
@@ -939,41 +935,6 @@ const SubOsTemplateCbo = () => {
   );
 };
 
-/**
- * Alibaba Cloud's system disk, 40 GB at least. The shared form starts at
- * 20 GB, so the smallest allowed size is applied when the picker appears.
- */
-const SubAlibabaCloudDiskCbo = () => {
-  const { form, formErrors } = useForm();
-  const control = useController({
-    control: form.control,
-    name: 'spec.diskSizeGB',
-  });
-  const diskSizeGB = control.field.value;
-
-  useEffect(() => {
-    if ((diskSizeGB ?? 0) < ALIBABA_CLOUD_DISK_GB.min) {
-      form.setValue('spec.diskSizeGB', ALIBABA_CLOUD_DISK_GB.min, {
-        shouldValidate: true,
-      });
-    }
-  }, [diskSizeGB, form]);
-
-  return (
-    <div className="mt-5 space-y-2">
-      <h6 className="text-sm font-semibold">System disk (GB)</h6>
-      <Combobox
-        classNameButton="w-full bg-background"
-        placeholder="Select disk"
-        onChange={control.field.onChange}
-        value={diskSizeGB}
-        items={OPTS_ALIBABA_CLOUD_DISK_GB}
-      />
-      <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
-    </div>
-  );
-};
-
 export default function SectionSpecs() {
   const { form, formErrors } = useForm();
   const provider = useWatch({ control: form.control, name: 'provider' }) as
@@ -1004,6 +965,107 @@ export default function SectionSpecs() {
     control: form.control,
     name: 'spec.diskSizeGB',
   });
+
+  const regionSlug = useWatch({ control: form.control, name: 'regionSlug' });
+  const zoneSlug = useWatch({ control: form.control, name: 'cloud.zoneSlug' });
+  // GCP, Alibaba Cloud and Tencent list instance types per zone, AWS and
+  // DigitalOcean per region; IDCloudHost takes CPU and memory directly.
+  const sizeLocation =
+    usesGcp || usesAlibabaCloud || usesTencent
+      ? zoneSlug || undefined
+      : usesAws || usesDigitalOcean
+        ? regionSlug || undefined
+        : undefined;
+
+  const instanceTypePicker = usesGcp ? (
+    <SubGcpMachineTypeCbo />
+  ) : usesAws ? (
+    <SubDigitalOceanSizeCbo
+      emptyDescription="The selected region did not return available AWS instance types."
+      emptyTitle="No instance types found"
+      fieldMessage={formErrors.spec?.machineType?.message}
+      fieldName="spec.machineType"
+      itemPlaceholder="Select an instance type"
+      loadingDescription="AWS instance types are filtered by the selected project and region."
+      loadingTitle="Select a region first"
+      refreshAriaLabel="Refresh instance types"
+      searchable
+      searchPlaceholder="Search instance types (for example t3, c6i, m7g)"
+      titleOnError="Could not load instance types"
+    />
+  ) : usesAlibabaCloud || usesTencent ? (
+    <SubDigitalOceanSizeCbo
+      buildFilter={buildPlainFilter}
+      emptyDescription="The selected zone has no pay-as-you-go instance types in stock."
+      emptyTitle="No instance types found"
+      fieldMessage={formErrors.spec?.machineType?.message}
+      fieldName="spec.machineType"
+      itemPlaceholder="Select an instance type"
+      loadingDescription="Instance types are listed per zone, smallest first, with only the ones in stock."
+      loadingTitle="Select a zone first"
+      refreshAriaLabel="Refresh instance types"
+      scope="zone"
+      searchable
+      searchPlaceholder={
+        usesAlibabaCloud
+          ? 'Search instance types (for example ecs.e, ecs.u1, ecs.g7)'
+          : 'Search instance types (for example SA5, S5, M5)'
+      }
+      titleOnError="Could not load instance types"
+    />
+  ) : usesDigitalOcean ? (
+    <SubDigitalOceanSizeCbo
+      emptyDescription="The selected region did not return available DigitalOcean sizes."
+      emptyTitle="No droplet sizes found"
+      fieldMessage={formErrors.spec?.machineType?.message}
+      fieldName="spec.machineType"
+      itemPlaceholder="Select a droplet size"
+      loadingDescription="DigitalOcean droplet sizes are filtered by the selected project and region."
+      loadingTitle="Select a region first"
+      refreshAriaLabel="Refresh droplet sizes"
+      titleOnError="Could not load droplet sizes"
+    />
+  ) : undefined;
+
+  const customSizeFields = (
+    <div className="grid gap-4 sm:grid-cols-3">
+      <div className="space-y-2">
+        <h6 className="text-sm font-semibold">CPU Cores</h6>
+        <Combobox
+          classNameButton="w-full bg-background"
+          placeholder="Select cores"
+          onChange={ctrlSpecCPUCore.field.onChange}
+          value={ctrlSpecCPUCore.field.value}
+          items={OPTS_CPU_CORE}
+        />
+        <ErrorInline message={formErrors.spec?.cpuCore?.message} />
+      </div>
+
+      <div className="space-y-2">
+        <h6 className="text-sm font-semibold">RAM</h6>
+        <Combobox
+          classNameButton="w-full bg-background"
+          placeholder="Select RAM"
+          onChange={ctrlSpecRAMSizeGB.field.onChange}
+          value={ctrlSpecRAMSizeGB.field.value}
+          items={OPTS_RAM_GB}
+        />
+        <ErrorInline message={formErrors.spec?.ramSizeGB?.message} />
+      </div>
+
+      <div className="space-y-2">
+        <h6 className="text-sm font-semibold">Disk</h6>
+        <Combobox
+          classNameButton="w-full bg-background"
+          placeholder="Select disk"
+          onChange={ctrlSpecDiskSizeGB.field.onChange}
+          value={ctrlSpecDiskSizeGB.field.value}
+          items={OPTS_DISK_GB}
+        />
+        <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-5">
@@ -1046,132 +1108,27 @@ export default function SectionSpecs() {
 
       {!usesBiznetGio && (
         <>
-          {usesGcp && (
-            <div className="mt-5 space-y-2">
-              <h6 className="text-sm font-semibold">Machine Type</h6>
-              <SubGcpMachineTypeCbo />
-            </div>
-          )}
-
-          {usesAws && (
-            <div className="mt-5 space-y-2">
-              <h6 className="text-sm font-semibold">Instance Type</h6>
-              <SubDigitalOceanSizeCbo
-                emptyDescription="The selected region did not return available AWS instance types."
-                emptyTitle="No instance types found"
-                fieldMessage={formErrors.spec?.machineType?.message}
-                fieldName="spec.machineType"
-                itemPlaceholder="Select an instance type"
-                loadingDescription="AWS instance types are filtered by the selected project and region."
-                loadingTitle="Select a region first"
-                refreshAriaLabel="Refresh instance types"
-                searchable
-                searchPlaceholder="Search instance types (for example t3, c6i, m7g)"
-                titleOnError="Could not load instance types"
-              />
-            </div>
-          )}
-
-          {(usesAlibabaCloud || usesTencent) && (
-            <div className="mt-5 space-y-2">
-              <h6 className="text-sm font-semibold">Instance Type</h6>
-              <SubDigitalOceanSizeCbo
-                buildFilter={buildPlainFilter}
-                emptyDescription="The selected zone has no pay-as-you-go instance types in stock."
-                emptyTitle="No instance types found"
-                fieldMessage={formErrors.spec?.machineType?.message}
-                fieldName="spec.machineType"
-                itemPlaceholder="Select an instance type"
-                loadingDescription="Instance types are listed per zone, smallest first, with only the ones in stock."
-                loadingTitle="Select a zone first"
-                refreshAriaLabel="Refresh instance types"
-                scope="zone"
-                searchable
-                searchPlaceholder={
-                  usesAlibabaCloud
-                    ? 'Search instance types (for example ecs.e, ecs.u1, ecs.g7)'
-                    : 'Search instance types (for example SA5, S5, M5)'
-                }
-                titleOnError="Could not load instance types"
-              />
-            </div>
-          )}
-
-          {usesDigitalOcean && (
-            <div className="mt-5 space-y-2">
-              <h6 className="text-sm font-semibold">Droplet Size</h6>
-              <SubDigitalOceanSizeCbo
-                emptyDescription="The selected region did not return available DigitalOcean sizes."
-                emptyTitle="No droplet sizes found"
-                fieldMessage={formErrors.spec?.machineType?.message}
-                fieldName="spec.machineType"
-                itemPlaceholder="Select a droplet size"
-                loadingDescription="DigitalOcean droplet sizes are filtered by the selected project and region."
-                loadingTitle="Select a region first"
-                refreshAriaLabel="Refresh droplet sizes"
-                titleOnError="Could not load droplet sizes"
-              />
-            </div>
-          )}
-
           <div className="mt-5 space-y-2">
             <h6 className="text-sm font-semibold">Ubuntu release</h6>
             <SubOsTemplateCbo />
           </div>
 
-          {usesAlibabaCloud && <SubAlibabaCloudDiskCbo />}
-
-          {usesGcp ? (
-            <div className="mt-5 space-y-2">
-              <h6 className="text-sm font-semibold">Disk</h6>
-              <Combobox
-                classNameButton="w-full bg-background"
-                placeholder="Select disk"
-                onChange={ctrlSpecDiskSizeGB.field.onChange}
-                value={ctrlSpecDiskSizeGB.field.value}
-                items={OPTS_DISK_GB}
-              />
-              <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
-            </div>
-          ) : !picksInstanceType ? (
-            <div className="mt-5 grid gap-4 sm:grid-cols-3">
-              <div className="space-y-2">
-                <h6 className="text-sm font-semibold">CPU Cores</h6>
-                <Combobox
-                  classNameButton="w-full bg-background"
-                  placeholder="Select cores"
-                  onChange={ctrlSpecCPUCore.field.onChange}
-                  value={ctrlSpecCPUCore.field.value}
-                  items={OPTS_CPU_CORE}
-                />
-                <ErrorInline message={formErrors.spec?.cpuCore?.message} />
-              </div>
-
-              <div className="space-y-2">
-                <h6 className="text-sm font-semibold">RAM</h6>
-                <Combobox
-                  classNameButton="w-full bg-background"
-                  placeholder="Select RAM"
-                  onChange={ctrlSpecRAMSizeGB.field.onChange}
-                  value={ctrlSpecRAMSizeGB.field.value}
-                  items={OPTS_RAM_GB}
-                />
-                <ErrorInline message={formErrors.spec?.ramSizeGB?.message} />
-              </div>
-
-              <div className="space-y-2">
-                <h6 className="text-sm font-semibold">Disk</h6>
-                <Combobox
-                  classNameButton="w-full bg-background"
-                  placeholder="Select disk"
-                  onChange={ctrlSpecDiskSizeGB.field.onChange}
-                  value={ctrlSpecDiskSizeGB.field.value}
-                  items={OPTS_DISK_GB}
-                />
-                <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
-              </div>
-            </div>
-          ) : null}
+          <div className="mt-5 space-y-2">
+            <h6 className="text-sm font-semibold">Size</h6>
+            <SizeSliders
+              location={sizeLocation}
+              needsLocation={picksInstanceType}
+              waitingTitle={
+                usesGcp || usesAlibabaCloud || usesTencent
+                  ? 'Select a zone first'
+                  : picksInstanceType
+                    ? 'Select a region first'
+                    : 'Select a cloud project first'
+              }
+              advanced={instanceTypePicker}
+              fallback={instanceTypePicker ?? customSizeFields}
+            />
+          </div>
         </>
       )}
     </div>
