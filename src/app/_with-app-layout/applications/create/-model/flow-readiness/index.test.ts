@@ -95,9 +95,10 @@ describe('evaluateFlowReadiness', () => {
     ).toBe(false);
   });
 
-  it('needs a name, a build command, a run command and a port', () => {
+  it('needs a valid name, a build command, a run command and a port', () => {
     for (const override of [
       { appName: '' },
+      { appName: 'my-app' },
       { appBuildCommand: ['   '] },
       { appRunCommand: '' },
       { appPort: '' },

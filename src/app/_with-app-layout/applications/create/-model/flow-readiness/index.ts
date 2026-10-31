@@ -1,3 +1,4 @@
+import { isValidApplicationName } from '../../../-rules/application-name';
 import { useFormStore } from '../store/form';
 import type { DependencyConfig, FlowMode, Progress } from '../store/form.types';
 
@@ -83,7 +84,8 @@ export function evaluateFlowReadiness(
   );
 
   const details = Boolean(
-    appName &&
+    // The API refuses the whole payload for a name it does not accept.
+    isValidApplicationName(appName) &&
     selectedRequiredBinaryIds.length > 0 &&
     selectedRequiredBinaryIds.every(
       (id) =>
