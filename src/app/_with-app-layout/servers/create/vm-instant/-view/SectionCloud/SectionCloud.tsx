@@ -119,7 +119,7 @@ function ProviderIcon(props: { provider: DTOs.CloudProviderContractV1 }) {
 }
 
 const SubCloudProviderCbo = () => {
-  const { form } = useForm();
+  const { form, setLabel } = useForm();
   const [response, refreshProviders] = ApiCloud.Project.Providers.useGet({});
   const providers = normalizeProviderContracts(response);
   const { field } = useController({
@@ -130,6 +130,9 @@ const SubCloudProviderCbo = () => {
   const handleSelect = (providerKey: string) => {
     field.onChange(providerKey);
     form.resetField('cloud.projectID');
+    // The project belongs to the previous provider, so the review panel
+    // must not keep showing its name.
+    setLabel('project', '');
     form.setValue('cloud.billingAccountID', undefined);
     form.setValue('cloud.zoneSlug', '');
     form.setValue('regionSlug', '');
