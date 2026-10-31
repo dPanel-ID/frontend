@@ -16,6 +16,7 @@ import {
 } from '@/entities/server-modules/lib/catalog';
 
 import { cn } from '@/shared/libs/tailwind/cn';
+import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
 
 import { useFormStore } from '../../../-model/store/form';
@@ -24,6 +25,7 @@ import type {
   RequiredBinaryConfig,
 } from '../../../-model/store/form.types';
 import { Sectioned } from '../../../-presentation/Sectioned';
+import { isValidApplicationName } from '../../../../-rules/application-name';
 import { CommandSettingsSection, useCommandPortState } from '../step-4-deploy';
 
 interface LanguageDependencyItem {
@@ -543,6 +545,9 @@ export default function Step3Config() {
   );
   const [appName, setAppName] = useFormStore((s) => [s.appName, s.setAppName]);
   const portState = useCommandPortState();
+  // Only once something is typed: an empty field is "missing", not wrong.
+  const isNameInvalid =
+    appName.trim() !== '' && !isValidApplicationName(appName);
 
   return (
     <div className="flex flex-col gap-4">
@@ -559,7 +564,19 @@ export default function Step3Config() {
             placeholder={t('inputAppNamePlaceholder')}
             value={appName}
             onChange={(event) => setAppName(event.target.value)}
+            aria-invalid={isNameInvalid}
+            aria-describedby="app-name-hint"
           />
+          {isNameInvalid ? (
+            <ErrorInline
+              id="app-name-hint"
+              message={t('inputAppNameInvalid')}
+            />
+          ) : (
+            <span id="app-name-hint" className="text-xs text-muted-foreground">
+              {t('inputAppNameHint')}
+            </span>
+          )}
         </label>
         <RequiredBinariesPicker />
       </Sectioned>

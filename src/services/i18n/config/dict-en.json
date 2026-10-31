@@ -1011,7 +1011,7 @@
         "blocked": {
           "source": "Choose a repository and the branch to build from, or pick a ready-made application.",
           "server": "Choose the server to install on, and set up each dependency you picked.",
-          "details": "A name, a language, a build command, a start command and a free port are all needed.",
+          "details": "A name (letters, numbers and spaces only), a language, a build command, a start command and a free port are all needed.",
           "env": "",
           "preview": "Finish the earlier steps first."
         }
@@ -1119,6 +1119,8 @@
             "desc": "Name the application before defining build and runtime behavior.",
             "inputAppName": "Application name",
             "inputAppNamePlaceholder": "My first app",
+            "inputAppNameHint": "Letters, numbers and spaces only, such as “My App”.",
+            "inputAppNameInvalid": "Use only letters, numbers and spaces. Hyphens, underscores and dots are not allowed: try “My App” instead of “my-app”.",
             "requiredBinariesTitle": "Required binaries",
             "requiredBinariesDesc": "Select runtime binaries from the modules chosen for this application. These values are stored in the application definition and cannot be edited here.",
             "requiredBinariesSelectServer": "Select application modules before choosing required binaries.",
