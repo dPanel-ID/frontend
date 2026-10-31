@@ -72,7 +72,7 @@ Kemungkinan besar Anda sedang berada di ruang kerja lain. Periksa nama ruang ker
 
 ### Dasbor menyebut Anda tidak bisa melihat kesehatan ruang kerja ini
 
-Peran Anda tidak mengizinkan membaca status eksekusi dan agen. Minta owner ruang kerja memberi peran yang mengizinkannya, misalnya **Viewer** atau **DevOps**. Lihat [Anggota dan peran](../teams/members-and-roles.md).
+Setiap anggota ruang kerja bisa membaca status eksekusi dan agennya. Jika pesan ini masih muncul, kemungkinan Anda bukan anggota ruang kerja yang dipilih: periksa pemilih ruang kerja, atau minta owner ruang kerja menambahkan Anda. Lihat [Anggota dan peran](../teams/members-and-roles.md).
 
 ## Meminta bantuan
 
