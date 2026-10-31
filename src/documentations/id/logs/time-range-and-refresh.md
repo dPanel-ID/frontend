@@ -41,6 +41,8 @@ Satu halaman berisi 200 baris, terbaru lebih dulu. Bagian bawah menunjukkan posi
 - Jika totalnya diketahui, pakai nomor halaman.
 - Jika tidak, pakai **Lebih baru** dan **Lebih lama**.
 
+![Bagian bawah log load balancer: Lines 1–200 of 201, newest first, dengan tombol halaman 1 dan 2](../../assets/logs/logs-pagination.webp)
+
 **Saring halaman ini** dan chip level bekerja di halaman yang sedang dibuka. Untuk mencari lebih jauh ke belakang, buka halaman yang lebih lama atau persempit rentang waktunya.
 
 ## Segarkan

@@ -1,7 +1,7 @@
 ---
 title: Install software
 description: Add a database or a runtime through the module catalogue.
-sidebar_position: 7
+sidebar_position: 12
 ---
 
 dPanel installs software through modules. A module is a tested recipe: you answer a few questions, dPanel installs, configures and starts it on the server, then keeps track of what it put there.

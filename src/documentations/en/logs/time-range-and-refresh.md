@@ -41,6 +41,8 @@ A page holds 200 lines, newest first. The footer says where you are, such as **L
 - With a known total, use the page numbers.
 - Otherwise, use **Newer** and **Older**.
 
+![The footer of a load balancer log: Lines 1–200 of 201, newest first, with page buttons 1 and 2](../../assets/logs/logs-pagination.webp)
+
 **Filter this page** and the level chips work on the page you are on. To search further back, move to an older page or narrow the time range.
 
 ## Refresh

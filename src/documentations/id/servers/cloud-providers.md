@@ -1,42 +1,31 @@
 ---
 title: Penyedia cloud
-description: Apa saja yang berbeda antarpenyedia di formulir peluncuran.
+description: Empat penyedia tempat dPanel meluncurkan server, dan apa yang berbeda di antara mereka.
 sidebar_position: 4
 ---
 
-Formulir peluncuran menawarkan **AWS**, **Google Cloud**, **DigitalOcean**, **IDCloudHost**, dan **Biznet Gio**. Penyedia mana pun yang dipilih, pertanyaannya sama dan servernya berperilaku sama: agen yang sama, tab yang sama, modul yang sama.
+dPanel meluncurkan server di **AWS**, **Google Cloud**, **IDCloudHost**, dan **DigitalOcean**. Tiap penyedia punya halaman sendiri: cara membuat kredensial, cara menghubungkannya, kolom di formulir peluncuran, dan jebakan khas penyedia itu.
 
-Yang berbeda hanya cara penyedia menamai lokasi dan ukuran, serta user Linux yang dipakai dPanel untuk masuk. Panel **Review** menampilkan user itu sebagai **Login user** sebelum Anda meluncurkan.
+Penyedia mana pun yang dipilih, server yang jadi sama saja: agen yang sama, tab yang sama, modul yang sama.
 
-## Google Cloud
+## Sekilas
 
-- Lokasi dipilih dua tahap: region, lalu zone di dalamnya.
-- Ukuran berupa machine type, misalnya `e2-small`.
-- dPanel membuat `dpanel-network` di region itu saat pertama dipakai, dengan SSH, HTTP, dan HTTPS terbuka.
-- User login-nya `ubuntu`.
+|                  | [AWS](./provider-aws.md)                      | [Google Cloud](./provider-gcp.md)             | [IDCloudHost](./provider-idcloudhost.md) | [DigitalOcean](./provider-digitalocean.md) |
+| ---------------- | --------------------------------------------- | --------------------------------------------- | ---------------------------------------- | ------------------------------------------ |
+| Kredensial       | Access key + secret key                       | Kunci JSON service account                    | API key                                  | API token                                  |
+| Lokasi           | Region                                        | Region, lalu zone                             | Region, misalnya `jkt01`                 | Region                                     |
+| Ukuran           | **Instance Type**                             | **Machine Type**                              | **CPU Cores** dan **RAM**                | **Droplet Size**                           |
+| Jaringan         | `dpanel-network`, dibuat saat pertama dipakai | `dpanel-network`, dibuat saat pertama dipakai | Dipilihkan per region                    | Bawaan penyedia, atau VPC pilihan Anda     |
+| Firewall         | Security group per server, TCP 22, 80, 443    | Aturan firewall per server, TCP 22, 80, 443   | Tidak dibuat oleh dPanel                 | Tidak dibuat oleh dPanel                   |
+| User login       | `ubuntu`                                      | `ubuntu`                                      | **Default User**, bawaannya `dpanel`     | **Default User**, bawaannya `dpanel`       |
+| Langkah tambahan | Tidak ada                                     | Tidak ada                                     | **Access**: user dan bootstrap password  | **Access**: user                           |
 
-## AWS
+Formulir peluncuran juga menampilkan **Biznet Gio**. Langkahnya sama dan tidak dibahas rinci di sini.
 
-![Formulir peluncuran dengan AWS terpilih](../../assets/servers/create-provider-aws.webp)
+## Sebelum memilih penyedia
 
-- Lokasi berupa region, dan dPanel memilih subnet di dalamnya.
-- Ukuran berupa instance type, misalnya `t3.small`.
-- dPanel membuat jaringan dan security group sendiri saat pertama dipakai, jadi akun baru cukup diberi kredensial.
-- User login-nya `ubuntu`.
+- SSH key di dPanel. Lihat [Sebelum mulai](./before-you-start.md).
+- Kredensial yang hanya bisa melakukan apa yang dibutuhkan dPanel. Batas minimumnya ada di halaman tiap penyedia.
+- Baca [Kredensial cloud dan keamanan](./cloud-credentials-security.md) sekali. Di sana dijelaskan apa yang disimpan dPanel dan apa yang terjadi kalau kunci dicabut.
 
-## DigitalOcean
-
-![Formulir peluncuran dengan DigitalOcean terpilih](../../assets/servers/create-provider-digitalocean.webp)
-
-- Lokasi cukup satu pilihan: region pusat datanya.
-- Ukuran berupa ukuran droplet.
-- User login-nya `dpanel`.
-
-## IDCloudHost
-
-- Lokasi berupa pusat data, misalnya `jkt01`.
-- User login-nya `dpanel`.
-
-:::note
-Biznet Gio juga ada di formulir dengan langkah yang sama. Periksa **Login user** di panel Review sebelum meluncurkan.
-:::
+Peluncurannya sendiri sama untuk semua penyedia: [Membuat server cloud](./create-a-cloud-server.md).

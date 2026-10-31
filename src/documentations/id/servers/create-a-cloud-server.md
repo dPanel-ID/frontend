@@ -4,7 +4,7 @@ description: Formulir peluncuran langkah demi langkah, dari memilih penyedia sam
 sidebar_position: 3
 ---
 
-Panduan ini memakai Google Cloud. Penyedia lain menanyakan hal yang sama dengan urutan yang sama. Perbedaannya dibahas di [Penyedia cloud](./cloud-providers.md).
+Panduan ini memakai Google Cloud. Penyedia lain menanyakan hal yang sama dengan urutan yang sama. Perbedaannya dibahas di [Penyedia cloud](./cloud-providers.md), yang punya halaman tersendiri untuk tiap penyedia.
 
 ## Yang perlu disiapkan
 
