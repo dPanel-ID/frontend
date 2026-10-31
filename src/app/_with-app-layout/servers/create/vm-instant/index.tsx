@@ -139,6 +139,7 @@ function LaunchFlow() {
   const usesBiznetGio = isBiznetGioProvider(provider);
   const usesGcp = isGcpProvider(provider);
   const usesAlibabaCloud = isAlibabaCloudProvider(provider);
+  const usesAws = isAwsProvider(provider);
   const usesZone = isZonalProvider(provider);
   const managedNetwork = usesManagedNetwork(provider);
   const fixedLoginUser = getFixedLoginUser(provider);
@@ -218,7 +219,7 @@ function LaunchFlow() {
   const providerLabel = getCloudProviderLabel(provider) || provider;
   const sizeValue = usesBiznetGio
     ? labels.product
-    : usesAlibabaCloud && values.spec?.machineType
+    : (usesAlibabaCloud || usesAws || usesGcp) && values.spec?.machineType
       ? `${values.spec.machineType} · ${values.spec.diskSizeGB} GB disk`
       : picksInstanceType
         ? values.spec?.machineType
@@ -229,7 +230,7 @@ function LaunchFlow() {
           : undefined;
   const sizeFields = usesBiznetGio
     ? ['spec.productID', 'spec.billingCycle']
-    : usesGcp || usesAlibabaCloud
+    : usesGcp || usesAlibabaCloud || usesAws
       ? ['spec.machineType', 'spec.diskSizeGB']
       : picksInstanceType
         ? ['spec.machineType']

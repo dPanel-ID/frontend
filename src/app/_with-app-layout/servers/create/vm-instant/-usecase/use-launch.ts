@@ -88,6 +88,7 @@ export function buildLaunchPayload(values: FormSchema) {
         region: values.regionSlug,
         instance_type: values.spec.machineType,
         image_id: values.spec.osTemplate,
+        disk_size_gb: values.spec.diskSizeGB,
         // No subnet: the VM joins dpanel-network, created on first use.
         reserve_public_ip: values.spec.reservePublicIP,
       },

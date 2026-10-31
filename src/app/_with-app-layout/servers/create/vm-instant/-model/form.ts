@@ -9,6 +9,9 @@ import {
   isTencentProvider,
 } from './provider';
 
+/** Disk sizes the size form offers, in GB. */
+const DISK_GB = { min: 20, max: 500 };
+
 /** System disk sizes Alibaba Cloud accepts, in GB. */
 export const ALIBABA_CLOUD_DISK_GB = { min: 40, max: 500 };
 
@@ -229,7 +232,10 @@ export const formSchema = z
         });
       }
 
-      if (values.spec.diskSizeGB < 20 || values.spec.diskSizeGB > 160) {
+      if (
+        values.spec.diskSizeGB < DISK_GB.min ||
+        values.spec.diskSizeGB > DISK_GB.max
+      ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Please select a disk size!',
@@ -309,6 +315,17 @@ export const formSchema = z
         });
       }
 
+      if (
+        values.spec.diskSizeGB < DISK_GB.min ||
+        values.spec.diskSizeGB > DISK_GB.max
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select a disk size!',
+          path: ['spec', 'diskSizeGB'],
+        });
+      }
+
       if (!values.spec.osTemplate) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -366,7 +383,7 @@ export const formSchema = z
       });
     }
 
-    if (values.spec.cpuCore < 2 || values.spec.cpuCore > 8) {
+    if (values.spec.cpuCore < 2 || values.spec.cpuCore > 32) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Please select a CPU core!',
@@ -374,7 +391,7 @@ export const formSchema = z
       });
     }
 
-    if (values.spec.ramSizeGB < 2 || values.spec.ramSizeGB > 16) {
+    if (values.spec.ramSizeGB < 2 || values.spec.ramSizeGB > 64) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Please select a RAM size!',
@@ -382,7 +399,10 @@ export const formSchema = z
       });
     }
 
-    if (values.spec.diskSizeGB < 20 || values.spec.diskSizeGB > 160) {
+    if (
+      values.spec.diskSizeGB < DISK_GB.min ||
+      values.spec.diskSizeGB > DISK_GB.max
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Please select a disk size!',
