@@ -26,7 +26,7 @@ The dPanel agent on that server has not reported in for a while. The server may 
 
 ### I pressed Deploy application and nothing happened
 
-Check the **Application name**. It may only contain letters, numbers and spaces. A name such as `my-app` or `my_app` is refused, and the form may not show an error. Use `My App` instead and deploy again.
+Check the **Application name**. It may only contain letters, numbers and spaces. A name such as `my-app` or `my_app` is refused; the field shows an error under it. Use `My App` instead and deploy again.
 
 ### "Port … is already used on this server"
 

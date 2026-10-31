@@ -1002,7 +1002,7 @@
         "blocked": {
           "source": "Pilih repositori dan branch yang akan dibangun, atau pilih aplikasi siap pakai.",
           "server": "Pilih server tempat pemasangan, lalu atur setiap dependensi yang Anda pilih.",
-          "details": "Nama, bahasa, perintah build, perintah jalan, dan port yang bebas semuanya diperlukan.",
+          "details": "Nama (hanya huruf, angka, dan spasi), bahasa, perintah build, perintah jalan, dan port yang bebas semuanya diperlukan.",
           "env": "",
           "preview": "Selesaikan langkah sebelumnya terlebih dahulu."
         }
@@ -1110,6 +1110,8 @@
             "desc": "Beri nama aplikasi sebelum mengatur build dan runtime.",
             "inputAppName": "Nama aplikasi",
             "inputAppNamePlaceholder": "Aplikasi pertama saya",
+            "inputAppNameHint": "Hanya huruf, angka, dan spasi, misalnya “My App”.",
+            "inputAppNameInvalid": "Gunakan hanya huruf, angka, dan spasi. Tanda hubung, garis bawah, dan titik tidak diizinkan: coba “My App”, bukan “my-app”.",
             "requiredBinariesTitle": "Binary yang dibutuhkan",
             "requiredBinariesDesc": "Pilih binary runtime dari modul yang dipilih untuk aplikasi ini. Nilai ini disimpan di definisi aplikasi dan tidak bisa diubah dari sini.",
             "requiredBinariesSelectServer": "Pilih modul aplikasi sebelum memilih binary yang dibutuhkan.",

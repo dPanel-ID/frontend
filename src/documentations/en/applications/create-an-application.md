@@ -47,7 +47,7 @@ If a module is already on the server, it appears under **Installed on selected s
 ![Step 3 of the form: the application name, the Go runtime, the build step, the runtime command and the application port](../../assets/applications/apps-create-app-setup.webp)
 
 :::warning[Letters, numbers and spaces]
-dPanel rejects a name with hyphens or other symbols, such as `go-example`. The form does not show an error yet: pressing **Deploy application** appears to do nothing. Use a name like `Go Example`.
+dPanel rejects a name with hyphens or other symbols, such as `go-example`. The field turns red and explains why, and the flow stays incomplete until you fix it. Use a name like `Go Example`.
 :::
 
 :::tip

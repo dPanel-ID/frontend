@@ -47,7 +47,7 @@ Jika modul sudah terpasang di server, modul itu muncul di **Terinstal di server 
 ![Langkah 3 formulir: nama aplikasi, runtime Go, langkah build, perintah runtime, dan port aplikasi](../../assets/applications/apps-create-app-setup.webp)
 
 :::warning[Huruf, angka, dan spasi]
-dPanel menolak nama yang memakai tanda hubung atau simbol lain, seperti `go-example`. Saat ini formulir belum menampilkan pesan galat: tombol **Rilis aplikasi** seolah tidak melakukan apa-apa. Pakai nama seperti `Go Example`.
+dPanel menolak nama yang memakai tanda hubung atau simbol lain, seperti `go-example`. Kolomnya menjadi merah dan menjelaskan alasannya, dan alur belum dianggap lengkap sampai nama diperbaiki. Pakai nama seperti `Go Example`.
 :::
 
 :::tip

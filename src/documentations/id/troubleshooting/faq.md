@@ -26,7 +26,7 @@ Agen dPanel di server itu sudah lama tidak melapor. Server mungkin mati, kelebih
 
 ### Saya menekan Rilis aplikasi dan tidak terjadi apa-apa
 
-Periksa **Nama aplikasi**. Nama hanya boleh berisi huruf, angka, dan spasi. Nama seperti `my-app` atau `my_app` ditolak, dan formulir mungkin tidak menampilkan pesan error. Gunakan `My App`, lalu deploy lagi.
+Periksa **Nama aplikasi**. Nama hanya boleh berisi huruf, angka, dan spasi. Nama seperti `my-app` atau `my_app` ditolak; kolomnya menampilkan pesan error di bawahnya. Gunakan `My App`, lalu deploy lagi.
 
 ### "Port … sudah digunakan di server ini"
 
