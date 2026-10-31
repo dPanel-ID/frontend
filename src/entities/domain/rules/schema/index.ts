@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { SchemaCommon } from '@/entities/shared/rules/schema';
 
-import { dnsRecord, domain, provider, providerDetails } from './parts';
+import { dnsRecord, domain, provider } from './parts';
 
 export * as SchemaDomainParts from './parts';
 
@@ -23,11 +23,12 @@ export const schemaDomainCard = z.intersection(
   }),
 );
 
-export type DomainDetails = z.output<typeof schemaDomainDetails>;
-export const schemaDomainDetails = z.intersection(
-  schemaDomainEssentials,
-  z.object({
-    providerDetails,
-    dnsRecords: z.array(dnsRecord),
-  }),
-);
+/** One page of a domain's DNS records, as the record list returns it. */
+export type DnsRecordPage = z.output<typeof schemaDnsRecordPage>;
+export const schemaDnsRecordPage = z.object({
+  records: z.array(dnsRecord),
+  page: z.number(),
+  totalPage: z.number(),
+  /** Records across every page that match the search, if any. */
+  total: z.number(),
+});

@@ -38,6 +38,7 @@ import { Route as WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport } fro
 import { Route as WithAppLayoutBackendLoadBalancersCreateIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/create/index'
 import { Route as WithAppLayoutBackendLoadBalancersIdIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/$id/index'
 import { Route as WithAppLayoutBackendDomainCreateIndexRouteImport } from './app/_with-app-layout/backend/domain/create/index'
+import { Route as WithAppLayoutBackendDomainDomainIdIndexRouteImport } from './app/_with-app-layout/backend/domain/$domainId/index'
 import { Route as WithAppLayoutApplicationsIdUpdateIndexRouteImport } from './app/_with-app-layout/applications/$id/update/index'
 import { Route as WithAppLayoutBackendSecretManagersSshKeyIdIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/$id/index'
 import { Route as WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/index'
@@ -208,6 +209,12 @@ const WithAppLayoutBackendDomainCreateIndexRoute =
     path: '/backend/domain/create/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
+const WithAppLayoutBackendDomainDomainIdIndexRoute =
+  WithAppLayoutBackendDomainDomainIdIndexRouteImport.update({
+    id: '/backend/domain/$domainId/',
+    path: '/backend/domain/$domainId/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
 const WithAppLayoutApplicationsIdUpdateIndexRoute =
   WithAppLayoutApplicationsIdUpdateIndexRouteImport.update({
     id: '/applications/$id/update/',
@@ -269,6 +276,7 @@ export interface FileRoutesByFullPath {
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
   '/docs/$section/$page': typeof DocsSectionPageIndexRoute
   '/applications/$id/update': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
+  '/backend/domain/$domainId': typeof WithAppLayoutBackendDomainDomainIdIndexRoute
   '/backend/domain/create': typeof WithAppLayoutBackendDomainCreateIndexRoute
   '/backend/load-balancers/$id': typeof WithAppLayoutBackendLoadBalancersIdIndexRoute
   '/backend/load-balancers/create': typeof WithAppLayoutBackendLoadBalancersCreateIndexRoute
@@ -304,6 +312,7 @@ export interface FileRoutesByTo {
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
   '/docs/$section/$page': typeof DocsSectionPageIndexRoute
   '/applications/$id/update': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
+  '/backend/domain/$domainId': typeof WithAppLayoutBackendDomainDomainIdIndexRoute
   '/backend/domain/create': typeof WithAppLayoutBackendDomainCreateIndexRoute
   '/backend/load-balancers/$id': typeof WithAppLayoutBackendLoadBalancersIdIndexRoute
   '/backend/load-balancers/create': typeof WithAppLayoutBackendLoadBalancersCreateIndexRoute
@@ -341,6 +350,7 @@ export interface FileRoutesById {
   '/_with-app-layout/teams/$id/': typeof WithAppLayoutTeamsIdIndexRoute
   '/docs/$section/$page/': typeof DocsSectionPageIndexRoute
   '/_with-app-layout/applications/$id/update/': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
+  '/_with-app-layout/backend/domain/$domainId/': typeof WithAppLayoutBackendDomainDomainIdIndexRoute
   '/_with-app-layout/backend/domain/create/': typeof WithAppLayoutBackendDomainCreateIndexRoute
   '/_with-app-layout/backend/load-balancers/$id/': typeof WithAppLayoutBackendLoadBalancersIdIndexRoute
   '/_with-app-layout/backend/load-balancers/create/': typeof WithAppLayoutBackendLoadBalancersCreateIndexRoute
@@ -378,6 +388,7 @@ export interface FileRouteTypes {
     | '/teams/$id'
     | '/docs/$section/$page'
     | '/applications/$id/update'
+    | '/backend/domain/$domainId'
     | '/backend/domain/create'
     | '/backend/load-balancers/$id'
     | '/backend/load-balancers/create'
@@ -413,6 +424,7 @@ export interface FileRouteTypes {
     | '/teams/$id'
     | '/docs/$section/$page'
     | '/applications/$id/update'
+    | '/backend/domain/$domainId'
     | '/backend/domain/create'
     | '/backend/load-balancers/$id'
     | '/backend/load-balancers/create'
@@ -449,6 +461,7 @@ export interface FileRouteTypes {
     | '/_with-app-layout/teams/$id/'
     | '/docs/$section/$page/'
     | '/_with-app-layout/applications/$id/update/'
+    | '/_with-app-layout/backend/domain/$domainId/'
     | '/_with-app-layout/backend/domain/create/'
     | '/_with-app-layout/backend/load-balancers/$id/'
     | '/_with-app-layout/backend/load-balancers/create/'
@@ -677,6 +690,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithAppLayoutBackendDomainCreateIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
+    '/_with-app-layout/backend/domain/$domainId/': {
+      id: '/_with-app-layout/backend/domain/$domainId/'
+      path: '/backend/domain/$domainId'
+      fullPath: '/backend/domain/$domainId'
+      preLoaderRoute: typeof WithAppLayoutBackendDomainDomainIdIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
     '/_with-app-layout/applications/$id/update/': {
       id: '/_with-app-layout/applications/$id/update/'
       path: '/applications/$id/update'
@@ -732,6 +752,7 @@ interface WithAppLayoutRouteRouteChildren {
   WithAppLayoutServersGroupsIndexRoute: typeof WithAppLayoutServersGroupsIndexRoute
   WithAppLayoutTeamsIdIndexRoute: typeof WithAppLayoutTeamsIdIndexRoute
   WithAppLayoutApplicationsIdUpdateIndexRoute: typeof WithAppLayoutApplicationsIdUpdateIndexRoute
+  WithAppLayoutBackendDomainDomainIdIndexRoute: typeof WithAppLayoutBackendDomainDomainIdIndexRoute
   WithAppLayoutBackendDomainCreateIndexRoute: typeof WithAppLayoutBackendDomainCreateIndexRoute
   WithAppLayoutBackendLoadBalancersIdIndexRoute: typeof WithAppLayoutBackendLoadBalancersIdIndexRoute
   WithAppLayoutBackendLoadBalancersCreateIndexRoute: typeof WithAppLayoutBackendLoadBalancersCreateIndexRoute
@@ -766,6 +787,8 @@ const WithAppLayoutRouteRouteChildren: WithAppLayoutRouteRouteChildren = {
   WithAppLayoutTeamsIdIndexRoute: WithAppLayoutTeamsIdIndexRoute,
   WithAppLayoutApplicationsIdUpdateIndexRoute:
     WithAppLayoutApplicationsIdUpdateIndexRoute,
+  WithAppLayoutBackendDomainDomainIdIndexRoute:
+    WithAppLayoutBackendDomainDomainIdIndexRoute,
   WithAppLayoutBackendDomainCreateIndexRoute:
     WithAppLayoutBackendDomainCreateIndexRoute,
   WithAppLayoutBackendLoadBalancersIdIndexRoute:
