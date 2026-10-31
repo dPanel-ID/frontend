@@ -1,8 +1,31 @@
 export interface AiChatPayloadV1 {
   content: string;
   conversation_id?: string;
-  /** false asks for one JSON response instead of an event stream. */
-  stream: false;
+  /** Runs the turn in the background; poll it at /v1/ai/turns/{id}. */
+  async: true;
+}
+
+export interface AiApprovalPayloadV1 {
+  action_id: string;
+  decision: 'approve' | 'reject';
+  async: true;
+}
+
+export interface AiTurnStartedV1 {
+  turn_id?: string;
+  conversation_id?: string;
+  status?: string;
+}
+
+export interface AiPendingActionV1 {
+  action_id?: string;
+  tool?: string;
+  summary?: string;
+}
+
+export interface AiActionResultV1 {
+  action_id?: string;
+  status?: string;
 }
 
 export interface AiChatResultV1 {
@@ -10,6 +33,16 @@ export interface AiChatResultV1 {
   title?: string;
   message?: string;
   tools?: string[] | null;
+  pending_actions?: AiPendingActionV1[] | null;
+  action_results?: AiActionResultV1[] | null;
+}
+
+export interface AiTurnV1 {
+  turn_id?: string;
+  conversation_id?: string;
+  status?: 'running' | 'completed' | 'failed' | string;
+  result?: AiChatResultV1 | null;
+  error?: string;
 }
 
 export interface AiConversationV1 {

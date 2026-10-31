@@ -3368,7 +3368,7 @@
       "exampleServers": "Which of my servers are stopped?",
       "exampleExecutions": "Did any job fail in the last 24 hours?",
       "exampleDomains": "List my domains and their DNS providers.",
-      "thinking": "Checking dPanel…",
+      "thinking": "Checking dPanel… longer tasks can take a minute or two.",
       "failedGeneric": "The assistant could not answer this message.",
       "retry": "Try again",
       "emptyAnswer": "The assistant returned no text.",
@@ -3383,7 +3383,17 @@
       "signIn": "Sign in",
       "unavailableTitle": "The assistant isn't available yet",
       "unavailableBody": "dPanel could not reach the assistant. It may still be rolling out; check again in a moment.",
-      "checkAgain": "Check again"
+      "checkAgain": "Check again",
+      "action": {
+        "pending": "Waiting for your approval",
+        "deciding": "Applying your decision",
+        "executed": "Approved and started",
+        "rejected": "Rejected; nothing was changed",
+        "failed": "Approved, but it did not start",
+        "approve": "Approve",
+        "reject": "Reject",
+        "working": "Working on it…"
+      }
     }
   },
   "modal": {

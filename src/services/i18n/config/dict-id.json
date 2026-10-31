@@ -3360,7 +3360,7 @@
       "exampleServers": "Server mana saja yang sedang berhenti?",
       "exampleExecutions": "Apakah ada job yang gagal dalam 24 jam terakhir?",
       "exampleDomains": "Tampilkan domain saya beserta penyedia DNS-nya.",
-      "thinking": "Memeriksa dPanel…",
+      "thinking": "Memeriksa dPanel… tugas yang lebih panjang bisa memakan satu sampai dua menit.",
       "failedGeneric": "Asisten tidak dapat menjawab pesan ini.",
       "retry": "Coba lagi",
       "emptyAnswer": "Asisten tidak mengembalikan teks.",
@@ -3375,7 +3375,17 @@
       "signIn": "Masuk",
       "unavailableTitle": "Asisten belum tersedia",
       "unavailableBody": "dPanel tidak dapat menjangkau asisten. Mungkin masih dalam proses rilis; coba periksa lagi sebentar lagi.",
-      "checkAgain": "Periksa lagi"
+      "checkAgain": "Periksa lagi",
+      "action": {
+        "pending": "Menunggu persetujuan Anda",
+        "deciding": "Menerapkan keputusan Anda",
+        "executed": "Disetujui dan dijalankan",
+        "rejected": "Ditolak; tidak ada yang diubah",
+        "failed": "Disetujui, tetapi gagal dijalankan",
+        "approve": "Setujui",
+        "reject": "Tolak",
+        "working": "Sedang dikerjakan…"
+      }
     }
   },
   "modal": {
