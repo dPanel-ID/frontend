@@ -121,7 +121,8 @@ tile, every page icon in it and the page being read.
   its name there and its component in
   `src/app/docs/-view/-presentation/DocsIcon/index.tsx`.
 - **Cloud providers:** `provider:aws`, `provider:gcp`, `provider:digitalocean`,
-  `provider:idcloudhost` show the provider's logo.
+  `provider:idcloudhost`, `provider:alibabacloud`, `provider:tencent` show the
+  provider's logo.
 
 An unknown icon or colour fails the build and names the file.
 

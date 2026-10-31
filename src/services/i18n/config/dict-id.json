@@ -143,7 +143,9 @@
       "biznetGio": "Biznet Gio",
       "digitalOcean": "DigitalOcean",
       "caddy": "Caddy",
-      "aws": "AWS"
+      "aws": "AWS",
+      "alibabaCloud": "Alibaba Cloud",
+      "tencentCloud": "Tencent Cloud"
     },
     "dataPanel": {
       "refresh": "Segarkan",

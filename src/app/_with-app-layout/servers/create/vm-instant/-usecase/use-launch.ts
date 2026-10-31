@@ -9,10 +9,12 @@ import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { useForm } from '../-model';
 import type { FormSchema } from '../-model/form';
 import {
+  isAlibabaCloudProvider,
   isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
+  isTencentProvider,
 } from '../-model/provider';
 
 /** Builds the provider-specific VM create request from the form values. */
@@ -84,6 +86,37 @@ export function buildLaunchPayload(values: FormSchema) {
       vm: {
         name: vmName,
         region: values.regionSlug,
+        instance_type: values.spec.machineType,
+        image_id: values.spec.osTemplate,
+        // No subnet: the VM joins dpanel-network, created on first use.
+        reserve_public_ip: values.spec.reservePublicIP,
+      },
+    };
+  }
+
+  if (isAlibabaCloudProvider(values.provider)) {
+    return {
+      ...base,
+      vm: {
+        name: vmName,
+        region: values.regionSlug,
+        zone: values.cloud.zoneSlug,
+        instance_type: values.spec.machineType,
+        image_id: values.spec.osTemplate,
+        system_disk_size: values.spec.diskSizeGB,
+        // No vSwitch: the VM joins dpanel-network, created on first use.
+        reserve_public_ip: values.spec.reservePublicIP,
+      },
+    };
+  }
+
+  if (isTencentProvider(values.provider)) {
+    return {
+      ...base,
+      vm: {
+        name: vmName,
+        region: values.regionSlug,
+        zone: values.cloud.zoneSlug,
         instance_type: values.spec.machineType,
         image_id: values.spec.osTemplate,
         // No subnet: the VM joins dpanel-network, created on first use.

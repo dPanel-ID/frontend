@@ -8,10 +8,12 @@ import { useController } from 'react-hook-form';
 
 import type { DTOs } from '@/shared/api';
 import IconBiznetGio from '@/shared/assets/biznetgio.png';
+import IconAlibabaCloud from '@/shared/assets/ico-alibabacloud.svg';
 import IconAmazonWebServices from '@/shared/assets/ico-aws.svg';
 import IconGoogleCloudPlatform from '@/shared/assets/ico-gcloud.png';
 import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
 import IconProxmox from '@/shared/assets/ico-proxmox.png';
+import IconTencentCloud from '@/shared/assets/ico-tencentcloud.svg';
 import IconDigitalOcean from '@/shared/assets/logo-digitalocean.png';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { cn } from '@/shared/libs/tailwind/cn';
@@ -71,6 +73,21 @@ function getLocalProviderIcon(provider: DTOs.CloudProviderContractV1) {
 
   if (tokens.some((token) => token.includes('proxmox'))) {
     return IconProxmox;
+  }
+
+  if (
+    tokens.some(
+      (token) =>
+        token.includes('alibabacloud') ||
+        token === 'alicloud' ||
+        token === 'aliyun',
+    )
+  ) {
+    return IconAlibabaCloud;
+  }
+
+  if (tokens.some((token) => token.includes('tencent') || token === 'qcloud')) {
+    return IconTencentCloud;
   }
 
   return undefined;
