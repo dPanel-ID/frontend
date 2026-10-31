@@ -72,7 +72,7 @@ You are probably in a different workspace. Check the workspace name at the top o
 
 ### "You cannot see this workspace's health"
 
-Your role does not allow reading execution and agent status. Ask a workspace owner for a role that does, such as **Viewer** or **DevOps**. See [Members and roles](../teams/members-and-roles.md).
+Every member of a workspace can read its execution and agent status. If you still see this, you are probably not a member of the selected workspace: check the workspace switcher, or ask a workspace owner to add you. See [Members and roles](../teams/members-and-roles.md).
 
 ## Getting help
 

@@ -67,7 +67,9 @@ function roleAliases(role: Role) {
 
 function isRoleAssignable(role: Role) {
   return (
-    role.assignable !== false && role.protected !== true && !!roleValue(role)
+    // The backend marks protected roles (owner, admin) assignable only for
+    // workspace owners.
+    role.assignable !== false && !!roleValue(role)
   );
 }
 

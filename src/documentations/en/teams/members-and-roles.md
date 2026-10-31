@@ -16,23 +16,31 @@ The person needs a dPanel account first. Ask them to sign up, then:
 1. Open **Teams** and open the team.
 2. Press **Add Member**.
 3. In **Add New People**, open **Select a user…** and search by username or name.
-4. Under **Workspace roles**, choose what they should get. See the table below. Owner and Admin are **Protected** and cannot be given from here.
+4. Under **Workspace roles**, choose what they should get. See the table below. Owner and Admin are **Protected**: only a workspace owner can give them.
 5. Press **Add member**.
 
 They see the team in their workspace switcher straight away.
 
 ## The roles
 
+Every role uses the same three levels on every kind of resource:
+
+| Level      | Read | Create | Update | Delete |
+| ---------- | ---- | ------ | ------ | ------ |
+| **Viewer** | Yes  | No     | No     | No     |
+| **Editor** | Yes  | Yes    | Yes    | No     |
+| **Admin**  | Yes  | Yes    | Yes    | Yes    |
+
 Preset roles apply across the whole workspace.
 
-| Role          | Can do                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------ |
-| **Owner**     | Everything, including members, roles, billing, destructive operations and ownership transfer     |
-| **Admin**     | Full control of all resources, except ownership transfer and the highest-risk account operations |
-| **DevOps**    | Servers, databases, load balancers, secrets, deployments, logs and agents                        |
-| **Developer** | Applications, builds, deployments, runtime logs and non-sensitive service operations             |
-| **Viewer**    | Read-only access to every resource and its status                                                |
-| **Billing**   | Billing, packages and subscriptions                                                              |
+| Role          | Can do                                                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Owner**     | Everything, including members, roles, billing, destructive operations and ownership transfer                                          |
+| **Admin**     | Create, read, update and delete every resource, and manage members                                                                    |
+| **DevOps**    | Editor on cloud projects, servers, databases, load balancers, secrets, domains and applications; reads everything else; cannot delete |
+| **Developer** | Editor on applications, builds and deployments; reads everything else; cannot delete                                                  |
+| **Viewer**    | Read-only access to every resource and its status                                                                                     |
+| **Billing**   | Billing, packages and subscriptions                                                                                                   |
 
 For finer control, each kind of resource also has its own **Viewer**, **Editor** and **Admin** role: Workspace, Cloud Project, Server, Application, Database, Domain, Load Balancer, Billing and Secret. For example, **Application Editor** can create and deploy applications but cannot delete them.
 
@@ -47,7 +55,9 @@ Start people on the narrowest role that lets them do their job. **Developer** su
 3. Tick the roles they should have. **Select group** ticks a whole group; **Clear** unticks everything.
 4. Press **Save roles**.
 
-Saving replaces the member's role set. Owner and Admin are marked **Protected**: they are shown, but cannot be ticked from **Add member** or **Manage roles**.
+Saving replaces the member's role set. A member holds one preset role, so ticking **Admin** replaces **Developer** or **DevOps**.
+
+Owner and Admin are marked **Protected**. Only a workspace owner can tick them, or change or remove a member who holds one. For everyone else they are shown but disabled.
 
 ## Remove a member
 
