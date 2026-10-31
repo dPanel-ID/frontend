@@ -49,9 +49,13 @@ Panggilan pencarian pilihan diambil langsung dari kode dPanel. Peluncuran dan pe
 5. Tempel **SecretId** dan **SecretKey**.
 6. Tekan **Connect cloud account**.
 
+![Formulir Connect Cloud Account dengan Tencent Cloud terpilih, kolom SecretId dan SecretKey masih kosong](../../../assets/servers/cloud-account-connect-tencent.webp)
+
 dPanel langsung menyimpan akun itu sebagai **Siap**, tanpa menguji kuncinya. Ujian pertamanya ada di formulir peluncuran: kalau **Region** tetap kosong atau menampilkan error, kunci atau izinnya salah.
 
 ## 3. Kolom Tencent Cloud di formulir peluncuran
+
+![Formulir peluncuran dengan Tencent Cloud terpilih](../../../assets/servers/create-provider-tencent.webp)
 
 | Kolom              | Yang dipilih                                                                            |
 | ------------------ | --------------------------------------------------------------------------------------- |

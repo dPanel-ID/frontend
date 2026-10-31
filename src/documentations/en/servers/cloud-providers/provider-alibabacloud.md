@@ -48,9 +48,13 @@ The discovery calls come straight from dPanel's code. The launch and delete call
 5. Paste **AccessKey ID** and **AccessKey secret**.
 6. Press **Connect cloud account**.
 
+![The Connect Cloud Account form with Alibaba Cloud selected and the AccessKey ID and AccessKey secret fields empty](../../../assets/servers/cloud-account-connect-alibabacloud.webp)
+
 dPanel saves the account as **Ready** straight away. It does not test the key on save. The first real test is the launch form: if **Region** stays empty or shows an error, the key or its permissions are wrong.
 
 ## 3. Alibaba Cloud fields in the launch form
+
+![The launch form with Alibaba Cloud selected](../../../assets/servers/create-provider-alibabacloud.webp)
 
 | Field              | What to pick                                                                               |
 | ------------------ | ------------------------------------------------------------------------------------------ |
