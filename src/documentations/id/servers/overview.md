@@ -25,13 +25,13 @@ Buka **Server**, lalu **Buat Server**. Halaman itu menawarkan dua jalur.
 
 ![Halaman Buat Server dengan pilihan meluncurkan server cloud atau menghubungkan server sendiri](../../assets/servers/create-choose-path.webp)
 
-|                        | Luncurkan server cloud                                   | Hubungkan server Anda                     |
-| ---------------------- | -------------------------------------------------------- | ----------------------------------------- |
-| Cocok untuk            | Anda butuh mesin baru dan punya akun cloud               | Anda sudah punya mesin yang berjalan      |
-| Penyedia               | AWS, Google Cloud, DigitalOcean, IDCloudHost, Biznet Gio | Server Ubuntu atau Debian apa pun via SSH |
-| Yang dikerjakan dPanel | Membuat mesin, lalu menyiapkannya                        | Masuk lewat SSH, lalu menyiapkannya       |
-| Yang Anda butuhkan     | Akun cloud dan SSH key di dPanel                         | SSH key dan alamat server                 |
-| Waktu                  | Sekitar 10 sampai 20 menit                               | Sekitar 5 menit                           |
+|                        | Luncurkan server cloud                                                                 | Hubungkan server Anda                     |
+| ---------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Cocok untuk            | Anda butuh mesin baru dan punya akun cloud                                             | Anda sudah punya mesin yang berjalan      |
+| Penyedia               | AWS, Google Cloud, DigitalOcean, IDCloudHost, Biznet Gio, Alibaba Cloud, Tencent Cloud | Server Ubuntu atau Debian apa pun via SSH |
+| Yang dikerjakan dPanel | Membuat mesin, lalu menyiapkannya                                                      | Masuk lewat SSH, lalu menyiapkannya       |
+| Yang Anda butuhkan     | Akun cloud dan SSH key di dPanel                                                       | SSH key dan alamat server                 |
+| Waktu                  | Sekitar 10 sampai 20 menit                                                             | Sekitar 5 menit                           |
 
 Apa pun jalurnya, dPanel membuat user `dpanel`, memasang agennya, dan mulai memantau mesin itu.
 

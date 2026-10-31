@@ -1,11 +1,16 @@
 import { z } from 'zod';
 
 import {
+  isAlibabaCloudProvider,
   isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
+  isTencentProvider,
 } from './provider';
+
+/** System disk sizes Alibaba Cloud accepts, in GB. */
+export const ALIBABA_CLOUD_DISK_GB = { min: 40, max: 500 };
 
 const bootstrapPasswordSchema = z
   .string()
@@ -33,6 +38,15 @@ const biznetGioVmNameSchema = z
   .regex(
     /^[a-zA-Z0-9][a-zA-Z0-9.-]{5,15}$/,
     'Use 6-16 letters, numbers, dashes, or dots.',
+  );
+
+// Alibaba Cloud and Tencent Cloud use the name as the instance host name.
+const hostnameVmNameSchema = z
+  .string()
+  .min(1, 'VM name is required!')
+  .regex(
+    /^[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$/,
+    'Use 2-63 letters, numbers, or dashes, starting with a letter and not ending with a dash.',
   );
 
 const linuxUsernameSchema = z
@@ -106,9 +120,15 @@ export const formSchema = z
     const usesGcp = isGcpProvider(values.provider);
     const usesDigitalOcean = isDigitalOceanProvider(values.provider);
     const usesAws = isAwsProvider(values.provider);
+    const usesAlibabaCloud = isAlibabaCloudProvider(values.provider);
+    const usesTencent = isTencentProvider(values.provider);
 
     const vmNameResult = (
-      usesBiznetGio ? biznetGioVmNameSchema : vmNameSchema
+      usesBiznetGio
+        ? biznetGioVmNameSchema
+        : usesAlibabaCloud || usesTencent
+          ? hostnameVmNameSchema
+          : vmNameSchema
     ).safeParse(values.spec.vmName);
 
     if (!vmNameResult.success) {
@@ -119,7 +139,7 @@ export const formSchema = z
       });
     }
 
-    if (!usesAws && !usesGcp) {
+    if (!usesAws && !usesGcp && !usesAlibabaCloud && !usesTencent) {
       const usernameResult = (
         usesBiznetGio ? biznetGioUsernameSchema : linuxUsernameSchema
       ).safeParse(values.login.username);
@@ -210,6 +230,46 @@ export const formSchema = z
       }
 
       if (values.spec.diskSizeGB < 20 || values.spec.diskSizeGB > 160) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select a disk size!',
+          path: ['spec', 'diskSizeGB'],
+        });
+      }
+
+      return;
+    }
+
+    if (usesAlibabaCloud || usesTencent) {
+      if (!values.cloud.zoneSlug) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select a zone!',
+          path: ['cloud', 'zoneSlug'],
+        });
+      }
+
+      if (!values.spec.machineType) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select an instance type!',
+          path: ['spec', 'machineType'],
+        });
+      }
+
+      if (!values.spec.osTemplate) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Please select an Ubuntu release!',
+          path: ['spec', 'osTemplate'],
+        });
+      }
+
+      if (
+        usesAlibabaCloud &&
+        (values.spec.diskSizeGB < ALIBABA_CLOUD_DISK_GB.min ||
+          values.spec.diskSizeGB > ALIBABA_CLOUD_DISK_GB.max)
+      ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Please select a disk size!',

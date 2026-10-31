@@ -1,8 +1,10 @@
 import IconBiznetGio from '@/shared/assets/biznetgio.png';
+import IconAlibabaCloud from '@/shared/assets/ico-alibabacloud.svg';
 import IconAWS from '@/shared/assets/ico-aws.svg';
 import IconGCloud from '@/shared/assets/ico-gcloud.png';
 import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
 import IconServer from '@/shared/assets/ico-server.webp';
+import IconTencentCloud from '@/shared/assets/ico-tencentcloud.svg';
 import IconDigitalOcean from '@/shared/assets/logo-digitalocean.png';
 
 import type { SchemaServerParts } from '../../rules/schema';
@@ -16,6 +18,12 @@ export const SERVER_PROVIDER_METADATA: Record<
     imageSrc: IconServer,
     i18n: {
       label: 'common.terms.other',
+    },
+  },
+  alibabacloud: {
+    imageSrc: IconAlibabaCloud,
+    i18n: {
+      label: 'common.brands.alibabaCloud',
     },
   },
   aws: {
@@ -46,6 +54,12 @@ export const SERVER_PROVIDER_METADATA: Record<
     imageSrc: IconIDCloudHost,
     i18n: {
       label: 'common.brands.idCloudHost',
+    },
+  },
+  tencent: {
+    imageSrc: IconTencentCloud,
+    i18n: {
+      label: 'common.brands.tencentCloud',
     },
   },
   do: {

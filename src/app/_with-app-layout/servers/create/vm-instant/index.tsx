@@ -36,10 +36,14 @@ import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 import { FormProvider, useForm } from './-model';
 import { formSchema } from './-model/form';
 import {
+  getFixedLoginUser,
+  isAlibabaCloudProvider,
   isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
+  isZonalProvider,
+  usesManagedNetwork,
 } from './-model/provider';
 import useLaunch from './-usecase/use-launch';
 import { SectionCloud } from './-view/SectionCloud';
@@ -134,10 +138,13 @@ function LaunchFlow() {
   const provider = values.provider ?? '';
   const usesBiznetGio = isBiznetGioProvider(provider);
   const usesGcp = isGcpProvider(provider);
-  const usesAws = isAwsProvider(provider);
-  const usesDigitalOcean = isDigitalOceanProvider(provider);
-  const managedNetwork = usesGcp || usesAws;
-  const needsAccessStep = !usesGcp && !usesAws;
+  const usesAlibabaCloud = isAlibabaCloudProvider(provider);
+  const usesZone = isZonalProvider(provider);
+  const managedNetwork = usesManagedNetwork(provider);
+  const fixedLoginUser = getFixedLoginUser(provider);
+  const needsAccessStep = !fixedLoginUser;
+  const picksInstanceType =
+    usesZone || isAwsProvider(provider) || isDigitalOceanProvider(provider);
 
   // One validation pass drives every "done" state, so the panel can never
   // disagree with what the form will accept.
@@ -211,23 +218,27 @@ function LaunchFlow() {
   const providerLabel = getCloudProviderLabel(provider) || provider;
   const sizeValue = usesBiznetGio
     ? labels.product
-    : usesGcp || usesAws || usesDigitalOcean
-      ? values.spec?.machineType
-      : values.spec?.cpuCore && values.spec.ramSizeGB && values.spec.diskSizeGB
-        ? `${values.spec.cpuCore} vCPU · ${values.spec.ramSizeGB} GB RAM · ${values.spec.diskSizeGB} GB disk`
-        : undefined;
+    : usesAlibabaCloud && values.spec?.machineType
+      ? `${values.spec.machineType} · ${values.spec.diskSizeGB} GB disk`
+      : picksInstanceType
+        ? values.spec?.machineType
+        : values.spec?.cpuCore &&
+            values.spec.ramSizeGB &&
+            values.spec.diskSizeGB
+          ? `${values.spec.cpuCore} vCPU · ${values.spec.ramSizeGB} GB RAM · ${values.spec.diskSizeGB} GB disk`
+          : undefined;
   const sizeFields = usesBiznetGio
     ? ['spec.productID', 'spec.billingCycle']
-    : usesGcp
+    : usesGcp || usesAlibabaCloud
       ? ['spec.machineType', 'spec.diskSizeGB']
-      : usesAws || usesDigitalOcean
+      : picksInstanceType
         ? ['spec.machineType']
         : ['spec.cpuCore', 'spec.ramSizeGB', 'spec.diskSizeGB'];
   const imageValue =
     values.spec?.osName && values.spec.osVersion
       ? `${capitalize(values.spec.osName)} ${values.spec.osVersion}`
       : values.spec?.osTemplate || undefined;
-  const loginValue = needsAccessStep ? values.login?.username : 'ubuntu';
+  const loginValue = fixedLoginUser ?? values.login?.username;
 
   const rows: ReviewPanelRow[] = buildRows();
   const stepDone = (step: StepKey) =>
@@ -269,10 +280,11 @@ function LaunchFlow() {
             {
               key: 'location',
               label: 'Location',
-              value: usesGcp ? values.cloud?.zoneSlug : values.regionSlug,
+              value: usesZone ? values.cloud?.zoneSlug : values.regionSlug,
               done:
-                Boolean(usesGcp ? values.cloud?.zoneSlug : values.regionSlug) &&
-                clean('regionSlug', 'cloud.zoneSlug'),
+                Boolean(
+                  usesZone ? values.cloud?.zoneSlug : values.regionSlug,
+                ) && clean('regionSlug', 'cloud.zoneSlug'),
             },
             {
               key: 'network',
@@ -281,7 +293,7 @@ function LaunchFlow() {
                 ? 'dpanel-network'
                 : values.vpcBulk?.subnet ||
                   values.vpcBulk?.id ||
-                  (usesDigitalOcean && values.regionSlug
+                  (isDigitalOceanProvider(provider) && values.regionSlug
                     ? 'Default VPC'
                     : undefined),
               done: managedNetwork

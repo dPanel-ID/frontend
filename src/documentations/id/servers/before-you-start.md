@@ -33,7 +33,7 @@ Akun cloud adalah penghubung dPanel ke akun Anda di penyedia cloud. Di dalamnya 
 2. Tekan **Hubungkan akun cloud**.
 3. Pilih penyedia, lalu tempel kredensial yang diberikan penyedia itu.
 
-Cara membuat kredensial dengan hak akses seminimal mungkin, langkah demi langkah, ada di halaman masing-masing penyedia: [AWS](./cloud-providers/provider-aws.md), [Google Cloud](./cloud-providers/provider-gcp.md), [IDCloudHost](./cloud-providers/provider-idcloudhost.md), dan [DigitalOcean](./cloud-providers/provider-digitalocean.md). Baca [Kredensial cloud dan keamanan](./cloud-providers/cloud-credentials-security.md) sebelum menempelkan kunci.
+Cara membuat kredensial dengan hak akses seminimal mungkin, langkah demi langkah, ada di halaman masing-masing penyedia: [AWS](./cloud-providers/provider-aws.md), [Google Cloud](./cloud-providers/provider-gcp.md), [IDCloudHost](./cloud-providers/provider-idcloudhost.md), [DigitalOcean](./cloud-providers/provider-digitalocean.md), [Alibaba Cloud](./cloud-providers/provider-alibabacloud.md), dan [Tencent Cloud](./cloud-providers/provider-tencent.md). Baca [Kredensial cloud dan keamanan](./cloud-providers/cloud-credentials-security.md) sebelum menempelkan kunci.
 
 :::info[Siapa yang membayar mesinnya]
 Mesin dibuat di dalam akun cloud Anda sendiri, jadi tagihannya langsung dari penyedia. dPanel tidak menjual ulang mesin.

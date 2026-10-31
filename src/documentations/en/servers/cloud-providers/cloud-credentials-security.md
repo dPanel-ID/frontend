@@ -1,7 +1,7 @@
 ---
 title: Cloud credentials and security
 description: What dPanel keeps when you connect a cloud account, what that credential can do, and how to limit, rotate and revoke it.
-sidebar_position: 6
+sidebar_position: 8
 sidebar_icon: shield-check
 ---
 
@@ -32,14 +32,16 @@ The encryption is AES in CFB mode, with a symmetric key held next to the applica
 
 ## What each credential can do
 
-| Provider     | With the minimum we recommend                                                                                 | With a broad credential                           |
-| ------------ | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| AWS          | Create and terminate EC2 instances it tagged, and their network and security groups, in the regions you allow | Everything your IAM user or root user can do      |
-| Google Cloud | Create and delete VMs, disks and firewall rules in one project                                                | Everything in every project the account can reach |
-| IDCloudHost  | Everything your IDCloudHost user can do; we could not confirm scoped keys (verify)                            | The same                                          |
-| DigitalOcean | Create, read and delete Droplets and SSH keys; read regions, sizes, images and VPCs                           | Everything in the team                            |
+| Provider      | With the minimum we recommend                                                                                 | With a broad credential                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| AWS           | Create and terminate EC2 instances it tagged, and their network and security groups, in the regions you allow | Everything your IAM user or root user can do      |
+| Google Cloud  | Create and delete VMs, disks and firewall rules in one project                                                | Everything in every project the account can reach |
+| IDCloudHost   | Everything your IDCloudHost user can do; we could not confirm scoped keys (verify)                            | The same                                          |
+| DigitalOcean  | Create, read and delete Droplets and SSH keys; read regions, sizes, images and VPCs                           | Everything in the team                            |
+| Alibaba Cloud | Create and delete ECS instances, VPCs, vSwitches, security groups and key pairs in the account                | Everything in the Alibaba Cloud account           |
+| Tencent Cloud | Create, pay for and delete CVM instances, VPCs, subnets, security groups and key pairs in the account         | Everything in the Tencent Cloud account           |
 
-The minimum for each one is on its page: [AWS](./provider-aws.md#minimum-iam-policy), [Google Cloud](./provider-gcp.md#minimum-permissions), [IDCloudHost](./provider-idcloudhost.md#1-create-the-api-key), [DigitalOcean](./provider-digitalocean.md#1-create-a-custom-scoped-token).
+The minimum for each one is on its page: [AWS](./provider-aws.md#minimum-iam-policy), [Google Cloud](./provider-gcp.md#minimum-permissions), [IDCloudHost](./provider-idcloudhost.md#1-create-the-api-key), [DigitalOcean](./provider-digitalocean.md#1-create-a-custom-scoped-token), [Alibaba Cloud](./provider-alibabacloud.md#1-create-a-ram-user-for-dpanel), [Tencent Cloud](./provider-tencent.md#1-create-a-cam-sub-user-for-dpanel).
 
 ## Least privilege, in practice
 
@@ -75,7 +77,7 @@ dPanel checks the new key before it saves it:
 The new key is stored encrypted, like the old one, and is never shown again. In a team workspace, updating credentials needs the cloud-project **admin** level: Owner, Admin, DevOps, or a cloud-project admin role.
 
 :::warning[Use a key for the same account]
-On AWS, DigitalOcean and IDCloudHost, dPanel can't confirm that the new key belongs to the same account as the old one. Make sure it does. Otherwise dPanel can't delete the servers launched with the old key.
+On AWS, DigitalOcean, IDCloudHost, Alibaba Cloud and Tencent Cloud, dPanel can't confirm that the new key belongs to the same account as the old one. Make sure it does. Otherwise dPanel can't delete the servers launched with the old key.
 :::
 
 If the old key has leaked, don't wait: update the credentials with a new key now, then revoke the old one at the provider.

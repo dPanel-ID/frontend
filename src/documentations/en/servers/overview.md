@@ -25,13 +25,13 @@ Open **Servers**, then **Create Server**. The page offers both paths.
 
 ![The Create Server page, offering Launch a cloud server or Connect your own server](../../assets/servers/create-choose-path.webp)
 
-|                  | Launch a cloud server                                    | Connect your own server              |
-| ---------------- | -------------------------------------------------------- | ------------------------------------ |
-| Who it suits     | You want a new machine and have a cloud account          | You already have a machine running   |
-| Providers        | AWS, Google Cloud, DigitalOcean, IDCloudHost, Biznet Gio | Any Ubuntu or Debian server over SSH |
-| What dPanel does | Creates the machine, then sets it up                     | Connects over SSH, then sets it up   |
-| You need         | A cloud account and an SSH key in dPanel                 | An SSH key, and the server's address |
-| Time             | About 10 to 20 minutes                                   | About 5 minutes                      |
+|                  | Launch a cloud server                                                                  | Connect your own server              |
+| ---------------- | -------------------------------------------------------------------------------------- | ------------------------------------ |
+| Who it suits     | You want a new machine and have a cloud account                                        | You already have a machine running   |
+| Providers        | AWS, Google Cloud, DigitalOcean, IDCloudHost, Biznet Gio, Alibaba Cloud, Tencent Cloud | Any Ubuntu or Debian server over SSH |
+| What dPanel does | Creates the machine, then sets it up                                                   | Connects over SSH, then sets it up   |
+| You need         | A cloud account and an SSH key in dPanel                                               | An SSH key, and the server's address |
+| Time             | About 10 to 20 minutes                                                                 | About 5 minutes                      |
 
 Either way, dPanel creates the `dpanel` user, installs its agent and starts monitoring the machine.
 

@@ -67,6 +67,22 @@ function normalizeCloudProvider(provider: string) {
     return normalizedProvider;
   }
 
+  if (
+    normalizedProvider === 'alibabacloud' ||
+    normalizedProvider === 'alicloud' ||
+    normalizedProvider === 'aliyun'
+  ) {
+    return 'alibabacloud';
+  }
+
+  if (
+    normalizedProvider === 'tencent' ||
+    normalizedProvider === 'tencentcloud' ||
+    normalizedProvider === 'qcloud'
+  ) {
+    return 'tencent';
+  }
+
   return normalizedProvider;
 }
 

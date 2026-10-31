@@ -31,7 +31,7 @@ The page is called **Cloud accounts**. In the sidebar it is **Cloud Projects**.
 
 1. In the sidebar, open **Cloud Projects**.
 2. Press **Connect a cloud account**.
-3. Pick your provider and paste the credential it gives you. Each provider's page shows how to create one with the least access: [AWS](../servers/cloud-providers/provider-aws.md), [Google Cloud](../servers/cloud-providers/provider-gcp.md), [IDCloudHost](../servers/cloud-providers/provider-idcloudhost.md), [DigitalOcean](../servers/cloud-providers/provider-digitalocean.md).
+3. Pick your provider and paste the credential it gives you. Each provider's page shows how to create one with the least access: [AWS](../servers/cloud-providers/provider-aws.md), [Google Cloud](../servers/cloud-providers/provider-gcp.md), [IDCloudHost](../servers/cloud-providers/provider-idcloudhost.md), [DigitalOcean](../servers/cloud-providers/provider-digitalocean.md), [Alibaba Cloud](../servers/cloud-providers/provider-alibabacloud.md), [Tencent Cloud](../servers/cloud-providers/provider-tencent.md).
 4. Save. dPanel stores the key encrypted and never shows it again. See [Cloud credentials and security](../servers/cloud-providers/cloud-credentials-security.md).
 
 dPanel then reads which regions, sizes and images your account may launch, so the create-server form only offers real options.

@@ -18,6 +18,7 @@ import {
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
+  isZonalProvider,
 } from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
 
@@ -449,6 +450,7 @@ const SubNetwork = () => {
 
   if (isGcpProvider(provider))
     return <SubManagedNetwork scopeLabel="zone's region" />;
+  if (isZonalProvider(provider)) return <SubManagedNetwork scopeLabel="zone" />;
   if (isAwsProvider(provider)) return <SubManagedNetwork scopeLabel="region" />;
   return <SubAutoNetwork />;
 };
@@ -655,7 +657,7 @@ export default function SectionRegionVPC() {
   const provider = useWatch({ control: form.control, name: 'provider' }) as
     | string
     | undefined;
-  const usesGcp = isGcpProvider(provider);
+  const usesZone = isZonalProvider(provider);
   const usesDigitalOcean = isDigitalOceanProvider(provider);
   const usesAws = isAwsProvider(provider);
 
@@ -669,7 +671,7 @@ export default function SectionRegionVPC() {
           <SubRegionCbo />
         </div>
 
-        {usesGcp ? (
+        {usesZone ? (
           <div className="grid gap-2 lg:grid-cols-[12rem_minmax(0,1fr)] lg:items-start">
             <h6 className="text-sm font-semibold lg:pt-2.5">Zone</h6>
             <SubZoneCbo />

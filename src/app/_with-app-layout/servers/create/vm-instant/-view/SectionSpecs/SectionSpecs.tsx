@@ -16,13 +16,21 @@ import { ChoiceTile } from '@/shared/presentation/molecules/ChoiceTile';
 import { Combobox } from '@/shared/presentation/molecules/Combobox';
 import { ComboboxWithSearchCb } from '@/shared/presentation/molecules/ComboboxWithSearchCb';
 
-import { OPTS_CPU_CORE, OPTS_DISK_GB, OPTS_RAM_GB } from '../../-config';
-import { useForm } from '../../-model';
 import {
+  OPTS_ALIBABA_CLOUD_DISK_GB,
+  OPTS_CPU_CORE,
+  OPTS_DISK_GB,
+  OPTS_RAM_GB,
+} from '../../-config';
+import { useForm } from '../../-model';
+import { ALIBABA_CLOUD_DISK_GB } from '../../-model/form';
+import {
+  isAlibabaCloudProvider,
   isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
   isGcpProvider,
+  isTencentProvider,
 } from '../../-model/provider';
 import { ErrorInline } from '../../-presentation/ErrorInline';
 
@@ -132,6 +140,11 @@ function buildMachineTypeFilter(search: string) {
   if (trimmedSearch.includes('=')) return trimmedSearch;
 
   return `name=${trimmedSearch}*`;
+}
+
+/** Alibaba Cloud and Tencent Cloud match the search text inside the type. */
+function buildPlainFilter(search: string) {
+  return search.trim() || undefined;
 }
 
 const SubBiznetProductFields = () => {
@@ -556,15 +569,20 @@ const SubDigitalOceanSizeCbo = (props: {
   emptyTitle: string;
   fieldMessage?: string;
   fieldName: 'spec.machineType';
+  /** Turns the search text into the provider's filter query. */
+  buildFilter?: (search: string) => string | undefined;
   itemPlaceholder: string;
   loadingDescription: string;
   loadingTitle: string;
   refreshAriaLabel: string;
+  /** Where sizes are listed: per region (default) or per zone. */
+  scope?: 'region' | 'zone';
   searchable?: boolean;
   searchPlaceholder?: string;
   titleOnError: string;
 }) => {
   const {
+    buildFilter = buildMachineTypeFilter,
     emptyDescription,
     emptyTitle,
     fieldMessage,
@@ -573,6 +591,7 @@ const SubDigitalOceanSizeCbo = (props: {
     loadingDescription,
     loadingTitle,
     refreshAriaLabel,
+    scope = 'region',
     searchable,
     searchPlaceholder,
     titleOnError,
@@ -583,14 +602,17 @@ const SubDigitalOceanSizeCbo = (props: {
     control: form.control,
     name: 'cloud.projectID',
   }) as string | undefined;
-  const regionSlug = useWatch({ control: form.control, name: 'regionSlug' });
-  const effectiveSearch = cloudProjectID && regionSlug ? searchValue : '';
+  const location = useWatch({
+    control: form.control,
+    name: scope === 'zone' ? 'cloud.zoneSlug' : 'regionSlug',
+  });
+  const effectiveSearch = cloudProjectID && location ? searchValue : '';
 
   const [response, refreshProducts] = ApiCloud.Project.Products.$Id.useGet({
     cloudProjectId: String(cloudProjectID),
-    filter: searchable ? buildMachineTypeFilter(effectiveSearch) : undefined,
-    zone: regionSlug ?? '',
-    options: { skip: !cloudProjectID || !regionSlug },
+    filter: searchable ? buildFilter(effectiveSearch) : undefined,
+    zone: location ?? '',
+    options: { skip: !cloudProjectID || !location },
   });
 
   const control = useController({
@@ -598,7 +620,7 @@ const SubDigitalOceanSizeCbo = (props: {
     name: fieldName,
   });
 
-  if (!cloudProjectID || !regionSlug || response.$status === 'initial') {
+  if (!cloudProjectID || !location || response.$status === 'initial') {
     return (
       <InlineState title={loadingTitle} description={loadingDescription} />
     );
@@ -707,6 +729,9 @@ const SubOsTemplateCbo = () => {
   const usesBiznetGio = isBiznetGioProvider(provider);
   const usesGcp = isGcpProvider(provider);
   const usesAws = isAwsProvider(provider);
+  // These providers publish a separate image ID in every region.
+  const usesRegionalImages =
+    usesAws || isAlibabaCloudProvider(provider) || isTencentProvider(provider);
   // Every provider except Biznet Gio offers only the supported Ubuntu LTS
   // releases (24.04 and 26.04.1), resolved to the provider's current image.
   const usesUbuntuCatalog = !usesBiznetGio;
@@ -715,12 +740,12 @@ const SubOsTemplateCbo = () => {
     catalog: usesUbuntuCatalog ? 'ubuntu-lts' : undefined,
     cloudProjectId: String(cloudProjectID),
     productId: usesBiznetGio ? productID : undefined,
-    zone: usesAws ? (regionSlug ?? '') : undefined,
+    zone: usesRegionalImages ? (regionSlug ?? '') : undefined,
     options: {
       skip:
         !cloudProjectID ||
         (usesBiznetGio && !productID) ||
-        (usesAws && !regionSlug),
+        (usesRegionalImages && !regionSlug),
     },
   });
 
@@ -760,7 +785,7 @@ const SubOsTemplateCbo = () => {
         title={
           usesBiznetGio
             ? 'Select a product first'
-            : usesAws
+            : usesRegionalImages
               ? 'Select a region first'
               : 'Select a cloud project first'
         }
@@ -769,7 +794,9 @@ const SubOsTemplateCbo = () => {
             ? 'Biznet Gio OS templates are scoped to the selected NEO Lite product.'
             : usesAws
               ? 'AWS AMI options are scoped to the selected cloud project and region.'
-              : 'OS templates are returned by the selected cloud project.'
+              : usesRegionalImages
+                ? 'Ubuntu images are scoped to the selected cloud project and region.'
+                : 'OS templates are returned by the selected cloud project.'
         }
       />
     );
@@ -902,12 +929,47 @@ const SubOsTemplateCbo = () => {
       )}
 
       <ErrorInline message={formErrors.spec?.osTemplate?.message} />
-      {!usesBiznetGio && !usesGcp && !usesAws && (
+      {!usesBiznetGio && !usesGcp && !usesRegionalImages && (
         <>
           <ErrorInline message={formErrors.spec?.osName?.message} />
           <ErrorInline message={formErrors.spec?.osVersion?.message} />
         </>
       )}
+    </div>
+  );
+};
+
+/**
+ * Alibaba Cloud's system disk, 40 GB at least. The shared form starts at
+ * 20 GB, so the smallest allowed size is applied when the picker appears.
+ */
+const SubAlibabaCloudDiskCbo = () => {
+  const { form, formErrors } = useForm();
+  const control = useController({
+    control: form.control,
+    name: 'spec.diskSizeGB',
+  });
+  const diskSizeGB = control.field.value;
+
+  useEffect(() => {
+    if ((diskSizeGB ?? 0) < ALIBABA_CLOUD_DISK_GB.min) {
+      form.setValue('spec.diskSizeGB', ALIBABA_CLOUD_DISK_GB.min, {
+        shouldValidate: true,
+      });
+    }
+  }, [diskSizeGB, form]);
+
+  return (
+    <div className="mt-5 space-y-2">
+      <h6 className="text-sm font-semibold">System disk (GB)</h6>
+      <Combobox
+        classNameButton="w-full bg-background"
+        placeholder="Select disk"
+        onChange={control.field.onChange}
+        value={diskSizeGB}
+        items={OPTS_ALIBABA_CLOUD_DISK_GB}
+      />
+      <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
     </div>
   );
 };
@@ -921,6 +983,12 @@ export default function SectionSpecs() {
   const usesGcp = isGcpProvider(provider);
   const usesDigitalOcean = isDigitalOceanProvider(provider);
   const usesAws = isAwsProvider(provider);
+  const usesAlibabaCloud = isAlibabaCloudProvider(provider);
+  const usesTencent = isTencentProvider(provider);
+  // Providers whose form picks a named instance type instead of CPU, RAM
+  // and disk sizes.
+  const picksInstanceType =
+    usesGcp || usesAws || usesDigitalOcean || usesAlibabaCloud || usesTencent;
 
   const ctrlSpecCPUCore = useController({
     control: form.control,
@@ -952,7 +1020,11 @@ export default function SectionSpecs() {
                   ? 'dpanel-do-01'
                   : usesAws
                     ? 'dpanel-aws-01'
-                    : 'dpanel-idcloudhost-01'
+                    : usesAlibabaCloud
+                      ? 'dpanel-ali-01'
+                      : usesTencent
+                        ? 'dpanel-tc-01'
+                        : 'dpanel-idcloudhost-01'
           }
           {...form.register('spec.vmName')}
         />
@@ -1000,6 +1072,31 @@ export default function SectionSpecs() {
             </div>
           )}
 
+          {(usesAlibabaCloud || usesTencent) && (
+            <div className="mt-5 space-y-2">
+              <h6 className="text-sm font-semibold">Instance Type</h6>
+              <SubDigitalOceanSizeCbo
+                buildFilter={buildPlainFilter}
+                emptyDescription="The selected zone has no pay-as-you-go instance types in stock."
+                emptyTitle="No instance types found"
+                fieldMessage={formErrors.spec?.machineType?.message}
+                fieldName="spec.machineType"
+                itemPlaceholder="Select an instance type"
+                loadingDescription="Instance types are listed per zone, smallest first, with only the ones in stock."
+                loadingTitle="Select a zone first"
+                refreshAriaLabel="Refresh instance types"
+                scope="zone"
+                searchable
+                searchPlaceholder={
+                  usesAlibabaCloud
+                    ? 'Search instance types (for example ecs.e, ecs.u1, ecs.g7)'
+                    : 'Search instance types (for example SA5, S5, M5)'
+                }
+                titleOnError="Could not load instance types"
+              />
+            </div>
+          )}
+
           {usesDigitalOcean && (
             <div className="mt-5 space-y-2">
               <h6 className="text-sm font-semibold">Droplet Size</h6>
@@ -1022,6 +1119,8 @@ export default function SectionSpecs() {
             <SubOsTemplateCbo />
           </div>
 
+          {usesAlibabaCloud && <SubAlibabaCloudDiskCbo />}
+
           {usesGcp ? (
             <div className="mt-5 space-y-2">
               <h6 className="text-sm font-semibold">Disk</h6>
@@ -1034,7 +1133,7 @@ export default function SectionSpecs() {
               />
               <ErrorInline message={formErrors.spec?.diskSizeGB?.message} />
             </div>
-          ) : !usesDigitalOcean && !usesAws ? (
+          ) : !picksInstanceType ? (
             <div className="mt-5 grid gap-4 sm:grid-cols-3">
               <div className="space-y-2">
                 <h6 className="text-sm font-semibold">CPU Cores</h6>
