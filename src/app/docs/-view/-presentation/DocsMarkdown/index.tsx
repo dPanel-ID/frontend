@@ -120,7 +120,7 @@ export function DocsMarkdown(props: DocsMarkdownProps) {
             >
               {step}
             </span>
-            <div className="flex min-w-0 flex-col gap-2 [&>p]:max-w-none">
+            <div className="min-w-0 flex-1 [&>*+*]:mt-2 [&>p]:max-w-none">
               {children}
             </div>
           </li>
@@ -133,7 +133,7 @@ export function DocsMarkdown(props: DocsMarkdownProps) {
             aria-hidden
             className="mt-3 size-1.5 shrink-0 rounded-full bg-sky-500"
           />
-          <div className="flex min-w-0 flex-col gap-2 [&>p]:max-w-none">
+          <div className="min-w-0 flex-1 [&>*+*]:mt-2 [&>p]:max-w-none">
             {children}
           </div>
         </li>
