@@ -6,6 +6,7 @@ import * as ProjectOstemplates$Id from './cloud.project.ostemplates.$id';
 import * as ProjectProducts$Id from './cloud.project.products.$id';
 import * as ProjectProviders from './cloud.project.providers';
 import * as ProjectProviders$Provider from './cloud.project.providers.$provider';
+import * as ProjectSizes$Id from './cloud.project.sizes.$id';
 import * as ProjectUpdate$IdCredentials from './cloud.project.update.$id.credentials';
 import * as ProjectZones$Id from './cloud.project.zones.$id';
 import * as Regions$Id from './cloud.regions.$id';
@@ -31,6 +32,9 @@ const Root = {
     },
     Products: {
       $Id: ProjectProducts$Id,
+    },
+    Sizes: {
+      $Id: ProjectSizes$Id,
     },
     Zones: {
       $Id: ProjectZones$Id,
