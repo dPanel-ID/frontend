@@ -1,42 +1,31 @@
 ---
 title: Cloud providers
-description: What differs between the providers in the launch form.
+description: The four providers dPanel launches servers on, and what differs between them.
 sidebar_position: 4
 ---
 
-The launch form offers **AWS**, **Google Cloud**, **DigitalOcean**, **IDCloudHost** and **Biznet Gio**. Whichever you pick, the form asks the same questions, and the finished server behaves the same: same agent, same tabs, same modules.
+dPanel launches servers on **AWS**, **Google Cloud**, **IDCloudHost** and **DigitalOcean**. Each one has its own page: how to create the credential, how to connect it, the launch-form fields, and the provider's gotchas.
 
-What changes is how location and size are named, and the Linux user dPanel signs in as. The **Review** panel shows that user as **Login user** before you launch.
+Whichever you pick, the finished server is the same: same agent, same tabs, same modules.
 
-## Google Cloud
+## At a glance
 
-- Location comes in two parts: a region, then a zone inside it.
-- Size is a machine type, such as `e2-small`.
-- dPanel creates `dpanel-network` in the region on first use, with SSH, HTTP and HTTPS open.
-- The login user is `ubuntu`.
+|                        | [AWS](./provider-aws.md)                   | [Google Cloud](./provider-gcp.md)         | [IDCloudHost](./provider-idcloudhost.md) | [DigitalOcean](./provider-digitalocean.md) |
+| ---------------------- | ------------------------------------------ | ----------------------------------------- | ---------------------------------------- | ------------------------------------------ |
+| Credential             | Access key + secret key                    | Service account JSON key                  | API key                                  | API token                                  |
+| Location               | Region                                     | Region, then zone                         | Region, such as `jkt01`                  | Region                                     |
+| Size                   | **Instance Type**                          | **Machine Type**                          | **CPU Cores** and **RAM**                | **Droplet Size**                           |
+| Network                | `dpanel-network`, created on first use     | `dpanel-network`, created on first use    | Chosen for you per region                | Provider default, or a VPC you pick        |
+| Firewall               | Security group per server, TCP 22, 80, 443 | Firewall rule per server, TCP 22, 80, 443 | None created by dPanel                   | None created by dPanel                     |
+| Login user             | `ubuntu`                                   | `ubuntu`                                  | **Default User**, `dpanel` by default    | **Default User**, `dpanel` by default      |
+| Extra step in the form | None                                       | None                                      | **Access**: user and bootstrap password  | **Access**: user                           |
 
-## AWS
+The launch form also lists **Biznet Gio**. It follows the same steps and is not covered in detail here.
 
-![The launch form with AWS selected](../../assets/servers/create-provider-aws.webp)
+## Before any provider
 
-- Location is a region. dPanel picks a subnet inside it.
-- Size is an instance type, such as `t3.small`.
-- dPanel creates its own network and security group on first use, so a new account needs nothing beyond credentials.
-- The login user is `ubuntu`.
+- An SSH key in dPanel. See [Before you start](./before-you-start.md).
+- A credential that can do only what dPanel needs. Each provider page gives the minimum.
+- Read [Cloud credentials and security](./cloud-credentials-security.md) once. It explains what dPanel keeps and what happens if you revoke a key.
 
-## DigitalOcean
-
-![The launch form with DigitalOcean selected](../../assets/servers/create-provider-digitalocean.webp)
-
-- Location is one choice: the datacenter region.
-- Size is a droplet size.
-- The login user is `dpanel`.
-
-## IDCloudHost
-
-- Location is a datacenter, such as `jkt01`.
-- The login user is `dpanel`.
-
-:::note
-Biznet Gio appears in the form and follows the same steps. Check its **Login user** in the Review panel before you launch.
-:::
+The launch itself is the same for every provider: [Create a cloud server](./create-a-cloud-server.md).

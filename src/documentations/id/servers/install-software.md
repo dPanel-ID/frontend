@@ -1,7 +1,7 @@
 ---
 title: Memasang perangkat lunak
 description: Tambahkan basis data atau runtime lewat katalog modul.
-sidebar_position: 7
+sidebar_position: 12
 ---
 
 dPanel memasang perangkat lunak lewat modul. Modul adalah resep yang sudah teruji: Anda menjawab beberapa pertanyaan, dPanel memasang, mengatur, dan menjalankannya di server, lalu mencatat apa saja yang dipasangnya.

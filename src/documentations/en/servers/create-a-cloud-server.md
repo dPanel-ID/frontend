@@ -4,7 +4,7 @@ description: The launch form, step by step, from provider to a running machine.
 sidebar_position: 3
 ---
 
-This walkthrough uses Google Cloud. The other providers ask the same questions in the same order. The differences are on [Cloud providers](./cloud-providers.md).
+This walkthrough uses Google Cloud. The other providers ask the same questions in the same order. The differences are on [Cloud providers](./cloud-providers.md), with a page for each provider.
 
 ## What you need first
 

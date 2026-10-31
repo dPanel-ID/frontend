@@ -15,6 +15,8 @@ Open the application and go to **Logs**, or press **View logs** on the Overview 
 | Runtime       | What the service writes to its output while it runs. The table is titled **Application Logs**.                            |
 | Load balancer | Every request that reached the load balancer in front of the application. The table is titled **Load balancer requests**. |
 
+![The Load balancer source on an application's Logs tab, listing requests that reached docs-demo.terpusat.me](../../assets/applications/app-lb-logs.webp)
+
 **Load balancer** only appears when a load balancer serves this application. Without one, the tab opens straight onto the runtime logs.
 
 Runtime logs follow the active deployment. If the application has no run command or no server yet, the tab says there are no runtime logs.

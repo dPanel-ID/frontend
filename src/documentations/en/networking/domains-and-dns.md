@@ -33,6 +33,12 @@ Use a scoped token. At Cloudflare, a token limited to "DNS edit" on that one zon
 
 dPanel reads the zone first and lists the records already there. Nothing is changed until you use the domain somewhere, for example as a **Managed** domain on a load balancer.
 
+## Use the domain on a load balancer
+
+On a load balancer, choose **Managed** under **Domain Name**, type a **Subdomain** and pick the domain. dPanel creates an `A` record from that name to the gateway server. It refuses a name that already has a record, so existing records stay untouched.
+
+In our walkthrough, `docs-demo` on `terpusat.me` became `docs-demo.terpusat.me`, pointing at the gateway `103.183.75.207`. See [Load balancers](./load-balancers.md).
+
 ## See and remove records
 
 1. In the list, open the domain with **Details**.

@@ -120,7 +120,7 @@ export function DocsMarkdown(props: DocsMarkdownProps) {
             >
               {step}
             </span>
-            <div className="flex min-w-0 flex-col gap-2 [&>p]:max-w-none">
+            <div className="min-w-0 flex-1 [&>*+*]:mt-2 [&>p]:max-w-none">
               {children}
             </div>
           </li>
@@ -133,7 +133,7 @@ export function DocsMarkdown(props: DocsMarkdownProps) {
             aria-hidden
             className="mt-3 size-1.5 shrink-0 rounded-full bg-sky-500"
           />
-          <div className="flex min-w-0 flex-col gap-2 [&>p]:max-w-none">
+          <div className="min-w-0 flex-1 [&>*+*]:mt-2 [&>p]:max-w-none">
             {children}
           </div>
         </li>
@@ -171,12 +171,20 @@ export function DocsMarkdown(props: DocsMarkdownProps) {
 
       return (
         <figure className="flex flex-col gap-3">
+          {/*
+           * Screenshots are captured at twice their display size, so the 2x
+           * descriptor halves their intrinsic width: a narrow panel shows at
+           * its real size, sharp on a retina display, instead of stretched
+           * across the column. Tall panels are capped so one image never
+           * fills more than a screen.
+           */}
           <img
             src={url}
+            srcSet={url ? `${url} 2x` : undefined}
             alt={alt}
             loading="lazy"
             decoding="async"
-            className="h-auto w-full rounded-xl border bg-card"
+            className="h-auto max-h-[720px] w-auto max-w-full self-start rounded-xl border bg-card"
           />
           {title && (
             <figcaption className="text-sm leading-6 text-muted-foreground">

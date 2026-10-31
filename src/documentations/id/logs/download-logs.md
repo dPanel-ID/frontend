@@ -14,6 +14,8 @@ Unduh log saat Anda perlu mencarinya dengan alat sendiri, atau melampirkannya ke
    - **Halaman ini**: baris di halaman yang sedang dibuka.
    - **Semua di rentang waktu ini**: semua halaman, diambil satu per satu.
 
+![Menu unduh: halaman ini dengan 200 baris di halaman 1, atau semua baris di rentang waktu ini, 201 baris](../../assets/logs/logs-download.webp)
+
 Unduhan yang panjang menampilkan progresnya, misalnya **Mengunduh 12.000 / 40.000 baris**. Tekan **Batalkan unduhan** untuk menghentikannya.
 
 :::warning[Maksimal 100.000 baris sekali unduh]
