@@ -11,6 +11,8 @@ import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { canReinstallServer } from '@/entities/server/lib/describeServer';
+
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { DataPanel } from '@/shared/presentation/organisms/DataPanel';
@@ -50,23 +52,24 @@ export default function SettingsTab() {
             </Button>
           }
         />
-        <SettingCard
-          icon={RotateCcwIcon}
-          title={t('setup.title')}
-          description={t('setup.description')}
-          action={
-            <Button
-              buttonStyle="outline"
-              buttonColor="secondary"
-              size="sm"
-              disabled={busy}
-              onClick={() => emit('@servers::detail/server-reinstall', null)}
-            >
-              <RotateCcwIcon />
-              {t('setup.action')}
-            </Button>
-          }
-        />
+        {server && canReinstallServer(server) && (
+          <SettingCard
+            icon={RotateCcwIcon}
+            title={t('setup.title')}
+            description={t('setup.description')}
+            action={
+              <Button
+                buttonStyle="outline"
+                buttonColor="secondary"
+                size="sm"
+                onClick={() => emit('@servers::detail/server-reinstall', null)}
+              >
+                <RotateCcwIcon />
+                {t('setup.action')}
+              </Button>
+            }
+          />
+        )}
         <SettingCard
           icon={BuildingIcon}
           title={t('ownership.title')}
