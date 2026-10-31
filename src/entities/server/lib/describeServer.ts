@@ -31,3 +31,14 @@ export function serverSystemLabel(server: ServerLike) {
   const prettyName = name.charAt(0).toUpperCase() + name.slice(1);
   return version ? `${prettyName} ${version}` : prettyName;
 }
+
+/**
+ * Reinstall runs setup again on the same server record. It collides with a
+ * setup in progress, and the API refuses it for a cancelled, deleting or
+ * deleted server: that host comes back only as a new server with a new ID.
+ */
+export function canReinstallServer(server: Pick<ServerCard, 'state'>) {
+  return !['progress', 'cancelled', 'deleting', 'deleted'].includes(
+    server.state.status,
+  );
+}

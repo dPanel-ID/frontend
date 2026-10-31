@@ -22,6 +22,7 @@ import { useMetaTags } from 'react-metatags-hook';
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import {
+  canReinstallServer,
   isCloudServer,
   serverDisplayName,
 } from '@/entities/server/lib/describeServer';
@@ -164,15 +165,16 @@ export default guard(function Hero() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  disabled={busy}
-                  onClick={() =>
-                    emit('@servers::detail/server-reinstall', null)
-                  }
-                >
-                  <RotateCcwIcon className="size-4" />
-                  {t('reinstall')}
-                </DropdownMenuItem>
+                {canReinstallServer(server) && (
+                  <DropdownMenuItem
+                    onClick={() =>
+                      emit('@servers::detail/server-reinstall', null)
+                    }
+                  >
+                    <RotateCcwIcon className="size-4" />
+                    {t('reinstall')}
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem
                   onClick={() =>
                     emit('@servers::detail/server-migrate-ownership', null)
