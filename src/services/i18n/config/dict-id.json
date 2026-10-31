@@ -2514,6 +2514,43 @@
         "title": "Tidak ada tim ditemukan",
         "message": "Buat tim untuk mengorganisir resource dan aplikasi.",
         "cta": "Tambah Tim"
+      },
+      "hero": {
+        "description": "Tim berbagi server, aplikasi, dan akun cloud. Semua anggota tim bekerja di workspace yang sama, dengan peran yang Anda berikan."
+      },
+      "overview": {
+        "teams": "Tim",
+        "teamsHint": "Tim yang Anda ikuti",
+        "owned": "Milik Anda",
+        "ownedHint": "Anda dapat menghapusnya",
+        "shared": "Dibagikan ke Anda",
+        "sharedHint": "Tim milik orang lain",
+        "active": "Workspace aktif",
+        "activeHint": "Tempat resource baru dibuat",
+        "personal": "Pribadi"
+      },
+      "card": {
+        "activeWorkspace": "Workspace aktif",
+        "members": "Anggota",
+        "yourRole": "Peran Anda",
+        "created": "Dibuat {when}",
+        "updated": "Diperbarui {when}"
+      },
+      "table": {
+        "team": "Tim",
+        "status": "Status",
+        "yourRole": "Peran Anda",
+        "members": "Anggota",
+        "created": "Dibuat",
+        "updated": "Diperbarui",
+        "actions": "Aksi"
+      },
+      "status": {
+        "active": "Aktif",
+        "pending": "Menunggu",
+        "suspended": "Ditangguhkan",
+        "inactive": "Tidak aktif",
+        "deleted": "Dihapus"
       }
     },
     "teamDetail": {
@@ -2544,7 +2581,23 @@
         "title": "Belum ada anggota",
         "message": "Tambahkan anggota ke tim ini untuk memulai.",
         "cta": "Tambah Anggota"
-      }
+      },
+      "hero": {
+        "description": "Semua orang di sini berbagi workspace ini: server, aplikasi, dan akun cloud-nya, sesuai peran masing-masing."
+      },
+      "tiles": {
+        "members": "Anggota",
+        "membersHint": "Semua orang di tim ini",
+        "yourRole": "Peran Anda",
+        "yourRoleHint": "Yang bisa Anda lakukan di sini",
+        "status": "Status",
+        "created": "Dibuat"
+      },
+      "membersTitle": "Anggota",
+      "membersDescription": "Siapa saja di tim ini dan apa yang bisa mereka lakukan.",
+      "showing": "Menampilkan {shown} dari {total} anggota",
+      "actionsColumn": "Aksi",
+      "joinedAgo": "Bergabung {when}"
     },
     "notFound": {
       "title": "Halaman Tidak Ditemukan",

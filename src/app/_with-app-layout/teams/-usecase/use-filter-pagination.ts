@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
-import { useOrgDataModel } from '../-model/org-data';
 import { useEmit } from '../-model/events';
 import { useFilterModel } from '../-model/filters';
+import { useOrgDataModel } from '../-model/org-data';
 
 export function useFilterPagination() {
   const { organizations } = useOrgDataModel();

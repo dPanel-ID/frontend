@@ -1,15 +1,19 @@
+import { useAuthModel } from '@/services/auth/model';
+import { useDevetekTranslations } from '@/services/i18n';
+
 import LayoutAutoGridList from '@/shared/presentation/atoms/LayoutAutoGridList';
 import { EmptyState } from '@/shared/presentation/organisms/EmptyState';
 import { buildResponseView } from '@/widgets/response-view-builder';
 
-import { useDevetekTranslations } from '@/services/i18n';
-import { useOrgDataModel } from '../../-model/org-data';
-import { useFilterModel } from '../../-model/filters';
 import { OrgListState } from '../-presentation/OrgListState';
+import { myTeamAccess } from '../../-lib/team-roles';
+import { useEmit } from '../../-model/events';
+import { useFilterModel } from '../../-model/filters';
+import { useOrgDataModel } from '../../-model/org-data';
 
-import OrgCard from './OrgCard';
-import OrgTable from './OrgTable';
-import type { OrgTableData } from './OrgTable';
+import { TeamCard } from './TeamCard';
+import { TeamTable } from './TeamTable';
+import type { TeamRow } from './types';
 
 export default buildResponseView({
   useResponse: () => useOrgDataModel((s) => s.organizations),
@@ -20,6 +24,10 @@ export default buildResponseView({
 
     const [derivedViewMode] = useFilterModel((s) => [s.derivedViewMode]);
     const t = useDevetekTranslations();
+    const emit = useEmit();
+    const { resUserProfile } = useAuthModel();
+    const profile =
+      resUserProfile.$status === 'success' ? resUserProfile : undefined;
 
     if (list.length < 1) {
       return (
@@ -27,34 +35,37 @@ export default buildResponseView({
           title={t('page.teams.emptyState.title')}
           message={t('page.teams.emptyState.message')}
           ctaText={t('page.teams.emptyState.cta')}
+          ctaOnClick={() => emit('@teams/add-new', undefined)}
         />
       );
     }
 
-    const tableData: OrgTableData[] = list.flatMap((org) => {
-      const { id, name, description, status, created_at, updated_at } = org;
-      if (!id) return [];
+    const teams: TeamRow[] = list.flatMap((org) => {
+      if (!org.id) return [];
 
       return [
         {
-          id,
-          name: name ?? null,
-          description: description ?? null,
-          status: status ?? null,
-          createdAt: created_at ?? null,
-          updatedAt: updated_at ?? null,
+          id: org.id,
+          name: org.name || org.id,
+          status: org.status,
+          createdAt: org.created_at,
+          updatedAt: org.updated_at,
+          access: profile
+            ? myTeamAccess(profile.workspaces, org.id)
+            : undefined,
+          isActive: profile?.active_workspace === org.id,
         },
       ];
     });
 
     if (derivedViewMode === 'table') {
-      return <OrgTable data={tableData} />;
+      return <TeamTable teams={teams} />;
     }
 
     return (
       <LayoutAutoGridList viewMode={derivedViewMode as 'grid' | 'list'}>
-        {tableData.map((org) => (
-          <OrgCard key={org.id} data={org} />
+        {teams.map((team) => (
+          <TeamCard key={team.id} team={team} />
         ))}
       </LayoutAutoGridList>
     );

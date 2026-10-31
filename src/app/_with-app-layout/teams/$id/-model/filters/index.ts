@@ -9,7 +9,6 @@ import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import type { FilterRules } from '../../-rules';
 import type { QueryString } from '../../-rules/qs';
-
 import { useSubscribe } from '../events';
 
 export const [FilterModelProvider, useFilterModel] = buildSelector(
