@@ -1,5 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 
+import { canReinstallServer } from '@/entities/server/lib/describeServer';
 import type { ServerCard } from '@/entities/server/rules/schema';
 
 import { useEmit } from '../../-model/events';
@@ -10,7 +11,10 @@ export interface ServerHandlers {
   showStatus: () => void;
   migrateOwnership: () => void;
   remove: () => void;
-  /** Absent while setup is running; reinstalling would collide with it. */
+  /**
+   * Absent while setup is running, where it would collide, and for a
+   * cancelled, deleting or deleted server, which the API refuses.
+   */
   reinstall?: () => void;
   /** Absent while setup is running; the address and ports are in use. */
   edit?: () => void;
@@ -44,7 +48,7 @@ export function useServerHandlers() {
           serverAddress: server.host.address,
           provider: server.cloud?.provider,
         }),
-      reinstall: busy
+      reinstall: !canReinstallServer(server)
         ? undefined
         : () =>
             emit('@resources::servers/machine-reinstall', {
