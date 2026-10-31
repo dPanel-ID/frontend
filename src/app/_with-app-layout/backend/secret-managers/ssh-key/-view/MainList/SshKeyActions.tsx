@@ -12,6 +12,8 @@ import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
+
 import { cn } from '@/shared/libs/tailwind/cn';
 import {
   DropdownMenu,
@@ -55,11 +57,13 @@ export function SshKeyActions(props: SshKeyActionsProps) {
           title={t('page.sshKeys.actions.useOnServer')}
           onClick={handlers.createServer}
         />
-        <ActionIcon
-          icon={BuildingIcon}
-          title={t('common.actions.migrateOwnership')}
-          onClick={handlers.migrateOwnership}
-        />
+        {isMigrateOwnershipVisible() && (
+          <ActionIcon
+            icon={BuildingIcon}
+            title={t('common.actions.migrateOwnership')}
+            onClick={handlers.migrateOwnership}
+          />
+        )}
         <ActionIcon
           icon={Trash2Icon}
           title={t('common.actions.delete')}
@@ -98,11 +102,15 @@ export function SshKeyActions(props: SshKeyActionsProps) {
             <ServerIcon className="size-4" />
             {t('page.sshKeys.actions.useOnServer')}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handlers.migrateOwnership}>
-            <BuildingIcon className="size-4" />
-            {t('common.actions.migrateOwnership')}
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
+          {isMigrateOwnershipVisible() && (
+            <>
+              <DropdownMenuItem onClick={handlers.migrateOwnership}>
+                <BuildingIcon className="size-4" />
+                {t('common.actions.migrateOwnership')}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </>
+          )}
           <DropdownMenuItem variant="destructive" onClick={handlers.remove}>
             <Trash2Icon className="size-4" />
             {t('common.actions.delete')}

@@ -59,11 +59,13 @@ export function ServerActions(props: ServerActionsProps) {
             onClick={handlers.edit}
           />
         )}
-        <ActionIcon
-          icon={BuildingIcon}
-          title={t('common.actions.migrateOwnership')}
-          onClick={handlers.migrateOwnership}
-        />
+        {handlers.migrateOwnership && (
+          <ActionIcon
+            icon={BuildingIcon}
+            title={t('common.actions.migrateOwnership')}
+            onClick={handlers.migrateOwnership}
+          />
+        )}
         <ActionIcon
           icon={Trash2Icon}
           title={t('common.actions.delete')}
@@ -106,10 +108,12 @@ export function ServerActions(props: ServerActionsProps) {
               {t('common.actions.edit')}
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem onClick={handlers.migrateOwnership}>
-            <BuildingIcon className="size-4" />
-            {t('common.actions.migrateOwnership')}
-          </DropdownMenuItem>
+          {handlers.migrateOwnership && (
+            <DropdownMenuItem onClick={handlers.migrateOwnership}>
+              <BuildingIcon className="size-4" />
+              {t('common.actions.migrateOwnership')}
+            </DropdownMenuItem>
+          )}
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" onClick={handlers.remove}>
             <Trash2Icon className="size-4" />
