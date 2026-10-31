@@ -48,9 +48,13 @@ Panggilan pencarian pilihan diambil langsung dari kode dPanel. Peluncuran dan pe
 5. Tempel **AccessKey ID** dan **AccessKey secret**.
 6. Tekan **Connect cloud account**.
 
+![Formulir Connect Cloud Account dengan Alibaba Cloud terpilih, kolom AccessKey ID dan AccessKey secret masih kosong](../../../assets/servers/cloud-account-connect-alibabacloud.webp)
+
 dPanel langsung menyimpan akun itu sebagai **Siap**, tanpa menguji kuncinya. Ujian pertamanya ada di formulir peluncuran: kalau **Region** tetap kosong atau menampilkan error, kunci atau izinnya salah.
 
 ## 3. Kolom Alibaba Cloud di formulir peluncuran
+
+![Formulir peluncuran dengan Alibaba Cloud terpilih](../../../assets/servers/create-provider-alibabacloud.webp)
 
 | Kolom              | Yang dipilih                                                                                   |
 | ------------------ | ---------------------------------------------------------------------------------------------- |
