@@ -54,6 +54,7 @@ dPanel does not resell servers. Machines are created inside your own provider ac
 
 - A key or account created in a team workspace is shared with that team. One created in your personal workspace is yours alone.
 - **Migrate Ownership** in the item's menu moves it to another workspace.
+- **Update credentials** replaces the key inside a cloud account, for example after you rotate it at the provider. Servers launched with it keep working. See [Rotating a credential](../servers/cloud-providers/cloud-credentials-security.md#rotating-a-credential).
 - **Disconnect cloud account** makes dPanel forget the API key. Servers already running at the provider keep running.
 
 ## What happens next

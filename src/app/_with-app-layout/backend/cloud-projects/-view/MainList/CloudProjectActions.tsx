@@ -3,6 +3,7 @@ import type { MouseEvent } from 'react';
 import {
   BuildingIcon,
   EyeIcon,
+  KeyRoundIcon,
   MoreHorizontalIcon,
   ServerIcon,
   Trash2Icon,
@@ -54,6 +55,13 @@ export function CloudProjectActions(props: CloudProjectActionsProps) {
           title={t('common.actions.migrateOwnership')}
           onClick={handlers.migrateOwnership}
         />
+        {handlers.updateCredentials && (
+          <ActionIcon
+            icon={KeyRoundIcon}
+            title={t('page.cloudProjects.actions.updateCredentials')}
+            onClick={handlers.updateCredentials}
+          />
+        )}
         <ActionIcon
           icon={Trash2Icon}
           title={t('common.actions.delete')}
@@ -92,6 +100,12 @@ export function CloudProjectActions(props: CloudProjectActionsProps) {
             <BuildingIcon className="size-4" />
             {t('common.actions.migrateOwnership')}
           </DropdownMenuItem>
+          {handlers.updateCredentials && (
+            <DropdownMenuItem onClick={handlers.updateCredentials}>
+              <KeyRoundIcon className="size-4" />
+              {t('page.cloudProjects.actions.updateCredentials')}
+            </DropdownMenuItem>
+          )}
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" onClick={handlers.remove}>
             <Trash2Icon className="size-4" />

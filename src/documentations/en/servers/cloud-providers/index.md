@@ -26,6 +26,6 @@ The launch form also lists **Biznet Gio**. It follows the same steps and is not 
 
 - An SSH key in dPanel. See [Before you start](../before-you-start.md).
 - A credential that can do only what dPanel needs. Each provider page gives the minimum.
-- Read [Cloud credentials and security](./cloud-credentials-security.md) once. It explains what dPanel keeps and what happens if you revoke a key.
+- Read [Cloud credentials and security](./cloud-credentials-security.md) once. It explains what dPanel keeps and what happens if you revoke a key, and how to replace one.
 
 The launch itself is the same for every provider: [Create a cloud server](./create-a-cloud-server.md).

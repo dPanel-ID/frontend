@@ -9,6 +9,8 @@ export interface CloudProjectHandlers {
   openDetails: () => void;
   createServer: () => void;
   migrateOwnership: () => void;
+  /** Absent when the account has no provider to pick a credential form by. */
+  updateCredentials?: () => void;
   remove: () => void;
 }
 
@@ -38,6 +40,14 @@ export function useCloudProjectHandlers() {
           teamName,
           teamId,
         }),
+      updateCredentials: provider
+        ? () =>
+            emit('@cloud-projects/open--update-credentials', {
+              id,
+              name,
+              provider,
+            })
+        : undefined,
       remove: () => emit('@cloud-projects/project--delete', { id, name }),
     };
   });

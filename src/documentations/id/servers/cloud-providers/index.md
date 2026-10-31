@@ -26,6 +26,6 @@ Formulir peluncuran juga menampilkan **Biznet Gio**. Langkahnya sama dan tidak d
 
 - SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
 - Kredensial yang hanya bisa melakukan apa yang dibutuhkan dPanel. Batas minimumnya ada di halaman tiap penyedia.
-- Baca [Kredensial cloud dan keamanan](./cloud-credentials-security.md) sekali. Di sana dijelaskan apa yang disimpan dPanel dan apa yang terjadi kalau kunci dicabut.
+- Baca [Kredensial cloud dan keamanan](./cloud-credentials-security.md) sekali. Di sana dijelaskan apa yang disimpan dPanel dan apa yang terjadi kalau kunci dicabut, serta cara menggantinya.
 
 Peluncurannya sendiri sama untuk semua penyedia: [Membuat server cloud](./create-a-cloud-server.md).

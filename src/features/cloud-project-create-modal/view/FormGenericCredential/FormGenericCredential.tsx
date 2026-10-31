@@ -18,7 +18,8 @@ export default function FormGenericCredential(props: {
   provider: DTOs.CloudProviderContractV1;
 }) {
   const { provider } = props;
-  const { handleSubmit, isSubmitting } = useModelSubmission(provider);
+  const { handleSubmit, isSubmitting, submitLabel } =
+    useModelSubmission(provider);
   const fields = getCredentialFields(provider);
 
   return (
@@ -56,7 +57,11 @@ export default function FormGenericCredential(props: {
           />
         ))}
 
-        <SubmitButton isSubmitting={isSubmitting} onClick={handleSubmit} />
+        <SubmitButton
+          isSubmitting={isSubmitting}
+          label={submitLabel}
+          onClick={handleSubmit}
+        />
       </div>
     </section>
   );

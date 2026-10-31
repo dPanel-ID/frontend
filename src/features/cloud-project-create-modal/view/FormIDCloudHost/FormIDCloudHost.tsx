@@ -17,7 +17,8 @@ export default function FormIDCloudHost(props: {
 }) {
   const { provider } = props;
   const { formIDCloudHost: form } = useCpcFormContext();
-  const { handleSubmit, isSubmitting } = useModelSubmission(provider);
+  const { handleSubmit, isSubmitting, submitLabel } =
+    useModelSubmission(provider);
   const tokenField = getCredentialFields(provider).find((field) =>
     [field.key, ...(field.aliases ?? [])]
       .filter(Boolean)
@@ -78,7 +79,11 @@ export default function FormIDCloudHost(props: {
           <ErrorInline message={form.formState.errors.token?.message} />
         </div>
 
-        <SubmitButton isSubmitting={isSubmitting} onClick={handleSubmit} />
+        <SubmitButton
+          isSubmitting={isSubmitting}
+          label={submitLabel}
+          onClick={handleSubmit}
+        />
       </div>
     </section>
   );

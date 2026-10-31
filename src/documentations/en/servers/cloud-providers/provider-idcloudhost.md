@@ -83,6 +83,6 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick IDCloudHost in 
 ## Security
 
 - The key can do what your IDCloudHost user can do. Treat it like your console password.
-- dPanel has no button to swap the key inside an existing cloud account. To rotate, see [Rotating a credential](./cloud-credentials-security.md#rotating-a-credential).
+- To rotate the key, create a new one for the same IDCloudHost account and replace it with **Update credentials** on the cloud account. See [Rotating a credential](./cloud-credentials-security.md#rotating-a-credential).
 - To cut dPanel off, delete the key in the IDCloudHost API page. Running servers keep running. See [what happens when you revoke](./cloud-credentials-security.md#if-you-revoke-a-credential).
 - More in [Cloud credentials and security](./cloud-credentials-security.md).

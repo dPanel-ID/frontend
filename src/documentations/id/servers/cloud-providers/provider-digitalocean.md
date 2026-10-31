@@ -80,6 +80,6 @@ Ikuti [Membuat server cloud](./create-a-cloud-server.md). Pilih DigitalOcean di 
 
 - Dengan custom scope, token ini bisa membuat, membaca, dan menghapus Droplet dan SSH key, serta membaca region, ukuran, image, dan VPC. Token ini tidak bisa menyentuh Spaces, basis data, DNS, atau penagihan.
 - Dengan **Full Access**, token bisa melakukan apa saja di team itu. Jadi jangan.
-- dPanel tidak punya tombol untuk mengganti token di dalam akun cloud yang sudah ada. Untuk merotasi, lihat [Merotasi kredensial](./cloud-credentials-security.md#merotasi-kredensial).
+- Untuk merotasi token, buat token baru di team yang sama, lalu ganti lewat **Perbarui kredensial** pada akun cloud. Lihat [Merotasi kredensial](./cloud-credentials-security.md#merotasi-kredensial).
 - Untuk memutus akses dPanel, hapus tokennya di **API**, **Tokens**. Server yang sedang berjalan tetap berjalan. Lihat [apa yang terjadi saat kunci dicabut](./cloud-credentials-security.md#kalau-kredensial-dicabut).
 - Selengkapnya di [Kredensial cloud dan keamanan](./cloud-credentials-security.md).

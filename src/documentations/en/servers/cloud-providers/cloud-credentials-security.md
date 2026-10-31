@@ -56,14 +56,29 @@ Don't connect your AWS root user, an AWS administrator, a Google Cloud owner, or
 
 ## Rotating a credential
 
-dPanel has no button to replace the key inside an existing cloud account, and it won't let you disconnect an account while servers still use it. Rotation therefore takes a few steps:
+You can replace the key inside an existing cloud account without disconnecting it. The account keeps its ID, so servers launched with it keep working and can still be deleted.
 
-1. Create a new key at the provider for the same identity. AWS allows two access keys per user, and Google Cloud several keys per service account. On DigitalOcean and IDCloudHost, create a second token.
-2. In dPanel, connect a new cloud account with the new key. Use it for every new server.
-3. Keep the old key working until the servers launched with the old account are deleted. dPanel needs it to destroy those VMs.
-4. When the old account has no servers left, press **Disconnect cloud account** on it in dPanel, then delete the old key at the provider.
+1. Create a new key at the provider for the same identity. AWS allows two access keys per user, and Google Cloud several keys per service account. On DigitalOcean and IDCloudHost, create a second token or API key.
+2. In the sidebar, open **Cloud Projects**. On the account, open its actions (the menu in list view, or the icon row in card view) and choose **Update credentials**.
+3. Fill in the same fields as when you connected the account, then press **Save credentials**.
+4. Confirm the new key works: open the launch form and check that the regions load.
+5. Delete or deactivate the old key at the provider.
 
-If the old key has leaked, don't wait: revoke it now and read the next section.
+From the command line, run `dnocs cloud-project update-credentials --id <ID>`. It asks for each field, like `dnocs cloud-project create`. For a multi-line value such as the Google Cloud service account JSON, answer the prompt with `@path/to/key.json` to read it from a file. You can also pass every field at once with `--credential-file credential.json`, a JSON object such as `{"project_id":"my-project","service_account_json":"..."}`, and skip the confirmation with `--yes`.
+
+dPanel checks the new key before it saves it:
+
+- Every required field must be filled in.
+- On Google Cloud, the **Project ID** must be the same as the account's current one. To use another project, connect a new cloud account.
+- dPanel calls the provider with the new key: it lists regions, and on IDCloudHost the billing accounts. If the provider refuses the key, nothing is saved, the old key stays in use, and the error says the provider rejected the credential.
+
+The new key is stored encrypted, like the old one, and is never shown again. In a team workspace, updating credentials needs the cloud-project **admin** level: Owner, Admin, DevOps, or a cloud-project admin role.
+
+:::warning[Use a key for the same account]
+On AWS, DigitalOcean and IDCloudHost, dPanel can't confirm that the new key belongs to the same account as the old one. Make sure it does. Otherwise dPanel can't delete the servers launched with the old key.
+:::
+
+If the old key has leaked, don't wait: update the credentials with a new key now, then revoke the old one at the provider.
 
 ## If you revoke a credential
 
@@ -73,6 +88,8 @@ Revoking means deleting or deactivating the key at the provider. Here is what ha
 - **New launches fail.** The launch form can't list regions or sizes, and creation fails at the provider.
 - **Deleting a server only half works.** dPanel can't destroy the VM at the provider. The server stays in **Deleting** or **Deleted**, dPanel won't remove its record until the provider confirms, and **the VM keeps running and billing** at the provider. Delete it yourself in the provider's console.
 - **The cloud account can't be disconnected** while servers still reference it.
+
+To fix a revoked or expired key, create a new key for the same account and [update the credentials](#rotating-a-credential). New launches and server deletion work again.
 
 ## Removing a cloud account from dPanel
 

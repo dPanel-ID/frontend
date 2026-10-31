@@ -116,6 +116,6 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick Google Cloud in
 ## Security
 
 - The key can create and delete VMs, disks and firewall rules in this one project. In a dedicated project, that's all it can reach.
-- A service account key does not expire by default. dPanel has no button to swap it inside an existing cloud account. To rotate, see [Rotating a credential](./cloud-credentials-security.md#rotating-a-credential).
+- A service account key does not expire by default. To rotate it, create a new key for the same service account and replace it with **Update credentials** on the cloud account. The **Project ID** must stay the same. See [Rotating a credential](./cloud-credentials-security.md#rotating-a-credential).
 - To cut dPanel off, delete the key or disable the service account. Running servers keep running. See [what happens when you revoke](./cloud-credentials-security.md#if-you-revoke-a-credential).
 - More in [Cloud credentials and security](./cloud-credentials-security.md).

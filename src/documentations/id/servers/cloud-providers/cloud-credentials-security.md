@@ -56,14 +56,29 @@ Jangan hubungkan root user AWS, administrator AWS, owner Google Cloud, atau toke
 
 ## Merotasi kredensial
 
-dPanel tidak punya tombol untuk mengganti kunci di dalam akun cloud yang sudah ada, dan tidak mengizinkan akun diputus selama masih ada server yang memakainya. Karena itu rotasi butuh beberapa langkah:
+Anda bisa mengganti kunci di dalam akun cloud yang sudah ada tanpa memutusnya. ID akun tidak berubah, jadi server yang diluncurkan dengannya tetap berfungsi dan tetap bisa dihapus.
 
-1. Buat kunci baru di penyedia untuk identitas yang sama. AWS mengizinkan dua access key per user, dan Google Cloud beberapa kunci per service account. Di DigitalOcean dan IDCloudHost, buat token kedua.
-2. Di dPanel, hubungkan akun cloud baru dengan kunci baru itu. Pakai akun ini untuk semua server baru.
-3. Biarkan kunci lama tetap berfungsi sampai server yang diluncurkan dengan akun lama sudah dihapus. dPanel membutuhkannya untuk menghancurkan VM tersebut.
-4. Setelah akun lama tidak punya server lagi, tekan **Putuskan akun cloud** pada akun itu di dPanel, lalu hapus kunci lamanya di penyedia.
+1. Buat kunci baru di penyedia untuk identitas yang sama. AWS mengizinkan dua access key per user, dan Google Cloud beberapa kunci per service account. Di DigitalOcean dan IDCloudHost, buat token atau API key kedua.
+2. Di sidebar, buka **Proyek Cloud**. Pada akun itu, buka aksinya (menu di tampilan daftar, atau deretan ikon di tampilan kartu), lalu pilih **Perbarui kredensial**.
+3. Isi kolom yang sama seperti saat Anda menghubungkan akun itu, lalu tekan **Simpan kredensial**.
+4. Pastikan kunci baru berfungsi: buka formulir peluncuran dan periksa apakah daftar region muncul.
+5. Hapus atau nonaktifkan kunci lama di penyedia.
 
-Kalau kunci lama sudah bocor, jangan menunggu: cabut sekarang, lalu baca bagian berikut.
+Dari command line, jalankan `dnocs cloud-project update-credentials --id <ID>`. Perintah ini menanyakan setiap kolom, sama seperti `dnocs cloud-project create`. Untuk nilai beberapa baris seperti JSON service account Google Cloud, jawab pertanyaannya dengan `@path/to/key.json` supaya isinya dibaca dari file. Anda juga bisa mengirim semua kolom sekaligus dengan `--credential-file credential.json`, berupa objek JSON seperti `{"project_id":"my-project","service_account_json":"..."}`, dan melewati konfirmasi dengan `--yes`.
+
+dPanel memeriksa kunci baru sebelum menyimpannya:
+
+- Semua kolom wajib harus terisi.
+- Di Google Cloud, **Project ID** harus sama dengan milik akun saat ini. Untuk memakai project lain, hubungkan akun cloud baru.
+- dPanel memanggil penyedia dengan kunci baru itu: memuat daftar region, dan di IDCloudHost juga daftar billing account. Kalau penyedia menolak kuncinya, tidak ada yang disimpan, kunci lama tetap dipakai, dan pesan galatnya menyebut bahwa penyedia menolak kredensial itu.
+
+Kunci baru disimpan terenkripsi seperti yang lama, dan tidak pernah ditampilkan lagi. Di ruang kerja tim, memperbarui kredensial membutuhkan level **admin** untuk proyek cloud: Owner, Admin, DevOps, atau role admin proyek cloud.
+
+:::warning[Pakai kunci untuk akun yang sama]
+Di AWS, DigitalOcean, dan IDCloudHost, dPanel tidak bisa memastikan kunci baru berasal dari akun yang sama dengan kunci lama. Pastikan sendiri. Kalau tidak, dPanel tidak bisa menghapus server yang diluncurkan dengan kunci lama.
+:::
+
+Kalau kunci lama sudah bocor, jangan menunggu: perbarui kredensialnya dengan kunci baru sekarang, lalu cabut kunci lama di penyedia.
 
 ## Kalau kredensial dicabut
 
@@ -73,6 +88,8 @@ Mencabut berarti menghapus atau menonaktifkan kunci di penyedia. Ini yang terjad
 - **Peluncuran baru gagal.** Formulir peluncuran tidak bisa memuat region atau ukuran, dan pembuatan gagal di penyedia.
 - **Menghapus server hanya setengah berhasil.** dPanel tidak bisa menghancurkan VM di penyedia. Server tertahan di **Deleting** atau **Deleted**, dPanel tidak menghapus catatannya sampai penyedia mengonfirmasi, dan **VM tetap berjalan dan terus ditagih** di penyedia. Hapus sendiri lewat konsol penyedia.
 - **Akun cloud tidak bisa diputus** selama masih ada server yang merujuk ke sana.
+
+Untuk memperbaiki kunci yang dicabut atau kedaluwarsa, buat kunci baru untuk akun yang sama lalu [perbarui kredensialnya](#merotasi-kredensial). Peluncuran baru dan penghapusan server kembali berfungsi.
 
 ## Menghapus akun cloud dari dPanel
 
