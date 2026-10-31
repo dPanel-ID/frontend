@@ -107,6 +107,8 @@ export default function ChatBody() {
               entry={entry}
               onRetry={handleRetry}
               retryDisabled={chat.isSending}
+              onDecide={(action, approve) => void chat.decide(action, approve)}
+              decideDisabled={chat.isSending}
             />
           ))}
         </div>
