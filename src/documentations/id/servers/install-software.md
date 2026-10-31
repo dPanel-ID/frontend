@@ -1,35 +1,46 @@
 ---
-title: 'Memasang perangkat lunak'
-description: 'Menambah basis data atau runtime lewat katalog modul.'
-sidebar_position: 6
+title: Memasang perangkat lunak
+description: Tambahkan basis data atau runtime lewat katalog modul.
+sidebar_position: 7
 ---
 
-dPanel memasang perangkat lunak melalui modul. Modul adalah resep yang sudah diuji: Anda menjawab beberapa pertanyaan, dPanel memasang, mengatur dan menjalankannya di server, lalu mencatat apa yang dipasang.
+dPanel memasang perangkat lunak lewat modul. Modul adalah resep yang sudah teruji: Anda menjawab beberapa pertanyaan, dPanel memasang, mengatur, dan menjalankannya di server, lalu mencatat apa saja yang dipasangnya.
 
-Buka server, masuk ke Modules, lalu tekan Add module. Katalog mengelompokkan isinya: basis data, runtime bahasa, kontainer, sistem manajemen konten dan infrastruktur.
+## Buka katalognya
 
-![Katalog modul yang dikelompokkan per kategori](../../assets/servers/server-module-catalog.png)
+1. Buka server, lalu tab **Modul**.
+2. Tekan **Tambah modul**.
+
+**Katalog modul** mengelompokkan isinya: **Containers**, **Databases**, **Infrastructure**, **Programming Languages Runtime**, dan **Utilities**. Modul yang sudah ada di server ditandai terpasang, dengan tombol **Kelola** alih-alih **Pasang**.
+
+![Katalog modul, dikelompokkan per kategori](../../assets/servers/server-module-catalog.webp)
 
 ## Memasang basis data
 
-Tekan Install pada modul yang diinginkan. Formulirnya menyebutkan apa yang akan dijalankan dan hanya menanyakan hal yang tidak bisa diputuskan sendiri: untuk basis data yaitu versinya, kata sandi akun administrator, dan alamat mana yang boleh didengarkan.
+1. Tekan **Pasang** pada modul yang diinginkan, misalnya **MariaDB**.
+2. Formulirnya menampilkan role yang akan dijalankan dan hanya menanyakan hal yang tidak bisa diputuskan sendiri. Untuk MariaDB: **MariaDB Version**, **Root Password**, dan **Bind Address**.
+3. Tekan **Install role**, lalu konfirmasi.
 
-![Formulir pemasangan MariaDB dengan kolom kata sandi tersamar](../../assets/servers/server-module-install-form.png)
+![Formulir pemasangan MariaDB, dengan versi, kata sandi root, dan bind address](../../assets/servers/server-module-install-form.webp)
 
-:::warning[Tentukan sendiri kata sandinya]
-Kata sandi administrator wajib diisi dan minimal 8 karakter. Tidak ada nilai bawaan, karena basis data dengan kata sandi bawaan yang dipublikasikan bisa diakses siapa pun yang mengetahuinya. dPanel menyimpannya terenkripsi di server dan tidak menampilkannya lagi, jadi simpan salinan Anda sendiri di tempat aman.
+:::warning[Tentukan kata sandinya sendiri]
+Kata sandi root wajib diisi, minimal 8 karakter. Tidak ada nilai bawaan, karena basis data dengan kata sandi bawaan yang sudah tersebar bisa dimasuki siapa saja. dPanel hanya menyimpannya di server dan tidak menampilkannya lagi, jadi simpan salinannya di tempat yang aman.
 :::
 
-Tekan Install role lalu konfirmasi. Modul muncul sebagai Installing, dan basis data perlu beberapa menit.
+## Setelah itu
 
-![Daftar modul menampilkan MariaDB sedang dipasang](../../assets/servers/server-module-installing.png)
+Modul muncul di tab **Modul** dengan status **Memasang**. Basis data butuh beberapa menit. Setelah selesai:
 
-![Daftar modul menampilkan MariaDB terpasang](../../assets/servers/server-module-installed.png 'Barisnya berubah menjadi Installed setelah selesai.')
+- Tab **Modul** menampilkannya sebagai **Terpasang**, lengkap dengan versinya.
+- Tab **Ringkasan** mencantumkannya di **Yang berjalan di sini**.
+- Tab **Layanan** menunjukkan layanannya berjalan.
 
-## Memastikan hasilnya
+Kalau statusnya **Gagal**, buka modulnya untuk melihat penyebabnya, perbaiki, lalu pasang lagi.
 
-- Tab Modules menampilkannya sebagai Installed beserta versinya.
-- Tab Overview mencantumkannya di What runs here, sesuai laporan agen.
-- Tab Services menampilkan layanannya berjalan.
+:::tip[Runtime untuk aplikasi]
+Runtime bahasa tidak harus dipasang lebih dulu. Saat [membuat aplikasi](../applications/create-an-application.md), Anda memilih runtime-nya sebagai dependensi, dan dPanel memasangnya di server.
+:::
 
-Jika Anda mengelola banyak mesin, server group memasang modul yang sama ke seluruh anggotanya dalam satu operasi dan menampilkan hasilnya per server. Grup ada di Servers, lalu Server groups.
+## Banyak server sekaligus
+
+Grup server memasang modul yang sama ke semua anggotanya dalam satu operasi, dan menampilkan hasilnya per server. Grup ada di **Server**, lalu **Server groups**.

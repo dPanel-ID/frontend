@@ -1,19 +1,36 @@
 ---
-title: 'Menghapus server'
-description: 'Berhenti membayar mesin yang sudah tidak dipakai.'
-sidebar_position: 8
+title: Menghapus server
+description: Berhenti membayar mesin yang sudah tidak dipakai.
+sidebar_position: 9
 ---
 
-Mesin cloud ditagih penyedia selama mesin itu ada, jadi hapus begitu Anda selesai memakainya. Buka server, masuk ke Settings, lalu lihat zona berbahaya.
+Penyedia menagih mesin cloud selama mesin itu ada, jadi hapus begitu tidak dipakai lagi.
 
-![Dialog penghapusan, memuat daftar akibat dan meminta nama server](../../assets/servers/server-delete.png 'Dialognya menyebutkan apa yang akan terjadi dan meminta Anda mengetik namanya.')
+## Yang perlu disiapkan
+
+Penghapusan ditolak selama masih ada aplikasi atau load balancer yang memakai server ini. Hapus dulu keduanya:
+
+- [Menghapus aplikasi](../applications/update-or-delete.md)
+- [Load balancer](../networking/load-balancers.md)
+
+## Hapus servernya
+
+1. Buka server, lalu tab **Pengaturan**.
+2. Di **Zona berbahaya**, tekan **Hapus server**.
+3. Baca bagian **Yang akan terjadi**.
+4. Ketik nama server untuk konfirmasi, lalu tekan **Hapus server**.
+
+![Dialog Hapus server, berisi apa yang akan terjadi dan kolom untuk mengetik nama server](../../assets/servers/server-delete.webp)
 
 :::danger[Tidak bisa dibatalkan]
-Untuk server yang dibuat dPanel, penghapusan mengeluarkannya dari dPanel dan memusnahkan mesinnya di penyedia cloud beserta seluruh isinya. Untuk server yang Anda hubungkan sendiri, dPanel hanya melupakannya dan mesin Anda tetap berjalan.
+Untuk server yang diluncurkan dPanel, penghapusan mencopot agen dan menghancurkan mesinnya di penyedia cloud, beserta disk dan seluruh isinya. Untuk server yang Anda hubungkan sendiri, dPanel hanya melupakannya dan mesinnya tetap berjalan.
 :::
 
-Penghapusan ditolak selama masih ada aplikasi atau load balancer yang memakai server itu, jadi hapus dulu yang lain. Barisnya kemudian menampilkan Deleting selama penyedia membongkar mesin, lalu hilang dari daftar.
+## Setelah itu
 
-## Memastikan sudah hilang
+Server berstatus **Deleting** selama penyedia membongkar mesinnya, lalu menjadi **Deleted**.
 
-Daftar Servers adalah pemeriksaan pertama. Yang kedua adalah konsol penyedia Anda: dPanel melaporkan apa yang disampaikan penyedia, jadi penghapusan yang gagal separuh jalan terlihat di sana.
+Periksa dua tempat:
+
+1. Daftar **Server**.
+2. Konsol penyedia Anda. dPanel melaporkan apa yang dikatakan penyedia, jadi penghapusan yang gagal sebagian di penyedia akan terlihat di sana.

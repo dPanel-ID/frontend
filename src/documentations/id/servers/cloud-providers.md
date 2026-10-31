@@ -1,33 +1,42 @@
 ---
-title: 'Penyedia cloud'
-description: 'Perbedaan Google Cloud, AWS dan DigitalOcean.'
+title: Penyedia cloud
+description: Apa saja yang berbeda antarpenyedia di formulir peluncuran.
 sidebar_position: 4
 ---
 
-Tiga penyedia dibahas di sini karena ketiganya sudah diuji dari awal sampai akhir. Penyedia lain tetap muncul di formulir dan bekerja dengan cara yang sama, dan akan mendapat bagiannya sendiri setelah melewati pengujian yang sama.
+Formulir peluncuran menawarkan **AWS**, **Google Cloud**, **DigitalOcean**, **IDCloudHost**, dan **Biznet Gio**. Penyedia mana pun yang dipilih, pertanyaannya sama dan servernya berperilaku sama: agen yang sama, tab yang sama, modul yang sama.
 
-Apa pun pilihannya, formulirnya menanyakan hal yang sama dan server jadinya berperilaku identik: agen yang sama, tab yang sama, modul yang sama.
+Yang berbeda hanya cara penyedia menamai lokasi dan ukuran, serta user Linux yang dipakai dPanel untuk masuk. Panel **Review** menampilkan user itu sebagai **Login user** sebelum Anda meluncurkan.
 
 ## Google Cloud
 
-- Lokasi ditanya dua tahap: region, lalu zone di dalamnya.
-- Ukuran berupa machine type, misalnya e2-small.
-- dPanel membuat dpanel-network di region itu saat pertama dipakai dan membuka SSH serta port web.
-- Pengguna login adalah ubuntu.
+- Lokasi dipilih dua tahap: region, lalu zone di dalamnya.
+- Ukuran berupa machine type, misalnya `e2-small`.
+- dPanel membuat `dpanel-network` di region itu saat pertama dipakai, dengan SSH, HTTP, dan HTTPS terbuka.
+- User login-nya `ubuntu`.
 
 ## AWS
 
-![Formulir peluncuran dengan AWS terpilih](../../assets/servers/create-provider-aws.png)
+![Formulir peluncuran dengan AWS terpilih](../../assets/servers/create-provider-aws.webp)
 
-- Lokasi berupa region, dan dPanel memilihkan subnet di dalamnya.
-- Ukuran berupa instance type, misalnya t3.small.
-- dPanel membuat jaringan dan security group sendiri saat pertama dipakai, jadi akun baru tidak perlu persiapan selain kredensial.
-- Pengguna login adalah ubuntu.
+- Lokasi berupa region, dan dPanel memilih subnet di dalamnya.
+- Ukuran berupa instance type, misalnya `t3.small`.
+- dPanel membuat jaringan dan security group sendiri saat pertama dipakai, jadi akun baru cukup diberi kredensial.
+- User login-nya `ubuntu`.
 
 ## DigitalOcean
 
-![Formulir peluncuran dengan DigitalOcean terpilih](../../assets/servers/create-provider-digitalocean.png)
+![Formulir peluncuran dengan DigitalOcean terpilih](../../assets/servers/create-provider-digitalocean.webp)
 
-- Lokasi cukup satu pilihan: region datacenter.
+- Lokasi cukup satu pilihan: region pusat datanya.
 - Ukuran berupa ukuran droplet.
-- Pengguna login adalah dpanel, satu-satunya perbedaan yang terasa saat membuka terminal.
+- User login-nya `dpanel`.
+
+## IDCloudHost
+
+- Lokasi berupa pusat data, misalnya `jkt01`.
+- User login-nya `dpanel`.
+
+:::note
+Biznet Gio juga ada di formulir dengan langkah yang sama. Periksa **Login user** di panel Review sebelum meluncurkan.
+:::
