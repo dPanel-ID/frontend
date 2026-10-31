@@ -33,6 +33,12 @@ Gunakan token dengan cakupan terbatas. Di Cloudflare, token khusus "DNS edit" un
 
 dPanel membaca zona itu terlebih dahulu dan menampilkan record yang sudah ada. Tidak ada yang diubah sampai domain itu dipakai, misalnya sebagai domain **Terkelola** pada load balancer.
 
+## Memakai domain di load balancer
+
+Di load balancer, pilih **Managed** pada **Domain Name**, ketik **Subdomain**, lalu pilih domainnya. dPanel membuat record `A` dari nama itu ke server gateway. dPanel menolak nama yang sudah punya record, jadi record yang ada tetap aman.
+
+Di panduan kami, `docs-demo` pada `terpusat.me` menjadi `docs-demo.terpusat.me`, mengarah ke gateway `103.183.75.207`. Lihat [Load balancer](./load-balancers.md).
+
 ## Melihat dan menghapus record
 
 1. Di daftar, buka domain lewat **Detil**.

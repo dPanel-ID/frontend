@@ -8,6 +8,9 @@ import { docsSections, findDocsPage } from '../../-lib/registry';
 import { DocsPageView } from '../../-view/DocsPageView';
 
 export const Route = createFileRoute('/docs/$section/$page/')({
+  // Rendered on the server, like the introduction, so every guide is real
+  // HTML for search engines and the static prerender can crawl the index.
+  ssr: true,
   head: () => ({
     meta: [{ title: 'Documentation | dnocs' }],
   }),

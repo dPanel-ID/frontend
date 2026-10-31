@@ -32,6 +32,8 @@ A cloud account is dPanel's link to your account at a cloud provider. It holds t
 2. Press **Connect a cloud account**.
 3. Pick your provider and paste the credentials it gives you.
 
+How to create a least-privilege credential, step by step, is on each provider's page: [AWS](./provider-aws.md), [Google Cloud](./provider-gcp.md), [IDCloudHost](./provider-idcloudhost.md) and [DigitalOcean](./provider-digitalocean.md). Read [Cloud credentials and security](./cloud-credentials-security.md) before you paste a key.
+
 :::info[Who pays for the machine]
 The machine is created inside your own cloud account, so your provider bills you directly. dPanel does not resell machines.
 :::

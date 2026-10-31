@@ -15,6 +15,8 @@ Buka aplikasinya dan masuk ke **Log**, atau tekan **Lihat log** di tab Ringkasan
 | Runtime       | Apa yang ditulis layanan ke keluarannya selama berjalan. Judul tabelnya **Log Aplikasi**.                     |
 | Load balancer | Setiap permintaan yang masuk ke load balancer di depan aplikasi. Judul tabelnya **Permintaan load balancer**. |
 
+![Sumber Load balancer di tab Log aplikasi, berisi request yang sampai ke docs-demo.terpusat.me](../../assets/applications/app-lb-logs.webp)
+
 Pilihan **Load balancer** hanya muncul jika aplikasi ini dilayani load balancer. Tanpa itu, tab langsung menampilkan log runtime.
 
 Log runtime mengikuti rilis yang aktif. Jika aplikasi belum punya perintah run atau server, tab ini memberi tahu bahwa belum ada log runtime.

@@ -1,7 +1,7 @@
 ---
 title: Halaman server Anda
 description: Fungsi setiap tab pada sebuah server.
-sidebar_position: 6
+sidebar_position: 11
 ---
 
 Setiap server punya satu halaman, dan semua tindakan terhadap server itu ada di sana.

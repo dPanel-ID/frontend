@@ -1,7 +1,7 @@
 ---
 title: Menghapus server
 description: Berhenti membayar mesin yang sudah tidak dipakai.
-sidebar_position: 9
+sidebar_position: 14
 ---
 
 Penyedia menagih mesin cloud selama mesin itu ada, jadi hapus begitu tidak dipakai lagi.

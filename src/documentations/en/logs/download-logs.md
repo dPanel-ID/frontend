@@ -14,6 +14,8 @@ Download a log when you need to search it with your own tools, or attach it to a
    - **This page**: the lines on the page you are on.
    - **Everything in this time range**: every page, fetched one after another.
 
+![The Download menu: This page, 200 lines on page 1, or Everything in this time range, 201 lines](../../assets/logs/logs-download.webp)
+
 A long download shows its progress, such as **Downloading 12,000 / 40,000 lines**. Press **Cancel download** to stop it.
 
 :::warning[Up to 100,000 lines at once]
