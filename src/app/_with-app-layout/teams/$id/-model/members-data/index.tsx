@@ -2,6 +2,7 @@ import { ApiOrganization } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
 
+import { teamAccessOf } from '../../../-lib/team-roles';
 import { useSubscribe } from '../events';
 import { useFilterModel } from '../filters';
 
@@ -30,10 +31,18 @@ export const [MembersDataModelProvider, useMembersDataModel] = buildSelector(
     organization: useAdapter(responseOrganization, (raw) => ({
       name: raw.name ?? null,
       description: raw.description ?? null,
+      status: raw.status,
+      createdAt: raw.created_at,
     })),
     members: useAdapter(response, (raw) => ({
       list: raw.org_peoples ?? [],
       pagination: raw.pagination,
+      /** Members in the whole team, not only on this page. */
+      total: raw.pagination.total_item,
+      /** The signed-in user's access in this team. */
+      myAccess: raw.workspace?.roles
+        ? teamAccessOf(raw.workspace.roles)
+        : undefined,
       orgName:
         raw.organization?.name ??
         raw.org_peoples?.[0]?.organization?.name ??

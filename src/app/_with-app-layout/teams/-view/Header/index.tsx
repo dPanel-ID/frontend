@@ -1,47 +1,42 @@
-import { PlusCircleIcon, UsersIcon } from 'lucide-react';
+import { PlusIcon, UsersIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
+
 import { Breadcrumb } from '@/shared/presentation/molecules/Breadcrumb';
-import { PageHeader } from '@/shared/presentation/organisms/PageHeader';
+import {
+  FlowHero,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
 
 import { useEmit } from '../../-model/events';
 
-const Headnote = () => {
-  const t = useDevetekTranslations();
-
-  return (
-    <span className="flex items-center justify-between">
-      <Breadcrumb
-        items={[
-          {
-            text: t('sidebar.dashboard'),
-            url: '/dashboard',
-          },
-        ]}
-      />
-    </span>
-  );
-};
-
+/** Page opening in the same visual language as the resource pages. */
 export default function Header() {
   const emit = useEmit();
   const t = useDevetekTranslations();
 
   return (
-    <PageHeader
-      heroIcon={UsersIcon}
-      headnote={<Headnote />}
+    <FlowHero
+      accent="violet"
+      icon={UsersIcon}
+      headnote={
+        <Breadcrumb
+          items={[{ text: t('sidebar.dashboard'), url: '/dashboard' }]}
+        />
+      }
       title={t('page.teams.headerTitle')}
-      description={t('page.teams.headerDesc')}
-      rightAppend={
-        <Button
-          buttonStyle="outline"
-          buttonColor="secondary"
-          onClick={() => emit('@teams/add-new', undefined)}
-        >
-          <PlusCircleIcon /> {t('page.teams.addTeam')}
-        </Button>
+      description={t('page.teams.hero.description')}
+      aside={
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <button
+            type="button"
+            className={flowCtaClassName('violet')}
+            onClick={() => emit('@teams/add-new', undefined)}
+          >
+            <PlusIcon className="size-4" />
+            {t('page.teams.addTeam')}
+          </button>
+        </div>
       }
     />
   );

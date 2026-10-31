@@ -7,10 +7,10 @@ import { OrgDataModelProvider } from './-model/org-data';
 import { schemaQueryString } from './-rules/qs';
 import {
   Header,
-  Layout,
   MainBottomActions,
   MainFilter,
   MainList,
+  Overview,
 } from './-view';
 
 export const Route = createFileRoute('/_with-app-layout/teams/')({
@@ -27,15 +27,13 @@ function TeamsPage() {
       <OrgDataModelProvider>
         <EventController />
 
-        <Header />
-
-        <Layout>
-          <Layout.Main>
-            <MainFilter />
-            <MainList />
-            <MainBottomActions />
-          </Layout.Main>
-        </Layout>
+        <div className="flex flex-col gap-4">
+          <Header />
+          <Overview />
+          <MainFilter />
+          <MainList />
+          <MainBottomActions />
+        </div>
       </OrgDataModelProvider>
     </FilterModelProvider>
   );
