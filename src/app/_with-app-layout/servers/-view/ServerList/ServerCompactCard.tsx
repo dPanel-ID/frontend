@@ -1,10 +1,17 @@
-import { Clock3Icon, GlobeIcon, TerminalIcon, UserIcon } from 'lucide-react';
+import {
+  BuildingIcon,
+  Clock3Icon,
+  GlobeIcon,
+  TerminalIcon,
+  UserIcon,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekLocale } from '@/services/i18n';
 
 import { serverSystemLabel } from '@/entities/server/lib/describeServer';
 import type { ServerCard } from '@/entities/server/rules/schema';
+import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
 
@@ -50,9 +57,14 @@ export function ServerCompactCard(props: ServerCompactCardProps) {
         <Fact icon={GlobeIcon} value={server.host.address || '-'} />
         <Fact icon={TerminalIcon} value={serverSystemLabel(server) ?? '-'} />
         <Fact
-          icon={UserIcon}
+          icon={server.ownership.team ? BuildingIcon : UserIcon}
           value={server.ownership.team || server.ownership.owner}
         />
+        {server.ownership.team && server.creator && (
+          <div className="text-muted-foreground">
+            <ServerCreator creator={server.creator} />
+          </div>
+        )}
       </dl>
 
       <div className="mt-auto flex items-center justify-between gap-2 border-t pt-2">

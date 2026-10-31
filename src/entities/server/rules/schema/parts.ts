@@ -91,3 +91,14 @@ export const specs = z.object({
     virtualCoreCount: z.number(),
   }),
 });
+
+/**
+ * The person who created the server, so a resource that breaks policy can be
+ * traced back to someone. Absent when the API cannot resolve them.
+ */
+export type Creator = z.output<typeof creator>;
+export const creator = z.object({
+  name: z.string(),
+  email: z.string().optional(),
+  avatarUrl: z.string().optional(),
+});

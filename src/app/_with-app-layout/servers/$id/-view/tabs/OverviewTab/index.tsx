@@ -27,6 +27,7 @@ import {
   serverProviderLabel,
   serverSystemLabel,
 } from '@/entities/server/lib/describeServer';
+import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import {
   DATABASE_MODULE_IDS,
   groupModules,
@@ -217,6 +218,15 @@ export default function OverviewTab() {
               value={server?.ownership.team || server?.ownership.owner}
             />
             <Row
+              icon={UserIcon}
+              label={t('createdBy')}
+              value={
+                server?.creator && (
+                  <ServerCreator creator={server.creator} nameOnly showEmail />
+                )
+              }
+            />
+            <Row
               icon={CalendarIcon}
               label={t('added')}
               value={server?.timestamp.created.toLocaleDateString(locale, {
@@ -317,7 +327,7 @@ function Section(props: {
 function Row(props: {
   icon: LucideIcon;
   label: string;
-  value?: string;
+  value?: ReactNode;
   mono?: boolean;
 }) {
   const { icon: Icon, label, mono, value } = props;
