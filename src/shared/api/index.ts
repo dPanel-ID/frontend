@@ -1,4 +1,5 @@
 export { default as ApiAgent } from './agent';
+export { default as ApiAi } from './ai';
 export { default as ApiApplication } from './application';
 export { default as ApiArtifact } from './artifact';
 export { default as ApiAuth } from './auth';
