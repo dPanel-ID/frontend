@@ -33,6 +33,7 @@ import {
   moduleInstanceLabel,
 } from '@/entities/server-modules/lib/installations';
 import type { OverviewModuleGroup } from '@/entities/server-modules/lib/installations';
+import { POLL_INTERVAL_MS__SERVER_CARD } from '@/entities/server-statistics/config';
 
 import { ApiLoadBalancer, ApiServer } from '@/shared/api';
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
@@ -82,17 +83,26 @@ export default function ServerCard(props: ServerCardProps) {
 
   const [cpuUsageResponse] = ApiServer.Origin.$Id.Cpu.Usage.useGet({
     serverId: server.id,
-    options: { skip: !shouldFetchLiveStats },
+    options: {
+      skip: !shouldFetchLiveStats,
+      refreshIntervalMs: POLL_INTERVAL_MS__SERVER_CARD,
+    },
   });
 
   const [memoryUsageResponse] = ApiServer.Origin.$Id.Memory.Usage.useGet({
     serverId: server.id,
-    options: { skip: !shouldFetchLiveStats },
+    options: {
+      skip: !shouldFetchLiveStats,
+      refreshIntervalMs: POLL_INTERVAL_MS__SERVER_CARD,
+    },
   });
 
   const [diskUsageResponse] = ApiServer.Origin.$Id.Disk.Usage.useGet({
     serverId: server.id,
-    options: { skip: !shouldFetchLiveStats },
+    options: {
+      skip: !shouldFetchLiveStats,
+      refreshIntervalMs: POLL_INTERVAL_MS__SERVER_CARD,
+    },
   });
 
   const moduleInventoryData = responseData(moduleInventoryResponse);
