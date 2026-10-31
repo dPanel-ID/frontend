@@ -3358,6 +3358,26 @@
         "confirmPasswordRequired": "Retype the new password.",
         "confirmPasswordMismatch": "Passwords do not match."
       }
+    },
+    "aiAssistant": {
+      "launcher": "Ask dPanel",
+      "title": "dPanel assistant",
+      "subtitle": "Looks things up in your current workspace. It can't make changes yet.",
+      "introTitle": "Ask about your infrastructure",
+      "introBody": "The assistant reads your servers, applications, domains, load balancers, SSH keys, cloud projects and recent jobs through dPanel, with your own access. Try one of these:",
+      "exampleServers": "Which of my servers are stopped?",
+      "exampleExecutions": "Did any job fail in the last 24 hours?",
+      "exampleDomains": "List my domains and their DNS providers.",
+      "thinking": "Checking dPanel…",
+      "failedGeneric": "The assistant could not answer this message.",
+      "retry": "Try again",
+      "emptyAnswer": "The assistant returned no text.",
+      "toolsUsed": "Checked: {tools}",
+      "newConversation": "New conversation",
+      "inputLabel": "Message to the assistant",
+      "inputPlaceholder": "Ask about your servers, apps, domains…",
+      "inputHint": "Enter to send, Shift+Enter for a new line",
+      "send": "Send message"
     }
   },
   "modal": {
