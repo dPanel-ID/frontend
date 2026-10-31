@@ -1,0 +1,62 @@
+---
+title: Time range and refresh
+description: Choose how far back to look, page through older lines, and keep the view up to date.
+sidebar_position: 2
+---
+
+These controls are on application runtime logs and load balancer logs.
+
+## Choose a time range
+
+The view opens on **Last 10 minutes**.
+
+1. Open the time range menu, left of **Filter this page**.
+2. Pick a preset: **Last 10 minutes**, **Last 1 hour**, **Last 6 hours**, **Last 24 hours**, **Last 3 days**, **Last 7 days** or **Last 10 days**.
+
+![The time range menu, with its presets and the custom range option](../../assets/logs/logs-time-range.webp)
+
+### A custom range
+
+1. In the same menu, choose **Custom range**.
+2. Set **From** and **To**. Times are in your time zone, shown as an offset such as UTC+07:00.
+3. Press **Apply**.
+
+The form tells you what is wrong before it runs the search:
+
+| Message                                  | Fix                            |
+| ---------------------------------------- | ------------------------------ |
+| Enter both a start and an end.           | Fill in both fields.           |
+| The start must be before the end.        | Swap them.                     |
+| Logs are only kept for the last 10 days. | Move the start forward.        |
+| The end can't be in the future.          | Set the end to now or earlier. |
+
+:::info[10 days back]
+Logs can be read up to 10 days back. dPanel holds every range to that limit, so an older start is moved up to the edge of the window.
+:::
+
+## Page through older lines
+
+A page holds 200 lines, newest first. The footer says where you are, such as **Lines 1–200 of 1,250, newest first**.
+
+- With a known total, use the page numbers.
+- Otherwise, use **Newer** and **Older**.
+
+**Filter this page** and the level chips work on the page you are on. To search further back, move to an older page or narrow the time range.
+
+## Refresh
+
+Press **Refresh** to load the newest lines. The table keeps showing the current lines while it loads.
+
+## Auto-refresh
+
+The button beside **Refresh** sets **Auto-refresh**. It is **Off** by default.
+
+1. Open the menu next to **Refresh**.
+2. Pick **Every 30 seconds**, **Every minute** or **Every 5 minutes**. The button shows the interval, such as **30s**.
+3. Pick **Off** to stop.
+
+![The Refresh button and the Auto-refresh menu with its intervals](../../assets/logs/logs-auto-refresh.webp)
+
+Auto-refresh pauses while you are on an older page, so the lines do not move under you. It picks up again when you go back to the first page.
+
+The server **Logs** tab and **Artifact Logs** have the same **Refresh** and **Auto-refresh** controls.
