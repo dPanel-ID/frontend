@@ -5,5 +5,7 @@
   "app": {
     "label": "Open load balancers",
     "href": "/backend/load-balancers"
-  }
+  },
+  "icon": "network",
+  "color": "emerald"
 }

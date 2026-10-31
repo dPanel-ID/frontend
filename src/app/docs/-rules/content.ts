@@ -36,10 +36,84 @@ export function isDocsAdmonition(value: string): value is DocsAdmonition {
   return (DOCS_ADMONITIONS as readonly string[]).includes(value);
 }
 
+/**
+ * Icons a page or a section may name in its `sidebar_icon` or `icon`. They
+ * are lucide icon names, plus `provider:<id>` for a cloud provider's logo. A
+ * name outside this list fails the build, so a typo never ships a blank tile.
+ */
+export const DOCS_ICON_NAMES = [
+  'app-window',
+  'building-2',
+  'circle-help',
+  'clock',
+  'cloud',
+  'cloud-upload',
+  'download',
+  'file-text',
+  'gauge',
+  'git-branch',
+  'globe',
+  'history',
+  'key-round',
+  'layout-dashboard',
+  'life-buoy',
+  'list-checks',
+  'log-in',
+  'network',
+  'package-plus',
+  'rocket',
+  'scroll-text',
+  'server',
+  'settings-2',
+  'shield-check',
+  'square-plus',
+  'square-terminal',
+  'terminal',
+  'timer',
+  'trash-2',
+  'user-cog',
+  'users',
+  'variable',
+] as const;
+
+export type DocsIconName = (typeof DOCS_ICON_NAMES)[number];
+
+/** A cloud provider's logo, such as `provider:aws`. */
+export type DocsProviderIcon = `provider:${string}`;
+
+export type DocsIcon = DocsIconName | DocsProviderIcon;
+
+export function isDocsIcon(value: string): value is DocsIcon {
+  return (
+    /^provider:[a-z0-9-]+$/.test(value) ||
+    (DOCS_ICON_NAMES as readonly string[]).includes(value)
+  );
+}
+
+/** The accent a section paints its icons and its active page in. */
+export const DOCS_COLORS = [
+  'sky',
+  'indigo',
+  'violet',
+  'emerald',
+  'amber',
+  'teal',
+  'rose',
+] as const;
+
+export type DocsColor = (typeof DOCS_COLORS)[number];
+
+export function isDocsColor(value: string): value is DocsColor {
+  return (DOCS_COLORS as readonly string[]).includes(value);
+}
+
 export interface DocsPage {
   /** URL segment, stable across languages so a link survives a locale switch. */
   slug: string;
   title: string;
+  /** The name in the index, from `sidebar_label`; the title when unset. */
+  label: string;
+  icon?: DocsIcon;
   /** One sentence under the title, and the text in the section index. */
   summary: string;
   /** Order inside the section, from `sidebar_position`. */
@@ -61,13 +135,39 @@ export interface DocsSectionAppLink {
   href: string;
 }
 
+/**
+ * A folder inside a section, such as `servers/cloud-providers/`. It groups
+ * pages in the index only: its pages keep flat URLs in the section, so a page
+ * can move into or out of a group without breaking a link to it.
+ */
+export interface DocsGroup {
+  slug: string;
+  title: string;
+  summary: string;
+  position: number;
+  icon?: DocsIcon;
+  /** The group's own page, from its `index.md`, opened by its name. */
+  page?: DocsPage;
+  pages: DocsPage[];
+}
+
+/** One row of a section's index: a page, or a group of pages. */
+export type DocsNavItem =
+  | { kind: 'page'; page: DocsPage }
+  | { kind: 'group'; group: DocsGroup };
+
 export interface DocsSection {
   slug: string;
   title: string;
   summary: string;
   /** Order in the index, from `_category_.json`'s `position`. */
   position: number;
+  icon?: DocsIcon;
+  color: DocsColor;
   app?: DocsSectionAppLink;
+  /** The index, as it is drawn: pages and groups in order. */
+  nav: DocsNavItem[];
+  /** Every page, groups flattened, in reading order. */
   pages: DocsPage[];
 }
 

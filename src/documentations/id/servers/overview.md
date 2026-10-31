@@ -2,6 +2,7 @@
 title: Apa itu server di dPanel
 description: Satu mesin Linux yang dirawat dPanel untuk Anda, dan dua cara menambahkannya.
 sidebar_position: 1
+sidebar_icon: server
 ---
 
 Server adalah satu mesin Linux yang dirawat dPanel untuk Anda. Bisa mesin yang diluncurkan dPanel di akun cloud Anda, bisa juga mesin yang sudah Anda jalankan lalu Anda hubungkan sendiri.
@@ -37,5 +38,5 @@ Apa pun jalurnya, dPanel membuat user `dpanel`, memasang agennya, dan mulai mema
 ## Langkah berikutnya
 
 - Baru memakai dPanel? Mulai dari [Sebelum mulai](./before-you-start.md).
-- Meluncurkan mesin baru: [Membuat server cloud](./create-a-cloud-server.md).
+- Meluncurkan mesin baru: [Membuat server cloud](./cloud-providers/create-a-cloud-server.md).
 - Membawa mesin sendiri: [Menghubungkan server Anda](./connect-your-own-server.md).

@@ -2799,6 +2799,9 @@
     },
     "docs": {
       "navLabel": "Documentation sections",
+      "onThisPage": "On this page",
+      "expandGroup": "Expand {name}",
+      "collapseGroup": "Collapse {name}",
       "pagerLabel": "Documentation pages",
       "breadcrumb": "Documentation",
       "previous": "Previous",

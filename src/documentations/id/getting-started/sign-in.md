@@ -2,6 +2,7 @@
 title: Masuk dan profil Anda
 description: Buat akun, masuk, dan perbarui nama, avatar, serta password Anda.
 sidebar_position: 1
+sidebar_icon: log-in
 ---
 
 dPanel berjalan di browser, jadi tidak ada yang perlu dipasang. Buka halaman utama, masuk, dan Anda langsung tiba di dasbor.

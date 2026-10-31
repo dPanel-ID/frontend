@@ -2,6 +2,7 @@
 title: Rilis dan rollback
 description: Bangun commit terbaru, ikuti sampai ke server, dan kembali ke build sebelumnya saat perlu.
 sidebar_position: 4
+sidebar_icon: history
 ---
 
 Ada dua istilah penting. **Build** adalah kode Anda yang dikemas sekali, dari satu commit. **Rilis** adalah build itu yang dipasang di satu server.

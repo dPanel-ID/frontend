@@ -2,6 +2,7 @@
 title: Download logs
 description: Save a page of log lines, or a whole time range, as a .log file.
 sidebar_position: 3
+sidebar_icon: download
 ---
 
 Download a log when you need to search it with your own tools, or attach it to a support request.

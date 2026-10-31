@@ -2,6 +2,7 @@
 title: Workspaces
 description: Your personal workspace, team workspaces, and how to switch between them.
 sidebar_position: 2
+sidebar_icon: building-2
 ---
 
 Everything in dPanel belongs to a workspace: servers, applications, load balancers, domains, cloud accounts and SSH keys. A workspace is a boundary. You only see what belongs to the workspace you are in.

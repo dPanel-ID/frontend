@@ -1,7 +1,8 @@
 ---
 title: Delete a server
 description: Stop paying for a machine you have finished with.
-sidebar_position: 14
+sidebar_position: 8
+sidebar_icon: trash-2
 ---
 
 Your provider bills a cloud machine for as long as it exists, so remove one as soon as you are done with it.

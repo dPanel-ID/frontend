@@ -2,6 +2,7 @@
 title: Log aplikasi
 description: Baca apa yang dicetak layanan yang berjalan, dan permintaan yang masuk lewat load balancer.
 sidebar_position: 5
+sidebar_icon: scroll-text
 ---
 
 Buka aplikasinya dan masuk ke **Log**, atau tekan **Lihat log** di tab Ringkasan.

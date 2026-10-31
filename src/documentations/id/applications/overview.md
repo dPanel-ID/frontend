@@ -2,6 +2,7 @@
 title: Cara kerja aplikasi
 description: dPanel membangun kode Anda dari GitHub dan menjalankannya di server yang sudah Anda miliki.
 sidebar_position: 1
+sidebar_icon: app-window
 ---
 
 Aplikasi adalah kode Anda yang berjalan sebagai layanan di salah satu server Anda. dPanel tidak menyimpan kodenya sendiri. dPanel membaca repositori GitHub yang Anda tunjuk, membangunnya di server, lalu menjaga layanannya tetap berjalan di sana.
@@ -18,7 +19,7 @@ Build tidak dibagikan antar mesin. Setiap server membangun dan memasang aplikasi
 
 ## Yang perlu disiapkan
 
-- Server berstatus **Ready**. Lihat [Membuat server cloud](../servers/create-a-cloud-server.md).
+- Server berstatus **Ready**. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
 - Akun GitHub yang sudah terhubung ke dPanel. Lihat [Menghubungkan GitHub](../getting-started/connect-github.md).
 - Repositori dengan perintah build dan perintah jalan. Satu skrip untuk masing-masing sudah cukup.
 

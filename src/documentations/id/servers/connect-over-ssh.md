@@ -1,7 +1,8 @@
 ---
 title: Terhubung lewat SSH
 description: Terminal di browser, dan cara masuk dari komputer Anda sendiri.
-sidebar_position: 13
+sidebar_position: 7
+sidebar_icon: square-terminal
 ---
 
 Biasanya Anda tidak butuh terminal: tab-tab di halaman server sudah mencakup layanan, pengguna, berkas, dan log. Kalau perlu, tekan **Buka terminal** di bagian atas halaman server. dPanel masuk dengan kunci yang disimpannya dan membuka shell.

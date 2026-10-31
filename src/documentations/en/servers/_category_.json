@@ -5,5 +5,7 @@
   "app": {
     "label": "Go to servers",
     "href": "/servers"
-  }
+  },
+  "icon": "server",
+  "color": "indigo"
 }

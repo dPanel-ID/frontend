@@ -2,6 +2,7 @@
 title: Masalah yang sering muncul
 description: Yang perlu dilakukan ketika server, aplikasi, GitHub, atau log tidak berjalan seperti seharusnya.
 sidebar_position: 1
+sidebar_icon: circle-help
 ---
 
 Setiap jawaban dimulai dari apa yang Anda lihat, lalu apa yang perlu dilakukan.
@@ -10,9 +11,9 @@ Setiap jawaban dimulai dari apa yang Anda lihat, lalu apa yang perlu dilakukan.
 
 ### Halaman server menampilkan "Penyiapan tidak selesai"
 
-Banner merah berarti penyedia cloud atau proses penyiapan berhenti karena error. Tekan **Lihat penyebabnya** untuk membaca alasannya. Penyebab paling umum adalah kuota akun cloud yang tidak cukup, dan kredensial yang sudah kedaluwarsa atau kurang izin. Kuota dan izin yang perlu diperiksa ada di halaman tiap penyedia: lihat [Penyedia cloud](../servers/cloud-providers.md).
+Banner merah berarti penyedia cloud atau proses penyiapan berhenti karena error. Tekan **Lihat penyebabnya** untuk membaca alasannya. Penyebab paling umum adalah kuota akun cloud yang tidak cukup, dan kredensial yang sudah kedaluwarsa atau kurang izin. Kuota dan izin yang perlu diperiksa ada di halaman tiap penyedia: lihat [Penyedia cloud](../servers/cloud-providers/index.md).
 
-Perbaiki penyebabnya di sisi penyedia, lalu buka tab **Pengaturan** server dan pakai **Instal ulang** di bagian **Penyiapan** untuk menjalankan penyiapan sekali lagi. Lihat [Membuat server cloud](../servers/create-a-cloud-server.md).
+Perbaiki penyebabnya di sisi penyedia, lalu buka tab **Pengaturan** server dan pakai **Instal ulang** di bagian **Penyiapan** untuk menjalankan penyiapan sekali lagi. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
 
 ### Server tidak bisa dihapus
 

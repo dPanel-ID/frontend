@@ -2,6 +2,7 @@
 title: Dasbor
 description: Apa isi setiap tab dasbor, dan ke mana melihat dulu ketika ada yang tidak beres.
 sidebar_position: 3
+sidebar_icon: layout-dashboard
 ---
 
 Dasbor adalah halaman pertama setelah masuk. Isinya menjawab satu pertanyaan: apakah semua di ruang kerja ini baik-baik saja? Buka kapan saja dari **Dasbor** di sidebar.

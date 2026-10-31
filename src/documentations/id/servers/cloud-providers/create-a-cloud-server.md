@@ -1,14 +1,15 @@
 ---
 title: Membuat server cloud
 description: Formulir peluncuran langkah demi langkah, dari memilih penyedia sampai mesin berjalan.
-sidebar_position: 3
+sidebar_position: 1
+sidebar_icon: cloud-upload
 ---
 
-Panduan ini memakai Google Cloud. Penyedia lain menanyakan hal yang sama dengan urutan yang sama. Perbedaannya dibahas di [Penyedia cloud](./cloud-providers.md), yang punya halaman tersendiri untuk tiap penyedia.
+Panduan ini memakai Google Cloud. Penyedia lain menanyakan hal yang sama dengan urutan yang sama. Perbedaannya dibahas di [Penyedia cloud](./index.md), yang punya halaman tersendiri untuk tiap penyedia.
 
 ## Yang perlu disiapkan
 
-- SSH key dan akun cloud di dPanel. Lihat [Sebelum mulai](./before-you-start.md).
+- SSH key dan akun cloud di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
 - Kuota yang cukup di penyedia untuk satu mesin lagi.
 
 ## Buka formulirnya
@@ -23,7 +24,7 @@ Formulirnya satu halaman dengan tiga langkah bernomor. Panel **Review** di kanan
 2. **Cloud project**: akun cloud mana yang membayarnya. **Add project** menghubungkan akun lain.
 3. **SSH key**: kunci yang dipakai dPanel untuk masuk ke mesin. **Create SSH key** membuat kunci baru di sini.
 
-![Langkah 1 formulir peluncuran, dengan Google Cloud, proyek cloud, dan SSH key terpilih](../../assets/servers/create-step1-provider.webp)
+![Langkah 1 formulir peluncuran, dengan Google Cloud, proyek cloud, dan SSH key terpilih](../../../assets/servers/create-step1-provider.webp)
 
 ## Langkah 2: Location
 
@@ -38,7 +39,7 @@ Formulirnya satu halaman dengan tiga langkah bernomor. Panel **Review** di kanan
 - **Ubuntu release**: 24.04 LTS adalah pilihan aman. LTS berarti pembaruan keamanan selama bertahun-tahun.
 - **Disk** adalah ukuran disk dalam gigabyte.
 
-![Langkah 2 dan 3 sudah terisi, dan panel Review bertuliskan Ready to launch, 9/9](../../assets/servers/create-step2-location-size.webp)
+![Langkah 2 dan 3 sudah terisi, dan panel Review bertuliskan Ready to launch, 9/9](../../../assets/servers/create-step2-location-size.webp)
 
 ## Luncurkan
 
@@ -64,5 +65,5 @@ Banner merah muncul dengan tombol **Lihat penyebabnya**, berisi alasan dari peny
 :::
 
 :::tip[Tagihan berjalan sejak sekarang]
-Penyedia menagih mesin selama mesin itu ada, termasuk selama setup. [Hapus servernya](./delete-a-server.md) kalau sudah tidak dipakai.
+Penyedia menagih mesin selama mesin itu ada, termasuk selama setup. [Hapus servernya](../delete-a-server.md) kalau sudah tidak dipakai.
 :::
