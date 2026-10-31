@@ -6,6 +6,7 @@ import {
   serverSystemLabel,
 } from '@/entities/server/lib/describeServer';
 import type { ServerCard } from '@/entities/server/rules/schema';
+import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
 
@@ -84,8 +85,16 @@ export function ServerTable(props: ServerTableProps) {
                 <TableCell className="font-mono text-xs">
                   {server.host.address || '-'}
                 </TableCell>
-                <TableCell className="max-w-[12rem] truncate text-muted-foreground">
-                  {server.ownership.team || server.ownership.owner}
+                <TableCell className="max-w-[14rem] text-muted-foreground">
+                  <span className="block truncate">
+                    {server.ownership.team || server.ownership.owner}
+                  </span>
+                  {server.ownership.team && (
+                    <ServerCreator
+                      creator={server.creator}
+                      className="max-w-full text-xs"
+                    />
+                  )}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {getDistanceFromNow(server.timestamp.updated, locale)}

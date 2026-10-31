@@ -26,6 +26,7 @@ import {
   serverDisplayName,
 } from '@/entities/server/lib/describeServer';
 import { getServerErrorSummary } from '@/entities/server/lib/error-detail';
+import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import { ServerErrorDialog } from '@/entities/server/ui/ServerErrorDialog';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
@@ -203,10 +204,14 @@ export default guard(function Hero() {
                 : t('noAgent')
             }
           />
-          <Fact
-            icon={server.ownership.team ? BuildingIcon : UserIcon}
-            value={server.ownership.team || server.ownership.owner}
-          />
+          {server.ownership.team ? (
+            <Fact icon={BuildingIcon} value={server.ownership.team} />
+          ) : (
+            !server.creator && (
+              <Fact icon={UserIcon} value={server.ownership.owner} />
+            )
+          )}
+          <ServerCreator creator={server.creator} />
           <Fact
             icon={Clock3Icon}
             value={t('created', {

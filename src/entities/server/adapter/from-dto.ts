@@ -15,7 +15,7 @@ import {
   schemaServerMinimal,
 } from '../rules/schema';
 
-import { ctorCloud, ctorSpecs } from './ctors';
+import { ctorCloud, ctorCreator, ctorSpecs } from './ctors';
 
 export const toMinimal = createAdapter<DTOs.MachineV1, ServerMinimal>((raw) =>
   schemaServerMinimal.parse({
@@ -42,6 +42,7 @@ export const toServerCard = createAdapter<DTOs.MachineV1, ServerCard>((raw) =>
       team: raw.organization?.name,
       teamId: resolveOwnershipTeamId(raw),
     },
+    creator: ctorCreator(raw),
     ssh: {
       port: raw.ssh_port ? Number(raw.ssh_port) : undefined,
       defaultUser: raw.default_user,
@@ -82,6 +83,7 @@ export const toServerDetail = createAdapter<DTOs.MachineV1, ServerDetail>(
         team: raw.organization?.name,
         teamId: resolveOwnershipTeamId(raw),
       },
+      creator: ctorCreator(raw),
       secret: {
         id: raw.secret_id ? String(raw.secret_id) : undefined,
       },
