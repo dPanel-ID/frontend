@@ -10,6 +10,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { createServerFn } from '@tanstack/react-start';
 import { getRequestHeaders } from '@tanstack/react-start/server';
 
+
 import { AuthModelProvider } from '@/services/auth/model';
 import { DialogController } from '@/services/dialog';
 import { DevetekIntlProvider } from '@/services/i18n';
@@ -19,6 +20,8 @@ import { SidepanelController } from '@/services/sidepanel';
 import { ThemeScript } from '@/services/theme/lib/themeScript';
 import { DevetekThemeModel } from '@/services/theme/model';
 import { ToasterController } from '@/services/toaster';
+
+import { AssistantLauncher } from '@/features/ai-assistant';
 
 import { EventsProvider } from '@/shared/libs/events';
 
@@ -98,6 +101,7 @@ function RootComponent() {
               <ModalController />
               <DialogController />
               <ToasterController />
+              <AssistantLauncher />
             </ClientOnly>
 
             <Outlet />
