@@ -59,7 +59,7 @@ export default function ReleasesSection(props: ReleasesSectionProps) {
           <div
             role="group"
             aria-label={t('tabsLabel')}
-            className="inline-flex h-8 items-center rounded-lg border bg-background p-0.5"
+            className="inline-flex h-8 items-center rounded-md border bg-background p-0.5"
           >
             {TABS.map((tab) => {
               const isActive = activeTab === tab;
@@ -71,7 +71,7 @@ export default function ReleasesSection(props: ReleasesSectionProps) {
                   aria-pressed={isActive}
                   onClick={() => onSelectTab(tab)}
                   className={cn(
-                    'h-6 rounded-md px-3 text-xs font-medium transition-colors',
+                    'h-full rounded-sm px-3 text-xs font-medium transition-colors',
                     'focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
                     isActive
                       ? 'bg-primary text-primary-foreground'
