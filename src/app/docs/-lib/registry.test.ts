@@ -1,22 +1,39 @@
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
-
 import { describe, expect, it } from 'vitest';
 
 import { DOCS_LOCALES } from '../-rules/content';
 
 import {
+  docsImageUrl,
+  docsLinkTarget,
   docsLocaleFor,
   docsSections,
   findDocsPage,
   firstDocsPageSlug,
 } from './registry';
 
+/** Every page of the documentation, in every language. */
+const PAGES = DOCS_LOCALES.flatMap((locale) =>
+  docsSections(locale).flatMap((section) =>
+    section.pages.map((page) => ({ locale, section, page })),
+  ),
+);
+
+/** Markdown with fenced code removed, so examples are not read as links. */
+function prose(markdown: string) {
+  return markdown.replace(/```[\s\S]*?```/g, '').replace(/`[^`]*`/g, '');
+}
+
 describe('docs registry', () => {
-  it('serves the same pages, in the same order, in every language', () => {
+  it('loads the documentation from Markdown', () => {
+    expect(docsSections('en').length).toBeGreaterThan(0);
+    expect(PAGES.length).toBeGreaterThan(0);
+  });
+
+  it('serves the same sections and pages, in the same order, in every language', () => {
     const [reference, ...others] = DOCS_LOCALES.map((locale) =>
       docsSections(locale).map((section) => ({
         slug: section.slug,
+        app: section.app?.href,
         pages: section.pages.map((page) => page.slug),
       })),
     );
@@ -34,56 +51,78 @@ describe('docs registry', () => {
     expect(docsLocaleFor('')).toBe('en');
   });
 
-  it('links each page to its neighbours', () => {
+  it('keeps the server guide where the app links to it', () => {
+    // The servers page header links to /docs/servers/overview.
     const first = findDocsPage('en', 'servers', 'overview');
     expect(first?.previous).toBeUndefined();
-    expect(first?.next?.slug).toBe('before-you-start');
+    expect(first?.next).toBeDefined();
+    expect(firstDocsPageSlug('en', 'servers')).toBe('overview');
+  });
 
-    const last = findDocsPage('en', 'servers', 'delete-a-server');
-    expect(last?.next).toBeUndefined();
-    expect(last?.previous?.slug).toBe('connect-over-ssh');
+  it('links each page to its neighbours', () => {
+    for (const section of docsSections('en')) {
+      const slugs = section.pages.map((page) => page.slug);
+      const last = slugs.at(-1) ?? '';
+
+      expect(findDocsPage('en', section.slug, last)?.next).toBeUndefined();
+      if (slugs.length > 1) {
+        expect(findDocsPage('en', section.slug, last)?.previous?.slug).toBe(
+          slugs.at(-2),
+        );
+      }
+    }
   });
 
   it('reports an unknown section or page rather than guessing', () => {
     expect(findDocsPage('en', 'servers', 'nope')).toBeUndefined();
     expect(findDocsPage('en', 'nope', 'overview')).toBeUndefined();
     expect(firstDocsPageSlug('en', 'nope')).toBeUndefined();
-    expect(firstDocsPageSlug('en', 'servers')).toBe('overview');
   });
 
-  it('writes every page with a title, a summary and some content', () => {
-    for (const locale of DOCS_LOCALES) {
-      for (const section of docsSections(locale)) {
-        for (const page of section.pages) {
-          expect(page.title.length, `${locale}/${page.slug}`).toBeGreaterThan(
-            0,
-          );
-          expect(page.summary.length, `${locale}/${page.slug}`).toBeGreaterThan(
-            0,
-          );
-          expect(page.blocks.length, `${locale}/${page.slug}`).toBeGreaterThan(
-            0,
-          );
+  it.each(PAGES)(
+    '$locale/$section.slug/$page.slug has a title, a summary and a body',
+    ({ page }) => {
+      expect(page.title.length).toBeGreaterThan(0);
+      expect(page.summary.length).toBeGreaterThan(0);
+      expect(page.markdown.trim().length).toBeGreaterThan(0);
+    },
+  );
+
+  it.each(PAGES)(
+    '$locale/$section.slug/$page.slug links only to pages that exist',
+    ({ page }) => {
+      const links = [
+        ...prose(page.markdown).matchAll(/(?<!!)\[[^\]]*\]\(([^)\s]+)/g),
+      ];
+
+      for (const [, href = ''] of links) {
+        const target = docsLinkTarget(href, page.file);
+        expect(target.kind, href).not.toBe('broken');
+
+        if (target.kind === 'page') {
+          expect(
+            findDocsPage('en', target.section, target.page),
+            href,
+          ).toBeDefined();
         }
       }
-    }
-  });
+    },
+  );
 
-  it('ships every screenshot it points at, with alt text', () => {
-    for (const locale of DOCS_LOCALES) {
-      for (const section of docsSections(locale)) {
-        for (const page of section.pages) {
-          for (const block of page.blocks) {
-            if (block.kind !== 'image') continue;
+  it.each(PAGES)(
+    '$locale/$section.slug/$page.slug ships every image it shows, with alt text',
+    ({ page }) => {
+      const images = [
+        ...prose(page.markdown).matchAll(/!\[([^\]]*)\]\(([^)\s]+)/g),
+      ];
 
-            expect(block.alt.length, `${locale}/${page.slug}`).toBeGreaterThan(
-              0,
-            );
-            const file = join(process.cwd(), 'public', block.src);
-            expect(existsSync(file), `missing asset ${block.src}`).toBe(true);
-          }
-        }
+      for (const [, alt = '', src = ''] of images) {
+        expect(alt.trim().length, `alt text for ${src}`).toBeGreaterThan(0);
+        expect(
+          docsImageUrl(src, page.file),
+          `missing image ${src}`,
+        ).toBeTruthy();
       }
-    }
-  });
+    },
+  );
 });

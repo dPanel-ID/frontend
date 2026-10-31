@@ -1,0 +1,9 @@
+{
+  "label": "Server",
+  "position": 2,
+  "description": "Membuat server di penyedia cloud, melihat isinya, memasang basis data, lalu menghapusnya setelah selesai.",
+  "app": {
+    "label": "Buka halaman server",
+    "href": "/servers"
+  }
+}
