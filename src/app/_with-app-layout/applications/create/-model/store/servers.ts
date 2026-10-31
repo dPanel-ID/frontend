@@ -6,6 +6,13 @@ import { buildContext } from '@/shared/libs/react-factories/buildContext';
 
 const PAGE_SIZE = 3;
 
+/**
+ * Only a ready server can host an application. Filtering on the server keeps
+ * every page full: dropping failed or deleted servers after paging left whole
+ * pages empty while later pages still had servers to pick.
+ */
+export const DEPLOYABLE_SERVER_STATUS = 'ready';
+
 export interface ApplicationCreateServerOption {
   id: number;
   hostname: string;
@@ -46,6 +53,7 @@ export const [ServersStoreProvider, useServersStore] = buildContext(
     const [responseServers, refresh] = ApiServer.Find.useGet({
       pageSize: PAGE_SIZE,
       page,
+      status: DEPLOYABLE_SERVER_STATUS,
       searchQuery: searchQuery || undefined,
     });
 
