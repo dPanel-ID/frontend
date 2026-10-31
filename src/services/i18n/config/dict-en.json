@@ -2799,11 +2799,17 @@
       "navLabel": "Documentation sections",
       "pagerLabel": "Documentation pages",
       "breadcrumb": "Documentation",
-      "goToServers": "Go to servers",
       "previous": "Previous",
       "next": "Next",
       "switchLanguage": "Switch language",
-      "switchTheme": "Switch light or dark mode"
+      "switchTheme": "Switch light or dark mode",
+      "callout": {
+        "note": "Note",
+        "tip": "Tip",
+        "info": "Info",
+        "warning": "Warning",
+        "danger": "Danger"
+      }
     }
   },
   "widget": {

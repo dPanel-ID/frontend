@@ -2791,11 +2791,17 @@
       "navLabel": "Bagian dokumentasi",
       "pagerLabel": "Halaman dokumentasi",
       "breadcrumb": "Dokumentasi",
-      "goToServers": "Buka halaman server",
       "previous": "Sebelumnya",
       "next": "Berikutnya",
       "switchLanguage": "Ganti bahasa",
-      "switchTheme": "Ganti mode terang atau gelap"
+      "switchTheme": "Ganti mode terang atau gelap",
+      "callout": {
+        "note": "Catatan",
+        "tip": "Tips",
+        "info": "Info",
+        "warning": "Peringatan",
+        "danger": "Bahaya"
+      }
     }
   },
   "widget": {

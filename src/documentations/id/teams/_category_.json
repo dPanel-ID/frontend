@@ -1,0 +1,9 @@
+{
+  "label": "Tim dan akses",
+  "position": 5,
+  "description": "Bagikan server dan aplikasi ke rekan kerja, lalu atur apa saja yang boleh dilakukan masing-masing.",
+  "app": {
+    "label": "Buka tim",
+    "href": "/teams"
+  }
+}
