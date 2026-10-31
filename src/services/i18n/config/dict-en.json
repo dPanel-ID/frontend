@@ -1437,6 +1437,11 @@
           "step3": "Installed modules and your data stay on the server.",
           "confirm": "Reinstall"
         }
+      },
+      "creator": {
+        "createdBy": "Created by {name}",
+        "tooltip": "Created by {name} ({email})",
+        "label": "Created by"
       }
     },
     "serverDetail": {
@@ -1522,7 +1527,8 @@
         "runsHereHint": "Modules reported by the agent.",
         "noModules": "No module inventory reported yet.",
         "manageModules": "Manage modules",
-        "more": "+{count} more"
+        "more": "+{count} more",
+        "createdBy": "Created by"
       },
       "modules": {
         "title": "Installed modules",

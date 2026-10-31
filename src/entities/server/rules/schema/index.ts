@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { SchemaCommon } from '@/entities/shared/rules/schema';
 
-import { agent, cloud, specs, ssh, state, system } from './parts';
+import { agent, cloud, creator, specs, ssh, state, system } from './parts';
 
 export * as SchemaServerParts from './parts';
 
@@ -17,6 +17,7 @@ export const schemaServerCard = z.object({
   id: SchemaCommon.unitId,
   timestamp: SchemaCommon.timestamp,
   ownership: SchemaCommon.ownership,
+  creator: creator.optional(),
   cloud: cloud.optional(),
   host: z.object({
     name: z.string().optional(),
@@ -33,6 +34,7 @@ export const schemaServerDetail = z.object({
   id: SchemaCommon.unitId,
   timestamp: SchemaCommon.timestamp,
   ownership: SchemaCommon.ownership,
+  creator: creator.optional(),
   hostGroupId: z.string().optional(),
   cloud: cloud.optional(),
   host: z.object({

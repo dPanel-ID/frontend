@@ -1428,6 +1428,11 @@
           "step3": "Modul terpasang dan data Anda tetap di server.",
           "confirm": "Instal ulang"
         }
+      },
+      "creator": {
+        "createdBy": "Dibuat oleh {name}",
+        "tooltip": "Dibuat oleh {name} ({email})",
+        "label": "Dibuat oleh"
       }
     },
     "serverDetail": {
@@ -1513,7 +1518,8 @@
         "runsHereHint": "Modul yang dilaporkan agen.",
         "noModules": "Inventaris modul belum dilaporkan.",
         "manageModules": "Kelola modul",
-        "more": "+{count} lagi"
+        "more": "+{count} lagi",
+        "createdBy": "Dibuat oleh"
       },
       "modules": {
         "title": "Modul terpasang",

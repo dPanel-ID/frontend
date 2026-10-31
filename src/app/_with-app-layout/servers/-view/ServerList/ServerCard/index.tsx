@@ -4,6 +4,7 @@ import type { MouseEvent } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import {
   AppWindowIcon,
+  BuildingIcon,
   CircleAlertIcon,
   Clock3Icon,
   CpuIcon,
@@ -22,6 +23,7 @@ import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import { serverDisplayName } from '@/entities/server/lib/describeServer';
 import { getServerErrorSummary } from '@/entities/server/lib/error-detail';
+import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import { ServerErrorDialog } from '@/entities/server/ui/ServerErrorDialog';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
@@ -223,10 +225,14 @@ export default function ServerCard(props: ServerCardProps) {
           <ModuleStrip modules={overview.moduleGroups} />
 
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium text-muted-foreground">
-            <InlineInfo
-              icon={UserIcon}
-              value={server.ownership.team || server.ownership.owner}
-            />
+            {server.ownership.team ? (
+              <InlineInfo icon={BuildingIcon} value={server.ownership.team} />
+            ) : (
+              !server.creator && (
+                <InlineInfo icon={UserIcon} value={server.ownership.owner} />
+              )
+            )}
+            <ServerCreator creator={server.creator} />
             <InlineInfo
               icon={KeyRoundIcon}
               value={

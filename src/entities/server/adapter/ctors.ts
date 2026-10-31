@@ -3,7 +3,24 @@ import type z from 'zod';
 import type { DTOs } from '@/shared/api';
 import type { KeysOnly, KeysOnlyDeep } from '@/shared/libs/types/keys-only';
 
-import type { cloud, specs } from '../rules/schema/parts';
+import type { cloud, creator, specs } from '../rules/schema/parts';
+
+/** The creator as the API resolves them from the server's owner subject. */
+export function ctorCreator(
+  raw: DTOs.MachineV1,
+): KeysOnly<z.input<typeof creator>> | undefined {
+  const { user } = raw;
+  const email = user?.email?.trim() || undefined;
+  const name = user?.fullname?.trim() || user?.username?.trim() || email;
+
+  if (!name) return undefined;
+
+  return {
+    name,
+    email,
+    avatarUrl: user?.avatar_url?.trim() || undefined,
+  };
+}
 
 export function ctorCloud(
   raw: DTOs.MachineV1,
