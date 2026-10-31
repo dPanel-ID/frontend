@@ -87,7 +87,8 @@ export default function FormProxmox(props: {
 }) {
   const { provider } = props;
   const { formProxmox: form } = useCpcFormContext();
-  const { isSubmitting, handleSubmit } = useModelSubmission(provider);
+  const { handleSubmit, isSubmitting, submitLabel } =
+    useModelSubmission(provider);
 
   const [uploadedData, setUploadedData] = useState<SchemaProxmoxUpload | null>(
     null,
@@ -133,7 +134,11 @@ export default function FormProxmox(props: {
               Clear
             </Button>
 
-            <SubmitButton isSubmitting={isSubmitting} onClick={handleSubmit} />
+            <SubmitButton
+              isSubmitting={isSubmitting}
+              label={submitLabel}
+              onClick={handleSubmit}
+            />
           </div>
         )}
       </div>

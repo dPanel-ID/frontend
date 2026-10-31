@@ -116,6 +116,6 @@ Ikuti [Membuat server cloud](./create-a-cloud-server.md). Pilih Google Cloud di 
 ## Keamanan
 
 - Kunci ini bisa membuat dan menghapus VM, disk, dan aturan firewall di satu project ini. Di project khusus, hanya itu yang bisa dijangkaunya.
-- Kunci service account tidak kedaluwarsa secara bawaan. dPanel tidak punya tombol untuk menggantinya di dalam akun cloud yang sudah ada. Untuk merotasi, lihat [Merotasi kredensial](./cloud-credentials-security.md#merotasi-kredensial).
+- Kunci service account tidak kedaluwarsa secara bawaan. Untuk merotasinya, buat kunci baru untuk service account yang sama, lalu ganti lewat **Perbarui kredensial** pada akun cloud. **Project ID** harus tetap sama. Lihat [Merotasi kredensial](./cloud-credentials-security.md#merotasi-kredensial).
 - Untuk memutus akses dPanel, hapus kuncinya atau nonaktifkan service account-nya. Server yang sedang berjalan tetap berjalan. Lihat [apa yang terjadi saat kunci dicabut](./cloud-credentials-security.md#kalau-kredensial-dicabut).
 - Selengkapnya di [Kredensial cloud dan keamanan](./cloud-credentials-security.md).

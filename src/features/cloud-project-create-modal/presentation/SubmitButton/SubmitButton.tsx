@@ -2,7 +2,7 @@ import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 
 export default function SubmitButton(props: Props) {
-  const { className, classNameWrapper, isSubmitting, onClick } = props;
+  const { className, classNameWrapper, isSubmitting, label, onClick } = props;
 
   return (
     <section className={classNameWrapper}>
@@ -11,7 +11,7 @@ export default function SubmitButton(props: Props) {
         buttonState={isSubmitting ? 'loading' : 'initial'}
         onClick={onClick}
       >
-        Connect cloud account
+        {label ?? 'Connect cloud account'}
       </Button.Action>
     </section>
   );
@@ -21,5 +21,6 @@ interface Props {
   className?: string;
   classNameWrapper?: string;
   isSubmitting?: boolean;
+  label?: string;
   onClick?: () => void;
 }

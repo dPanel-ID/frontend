@@ -3,6 +3,13 @@ export interface CloudProjectDeletePayload {
   name: string;
 }
 
+export interface CloudProjectCredentialsPayload {
+  id: string;
+  name: string;
+  /** Raw provider ID; picks the credential form. */
+  provider: string;
+}
+
 export interface CloudProjectDetailsPayload {
   cloudProjectId: string;
   cloudProjectName: string;

@@ -193,6 +193,6 @@ Ikuti [Membuat server cloud](./create-a-cloud-server.md). Pilih AWS di langkah 1
 ## Keamanan
 
 - Kunci ini bisa membuat dan menghapus resource EC2 di region yang Anda izinkan. Dengan policy di atas, kunci ini tidak bisa menyentuh IAM, S3, basis data, atau instance yang tidak diberi tagnya.
-- dPanel tidak punya tombol untuk mengganti kunci di dalam akun cloud yang sudah ada. Untuk merotasi, lihat [Merotasi kredensial](./cloud-credentials-security.md#merotasi-kredensial).
+- Untuk merotasi kunci, buat kunci baru untuk IAM user yang sama, lalu ganti lewat **Perbarui kredensial** pada akun cloud. Lihat [Merotasi kredensial](./cloud-credentials-security.md#merotasi-kredensial).
 - Untuk memutus akses dPanel, nonaktifkan access key-nya di IAM. Server yang sedang berjalan tetap berjalan. Lihat [apa yang terjadi saat kunci dicabut](./cloud-credentials-security.md#kalau-kredensial-dicabut).
 - Selengkapnya di [Kredensial cloud dan keamanan](./cloud-credentials-security.md).
