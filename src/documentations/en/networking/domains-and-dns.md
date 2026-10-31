@@ -2,6 +2,7 @@
 title: Domains and DNS
 description: Let dPanel manage DNS records for a domain you already own, with your existing DNS provider.
 sidebar_position: 2
+sidebar_icon: globe
 ---
 
 dPanel does not sell or transfer domains. You keep buying them where you do today. What dPanel needs is access to whoever answers DNS for the domain, so it can create the records that point a name at your servers.

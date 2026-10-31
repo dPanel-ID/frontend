@@ -2791,6 +2791,9 @@
     },
     "docs": {
       "navLabel": "Bagian dokumentasi",
+      "onThisPage": "Di halaman ini",
+      "expandGroup": "Buka {name}",
+      "collapseGroup": "Tutup {name}",
       "pagerLabel": "Halaman dokumentasi",
       "breadcrumb": "Dokumentasi",
       "previous": "Sebelumnya",

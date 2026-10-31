@@ -2,6 +2,7 @@
 title: Update or delete an application
 description: Change how an application is built and run, or remove it and stop its service.
 sidebar_position: 6
+sidebar_icon: settings-2
 ---
 
 ## Review the setup

@@ -1,7 +1,8 @@
 ---
 title: DigitalOcean
 description: Buat token DigitalOcean dengan cakupan khusus, hubungkan ke dPanel, lalu luncurkan Droplet.
-sidebar_position: 8
+sidebar_position: 4
+sidebar_icon: provider:digitalocean
 ---
 
 dPanel meluncurkan Droplet di team DigitalOcean Anda. dPanel masuk dengan personal access token yang Anda buat khusus untuknya.
@@ -9,7 +10,7 @@ dPanel meluncurkan Droplet di team DigitalOcean Anda. dPanel masuk dengan person
 ## Yang perlu disiapkan
 
 - Team DigitalOcean yang sudah diatur penagihannya. Team terpisah khusus untuk dPanel membuat aksesnya tetap terbatas.
-- SSH key di dPanel. Lihat [Sebelum mulai](./before-you-start.md).
+- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
 
 ## 1. Buat token dengan cakupan khusus
 
@@ -46,13 +47,13 @@ Daftar di atas berasal dari panggilan API di kode dPanel (`/v2/regions`, `/v2/si
 5. Tempel tokennya di **API token**.
 6. Tekan **Connect cloud account**.
 
-![Formulir Connect Cloud Account dengan DigitalOcean terpilih dan kolom API token masih kosong](../../assets/servers/cloud-account-connect-digitalocean.webp)
+![Formulir Connect Cloud Account dengan DigitalOcean terpilih dan kolom API token masih kosong](../../../assets/servers/cloud-account-connect-digitalocean.webp)
 
 dPanel menyimpan akun itu sebagai **Siap** tanpa mengujinya. Ujian pertamanya ada di formulir peluncuran: kalau **Region** tetap kosong atau error, periksa token dan scope-nya.
 
 ## 3. Kolom DigitalOcean di formulir peluncuran
 
-![Formulir peluncuran dengan DigitalOcean terpilih](../../assets/servers/create-provider-digitalocean.webp)
+![Formulir peluncuran dengan DigitalOcean terpilih](../../../assets/servers/create-provider-digitalocean.webp)
 
 | Kolom              | Yang dipilih                                           |
 | ------------------ | ------------------------------------------------------ |

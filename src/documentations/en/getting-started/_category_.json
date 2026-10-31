@@ -5,5 +5,7 @@
   "app": {
     "label": "Open the dashboard",
     "href": "/dashboard"
-  }
+  },
+  "icon": "rocket",
+  "color": "sky"
 }

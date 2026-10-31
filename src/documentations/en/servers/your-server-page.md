@@ -1,7 +1,8 @@
 ---
 title: Your server page
 description: What each tab on a server is for.
-sidebar_position: 11
+sidebar_position: 5
+sidebar_icon: gauge
 ---
 
 Every server has one page, and everything you can do to that server is on it.

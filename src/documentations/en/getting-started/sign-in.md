@@ -2,6 +2,7 @@
 title: Sign in and your profile
 description: Create an account, sign in, and keep your name, avatar and password up to date.
 sidebar_position: 1
+sidebar_icon: log-in
 ---
 
 dPanel runs in your browser. There is nothing to install. Open the home page, sign in, and you land on the dashboard.

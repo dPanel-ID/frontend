@@ -72,11 +72,74 @@ describe('buildDocsTree', () => {
     expect(tree.id[0]?.pages[0]).toEqual({
       slug: 'overview',
       title: 'Ringkasan',
+      label: 'Ringkasan',
+      icon: undefined,
       summary: 'About Ringkasan',
       position: 1,
       file: `${ROOT}/id/servers/02-overview.md`,
       markdown: 'Ringkasan body',
     });
+  });
+
+  it('nests a folder with its own category as a group, in reading order', () => {
+    const tree = buildDocsTree({
+      categories: {
+        [`${ROOT}/en/servers/_category_.json`]: {
+          label: 'Servers',
+          description: 'Machines',
+          icon: 'server',
+          color: 'indigo',
+        },
+        [`${ROOT}/en/servers/cloud/_category_.json`]: {
+          label: 'Cloud providers',
+          description: 'Launch in your cloud',
+          position: 2,
+          icon: 'cloud',
+        },
+      },
+      pages: {
+        [`${ROOT}/en/servers/overview.md`]: page('Overview', 1),
+        [`${ROOT}/en/servers/delete.md`]: page('Delete', 3),
+        [`${ROOT}/en/servers/cloud/index.md`]: page('Cloud', 0),
+        [`${ROOT}/en/servers/cloud/aws.md`]: page(
+          'AWS',
+          2,
+          'sidebar_icon: provider:aws\n',
+        ),
+        [`${ROOT}/en/servers/cloud/launch.md`]: page(
+          'Launch a cloud server',
+          1,
+          'sidebar_label: Launch\nsidebar_icon: cloud-upload\n',
+        ),
+      },
+    });
+
+    const section = tree.en[0];
+    expect(section?.color).toBe('indigo');
+    expect(section?.icon).toBe('server');
+    expect(
+      section?.nav.map((item) =>
+        item.kind === 'page' ? item.page.slug : `group:${item.group.slug}`,
+      ),
+    ).toEqual(['overview', 'group:cloud', 'delete']);
+
+    // Grouped pages keep flat URLs, and read in the order the index shows.
+    expect(section?.pages.map((p) => p.slug)).toEqual([
+      'overview',
+      'cloud',
+      'launch',
+      'aws',
+      'delete',
+    ]);
+
+    const group = section?.nav[1];
+    expect(group?.kind === 'group' && group.group.page?.icon).toBe('cloud');
+    const launch = section?.pages.find((p) => p.slug === 'launch');
+    expect(launch?.label).toBe('Launch');
+    expect(launch?.title).toBe('Launch a cloud server');
+    expect(section?.pages.find((p) => p.slug === 'aws')?.icon).toBe(
+      'provider:aws',
+    );
   });
 
   it('ignores files outside a locale section, such as the README and assets', () => {
@@ -108,6 +171,11 @@ describe('buildDocsTree', () => {
       'a slug that is not kebab-case',
       { [`${ROOT}/en/s/p.md`]: page('T', 1, 'slug: Not Valid\n') },
       /kebab-case/,
+    ],
+    [
+      'an icon that does not exist',
+      { [`${ROOT}/en/s/p.md`]: page('T', 1, 'sidebar_icon: sparkles\n') },
+      /not a docs icon/,
     ],
     [
       'a page whose folder has no _category_.json',

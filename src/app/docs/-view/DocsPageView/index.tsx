@@ -13,6 +13,8 @@ import {
 import { DocsFooter } from '../-presentation/DocsFooter';
 import { DocsMarkdown } from '../-presentation/DocsMarkdown';
 import { DocsNav } from '../-presentation/DocsNav';
+import { DocsToc } from '../-presentation/DocsToc';
+import { pageHeadings } from '../../-lib/headings';
 import type { DocsPageLocation } from '../../-lib/registry';
 import { docsImageUrl, docsLinkTarget } from '../../-lib/registry';
 import type { DocsSection } from '../../-rules/content';
@@ -26,18 +28,19 @@ interface DocsPageViewProps {
  * One documentation page: the index on the left on wide screens, the page
  * itself in the middle, and the way onwards at the bottom.
  *
- * The whole thing is held to a fixed width rather than filling the display.
- * Prose keeps its own reading measure inside the article; the screenshots
- * are captured at twice the column's width, so they stay sharp on a retina
- * display at any width up to this cap.
+ * It fills the window like every other page of the app. Prose keeps its own
+ * reading measure inside the article, and screenshots show at their captured
+ * density, so a wide window adds room rather than stretching either. The
+ * index stays in view while the article scrolls.
  */
 export function DocsPageView(props: DocsPageViewProps) {
   const { location, sections } = props;
-  const { next, page, previous, section } = location;
+  const { group, next, page, previous, section } = location;
   const t = useDevetekTranslations('page.docs');
+  const headings = pageHeadings(page.markdown);
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="flex w-full flex-col gap-4 p-3 sm:p-4 lg:p-6">
       <FlowHero
         accent="sky"
         icon={BookOpenIcon}
@@ -49,6 +52,14 @@ export function DocsPageView(props: DocsPageViewProps) {
                 text: section.title,
                 url: `/docs/${section.slug}/${section.pages[0]?.slug ?? ''}`,
               },
+              ...(group
+                ? [
+                    {
+                      text: group.title,
+                      url: `/docs/${section.slug}/${group.page?.slug ?? group.pages[0]?.slug ?? ''}`,
+                    },
+                  ]
+                : []),
             ]}
           />
         }
@@ -66,7 +77,7 @@ export function DocsPageView(props: DocsPageViewProps) {
       />
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-        <aside className="hidden w-64 shrink-0 rounded-2xl border bg-card p-3 lg:block">
+        <aside className="hidden w-72 shrink-0 rounded-2xl border bg-card p-3 lg:sticky lg:top-4 lg:block lg:max-h-[calc(100svh-2rem)] lg:overflow-y-auto">
           <DocsNav
             sections={sections}
             activeSection={section.slug}
@@ -119,6 +130,12 @@ export function DocsPageView(props: DocsPageViewProps) {
             />
           </div>
         </div>
+
+        {headings.length > 1 && (
+          <aside className="hidden w-60 shrink-0 xl:sticky xl:top-4 xl:block xl:max-h-[calc(100svh-2rem)] xl:overflow-y-auto">
+            <DocsToc headings={headings} />
+          </aside>
+        )}
       </div>
 
       <DocsFooter />

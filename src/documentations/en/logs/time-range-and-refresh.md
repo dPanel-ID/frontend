@@ -2,6 +2,7 @@
 title: Time range and refresh
 description: Choose how far back to look, page through older lines, and keep the view up to date.
 sidebar_position: 2
+sidebar_icon: clock
 ---
 
 These controls are on application runtime logs and load balancer logs.

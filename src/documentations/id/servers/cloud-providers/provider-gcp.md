@@ -1,7 +1,8 @@
 ---
 title: Google Cloud
 description: Buat service account dengan hak akses minimum di project khusus, hubungkan ke dPanel, lalu luncurkan server Compute Engine.
-sidebar_position: 6
+sidebar_position: 3
+sidebar_icon: provider:gcp
 ---
 
 dPanel meluncurkan VM Compute Engine di salah satu project Google Cloud Anda. dPanel masuk dengan kunci JSON service account yang Anda buat khusus untuknya.
@@ -11,7 +12,7 @@ dPanel meluncurkan VM Compute Engine di salah satu project Google Cloud Anda. dP
 - Project Google Cloud yang sudah terhubung ke akun penagihan. Paling baik project baru khusus untuk dPanel.
 - **Compute Engine API** sudah aktif di project itu.
 - Izin membuat service account, custom role, dan kunci di project itu.
-- SSH key di dPanel. Lihat [Sebelum mulai](./before-you-start.md).
+- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
 
 ## 1. Buat project dan service account khusus
 
@@ -78,13 +79,13 @@ Izin penelusuran berasal dari panggilan API dPanel sendiri. Sisanya berasal dari
 5. Unggah `dpanel-key.json`. dPanel menampilkan **Project ID** dan **Client Email** yang ditemukannya, dan menyamarkan **Private Key**.
 6. Tekan **Connect cloud account**.
 
-![Formulir Connect Cloud Account dengan Google Cloud terpilih, menunggu unggahan JSON service account](../../assets/servers/cloud-account-connect-gcp.webp)
+![Formulir Connect Cloud Account dengan Google Cloud terpilih, menunggu unggahan JSON service account](../../../assets/servers/cloud-account-connect-gcp.webp)
 
 dPanel menyimpan akun itu sebagai **Siap** tanpa mengujinya. Ujian pertamanya ada di formulir peluncuran: kalau **Region** tetap kosong atau error, periksa kunci dan role-nya.
 
 ## 3. Kolom Google Cloud di formulir peluncuran
 
-![Langkah 1 formulir peluncuran dengan Google Cloud terpilih](../../assets/servers/create-step1-provider.webp)
+![Langkah 1 formulir peluncuran dengan Google Cloud terpilih](../../../assets/servers/create-step1-provider.webp)
 
 | Kolom              | Yang dipilih                                                                        |
 | ------------------ | ----------------------------------------------------------------------------------- |
@@ -97,7 +98,7 @@ dPanel menyimpan akun itu sebagai **Siap** tanpa mengujinya. Ujian pertamanya ad
 
 Untuk Google Cloud tidak ada langkah **Access**. dPanel masuk sebagai `ubuntu`.
 
-![Langkah 2 dan 3 sudah terisi untuk Google Cloud](../../assets/servers/create-step2-location-size.webp)
+![Langkah 2 dan 3 sudah terisi untuk Google Cloud](../../../assets/servers/create-step2-location-size.webp)
 
 ## 4. Luncurkan
 

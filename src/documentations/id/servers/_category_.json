@@ -5,5 +5,7 @@
   "app": {
     "label": "Buka halaman server",
     "href": "/servers"
-  }
+  },
+  "icon": "server",
+  "color": "indigo"
 }

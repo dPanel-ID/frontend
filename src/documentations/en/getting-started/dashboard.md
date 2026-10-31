@@ -2,6 +2,7 @@
 title: The dashboard
 description: What each dashboard tab tells you, and where to look first when something is wrong.
 sidebar_position: 3
+sidebar_icon: layout-dashboard
 ---
 
 The dashboard is the first page after sign-in. It answers one question: is everything in this workspace all right? Open it any time from **Dashboard** in the sidebar.

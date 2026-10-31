@@ -1,7 +1,9 @@
 ---
 title: Menghubungkan server Anda
 description: Bawa VPS, mesin bare metal, atau mesin home lab yang sudah Anda jalankan.
-sidebar_position: 10
+sidebar_position: 3
+sidebar_icon: terminal
+sidebar_label: SSH manual
 ---
 
 dPanel bisa merawat mesin yang sudah Anda punya. dPanel masuk lewat SSH dengan salah satu SSH key Anda di dPanel, lalu memasang agennya.

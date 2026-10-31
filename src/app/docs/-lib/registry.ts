@@ -1,4 +1,9 @@
-import type { DocsLocale, DocsPage, DocsSection } from '../-rules/content';
+import type {
+  DocsGroup,
+  DocsLocale,
+  DocsPage,
+  DocsSection,
+} from '../-rules/content';
 import { isDocsLocale } from '../-rules/content';
 
 import type { DocsLinkTarget } from './links';
@@ -10,14 +15,17 @@ import { buildDocsTree } from './tree';
  * category file into the bundle, and fingerprints every image, so nothing is
  * fetched at runtime and the pages render on the server like any other.
  */
-const PAGE_FILES = import.meta.glob<string>('/src/documentations/*/*/*.md', {
-  eager: true,
-  query: '?raw',
-  import: 'default',
-});
+// Sections, and groups one level inside them.
+const PAGE_FILES = import.meta.glob<string>(
+  ['/src/documentations/*/*/*.md', '/src/documentations/*/*/*/*.md'],
+  { eager: true, query: '?raw', import: 'default' },
+);
 
 const CATEGORY_FILES = import.meta.glob<unknown>(
-  '/src/documentations/*/*/_category_.json',
+  [
+    '/src/documentations/*/*/_category_.json',
+    '/src/documentations/*/*/*/_category_.json',
+  ],
   { eager: true, import: 'default' },
 );
 
@@ -58,6 +66,8 @@ export function findDocsSection(
 
 export interface DocsPageLocation {
   section: DocsSection;
+  /** The group the page sits in, if any, for the breadcrumb. */
+  group?: DocsGroup;
   page: DocsPage;
   /** The page before this one in reading order, for the footer links. */
   previous?: DocsPage;
@@ -76,8 +86,15 @@ export function findDocsPage(
   const page = index < 0 ? undefined : section.pages[index];
   if (!page) return undefined;
 
+  const group = section.nav.find(
+    (item): item is Extract<typeof item, { kind: 'group' }> =>
+      item.kind === 'group' &&
+      (item.group.page === page || item.group.pages.includes(page)),
+  )?.group;
+
   return {
     section,
+    group,
     page,
     previous: index > 0 ? section.pages[index - 1] : undefined,
     next:

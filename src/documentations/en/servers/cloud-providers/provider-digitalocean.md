@@ -1,7 +1,8 @@
 ---
 title: DigitalOcean
 description: Create a custom-scoped DigitalOcean token, connect it to dPanel, and launch a Droplet.
-sidebar_position: 8
+sidebar_position: 4
+sidebar_icon: provider:digitalocean
 ---
 
 dPanel launches Droplets in your DigitalOcean team. It signs in with a personal access token that you create for it.
@@ -9,7 +10,7 @@ dPanel launches Droplets in your DigitalOcean team. It signs in with a personal 
 ## What you need first
 
 - A DigitalOcean team with billing set up. A separate team just for dPanel keeps its access contained.
-- An SSH key in dPanel. See [Before you start](./before-you-start.md).
+- An SSH key in dPanel. See [Before you start](../before-you-start.md).
 
 ## 1. Create a custom-scoped token
 
@@ -46,13 +47,13 @@ The list above comes from the API calls in dPanel's code (`/v2/regions`, `/v2/si
 5. Paste the token into **API token**.
 6. Press **Connect cloud account**.
 
-![The Connect Cloud Account form with DigitalOcean selected and the API token field empty](../../assets/servers/cloud-account-connect-digitalocean.webp)
+![The Connect Cloud Account form with DigitalOcean selected and the API token field empty](../../../assets/servers/cloud-account-connect-digitalocean.webp)
 
 dPanel saves the account as **Ready** without testing it. The launch form is the first real test: if **Region** stays empty or errors, check the token and its scopes.
 
 ## 3. DigitalOcean fields in the launch form
 
-![The launch form with DigitalOcean selected](../../assets/servers/create-provider-digitalocean.webp)
+![The launch form with DigitalOcean selected](../../../assets/servers/create-provider-digitalocean.webp)
 
 | Field              | What to pick                                       |
 | ------------------ | -------------------------------------------------- |

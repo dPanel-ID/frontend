@@ -1,5 +1,7 @@
 {
   "label": "Troubleshooting",
   "position": 7,
-  "description": "Answers to the problems people actually run into, and where to get help."
+  "description": "Answers to the problems people actually run into, and where to get help.",
+  "icon": "life-buoy",
+  "color": "rose"
 }

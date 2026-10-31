@@ -2,6 +2,7 @@
 title: Connect GitHub
 description: Link a GitHub account so dPanel can read your repositories and build them.
 sidebar_position: 4
+sidebar_icon: git-branch
 ---
 
 dPanel builds applications from GitHub repositories. Before you create an application, link a GitHub account. You do it once per dPanel account.

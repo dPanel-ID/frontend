@@ -2,6 +2,7 @@
 title: How applications work
 description: dPanel builds your code from GitHub and runs it on a server you already have.
 sidebar_position: 1
+sidebar_icon: app-window
 ---
 
 An application is your code, running as a service on one of your servers. dPanel does not host the code itself. It reads the GitHub repository you point it at, builds it on the server, and keeps the service running there.
@@ -18,7 +19,7 @@ A build is not shared between machines. Each server builds and installs the appl
 
 ## What you need first
 
-- A server that is **Ready**. See [Create a cloud server](../servers/create-a-cloud-server.md).
+- A server that is **Ready**. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
 - A GitHub account connected to dPanel. See [Connect GitHub](../getting-started/connect-github.md).
 - A repository with a build command and a start command. A single script for each is enough.
 

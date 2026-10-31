@@ -2,6 +2,7 @@
 title: Membaca log
 description: Di mana setiap log berada di dPanel, dan cara membaca serta menyaring tabel log.
 sidebar_position: 1
+sidebar_icon: file-text
 ---
 
 dPanel menampilkan empat jenis log. Semuanya memakai tabel yang sama, jadi begitu Anda bisa membaca satu, Anda bisa membaca semuanya.

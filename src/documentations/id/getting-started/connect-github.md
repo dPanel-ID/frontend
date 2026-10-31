@@ -2,6 +2,7 @@
 title: Menghubungkan GitHub
 description: Tautkan akun GitHub agar dPanel bisa membaca dan membangun repositori Anda.
 sidebar_position: 4
+sidebar_icon: git-branch
 ---
 
 dPanel membangun aplikasi dari repositori GitHub. Sebelum membuat aplikasi, tautkan dulu akun GitHub. Cukup sekali untuk setiap akun dPanel.

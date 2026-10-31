@@ -2,6 +2,7 @@
 title: Create an application
 description: The five-step form, from a GitHub repository to a running service.
 sidebar_position: 2
+sidebar_icon: square-plus
 ---
 
 This walkthrough deploys [dPanel-ID/go-example](https://github.com/dPanel-ID/go-example), a small Go web service. Any repository works the same way. Expect it to take 5 to 15 minutes, most of it the first build.

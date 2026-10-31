@@ -1,0 +1,6 @@
+{
+  "label": "Cloud providers",
+  "position": 4,
+  "icon": "cloud",
+  "description": "Launch a server in your own cloud account, with a guide for each provider and how dPanel handles your credentials."
+}

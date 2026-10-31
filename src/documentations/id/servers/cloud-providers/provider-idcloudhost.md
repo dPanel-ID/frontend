@@ -1,7 +1,8 @@
 ---
 title: IDCloudHost
 description: Buat API key IDCloudHost, hubungkan ke dPanel, lalu luncurkan server di Indonesia.
-sidebar_position: 7
+sidebar_position: 5
+sidebar_icon: provider:idcloudhost
 ---
 
 dPanel meluncurkan VM cloud di akun IDCloudHost Anda. dPanel masuk dengan API key dari profil IDCloudHost Anda.
@@ -9,7 +10,7 @@ dPanel meluncurkan VM cloud di akun IDCloudHost Anda. dPanel masuk dengan API ke
 ## Yang perlu disiapkan
 
 - Akun IDCloudHost dengan billing account yang punya saldo atau metode pembayaran.
-- SSH key di dPanel. Lihat [Sebelum mulai](./before-you-start.md).
+- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
 
 ## 1. Buat API key
 
@@ -44,13 +45,13 @@ Kode dPanel memakai satu API key yang dikirim di header `apikey`. Dari kode, kam
 5. Tempel kuncinya di **API key**. Panel itu menautkan ke halaman API IDCloudHost kalau Anda belum punya kunci.
 6. Tekan **Connect cloud account**.
 
-![Formulir Connect Cloud Account dengan IDCloudHost terpilih dan kolom API key masih kosong](../../assets/servers/cloud-account-connect-idcloudhost.webp)
+![Formulir Connect Cloud Account dengan IDCloudHost terpilih dan kolom API key masih kosong](../../../assets/servers/cloud-account-connect-idcloudhost.webp)
 
 dPanel menyimpan akun itu sebagai **Siap** tanpa mengujinya. Ujian pertamanya ada di formulir peluncuran: kalau **Region** tetap kosong atau error, periksa kuncinya.
 
 ## 3. Kolom IDCloudHost di formulir peluncuran
 
-![Formulir peluncuran dengan IDCloudHost terpilih](../../assets/servers/create-provider-idcloudhost.webp)
+![Formulir peluncuran dengan IDCloudHost terpilih](../../../assets/servers/create-provider-idcloudhost.webp)
 
 | Kolom               | Yang dipilih                                                                                    |
 | ------------------- | ----------------------------------------------------------------------------------------------- |

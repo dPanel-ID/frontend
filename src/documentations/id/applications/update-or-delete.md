@@ -2,6 +2,7 @@
 title: Mengubah atau menghapus aplikasi
 description: Ubah cara aplikasi dibangun dan dijalankan, atau hapus aplikasinya dan hentikan layanannya.
 sidebar_position: 6
+sidebar_icon: settings-2
 ---
 
 ## Meninjau pengaturannya

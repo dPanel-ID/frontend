@@ -2,6 +2,7 @@
 title: Reading logs
 description: Where each log lives in dPanel, and how to read and narrow the log table.
 sidebar_position: 1
+sidebar_icon: file-text
 ---
 
 dPanel shows four kinds of log. They share one table, so once you can read one you can read them all.

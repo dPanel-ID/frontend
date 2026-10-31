@@ -2,5 +2,10 @@
   "label": "Log",
   "position": 6,
   "description": "Temukan log yang Anda butuhkan, baca, persempit, lalu simpan salinannya.",
-  "app": { "label": "Buka halaman server", "href": "/servers" }
+  "app": {
+    "label": "Buka halaman server",
+    "href": "/servers"
+  },
+  "icon": "scroll-text",
+  "color": "teal"
 }

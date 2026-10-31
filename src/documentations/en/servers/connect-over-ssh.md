@@ -1,7 +1,8 @@
 ---
 title: Connect over SSH
 description: The terminal in your browser, and connecting from your own machine.
-sidebar_position: 13
+sidebar_position: 7
+sidebar_icon: square-terminal
 ---
 
 Most of the time you won't need a terminal: the tabs cover services, users, files and logs. When you do, press **Open terminal** at the top of the server page. dPanel signs in with the key it holds and opens a shell.

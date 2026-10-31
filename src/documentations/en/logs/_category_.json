@@ -2,5 +2,10 @@
   "label": "Logs",
   "position": 6,
   "description": "Find the log you need, read it, narrow it down, and take a copy with you.",
-  "app": { "label": "Go to servers", "href": "/servers" }
+  "app": {
+    "label": "Go to servers",
+    "href": "/servers"
+  },
+  "icon": "scroll-text",
+  "color": "teal"
 }

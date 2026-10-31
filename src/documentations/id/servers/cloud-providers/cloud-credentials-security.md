@@ -1,7 +1,8 @@
 ---
 title: Kredensial cloud dan keamanan
 description: Apa yang disimpan dPanel saat Anda menghubungkan akun cloud, apa yang bisa dilakukan kredensial itu, dan cara membatasi, merotasi, serta mencabutnya.
-sidebar_position: 9
+sidebar_position: 6
+sidebar_icon: shield-check
 ---
 
 Untuk meluncurkan server atas nama Anda, dPanel memegang kredensial akun cloud Anda. Halaman ini menjelaskan apa artinya secara terus terang, supaya Anda bisa menimbang seberapa jauh memercayainya dan bagaimana membatasi kerugian kalau ada yang salah.
@@ -75,10 +76,10 @@ Mencabut berarti menghapus atau menonaktifkan kunci di penyedia. Ini yang terjad
 
 ## Menghapus akun cloud dari dPanel
 
-1. Hapus semua server yang diluncurkan dengan akun itu. Lihat [Menghapus server](./delete-a-server.md).
+1. Hapus semua server yang diluncurkan dengan akun itu. Lihat [Menghapus server](../delete-a-server.md).
 2. Di sidebar, buka **Proyek Cloud**.
 3. Pada akun itu, buka menunya, pilih **Putuskan akun cloud**, lalu konfirmasi.
 
 dPanel menghapus kredensial yang disimpannya. Itu tidak mencabut kunci di penyedia: hapus juga di sana.
 
-![Halaman Akun cloud berisi daftar akun penyedia yang terhubung](../../assets/getting-started/cloud-projects.webp)
+![Halaman Akun cloud berisi daftar akun penyedia yang terhubung](../../../assets/getting-started/cloud-projects.webp)

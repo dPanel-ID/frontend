@@ -1,7 +1,7 @@
 ---
 title: Cloud providers
 description: The four providers dPanel launches servers on, and what differs between them.
-sidebar_position: 4
+sidebar_position: 0
 ---
 
 dPanel launches servers on **AWS**, **Google Cloud**, **IDCloudHost** and **DigitalOcean**. Each one has its own page: how to create the credential, how to connect it, the launch-form fields, and the provider's gotchas.
@@ -24,7 +24,7 @@ The launch form also lists **Biznet Gio**. It follows the same steps and is not 
 
 ## Before any provider
 
-- An SSH key in dPanel. See [Before you start](./before-you-start.md).
+- An SSH key in dPanel. See [Before you start](../before-you-start.md).
 - A credential that can do only what dPanel needs. Each provider page gives the minimum.
 - Read [Cloud credentials and security](./cloud-credentials-security.md) once. It explains what dPanel keeps and what happens if you revoke a key.
 

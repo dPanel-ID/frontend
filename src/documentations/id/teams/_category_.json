@@ -5,5 +5,7 @@
   "app": {
     "label": "Buka tim",
     "href": "/teams"
-  }
+  },
+  "icon": "users",
+  "color": "amber"
 }

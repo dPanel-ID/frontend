@@ -1,5 +1,7 @@
 {
   "label": "Pemecahan masalah",
   "position": 7,
-  "description": "Jawaban untuk masalah yang paling sering ditemui, dan ke mana meminta bantuan."
+  "description": "Jawaban untuk masalah yang paling sering ditemui, dan ke mana meminta bantuan.",
+  "icon": "life-buoy",
+  "color": "rose"
 }

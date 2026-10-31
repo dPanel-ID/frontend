@@ -2,6 +2,7 @@
 title: Tim
 description: Buat ruang kerja tim, ganti namanya, dan hapus kalau sudah tidak diperlukan.
 sidebar_position: 1
+sidebar_icon: users
 ---
 
 Tim adalah ruang kerja bersama. Server, aplikasi, load balancer, domain, akun cloud, dan kunci SSH yang dibuat di dalamnya menjadi milik tim, dan setiap anggota bisa mengaksesnya sesuai perannya.

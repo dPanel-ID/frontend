@@ -2,6 +2,7 @@
 title: Build timeout
 description: How long a build may run, and how to give a slow build more time.
 sidebar_position: 7
+sidebar_icon: timer
 ---
 
 Every build and release runs as one job: clone, runtime setup, build steps and service start. By default that job stops after **20 minutes**.

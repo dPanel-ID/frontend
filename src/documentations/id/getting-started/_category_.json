@@ -5,5 +5,7 @@
   "app": {
     "label": "Buka dasbor",
     "href": "/dashboard"
-  }
+  },
+  "icon": "rocket",
+  "color": "sky"
 }
