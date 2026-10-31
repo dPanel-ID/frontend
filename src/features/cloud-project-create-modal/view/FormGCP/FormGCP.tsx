@@ -42,7 +42,8 @@ export default function FormGCP(props: {
   const { formGCP: form } = useCpcFormContext();
   const [uploadedCredential, setUploadedCredential] = useState<SchemaGcpForm>();
 
-  const { isSubmitting, handleSubmit } = useModelSubmission(provider);
+  const { handleSubmit, isSubmitting, submitLabel } =
+    useModelSubmission(provider);
 
   const handleUploadData = (data: SchemaGcpForm) => {
     setUploadedCredential(data);
@@ -129,7 +130,11 @@ export default function FormGCP(props: {
               Clear selected JSON
             </Button>
 
-            <SubmitButton isSubmitting={isSubmitting} onClick={handleSubmit} />
+            <SubmitButton
+              isSubmitting={isSubmitting}
+              label={submitLabel}
+              onClick={handleSubmit}
+            />
           </div>
         )}
       </div>

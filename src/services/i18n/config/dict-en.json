@@ -2250,7 +2250,8 @@
       "actions": {
         "viewRegions": "View regions",
         "openDetails": "Open account",
-        "useOnServer": "Create a server here"
+        "useOnServer": "Create a server here",
+        "updateCredentials": "Update credentials"
       },
       "table": {
         "headers": {
@@ -3367,6 +3368,22 @@
       "confirm": "Confirm",
       "saving": "Saving…",
       "submitFailed": "Unable to submit the selection."
+    },
+    "cloudProjectCredentials": {
+      "title": "Update credentials",
+      "description": "Replace the key dPanel uses for this cloud account. Servers launched with it keep working.",
+      "accountTitle": "Cloud account",
+      "accountHint": "Use a new key for the same provider account. dPanel checks it with the provider before saving, and keeps the current key if the provider refuses it.",
+      "accountName": "Account",
+      "provider": "Provider",
+      "providersError": "Could not load the provider's credential fields.",
+      "retry": "Retry",
+      "unknownProvider": "dPanel has no credential form for provider \"{provider}\". Use the CLI: dnocs cloud-project update-credentials.",
+      "submit": "Save credentials",
+      "toaster": {
+        "success": "Updated the credentials of \"{name}\"",
+        "error": "Could not update the credentials of \"{name}\""
+      }
     }
   },
   "formErrors": {

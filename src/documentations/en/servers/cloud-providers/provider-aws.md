@@ -193,6 +193,6 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick AWS in step 1.
 ## Security
 
 - The key can create and destroy EC2 resources in the regions you allowed. With the policy above it can't touch IAM, S3, databases or instances it didn't tag.
-- dPanel has no button to swap the key inside an existing cloud account. To rotate, see [Rotating a credential](./cloud-credentials-security.md#rotating-a-credential).
+- To rotate the key, create a new one for the same IAM user and replace it with **Update credentials** on the cloud account. See [Rotating a credential](./cloud-credentials-security.md#rotating-a-credential).
 - To cut dPanel off, deactivate the access key in IAM. Running servers keep running. See [what happens when you revoke](./cloud-credentials-security.md#if-you-revoke-a-credential).
 - More in [Cloud credentials and security](./cloud-credentials-security.md).

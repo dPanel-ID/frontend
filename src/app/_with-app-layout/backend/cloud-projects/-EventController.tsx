@@ -3,6 +3,7 @@ import useAddNewCloudProjectUsecase from './-usecase/use-add-new-cloud-project';
 import useDeleteCloudProjectUsecase from './-usecase/use-delete-cloud-project';
 import useOpenDetailsUsecase from './-usecase/use-open-details';
 import useOpenCloudProjectMigrateOwnershipUsecase from './-usecase/use-open-migrate-ownership';
+import useUpdateCloudProjectCredentialsUsecase from './-usecase/use-update-cloud-project-credentials';
 
 export default function EventController() {
   const emit = useEmit();
@@ -16,6 +17,9 @@ export default function EventController() {
     onSuccess: handleDefaultSuccess,
   });
   const [handleOpenDetails] = useOpenDetailsUsecase();
+  const [handleUpdateCredentials] = useUpdateCloudProjectCredentialsUsecase({
+    onSuccess: handleDefaultSuccess,
+  });
   const [handleOpenMigrateOwnership] =
     useOpenCloudProjectMigrateOwnershipUsecase({
       onSuccess: handleDefaultSuccess,
@@ -28,6 +32,10 @@ export default function EventController() {
     handleOpenMigrateOwnership,
   );
   useSubscribe('@cloud-projects/open--details', handleOpenDetails);
+  useSubscribe(
+    '@cloud-projects/open--update-credentials',
+    handleUpdateCredentials,
+  );
 
   return null;
 }

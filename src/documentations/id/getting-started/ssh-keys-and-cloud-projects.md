@@ -54,6 +54,7 @@ dPanel tidak menjual ulang server. Mesin dibuat di dalam akun penyedia milik And
 
 - Kunci atau akun yang dibuat di ruang kerja tim otomatis dibagikan ke tim itu. Yang dibuat di ruang kerja personal hanya milik Anda.
 - **Pindah Pemilik** di menu item memindahkannya ke ruang kerja lain.
+- **Perbarui kredensial** mengganti kunci di dalam akun cloud, misalnya setelah Anda merotasinya di penyedia. Server yang diluncurkan dengannya tetap berfungsi. Lihat [Merotasi kredensial](../servers/cloud-providers/cloud-credentials-security.md#merotasi-kredensial).
 - **Putuskan akun cloud** membuat dPanel melupakan API key-nya. Server yang sudah berjalan di penyedia tetap berjalan.
 
 ## Langkah berikutnya

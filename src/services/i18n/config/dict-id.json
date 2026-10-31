@@ -2242,7 +2242,8 @@
       "actions": {
         "viewRegions": "Lihat region",
         "openDetails": "Buka akun",
-        "useOnServer": "Buat server di sini"
+        "useOnServer": "Buat server di sini",
+        "updateCredentials": "Perbarui kredensial"
       },
       "table": {
         "headers": {
@@ -3359,6 +3360,22 @@
       "confirm": "Konfirmasi",
       "saving": "Menyimpan…",
       "submitFailed": "Pilihan tidak dapat dikirim."
+    },
+    "cloudProjectCredentials": {
+      "title": "Perbarui kredensial",
+      "description": "Ganti kunci yang dipakai dPanel untuk akun cloud ini. Server yang dibuat dengannya tetap berjalan.",
+      "accountTitle": "Akun cloud",
+      "accountHint": "Gunakan kunci baru untuk akun penyedia yang sama. dPanel memeriksanya ke penyedia sebelum menyimpan, dan tetap memakai kunci lama jika penyedia menolaknya.",
+      "accountName": "Akun",
+      "provider": "Penyedia",
+      "providersError": "Gagal memuat kolom kredensial penyedia.",
+      "retry": "Coba lagi",
+      "unknownProvider": "dPanel belum punya formulir kredensial untuk penyedia \"{provider}\". Gunakan CLI: dnocs cloud-project update-credentials.",
+      "submit": "Simpan kredensial",
+      "toaster": {
+        "success": "Kredensial \"{name}\" diperbarui",
+        "error": "Gagal memperbarui kredensial \"{name}\""
+      }
     }
   },
   "formErrors": {

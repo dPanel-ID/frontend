@@ -80,6 +80,6 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick DigitalOcean in
 
 - With custom scopes, the token can create, read and delete Droplets and SSH keys, and read regions, sizes, images and VPCs. It can't touch Spaces, databases, DNS or billing.
 - With **Full Access**, it can do anything in the team, so don't.
-- dPanel has no button to swap the token inside an existing cloud account. To rotate, see [Rotating a credential](./cloud-credentials-security.md#rotating-a-credential).
+- To rotate the token, create a new one in the same team and replace it with **Update credentials** on the cloud account. See [Rotating a credential](./cloud-credentials-security.md#rotating-a-credential).
 - To cut dPanel off, delete the token under **API**, **Tokens**. Running servers keep running. See [what happens when you revoke](./cloud-credentials-security.md#if-you-revoke-a-credential).
 - More in [Cloud credentials and security](./cloud-credentials-security.md).

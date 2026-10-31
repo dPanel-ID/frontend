@@ -1,3 +1,4 @@
+import { useDevetekTranslations } from '@/services/i18n';
 import { useModalEmit } from '@/services/modal/model/event';
 import { useToaster } from '@/services/toaster';
 
@@ -22,7 +23,8 @@ import {
 export default function useModelSubmission(
   provider?: DTOs.CloudProviderContractV1,
 ) {
-  const { onSubmitSuccess } = useCpcPropsContext();
+  const { credentialTarget, onSubmitSuccess } = useCpcPropsContext();
+  const t = useDevetekTranslations();
   const {
     formDynamicCredential,
     formGCP,
@@ -100,6 +102,35 @@ export default function useModelSubmission(
 
     emitModal('%%modal/allow-trivial-close', false);
 
+    if (credentialTarget) {
+      const response = await ApiCloud.Project.Update.$Id.Credentials.doPost({
+        id: credentialTarget.id,
+        credential,
+      });
+      const name = credentialTarget.name;
+
+      if (response.$status === 'failed') {
+        openToaster({
+          title: t('modal.cloudProjectCredentials.toaster.error', { name }),
+          message: getApiErrorDetail(response.error),
+          variant: 'error',
+          duration: 5000,
+        });
+
+        emitModal('%%modal/allow-trivial-close', true);
+        return;
+      }
+
+      emitModal('%%modal/close', null);
+      openToaster({
+        variant: 'success',
+        message: t('modal.cloudProjectCredentials.toaster.success', { name }),
+      });
+
+      onSubmitSuccess();
+      return;
+    }
+
     const response = await ApiCloud.Project.Create.doPost({
       credential,
       name: baseData.metaTitle,
@@ -137,6 +168,9 @@ export default function useModelSubmission(
   return {
     handleSubmit,
     isSubmitting,
+    submitLabel: credentialTarget
+      ? t('modal.cloudProjectCredentials.submit')
+      : undefined,
   };
 }
 

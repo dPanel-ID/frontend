@@ -6,6 +6,7 @@ import * as ProjectOstemplates$Id from './cloud.project.ostemplates.$id';
 import * as ProjectProducts$Id from './cloud.project.products.$id';
 import * as ProjectProviders from './cloud.project.providers';
 import * as ProjectProviders$Provider from './cloud.project.providers.$provider';
+import * as ProjectUpdate$IdCredentials from './cloud.project.update.$id.credentials';
 import * as ProjectZones$Id from './cloud.project.zones.$id';
 import * as Regions$Id from './cloud.regions.$id';
 import * as Vpcs$Id from './cloud.vpcs.$id';
@@ -17,6 +18,11 @@ const Root = {
       $Id: ProjectDelete$Id,
     },
     Find: ProjectFind,
+    Update: {
+      $Id: {
+        Credentials: ProjectUpdate$IdCredentials,
+      },
+    },
     BillingAccounts: {
       $Id: ProjectBillingAccounts$Id,
     },

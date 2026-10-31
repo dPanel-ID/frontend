@@ -3,6 +3,7 @@ import type { Rescope } from '@/shared/libs/events/models/registerEvents';
 
 import type { FilterRules } from '../-rules';
 import type {
+  CloudProjectCredentialsPayload,
   CloudProjectDeletePayload,
   CloudProjectDetailsPayload,
   CloudProjectMigrateOwnershipPayload,
@@ -18,6 +19,7 @@ type EventsRegistry = Rescope<
     'filters/status--change': FilterRules.Status;
     'data--refresh': null;
     'project--delete': CloudProjectDeletePayload;
+    'open--update-credentials': CloudProjectCredentialsPayload;
     'open--migrate-ownership': CloudProjectMigrateOwnershipPayload;
     'open--details': CloudProjectDetailsPayload;
   }

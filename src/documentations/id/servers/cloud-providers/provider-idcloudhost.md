@@ -83,6 +83,6 @@ Ikuti [Membuat server cloud](./create-a-cloud-server.md). Pilih IDCloudHost di l
 ## Keamanan
 
 - Kunci ini bisa melakukan apa yang bisa dilakukan user IDCloudHost Anda. Perlakukan seperti kata sandi konsol.
-- dPanel tidak punya tombol untuk mengganti kunci di dalam akun cloud yang sudah ada. Untuk merotasi, lihat [Merotasi kredensial](./cloud-credentials-security.md#merotasi-kredensial).
+- Untuk merotasi kunci, buat kunci baru untuk akun IDCloudHost yang sama, lalu ganti lewat **Perbarui kredensial** pada akun cloud. Lihat [Merotasi kredensial](./cloud-credentials-security.md#merotasi-kredensial).
 - Untuk memutus akses dPanel, hapus kuncinya di halaman API IDCloudHost. Server yang sedang berjalan tetap berjalan. Lihat [apa yang terjadi saat kunci dicabut](./cloud-credentials-security.md#kalau-kredensial-dicabut).
 - Selengkapnya di [Kredensial cloud dan keamanan](./cloud-credentials-security.md).
