@@ -1,4 +1,3 @@
-import LogoAdminerDBM from '@/shared/assets/server-modules/module-cm-adminer.png';
 import LogoMariaDB from '@/shared/assets/server-modules/module-db-mariadb.svg';
 import LogoMongoDB from '@/shared/assets/server-modules/module-db-mongo.svg';
 import LogoPostgreSQL from '@/shared/assets/server-modules/module-db-postgresql.svg';
@@ -21,7 +20,6 @@ import type {
 } from '../model/types';
 
 export const SERVER_MODULE_LOGOS: Record<string, string> = {
-  adminer: LogoAdminerDBM,
   bun: LogoBun,
   caddy: LogoCaddyServer,
   caddyserver: LogoCaddyServer,
@@ -156,16 +154,6 @@ export const HARDCODED_SERVER_MODULES: ServerModule[] = [
     description:
       'Free and open-source relational database management system emphasizing extensibility and SQL compliance.',
     logoUrl: LogoPostgreSQL,
-    has_submodule: false,
-  },
-  {
-    category: ['cms'],
-    platform: ['vm'],
-    id: 'adminer',
-    name: 'Adminer',
-    description:
-      'Adminer is a full-featured database management tool written in PHP.',
-    logoUrl: LogoAdminerDBM,
     has_submodule: false,
   },
   {
