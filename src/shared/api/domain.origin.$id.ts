@@ -14,13 +14,24 @@ import type { DTOs } from '.';
 export interface RecipeParams {
   domainId: string;
   page?: number;
+  /** Records per page; the API's default when unset. */
+  limit?: number;
+  /** Keeps records whose name or content contains it, ignoring case. */
+  search?: string;
+  /** Keeps one record type, such as `A` or `CNAME`. */
+  type?: string;
 }
 
 export function recipe(params: RecipeParams): GetRequestRecipe {
-  const { domainId, page = 1 } = params;
+  const { domainId, limit, page = 1, search, type } = params;
+
+  const queryParams = new URLSearchParams({ page: String(page) });
+  if (limit) queryParams.set('limit', String(limit));
+  if (search) queryParams.set('search', search);
+  if (type) queryParams.set('type', type);
 
   return {
-    url: `/v1/domain/origin/${domainId}?page=${page}`,
+    url: `/v1/domain/origin/${domainId}?${queryParams.toString()}`,
   };
 }
 
