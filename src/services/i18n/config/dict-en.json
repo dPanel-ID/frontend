@@ -2816,6 +2816,47 @@
         "warning": "Warning",
         "danger": "Danger"
       }
+    },
+    "domainDetail": {
+      "breadcrumb": "Domains",
+      "headerFallback": "DNS records for this domain.",
+      "refresh": "Refresh",
+      "openSite": "Open site",
+      "tiles": {
+        "provider": "DNS provider",
+        "records": "Records",
+        "recordsHint": "in this zone",
+        "owner": "Owner",
+        "added": "Added"
+      },
+      "records": {
+        "title": "DNS records",
+        "description": "Every record in this zone. Search by name or content, or narrow to one type.",
+        "searchPlaceholder": "Search records, e.g. demo",
+        "typeFilter": "Record type",
+        "allTypes": "All",
+        "count": "{count, plural, one {# record} other {# records}}",
+        "matches": "{count, plural, one {# match} other {# matches}}",
+        "empty": "This zone has no records yet.",
+        "noMatch": "No records match “{query}”.",
+        "noMatchTyped": "No {type} records match “{query}”.",
+        "noMatchType": "No {type} records here.",
+        "noMatchHint": "Try part of the name, such as “demo”, or another record type.",
+        "clearFilters": "Clear search and filter",
+        "table": {
+          "type": "Type",
+          "name": "Name",
+          "content": "Content",
+          "ttl": "TTL",
+          "actions": "Actions"
+        },
+        "ttlAuto": "Auto",
+        "apex": "root",
+        "copyName": "Copy name",
+        "copyContent": "Copy content",
+        "copied": "Copied {value}",
+        "delete": "Delete"
+      }
     }
   },
   "widget": {
@@ -3075,17 +3116,6 @@
     "loadBalancerDetails": {
       "title": "Load Balancer Details",
       "pathPattern": "Path Pattern"
-    },
-    "domainDetails": {
-      "title": "Domain Details",
-      "table": {
-        "type": "Type",
-        "name": "Name",
-        "content": "Content",
-        "ttl": "TTL",
-        "attributes": "Attributes",
-        "comments": "Comments"
-      }
     },
     "domainRegistration": {
       "title": "Register new domain",

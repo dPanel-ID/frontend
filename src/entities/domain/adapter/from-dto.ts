@@ -7,10 +7,10 @@ import { resolveOwnershipTeamId } from '@/entities/shared/lib/resolveOwnershipTe
 import type { DTOs } from '@/shared/api';
 import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
 
-import { schemaDomainCard, schemaDomainDetails } from '../rules/schema';
-import type { DomainCard, DomainDetails } from '../rules/schema';
+import { schemaDnsRecordPage, schemaDomainCard } from '../rules/schema';
+import type { DnsRecordPage, DomainCard } from '../rules/schema';
 
-import { ctorDnsRecord, ctorProvider, ctorProviderDetails } from './ctors';
+import { ctorDnsRecord, ctorProvider } from './ctors';
 
 export const toDomainCard = createAdapter<DTOs.DomainV1, DomainCard>((raw) => {
   return schemaDomainCard.parse({
@@ -30,24 +30,17 @@ export const toDomainCard = createAdapter<DTOs.DomainV1, DomainCard>((raw) => {
   } as KeysOnlyDeep<z.input<typeof schemaDomainCard>>);
 });
 
-export const toDomainDetails = createAdapter<
-  [DTOs.DomainV1, DTOs.DomainRecordListResponseV1],
-  DomainDetails
->(([rawDomain, rawRecords]) => {
-  return schemaDomainDetails.parse({
-    id: String(rawDomain.id),
-    ownership: {
-      owner: resolveOwnershipOwner(rawDomain),
-      team: rawDomain.organization?.name,
-      teamId: resolveOwnershipTeamId(rawDomain),
-    },
-    timestamp: {
-      created: rawDomain.created_at,
-      updated: rawDomain.updated_at,
-    },
-    domain: rawDomain.domain,
-    description: rawDomain.name,
-    providerDetails: ctorProviderDetails(rawDomain),
-    dnsRecords: rawRecords.result.map(ctorDnsRecord),
-  } as KeysOnlyDeep<z.input<typeof schemaDomainDetails>>);
+export const toDnsRecordPage = createAdapter<
+  DTOs.DomainRecordListResponseV1,
+  DnsRecordPage
+>((raw) => {
+  return schemaDnsRecordPage.parse({
+    // Older API builds send `null` rather than `[]` when nothing matches.
+    records: ((raw.result as DTOs.DomainRecordItemV1[] | null) ?? []).map(
+      ctorDnsRecord,
+    ),
+    page: raw.result_info.page,
+    totalPage: raw.result_info.total_pages,
+    total: raw.result_info.total_count,
+  });
 });

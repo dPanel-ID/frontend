@@ -2808,6 +2808,47 @@
         "warning": "Peringatan",
         "danger": "Bahaya"
       }
+    },
+    "domainDetail": {
+      "breadcrumb": "Domain",
+      "headerFallback": "Record DNS untuk domain ini.",
+      "refresh": "Muat ulang",
+      "openSite": "Buka situs",
+      "tiles": {
+        "provider": "Penyedia DNS",
+        "records": "Record",
+        "recordsHint": "di zona ini",
+        "owner": "Pemilik",
+        "added": "Ditambahkan"
+      },
+      "records": {
+        "title": "Record DNS",
+        "description": "Semua record di zona ini. Cari berdasarkan nama atau isi, atau saring satu jenis record.",
+        "searchPlaceholder": "Cari record, mis. demo",
+        "typeFilter": "Jenis record",
+        "allTypes": "Semua",
+        "count": "{count} record",
+        "matches": "{count} cocok",
+        "empty": "Zona ini belum punya record.",
+        "noMatch": "Tidak ada record yang cocok dengan “{query}”.",
+        "noMatchTyped": "Tidak ada record {type} yang cocok dengan “{query}”.",
+        "noMatchType": "Tidak ada record {type} di sini.",
+        "noMatchHint": "Coba sebagian nama, misalnya “demo”, atau jenis record lain.",
+        "clearFilters": "Hapus pencarian dan filter",
+        "table": {
+          "type": "Jenis",
+          "name": "Nama",
+          "content": "Isi",
+          "ttl": "TTL",
+          "actions": "Aksi"
+        },
+        "ttlAuto": "Otomatis",
+        "apex": "root",
+        "copyName": "Salin nama",
+        "copyContent": "Salin isi",
+        "copied": "{value} disalin",
+        "delete": "Hapus"
+      }
     }
   },
   "widget": {
@@ -3067,17 +3108,6 @@
     "loadBalancerDetails": {
       "title": "Detil Load Balancer",
       "pathPattern": "Pola Jalur URL"
-    },
-    "domainDetails": {
-      "title": "Detil Domain",
-      "table": {
-        "type": "Tipe",
-        "name": "Nama",
-        "content": "Konten",
-        "ttl": "TTL",
-        "attributes": "Atribut",
-        "comments": "Komentar"
-      }
     },
     "domainRegistration": {
       "title": "Daftarkan domain baru",
