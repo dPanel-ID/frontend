@@ -2,21 +2,15 @@ import { MessageCircleIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { ApiAi } from '@/shared/api';
-
 import { useAssistantSidepanel } from '../../sidepanel';
 
 /**
- * The floating "Ask dPanel" button. It appears only after the backend
- * confirms the assistant is available for this user; when the assistant is
- * not configured or not deployed the surface stays hidden.
+ * The floating "Ask dPanel" button, fixed at the bottom right of every page.
+ * Sign-in and availability are handled inside the panel it opens.
  */
 export default function AssistantLauncher() {
   const t = useDevetekTranslations();
   const [openSidepanel] = useAssistantSidepanel();
-  const [availability] = ApiAi.Conversations.useGet();
-
-  if (availability.$status !== 'success') return null;
 
   const label = t('sidepanel.aiAssistant.launcher');
 

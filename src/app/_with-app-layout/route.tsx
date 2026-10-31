@@ -1,6 +1,5 @@
 import { Outlet, createFileRoute } from '@tanstack/react-router';
 
-import { AssistantLauncher } from '@/features/ai-assistant';
 import { AppLayout } from '@/features/app-shell';
 import { AuthGuard } from '@/features/auth-toolkit/guard';
 
@@ -15,7 +14,6 @@ function WithAppLayout() {
         <div className="p-3">
           <Outlet />
         </div>
-        <AssistantLauncher />
       </AppLayout>
     </AuthGuard>
   );

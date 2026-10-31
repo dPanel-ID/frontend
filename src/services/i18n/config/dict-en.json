@@ -3377,7 +3377,13 @@
       "inputLabel": "Message to the assistant",
       "inputPlaceholder": "Ask about your servers, apps, domains…",
       "inputHint": "Enter to send, Shift+Enter for a new line",
-      "send": "Send message"
+      "send": "Send message",
+      "signInTitle": "Sign in to use the assistant",
+      "signInBody": "The assistant works with your own dPanel access, so it needs you to be signed in.",
+      "signIn": "Sign in",
+      "unavailableTitle": "The assistant isn't available yet",
+      "unavailableBody": "dPanel could not reach the assistant. It may still be rolling out; check again in a moment.",
+      "checkAgain": "Check again"
     }
   },
   "modal": {

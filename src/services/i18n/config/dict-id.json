@@ -3369,7 +3369,13 @@
       "inputLabel": "Pesan untuk asisten",
       "inputPlaceholder": "Tanyakan tentang server, aplikasi, domain…",
       "inputHint": "Enter untuk mengirim, Shift+Enter untuk baris baru",
-      "send": "Kirim pesan"
+      "send": "Kirim pesan",
+      "signInTitle": "Masuk untuk memakai asisten",
+      "signInBody": "Asisten bekerja dengan akses dPanel Anda sendiri, jadi Anda perlu masuk terlebih dahulu.",
+      "signIn": "Masuk",
+      "unavailableTitle": "Asisten belum tersedia",
+      "unavailableBody": "dPanel tidak dapat menjangkau asisten. Mungkin masih dalam proses rilis; coba periksa lagi sebentar lagi.",
+      "checkAgain": "Periksa lagi"
     }
   },
   "modal": {
