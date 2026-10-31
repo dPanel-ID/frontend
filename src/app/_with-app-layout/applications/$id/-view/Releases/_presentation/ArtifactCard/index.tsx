@@ -11,7 +11,6 @@ import {
   GlobeIcon,
   HammerIcon,
   HashIcon,
-  LoaderCircle,
   TerminalIcon,
   UserCogIcon,
 } from 'lucide-react';
@@ -31,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from '@/shared/presentation/atoms/DropdownMenu';
 import Shimmer from '@/shared/presentation/atoms/Shimmer';
+import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 
 import { ArtifactCardPartials as Partials } from './_Partials';
 import type { ArtifactCardProps } from './types';
@@ -142,16 +142,18 @@ export default function ArtifactCard(props: ArtifactCardProps) {
 
         <div className="flex items-center gap-2">
           {isDeploying && (
-            <span className="inline-flex items-center gap-1 rounded-tr-[7px] rounded-bl-md pl-1.5 pr-3 py-1 text-xs font-semibold bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">
-              <LoaderCircle className="size-3 animate-spin" />
-              {t('common.terms.inProgress')}
-            </span>
+            <StatusPill
+              tone="warning"
+              label={t('common.terms.inProgress')}
+              pulse
+            />
           )}
           {isUsed && !isDeploying && (
-            <span className="inline-flex items-center gap-1 rounded-tr-[7px] rounded-bl-md pl-1.5 pr-3 py-1 text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
-              <CheckIcon className="size-3" />
-              {t('common.terms.used')}
-            </span>
+            <StatusPill
+              tone="info"
+              icon={CheckIcon}
+              label={t('common.terms.used')}
+            />
           )}
           <Partials.ReleaseStatusPill
             releaseStatus={releaseStatus}
