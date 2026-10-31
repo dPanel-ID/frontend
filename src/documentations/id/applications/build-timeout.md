@@ -2,6 +2,7 @@
 title: Batas waktu build
 description: Berapa lama build boleh berjalan, dan cara memberi waktu lebih untuk build yang lambat.
 sidebar_position: 7
+sidebar_icon: timer
 ---
 
 Setiap build dan rilis berjalan sebagai satu pekerjaan: clone, menyiapkan runtime, langkah build, lalu menjalankan layanan. Secara bawaan, pekerjaan itu dihentikan setelah **20 menit**.

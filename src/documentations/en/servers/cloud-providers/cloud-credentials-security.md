@@ -1,7 +1,8 @@
 ---
 title: Cloud credentials and security
 description: What dPanel keeps when you connect a cloud account, what that credential can do, and how to limit, rotate and revoke it.
-sidebar_position: 9
+sidebar_position: 6
+sidebar_icon: shield-check
 ---
 
 To launch servers for you, dPanel holds a credential for your cloud account. This page says plainly what that means, so you can decide how much to trust it and how to limit the damage if something goes wrong.
@@ -75,10 +76,10 @@ Revoking means deleting or deactivating the key at the provider. Here is what ha
 
 ## Removing a cloud account from dPanel
 
-1. Delete every server launched with it. See [Delete a server](./delete-a-server.md).
+1. Delete every server launched with it. See [Delete a server](../delete-a-server.md).
 2. In the sidebar, open **Cloud Projects**.
 3. On the account, open the menu and choose **Disconnect cloud account**, then confirm.
 
 dPanel deletes the stored credential. That does not revoke the key at the provider: delete it there too.
 
-![The Cloud accounts page listing connected provider accounts](../../assets/getting-started/cloud-projects.webp)
+![The Cloud accounts page listing connected provider accounts](../../../assets/getting-started/cloud-projects.webp)

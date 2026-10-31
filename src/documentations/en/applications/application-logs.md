@@ -2,6 +2,7 @@
 title: Application logs
 description: Read what the running service prints, and the requests reaching it through a load balancer.
 sidebar_position: 5
+sidebar_icon: scroll-text
 ---
 
 Open the application and go to **Logs**, or press **View logs** on the Overview tab.

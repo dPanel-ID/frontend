@@ -1,7 +1,8 @@
 ---
 title: AWS
 description: Buat IAM user dengan hak akses minimum, hubungkan ke dPanel, lalu luncurkan server EC2.
-sidebar_position: 5
+sidebar_position: 2
+sidebar_icon: provider:aws
 ---
 
 dPanel meluncurkan instance EC2 di akun AWS Anda. dPanel masuk dengan access key IAM yang Anda buat khusus untuknya.
@@ -10,7 +11,7 @@ dPanel meluncurkan instance EC2 di akun AWS Anda. dPanel masuk dengan access key
 
 - Akun AWS yang sudah diatur penagihannya.
 - Izin di akun itu untuk membuat IAM user dan policy.
-- SSH key di dPanel. Lihat [Sebelum mulai](./before-you-start.md).
+- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
 
 ## 1. Buat IAM user khusus
 
@@ -159,13 +160,13 @@ Panggilan di tabel pertama diambil langsung dari kode dPanel. Beberapa action di
 5. Tempel **Access key** dan **Secret key**.
 6. Tekan **Connect cloud account**.
 
-![Formulir Connect Cloud Account dengan AWS terpilih, kolom Access key dan Secret key masih kosong](../../assets/servers/cloud-account-connect-aws.webp)
+![Formulir Connect Cloud Account dengan AWS terpilih, kolom Access key dan Secret key masih kosong](../../../assets/servers/cloud-account-connect-aws.webp)
 
 dPanel langsung menyimpan akun itu sebagai **Siap**, tanpa menguji kuncinya. Ujian pertamanya ada di formulir peluncuran: kalau **Region** tetap kosong atau menampilkan error, kunci atau policy-nya salah.
 
 ## 3. Kolom AWS di formulir peluncuran
 
-![Formulir peluncuran dengan AWS terpilih](../../assets/servers/create-provider-aws.webp)
+![Formulir peluncuran dengan AWS terpilih](../../../assets/servers/create-provider-aws.webp)
 
 | Kolom              | Yang dipilih                                                                       |
 | ------------------ | ---------------------------------------------------------------------------------- |

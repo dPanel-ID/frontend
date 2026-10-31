@@ -45,12 +45,14 @@ too.
    The page body starts here.
    ```
 
-   | Key                | Required | Meaning                                                            |
-   | ------------------ | -------- | ------------------------------------------------------------------ |
-   | `title`            | yes      | The page heading and its name in the index.                        |
-   | `description`      | yes      | One sentence under the heading.                                    |
-   | `sidebar_position` | no       | Order inside the section, lowest first. Pages without one go last. |
-   | `slug`             | no       | The URL segment. Defaults to the file name. Lowercase kebab-case.  |
+   | Key                | Required | Meaning                                                             |
+   | ------------------ | -------- | ------------------------------------------------------------------- |
+   | `title`            | yes      | The page heading and its name in the index.                         |
+   | `description`      | yes      | One sentence under the heading.                                     |
+   | `sidebar_position` | no       | Order inside the section, lowest first. Pages without one go last.  |
+   | `slug`             | no       | The URL segment. Defaults to the file name. Lowercase kebab-case.   |
+   | `sidebar_label`    | no       | A shorter name for the index. Defaults to `title`.                  |
+   | `sidebar_icon`     | no       | The icon in the index. See [Icons and colours](#icons-and-colours). |
 
    Frontmatter is one `key: value` per line. Quote a value that contains a colon.
 
@@ -68,6 +70,8 @@ Create a folder in both `en/` and `id/`, each with a `_category_.json`:
   "label": "Load balancers",
   "position": 4,
   "description": "Put one public HTTPS address in front of your applications.",
+  "icon": "network",
+  "color": "emerald",
   "app": { "label": "Open load balancers", "href": "/backend/load-balancers" }
 }
 ```
@@ -78,6 +82,48 @@ section's page header that opens that part of the product. The folder name is
 the section's URL segment. The introduction page picks up new sections by
 itself; to give one an icon, add its folder name to `MODULE_ICONS` in
 `src/app/docs/intro/-view/DocsIntroContent.tsx`.
+
+## Group pages inside a section
+
+A folder inside a section with its own `_category_.json` becomes a group that
+folds open in the index, like **Servers → Cloud providers**:
+
+```text
+en/servers/
+├── _category_.json
+├── overview.md
+└── cloud-providers/
+    ├── _category_.json      label, position, description, icon
+    ├── index.md             the group's own page, opened by its name
+    ├── provider-aws.md
+    └── provider-gcp.md
+```
+
+- The group's `position` orders it among the section's pages.
+- `index.md` is optional. Its URL is the folder name
+  (`/docs/servers/cloud-providers`); without one, the group's name opens its
+  first page.
+- Grouped pages keep flat URLs (`/docs/servers/provider-aws`), so moving a page
+  into or out of a group never breaks a link. Slugs must be unique across the
+  whole section.
+- Groups go one level deep. Link to a grouped page with its file path, such as
+  `./cloud-providers/provider-aws.md`.
+
+## Icons and colours
+
+A section's `_category_.json` takes an `icon` and a `color`; a group's takes
+an `icon`; a page takes `sidebar_icon`. The section's colour tints its icon
+tile, every page icon in it and the page being read.
+
+- **Colours:** `sky`, `indigo`, `violet`, `emerald`, `amber`, `teal`, `rose`.
+- **Icons:** [lucide](https://lucide.dev/icons) names from the list in
+  `DOCS_ICON_NAMES` (`src/app/docs/-rules/content.ts`). To use a new one, add
+  its name there and its component in
+  `src/app/docs/-view/-presentation/DocsIcon/index.tsx`.
+- **Cloud providers:** `provider:aws`, `provider:gcp`, `provider:digitalocean`,
+  `provider:idcloudhost` show the provider's logo.
+
+An unknown icon or colour fails the build and names the file.
 
 ## Add an image
 

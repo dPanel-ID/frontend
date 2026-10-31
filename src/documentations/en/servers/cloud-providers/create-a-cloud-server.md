@@ -1,14 +1,15 @@
 ---
 title: Create a cloud server
 description: The launch form, step by step, from provider to a running machine.
-sidebar_position: 3
+sidebar_position: 1
+sidebar_icon: cloud-upload
 ---
 
-This walkthrough uses Google Cloud. The other providers ask the same questions in the same order. The differences are on [Cloud providers](./cloud-providers.md), with a page for each provider.
+This walkthrough uses Google Cloud. The other providers ask the same questions in the same order. The differences are on [Cloud providers](./index.md), with a page for each provider.
 
 ## What you need first
 
-- An SSH key and a cloud account in dPanel. See [Before you start](./before-you-start.md).
+- An SSH key and a cloud account in dPanel. See [Before you start](../before-you-start.md).
 - Enough quota at your provider for one more machine.
 
 ## Open the form
@@ -23,7 +24,7 @@ The form is one page with three numbered steps. The **Review** panel on the righ
 2. **Cloud project**: pick which of your cloud accounts pays for it. **Add project** connects another.
 3. **SSH key**: pick the key dPanel uses to reach the machine. **Create SSH key** makes one here.
 
-![Step 1 of the launch form, with Google Cloud, a cloud project and an SSH key selected](../../assets/servers/create-step1-provider.webp)
+![Step 1 of the launch form, with Google Cloud, a cloud project and an SSH key selected](../../../assets/servers/create-step1-provider.webp)
 
 ## Step 2: Location
 
@@ -38,7 +39,7 @@ The form is one page with three numbered steps. The **Review** panel on the righ
 - **Ubuntu release**: 24.04 LTS is the safe default. LTS means years of security updates.
 - **Disk** is the size in gigabytes.
 
-![Steps 2 and 3 filled in, with the Review panel reading Ready to launch, 9/9](../../assets/servers/create-step2-location-size.webp)
+![Steps 2 and 3 filled in, with the Review panel reading Ready to launch, 9/9](../../../assets/servers/create-step2-location-size.webp)
 
 ## Launch
 
@@ -64,5 +65,5 @@ A red banner says so and offers **See what happened**, with the reason the provi
 :::
 
 :::tip[Your provider bills from now]
-The machine is billed by your provider while it exists, even while setup runs. [Delete it](./delete-a-server.md) when you are done.
+The machine is billed by your provider while it exists, even while setup runs. [Delete it](../delete-a-server.md) when you are done.
 :::

@@ -2,6 +2,7 @@
 title: Environment variables
 description: Give the build and the running service the settings they need, without putting them in the repository.
 sidebar_position: 3
+sidebar_icon: variable
 ---
 
 dPanel keeps two separate lists, so a setting only the build needs never reaches the running service.

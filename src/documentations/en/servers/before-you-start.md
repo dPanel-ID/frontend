@@ -2,6 +2,7 @@
 title: Before you start
 description: The two things dPanel needs once, then reuses for every server.
 sidebar_position: 2
+sidebar_icon: list-checks
 ---
 
 ## An SSH key
@@ -32,7 +33,7 @@ A cloud account is dPanel's link to your account at a cloud provider. It holds t
 2. Press **Connect a cloud account**.
 3. Pick your provider and paste the credentials it gives you.
 
-How to create a least-privilege credential, step by step, is on each provider's page: [AWS](./provider-aws.md), [Google Cloud](./provider-gcp.md), [IDCloudHost](./provider-idcloudhost.md) and [DigitalOcean](./provider-digitalocean.md). Read [Cloud credentials and security](./cloud-credentials-security.md) before you paste a key.
+How to create a least-privilege credential, step by step, is on each provider's page: [AWS](./cloud-providers/provider-aws.md), [Google Cloud](./cloud-providers/provider-gcp.md), [IDCloudHost](./cloud-providers/provider-idcloudhost.md) and [DigitalOcean](./cloud-providers/provider-digitalocean.md). Read [Cloud credentials and security](./cloud-providers/cloud-credentials-security.md) before you paste a key.
 
 :::info[Who pays for the machine]
 The machine is created inside your own cloud account, so your provider bills you directly. dPanel does not resell machines.
@@ -42,4 +43,4 @@ The machine is created inside your own cloud account, so your provider bills you
 
 ## What happens next
 
-Go to [Create a cloud server](./create-a-cloud-server.md). More on keys and accounts, including sharing them with a team, is in [SSH keys and cloud accounts](../getting-started/ssh-keys-and-cloud-projects.md).
+Go to [Create a cloud server](./cloud-providers/create-a-cloud-server.md). More on keys and accounts, including sharing them with a team, is in [SSH keys and cloud accounts](../getting-started/ssh-keys-and-cloud-projects.md).

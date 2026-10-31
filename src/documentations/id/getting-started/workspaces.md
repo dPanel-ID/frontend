@@ -2,6 +2,7 @@
 title: Ruang kerja
 description: Ruang kerja personal, ruang kerja tim, dan cara berpindah di antaranya.
 sidebar_position: 2
+sidebar_icon: building-2
 ---
 
 Semua yang ada di dPanel berada di dalam sebuah ruang kerja: server, aplikasi, load balancer, domain, akun cloud, dan kunci SSH. Ruang kerja adalah batas akses. Anda hanya melihat isi ruang kerja yang sedang aktif.

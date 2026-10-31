@@ -2,6 +2,7 @@
 title: Load balancers
 description: Put one public HTTPS address in front of an application, from domain to live site.
 sidebar_position: 1
+sidebar_icon: network
 ---
 
 A load balancer is the front door. It takes the traffic arriving at your domain, handles the HTTPS certificate, and forwards each request to an application or to a port on a server.

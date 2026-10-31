@@ -2,6 +2,7 @@
 title: What a server is here
 description: One Linux machine that dPanel looks after for you, and the two ways to add one.
 sidebar_position: 1
+sidebar_icon: server
 ---
 
 A server is one Linux machine that dPanel looks after for you. It can be a machine dPanel launched in your cloud account, or one you already run and connect yourself.
@@ -37,5 +38,5 @@ Either way, dPanel creates the `dpanel` user, installs its agent and starts moni
 ## Where to go next
 
 - New to dPanel? Start with [Before you start](./before-you-start.md).
-- Launching a machine: [Create a cloud server](./create-a-cloud-server.md).
+- Launching a machine: [Create a cloud server](./cloud-providers/create-a-cloud-server.md).
 - Bringing your own: [Connect your own server](./connect-your-own-server.md).

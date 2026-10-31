@@ -2,6 +2,7 @@
 title: Domain dan DNS
 description: Biarkan dPanel mengelola record DNS domain milik Anda, lewat penyedia DNS yang sudah Anda pakai.
 sidebar_position: 2
+sidebar_icon: globe
 ---
 
 dPanel tidak menjual atau memindahkan domain. Anda tetap membeli domain di tempat biasa. Yang dibutuhkan dPanel hanyalah akses ke penyedia yang menjawab DNS domain itu, agar dPanel bisa membuat record yang mengarahkan sebuah nama ke server Anda.

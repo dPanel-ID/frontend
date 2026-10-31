@@ -1,7 +1,9 @@
 ---
 title: Connect your own server
 description: Bring a VPS, a bare-metal machine or a home lab box that you already run.
-sidebar_position: 10
+sidebar_position: 3
+sidebar_icon: terminal
+sidebar_label: Manual SSH
 ---
 
 dPanel can look after a machine you already have. It signs in over SSH with one of your dPanel SSH keys, then installs its agent.

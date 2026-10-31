@@ -2,6 +2,7 @@
 title: Mengunduh log
 description: Simpan satu halaman baris log, atau seluruh rentang waktu, sebagai file .log.
 sidebar_position: 3
+sidebar_icon: download
 ---
 
 Unduh log saat Anda perlu mencarinya dengan alat sendiri, atau melampirkannya ke permintaan bantuan.

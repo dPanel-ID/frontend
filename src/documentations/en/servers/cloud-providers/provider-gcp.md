@@ -1,7 +1,8 @@
 ---
 title: Google Cloud
 description: Create a least-privilege service account in a dedicated project, connect it to dPanel, and launch a Compute Engine server.
-sidebar_position: 6
+sidebar_position: 3
+sidebar_icon: provider:gcp
 ---
 
 dPanel launches Compute Engine VMs in one of your Google Cloud projects. It signs in with a service account JSON key that you create for it.
@@ -11,7 +12,7 @@ dPanel launches Compute Engine VMs in one of your Google Cloud projects. It sign
 - A Google Cloud project with billing linked. A new project just for dPanel is best.
 - The **Compute Engine API** enabled in that project.
 - Permission to create service accounts, custom roles and keys in that project.
-- An SSH key in dPanel. See [Before you start](./before-you-start.md).
+- An SSH key in dPanel. See [Before you start](../before-you-start.md).
 
 ## 1. Create a dedicated project and service account
 
@@ -78,13 +79,13 @@ The discovery permissions come from dPanel's own API calls. The rest come from t
 5. Upload `dpanel-key.json`. dPanel shows the **Project ID** and **Client Email** it found, and masks the **Private Key**.
 6. Press **Connect cloud account**.
 
-![The Connect Cloud Account form with Google Cloud selected, waiting for a service account JSON upload](../../assets/servers/cloud-account-connect-gcp.webp)
+![The Connect Cloud Account form with Google Cloud selected, waiting for a service account JSON upload](../../../assets/servers/cloud-account-connect-gcp.webp)
 
 dPanel saves the account as **Ready** without testing it. The launch form is the first real test: if **Region** stays empty or errors, check the key and the role.
 
 ## 3. Google Cloud fields in the launch form
 
-![Step 1 of the launch form with Google Cloud selected](../../assets/servers/create-step1-provider.webp)
+![Step 1 of the launch form with Google Cloud selected](../../../assets/servers/create-step1-provider.webp)
 
 | Field              | What to pick                                                                  |
 | ------------------ | ----------------------------------------------------------------------------- |
@@ -97,7 +98,7 @@ dPanel saves the account as **Ready** without testing it. The launch form is the
 
 There is no **Access** step for Google Cloud. dPanel signs in as `ubuntu`.
 
-![Steps 2 and 3 filled in for Google Cloud](../../assets/servers/create-step2-location-size.webp)
+![Steps 2 and 3 filled in for Google Cloud](../../../assets/servers/create-step2-location-size.webp)
 
 ## 4. Launch
 

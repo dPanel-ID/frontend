@@ -51,7 +51,7 @@ function DocsIntroPage() {
         tabIndex={-1}
         className="min-h-svh bg-background text-foreground"
       >
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex w-full flex-col gap-4 p-3 sm:p-4 lg:p-6">
           <DocsIntroContent locale={locale} sections={sections} />
           <DocsFooter />
         </div>

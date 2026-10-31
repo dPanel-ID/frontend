@@ -2,6 +2,7 @@
 title: Teams
 description: Create a team workspace, rename it, and delete it when it is no longer needed.
 sidebar_position: 1
+sidebar_icon: users
 ---
 
 A team is a shared workspace. Servers, applications, load balancers, domains, cloud accounts and SSH keys created in it belong to the team, and every member can reach them according to their role.

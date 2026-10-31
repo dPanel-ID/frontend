@@ -2,6 +2,7 @@
 title: Members and roles
 description: Add people to a team, give each the access they need, and move resources between workspaces.
 sidebar_position: 2
+sidebar_icon: user-cog
 ---
 
 Each member of a team has one or more roles. A role decides what that person can see and change in the team's workspace.

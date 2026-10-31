@@ -2,6 +2,7 @@
 title: Membuat aplikasi
 description: Formulir lima langkah, dari repositori GitHub sampai layanan yang berjalan.
 sidebar_position: 2
+sidebar_icon: square-plus
 ---
 
 Panduan ini merilis [dPanel-ID/go-example](https://github.com/dPanel-ID/go-example), layanan web Go yang kecil. Repositori lain caranya sama. Prosesnya sekitar 5 sampai 15 menit, sebagian besar untuk build pertama.

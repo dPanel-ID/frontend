@@ -2,6 +2,7 @@
 title: SSH keys and cloud accounts
 description: The two things dPanel needs before it can launch or connect a server.
 sidebar_position: 5
+sidebar_icon: key-round
 ---
 
 Before your first server, set up two things. Both live under **Backend** in the sidebar, and both are reused for every server after that.
@@ -30,8 +31,8 @@ The page is called **Cloud accounts**. In the sidebar it is **Cloud Projects**.
 
 1. In the sidebar, open **Cloud Projects**.
 2. Press **Connect a cloud account**.
-3. Pick your provider and paste the credential it gives you. Each provider's page shows how to create one with the least access: [AWS](../servers/provider-aws.md), [Google Cloud](../servers/provider-gcp.md), [IDCloudHost](../servers/provider-idcloudhost.md), [DigitalOcean](../servers/provider-digitalocean.md).
-4. Save. dPanel stores the key encrypted and never shows it again. See [Cloud credentials and security](../servers/cloud-credentials-security.md).
+3. Pick your provider and paste the credential it gives you. Each provider's page shows how to create one with the least access: [AWS](../servers/cloud-providers/provider-aws.md), [Google Cloud](../servers/cloud-providers/provider-gcp.md), [IDCloudHost](../servers/cloud-providers/provider-idcloudhost.md), [DigitalOcean](../servers/cloud-providers/provider-digitalocean.md).
+4. Save. dPanel stores the key encrypted and never shows it again. See [Cloud credentials and security](../servers/cloud-providers/cloud-credentials-security.md).
 
 dPanel then reads which regions, sizes and images your account may launch, so the create-server form only offers real options.
 
@@ -57,4 +58,4 @@ dPanel does not resell servers. Machines are created inside your own provider ac
 
 ## What happens next
 
-Launch or connect your first server. [Before you start](../servers/before-you-start.md) explains key types and provider credentials in more detail, and [Create a cloud server](../servers/create-a-cloud-server.md) walks through the form.
+Launch or connect your first server. [Before you start](../servers/before-you-start.md) explains key types and provider credentials in more detail, and [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md) walks through the form.

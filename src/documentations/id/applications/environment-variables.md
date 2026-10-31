@@ -2,6 +2,7 @@
 title: Variabel environment
 description: Beri build dan layanan yang berjalan pengaturan yang mereka butuhkan, tanpa menaruhnya di repositori.
 sidebar_position: 3
+sidebar_icon: variable
 ---
 
 dPanel menyimpan dua daftar terpisah, jadi pengaturan yang hanya dibutuhkan build tidak pernah sampai ke layanan yang berjalan.

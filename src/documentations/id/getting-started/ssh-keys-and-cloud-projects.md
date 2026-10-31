@@ -2,6 +2,7 @@
 title: Kunci SSH dan akun cloud
 description: Dua hal yang dibutuhkan dPanel sebelum bisa membuat atau menghubungkan server.
 sidebar_position: 5
+sidebar_icon: key-round
 ---
 
 Sebelum server pertama, siapkan dua hal. Keduanya ada di bawah **Backend** di sidebar, dan dipakai ulang untuk semua server berikutnya.
@@ -30,8 +31,8 @@ Judul halamannya **Akun cloud**. Di sidebar namanya **Proyek Cloud**.
 
 1. Di sidebar, buka **Proyek Cloud**.
 2. Tekan **Hubungkan akun cloud**.
-3. Pilih penyedia Anda dan tempel kredensial yang diberikan penyedia itu. Cara membuatnya dengan akses seminimal mungkin ada di halaman tiap penyedia: [AWS](../servers/provider-aws.md), [Google Cloud](../servers/provider-gcp.md), [IDCloudHost](../servers/provider-idcloudhost.md), [DigitalOcean](../servers/provider-digitalocean.md).
-4. Simpan. dPanel menyimpan kunci itu terenkripsi dan tidak pernah menampilkannya lagi. Lihat [Kredensial cloud dan keamanan](../servers/cloud-credentials-security.md).
+3. Pilih penyedia Anda dan tempel kredensial yang diberikan penyedia itu. Cara membuatnya dengan akses seminimal mungkin ada di halaman tiap penyedia: [AWS](../servers/cloud-providers/provider-aws.md), [Google Cloud](../servers/cloud-providers/provider-gcp.md), [IDCloudHost](../servers/cloud-providers/provider-idcloudhost.md), [DigitalOcean](../servers/cloud-providers/provider-digitalocean.md).
+4. Simpan. dPanel menyimpan kunci itu terenkripsi dan tidak pernah menampilkannya lagi. Lihat [Kredensial cloud dan keamanan](../servers/cloud-providers/cloud-credentials-security.md).
 
 Setelah itu dPanel membaca region, ukuran mesin, dan image yang boleh dipakai akun Anda, sehingga formulir pembuatan server hanya menawarkan pilihan yang benar-benar tersedia.
 
@@ -57,4 +58,4 @@ dPanel tidak menjual ulang server. Mesin dibuat di dalam akun penyedia milik And
 
 ## Langkah berikutnya
 
-Buat atau hubungkan server pertama Anda. [Sebelum memulai](../servers/before-you-start.md) menjelaskan jenis kunci dan kredensial penyedia lebih rinci, dan [Membuat server cloud](../servers/create-a-cloud-server.md) memandu pengisian formulirnya.
+Buat atau hubungkan server pertama Anda. [Sebelum memulai](../servers/before-you-start.md) menjelaskan jenis kunci dan kredensial penyedia lebih rinci, dan [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md) memandu pengisian formulirnya.

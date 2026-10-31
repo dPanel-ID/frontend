@@ -2,6 +2,7 @@
 title: Anggota dan peran
 description: Tambahkan orang ke tim, beri akses sesuai kebutuhannya, dan pindahkan resource antar ruang kerja.
 sidebar_position: 2
+sidebar_icon: user-cog
 ---
 
 Setiap anggota tim punya satu peran atau lebih. Peran menentukan apa yang bisa dilihat dan diubah orang itu di ruang kerja tim.

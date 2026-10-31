@@ -2,6 +2,7 @@
 title: Common problems
 description: What to do when a server, an application, GitHub or the logs do not behave as expected.
 sidebar_position: 1
+sidebar_icon: circle-help
 ---
 
 Each answer starts with what you see, then what to do.
@@ -10,9 +11,9 @@ Each answer starts with what you see, then what to do.
 
 ### The server page says "Setup did not finish"
 
-The red banner means the provider or the setup stopped with an error. Press **See what happened** to read the reason. The usual causes are a cloud account without enough quota, and credentials that have expired or lack a permission. Each provider's page lists the quotas and permissions to check: see [Cloud providers](../servers/cloud-providers.md).
+The red banner means the provider or the setup stopped with an error. Press **See what happened** to read the reason. The usual causes are a cloud account without enough quota, and credentials that have expired or lack a permission. Each provider's page lists the quotas and permissions to check: see [Cloud providers](../servers/cloud-providers/index.md).
 
-Fix the cause at your provider, then open the server's **Settings** tab and use **Reinstall** under **Setup** to run setup again. See [Create a cloud server](../servers/create-a-cloud-server.md).
+Fix the cause at your provider, then open the server's **Settings** tab and use **Reinstall** under **Setup** to run setup again. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
 
 ### I cannot delete a server
 

@@ -1,7 +1,8 @@
 ---
 title: IDCloudHost
 description: Create an IDCloudHost API key, connect it to dPanel, and launch a server in Indonesia.
-sidebar_position: 7
+sidebar_position: 5
+sidebar_icon: provider:idcloudhost
 ---
 
 dPanel launches cloud VMs in your IDCloudHost account. It signs in with an API key from your IDCloudHost profile.
@@ -9,7 +10,7 @@ dPanel launches cloud VMs in your IDCloudHost account. It signs in with an API k
 ## What you need first
 
 - An IDCloudHost account with a billing account that has credit or a payment method.
-- An SSH key in dPanel. See [Before you start](./before-you-start.md).
+- An SSH key in dPanel. See [Before you start](../before-you-start.md).
 
 ## 1. Create the API key
 
@@ -44,13 +45,13 @@ dPanel's code uses a single API key, sent in the `apikey` header. We could not c
 5. Paste the key into **API key**. The panel links to the IDCloudHost API page if you still need one.
 6. Press **Connect cloud account**.
 
-![The Connect Cloud Account form with IDCloudHost selected and the API key field empty](../../assets/servers/cloud-account-connect-idcloudhost.webp)
+![The Connect Cloud Account form with IDCloudHost selected and the API key field empty](../../../assets/servers/cloud-account-connect-idcloudhost.webp)
 
 dPanel saves the account as **Ready** without testing it. The launch form is the first real test: if **Region** stays empty or errors, check the key.
 
 ## 3. IDCloudHost fields in the launch form
 
-![The launch form with IDCloudHost selected](../../assets/servers/create-provider-idcloudhost.webp)
+![The launch form with IDCloudHost selected](../../../assets/servers/create-provider-idcloudhost.webp)
 
 | Field               | What to pick                                                                                        |
 | ------------------- | --------------------------------------------------------------------------------------------------- |

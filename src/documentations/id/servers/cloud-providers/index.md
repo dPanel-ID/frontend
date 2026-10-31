@@ -1,7 +1,7 @@
 ---
 title: Penyedia cloud
 description: Empat penyedia tempat dPanel meluncurkan server, dan apa yang berbeda di antara mereka.
-sidebar_position: 4
+sidebar_position: 0
 ---
 
 dPanel meluncurkan server di **AWS**, **Google Cloud**, **IDCloudHost**, dan **DigitalOcean**. Tiap penyedia punya halaman sendiri: cara membuat kredensial, cara menghubungkannya, kolom di formulir peluncuran, dan jebakan khas penyedia itu.
@@ -24,7 +24,7 @@ Formulir peluncuran juga menampilkan **Biznet Gio**. Langkahnya sama dan tidak d
 
 ## Sebelum memilih penyedia
 
-- SSH key di dPanel. Lihat [Sebelum mulai](./before-you-start.md).
+- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
 - Kredensial yang hanya bisa melakukan apa yang dibutuhkan dPanel. Batas minimumnya ada di halaman tiap penyedia.
 - Baca [Kredensial cloud dan keamanan](./cloud-credentials-security.md) sekali. Di sana dijelaskan apa yang disimpan dPanel dan apa yang terjadi kalau kunci dicabut.
 

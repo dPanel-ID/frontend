@@ -2,6 +2,7 @@
 title: Rentang waktu dan pembaruan
 description: Pilih seberapa jauh ke belakang, telusuri baris yang lebih lama, dan jaga tampilan tetap terbaru.
 sidebar_position: 2
+sidebar_icon: clock
 ---
 
 Kontrol ini ada di log runtime aplikasi dan log load balancer.

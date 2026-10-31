@@ -1,7 +1,8 @@
 ---
 title: AWS
 description: Create a least-privilege IAM user, connect it to dPanel, and launch an EC2 server.
-sidebar_position: 5
+sidebar_position: 2
+sidebar_icon: provider:aws
 ---
 
 dPanel launches EC2 instances in your AWS account. It signs in with an IAM access key that you create for it.
@@ -10,7 +11,7 @@ dPanel launches EC2 instances in your AWS account. It signs in with an IAM acces
 
 - An AWS account with billing set up.
 - Permission in that account to create IAM users and policies.
-- An SSH key in dPanel. See [Before you start](./before-you-start.md).
+- An SSH key in dPanel. See [Before you start](../before-you-start.md).
 
 ## 1. Create a dedicated IAM user
 
@@ -159,13 +160,13 @@ The calls in the first table come straight from dPanel's code. A few actions in 
 5. Paste **Access key** and **Secret key**.
 6. Press **Connect cloud account**.
 
-![The Connect Cloud Account form with AWS selected and the Access key and Secret key fields empty](../../assets/servers/cloud-account-connect-aws.webp)
+![The Connect Cloud Account form with AWS selected and the Access key and Secret key fields empty](../../../assets/servers/cloud-account-connect-aws.webp)
 
 dPanel saves the account as **Ready** straight away. It does not test the key on save. The first real test is the launch form: if **Region** stays empty or shows an error, the key or its policy is wrong.
 
 ## 3. AWS fields in the launch form
 
-![The launch form with AWS selected](../../assets/servers/create-provider-aws.webp)
+![The launch form with AWS selected](../../../assets/servers/create-provider-aws.webp)
 
 | Field              | What to pick                                                                    |
 | ------------------ | ------------------------------------------------------------------------------- |

@@ -2,6 +2,7 @@
 title: Load balancer
 description: Pasang satu alamat HTTPS publik di depan aplikasi, dari domain sampai situs berjalan.
 sidebar_position: 1
+sidebar_icon: network
 ---
 
 Load balancer adalah pintu depan. Ia menerima lalu lintas yang datang ke domain Anda, mengurus sertifikat HTTPS, lalu meneruskan setiap request ke aplikasi atau ke port di sebuah server.

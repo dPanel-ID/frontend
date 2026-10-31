@@ -5,5 +5,7 @@
   "app": {
     "label": "Open teams",
     "href": "/teams"
-  }
+  },
+  "icon": "users",
+  "color": "amber"
 }

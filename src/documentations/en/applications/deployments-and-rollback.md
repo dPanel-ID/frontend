@@ -2,6 +2,7 @@
 title: Deployments and rollback
 description: Build the latest commit, follow it onto the server, and go back to an earlier build when you need to.
 sidebar_position: 4
+sidebar_icon: history
 ---
 
 Two words matter here. A **build** is your code packaged once, from one commit. A **release** is that build placed on one server.
