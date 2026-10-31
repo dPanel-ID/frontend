@@ -1,9 +1,11 @@
 import IconBiznetGio from '@/shared/assets/biznetgio.png';
+import IconAlibabaCloud from '@/shared/assets/ico-alibabacloud.svg';
 import IconAWS from '@/shared/assets/ico-aws.svg';
 import IconDigitalOcean from '@/shared/assets/ico-do.svg';
 import IconGoogleCloud from '@/shared/assets/ico-gcloud.png';
 import IconIDCloudHost from '@/shared/assets/ico-idcloudhost.svg';
 import IconProxmox from '@/shared/assets/ico-proxmox.png';
+import IconTencentCloud from '@/shared/assets/ico-tencentcloud.svg';
 import { cn } from '@/shared/libs/tailwind/cn';
 
 const PROVIDER_LOGOS: Record<string, { src: string; label: string }> = {
@@ -20,6 +22,12 @@ const PROVIDER_LOGOS: Record<string, { src: string; label: string }> = {
   biznetgioneolite: { src: IconBiznetGio, label: 'Biznet Gio' },
   neolite: { src: IconBiznetGio, label: 'Biznet Gio' },
   proxmox: { src: IconProxmox, label: 'Proxmox VE' },
+  alibabacloud: { src: IconAlibabaCloud, label: 'Alibaba Cloud' },
+  alicloud: { src: IconAlibabaCloud, label: 'Alibaba Cloud' },
+  aliyun: { src: IconAlibabaCloud, label: 'Alibaba Cloud' },
+  tencent: { src: IconTencentCloud, label: 'Tencent Cloud' },
+  tencentcloud: { src: IconTencentCloud, label: 'Tencent Cloud' },
+  qcloud: { src: IconTencentCloud, label: 'Tencent Cloud' },
 };
 
 /** Normalizes provider IDs such as "IDCloudHost" or "biznet-gio" for lookup. */

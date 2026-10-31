@@ -31,7 +31,7 @@ Judul halamannya **Akun cloud**. Di sidebar namanya **Proyek Cloud**.
 
 1. Di sidebar, buka **Proyek Cloud**.
 2. Tekan **Hubungkan akun cloud**.
-3. Pilih penyedia Anda dan tempel kredensial yang diberikan penyedia itu. Cara membuatnya dengan akses seminimal mungkin ada di halaman tiap penyedia: [AWS](../servers/cloud-providers/provider-aws.md), [Google Cloud](../servers/cloud-providers/provider-gcp.md), [IDCloudHost](../servers/cloud-providers/provider-idcloudhost.md), [DigitalOcean](../servers/cloud-providers/provider-digitalocean.md).
+3. Pilih penyedia Anda dan tempel kredensial yang diberikan penyedia itu. Cara membuatnya dengan akses seminimal mungkin ada di halaman tiap penyedia: [AWS](../servers/cloud-providers/provider-aws.md), [Google Cloud](../servers/cloud-providers/provider-gcp.md), [IDCloudHost](../servers/cloud-providers/provider-idcloudhost.md), [DigitalOcean](../servers/cloud-providers/provider-digitalocean.md), [Alibaba Cloud](../servers/cloud-providers/provider-alibabacloud.md), [Tencent Cloud](../servers/cloud-providers/provider-tencent.md).
 4. Simpan. dPanel menyimpan kunci itu terenkripsi dan tidak pernah menampilkannya lagi. Lihat [Kredensial cloud dan keamanan](../servers/cloud-providers/cloud-credentials-security.md).
 
 Setelah itu dPanel membaca region, ukuran mesin, dan image yang boleh dipakai akun Anda, sehingga formulir pembuatan server hanya menawarkan pilihan yang benar-benar tersedia.

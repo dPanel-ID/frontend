@@ -1,24 +1,24 @@
 ---
 title: Cloud providers
-description: The four providers dPanel launches servers on, and what differs between them.
+description: The six providers dPanel launches servers on, and what differs between them.
 sidebar_position: 0
 ---
 
-dPanel launches servers on **AWS**, **Google Cloud**, **IDCloudHost** and **DigitalOcean**. Each one has its own page: how to create the credential, how to connect it, the launch-form fields, and the provider's gotchas.
+dPanel launches servers on **AWS**, **Google Cloud**, **IDCloudHost**, **DigitalOcean**, **Alibaba Cloud** and **Tencent Cloud**. Each one has its own page: how to create the credential, how to connect it, the launch-form fields, and the provider's gotchas.
 
 Whichever you pick, the finished server is the same: same agent, same tabs, same modules.
 
 ## At a glance
 
-|                        | [AWS](./provider-aws.md)                   | [Google Cloud](./provider-gcp.md)         | [IDCloudHost](./provider-idcloudhost.md) | [DigitalOcean](./provider-digitalocean.md) |
-| ---------------------- | ------------------------------------------ | ----------------------------------------- | ---------------------------------------- | ------------------------------------------ |
-| Credential             | Access key + secret key                    | Service account JSON key                  | API key                                  | API token                                  |
-| Location               | Region                                     | Region, then zone                         | Region, such as `jkt01`                  | Region                                     |
-| Size                   | **Instance Type**                          | **Machine Type**                          | **CPU Cores** and **RAM**                | **Droplet Size**                           |
-| Network                | `dpanel-network`, created on first use     | `dpanel-network`, created on first use    | Chosen for you per region                | Provider default, or a VPC you pick        |
-| Firewall               | Security group per server, TCP 22, 80, 443 | Firewall rule per server, TCP 22, 80, 443 | None created by dPanel                   | None created by dPanel                     |
-| Login user             | `ubuntu`                                   | `ubuntu`                                  | **Default User**, `dpanel` by default    | **Default User**, `dpanel` by default      |
-| Extra step in the form | None                                       | None                                      | **Access**: user and bootstrap password  | **Access**: user                           |
+|                        | [AWS](./provider-aws.md)                   | [Google Cloud](./provider-gcp.md)         | [IDCloudHost](./provider-idcloudhost.md) | [DigitalOcean](./provider-digitalocean.md) | [Alibaba Cloud](./provider-alibabacloud.md) | [Tencent Cloud](./provider-tencent.md)     |
+| ---------------------- | ------------------------------------------ | ----------------------------------------- | ---------------------------------------- | ------------------------------------------ | ------------------------------------------- | ------------------------------------------ |
+| Credential             | Access key + secret key                    | Service account JSON key                  | API key                                  | API token                                  | AccessKey ID + secret                       | SecretId + SecretKey                       |
+| Location               | Region                                     | Region, then zone                         | Region, such as `jkt01`                  | Region                                     | Region, then zone                           | Region, then zone                          |
+| Size                   | **Instance Type**                          | **Machine Type**                          | **CPU Cores** and **RAM**                | **Droplet Size**                           | **Instance Type** and **System disk**       | **Instance Type**                          |
+| Network                | `dpanel-network`, created on first use     | `dpanel-network`, created on first use    | Chosen for you per region                | Provider default, or a VPC you pick        | `dpanel-network`, created on first use      | `dpanel-network`, created on first use     |
+| Firewall               | Security group per server, TCP 22, 80, 443 | Firewall rule per server, TCP 22, 80, 443 | None created by dPanel                   | None created by dPanel                     | Security group per server, TCP 22, 80, 443  | Security group per server, TCP 22, 80, 443 |
+| Login user             | `ubuntu`                                   | `ubuntu`                                  | **Default User**, `dpanel` by default    | **Default User**, `dpanel` by default      | `root`                                      | `ubuntu`                                   |
+| Extra step in the form | None                                       | None                                      | **Access**: user and bootstrap password  | **Access**: user                           | None                                        | None                                       |
 
 The launch form also lists **Biznet Gio**. It follows the same steps and is not covered in detail here.
 

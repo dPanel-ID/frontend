@@ -1,7 +1,7 @@
 ---
 title: Kredensial cloud dan keamanan
 description: Apa yang disimpan dPanel saat Anda menghubungkan akun cloud, apa yang bisa dilakukan kredensial itu, dan cara membatasi, merotasi, serta mencabutnya.
-sidebar_position: 6
+sidebar_position: 8
 sidebar_icon: shield-check
 ---
 
@@ -32,14 +32,16 @@ Enkripsinya AES mode CFB, dengan kunci simetris yang disimpan di samping aplikas
 
 ## Apa yang bisa dilakukan tiap kredensial
 
-| Penyedia     | Dengan batas minimum yang kami sarankan                                                                                     | Dengan kredensial yang luas                              |
-| ------------ | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| AWS          | Membuat dan menghapus instance EC2 yang diberinya tag, beserta jaringan dan security group-nya, di region yang Anda izinkan | Semua yang bisa dilakukan IAM user atau root user Anda   |
-| Google Cloud | Membuat dan menghapus VM, disk, dan aturan firewall di satu project                                                         | Semua hal di setiap project yang bisa dijangkau akun itu |
-| IDCloudHost  | Semua yang bisa dilakukan user IDCloudHost Anda; kunci bercakupan belum bisa kami pastikan (perlu dicek)                    | Sama                                                     |
-| DigitalOcean | Membuat, membaca, dan menghapus Droplet dan SSH key; membaca region, ukuran, image, dan VPC                                 | Semua hal di team itu                                    |
+| Penyedia      | Dengan batas minimum yang kami sarankan                                                                                     | Dengan kredensial yang luas                              |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| AWS           | Membuat dan menghapus instance EC2 yang diberinya tag, beserta jaringan dan security group-nya, di region yang Anda izinkan | Semua yang bisa dilakukan IAM user atau root user Anda   |
+| Google Cloud  | Membuat dan menghapus VM, disk, dan aturan firewall di satu project                                                         | Semua hal di setiap project yang bisa dijangkau akun itu |
+| IDCloudHost   | Semua yang bisa dilakukan user IDCloudHost Anda; kunci bercakupan belum bisa kami pastikan (perlu dicek)                    | Sama                                                     |
+| DigitalOcean  | Membuat, membaca, dan menghapus Droplet dan SSH key; membaca region, ukuran, image, dan VPC                                 | Semua hal di team itu                                    |
+| Alibaba Cloud | Membuat dan menghapus instance ECS, VPC, vSwitch, security group, dan key pair di akun itu                                  | Semua hal di akun Alibaba Cloud itu                      |
+| Tencent Cloud | Membuat, membayar, dan menghapus instance CVM, VPC, subnet, security group, dan key pair di akun itu                        | Semua hal di akun Tencent Cloud itu                      |
 
-Batas minimum tiap penyedia ada di halamannya: [AWS](./provider-aws.md#policy-iam-minimum), [Google Cloud](./provider-gcp.md#izin-minimum), [IDCloudHost](./provider-idcloudhost.md#1-buat-api-key), [DigitalOcean](./provider-digitalocean.md#1-buat-token-dengan-cakupan-khusus).
+Batas minimum tiap penyedia ada di halamannya: [AWS](./provider-aws.md#policy-iam-minimum), [Google Cloud](./provider-gcp.md#izin-minimum), [IDCloudHost](./provider-idcloudhost.md#1-buat-api-key), [DigitalOcean](./provider-digitalocean.md#1-buat-token-dengan-cakupan-khusus), [Alibaba Cloud](./provider-alibabacloud.md#1-buat-ram-user-untuk-dpanel), [Tencent Cloud](./provider-tencent.md#1-buat-sub-user-cam-untuk-dpanel).
 
 ## Hak akses minimum, dalam praktik
 
@@ -75,7 +77,7 @@ dPanel memeriksa kunci baru sebelum menyimpannya:
 Kunci baru disimpan terenkripsi seperti yang lama, dan tidak pernah ditampilkan lagi. Di ruang kerja tim, memperbarui kredensial membutuhkan level **admin** untuk proyek cloud: Owner, Admin, DevOps, atau role admin proyek cloud.
 
 :::warning[Pakai kunci untuk akun yang sama]
-Di AWS, DigitalOcean, dan IDCloudHost, dPanel tidak bisa memastikan kunci baru berasal dari akun yang sama dengan kunci lama. Pastikan sendiri. Kalau tidak, dPanel tidak bisa menghapus server yang diluncurkan dengan kunci lama.
+Di AWS, DigitalOcean, IDCloudHost, Alibaba Cloud, dan Tencent Cloud, dPanel tidak bisa memastikan kunci baru berasal dari akun yang sama dengan kunci lama. Pastikan sendiri. Kalau tidak, dPanel tidak bisa menghapus server yang diluncurkan dengan kunci lama.
 :::
 
 Kalau kunci lama sudah bocor, jangan menunggu: perbarui kredensialnya dengan kunci baru sekarang, lalu cabut kunci lama di penyedia.

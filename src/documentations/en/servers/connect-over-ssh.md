@@ -11,11 +11,12 @@ Most of the time you won't need a terminal: the tabs cover services, users, file
 
 You install nothing on your computer, and you don't need the private key. The session belongs to the login user dPanel set up. The server header shows it, for example `dpanel@203.0.113.10:22`.
 
-| Provider                  | Login user                     |
-| ------------------------- | ------------------------------ |
-| Google Cloud, AWS         | `ubuntu`                       |
-| DigitalOcean, IDCloudHost | `dpanel`                       |
-| A server you connected    | The **Linux user** you entered |
+| Provider                         | Login user                     |
+| -------------------------------- | ------------------------------ |
+| Google Cloud, AWS, Tencent Cloud | `ubuntu`                       |
+| Alibaba Cloud                    | `root`                         |
+| DigitalOcean, IDCloudHost        | `dpanel`                       |
+| A server you connected           | The **Linux user** you entered |
 
 ## From your own machine
 

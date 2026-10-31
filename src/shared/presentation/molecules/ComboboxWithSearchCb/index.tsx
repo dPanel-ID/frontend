@@ -20,6 +20,7 @@ export function ComboboxWithSearchCb<V>(props: ComboboxProps<V>) {
     items,
     placeholder,
     value,
+    searchPlaceholder,
     searchValue,
     onChange,
     onSearchEnter,
@@ -66,6 +67,7 @@ export function ComboboxWithSearchCb<V>(props: ComboboxProps<V>) {
         <div className="p-1 w-full flex flex-col gap-1.5 max-h-80 overflow-y-auto">
           <SearchInput
             defaultValue={searchValue || ''}
+            placeholder={searchPlaceholder}
             onEnter={onSearchEnter}
           />
 
@@ -109,6 +111,8 @@ interface ComboboxProps<V> {
   items?: Array<ComboboxItem<V>>;
   placeholder?: string;
   value?: V;
+  /** Hint inside the search box; defaults to "Search". */
+  searchPlaceholder?: string;
   searchValue?: string;
   onChange?: (value: V) => void;
   onSearchEnter?: (searchQuery: string) => void;

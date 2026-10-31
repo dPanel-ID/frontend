@@ -152,7 +152,9 @@
       "quic": "QUIC",
       "ssltls": "SSL/TLS",
       "brotli": "Brotli",
-      "aws": "AWS"
+      "aws": "AWS",
+      "alibabaCloud": "Alibaba Cloud",
+      "tencentCloud": "Tencent Cloud"
     },
     "dataPanel": {
       "refresh": "Refresh",

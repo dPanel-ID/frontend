@@ -11,11 +11,12 @@ Biasanya Anda tidak butuh terminal: tab-tab di halaman server sudah mencakup lay
 
 Tidak ada yang perlu dipasang di komputer Anda, dan Anda tidak butuh kunci privatnya. Sesi itu milik user login yang disiapkan dPanel. Bagian kepala server menampilkannya, misalnya `dpanel@203.0.113.10:22`.
 
-| Penyedia                   | User login               |
-| -------------------------- | ------------------------ |
-| Google Cloud, AWS          | `ubuntu`                 |
-| DigitalOcean, IDCloudHost  | `dpanel`                 |
-| Server yang Anda hubungkan | User Linux yang Anda isi |
+| Penyedia                         | User login               |
+| -------------------------------- | ------------------------ |
+| Google Cloud, AWS, Tencent Cloud | `ubuntu`                 |
+| Alibaba Cloud                    | `root`                   |
+| DigitalOcean, IDCloudHost        | `dpanel`                 |
+| Server yang Anda hubungkan       | User Linux yang Anda isi |
 
 ## Dari komputer sendiri
 

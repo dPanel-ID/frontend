@@ -12,6 +12,9 @@ export const OPTS_DISK_GB = mapLabel([20, 40, 60, 80, 100, 120, 140, 160]);
 
 export const OPTS_CPU_CORE = mapLabel([2, 4, 6, 8]);
 
+/** Alibaba Cloud system disk sizes, within its 40-500 GB limit. */
+export const OPTS_ALIBABA_CLOUD_DISK_GB = mapLabel([40, 60, 80, 100, 160, 200]);
+
 export const LINK_DOCUMENTATION = '/docs/intro';
 export const LINK_MAILTO_PRAKASA = 'mailto: prakasa@devetek.com';
 export const LINK_START_CHAT =
