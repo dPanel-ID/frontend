@@ -1,11 +1,11 @@
 ---
 title: Kredensial cloud dan keamanan
-description: Apa yang disimpan dPanel saat Anda menghubungkan akun cloud, apa yang bisa dilakukan kredensial itu, dan cara membatasi, merotasi, serta mencabutnya.
+description: Apa yang disimpan dPanel saat Anda menghubungkan akun cloud, apa yang bisa dilakukan API key-nya, dan cara membatasi, merotasi, dan mencabut kredensial cloud.
 sidebar_position: 8
 sidebar_icon: shield-check
 ---
 
-Untuk meluncurkan server atas nama Anda, dPanel memegang kredensial akun cloud Anda. Halaman ini menjelaskan apa artinya secara terus terang, supaya Anda bisa menimbang seberapa jauh memercayainya dan bagaimana membatasi kerugian kalau ada yang salah.
+Untuk meluncurkan server atas nama Anda, dPanel memegang kredensial terenkripsi (API key) untuk akun cloud Anda. Halaman ini menjelaskan secara terus terang apa yang disimpan dPanel, apa yang bisa dilakukan kunci itu, dan cara membatasi, merotasi, serta mencabutnya, supaya Anda bisa menimbang seberapa jauh memercayainya dan bagaimana membatasi kerugian kalau ada yang salah.
 
 ## Risikonya, dalam satu paragraf
 
@@ -61,10 +61,12 @@ Jangan hubungkan root user AWS, administrator AWS, owner Google Cloud, atau toke
 Anda bisa mengganti kunci di dalam akun cloud yang sudah ada tanpa memutusnya. ID akun tidak berubah, jadi server yang diluncurkan dengannya tetap berfungsi dan tetap bisa dihapus.
 
 1. Buat kunci baru di penyedia untuk identitas yang sama. AWS mengizinkan dua access key per user, dan Google Cloud beberapa kunci per service account. Di DigitalOcean dan IDCloudHost, buat token atau API key kedua.
-2. Di sidebar, buka **Proyek Cloud**. Pada akun itu, buka aksinya (menu di tampilan daftar, atau deretan ikon di tampilan kartu), lalu pilih **Perbarui kredensial**.
+2. Di sidebar, buka **Proyek Cloud**. Pada baris akun itu, buka menu **Lebih** (⋯), lalu pilih **Perbarui kredensial**.
 3. Isi kolom yang sama seperti saat Anda menghubungkan akun itu, lalu tekan **Simpan kredensial**.
 4. Pastikan kunci baru berfungsi: buka formulir peluncuran dan periksa apakah daftar region muncul.
 5. Hapus atau nonaktifkan kunci lama di penyedia.
+
+![Dialog Perbarui kredensial untuk sebuah akun cloud, dengan kolom kredensial kosong dan tombol Simpan kredensial](../../../assets/getting-started/cloud-credentials-update.webp 'Kunci yang sekarang tidak pernah ditampilkan. Isi kunci baru, lalu simpan.')
 
 Dari command line, jalankan `dnocs cloud-project update-credentials --id <ID>`. Perintah ini menanyakan setiap kolom, sama seperti `dnocs cloud-project create`. Untuk nilai beberapa baris seperti JSON service account Google Cloud, jawab pertanyaannya dengan `@path/to/key.json` supaya isinya dibaca dari file. Anda juga bisa mengirim semua kolom sekaligus dengan `--credential-file credential.json`, berupa objek JSON seperti `{"project_id":"my-project","service_account_json":"..."}`, dan melewati konfirmasi dengan `--yes`.
 
@@ -97,8 +99,22 @@ Untuk memperbaiki kunci yang dicabut atau kedaluwarsa, buat kunci baru untuk aku
 
 1. Hapus semua server yang diluncurkan dengan akun itu. Lihat [Menghapus server](../delete-a-server.md).
 2. Di sidebar, buka **Proyek Cloud**.
-3. Pada akun itu, buka menunya, pilih **Putuskan akun cloud**, lalu konfirmasi.
+3. Pada baris akun itu, buka menu **Lebih** (⋯), pilih **Hapus**, lalu konfirmasi **Putuskan akun cloud**.
 
 dPanel menghapus kredensial yang disimpannya. Itu tidak mencabut kunci di penyedia: hapus juga di sana.
 
 ![Halaman Akun cloud berisi daftar akun penyedia yang terhubung](../../../assets/getting-started/cloud-projects.webp)
+
+## Pertanyaan yang sering diajukan
+
+### Bisakah seseorang membaca kembali API key cloud saya dari dPanel?
+
+Tidak. Setelah disimpan, kunci tidak pernah dikirim balik ke browser atau ditampilkan lagi, baik kepada Anda maupun rekan tim Anda. dPanel hanya mendekripsinya di server dan worker-nya sendiri untuk memanggil penyedia Anda.
+
+### Bagaimana cara mengganti kunci yang bocor atau kedaluwarsa?
+
+Buat kunci baru di penyedia, pilih **Perbarui kredensial** pada akun cloud di dPanel, simpan, lalu cabut kunci lama di penyedia. ID akun tidak berubah, jadi server Anda tetap berfungsi. Lihat [Merotasi kredensial](#merotasi-kredensial).
+
+### Apa yang terjadi pada server saya jika kuncinya dicabut?
+
+Server tetap berjalan, dan aplikasi, log, serta terminal tetap bekerja. Hanya peluncuran baru dan penghapusan server di penyedia yang berhenti sampai Anda menambahkan kunci yang berfungsi.

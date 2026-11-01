@@ -1,11 +1,11 @@
 ---
 title: Build timeout
-description: How long a build may run, and how to give a slow build more time.
+description: dPanel stops a build after 20 minutes by default. Set build.timeout between 1 minute and 3 hours to give a slow application build more time.
 sidebar_position: 7
 sidebar_icon: timer
 ---
 
-Every build and release runs as one job: clone, runtime setup, build steps and service start. By default that job stops after **20 minutes**.
+dPanel stops a build after **20 minutes** by default, and you can raise the limit per application up to 3 hours with `build.timeout`. Every build and release runs as one job: clone, runtime setup, build steps and service start.
 
 Most applications finish well inside that. A build that compiles a lot, such as a Docker image with many PHP extensions on a small server, may not. When the limit is reached the build fails, and its log ends with `context deadline exceeded`.
 
@@ -27,4 +27,5 @@ The **Create Application** and **Update Application** forms have no field for th
 ## Before you raise it
 
 - Read the failed build's **Logs** first. A step that hangs waiting for input fails the same way, and more time will not help.
-- Try a bigger server. A build that takes an hour on the smallest size often takes minutes on the next one.
+- Try a bigger server. A build that takes an hour on the smallest size often takes minutes on the next one. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
+- See all of a build's output in [Deployments and rollback](./deployments-and-rollback.md#read-a-builds-logs).

@@ -1,17 +1,28 @@
 ---
 title: Your server page
-description: What each tab on a server page shows: overview, modules, services, users, network, files, logs and settings.
+description: Every tab of a dPanel server page: live CPU and memory, modules, systemd services, Linux users, open ports, files, logs and settings.
 sidebar_position: 5
 sidebar_icon: gauge
 ---
 
-Every server has one page, and everything you can do to that server is on it.
+Every server in dPanel has one page, and everything you can do to that server is on it: live usage, installed modules, systemd services, Linux users, open ports, files, logs and settings. Open it from **Servers** by selecting the server's row.
 
-The header shows the name, the status, the address, the Ubuntu release, where it runs, the SSH login dPanel uses, the agent, the workspace it belongs to and when it was created. **Open terminal** is there too. See [Connect over SSH](./connect-over-ssh.md).
+## The header
+
+The header shows the name, the status, the address, the Ubuntu release and where it runs, then a line of facts: the SSH login dPanel uses (such as `ubuntu@203.0.113.10:22`), the agent version, the workspace, who created the server and when.
+
+| Control              | What it does                                                                              |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| Refresh (↻)          | Reads the server's status, usage, services and modules again.                             |
+| **Edit server** (✎)  | Changes the address, SSH login and agent ports dPanel uses.                               |
+| **Open terminal**    | Opens a shell in the browser. See [Connect over SSH](./connect-over-ssh.md).              |
+| **More actions** (⋯) | **Reinstall server** runs setup again; **Delete server** removes it. See the table below. |
+
+Select the status badge to see what the status means. While dPanel is setting a server up, a blue banner says so, with **Follow the logs**. If setup fails, a red **Setup did not finish** banner offers **See what happened**.
 
 ## Overview
 
-**Live usage** reads CPU, memory and disk from the agent every few seconds while the page is open. Below it are counts of applications, load balancers, databases and modules, then **Server details** and **What runs here**.
+**Live usage** reads CPU, memory and disk from the agent every few seconds while the page is open. Below it are counts of applications, load balancers, databases and modules, then **Server details** (address, SSH login, operating system, agent, provider, ownership, **Created by** and when it was added) and **What runs here**.
 
 ![A server page on the Overview tab](../../assets/servers/server-overview.webp)
 
@@ -68,11 +79,12 @@ This tab reads the newest lines of a file. The time range, paging and download a
 
 The changes you rarely need, each saying what it does.
 
-| Card        | Button                | What it does                                                           |
-| ----------- | --------------------- | ---------------------------------------------------------------------- |
-| Connection  | **Edit connection**   | Changes the address, SSH login and agent ports dPanel uses.            |
-| Setup       | **Reinstall**         | Reconnects over SSH, reinstalls the agent and refreshes the inventory. |
-| Ownership   | **Migrate ownership** | Moves the server to another workspace, or to your personal space.      |
-| Danger zone | **Delete server**     | Removes the server. See [Delete a server](./delete-a-server.md).       |
+| Card        | Button              | What it does                                                           |
+| ----------- | ------------------- | ---------------------------------------------------------------------- |
+| Connection  | **Edit connection** | Changes the address, SSH login and agent ports dPanel uses.            |
+| Setup       | **Reinstall**       | Reconnects over SSH, reinstalls the agent and refreshes the inventory. |
+| Danger zone | **Delete server**   | Removes the server. See [Delete a server](./delete-a-server.md).       |
 
-![The Settings tab with Connection, Setup, Ownership and Danger zone](../../assets/servers/server-settings.webp)
+**Setup** is hidden while a server is being set up or deleted, and on a deleted server, because there is nothing to reinstall then. A server stays in the workspace it was created in; it cannot be moved to another one.
+
+![The Settings tab with the Connection, Setup and Danger zone cards](../../assets/servers/server-settings.webp)

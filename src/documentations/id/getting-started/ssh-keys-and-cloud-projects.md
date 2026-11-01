@@ -1,11 +1,12 @@
 ---
-title: Kunci SSH dan akun cloud
-description: Dua hal yang dibutuhkan dPanel sebelum bisa membuat atau menghubungkan server.
+title: Kunci SSH & akun cloud
+description: Buat kunci SSH yang dipakai dPanel untuk masuk ke server, dan hubungkan akun AWS, Google Cloud, DigitalOcean, atau cloud lain untuk membuat server VPS.
 sidebar_position: 5
 sidebar_icon: key-round
+sidebar_label: Kunci SSH dan akun cloud
 ---
 
-Sebelum server pertama, siapkan dua hal. Keduanya ada di bawah **Backend** di sidebar, dan dipakai ulang untuk semua server berikutnya.
+Sebelum dPanel bisa membuat atau menghubungkan server pertama Anda, dPanel membutuhkan kunci SSH, dan untuk membuat VPS baru juga membutuhkan akun cloud. Keduanya ada di bawah **Backend** di sidebar, dan dipakai ulang untuk semua server berikutnya.
 
 | Yang dibutuhkan | Letaknya                                | Gunanya                                          |
 | --------------- | --------------------------------------- | ------------------------------------------------ |
@@ -53,9 +54,9 @@ dPanel tidak menjual ulang server. Mesin dibuat di dalam akun penyedia milik And
 ## Berbagi dan menghapus
 
 - Kunci atau akun yang dibuat di ruang kerja tim otomatis dibagikan ke tim itu. Yang dibuat di ruang kerja personal hanya milik Anda.
-- **Pindah Pemilik** di menu item memindahkannya ke ruang kerja lain.
-- **Perbarui kredensial** mengganti kunci di dalam akun cloud, misalnya setelah Anda merotasinya di penyedia. Server yang diluncurkan dengannya tetap berfungsi. Lihat [Merotasi kredensial](../servers/cloud-providers/cloud-credentials-security.md#merotasi-kredensial).
-- **Putuskan akun cloud** membuat dPanel melupakan API key-nya. Server yang sudah berjalan di penyedia tetap berjalan.
+- Kunci atau akun tetap berada di ruang kerja tempat ia dibuat. Keduanya tidak bisa dipindahkan ke ruang kerja lain.
+- **Perbarui kredensial**, di menu **Lebih** (⋯) pada baris akun cloud, mengganti kunci di dalam akun itu, misalnya setelah Anda merotasinya di penyedia. Server yang diluncurkan dengannya tetap berfungsi. Lihat [Merotasi kredensial](../servers/cloud-providers/cloud-credentials-security.md#merotasi-kredensial).
+- **Hapus**, di menu yang sama, memutuskan akun cloud: dPanel melupakan API key-nya setelah Anda mengonfirmasi **Putuskan akun cloud**. Server yang sudah berjalan di penyedia tetap berjalan.
 
 ## Langkah berikutnya
 

@@ -1,11 +1,11 @@
 ---
 title: Delete a server
-description: Delete a server you no longer need: what dPanel destroys at your cloud provider, and what happens to a server you connected yourself.
+description: Delete a server you no longer need in dPanel: what it destroys at your cloud provider, and why a server you connected yourself keeps running.
 sidebar_position: 8
 sidebar_icon: trash-2
 ---
 
-Your provider bills a cloud machine for as long as it exists, so remove one as soon as you are done with it.
+Deleting a server in dPanel destroys a cloud VM at your provider, or only disconnects a server you connected yourself. Your provider bills a cloud machine for as long as it exists, so remove one as soon as you are done with it.
 
 ## What you need first
 
@@ -17,7 +17,7 @@ Deletion is refused while applications or load balancers still use the server. D
 ## Delete it
 
 1. Open the server and go to **Settings**.
-2. In **Danger zone**, press **Delete server**.
+2. In **Danger zone**, press **Delete server**. The same command is in the header, under **More actions** (⋯).
 3. Read **What happens**.
 4. Type the server's name to confirm, then press **Delete server**.
 

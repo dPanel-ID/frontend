@@ -1,11 +1,11 @@
 ---
 title: Membaca log
-description: Di mana setiap log berada di dPanel, dan cara membaca serta menyaring tabel log.
+description: Letak log server, aplikasi, load balancer, dan build di dPanel, serta cara membaca, menyaring, dan mencari tabel log berdasarkan level dan teks.
 sidebar_position: 1
 sidebar_icon: file-text
 ---
 
-dPanel menampilkan empat jenis log. Semuanya memakai tabel yang sama, jadi begitu Anda bisa membaca satu, Anda bisa membaca semuanya.
+dPanel menampilkan empat jenis log langsung di browser, jadi Anda tidak perlu SSH, `journalctl`, atau `tail -f`: file log server, log runtime aplikasi, log request load balancer, dan log build. Semuanya memakai tabel yang sama, jadi begitu Anda bisa membaca satu, Anda bisa membaca semuanya.
 
 ## Letak setiap log
 
@@ -66,3 +66,21 @@ Log server membaca baris terbaru dari sebuah file, bukan jendela waktu. Rentang 
 ## Log build
 
 **Log Artefak** terbuka di atas halaman dengan 500 baris terbaru dari build itu. Di sana ada **Saring halaman ini**, chip level, **Unduh**, serta **Segarkan** dengan **Muat ulang otomatis**, yang berguna selama build masih berjalan. Pilih sebuah baris untuk membukanya di tempat.
+
+## Pertanyaan yang sering diajukan
+
+### Seberapa jauh ke belakang log bisa dibaca di dPanel?
+
+Log aplikasi dan load balancer bisa dibaca hingga 10 hari ke belakang. Log server menampilkan 20 sampai 500 baris terbaru dari sebuah file, dan log build 500 baris terbaru dari sebuah build.
+
+### Apakah Saring halaman ini mencari di seluruh rentang waktu?
+
+Tidak. Saringan itu hanya mencari di baris yang sudah dimuat di halaman yang sedang dibuka. Untuk melihat lebih jauh ke belakang, buka halaman yang lebih lama atau persempit rentang waktunya. Lihat [Rentang waktu dan pembaruan](./time-range-and-refresh.md).
+
+### Bisakah saya mengikuti log secara langsung?
+
+Bisa. Nyalakan **Muat ulang otomatis** di sebelah **Segarkan**, setiap 30 detik, setiap menit, atau setiap 5 menit. Fitur ini berhenti sementara selama Anda membaca halaman yang lebih lama.
+
+### Bisakah saya menyimpan log ke file?
+
+Bisa. Log aplikasi dan load balancer punya tombol **Unduh**, untuk satu halaman atau seluruh rentang waktu. Lihat [Mengunduh log](./download-logs.md).

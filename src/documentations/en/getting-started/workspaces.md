@@ -1,11 +1,11 @@
 ---
 title: Workspaces
-description: Your personal workspace, team workspaces, and how to switch between them.
+description: How dPanel workspaces work: your personal workspace, shared team workspaces, and how to switch between them so you see the right servers and apps.
 sidebar_position: 2
 sidebar_icon: building-2
 ---
 
-Everything in dPanel belongs to a workspace: servers, applications, load balancers, domains, cloud accounts and SSH keys. A workspace is a boundary. You only see what belongs to the workspace you are in.
+A workspace in dPanel is the boundary around a set of servers, applications, load balancers, domains, cloud accounts and SSH keys. You only see what belongs to the workspace you are in, and you switch workspace from the top of the sidebar.
 
 ## Two kinds of workspace
 
@@ -37,6 +37,6 @@ Switching workspace changes what every page shows. If a server or application se
 - **New workspace** creates a team workspace. See [Create a team](../teams/teams.md#create-a-team).
 - The people icon at the end of a team row (**Manage workspace**) opens that team's members page.
 
-## Moving things between workspaces
+## A resource stays in its workspace
 
-A server, application, load balancer, domain, cloud account or SSH key can move to another workspace. Use **Migrate Ownership** in the item's menu, or **Migrate ownership** on a server's **Settings** tab. See [Move a resource to another workspace](../teams/members-and-roles.md#move-a-resource-to-another-workspace).
+A server, application, load balancer, domain, cloud account or SSH key stays in the workspace it was created in. dPanel does not move resources between workspaces, so switch to the right workspace before you create something. To share your work with other people, create it in a [team workspace](../teams/teams.md).

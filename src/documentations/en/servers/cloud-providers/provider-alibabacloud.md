@@ -1,11 +1,12 @@
 ---
-title: Alibaba Cloud
-description: Create a RAM user with an AccessKey, connect it to dPanel, and launch an ECS server.
+title: Alibaba Cloud ECS
+description: Create an Alibaba Cloud RAM user with an AccessKey, connect it to dPanel, and launch an Ubuntu ECS server in your own Alibaba Cloud account.
 sidebar_position: 6
 sidebar_icon: provider:alibabacloud
+sidebar_label: Alibaba Cloud
 ---
 
-dPanel launches ECS instances in your Alibaba Cloud account. It signs in with an AccessKey that belongs to a RAM user you create for it.
+dPanel launches Ubuntu ECS instances in your own Alibaba Cloud account. It signs in with an AccessKey that belongs to a RAM user you create for it, with only the ECS and VPC permissions listed on this page.
 
 ## What you need first
 
@@ -56,14 +57,14 @@ dPanel saves the account as **Ready** straight away. It does not test the key on
 
 ![The launch form with Alibaba Cloud selected](../../../assets/servers/create-provider-alibabacloud.webp)
 
-| Field              | What to pick                                                                               |
-| ------------------ | ------------------------------------------------------------------------------------------ |
-| **Region**         | Where the server runs, such as `ap-southeast-5` (Jakarta).                                 |
-| **Zone**           | A zone inside the region, such as `ap-southeast-5a`.                                       |
-| **Network**        | `dpanel-network`. You don't choose it.                                                     |
-| **Instance Type**  | The size, such as `ecs.e-c1m2.large`. The list shows only the types in stock in that zone. |
-| **Ubuntu release** | 24.04 LTS or 26.04 LTS. dPanel picks the current Alibaba Cloud image for that release.     |
-| **System disk**    | 40 to 200 GB, ESSD.                                                                        |
+| Field              | What to pick                                                                                                                                                                                                               |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Region**         | Where the server runs, such as `ap-southeast-5` (Jakarta).                                                                                                                                                                 |
+| **Zone**           | A zone inside the region, such as `ap-southeast-5a`.                                                                                                                                                                       |
+| **Network**        | `dpanel-network`. You don't choose it.                                                                                                                                                                                     |
+| **Size**           | Move **CPU** and **RAM**. dPanel launches the cheapest type in stock in that zone, `ecs.e-` first, then `ecs.u1-`, `ecs.c7` or `ecs.g7`. **Choose the instance type yourself** lists them all, such as `ecs.e-c1m2.large`. |
+| **Ubuntu release** | 24.04 LTS or 26.04 LTS. dPanel picks the current Alibaba Cloud image for that release.                                                                                                                                     |
+| **Storage**        | System disk, 40 to 500 GB, ESSD.                                                                                                                                                                                           |
 
 There is no **Access** step for Alibaba Cloud. dPanel signs in as `root` with your SSH key.
 

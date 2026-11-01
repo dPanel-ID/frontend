@@ -1,13 +1,15 @@
 ---
 title: Teams
-description: Create a team workspace, rename it, and delete it when it is no longer needed.
+description: Create a team workspace in dPanel to share servers, applications and cloud accounts with your team, then rename it or delete it when you are done.
 sidebar_position: 1
 sidebar_icon: users
 ---
 
-A team is a shared workspace. Servers, applications, load balancers, domains, cloud accounts and SSH keys created in it belong to the team, and every member can reach them according to their role.
+A team in dPanel is a shared workspace. Servers, applications, load balancers, domains, cloud accounts and SSH keys created in it belong to the team, and every member can reach them according to their [role](./members-and-roles.md). Use a team so colleagues never have to share a server password or SSH key.
 
-![The Teams page listing team workspaces with their last update](../../assets/teams/teams-list.webp 'Teams: every team workspace you belong to.')
+![The Teams page in table view, listing a team with its status, your role and its member count](../../assets/teams/teams-list.webp 'Teams: every team workspace you belong to, with your role in each.')
+
+The page starts with counts: the teams you belong to, those **Owned by you**, those **Shared with you**, and your **Active workspace**. The table lists each team with its **Status**, **Your role**, **Members**, and when it was created and updated.
 
 ## Create a team
 
@@ -24,7 +26,7 @@ Switch to the new workspace (see [Workspaces](../getting-started/workspaces.md))
 
 ## Open a team
 
-On the **Teams** page, press the arrow on a team's row. The team page lists its members, with their role and when they joined.
+On the **Teams** page, select a team's row, or press **Details** (the eye icon) on it. The team page shows its member count, **Your role**, its status and when it was created, then the **Members** table with each member's roles and when they joined.
 
 ## Rename a team
 
@@ -35,9 +37,9 @@ On the **Teams** page, press the arrow on a team's row. The team page lists its 
 
 ## Delete a team
 
-1. On the **Teams** page, press the bin icon on the team's row.
+1. On the **Teams** page, press **Delete** (the bin icon) on the team's row. Only teams **Owned by you** can be deleted.
 2. Confirm **Delete Team**.
 
 :::danger[Move what you need first]
-Deleting a team removes the workspace. Move any server, application or other resource you want to keep to another workspace before you delete it. See [Move a resource to another workspace](./members-and-roles.md#move-a-resource-to-another-workspace).
+Deleting a team removes the workspace. Resources cannot be moved to another workspace, so delete the team only when you no longer need anything in it. Delete its servers first if you want your cloud provider to stop billing for them. See [Delete a server](../servers/delete-a-server.md).
 :::

@@ -1,11 +1,11 @@
 ---
 title: Dasbor
-description: Apa isi setiap tab dasbor, dan ke mana melihat dulu ketika ada yang tidak beres.
+description: Dasbor dPanel menampilkan kesehatan server, job yang gagal, penggunaan CPU, memori, dan disk, serta aktivitas terbaru ruang kerja. Pelajari isi tiap tabnya.
 sidebar_position: 3
 sidebar_icon: layout-dashboard
 ---
 
-Dasbor adalah halaman pertama setelah masuk. Isinya menjawab satu pertanyaan: apakah semua di ruang kerja ini baik-baik saja? Buka kapan saja dari **Dasbor** di sidebar.
+Dasbor dPanel adalah halaman pertama setelah masuk. Isinya menjawab satu pertanyaan: apakah semua di ruang kerja ini baik-baik saja? Dasbor menampilkan status kesehatan, jumlah resource, operasi yang gagal, serta penggunaan CPU, memori, dan disk di seluruh server Anda. Buka kapan saja dari **Dasbor** di sidebar.
 
 ![Tab Ringkasan di dasbor dengan status kesehatan, jumlah resource, dan aktivitas platform](../../assets/getting-started/dashboard-overview.webp 'Ringkasan: status di paling atas, lalu jumlah resource, aktivitas, dan penggunaan.')
 
@@ -51,6 +51,14 @@ Hanya muncul di ruang kerja tim.
 - **Anggota Ruang Kerja**: siapa saja yang punya akses. **Kelola** membuka halaman tim.
 - **Proyek Cloud**: akun penyedia tempat tim ini bisa membuat server.
 - **Konfigurasi ruang kerja**: **Repositori IaC** tempat dPanel menuliskan infrastruktur ruang kerja ini.
+
+## Daftar, tabel, dan kartu
+
+Setiap daftar di dPanel (server, aplikasi, load balancer, domain, akun cloud, kunci SSH, dan tim) terbuka sebagai tabel. Pengalih tampilan di samping kotak pencarian mengubahnya menjadi **Tampilan Grid Kartu** atau **Tampilan Daftar Kartu**, dan kembali ke **Tampilkan Tabel**. Setiap baris diakhiri dengan aksinya, misalnya **Detil**, atau menu **Lebih** (⋯) yang berisi **Hapus**.
+
+## Bertanya saja
+
+Tombol **Tanya dPanel** di kanan bawah setiap halaman membuka asisten AI. Tanyakan, misalnya, "Apakah ada job yang gagal dalam 24 jam terakhir?". Lihat [Tanya dPanel](./ask-dpanel.md).
 
 ## Kalau dasbor tidak bisa memeriksa
 

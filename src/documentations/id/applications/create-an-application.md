@@ -1,9 +1,11 @@
 ---
 title: Membuat aplikasi
-description: Formulir lima langkah, dari repositori GitHub sampai layanan yang berjalan.
+description: Deploy aplikasi dari GitHub dengan dPanel: pilih repositori, server yang siap, runtime, dan perintah build, lalu dPanel menjalankannya sebagai layanan.
 sidebar_position: 2
 sidebar_icon: square-plus
 ---
+
+Untuk men-deploy aplikasi dari GitHub dengan dPanel, Anda mengisi formulir lima langkah: repositori dan branch, server dan runtime, perintah build dan perintah jalan, environment, lalu pratinjau akhir. Setelah itu dPanel meng-clone, membangun, dan menjalankan kode Anda sebagai layanan systemd di server Anda.
 
 Panduan ini merilis [dPanel-ID/go-example](https://github.com/dPanel-ID/go-example), layanan web Go yang kecil. Repositori lain caranya sama. Prosesnya sekitar 5 sampai 15 menit, sebagian besar untuk build pertama.
 
@@ -27,7 +29,7 @@ Buka **Aplikasi**, lalu tekan **Buat Aplikasi**. Formulirnya punya lima langkah.
 
 ## Langkah 2: Server & modul
 
-1. Di **Pilih Server**, pilih server yang akan menjalankan aplikasi. Pakai **Cari server...** jika server Anda banyak.
+1. Di **Pilih Server**, pilih server yang akan menjalankan aplikasi. Hanya server berstatus **Ready** yang ditampilkan; pakai **Cari server...** jika server Anda banyak. Jika belum ada yang siap, daftarnya bertuliskan **Tidak ada server yang siap**: tambahkan server, atau tunggu sampai salah satunya selesai disiapkan.
 2. Di **Pilih dependency**, tambahkan apa yang dibutuhkan aplikasi untuk dibangun dan dijalankan. Ketik di **Cari modul**, lalu tekan **Tambah** pada modulnya. Untuk go-example, modulnya **Go**.
 3. Opsi modul terbuka di samping daftar. Kolom wajib diberi tanda. Periksa, lalu tekan **Simpan opsi**.
 4. Tekan **Lanjut**.
@@ -78,3 +80,25 @@ Aplikasi berstatus **Sedang dibangun** sampai rilis selesai, lalu **Berjalan**. 
 :::note[Beri alamat publik]
 Aplikasi baru mendengarkan di port-nya di server. Untuk menyajikannya di domain dengan HTTPS, pasang load balancer di depannya. Lihat [Load balancer](../networking/load-balancers.md).
 :::
+
+## Pertanyaan yang sering diajukan
+
+### Bahasa dan framework apa saja yang bisa saya deploy?
+
+Apa saja yang berjalan di Ubuntu. Anda memilih runtime, misalnya Go, sebagai modul di langkah 2, lalu memberikan perintah untuk membangun dan menjalankan kode Anda di langkah 3. dPanel menjalankannya persis seperti yang Anda tulis.
+
+### Mengapa formulir menolak nama aplikasi saya?
+
+Nama hanya boleh berisi huruf, angka, dan spasi. `my-app` atau `my_app` ditolak; pakai `My App` sebagai gantinya.
+
+### Mengapa server saya tidak ada di daftar?
+
+Hanya server berstatus **Ready** yang bisa menjalankan aplikasi. Server yang masih disiapkan, gagal disiapkan, atau sudah dihapus tidak ditampilkan. Lihat [Halaman server Anda](../servers/your-server-page.md).
+
+### Bisakah saya men-deploy dari organisasi GitHub?
+
+Bisa. Pasang GitHub App dnocs-id di organisasi itu lewat **Tambah akun GitHub**, lalu organisasinya muncul di **Tim GitHub**. Lihat [Menghubungkan GitHub](../getting-started/connect-github.md#menambahkan-organisasi-github).
+
+### Bagaimana cara memberi aplikasi domain dengan HTTPS?
+
+Buat [load balancer](../networking/load-balancers.md) yang merutekan domain Anda ke aplikasi itu. dPanel menambahkan record DNS dan sertifikat Let's Encrypt-nya.

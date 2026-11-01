@@ -1,9 +1,11 @@
 ---
 title: Create a cloud server
-description: The launch form, step by step, from provider to a running machine.
+description: Launch an Ubuntu VPS at AWS, Google Cloud, DigitalOcean, IDCloudHost, Alibaba Cloud or Tencent Cloud from dPanel, step by step, in 10 to 20 minutes.
 sidebar_position: 1
 sidebar_icon: cloud-upload
 ---
+
+dPanel launches a new Ubuntu server (a VM) in your own cloud account from one form: pick the provider, the region, the size and the Ubuntu release, and dPanel creates the machine, installs its agent and opens SSH, HTTP and HTTPS. It is ready in about 10 to 20 minutes.
 
 This walkthrough uses Google Cloud. The other providers ask the same questions in the same order. The differences are on [Cloud providers](./index.md), with a page for each provider.
 
@@ -29,17 +31,33 @@ The form is one page with three numbered steps. The **Review** panel on the righ
 ## Step 2: Location
 
 - **Region** is the part of the world the machine runs in. Pick one close to your users.
-- **Zone** is one data centre inside that region. Any of them is fine.
-- **Network** is filled in for you. dPanel creates `dpanel-network` the first time it launches in a region, then reuses it. Only SSH, HTTP and HTTPS are open.
+- **Zone** is one data centre inside that region. Any of them is fine. Google Cloud, Alibaba Cloud and Tencent Cloud ask for one.
+- **Network** is filled in for you. On most providers dPanel creates `dpanel-network` the first time it launches in a region, then reuses it. Only SSH, HTTP and HTTPS are open.
 
 ## Step 3: Size and image
 
-- **Server name** is how the machine appears in dPanel and at your provider.
-- **Machine Type** is how much CPU and memory it has. A small size, such as `e2-small`, is enough to try things out.
-- **Ubuntu release**: 24.04 LTS is the safe default. LTS means years of security updates.
-- **Disk** is the size in gigabytes.
+1. **Server name** is how the machine appears in dPanel and at your provider.
+2. **Ubuntu release**: 24.04 LTS is selected by default; 26.04 LTS is marked **Newest**. LTS means years of security updates.
+3. **Size**: move the **CPU** and **RAM** sliders to the size you want, and **Storage** to the disk size in GB.
 
-![Steps 2 and 3 filled in, with the Review panel reading Ready to launch, 9/9](../../../assets/servers/create-step2-location-size.webp)
+![Step 3 of the launch form with the CPU, RAM and Storage sliders and the size dPanel will launch](../../../assets/servers/create-step2-location-size.webp)
+
+The card under the sliders says exactly what you will get:
+
+- **You get**: providers that take any CPU and memory pair, such as Google Cloud and IDCloudHost, launch exactly that size.
+- **Cheapest match**: providers with fixed instance types, such as AWS, DigitalOcean, Alibaba Cloud and Tencent Cloud, launch the cheapest type with at least that much CPU and memory. **Rounded up from** says when the type is bigger than you asked for, and the card shows the monthly price when the provider gives one.
+
+| Slider  | Range                                                                                                       |
+| ------- | ----------------------------------------------------------------------------------------------------------- |
+| CPU     | 1, 2, 4, 8 or 16 vCPU. A value the provider cannot serve is crossed out.                                    |
+| RAM     | 1 to 64 GB. Moving CPU moves RAM to the nearest pair the provider sells.                                    |
+| Storage | 20 to 500 GB in 10 GB steps (40 to 500 GB on Alibaba Cloud). DigitalOcean and Tencent Cloud set it for you. |
+
+On a provider with fixed types, **Choose the instance type yourself** opens the provider's full list instead of the sliders. **Use the size sliders instead** goes back. Biznet Gio keeps its own **Product** and **Billing Cycle** pickers.
+
+:::tip[Start small]
+1 vCPU and 2 GB RAM is enough to try dPanel with one small application. You can launch a bigger server later and move your applications to it.
+:::
 
 ## Launch
 
@@ -58,12 +76,34 @@ A blue banner says dPanel is setting the server up. Expect 10 to 20 minutes:
 2. dPanel installs its agent and reads what is on the machine.
 3. dPanel opens the ports it needs.
 
-When the banner goes and the badge reads **Ready**, the server is yours to use.
+When the banner goes and the badge reads **Ready**, the server is yours to use. Next, [install software](../install-software.md) on it or [create an application](../../applications/create-an-application.md).
 
 :::warning[If setup fails]
-A red banner says so and offers **See what happened**, with the reason the provider or the setup gave. The usual causes are a cloud account without enough quota, and credentials that have expired. To try again, use **Reinstall** on the server's **Settings** tab.
+A red banner says so and offers **See what happened**, with the reason the provider or the setup gave. The usual causes are a cloud account without enough quota, and credentials that have expired. To try again, use **Reinstall** on the server's **Settings** tab. See [Common problems](../../troubleshooting/faq.md#servers).
 :::
 
 :::tip[Your provider bills from now]
 The machine is billed by your provider while it exists, even while setup runs. [Delete it](../delete-a-server.md) when you are done.
 :::
+
+## Frequently asked questions
+
+### How long does it take to launch a server?
+
+About 10 to 20 minutes from **Launch server** to **Ready**. Most of it is the provider creating the VM and dPanel installing its agent.
+
+### Which Ubuntu versions can I launch?
+
+Ubuntu 24.04 LTS and 26.04 LTS. dPanel picks the provider's current image for the release you choose.
+
+### How much does a server cost?
+
+Your provider bills you at its own prices, because the server runs in your account. On providers with fixed instance types, the size card shows the provider's monthly price when it is available.
+
+### Can I choose an exact instance type, such as t3.small?
+
+Yes, on AWS, DigitalOcean, Alibaba Cloud and Tencent Cloud. Press **Choose the instance type yourself** under the sliders and pick from the provider's list.
+
+### Which login user does the server get?
+
+`ubuntu` on AWS, Google Cloud and Tencent Cloud, `root` on Alibaba Cloud, and the **Default User** you set (`dpanel` by default) on DigitalOcean and IDCloudHost. See [Connect over SSH](../connect-over-ssh.md).

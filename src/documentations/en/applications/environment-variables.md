@@ -1,11 +1,11 @@
 ---
 title: Environment variables
-description: Give the build and the running service the settings they need, without putting them in the repository.
+description: Set build-time and runtime environment variables for an app in dPanel, keep secrets out of your repository, and apply new values with a release.
 sidebar_position: 3
 sidebar_icon: variable
 ---
 
-dPanel keeps two separate lists, so a setting only the build needs never reaches the running service.
+dPanel passes environment variables to your application from two separate lists, so a setting only the build needs never reaches the running service, and secrets such as API keys stay out of your Git repository.
 
 | List                 | Used                           | Typical contents                       |
 | -------------------- | ------------------------------ | -------------------------------------- |

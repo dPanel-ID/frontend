@@ -1,11 +1,12 @@
 ---
-title: IDCloudHost
-description: Create an IDCloudHost API key, connect it to dPanel, and launch a server in Indonesia.
+title: IDCloudHost VPS
+description: Create an IDCloudHost API key, connect it to dPanel, and launch an Ubuntu cloud VPS in Indonesia from your own IDCloudHost billing account.
 sidebar_position: 5
 sidebar_icon: provider:idcloudhost
+sidebar_label: IDCloudHost
 ---
 
-dPanel launches cloud VMs in your IDCloudHost account. It signs in with an API key from your IDCloudHost profile.
+dPanel launches Ubuntu cloud VMs in Indonesia in your own IDCloudHost account. It signs in with an API key from your IDCloudHost profile and charges your IDCloudHost billing account.
 
 ## What you need first
 
@@ -58,9 +59,8 @@ dPanel saves the account as **Ready** without testing it. The launch form is the
 | **Region**          | The location, such as `jkt01`.                                                                      |
 | **Billing Account** | Leave it on **Auto-select billing account** to use your default active account, or pick one.        |
 | **Network**         | Chosen for you from the location's networks. If none exists, create one in the IDCloudHost console. |
-| **CPU Cores**       | 2, 4, 6 or 8.                                                                                       |
-| **RAM**             | 2 to 16 GB.                                                                                         |
-| **Disk**            | 20 to 160 GB.                                                                                       |
+| **Size**            | Move **CPU** (2 to 16 vCPU) and **RAM** (2 to 64 GB). IDCloudHost launches exactly that size.       |
+| **Storage**         | 20 to 500 GB.                                                                                       |
 | **Ubuntu release**  | 24.04 LTS or 26.04 LTS.                                                                             |
 
 IDCloudHost adds a fourth step, **Access**:
