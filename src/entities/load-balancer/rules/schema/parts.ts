@@ -5,6 +5,7 @@ import { SchemaCommon } from '@/entities/shared/rules/schema';
 
 export const KNOWN_WEBSERVER_ENGINES = [
   'caddy',
+  'apisix',
   'nginx',
   'traefik',
   'haproxy',
