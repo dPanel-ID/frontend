@@ -102,7 +102,8 @@
       "path": "Path",
       "branch": "Branch",
       "command": "Command",
-      "ownServer": "Server sendiri"
+      "ownServer": "Server sendiri",
+      "type": "Tipe"
     },
     "actions": {
       "refresh": "Segarkan",

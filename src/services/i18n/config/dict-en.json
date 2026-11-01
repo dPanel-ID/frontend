@@ -102,7 +102,8 @@
       "path": "Path",
       "branch": "Branch",
       "command": "Command",
-      "ownServer": "Own server"
+      "ownServer": "Own server",
+      "type": "Type"
     },
     "actions": {
       "refresh": "Refresh",
@@ -1956,8 +1957,8 @@
         "activeRoutes": "Active routes",
         "targetSummary": "Backend fan-out",
         "emptyTargets": "No target preview available yet.",
-        "targetCount": "{count} targets",
-        "routeCount": "{count} routes",
+        "targetCount": "{count, plural, one {# target} other {# targets}}",
+        "routeCount": "{count, plural, one {# route} other {# routes}}",
         "routeMap": "Route map",
         "routeMapDesc": "Every configured route and backend target in the current load balancer definition."
       },
