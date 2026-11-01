@@ -3,8 +3,6 @@ import {
   IconAppActive,
   IconCloud,
   IconCloudActive,
-  // IconDatabase,
-  // IconDatabaseActive,
   IconGlobe,
   IconGlobeActive,
   IconHome,
@@ -49,13 +47,6 @@ export const MENUS: MenuGroup[] = [
   {
     i18nKey: 'sidebar.backend',
     children: [
-      // {
-      //   id: 'db',
-      //   icon: IconDatabase,
-      //   iconActive: IconDatabaseActive,
-      //   i18nKey: 'sidebar.database',
-      //   url: '/backend/database',
-      // },
       {
         id: 'lb',
         icon: IconLoadBalancer,

@@ -342,9 +342,7 @@
         "loadBalancersHint": "{ready} ready, {attention} need a look",
         "cloudProjects": "Cloud projects",
         "domains": "Domains",
-        "databases": "Databases",
-        "sshKeys": "SSH keys",
-        "unavailable": "This count could not be read right now"
+        "sshKeys": "SSH keys"
       },
       "serverHealth": {
         "title": "Server Health",
@@ -702,11 +700,6 @@
         "available": "Available",
         "githubAccess": "GitHub access"
       }
-    },
-    "database": {
-      "headerTitle": "Database",
-      "headerDesc": "View your deployed databases and its users here.",
-      "headerFootnote": "You can use your own resources or a public resource to create database. Visit our <a>YouTube channel</a> for a tutorial."
     },
     "applications": {
       "headerTitle": "Applications",
@@ -3079,10 +3072,6 @@
     }
   },
   "dialog": {
-    "databaseDelete": {
-      "title": "Delete Database",
-      "message": "Are you sure you want to delete \"<code>{databaseName}</code>\"?"
-    },
     "machineReinstall": {
       "title": "Reinstall Machine",
       "message": "Are you sure you want to reinstall machine with id <code>{machineID}</code>?"
@@ -3142,10 +3131,6 @@
     "signUp": {
       "success": "Successfully registered {email}, please wait for the redirection.",
       "error": "Failed to register {email}!"
-    },
-    "databaseDelete": {
-      "success": "Successfully deleted database <code>{databaseName}</code>.",
-      "error": "Failed to delete database <code>{databaseName}</code>!"
     },
     "machineReinstall": {
       "success": "Successfully reinstalled machine with id <code>{machineID}</code>.",
@@ -3684,7 +3669,6 @@
     "applications": "Applications",
     "servers": "Servers",
     "backend": "Backend",
-    "database": "Database",
     "loadBalancers": "Load Balancers",
     "dDns": "Domain & DNS",
     "cloudProject": "Cloud Projects",

@@ -23,7 +23,7 @@ Dasbor dPanel adalah halaman pertama setelah masuk. Isinya menjawab satu pertany
 Baca dari atas ke bawah.
 
 1. **Status.** Semua berjalan normal, atau ada sejumlah hal yang perlu perhatian Anda.
-2. **Jumlah resource.** Server, aplikasi, dan load balancer, masing-masing dengan berapa yang siap dan berapa yang perlu dicek. Lalu proyek cloud, domain, basis data, dan kunci SSH. Tekan salah satu kotak untuk membuka daftarnya.
+2. **Jumlah resource.** Server, aplikasi, dan load balancer, masing-masing dengan berapa yang siap dan berapa yang perlu dicek. Lalu proyek cloud, domain, dan kunci SSH. Tekan salah satu kotak untuk membuka daftarnya.
 3. **Aktivitas platform.** Semua operasi yang dijalankan dPanel di ruang kerja ini, dipisah menjadi berhasil, gagal, dan sedang berjalan atau dibatalkan. Pilih rentang 24 jam, 7 hari, atau 30 hari. Di sebelahnya tampil jumlah operasi, tingkat keberhasilan, dan berapa yang gagal.
 4. **Penggunaan sumber daya.** CPU, memori, dan disk di seluruh server. Setiap grafik menampilkan rata-rata semua server dan server tersibuk. Pilih 1 jam, 24 jam, atau 3 hari.
 5. **Perlu perhatian Anda.** Server yang tidak berjalan, server yang agennya berhenti melapor, dan operasi yang gagal. **Buka server** membawa Anda ke server yang bermasalah.

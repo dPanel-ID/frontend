@@ -28,7 +28,6 @@ import { Route as WithAppLayoutServersCreateIndexRouteImport } from './app/_with
 import { Route as WithAppLayoutServersIdIndexRouteImport } from './app/_with-app-layout/servers/$id/index'
 import { Route as WithAppLayoutBackendLoadBalancersIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/index'
 import { Route as WithAppLayoutBackendDomainIndexRouteImport } from './app/_with-app-layout/backend/domain/index'
-import { Route as WithAppLayoutBackendDatabaseIndexRouteImport } from './app/_with-app-layout/backend/database/index'
 import { Route as WithAppLayoutBackendCloudProjectsIndexRouteImport } from './app/_with-app-layout/backend/cloud-projects/index'
 import { Route as WithAppLayoutApplicationsCreateIndexRouteImport } from './app/_with-app-layout/applications/create/index'
 import { Route as WithAppLayoutApplicationsIdIndexRouteImport } from './app/_with-app-layout/applications/$id/index'
@@ -149,12 +148,6 @@ const WithAppLayoutBackendDomainIndexRoute =
     path: '/backend/domain/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutBackendDatabaseIndexRoute =
-  WithAppLayoutBackendDatabaseIndexRouteImport.update({
-    id: '/backend/database/',
-    path: '/backend/database/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
 const WithAppLayoutBackendCloudProjectsIndexRoute =
   WithAppLayoutBackendCloudProjectsIndexRouteImport.update({
     id: '/backend/cloud-projects/',
@@ -267,7 +260,6 @@ export interface FileRoutesByFullPath {
   '/applications/$id': typeof WithAppLayoutApplicationsIdIndexRoute
   '/applications/create': typeof WithAppLayoutApplicationsCreateIndexRoute
   '/backend/cloud-projects': typeof WithAppLayoutBackendCloudProjectsIndexRoute
-  '/backend/database': typeof WithAppLayoutBackendDatabaseIndexRoute
   '/backend/domain': typeof WithAppLayoutBackendDomainIndexRoute
   '/backend/load-balancers': typeof WithAppLayoutBackendLoadBalancersIndexRoute
   '/servers/$id': typeof WithAppLayoutServersIdIndexRoute
@@ -303,7 +295,6 @@ export interface FileRoutesByTo {
   '/applications/$id': typeof WithAppLayoutApplicationsIdIndexRoute
   '/applications/create': typeof WithAppLayoutApplicationsCreateIndexRoute
   '/backend/cloud-projects': typeof WithAppLayoutBackendCloudProjectsIndexRoute
-  '/backend/database': typeof WithAppLayoutBackendDatabaseIndexRoute
   '/backend/domain': typeof WithAppLayoutBackendDomainIndexRoute
   '/backend/load-balancers': typeof WithAppLayoutBackendLoadBalancersIndexRoute
   '/servers/$id': typeof WithAppLayoutServersIdIndexRoute
@@ -341,7 +332,6 @@ export interface FileRoutesById {
   '/_with-app-layout/applications/$id/': typeof WithAppLayoutApplicationsIdIndexRoute
   '/_with-app-layout/applications/create/': typeof WithAppLayoutApplicationsCreateIndexRoute
   '/_with-app-layout/backend/cloud-projects/': typeof WithAppLayoutBackendCloudProjectsIndexRoute
-  '/_with-app-layout/backend/database/': typeof WithAppLayoutBackendDatabaseIndexRoute
   '/_with-app-layout/backend/domain/': typeof WithAppLayoutBackendDomainIndexRoute
   '/_with-app-layout/backend/load-balancers/': typeof WithAppLayoutBackendLoadBalancersIndexRoute
   '/_with-app-layout/servers/$id/': typeof WithAppLayoutServersIdIndexRoute
@@ -379,7 +369,6 @@ export interface FileRouteTypes {
     | '/applications/$id'
     | '/applications/create'
     | '/backend/cloud-projects'
-    | '/backend/database'
     | '/backend/domain'
     | '/backend/load-balancers'
     | '/servers/$id'
@@ -415,7 +404,6 @@ export interface FileRouteTypes {
     | '/applications/$id'
     | '/applications/create'
     | '/backend/cloud-projects'
-    | '/backend/database'
     | '/backend/domain'
     | '/backend/load-balancers'
     | '/servers/$id'
@@ -452,7 +440,6 @@ export interface FileRouteTypes {
     | '/_with-app-layout/applications/$id/'
     | '/_with-app-layout/applications/create/'
     | '/_with-app-layout/backend/cloud-projects/'
-    | '/_with-app-layout/backend/database/'
     | '/_with-app-layout/backend/domain/'
     | '/_with-app-layout/backend/load-balancers/'
     | '/_with-app-layout/servers/$id/'
@@ -620,13 +607,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithAppLayoutBackendDomainIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/backend/database/': {
-      id: '/_with-app-layout/backend/database/'
-      path: '/backend/database'
-      fullPath: '/backend/database'
-      preLoaderRoute: typeof WithAppLayoutBackendDatabaseIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
     '/_with-app-layout/backend/cloud-projects/': {
       id: '/_with-app-layout/backend/cloud-projects/'
       path: '/backend/cloud-projects'
@@ -744,7 +724,6 @@ interface WithAppLayoutRouteRouteChildren {
   WithAppLayoutApplicationsIdIndexRoute: typeof WithAppLayoutApplicationsIdIndexRoute
   WithAppLayoutApplicationsCreateIndexRoute: typeof WithAppLayoutApplicationsCreateIndexRoute
   WithAppLayoutBackendCloudProjectsIndexRoute: typeof WithAppLayoutBackendCloudProjectsIndexRoute
-  WithAppLayoutBackendDatabaseIndexRoute: typeof WithAppLayoutBackendDatabaseIndexRoute
   WithAppLayoutBackendDomainIndexRoute: typeof WithAppLayoutBackendDomainIndexRoute
   WithAppLayoutBackendLoadBalancersIndexRoute: typeof WithAppLayoutBackendLoadBalancersIndexRoute
   WithAppLayoutServersIdIndexRoute: typeof WithAppLayoutServersIdIndexRoute
@@ -776,8 +755,6 @@ const WithAppLayoutRouteRouteChildren: WithAppLayoutRouteRouteChildren = {
     WithAppLayoutApplicationsCreateIndexRoute,
   WithAppLayoutBackendCloudProjectsIndexRoute:
     WithAppLayoutBackendCloudProjectsIndexRoute,
-  WithAppLayoutBackendDatabaseIndexRoute:
-    WithAppLayoutBackendDatabaseIndexRoute,
   WithAppLayoutBackendDomainIndexRoute: WithAppLayoutBackendDomainIndexRoute,
   WithAppLayoutBackendLoadBalancersIndexRoute:
     WithAppLayoutBackendLoadBalancersIndexRoute,

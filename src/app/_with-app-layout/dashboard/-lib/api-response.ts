@@ -17,12 +17,3 @@ export function countFromPagination(
 export function isPendingResponse(response: ApiResponse<unknown>) {
   return response.$status === 'initial' || response.$status === 'loading';
 }
-
-/**
- * Whether a request finished without producing data. A count that will never
- * arrive has to be shown as unknown: left as pending it renders a loading
- * placeholder that spins for the life of the page.
- */
-export function hasFailedResponse(response: ApiResponse<unknown>) {
-  return response.$status === 'failed';
-}

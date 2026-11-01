@@ -333,9 +333,7 @@
         "loadBalancersHint": "{ready} siap, {attention} perlu diperiksa",
         "cloudProjects": "Proyek cloud",
         "domains": "Domain",
-        "databases": "Basis data",
-        "sshKeys": "Kunci SSH",
-        "unavailable": "Jumlah ini sedang tidak dapat dibaca"
+        "sshKeys": "Kunci SSH"
       },
       "serverHealth": {
         "title": "Kesehatan Server",
@@ -693,11 +691,6 @@
         "available": "Tersedia",
         "githubAccess": "Akses GitHub"
       }
-    },
-    "database": {
-      "headerTitle": "Database",
-      "headerDesc": "Lihat database yang telah Anda deploy dan penggunanya di sini.",
-      "headerFootnote": "Anda dapat menggunakan <i>resource</i> sendiri atau <i>resource</i> publik untuk membuat database. Kunjungi <a>kanal YouTube</a> kami untuk panduannya."
     },
     "applications": {
       "headerTitle": "Aplikasi",
@@ -3071,10 +3064,6 @@
     }
   },
   "dialog": {
-    "databaseDelete": {
-      "title": "Hapus Database",
-      "message": "Apa anda yakin anda ingin menghapus \"<code>{databaseName}</code>\"?"
-    },
     "machineReinstall": {
       "title": "Re-install Mesin",
       "message": "Apa anda yakin anda ingin melakukan reinstall mesin dengan id <code>{machineID}</code>?"
@@ -3134,10 +3123,6 @@
     "signUp": {
       "success": "Berhasil mendaftarkan {email}, mohon menunggu untuk pengarahan halaman.",
       "error": "Gagal mendaftarkan {email}!"
-    },
-    "databaseDelete": {
-      "success": "Berhasil menghapus database <code>{databaseName}</code>.",
-      "error": "Gagal menghapus database <code>{databaseName}</code>!"
     },
     "machineReinstall": {
       "success": "Berhasil melakukan reinstall mesin dengan id <code>{machineID}</code>.",
@@ -3676,7 +3661,6 @@
     "applications": "Aplikasi",
     "servers": "Server",
     "backend": "Backend",
-    "database": "Database",
     "loadBalancers": "Load Balancer",
     "dDns": "Domain & DNS",
     "cloudProject": "Proyek Cloud",
