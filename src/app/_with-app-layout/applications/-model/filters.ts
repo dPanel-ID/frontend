@@ -26,7 +26,7 @@ export const [FilterModelProvider, useFilterModel] = buildQsFilterContext(
     // The same four modes as every other list. This module used to map
     // `list` onto the table and resolve `auto` to it as well, which left
     // it the only list in the product with no full-width row view.
-    viewMode: (value) => {
+    viewMode: (value): 'auto' | 'list' | 'grid' | 'table' => {
       switch (value) {
         case 'list':
           return 'list' as const;
@@ -38,7 +38,7 @@ export const [FilterModelProvider, useFilterModel] = buildQsFilterContext(
           return 'table' as const;
 
         default:
-          return 'auto' as const;
+          return 'table' as const;
       }
     },
   },

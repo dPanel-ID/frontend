@@ -26,7 +26,7 @@ export default function useCreateDomain() {
   const backToDomains = useHandler(() => {
     navigate({
       to: '/backend/domain',
-      search: { page: 1, viewMode: 'auto' },
+      search: { page: 1, viewMode: 'table' },
     });
   });
 

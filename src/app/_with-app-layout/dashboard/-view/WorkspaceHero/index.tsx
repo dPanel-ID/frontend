@@ -91,7 +91,7 @@ export default function WorkspaceHero(props: WorkspaceHeroProps) {
 
         <Link
           to="/teams"
-          search={{ page: 1, viewMode: 'auto' }}
+          search={{ page: 1, viewMode: 'table' }}
           className="shrink-0 rounded-lg border bg-background px-3 py-2 text-xs font-semibold text-primary transition hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
         >
           {t('manage')}

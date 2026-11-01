@@ -273,7 +273,7 @@ function CreateFlow() {
     <div className="flex flex-col gap-4">
       <Link
         to="/backend/load-balancers"
-        search={{ page: 1, viewMode: 'auto' }}
+        search={{ page: 1, viewMode: 'table' }}
         className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeftIcon className="size-4" />
