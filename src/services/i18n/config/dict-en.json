@@ -1812,41 +1812,42 @@
         "internalDomain": "Managed",
         "subdomain": "Subdomain",
         "selectDomain": "Select domain",
-        "engineHint": "Pick an infrastructure module from the selected server catalog. dPanel will use this module metadata for the generated load balancer playbook.",
+        "engineHint": "The web server that answers requests on the gateway. Pick one already on the server, or install one.",
         "engineRuntime": "Gateway runtime",
-        "searchEngine": "Search infrastructure modules...",
-        "selectServerFirst": "Select a gateway server before choosing the engine module.",
-        "loadingEngines": "Loading infrastructure modules...",
-        "engineLoadFailed": "Unable to load infrastructure modules for this server.",
-        "engineDetailFailed": "Unable to read the selected infrastructure module contract.",
-        "noInfrastructureEngines": "No infrastructure modules are available from the workspace IaC catalog for this server.",
-        "noEnginesForSearch": "No infrastructure modules match this search.",
+        "searchEngine": "Search engines…",
+        "selectServerFirst": "Choose a gateway server first; its engines appear here.",
+        "loadingEngines": "Loading engines…",
+        "engineLoadFailed": "Couldn't load the engines for this server.",
+        "engineDetailFailed": "Couldn't read the selected engine's settings.",
+        "noInfrastructureEngines": "No web server engines are available for this server.",
+        "noEnginesForSearch": "No engines match this search.",
         "installedInfrastructureTitle": "Reported on selected gateway",
-        "installedInfrastructureDescription": "Choose an installed infrastructure module already reported by the selected machine. Modules still installing are shown for visibility and become selectable when ready.",
-        "availableInfrastructureTitle": "Install infrastructure modules",
+        "installedInfrastructureDescription": "Engines already on this server. One that is still installing can be picked once it is ready.",
+        "availableInfrastructureTitle": "Install an engine",
         "availableInfrastructureDescription": "Search the workspace IaC catalog and open the same installation modal used in server detail.",
-        "noInstalledInfrastructure": "No installed or installing infrastructure modules were reported for this gateway server.",
-        "noAvailableInfrastructure": "All infrastructure modules from this catalog are already reported on the selected gateway.",
+        "noInstalledInfrastructure": "This server has no web server engine yet. Install one below.",
+        "noAvailableInfrastructure": "Every available engine is already on this server.",
         "infrastructureCategory": "Infrastructure",
         "installedBadge": "Installed",
         "installingBadge": "Installing",
         "loadingMetadata": "Loading metadata",
         "playbookReady": "Playbook ready",
-        "serverHint": "Select the server that should receive and run this load balancer.",
+        "serverHint": "The server that receives the public traffic. Only ready servers can be used.",
         "searchServer": "Search server...",
         "openInstallModal": "Install",
         "noServers": "No servers match this search.",
         "selectedServer": "Selected gateway: {server}",
         "noSelectedServer": "No gateway server selected.",
-        "pageOf": "Page {page} of {total}"
+        "pageOf": "Page {page} of {total}",
+        "notReady": "Only ready servers can run a load balancer."
       },
       "routing": {
         "title": "Traffic routing",
         "description": "Choose the traffic layer and map incoming requests to applications or direct upstream addresses.",
         "kindHint": "L7 is best for HTTP path routing. L4 is best for raw TCP, UDP, or database ports.",
-        "featuresHint": "Protocol and SSL flags are stored with the load balancer configuration.",
-        "sslHint": "Enable TLS handling when this gateway should serve secure traffic.",
-        "l7Hint": "Each rule matches an incoming path and sends it to an application or upstream pool.",
+        "featuresHint": "How visitors connect. With HTTPS, dNocs requests and renews the certificate for you.",
+        "sslHint": "Serve the site over HTTPS. Turn off only for plain-HTTP setups.",
+        "l7Hint": "Each rule matches a path and sends it to an application or an address.",
         "l4Hint": "L4 forwards traffic to one or more upstream addresses without HTTP path inspection.",
         "wildcard": "Wildcard"
       },
@@ -1898,7 +1899,8 @@
         "httpsOff": "Off",
         "mode": "Routing mode",
         "routes": "Routes",
-        "footnote": "dNocs installs the engine on the gateway server if it is not there yet, then publishes the routes."
+        "footnote": "dNocs installs the engine on the gateway server if it is not there yet, then publishes the routes.",
+        "startTitle": "Start with a gateway server"
       }
     },
     "loadBalancersDetail": {
@@ -3216,8 +3218,8 @@
     },
     "loadBalancerCreation": {
       "title": "Create Load Balancer",
-      "sectionLbKind": "LB Type Allocation",
-      "sectionFeatures": "Protocol & Features",
+      "sectionLbKind": "Routing mode",
+      "sectionFeatures": "Protocol and HTTPS",
       "fieldDescription": {
         "title": "Name"
       },
@@ -3228,24 +3230,24 @@
         "useExternalDomain": "Use External Domain"
       },
       "fieldServer": {
-        "title": "Gateway Server",
+        "title": "Gateway server",
         "placeholder": "Select a server",
         "onError": "Failed to load servers."
       },
       "fieldEngine": {
-        "title": "Web Server Engine",
+        "title": "Web server engine",
         "placeholder": "Select engine"
       },
       "fieldLbKind": {
-        "hintL7": "L7 allocation enables HTTP/HTTPS protocol inspection and URI-based path routing.",
-        "hintL4": "L4 allocation enables TCP/UDP port-based forwarding without protocol inspection."
+        "hintL7": "Routes by path, for websites and HTTP APIs (/api, /app…).",
+        "hintL4": "Forwards raw TCP/UDP ports, for databases and other non-HTTP services."
       },
       "fieldProtocol": {
         "title": "Protocol",
         "placeholder": "Select protocol"
       },
       "fieldSslEnabled": {
-        "title": "SSL Enabled"
+        "title": "HTTPS"
       },
       "l4rule": {
         "title": "L4 Destination",
@@ -3256,7 +3258,7 @@
         }
       },
       "upstreamRules": {
-        "title": "Upstream Rules Configuration",
+        "title": "Routes",
         "addRule": "Add New Rule",
         "removeRule": "Remove",
         "ruleLabel": "Rule",
