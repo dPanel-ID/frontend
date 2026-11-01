@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import {
   ActivityIcon,
+  LockIcon,
   RouteIcon,
   ServerIcon,
   ShieldCheckIcon,
@@ -13,6 +14,9 @@ import { LOAD_BALANCER_FEATURES } from '@/entities/load-balancer/ui/constants/fe
 import { LOAD_BALANCER_STATUS_METADATA } from '@/entities/load-balancer/ui/constants/state-metadata';
 import { LOAD_BALANCER_WEBSERVER_ENGINE } from '@/entities/load-balancer/ui/constants/webserver';
 
+import { ApiLoadBalancer } from '@/shared/api';
+import type { CertificateStatus } from '@/shared/api/load-balancer.certificate.$id';
+import type { StatTileTone } from '@/shared/presentation/molecules/StatTile';
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
 
 import { getRouteCount } from '../-lib/upstream-drafts';
@@ -32,7 +36,7 @@ export function Overview(props: { details: LoadBalancerDetails }) {
   const routes = getRouteCount(details);
 
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
       <StatTile
         icon={ActivityIcon}
         tone={details.state.status === 'failed' ? 'red' : 'emerald'}
@@ -79,6 +83,64 @@ export function Overview(props: { details: LoadBalancerDetails }) {
         value={t(engine.i18n.brandName)}
         hint={features || undefined}
       />
+      <CertificateTile loadBalancerId={String(details.id)} />
     </div>
+  );
+}
+
+const CERTIFICATE_TONE: Record<CertificateStatus, StatTileTone> = {
+  none: 'neutral',
+  valid: 'emerald',
+  expiring: 'amber',
+  expired: 'red',
+  missing: 'amber',
+};
+
+const CERTIFICATE_LABEL = {
+  none: 'page.loadBalancersDetail.tiles.certificateNone',
+  valid: 'page.loadBalancersDetail.tiles.certificateValid',
+  expiring: 'page.loadBalancersDetail.tiles.certificateExpiring',
+  expired: 'page.loadBalancersDetail.tiles.certificateExpired',
+  missing: 'page.loadBalancersDetail.tiles.certificateMissing',
+} as const;
+
+/** The certificate the server serves, read through its agent. */
+function CertificateTile(props: { loadBalancerId: string }) {
+  const t = useDevetekTranslations();
+  const [response] = ApiLoadBalancer.Certificate.$Id.useGet({
+    loadBalancerId: props.loadBalancerId,
+  });
+
+  if (response.$status !== 'success') {
+    return (
+      <StatTile
+        icon={LockIcon}
+        label={t('page.loadBalancersDetail.tiles.certificate')}
+        loading={response.$status === 'loading'}
+        value={t('page.loadBalancersDetail.tiles.certificateUnavailable')}
+        hint={response.$status === 'failed' ? response.error.message : undefined}
+      />
+    );
+  }
+
+  const status = response.status;
+  let hint = response.message;
+  if (status === 'none') {
+    hint = t('page.loadBalancersDetail.tiles.certificateNoneHint');
+  } else if (response.issuer && response.days_left != null) {
+    hint = t('page.loadBalancersDetail.tiles.certificateExpires', {
+      issuer: response.issuer,
+      days: response.days_left,
+    });
+  }
+
+  return (
+    <StatTile
+      icon={LockIcon}
+      tone={CERTIFICATE_TONE[status]}
+      label={t('page.loadBalancersDetail.tiles.certificate')}
+      value={t(CERTIFICATE_LABEL[status])}
+      hint={hint || undefined}
+    />
   );
 }
