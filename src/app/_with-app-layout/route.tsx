@@ -15,7 +15,10 @@ function WithAppLayout() {
   return (
     <AuthGuard>
       <AppLayout>
-        <div className="p-3">
+        {/* pb-24 keeps the end of every page (pagination, last rows) clear
+            of the floating "Ask dPanel" button, which sits 20px from the
+            bottom and is about 44px tall. */}
+        <div className="p-3 pb-24">
           <Outlet />
         </div>
       </AppLayout>
