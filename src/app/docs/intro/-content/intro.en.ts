@@ -15,7 +15,7 @@ export const DOCS_INTRO_EN: DocsIntroCopy = {
     steps: [
       {
         title: 'Bring a server, or let dPanel launch one',
-        text: 'Connect a machine you already run over SSH, or launch a VM at IDCloudHost, AWS, GCP or Vultr. Either way, dPanel takes it from there.',
+        text: 'Connect a machine you already run over SSH, or launch a VM at AWS, Google Cloud, DigitalOcean, IDCloudHost, Alibaba Cloud or Tencent Cloud. Either way, dPanel takes it from there.',
       },
       {
         title: 'It sets the server up',
@@ -79,7 +79,15 @@ export const DOCS_INTRO_EN: DocsIntroCopy = {
   },
   providers: {
     title: 'Works with',
-    items: ['IDCloudHost', 'AWS', 'GCP', 'Vultr', 'Your own server over SSH'],
+    items: [
+      'AWS',
+      'Google Cloud',
+      'DigitalOcean',
+      'IDCloudHost',
+      'Alibaba Cloud',
+      'Tencent Cloud',
+      'Your own server over SSH',
+    ],
   },
   closing: {
     title: 'Start with one server.',

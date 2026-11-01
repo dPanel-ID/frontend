@@ -15,7 +15,7 @@ export const DOCS_INTRO_ID: DocsIntroCopy = {
     steps: [
       {
         title: 'Bawa server Anda, atau biarkan dPanel membuatnya',
-        text: 'Hubungkan mesin yang sudah Anda jalankan lewat SSH, atau buat VM di IDCloudHost, AWS, GCP, atau Vultr. Keduanya sama saja: dPanel yang melanjutkan.',
+        text: 'Hubungkan mesin yang sudah Anda jalankan lewat SSH, atau buat VM di AWS, Google Cloud, DigitalOcean, IDCloudHost, Alibaba Cloud, atau Tencent Cloud. Keduanya sama saja: dPanel yang melanjutkan.',
       },
       {
         title: 'dPanel menyiapkan servernya',
@@ -80,10 +80,12 @@ export const DOCS_INTRO_ID: DocsIntroCopy = {
   providers: {
     title: 'Bekerja dengan',
     items: [
-      'IDCloudHost',
       'AWS',
-      'GCP',
-      'Vultr',
+      'Google Cloud',
+      'DigitalOcean',
+      'IDCloudHost',
+      'Alibaba Cloud',
+      'Tencent Cloud',
       'Server Anda sendiri via SSH',
     ],
   },
