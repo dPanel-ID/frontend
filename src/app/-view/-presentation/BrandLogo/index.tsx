@@ -6,10 +6,16 @@ import LOGO_TERPUSAT from '@/shared/assets/ico-terpusat.svg';
 
 interface BrandLogoProps {
   collapsed?: boolean;
+  /**
+   * Renders the brand as the page's `<h1>`. The landing page renders its
+   * layout twice before it knows the screen size, and only one may be it.
+   */
+  asHeading?: boolean;
 }
 
 export default function BrandLogo(props: BrandLogoProps) {
-  const { collapsed } = props;
+  const { asHeading, collapsed } = props;
+  const Brand = asHeading ? 'h1' : 'p';
 
   const [theme] = useTheme();
 
@@ -28,20 +34,21 @@ export default function BrandLogo(props: BrandLogoProps) {
         >
           <img
             src={theme === 'dark' ? LOGO_TERPUSAT_WHITE : LOGO_TERPUSAT}
-            alt="Logo Terpusat"
+            alt="dPanel - dNocs logo"
           />
         </div>
 
         {!collapsed && (
-          <p className="text-xl text-primary flex items-center">
-            d<span className="font-bold">nocs</span>
+          <Brand className="text-xl font-normal text-primary flex items-center">
+            <span className="sr-only">dPanel - </span>d
+            <span className="font-bold">Nocs</span>
             <span className="not-md:hidden">&nbsp;&nbsp;</span>
             <span className="not-md:hidden w-0.25 h-7 bg-primary/70" />
             <span className="not-md:hidden">&nbsp;&nbsp;</span>
             <span className="not-md:hidden pt-0.5 text-sm opacity-50">
               {t('page.landing.heading.slogan')}
             </span>
-          </p>
+          </Brand>
         )}
       </a>
     </div>

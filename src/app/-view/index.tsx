@@ -32,7 +32,8 @@ const ViewFull = () => {
   );
 };
 
-const ViewResponsive = () => {
+/** `secondary` when rendered beside the full view, whose header has the h1. */
+const ViewResponsive = (props: { secondary?: boolean }) => {
   const { isBot } = useDisplayView();
 
   const t = useDevetekTranslations();
@@ -53,7 +54,7 @@ const ViewResponsive = () => {
     >
       <Layout.Responsive.Main>
         <Layout.MainWrapperCard key="responsiveview">
-          <Heading />
+          <Heading primary={!props.secondary} />
           <MarketingCarousel />
           <Footer />
         </Layout.MainWrapperCard>
@@ -88,7 +89,7 @@ export default function LandingView() {
     return (
       <>
         <ViewFull />
-        <ViewResponsive />
+        <ViewResponsive secondary />
       </>
     );
   }
