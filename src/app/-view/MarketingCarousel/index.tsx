@@ -28,18 +28,20 @@ const MarketingCarouselItem = (props: MarketingCarouselItemProps) => {
         <div className="flex flex-col">
           <div className="grow" />
 
-          <h1 className="not-lg:text-center lg:w-[80%] text-3xl md:text-5xl lg:text-7xl leading-8 md:leading-14 lg:leading-19 font-medium text-primary pb-1">
+          <h2 className="not-lg:text-center lg:w-[80%] text-3xl md:text-5xl lg:text-7xl leading-8 md:leading-14 lg:leading-19 font-medium text-primary pb-1">
             {t.rich(`${slideKey}.title`, {
               br: () => <br />,
               highlight: (node) => <span className="text-accent">{node}</span>,
             })}
-          </h1>
+          </h2>
         </div>
 
         <div className="w-full h-full flex items-center justify-center">
           <img
             className="w-[80%] lg:w-full h-full object-scale-down lg:object-bottom-right pb-2 md:pb-5 lg:pb-8"
             src={illustSrc}
+            alt=""
+            aria-hidden
           />
         </div>
       </div>

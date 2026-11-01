@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite dev --port 3000 --host 0.0.0.0",
     "build": "vite build",
-    "build:static": "STATIC_SPA=true VITE_STATIC_SPA=true BUILD_DIR=.output-static vite build",
+    "build:static": "STATIC_SPA=true VITE_STATIC_SPA=true BUILD_DIR=.output-static vite build && node scripts/seo/postbuild.mjs .output-static/client",
     "build:static:prerender": "STATIC_PRERENDER=true VITE_STATIC_PRERENDER=true BUILD_DIR=.output-static vite build",
     "serve": "vite preview",
     "test": "vitest run",
