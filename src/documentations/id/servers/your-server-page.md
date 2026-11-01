@@ -1,6 +1,6 @@
 ---
 title: Halaman server Anda
-description: Fungsi setiap tab pada sebuah server.
+description: Isi setiap tab di halaman server: ringkasan, modul, layanan, pengguna, jaringan, berkas, log, dan pengaturan.
 sidebar_position: 5
 sidebar_icon: gauge
 ---

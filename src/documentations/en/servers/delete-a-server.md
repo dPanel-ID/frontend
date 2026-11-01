@@ -1,6 +1,6 @@
 ---
 title: Delete a server
-description: Stop paying for a machine you have finished with.
+description: Delete a server you no longer need: what dPanel destroys at your cloud provider, and what happens to a server you connected yourself.
 sidebar_position: 8
 sidebar_icon: trash-2
 ---

@@ -1,6 +1,6 @@
 ---
 title: Your server page
-description: What each tab on a server is for.
+description: What each tab on a server page shows: overview, modules, services, users, network, files, logs and settings.
 sidebar_position: 5
 sidebar_icon: gauge
 ---
