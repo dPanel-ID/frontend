@@ -5,14 +5,11 @@ import type {
   ReactNode,
 } from 'react';
 
-import dayjs from 'dayjs';
 import {
   BuildingIcon,
-  CalendarIcon,
   Clock3Icon,
   ExternalLinkIcon,
   EyeIcon,
-  GlobeIcon,
   MoreHorizontalIcon,
   NetworkIcon,
   RouteIcon,
@@ -27,7 +24,6 @@ import type { LucideProps } from 'lucide-react';
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import type { SchemaLoadBalancerParts } from '@/entities/load-balancer/rules/schema';
-import { LOAD_BALANCER_FEATURES } from '@/entities/load-balancer/ui/constants/features';
 import { LOAD_BALANCER_STATUS_METADATA } from '@/entities/load-balancer/ui/constants/state-metadata';
 import { LOAD_BALANCER_WEBSERVER_ENGINE } from '@/entities/load-balancer/ui/constants/webserver';
 
@@ -210,7 +206,7 @@ export default function LbCard(props: LbCardProps) {
       onClick={handleCardClick}
       onKeyDown={handleCardKeyDown}
       className={cn(
-        'overflow-hidden rounded-2xl border bg-card transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary hover:-translate-y-0.5 hover:border-sky-400/40 hover:shadow-lg hover:shadow-black/5',
+        'overflow-hidden rounded-2xl border bg-card transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary hover:border-sky-400/40',
         onClickDetails && 'cursor-pointer',
         data.state.status === 'failed' && 'border-red-400/40',
         data.state.status === 'progress' && 'border-sky-400/40',
@@ -218,16 +214,13 @@ export default function LbCard(props: LbCardProps) {
           'border-dashed border-amber-400/50',
       )}
     >
-      {/* The minimums have to fit the content column, not the viewport:
-          `xl` matches at a 1280px window, where the sidebar and the help
-          aside leave this row about 1030px. The old 280/220/220/180/88
-          needed more than that, so the first column truncated. */}
-      <div className="grid items-center gap-4 p-4 xl:grid-cols-[minmax(230px,1.5fr)_minmax(170px,1fr)_minmax(170px,1fr)_minmax(130px,0.7fr)_88px]">
-        <div className="flex min-w-0 items-center gap-3">
+      <div className="flex flex-col gap-3 p-4">
+        <div className="flex min-w-0 items-start gap-3">
           <LoadBalancerIcon icon={webserver.icon} badge={RouteIcon} />
-          <div className="min-w-0">
-            <div className="flex min-w-0 items-center gap-2">
-              <h3 className="truncate text-sm font-bold text-primary">
+
+          <div className="min-w-0 flex-1">
+            <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+              <h3 className="min-w-0 truncate text-base font-bold text-primary">
                 {data.domain.fqdn}
               </h3>
               <a
@@ -246,130 +239,73 @@ export default function LbCard(props: LbCardProps) {
               >
                 <ExternalLinkIcon className="size-3.5" />
               </a>
-            </div>
-            <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium text-primary/50">
-              <InlineInfo
-                icon={ShieldCheckIcon}
-                value={t(webserver.i18n.brandName)}
+              <StatusPill
+                icon={stateMetadata.icon}
+                label={t(stateMetadata.i18n.statusLabel)}
+                color={`var(${stateMetadata.color})`}
               />
-              <InlineInfo
-                icon={UserIcon}
-                value={data.ownership.team || data.ownership.owner}
-              />
-              <InlineInfo icon={Clock3Icon} value={lastUpdated} />
+              <Badge variant="outline" className="font-mono">
+                {kindLabel}
+              </Badge>
             </div>
-          </div>
-        </div>
-
-        <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-primary">
-            {data.gateway?.server.hostname || t('page.loadBalancers.noGateway')}
-          </p>
-          <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium text-primary/50">
-            <InlineInfo
-              icon={GlobeIcon}
-              value={data.gateway?.address || t('page.loadBalancers.noAddress')}
-            />
-          </div>
-        </div>
-
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="font-mono">
-              {kindLabel}
-            </Badge>
-            <p className="truncate text-sm font-bold text-primary">
-              {routingSummary}
+            <p className="mt-0.5 truncate text-sm text-primary/55">
+              {data.description || t('page.loadBalancers.noDescription')}
             </p>
           </div>
-          <p className="mt-1 truncate text-xs font-medium text-primary/50">
-            {getPrimaryRouteSummary(data.configuration, t)}
-          </p>
+
+          <div
+            className="flex shrink-0 items-center gap-1"
+            onClick={stopInteractivePropagation}
+            onKeyDown={stopInteractivePropagation}
+          >
+            <ActionButton
+              icon={EyeIcon}
+              label={t('common.actions.details')}
+              onClick={onClickDetails}
+            />
+            <ActionPopover actions={actions.slice(1)}>
+              <Button
+                size="icon-sm"
+                buttonColor="secondary"
+                buttonStyle="ghost"
+                aria-label={t('common.actions.more')}
+                title={t('common.actions.more')}
+              >
+                <MoreHorizontalIcon />
+              </Button>
+            </ActionPopover>
+          </div>
         </div>
 
-        <div className="flex min-w-0 flex-col items-start gap-1.5">
-          <StatusPill
-            icon={stateMetadata.icon}
-            label={t(stateMetadata.i18n.statusLabel)}
-            color={`var(${stateMetadata.color})`}
+        <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-primary/55">
+          <InlineInfo
+            icon={ServerIcon}
+            value={[
+              data.gateway?.server.hostname ||
+                t('page.loadBalancers.noGateway'),
+              data.gateway?.address,
+            ]
+              .filter(Boolean)
+              .join(' · ')}
           />
-        </div>
-
-        <div
-          className="flex justify-end gap-1"
-          onClick={stopInteractivePropagation}
-          onKeyDown={stopInteractivePropagation}
-        >
-          <ActionButton
-            icon={EyeIcon}
-            label={t('common.actions.details')}
-            onClick={onClickDetails}
-          />
-          <ActionPopover actions={actions.slice(1)}>
-            <Button
-              size="icon-sm"
-              buttonColor="secondary"
-              buttonStyle="ghost"
-              aria-label={t('common.actions.more')}
-              title={t('common.actions.more')}
-            >
-              <MoreHorizontalIcon />
-            </Button>
-          </ActionPopover>
-        </div>
-      </div>
-
-      <div className="grid gap-3 border-t border-dashed px-4 py-3 lg:grid-cols-[1.35fr_1fr_1fr]">
-        <DetailGroup
-          icon={SignpostIcon}
-          title={t('page.loadBalancers.sections.routingRules')}
-        >
-          <RoutePreview configuration={data.configuration} />
-        </DetailGroup>
-
-        <DetailGroup icon={NetworkIcon} title={t('common.terms.configuration')}>
-          <DetailItem
+          <InlineInfo
             icon={ShieldCheckIcon}
-            label={t('common.terms.engine')}
             value={t(webserver.i18n.brandName)}
           />
-          <DetailItem
-            icon={RouteIcon}
-            label={t('page.loadBalancers.lbKind')}
-            value={kindLabel}
+          <InlineInfo
+            icon={data.ownership.team ? BuildingIcon : UserIcon}
+            value={data.ownership.team || data.ownership.owner}
           />
-          <FeatureStrip features={Array.from(data.features)} />
-        </DetailGroup>
+          <InlineInfo icon={Clock3Icon} value={lastUpdated} />
+        </div>
 
-        <DetailGroup icon={BuildingIcon} title={t('common.terms.ownership')}>
-          <DetailItem
-            icon={UserIcon}
-            label={t('common.terms.owner')}
-            value={data.ownership.owner}
-          />
-          <DetailItem
-            icon={BuildingIcon}
-            label={t('common.terms.team')}
-            value={
-              data.ownership.team ||
-              (data.ownership.teamId
-                ? t('page.loadBalancers.unnamedTeam')
-                : t('page.loadBalancers.personalScope'))
-            }
-          />
-          <DetailItem
-            icon={CalendarIcon}
-            label={t('common.terms.createdAt')}
-            value={getDistanceFromNow(data.timestamp.created, locale)}
-            title={formatDate(data.timestamp.created)}
-          />
-          <DetailItem
-            icon={Clock3Icon}
-            label={t('common.terms.lastUpdated')}
-            value={lastUpdated}
-            title={formatDate(data.timestamp.updated)}
-          />
-        </DetailGroup>
+        <div className="flex min-w-0 items-start gap-2 border-t border-dashed pt-3">
+          <span className="mt-1 inline-flex shrink-0 items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-primary/45">
+            <SignpostIcon className="size-3.5" />
+            {routingSummary}
+          </span>
+          <RoutePreview configuration={data.configuration} />
+        </div>
       </div>
 
       {data.state.message && (
@@ -396,7 +332,7 @@ function RoutePreview(props: { configuration: LbConfiguration }) {
     }
 
     return (
-      <div className="grid gap-1.5">
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
         {configuration.upstreams.slice(0, 3).map((upstream, index) => (
           <RouteLine
             key={`${upstream.address}:${upstream.port}:${index}`}
@@ -414,7 +350,7 @@ function RoutePreview(props: { configuration: LbConfiguration }) {
   }
 
   return (
-    <div className="grid gap-1.5">
+    <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
       {configuration.rules.slice(0, 3).map((rule, index) => (
         <RouteLine
           key={`${rule.upstream.type}:${getRulePath(rule.upstream)}:${index}`}
@@ -423,36 +359,6 @@ function RoutePreview(props: { configuration: LbConfiguration }) {
         />
       ))}
       <MoreCount count={configuration.rules.length - 3} />
-    </div>
-  );
-}
-
-function FeatureStrip(props: {
-  features: Array<keyof typeof LOAD_BALANCER_FEATURES>;
-}) {
-  const { features } = props;
-  const t = useDevetekTranslations();
-
-  if (features.length < 1) {
-    return <EmptyDetail>{t('page.loadBalancers.noFeatures')}</EmptyDetail>;
-  }
-
-  return (
-    <div className="flex flex-wrap gap-1.5 pt-1">
-      {features.map((feature) => {
-        const metadata = LOAD_BALANCER_FEATURES[feature];
-
-        return (
-          <span
-            key={feature}
-            title={t(metadata.i18n.label)}
-            className="inline-flex h-7 items-center gap-1 rounded-md border bg-background px-2 text-xs font-semibold text-primary/70"
-          >
-            <img src={metadata.logoSrc} alt="" className="size-3.5" />
-            {t(metadata.i18n.label)}
-          </span>
-        );
-      })}
     </div>
   );
 }
@@ -515,50 +421,6 @@ function ActionButton(props: {
   );
 }
 
-function DetailGroup(props: {
-  children: ReactNode;
-  icon: IconComponent;
-  title: string;
-}) {
-  const { children, icon: Icon, title } = props;
-
-  return (
-    <section className="min-w-0 rounded-lg border bg-background/65 p-3">
-      <h4 className="mb-2 flex items-center gap-2 text-xs font-bold uppercase text-primary/55">
-        <Icon className="size-3.5" />
-        {title}
-      </h4>
-      <div className="grid gap-1.5">{children}</div>
-    </section>
-  );
-}
-
-function DetailItem(props: {
-  icon: IconComponent;
-  label: string;
-  value?: ReactNode;
-  /** The exact value, for a relative one that hides it. */
-  title?: string;
-}) {
-  const { icon: Icon, label, title, value } = props;
-  const t = useDevetekTranslations();
-
-  return (
-    <div className="grid grid-cols-[1.05fr_minmax(0,1.35fr)] items-start gap-2 text-sm">
-      <span className="flex min-w-0 items-center gap-1.5 font-medium text-primary/50">
-        <Icon className="size-3.5 shrink-0" />
-        <span className="truncate">{label}</span>
-      </span>
-      <span
-        className="min-w-0 break-words font-semibold text-primary"
-        title={title}
-      >
-        {value || t('common.terms.unknown')}
-      </span>
-    </div>
-  );
-}
-
 function InlineInfo(props: { icon: IconComponent; value?: ReactNode }) {
   const { icon: Icon, value } = props;
 
@@ -576,10 +438,13 @@ function RouteLine(props: { label: string; value: string }) {
   const { label, value } = props;
 
   return (
-    <div className="grid grid-cols-[minmax(92px,0.7fr)_minmax(0,1.3fr)] gap-2 rounded-md border bg-card/45 px-2 py-1.5 text-sm">
-      <code className="truncate font-semibold text-primary/60">{label}</code>
-      <code className="truncate font-semibold text-primary">{value}</code>
-    </div>
+    <span className="inline-flex max-w-full min-w-0 items-center gap-1.5 rounded-md border bg-background/60 px-2 py-1 font-mono text-xs">
+      <span className="truncate font-semibold text-primary/60">{label}</span>
+      <span aria-hidden className="text-primary/35">
+        →
+      </span>
+      <span className="truncate font-semibold text-primary">{value}</span>
+    </span>
   );
 }
 
@@ -590,9 +455,9 @@ function MoreCount(props: { count: number }) {
   if (count <= 0) return null;
 
   return (
-    <p className="text-xs font-semibold text-primary/45">
+    <span className="text-xs font-semibold text-primary/45">
       {t('page.loadBalancers.moreRoutes', { count })}
-    </p>
+    </span>
   );
 }
 
@@ -615,21 +480,6 @@ function getRoutingSummary(
   return t('page.loadBalancers.xRules', {
     length: configuration.rules.length,
   });
-}
-
-function getPrimaryRouteSummary(
-  configuration: LbConfiguration,
-  t: ReturnType<typeof useDevetekTranslations>,
-) {
-  if (configuration.lbKind === 'l4') {
-    const first = configuration.upstreams[0];
-    if (!first) return t('page.loadBalancers.noRules');
-    return `${first.address}:${first.port}`;
-  }
-
-  const first = configuration.rules[0]?.upstream;
-  if (!first) return t('page.loadBalancers.noRules');
-  return `${getRulePath(first)} -> ${formatRuleTarget(first, t)}`;
 }
 
 function getRulePath(rule: L7RuleUpstream) {
@@ -659,9 +509,4 @@ function formatRuleTarget(
   const port = target.port > 0 ? `:${target.port}` : '';
 
   return `${protocol}${target.address.hostname}${port}`;
-}
-
-function formatDate(value?: Date | string) {
-  if (!value) return '';
-  return dayjs(value).format('YYYY/MM/DD HH:mm');
 }

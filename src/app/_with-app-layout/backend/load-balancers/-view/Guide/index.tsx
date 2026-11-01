@@ -1,80 +1,41 @@
-import { ArrowRightIcon, GlobeIcon, RouteIcon, ServerIcon } from 'lucide-react';
+import { GlobeIcon, RouteIcon, ServerIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { cn } from '@/shared/libs/tailwind/cn';
-import {
-  FLOW_ACCENTS,
-  flowCtaClassName,
-} from '@/shared/presentation/organisms/FlowHero';
-
-import { useEmit } from '../../-models/events';
+import { FLOW_ACCENTS } from '@/shared/presentation/organisms/FlowHero';
 
 /**
  * "Load balancer" sounds like a traffic-splitting appliance, and most people
  * here want the simpler thing it also is: the front door that terminates
- * HTTPS and forwards a path to an application.
+ * HTTPS and forwards a path to an application. Shown to people who have none
+ * yet; once they do, the list is the page.
  */
-export default function Guide() {
+export function GuideSteps() {
   const t = useDevetekTranslations();
-  const emit = useEmit();
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border bg-card">
-      <div
-        className={cn(
-          'pointer-events-none absolute inset-0',
-          FLOW_ACCENTS.sky.glow,
-        )}
+    <ol className="grid gap-2 text-left sm:grid-cols-3">
+      <Step
+        number={1}
+        icon={ServerIcon}
+        title={t('page.loadBalancers.guide.steps.gateway.title')}
+        description={t('page.loadBalancers.guide.steps.gateway.description')}
       />
-
-      <div className="relative flex flex-col gap-4 p-5">
-        <div className="flex flex-col gap-1.5 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-          <div className="min-w-0">
-            <h2 className="text-base font-bold">
-              {t('page.loadBalancers.guide.title')}
-            </h2>
-            <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-              {t('page.loadBalancers.guide.description')}
-            </p>
-          </div>
-
-          <button
-            type="button"
-            className={cn(flowCtaClassName('sky'), 'shrink-0')}
-            onClick={() => emit('@load-balancers/open--create', null)}
-          >
-            <RouteIcon className="size-4" />
-            {t('page.loadBalancers.guide.cta')}
-            <ArrowRightIcon className="size-4 transition-transform group-hover/cta:translate-x-0.5" />
-          </button>
-        </div>
-
-        <ol className="grid gap-2 sm:grid-cols-3">
-          <Step
-            number={1}
-            icon={ServerIcon}
-            title={t('page.loadBalancers.guide.steps.gateway.title')}
-            description={t(
-              'page.loadBalancers.guide.steps.gateway.description',
-            )}
-          />
-          <Step
-            number={2}
-            icon={GlobeIcon}
-            title={t('page.loadBalancers.guide.steps.domain.title')}
-            description={t('page.loadBalancers.guide.steps.domain.description')}
-          />
-          <Step
-            number={3}
-            icon={RouteIcon}
-            title={t('page.loadBalancers.guide.steps.routes.title')}
-            description={t('page.loadBalancers.guide.steps.routes.description')}
-          />
-        </ol>
-      </div>
-    </section>
+      <Step
+        number={2}
+        icon={GlobeIcon}
+        title={t('page.loadBalancers.guide.steps.domain.title')}
+        description={t('page.loadBalancers.guide.steps.domain.description')}
+      />
+      <Step
+        number={3}
+        icon={RouteIcon}
+        title={t('page.loadBalancers.guide.steps.routes.title')}
+        description={t('page.loadBalancers.guide.steps.routes.description')}
+      />
+    </ol>
   );
 }
 
