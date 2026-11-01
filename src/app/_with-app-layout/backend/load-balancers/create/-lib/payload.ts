@@ -18,16 +18,21 @@ export function getRoutePreviewItems(
   }
 
   return (formValues.l7rules ?? []).map((rule, index) => {
+    const targets = (upstreams?: Array<{ address: string; port: number }>) =>
+      (upstreams ?? [])
+        .map((upstream) => `${upstream.address}:${upstream.port}`)
+        .join(', ');
+    const applicationName =
+      applications.find(
+        (application) => application.id === rule.applicationIdIfProxyPassApp,
+      )?.identity.name ??
+      `Application #${rule.applicationIdIfProxyPassApp ?? '-'}`;
     const destination =
-      rule.type === 'proxy-pass-app'
-        ? (applications.find(
-            (application) =>
-              application.id === rule.applicationIdIfProxyPassApp,
-          )?.identity.name ??
-          `Application #${rule.applicationIdIfProxyPassApp ?? '-'}`)
-        : (rule.upstreamsIfProxyPass ?? [])
-            .map((upstream) => `${upstream.address}:${upstream.port}`)
-            .join(', ');
+      rule.type !== 'proxy-pass-app'
+        ? targets(rule.upstreamsIfProxyPass)
+        : rule.addressModeIfProxyPassApp === 'custom'
+          ? `${applicationName} · ${targets(rule.customTargetsIfProxyPassApp)}`
+          : applicationName;
 
     return {
       key: `l7-${index}`,
@@ -48,14 +53,20 @@ export function toCreateLoadBalancerPayload(
       return values.l7rules.map((rule) => {
         const isApplicationTarget = rule.type === 'proxy-pass-app';
         const route = normalizeLoadBalancerPathMatchForPayload(rule.pathMatch);
-        const upstreams = isApplicationTarget
-          ? undefined
-          : rule.upstreamsIfProxyPass?.map((upstream) => ({
-              address: upstream.address,
-              port: String(upstream.port),
-            }));
+        const addressMode = isApplicationTarget
+          ? (rule.addressModeIfProxyPassApp ?? 'registered')
+          : undefined;
+        const targets = isApplicationTarget
+          ? addressMode === 'custom'
+            ? rule.customTargetsIfProxyPassApp
+            : undefined
+          : rule.upstreamsIfProxyPass;
+        const upstreams = targets?.map((upstream) => ({
+          address: upstream.address.trim(),
+          port: String(upstream.port),
+        }));
 
-        if (route.pathMatch === '/' && upstreams?.[0]) {
+        if (route.pathMatch === '/' && !isApplicationTarget && upstreams?.[0]) {
           defaultUpstream = `${upstreams[0].address}:${upstreams[0].port}`;
         }
 
@@ -66,6 +77,7 @@ export function toCreateLoadBalancerPayload(
           applicationId: isApplicationTarget
             ? rule.applicationIdIfProxyPassApp
             : undefined,
+          addressMode,
           upstreams,
         };
       });

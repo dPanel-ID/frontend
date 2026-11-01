@@ -1852,7 +1852,36 @@
         "sslHint": "Serve the site over HTTPS. Turn off only for plain-HTTP setups.",
         "l7Hint": "Each rule matches a path and sends it to an application or an address.",
         "l4Hint": "L4 forwards traffic to one or more upstream addresses without HTTP path inspection.",
-        "wildcard": "Wildcard"
+        "wildcard": "Wildcard",
+        "reach": {
+          "title": "How the gateway reaches this application",
+          "hintRemote": "{count, plural, one {# deployment runs} other {# deployments run}} on another server, maybe at another provider. Its internal IP is not reachable from here.",
+          "hintLocal": "Deployments on the gateway server itself are reached on localhost.",
+          "default": "Default",
+          "modes": {
+            "registered": {
+              "title": "Registered address",
+              "description": "The server address registered in dPanel. Works across providers."
+            },
+            "private": {
+              "title": "Private network",
+              "description": "The server’s private IP. Only when both share one network."
+            },
+            "custom": {
+              "title": "Custom targets",
+              "description": "Type IPs or another domain already serving the app."
+            }
+          },
+          "customTitle": "Targets",
+          "customPlaceholder": "203.0.113.10 or origin.example.com",
+          "customAddress": "Target address",
+          "customPort": "Target port",
+          "customRemove": "Remove target",
+          "customAdd": "Add target",
+          "noDeployments": "This application is not deployed yet.",
+          "privateResolved": "private IP, found when the load balancer is created",
+          "sameServer": "Same server"
+        }
       },
       "preview": {
         "title": "Preview deployment",
@@ -1879,15 +1908,19 @@
       "steps": {
         "gateway": {
           "title": "Gateway",
-          "description": "The server that answers public traffic, and the web server engine it runs."
+          "description": "Pick the server that answers public traffic and install its engine. You can continue once the engine is installed."
         },
         "domain": {
-          "title": "Domain and HTTPS",
-          "description": "The name visitors type. dNocs requests and renews the certificate for it."
+          "title": "Domain",
+          "description": "The name visitors type, and the DNS record dNocs creates for it."
         },
         "routing": {
           "title": "Routing",
-          "description": "Where each request goes: an application, a port on a server, or static files."
+          "description": "Where each request goes, and how the gateway reaches applications on other servers."
+        },
+        "review": {
+          "title": "Review",
+          "description": "Check everything once more, then create the load balancer."
         }
       },
       "review": {
@@ -1902,8 +1935,32 @@
         "httpsOff": "Off",
         "mode": "Routing mode",
         "routes": "Routes",
-        "footnote": "dNocs installs the engine on the gateway server if it is not there yet, then publishes the routes.",
+        "footnote": "dNocs writes the routes to the gateway and requests the certificate. It usually takes a minute.",
         "startTitle": "Start with a gateway server"
+      },
+      "flow": {
+        "back": "Back",
+        "continue": "Continue",
+        "edit": "Edit",
+        "blocked": {
+          "gateway": "Choose a ready server and an installed engine to continue.",
+          "domain": "Enter a domain, or pick a registered one and its subdomain.",
+          "routing": "Every route needs a path and a reachable target.",
+          "review": "Something above is still missing."
+        }
+      },
+      "dns": {
+        "externalTitle": "Record to add at your DNS provider",
+        "managedTitle": "Record dNocs creates at {provider}",
+        "proxied": "Proxied",
+        "dnsOnly": "DNS only",
+        "hostPending": "your-domain",
+        "gatewayPending": "gateway address",
+        "externalHint": "Point this A record at the gateway before traffic arrives. The certificate is issued once the name resolves to it.",
+        "proxiedHint": "Traffic goes through Cloudflare, which hides the gateway address. The certificate is issued over DNS-01, which works for Caddy and APISIX alike.",
+        "dnsOnlyHint": "Visitors reach the gateway directly. The certificate is issued over HTTP-01.",
+        "proxiedToggle": "Proxy through Cloudflare",
+        "proxiedToggleHint": "Turn off to point the name straight at the gateway (grey cloud)."
       }
     },
     "loadBalancersDetail": {

@@ -54,6 +54,8 @@ export const DEFAULT_VALUES: LoadBalancerCreationFormValues = {
       type: 'proxy-pass',
       upstreamsIfProxyPass: [{ address: 'localhost', port: 80 }],
       applicationIdIfProxyPassApp: '',
+      addressModeIfProxyPassApp: 'registered',
+      customTargetsIfProxyPassApp: [],
     },
   ],
   l4rule: {

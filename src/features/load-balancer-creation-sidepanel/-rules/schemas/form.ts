@@ -23,6 +23,14 @@ const l7Rule = z
     type: z.enum(['proxy_pass', 'proxy-pass', 'proxy-pass-app']),
     upstreamsIfProxyPass: z.array(upstream).optional(),
     applicationIdIfProxyPassApp: SchemaCommon.unitId.optional(),
+    /**
+     * How an application on another server is reached: its address
+     * registered in dPanel, its private network IP, or targets typed here.
+     */
+    addressModeIfProxyPassApp: z
+      .enum(['registered', 'private', 'custom'])
+      .optional(),
+    customTargetsIfProxyPassApp: z.array(upstream).optional(),
   })
   .superRefine((data, ctx) => {
     if (
@@ -32,6 +40,19 @@ const l7Rule = z
       ctx.addIssue({
         code: 'custom',
         path: ['upstreamsIfProxyPass'],
+        message: 'formErrors.required',
+      });
+    }
+
+    if (
+      data.type === 'proxy-pass-app' &&
+      data.addressModeIfProxyPassApp === 'custom' &&
+      (!data.customTargetsIfProxyPassApp ||
+        data.customTargetsIfProxyPassApp.length === 0)
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['customTargetsIfProxyPassApp'],
         message: 'formErrors.required',
       });
     }

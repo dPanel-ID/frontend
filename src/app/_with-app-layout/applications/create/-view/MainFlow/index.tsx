@@ -10,12 +10,12 @@ import type { LucideIcon } from 'lucide-react';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { cn } from '@/shared/libs/tailwind/cn';
+import { FlowActions } from '@/shared/presentation/organisms/FlowActions';
 import { FLOW_ACCENTS } from '@/shared/presentation/organisms/FlowHero';
+import { FlowStepper } from '@/shared/presentation/organisms/FlowStepper';
 
 import { useFlowNav } from '../../-model/flow-nav';
 import type { FlowStepKey } from '../../-model/flow-readiness';
-import FlowActions from '../../-presentation/FlowActions';
-import FlowStepper from '../../-presentation/FlowStepper';
 import { useSubmitFlow } from '../../-usecase/submit-flow';
 import Step1Source from '../MainWizard/step-1-source';
 import Step2Details from '../MainWizard/step-2-details';
