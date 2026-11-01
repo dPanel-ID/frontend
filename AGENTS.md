@@ -39,9 +39,9 @@ dPanel is a developer-first control plane for managing infrastructure, applicati
 
 Primary users include independent developers, small engineering teams, agencies, platform operators, and DevOps engineers.
 
-The platform v2 direction is additive. Preserve legacy APIs, legacy auth, legacy HTTP agent behavior, production data, and existing customer workflows while introducing Casdoor identity/RBAC, outbound Agent v2 through NSQ, execution records, Uptrace-backed observability, and GitHub Release artifact metadata.
+The platform signs users in through Casdoor (identity, workspaces and RBAC), runs every long-running operation as an execution record that the executor works through, manages servers through the active agent, reads observability from Uptrace, and stores application artifacts as GitHub Release metadata. Preserve production data and existing customer workflows.
 
-Production compatibility is a product requirement. Treat old status strings, empty-string statuses, nullable JSON fields, missing historical deployment references, numeric legacy IDs, and legacy artifact metadata as valid product states.
+Production compatibility is a product requirement. Treat old status strings, empty-string statuses, nullable JSON fields, missing historical deployment references, numeric IDs, and older artifact metadata (`application_artifacts.url`, `file_url`) as valid product states.
 
 Sensitive values must never be rendered, logged, included in screenshots, copied into mock data, or exposed in telemetry views. This includes passwords, tokens, SSH keys, machine secrets, provider credentials, DNS credentials, database passwords, payment data, and secret payloads.
 
@@ -87,10 +87,10 @@ Responsibilities:
 - Keep work aligned to the target personas: independent developers, small teams, agencies, platform operators, and DevOps engineers.
 - Define the expected user workflow before implementation begins, especially for long-running infrastructure actions.
 - Require every long-running operation to expose user-visible status, timestamps, failure context, and recovery guidance.
-- Preserve legacy behavior unless the task explicitly targets a migration or deprecation path.
-- Prefer additive UX and API changes during v2 work.
-- Call out feature flags or configuration gates for Casdoor, Uptrace, Agent v2, and GitHub artifact flows.
-- Require compatibility with legacy status values and missing historical relationships where production data allows them.
+- Preserve existing behavior unless the task explicitly changes or removes it.
+- Prefer additive UX and API changes.
+- Call out feature flags or configuration gates for Uptrace, active-agent and GitHub artifact flows.
+- Require compatibility with old status values and missing historical relationships where production data allows them.
 - Define ownership boundaries by product surface: identity/organization, providers/machines, applications/artifacts/deployments, executions/observability, DNS/load balancer, databases/services/users.
 - Escalate unresolved product questions instead of letting agents make architectural or rollout decisions silently.
 
@@ -98,7 +98,7 @@ Acceptance checklist:
 
 - User journey is explicit.
 - Product surface and owner are clear.
-- Legacy behavior is preserved or the migration path is stated.
+- Existing behavior is preserved, or the change to it is stated.
 - Sensitive data handling is stated.
 - Loading, empty, failure, retry, stale, and permission states are covered.
 - Observability or execution visibility is included for long-running work.
@@ -114,15 +114,14 @@ Responsibilities:
 - Enforce `RULES.md`: FSD dependency direction, hook-first usecases, zod schemas in `rules/`, typed API recipes, service hooks for dialogs/toasts, and local naming conventions.
 - Own UI state integrity for long-running operations: pending, queued, running, succeeded, failed, cancelled, retryable, stale, unauthorized, and degraded states.
 - Keep execution summary state usable even when Uptrace-backed detail data is unavailable.
-- Make legacy, dual, and active-agent machine modes explicit where they affect user understanding or available actions.
-- Preserve additive v1/v2 coexistence across legacy auth, Casdoor, legacy agents, Agent v2, old artifact metadata, and new artifact assets.
+- Keep older artifact metadata and new artifact assets both readable.
 - Work contract-first with backend APIs. Do not invent hidden client-side business rules or new API contracts.
 - Raise route, payload, state-transition, permission, or rollout gaps early with concrete questions.
 
 Deliverables:
 
-- Per-flow architecture brief covering route ownership, slice ownership, API dependencies, feature flags, loading/empty/error states, and migration assumptions.
-- Frontend contract checklist covering auth mode, organization scope, machine mode, execution lifecycle, telemetry source, and backward-compatibility behavior.
+- Per-flow architecture brief covering route ownership, slice ownership, API dependencies, feature flags, loading/empty/error states, and data-compatibility assumptions.
+- Frontend contract checklist covering organization scope, execution lifecycle, telemetry source, and production-data compatibility.
 - UI state matrix for happy path, pending, partial, failed, retryable, unauthorized, stale-data, and config-disabled states.
 - QA handoff notes covering keyboard/focus behavior, permissions, async race risks, and redaction-sensitive surfaces.
 
@@ -144,7 +143,7 @@ These rules apply to every agent working in this frontend repository. They are m
 - Secrets never reach the screen, the clipboard, a toast, a log, a screenshot or mock data: passwords, tokens, private keys, machine secrets, provider and DNS credentials, database passwords, payment data. The public half of an SSH key is the single safe exception and is labelled as safe to share. A secret the backend does not return is described, never faked or revealed behind a toggle.
 - Render-phase state updates are forbidden. Deferred search, popover sync, responsive state, and operation notifications must use event handlers, effects with asynchronous state transitions, refs, or explicit React state-transition APIs.
 - Text must fit its container at mobile and desktop widths. Use truncation, stable grid tracks, fixed toolbar dimensions, and responsive constraints so labels, filenames, icons, and dynamic status text do not shift or overlap.
-- Map DTOs to a view model in the slice's `-lib` before a view sees them, so production-shaped data — empty-string statuses, null JSON, missing IDs, legacy numeric IDs — is handled once and never crashes a card. Cover that mapper with a focused test.
+- Map DTOs to a view model in the slice's `-lib` before a view sees them, so production-shaped data — empty-string statuses, null JSON, missing IDs, numeric IDs — is handled once and never crashes a card. Cover that mapper with a focused test.
 - Any frontend implementation touching a visible surface MUST run `pnpm run type-check` and `npx eslint <changed paths>`, and, when practical, build or browser-verify the affected route at 1440, 1024 and 375 in light and dark. If verification cannot be run, state exactly what was skipped and why.
 - When a module is redesigned, record it in `docs/design/` next to `SERVERS_UI_REDESIGN_PLAN.md`: what changed, what was removed, which gaps are the backend's, and what is left. Update `UI_UX_STANDARD.md` in the same pull request if the standard itself moved.
 
@@ -155,25 +154,24 @@ QA owns production-safety validation for frontend work, not only visual correctn
 Responsibilities:
 
 - Validate user journeys against the product requirements: machine setup, service install, app deploy, execution visibility, agent health, auth, artifacts, DNS, load balancer, databases, and users.
-- Treat compatibility as P0: legacy APIs, legacy auth, legacy HTTP agent behavior, old status strings, missing historical references, and legacy artifact metadata must remain usable.
-- Verify frontend behavior with real backend contracts where possible. Avoid relying only on mocked happy paths for platform v2 work.
+- Treat compatibility as P0: old status strings, missing historical references, and older artifact metadata must remain usable.
+- Verify frontend behavior with real backend contracts where possible. Avoid relying only on mocked happy paths.
 - Ensure sensitive values never appear in UI, logs, telemetry views, screenshots, error states, or test artifacts.
 - Confirm implementation follows `RULES.md`, including FSD boundaries, zod schemas, API client usage, and service hooks.
 
 Acceptance criteria:
 
-- Legacy records with empty-string statuses, null JSON fields, missing artifact or machine references, and numeric legacy IDs render without crashes.
+- Records with empty-string statuses, null JSON fields, missing artifact or machine references, and numeric IDs render without crashes.
 - Long-running actions show durable execution state, timestamps, useful error summaries, and ordered events when available.
 - Missing Uptrace data degrades gracefully while DB summary state remains usable.
-- Casdoor-enabled and legacy-auth transition states are covered when auth surfaces change.
-- GitHub Release artifact UI preserves and reads legacy `application_artifacts.url` and `file_url` behavior.
-- Active-agent, dual-agent, and legacy HTTP machine modes are represented clearly and safely.
+- Unauthorized and expired Casdoor sessions are covered when auth surfaces change.
+- GitHub Release artifact UI still reads older `application_artifacts.url` and `file_url` values.
 - Rollout flags or config-disabled states do not expose broken navigation, dead actions, or misleading success states.
 
 Test strategy:
 
 - Map each UI change to the relevant P0/P1/P2 requirement and acceptance criteria.
-- Cover regression tests for legacy v1 flows before validating v2-only behavior.
+- Cover regression tests for existing flows before validating new behavior.
 - Use local full-stack or API-backed validation for execution, active-agent, Casdoor, Uptrace, and artifact flows when the change touches those areas.
 - Include compatibility fixtures for production-shaped data: empty statuses, nullable JSON, orphaned deployment references, empty `file_url`, and old artifact URL fields.
 - Test failure and degraded states: manager errors, executor failure, missing Uptrace logs, stale heartbeat, failed Ansible task, expired command, unauthorized Casdoor token, and disabled feature config.

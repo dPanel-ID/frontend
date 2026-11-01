@@ -325,7 +325,7 @@ missing agent work.
 agent delivers every heartbeat to the backend over the WebSocket or the
 callback URL, carrying `cpu.usage_percent`, `memory.used_percent` and
 `disk.used_percent` in its attributes. `upsertAgentFromEventTx` persists only
-`version`, `status`, `last_seen_at`, `nsq_topic` and `otel_resource_id` — the
+`version`, `status`, `last_seen_at` and `otel_resource_id` — the
 system stats are read and thrown away. The per-server usage endpoints then
 recover those same figures by querying Uptrace _logs_ for the agent's log
 file and parsing the heartbeat JSON back out of a text line.
