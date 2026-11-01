@@ -251,6 +251,13 @@
           "5m": "5m"
         }
       }
+    },
+    "moduleVersion": {
+      "release": "Version {version}",
+      "latest": "Latest",
+      "branch": "Branch {branch}",
+      "build": "Build {build}",
+      "default": "Default"
     }
   },
   "page": {
@@ -1873,14 +1880,16 @@
             }
           },
           "customTitle": "Targets",
-          "customPlaceholder": "203.0.113.10 or origin.example.com",
+          "customPlaceholder": "https://origin.example.com or 203.0.113.10",
           "customAddress": "Target address",
           "customPort": "Target port",
           "customRemove": "Remove target",
           "customAdd": "Add target",
           "noDeployments": "This application is not deployed yet.",
           "privateResolved": "private IP, found when the load balancer is created",
-          "sameServer": "Same server"
+          "sameServer": "Same server",
+          "customPortAuto": "auto",
+          "customHint": "Use an origin URL such as https://origin-gcp.example.com to reach an app another domain already serves: the gateway connects over HTTPS and asks for that domain. Leave the port empty to use 443 for https, 80 for http, or the app’s port for an IP. Keep one route’s targets all URLs or all IPs."
         }
       },
       "preview": {
@@ -3606,7 +3615,9 @@
     "parseDomain": {
       "invalidTld": "Parse domain failed: unrecognized TLD.",
       "invalidDomain": "Parse domain failed: invalid domain."
-    }
+    },
+    "mixedTargetForms": "Use only origin URLs or only IP addresses in one route.",
+    "portPositive": "Use a port between 1 and 65535."
   },
   "sidebar": {
     "teamsWidget": {

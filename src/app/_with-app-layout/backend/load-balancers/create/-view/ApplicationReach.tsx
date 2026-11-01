@@ -44,6 +44,7 @@ export function ApplicationReach(props: {
 }) {
   const { application, form, ruleIndex } = props;
   const t = useDevetekTranslations('page.loadBalancersCreate.routing.reach');
+  const tRoot = useDevetekTranslations();
   const gatewayId = useWatch({ control: form.control, name: 'serverId' });
   const mode = useController({
     control: form.control,
@@ -71,7 +72,7 @@ export function ApplicationReach(props: {
         .filter((server) => server.address)
         .map((server) => ({ address: server.address!, port: port || 80 }));
       targets.replace(
-        seeds.length > 0 ? seeds : [{ address: '', port: port || 80 }],
+        seeds.length > 0 ? seeds : [{ address: '', port: undefined }],
       );
     }
   };
@@ -166,9 +167,14 @@ export function ApplicationReach(props: {
                     max={65_535}
                     className="font-mono"
                     aria-label={t('customPort')}
+                    placeholder={t('customPortAuto')}
                     {...form.register(
                       `l7rules.${ruleIndex}.customTargetsIfProxyPassApp.${index}.port` as const,
-                      { valueAsNumber: true },
+                      {
+                        // Blank means "use the default port", not zero.
+                        setValueAs: (value: string) =>
+                          value === '' ? undefined : Number(value),
+                      },
                     )}
                   />
                   <Button
@@ -185,8 +191,8 @@ export function ApplicationReach(props: {
                 </div>
                 {(errors?.address || errors?.port) && (
                   <div className="grid grid-cols-[minmax(0,1fr)_96px] gap-2">
-                    <ErrorInline t={t} message={errors.address?.message} />
-                    <ErrorInline t={t} message={errors.port?.message} />
+                    <ErrorInline t={tRoot} message={errors.address?.message} />
+                    <ErrorInline t={tRoot} message={errors.port?.message} />
                   </div>
                 )}
               </div>
@@ -197,12 +203,15 @@ export function ApplicationReach(props: {
             buttonStyle="outline"
             buttonColor="secondary"
             className="w-fit"
-            onClick={() => targets.append({ address: '', port: port || 80 })}
+            onClick={() => targets.append({ address: '', port: undefined })}
           >
             <PlusIcon />
             {t('customAdd')}
           </Button>
-          <ErrorInline t={t} message={targetErrors?.message} />
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            {t('customHint')}
+          </p>
+          <ErrorInline t={tRoot} message={targetErrors?.message} />
         </div>
       ) : (
         <ul className="grid gap-1.5">
