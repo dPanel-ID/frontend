@@ -5,8 +5,6 @@ export { default as ApiArtifact } from './artifact';
 export { default as ApiAuth } from './auth';
 export { default as ApiBundle } from './bundle';
 export { default as ApiCloud } from './cloud';
-export { default as ApiDatabase } from './database';
-export { default as ApiDatabaseUser } from './database-user';
 export { default as ApiDeploy } from './deploy';
 export { default as ApiDomain } from './domain';
 export { default as ApiExecution } from './execution';
