@@ -1,5 +1,9 @@
+import type { ReactNode } from 'react';
+
+import { Link } from '@tanstack/react-router';
 import {
-  ArrowRightIcon,
+  ChevronRightIcon,
+  ExternalLinkIcon,
   Globe2Icon,
   Layers3Icon,
   ListTreeIcon,
@@ -13,332 +17,338 @@ import { useDevetekTranslations } from '@/services/i18n';
 import type { LoadBalancerDetails } from '@/entities/load-balancer/rules/schema';
 
 import { cn } from '@/shared/libs/tailwind/cn';
-import { Badge } from '@/shared/presentation/atoms/Badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/shared/presentation/atoms/Table';
+import {
+  DataPanel,
+  DataPanelMeta,
+  DataPanelState,
+} from '@/shared/presentation/organisms/DataPanel';
 
 import type { IconComponent, UpstreamDraft } from '../-lib/types';
 import { getRouteCount, getUpstreamDrafts } from '../-lib/upstream-drafts';
 
-import { DetailSurface, EmptyInline } from './-presentation/surfaces';
+type StopTone = 'sky' | 'violet' | 'emerald' | 'amber';
 
+const TONE_CLASSES: Record<StopTone, string> = {
+  sky: 'border-sky-400/30 bg-sky-500/10 text-sky-600 dark:text-sky-300',
+  violet:
+    'border-violet-400/30 bg-violet-500/10 text-violet-600 dark:text-violet-300',
+  emerald:
+    'border-emerald-400/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300',
+  amber:
+    'border-amber-400/30 bg-amber-500/10 text-amber-600 dark:text-amber-300',
+};
+
+const VISIBLE_TARGETS = 3;
+
+/**
+ * The request path as one rail: domain, load balancer, gateway and targets,
+ * with the hop between each named on the line. Below it, every route as a
+ * table row.
+ */
 export function GraphTab(props: { details: LoadBalancerDetails }) {
   const { details } = props;
   const t = useDevetekTranslations();
   const upstreams = getUpstreamDrafts(details);
-  const gatewayLabel =
-    details.gateway?.server.hostname ?? t('page.loadBalancers.noGateway');
   const routeCount = getRouteCount(details);
+  const protocol = details.domain.protocol.toUpperCase();
+  const kind = details.configuration.lbKind.toUpperCase();
 
   return (
     <div className="grid gap-4">
-      <DetailSurface
+      <DataPanel
         icon={RouteIcon}
         title={t('page.loadBalancersDetail.graph.title')}
         description={t('page.loadBalancersDetail.graph.description')}
       >
-        <div className="overflow-hidden rounded-lg border bg-background">
-          <div
-            className="p-4"
-            aria-label={t('page.loadBalancersDetail.graph.requestPath')}
+        <ol
+          aria-label={t('page.loadBalancersDetail.graph.requestPath')}
+          className="grid p-4 md:grid-cols-4 md:p-5"
+        >
+          <Stop
+            icon={Globe2Icon}
+            tone="sky"
+            label={t('page.loadBalancersDetail.graph.domain')}
+            hop={protocol}
+            meta={[protocol, t('page.loadBalancersDetail.graph.entryPoint')]}
           >
-            {/* Left to right from tablet width up, top to bottom on phones;
-                never wider than the page. */}
-            <div className="grid items-stretch gap-1 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1.25fr)]">
-              <GraphNode
-                icon={Globe2Icon}
-                label={t('page.loadBalancersDetail.graph.domain')}
-                value={details.domain.fqdn}
-                description={details.domain.protocol.toUpperCase()}
-                href={`${details.domain.protocol}://${details.domain.fqdn}`}
-                meta={t('page.loadBalancersDetail.graph.entryPoint')}
-                tone="source"
-              />
-              <GraphConnector label={details.domain.protocol.toUpperCase()} />
-              <GraphNode
-                icon={NetworkIcon}
-                label={t('common.terms.loadBalancer')}
-                value={details.description || details.domain.fqdn}
-                description={details.configuration.lbKind.toUpperCase()}
-                meta={t('page.loadBalancersDetail.graph.edgeRuntime')}
-                tone="edge"
-              />
-              <GraphConnector
-                label={details.configuration.lbKind.toUpperCase()}
-              />
-              <GraphNode
-                icon={ServerIcon}
-                label={t('page.loadBalancersDetail.graph.gateway')}
-                value={gatewayLabel}
-                description={
-                  details.gateway?.address ?? t('common.terms.unknown')
-                }
-                href={
-                  details.gateway
-                    ? `/servers/${details.gateway.server.id}`
-                    : undefined
-                }
-                meta={
-                  details.gateway
-                    ? t('page.loadBalancersDetail.graph.gatewayLinked')
-                    : t('common.terms.unknown')
-                }
-                tone="machine"
-              />
-              <GraphConnector
-                label={t('page.loadBalancersDetail.graph.routeFanout')}
-              />
-              <TargetCluster routeCount={routeCount} upstreams={upstreams} />
-            </div>
-          </div>
-        </div>
-      </DetailSurface>
+            <a
+              href={`${details.domain.protocol}://${details.domain.fqdn}`}
+              target="_blank"
+              rel="noreferrer"
+              className="group/link inline-flex max-w-full items-start gap-1 hover:underline"
+            >
+              <span className="break-all">{details.domain.fqdn}</span>
+              <ExternalLinkIcon className="mt-0.5 size-3.5 shrink-0 text-muted-foreground group-hover/link:text-foreground" />
+            </a>
+          </Stop>
 
-      <DetailSurface
+          <Stop
+            icon={NetworkIcon}
+            tone="violet"
+            label={t('common.terms.loadBalancer')}
+            hop={kind}
+            meta={[kind, t('page.loadBalancersDetail.graph.edgeRuntime')]}
+          >
+            <span className="break-words">
+              {details.description || details.domain.fqdn}
+            </span>
+          </Stop>
+
+          <Stop
+            icon={ServerIcon}
+            tone="emerald"
+            label={t('page.loadBalancersDetail.graph.gateway')}
+            hop={t('page.loadBalancersDetail.graph.routeCount', {
+              count: routeCount,
+            })}
+            meta={[details.gateway?.address]}
+          >
+            {details.gateway ? (
+              <Link
+                to="/servers/$id"
+                params={{ id: String(details.gateway.server.id) }}
+                className="break-all hover:underline"
+              >
+                {details.gateway.server.hostname}
+              </Link>
+            ) : (
+              <span className="text-muted-foreground">
+                {t('page.loadBalancers.noGateway')}
+              </span>
+            )}
+          </Stop>
+
+          <Stop
+            icon={Layers3Icon}
+            tone="amber"
+            label={t('page.loadBalancersDetail.graph.targets')}
+            meta={[
+              t('page.loadBalancersDetail.graph.targetCount', {
+                count: upstreams.length,
+              }),
+            ]}
+            last
+          >
+            {upstreams.length > 0 ? (
+              <span className="grid gap-1">
+                {upstreams.slice(0, VISIBLE_TARGETS).map((upstream) => (
+                  <TargetLine key={upstream.id} upstream={upstream} />
+                ))}
+                {upstreams.length > VISIBLE_TARGETS && (
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {t('page.loadBalancers.moreRoutes', {
+                      count: upstreams.length - VISIBLE_TARGETS,
+                    })}
+                  </span>
+                )}
+              </span>
+            ) : (
+              <span className="text-muted-foreground">
+                {t('page.loadBalancersDetail.graph.emptyTargets')}
+              </span>
+            )}
+          </Stop>
+        </ol>
+      </DataPanel>
+
+      <DataPanel
         icon={ListTreeIcon}
         title={t('page.loadBalancersDetail.graph.routeMap')}
         description={t('page.loadBalancersDetail.graph.routeMapDesc')}
+        footer={
+          upstreams.length > 0 && (
+            <DataPanelMeta>
+              {t('page.loadBalancersDetail.graph.routeCount', {
+                count: routeCount,
+              })}
+            </DataPanelMeta>
+          )
+        }
       >
         {upstreams.length > 0 ? (
-          <div className="grid gap-3">
-            {upstreams.map((upstream) => (
-              <TopologyRoute key={upstream.id} upstream={upstream} />
-            ))}
-          </div>
+          <RouteTable upstreams={upstreams} />
         ) : (
-          <EmptyInline>{t('page.loadBalancers.noRules')}</EmptyInline>
+          <DataPanelState
+            state="empty"
+            title={t('page.loadBalancers.noRules')}
+          />
         )}
-      </DetailSurface>
+      </DataPanel>
     </div>
   );
 }
 
-export function GraphConnector(props: { label: string }) {
-  const { label } = props;
+/**
+ * One stop on the rail. From tablet width up the icons sit on a horizontal
+ * line with the hop named on it; on phones the line runs down the left.
+ */
+function Stop(props: {
+  icon: IconComponent;
+  tone: StopTone;
+  label: string;
+  /** Names the hop to the next stop, e.g. "HTTPS". */
+  hop?: string;
+  meta: Array<string | undefined>;
+  last?: boolean;
+  children: ReactNode;
+}) {
+  const { children, hop, icon: Icon, label, last, meta, tone } = props;
+  const metaText = meta.filter(Boolean).join(' · ');
 
   return (
-    <div
-      className="flex items-center justify-center gap-2 py-1 text-muted-foreground md:px-1 md:py-0"
-      aria-hidden="true"
-    >
-      <span className="hidden h-px w-3 border-t border-dashed md:block" />
-      <span className="flex items-center gap-1.5 md:grid md:justify-items-center md:gap-1">
-        <span className="flex size-7 items-center justify-center rounded-full border bg-card">
-          <ArrowRightIcon className="size-3.5 rotate-90 md:rotate-0" />
-        </span>
-        <span className="max-w-16 truncate text-[10px] font-bold uppercase leading-none">
-          {label}
-        </span>
+    <li className="relative flex min-w-0 gap-3 pb-6 last:pb-0 md:flex-col md:gap-3 md:pb-0 md:pr-6">
+      {!last && (
+        <>
+          {/* Vertical rail on phones. */}
+          <span
+            aria-hidden
+            className="absolute bottom-0 left-5 top-11 w-px bg-border md:hidden"
+          />
+          {/* Horizontal rail from tablet width up, with the hop on it. */}
+          <span
+            aria-hidden
+            className="absolute left-12 right-2 top-5 hidden -translate-y-1/2 items-center md:flex"
+          >
+            <span className="h-px flex-1 bg-border" />
+            {hop && (
+              <span className="mx-1.5 shrink-0 rounded-full border bg-background px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                {hop}
+              </span>
+            )}
+            <span className="h-px flex-1 bg-border" />
+            <ChevronRightIcon className="-ml-1 size-3.5 shrink-0 text-border" />
+          </span>
+        </>
+      )}
+
+      <span
+        className={cn(
+          'relative z-10 flex size-10 shrink-0 items-center justify-center rounded-xl border',
+          TONE_CLASSES[tone],
+        )}
+      >
+        <Icon className="size-4.5" />
       </span>
-      <span className="hidden h-px w-3 border-t border-dashed md:block" />
-    </div>
+
+      <div className="min-w-0 pt-0.5 md:pt-0">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          {label}
+        </p>
+        <div className="mt-1 text-sm font-semibold leading-snug">
+          {children}
+        </div>
+        {metaText && (
+          <p className="mt-1 truncate text-xs text-muted-foreground">
+            {metaText}
+          </p>
+        )}
+        {hop && !last && (
+          <span className="mt-2 inline-flex rounded-full border bg-background px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground md:hidden">
+            {hop}
+          </span>
+        )}
+      </div>
+    </li>
   );
 }
 
-export function GraphNode(props: {
-  description: string;
-  href?: string;
-  icon: IconComponent;
-  label: string;
-  meta?: string;
-  tone?: 'source' | 'edge' | 'machine';
-  value: string;
-}) {
-  const {
-    description,
-    href,
-    icon: Icon,
-    label,
-    meta,
-    tone = 'edge',
-    value,
-  } = props;
-  const content = (
-    <>
-      <span className="flex min-w-0 items-center gap-2">
-        <span
-          className={cn(
-            'flex size-7 shrink-0 items-center justify-center rounded-md border',
-            tone === 'source' &&
-              'border-blue-500/30 bg-blue-500/10 text-blue-500',
-            tone === 'edge' &&
-              'border-cyan-500/30 bg-cyan-500/10 text-cyan-500',
-            tone === 'machine' &&
-              'border-emerald-500/30 bg-emerald-500/10 text-emerald-500',
-          )}
-        >
-          <Icon className="size-3.5" />
-        </span>
-        <span className="truncate text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
-          {label}
-        </span>
-      </span>
-      <span className="block break-words text-sm font-bold leading-snug">
-        {value}
-      </span>
-      <span
-        className="block truncate text-xs font-medium text-muted-foreground"
-        title={meta}
-      >
-        {[description, meta].filter(Boolean).join(' · ')}
-      </span>
-    </>
-  );
+function TargetLine(props: { upstream: UpstreamDraft }) {
+  const { upstream } = props;
 
-  if (href) {
+  return (
+    <span className="flex min-w-0 items-center gap-1.5">
+      <code className="shrink-0 rounded border bg-background px-1 font-mono text-[11px] text-muted-foreground">
+        {upstream.match}
+      </code>
+      <span aria-hidden className="text-muted-foreground">
+        →
+      </span>
+      <Destination upstream={upstream} className="truncate" />
+    </span>
+  );
+}
+
+function Destination(props: { upstream: UpstreamDraft; className?: string }) {
+  const { className, upstream } = props;
+
+  if (upstream.href) {
     return (
       <a
-        href={href}
-        className="flex min-w-0 flex-col gap-1.5 rounded-lg border bg-card p-3 transition-colors hover:bg-muted/40 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
+        href={upstream.href}
+        className={cn('min-w-0 hover:underline', className)}
       >
-        {content}
+        {upstream.destination}
       </a>
     );
   }
 
   return (
-    <div className="flex min-w-0 flex-col gap-1.5 rounded-lg border bg-card p-3">
-      {content}
-    </div>
+    <code className={cn('min-w-0 font-mono text-[13px]', className)}>
+      {upstream.destination}
+    </code>
   );
 }
 
-export function TargetCluster(props: {
-  routeCount: number;
-  upstreams: UpstreamDraft[];
-}) {
-  const { routeCount, upstreams } = props;
+/** Every route in the order the gateway matches them. */
+function RouteTable(props: { upstreams: UpstreamDraft[] }) {
+  const { upstreams } = props;
   const t = useDevetekTranslations();
-  const visibleUpstreams = upstreams.slice(0, 4);
 
-  return (
-    <div className="flex min-w-0 flex-col gap-1.5 rounded-lg border bg-card p-3">
-      <span className="flex min-w-0 items-center gap-2">
-        <span className="flex size-7 shrink-0 items-center justify-center rounded-md border border-violet-500/30 bg-violet-500/10 text-violet-500">
-          <Layers3Icon className="size-3.5" />
-        </span>
-        <span className="truncate text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
-          {t('page.loadBalancersDetail.graph.targets')}
-        </span>
-      </span>
-      <span className="text-sm font-bold">
-        {t('page.loadBalancersDetail.graph.targetCount', {
-          count: upstreams.length,
-        })}
-        <span className="font-medium text-muted-foreground">
-          {' · '}
-          {t('page.loadBalancersDetail.graph.routeCount', {
-            count: routeCount,
-          })}
-        </span>
-      </span>
-
-      <div className="mt-1 grid gap-1.5">
-        {visibleUpstreams.length > 0 ? (
-          visibleUpstreams.map((upstream) => (
-            <TargetPreview key={upstream.id} upstream={upstream} />
-          ))
-        ) : (
-          <div className="rounded-lg border border-dashed p-3 text-sm font-semibold text-muted-foreground">
-            {t('page.loadBalancersDetail.graph.emptyTargets')}
-          </div>
-        )}
-        {upstreams.length > visibleUpstreams.length ? (
-          <Badge variant="secondary" className="w-fit">
-            {t('page.loadBalancers.moreRoutes', {
-              count: upstreams.length - visibleUpstreams.length,
-            })}
-          </Badge>
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-export function TargetPreview(props: { upstream: UpstreamDraft }) {
-  const { upstream } = props;
-  const t = useDevetekTranslations();
-  const kindLabel =
-    upstream.kind === 'application'
+  const kindLabel = (kind: UpstreamDraft['kind']) =>
+    kind === 'application'
       ? t('page.loadBalancersDetail.upstreams.kind.application')
-      : upstream.kind === 'static'
+      : kind === 'static'
         ? t('page.loadBalancersDetail.upstreams.kind.static')
         : t('page.loadBalancersDetail.upstreams.kind.address');
 
   return (
-    <div className="grid gap-2 rounded-lg border bg-background p-3 text-sm">
-      <div className="flex min-w-0 items-center justify-between gap-2">
-        <Badge variant="outline">{kindLabel}</Badge>
-        <span className="truncate text-xs font-bold text-muted-foreground">
-          {upstream.match}
-        </span>
-      </div>
-      {upstream.href ? (
-        <a
-          href={upstream.href}
-          className="truncate font-semibold underline underline-offset-2 hover:opacity-70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          {upstream.destination}
-        </a>
-      ) : (
-        <code className="truncate text-sm font-semibold">
-          {upstream.destination}
-        </code>
-      )}
-    </div>
-  );
-}
-
-export function TopologyRoute(props: { upstream: UpstreamDraft }) {
-  const { upstream } = props;
-  const t = useDevetekTranslations();
-  const kindLabel =
-    upstream.kind === 'application'
-      ? t('page.loadBalancersDetail.upstreams.kind.application')
-      : upstream.kind === 'static'
-        ? t('page.loadBalancersDetail.upstreams.kind.static')
-        : t('page.loadBalancersDetail.upstreams.kind.address');
-
-  return (
-    <div className="rounded-lg border bg-background p-3">
-      <div className="grid gap-3 lg:grid-cols-[112px_minmax(140px,0.35fr)_minmax(0,1fr)] lg:items-center">
-        <div className="flex items-center gap-2">
-          <span className="flex size-8 items-center justify-center rounded-full border bg-card text-sm font-bold">
-            {String(upstream.order).padStart(2, '0')}
-          </span>
-          <Badge variant="secondary">{kindLabel}</Badge>
-        </div>
-        <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-normal text-muted-foreground">
-            {t('page.loadBalancersDetail.upstreams.match')}
-          </p>
-          <code className="break-all text-sm font-semibold">
-            {upstream.match}
-          </code>
-        </div>
-        <div className="grid min-w-0 gap-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
-          <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-normal text-muted-foreground">
-              {t('page.loadBalancersDetail.upstreams.destination')}
-            </p>
-            {upstream.href ? (
-              <a
-                href={upstream.href}
-                className="break-all text-sm font-semibold underline underline-offset-2 hover:opacity-70 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                {upstream.destination}
-              </a>
-            ) : (
-              <code className="break-all text-sm font-semibold">
-                {upstream.destination}
+    <Table>
+      <TableHeader>
+        <TableRow className="hover:bg-transparent">
+          <TableHead className="w-12 px-4">#</TableHead>
+          <TableHead>{t('page.loadBalancersDetail.upstreams.match')}</TableHead>
+          <TableHead>
+            {t('page.loadBalancersDetail.upstreams.destination')}
+          </TableHead>
+          <TableHead>{t('common.terms.type')}</TableHead>
+          <TableHead className="px-4 text-right">
+            {t('common.terms.port')}
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {upstreams.map((upstream) => (
+          <TableRow key={upstream.id}>
+            <TableCell className="px-4 font-mono text-xs text-muted-foreground">
+              {String(upstream.order).padStart(2, '0')}
+            </TableCell>
+            <TableCell>
+              <code className="rounded border bg-background px-1.5 py-0.5 font-mono text-xs">
+                {upstream.match}
               </code>
-            )}
-          </div>
-          {upstream.port ? (
-            <Badge variant="outline">
-              {t('common.terms.port')} {upstream.port}
-            </Badge>
-          ) : null}
-        </div>
-      </div>
-    </div>
+            </TableCell>
+            <TableCell className="max-w-[24rem] text-sm font-medium">
+              <Destination upstream={upstream} className="block truncate" />
+            </TableCell>
+            <TableCell>
+              <span className="rounded-md border bg-background px-1.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
+                {kindLabel(upstream.kind)}
+              </span>
+            </TableCell>
+            <TableCell className="px-4 text-right font-mono text-xs text-muted-foreground">
+              {upstream.port || '—'}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
