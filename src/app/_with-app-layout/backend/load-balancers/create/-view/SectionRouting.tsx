@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   CheckCircle2Icon,
@@ -27,6 +27,7 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { Switch } from '@/shared/presentation/atoms/Switch';
 import { Combobox } from '@/shared/presentation/molecules/Combobox';
 
+import { normalizeLoadBalancerEngine } from '../-lib/modules';
 import type { Form } from '../-model/form';
 import { DEFAULT_VALUES } from '../-model/form';
 import {
@@ -39,6 +40,9 @@ export function RoutingModePicker(props: { form: Form }) {
   const { form } = props;
   const t = useDevetekTranslations();
   const lbKind = useController({ control: form.control, name: 'lbKind' });
+  const engine = useWatch({ control: form.control, name: 'engine' });
+  // Apache APISIX serves HTTP load balancers only; Caddy keeps layer 4.
+  const layer4Unsupported = normalizeLoadBalancerEngine(engine) === 'apisix';
 
   const selectKind = (kind: 'l7' | 'l4') => {
     lbKind.field.onChange(kind);
@@ -52,6 +56,15 @@ export function RoutingModePicker(props: { form: Form }) {
       form.setValue('l4rule', DEFAULT_VALUES.l4rule);
     }
   };
+
+  useEffect(() => {
+    if (layer4Unsupported && lbKind.field.value === 'l4') {
+      lbKind.field.onChange('l7');
+      if (!form.getValues('l7rules')?.length) {
+        form.setValue('l7rules', DEFAULT_VALUES.l7rules);
+      }
+    }
+  }, [form, layer4Unsupported, lbKind.field]);
 
   return (
     <Card className="rounded-lg p-4 shadow-none">
@@ -76,7 +89,12 @@ export function RoutingModePicker(props: { form: Form }) {
           icon={NetworkIcon}
           selected={lbKind.field.value === 'l4'}
           title="L4"
-          description={t('sidepanel.loadBalancerCreation.fieldLbKind.hintL4')}
+          description={
+            layer4Unsupported
+              ? t('page.loadBalancersCreate.routing.l4UnsupportedByEngine')
+              : t('sidepanel.loadBalancerCreation.fieldLbKind.hintL4')
+          }
+          disabled={layer4Unsupported}
           onClick={() => selectKind('l4')}
         />
       </div>

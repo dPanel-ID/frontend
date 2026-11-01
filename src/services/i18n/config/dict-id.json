@@ -143,6 +143,7 @@
       "biznetGio": "Biznet Gio",
       "digitalOcean": "DigitalOcean",
       "caddy": "Caddy",
+      "apisix": "Apache APISIX",
       "aws": "AWS",
       "alibabaCloud": "Alibaba Cloud",
       "tencentCloud": "Tencent Cloud"
@@ -1837,6 +1838,7 @@
         "title": "Routing trafik",
         "description": "Pilih layer trafik dan arahkan request masuk ke aplikasi atau alamat upstream langsung.",
         "kindHint": "L7 cocok untuk routing path HTTP. L4 cocok untuk TCP, UDP, atau port database.",
+        "l4UnsupportedByEngine": "Apache APISIX hanya melayani load balancer HTTP (L7). Pilih Caddy untuk port TCP, UDP, atau database.",
         "featuresHint": "Cara pengunjung terhubung. Dengan HTTPS, dNocs meminta dan memperbarui sertifikat untuk Anda.",
         "sslHint": "Sajikan situs lewat HTTPS. Matikan hanya untuk setup HTTP biasa.",
         "l7Hint": "Setiap aturan mencocokkan path dan mengirimnya ke aplikasi atau alamat.",

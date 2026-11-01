@@ -1,6 +1,7 @@
 import { CircleQuestionMarkIcon } from 'lucide-react';
 
 import {
+  IconBrandAPISIX,
   IconBrandCaddy,
   IconBrandEnvoy,
   IconBrandHAProxy,
@@ -19,6 +20,12 @@ export const LOAD_BALANCER_WEBSERVER_ENGINE: Record<
     icon: IconBrandCaddy,
     i18n: {
       brandName: 'common.brands.caddy',
+    },
+  },
+  apisix: {
+    icon: IconBrandAPISIX,
+    i18n: {
+      brandName: 'common.brands.apisix',
     },
   },
   nginx: {

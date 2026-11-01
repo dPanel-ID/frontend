@@ -19,6 +19,7 @@ export { default as IconServerActive } from './ServerActive';
 export { default as IconSidebarCollapse } from './SidebarCollapse';
 export { default as IconSidebarExpand } from './SidebarExpand';
 export { default as IconBrandNginx } from './BrandNginx';
+export { default as IconBrandAPISIX } from './BrandAPISIX';
 export { default as IconBrandHAProxy } from './BrandHAProxy';
 export { default as IconBrandGoogle } from './BrandGoogle';
 export { default as IconBrandEnvoy } from './BrandEnvoy';

@@ -52,6 +52,8 @@ export function normalizeLoadBalancerEngine(engine?: string) {
     case 'caddyserver':
     case 'dpanel-router':
       return 'caddy';
+    case 'apache-apisix':
+      return 'apisix';
     default:
       return engine ?? 'unknown';
   }
@@ -252,7 +254,9 @@ export function buildLoadBalancerEngineVariables(
   const normalizedName = moduleName.trim().toLowerCase();
 
   if (
-    ['caddy', 'caddyserver', 'dpanel-router'].includes(normalizedName) &&
+    ['caddy', 'caddyserver', 'dpanel-router', 'apisix'].includes(
+      normalizedName,
+    ) &&
     variables.router_action == null
   ) {
     return {
