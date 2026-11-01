@@ -32,9 +32,15 @@ gcloud iam roles create dpanelCompute --project=my-dpanel-project \
 # The service account, with that role and nothing else
 gcloud iam service-accounts create dpanel --project=my-dpanel-project \
   --display-name="dPanel"
-gcloud projects add-iam-policy-binding my-dpanel-project \
-  --member="serviceAccount:dpanel@my-dpanel-project.iam.gserviceaccount.com" \
-  --role="projects/my-dpanel-project/roles/dpanelCompute"
+# A new service account takes a few seconds to appear, and binding it too
+# early fails with "does not exist". This retries for up to a minute.
+for attempt in 1 2 3 4 5 6; do
+  gcloud projects add-iam-policy-binding my-dpanel-project \
+    --member="serviceAccount:dpanel@my-dpanel-project.iam.gserviceaccount.com" \
+    --role="projects/my-dpanel-project/roles/dpanelCompute" \
+    --condition=None && break
+  sleep 10
+done
 
 # The JSON key you upload to dPanel
 gcloud iam service-accounts keys create dpanel-key.json \
