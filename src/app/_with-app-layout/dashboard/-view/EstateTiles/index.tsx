@@ -2,7 +2,6 @@ import { Link } from '@tanstack/react-router';
 import {
   AppWindowIcon,
   CloudIcon,
-  DatabaseIcon,
   Globe2Icon,
   KeyRoundIcon,
   NetworkIcon,
@@ -17,8 +16,6 @@ import type { StatTileTone } from '@/shared/presentation/molecules/StatTile';
 
 export interface EstateCount {
   value?: number;
-  /** The count could not be read, so it is shown as unknown rather than loading. */
-  unavailable?: boolean;
   hint?: string;
   tone?: StatTileTone;
 }
@@ -29,7 +26,6 @@ export interface EstateTilesProps {
   loadBalancers: EstateCount;
   cloudProjects: EstateCount;
   domains: EstateCount;
-  databases: EstateCount;
   sshKeys: EstateCount;
 }
 
@@ -58,7 +54,6 @@ const TILES: TileSpec[] = [
     search: { page: 1, viewMode: 'table' },
   },
   { key: 'domains', icon: Globe2Icon, to: '/backend/domain' },
-  { key: 'databases', icon: DatabaseIcon, to: '/backend/database' },
   {
     key: 'sshKeys',
     icon: KeyRoundIcon,
@@ -69,7 +64,7 @@ const TILES: TileSpec[] = [
 export default function EstateTiles(props: EstateTilesProps) {
   const t = useDevetekTranslations('page.dashboard.estate');
 
-  // Four columns at most, matching the servers list. Seven across fits on a
+  // Four columns at most, matching the servers list. Six across fits on a
   // wide screen but leaves each tile too narrow for its label and status
   // line, which then truncate; wrapping to a second row keeps them whole.
   return (
@@ -88,11 +83,9 @@ export default function EstateTiles(props: EstateTilesProps) {
               icon={icon}
               tone={count.tone ?? 'neutral'}
               label={t(key)}
-              // A count that will never arrive reads as unknown; one still on
-              // its way keeps the shimmer.
-              value={count.unavailable ? '—' : (count.value ?? 0)}
+              value={count.value ?? 0}
               hint={count.hint}
-              loading={!count.unavailable && count.value == null}
+              loading={count.value == null}
               className="h-full transition-all hover:-translate-y-0.5 hover:border-sky-400/40 hover:shadow-lg hover:shadow-black/5"
             />
           </Link>

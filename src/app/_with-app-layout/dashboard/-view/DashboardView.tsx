@@ -1,12 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { useAuthLoggedIn } from '@/services/auth';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import {
   ApiApplication,
   ApiCloud,
-  ApiDatabase,
   ApiDomain,
   ApiLoadBalancer,
   ApiModule,
@@ -25,7 +23,6 @@ import { isBrowser } from '@/shared/libs/browser/environment';
 
 import {
   countFromPagination,
-  hasFailedResponse,
   isPendingResponse,
   responseData,
 } from '../-lib/api-response';
@@ -73,7 +70,6 @@ export interface DashboardViewProps {
 
 export default function DashboardView(props: DashboardViewProps) {
   const t = useDevetekTranslations();
-  const { userProfile } = useAuthLoggedIn();
 
   const [profileResponse] = ApiUser.Profile.useGet();
   const [serversResponse] = ApiServer.Find.useGet({
@@ -91,11 +87,6 @@ export default function DashboardView(props: DashboardViewProps) {
   const [domainsResponse] = ApiDomain.Find.useGet({
     page: 1,
     perPage: 1,
-  });
-  const [databasesResponse] = ApiDatabase.Find.useGet({
-    userId: userProfile.id,
-    page: 1,
-    pageSize: 1,
   });
   const [sshKeysResponse] = ApiSecret.SshKey.Find.useGet({
     page: 1,
@@ -115,7 +106,6 @@ export default function DashboardView(props: DashboardViewProps) {
   const applicationsData = responseData(applicationsResponse);
   const loadBalancersData = responseData(loadBalancersResponse);
   const domainsData = responseData(domainsResponse);
-  const databasesData = responseData(databasesResponse);
   const sshKeysData = responseData(sshKeysResponse);
   const cloudProjectsData = responseData(cloudProjectsResponse);
   const iacRepositoryData = responseData(iacRepositoryResponse);
@@ -226,10 +216,6 @@ export default function DashboardView(props: DashboardViewProps) {
     domainsData,
     domainsData?.domains?.length,
   );
-  const totalDatabases = countFromPagination(
-    databasesData,
-    databasesData?.databases?.length,
-  );
   const totalSshKeys = countFromPagination(
     sshKeysData,
     sshKeysData?.secrets?.length,
@@ -278,12 +264,6 @@ export default function DashboardView(props: DashboardViewProps) {
     },
     cloudProjects: { value: totalCloudProjects },
     domains: { value: totalDomains },
-    databases: {
-      value: totalDatabases,
-      // The v1 database endpoint currently answers 410, so this count never
-      // arrives; shown as unknown rather than loading for the page's life.
-      unavailable: hasFailedResponse(databasesResponse),
-    },
     sshKeys: { value: totalSshKeys },
   };
 
