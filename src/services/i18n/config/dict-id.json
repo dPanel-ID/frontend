@@ -2033,7 +2033,16 @@
         "routes": "Rute",
         "routesHint": "Routing {kind}",
         "gateway": "Server gateway",
-        "engine": "Engine"
+        "engine": "Engine",
+        "certificate": "Sertifikat",
+        "certificateNone": "Tidak dipakai",
+        "certificateNoneHint": "Load balancer ini melayani HTTP biasa.",
+        "certificateValid": "Valid",
+        "certificateExpiring": "Segera kedaluwarsa",
+        "certificateExpired": "Kedaluwarsa",
+        "certificateMissing": "Belum terbit",
+        "certificateUnavailable": "Tidak tersedia",
+        "certificateExpires": "{issuer} · sisa {days} hari"
       }
     },
     "domain": {
