@@ -8,6 +8,7 @@ import {
   SERVER_MODULES_CATEGORY,
   resolveServerModuleLogo,
 } from '@/entities/server-modules/config/registry';
+import { useModuleVersionLabel } from '@/entities/server-modules/lib/version';
 import { getModuleInfoByFind } from '@/entities/server-modules/model/getModuleInfo';
 
 import type { DTOs } from '@/shared/api';
@@ -56,6 +57,7 @@ type GroupStatus = 'installed' | 'installing' | 'failed' | 'mixed';
 export default function ModulesList(props: ModulesListProps) {
   const { modules, onDeleted, serverId } = props;
   const t = useDevetekTranslations('page.serverDetail.modules');
+  const versionLabel = useModuleVersionLabel();
   const [selectedInstallation, setSelectedInstallation] =
     useState<SelectedInstallation | null>(null);
 
@@ -125,7 +127,7 @@ export default function ModulesList(props: ModulesListProps) {
                         }
                       >
                         <span className="truncate">
-                          {moduleInstanceLabel(installation)}
+                          {versionLabel(moduleInstanceLabel(installation))}
                         </span>
                       </button>
                     ))}
@@ -276,13 +278,14 @@ function InstalledModuleDialog(props: {
 }) {
   const { onDeleted, onOpenChange, selected, serverId } = props;
   const t = useDevetekTranslations('page.serverDetail.sectionModules');
+  const versionLabel = useModuleVersionLabel();
   const { deleteInstallation, deletingInstallationId } =
     useModuleInstallationDelete();
   const isDeleting =
     deletingInstallationId != null &&
     deletingInstallationId === selected?.installation.id;
   const installationLabel = selected
-    ? moduleInstanceLabel(selected.installation)
+    ? versionLabel(moduleInstanceLabel(selected.installation))
     : '';
 
   const handleClickUninstall = () => {
@@ -314,7 +317,7 @@ function InstalledModuleDialog(props: {
                 <span className="min-w-0">
                   <span className="block truncate">{selected.group.name}</span>
                   <span className="block text-xs font-medium text-primary/55">
-                    {moduleInstanceLabel(selected.installation)}
+                    {installationLabel}
                   </span>
                 </span>
               </DialogTitle>

@@ -18,9 +18,13 @@ export function getRoutePreviewItems(
   }
 
   return (formValues.l7rules ?? []).map((rule, index) => {
-    const targets = (upstreams?: Array<{ address: string; port: number }>) =>
+    const targets = (upstreams?: Array<{ address: string; port?: number }>) =>
       (upstreams ?? [])
-        .map((upstream) => `${upstream.address}:${upstream.port}`)
+        .map((upstream) =>
+          upstream.port
+            ? `${upstream.address}:${upstream.port}`
+            : upstream.address,
+        )
         .join(', ');
     const applicationName =
       applications.find(
@@ -63,7 +67,7 @@ export function toCreateLoadBalancerPayload(
           : rule.upstreamsIfProxyPass;
         const upstreams = targets?.map((upstream) => ({
           address: upstream.address.trim(),
-          port: String(upstream.port),
+          port: upstream.port ? String(upstream.port) : '',
         }));
 
         if (route.pathMatch === '/' && !isApplicationTarget && upstreams?.[0]) {
