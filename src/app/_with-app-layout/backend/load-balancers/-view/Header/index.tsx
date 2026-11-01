@@ -1,5 +1,4 @@
-import { Link } from '@tanstack/react-router';
-import { FileTextIcon, NetworkIcon, PlusIcon, ServerIcon } from 'lucide-react';
+import { FileTextIcon, NetworkIcon, PlusIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -34,14 +33,6 @@ export default function Header() {
       description={t('page.loadBalancers.headerDesc')}
       aside={
         <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-          <Button variant="outline" size="sm" asChild>
-            <Link to="/servers">
-              <ServerIcon />
-              <span className="hidden sm:inline">
-                {t('page.loadBalancers.servers')}
-              </span>
-            </Link>
-          </Button>
           <Button variant="outline" size="sm" asChild>
             <a
               href={LINK__DOCUMENTATION}

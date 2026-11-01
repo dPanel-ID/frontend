@@ -16,6 +16,8 @@ import {
   flowCtaClassName,
 } from '@/shared/presentation/organisms/FlowHero';
 
+import { GuideSteps } from '../Guide';
+
 interface LbEmptyStateProps {
   /** True when a search or status filter hides load balancers that exist. */
   filtered: boolean;
@@ -102,6 +104,9 @@ export function LbEmptyState(props: LbEmptyStateProps) {
             <ServerCogIcon className="size-4" />
             {t('page.loadBalancers.empty.secondary')}
           </Link>
+        </div>
+        <div className="mt-2 w-full max-w-4xl">
+          <GuideSteps />
         </div>
       </div>
     </div>
