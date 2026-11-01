@@ -1906,8 +1906,8 @@
       },
       "backendUpdateRequired": "Simpan perubahan",
       "hero": {
-        "descriptionNamed": "Selamat datang kembali, {name}. Berikut kondisi infrastruktur Anda.",
-        "description": "Berikut kondisi infrastruktur Anda."
+        "updated": "Diperbarui {when}",
+        "openSite": "Buka situs"
       },
       "tabs": {
         "graph": "Graf",
@@ -2023,6 +2023,13 @@
         "emptyError": "Tidak ada request gateway 4xx atau 5xx di access log.",
         "unavailableTitle": "Log tidak tersedia",
         "unavailableDesc": "Load balancer ini belum memiliki metadata gateway yang cukup untuk menemukan file log."
+      },
+      "tiles": {
+        "status": "Status",
+        "routes": "Rute",
+        "routesHint": "Routing {kind}",
+        "gateway": "Server gateway",
+        "engine": "Engine"
       }
     },
     "domain": {
