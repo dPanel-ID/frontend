@@ -278,7 +278,8 @@
         "helloAgain": "Halo lagi,",
         "goToDashboard": "Ke dashbor",
         "viewProfile": "Lihat profil",
-        "logout": "Keluar"
+        "logout": "Keluar",
+        "continueTo": "Lanjut ke {host}"
       }
     },
     "dashboard": {
@@ -1466,6 +1467,12 @@
         "emptyState": {
           "title": "Anda belum memasang modul apapun saat ini.",
           "subtitle": "Alat jelajah modul kami memiliki banyak modul yang bisa anda tambahkan ke server anda."
+        },
+        "databasePanel": {
+          "title": "Kelola database dan pengguna",
+          "description": "Membuka pengelola database di tab baru. Masuk dengan akun database yang dibuat saat modul ini diinstal; dPanel tidak menyimpan kata sandi database.",
+          "button": "Buka database",
+          "buttonAria": "Buka {module} di pengelola database"
         }
       },
       "hero": {
@@ -1551,7 +1558,8 @@
         "table": {
           "module": "Modul",
           "versions": "Versi",
-          "status": "Status"
+          "status": "Status",
+          "actions": "Aksi"
         },
         "status": {
           "installed": "Terpasang",
@@ -1560,7 +1568,9 @@
           "mixed": "Campuran"
         },
         "searchPlaceholder": "Cari modul",
-        "noMatch": "Tidak ada modul yang cocok."
+        "noMatch": "Tidak ada modul yang cocok.",
+        "openDatabase": "Buka database",
+        "openDatabaseAria": "Buka {module} di pengelola database"
       },
       "files": {
         "title": "Berkas",

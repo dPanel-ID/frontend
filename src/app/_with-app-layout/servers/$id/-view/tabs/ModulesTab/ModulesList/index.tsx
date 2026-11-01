@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { Trash2Icon } from 'lucide-react';
+import { DatabaseIcon, Trash2Icon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -33,6 +33,7 @@ import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 import type { StatusTone } from '@/shared/presentation/molecules/StatusPill';
 import { dataTable } from '@/shared/presentation/organisms/DataPanel';
 
+import { dbManagerUrl, firstDbManagerUrl } from '../-lib/db-manager';
 import useModuleInstallationDelete from '../../../../-usecase/module-installation-delete';
 
 import type { ModulesListProps } from './types';
@@ -52,6 +53,10 @@ type SelectedInstallation = {
 };
 
 type GroupStatus = 'installed' | 'installing' | 'failed' | 'mixed';
+
+const DB_MANAGER_HOST = import.meta.env.VITE_DB_MANAGER_HOST as
+  | string
+  | undefined;
 
 /** One row per module, its installations as version chips. */
 export default function ModulesList(props: ModulesListProps) {
@@ -80,6 +85,9 @@ export default function ModulesList(props: ModulesListProps) {
             <TableHead className={cn(dataTable.head, 'w-36')}>
               {t('table.status')}
             </TableHead>
+            <TableHead className={cn(dataTable.head, 'w-40')}>
+              <span className="sr-only">{t('table.actions')}</span>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -87,6 +95,11 @@ export default function ModulesList(props: ModulesListProps) {
             const status = groupStatus(group.installations);
             const category = SERVER_MODULES_CATEGORY.find(
               (item) => item.id === group.categoryID,
+            );
+            const databaseUrl = firstDbManagerUrl(
+              DB_MANAGER_HOST,
+              serverId,
+              group.installations,
             );
 
             return (
@@ -139,6 +152,15 @@ export default function ModulesList(props: ModulesListProps) {
                     pulse={status === 'installing'}
                     label={t(`status.${status}`)}
                   />
+                </TableCell>
+                <TableCell className={cn(dataTable.cell, 'text-right')}>
+                  {databaseUrl && (
+                    <OpenDatabaseLink
+                      href={databaseUrl}
+                      label={t('openDatabase')}
+                      ariaLabel={t('openDatabaseAria', { module: group.name })}
+                    />
+                  )}
                 </TableCell>
               </TableRow>
             );
@@ -287,6 +309,9 @@ function InstalledModuleDialog(props: {
   const installationLabel = selected
     ? versionLabel(moduleInstanceLabel(selected.installation))
     : '';
+  const databaseUrl = selected
+    ? dbManagerUrl(DB_MANAGER_HOST, serverId, selected.installation)
+    : null;
 
   const handleClickUninstall = () => {
     if (!selected) return;
@@ -381,7 +406,26 @@ function InstalledModuleDialog(props: {
               <ErrorDetailSection installation={selected.installation} />
             </div>
 
-            <div className="shrink-0 border-t px-5 py-4">
+            <div className="flex shrink-0 flex-col gap-3 border-t px-5 py-4">
+              {databaseUrl && (
+                <div className="flex flex-col gap-3 rounded-lg border border-sky-400/30 bg-sky-500/5 p-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-primary">
+                      {t('databasePanel.title')}
+                    </p>
+                    <p className="mt-1 text-xs text-primary/55">
+                      {t('databasePanel.description')}
+                    </p>
+                  </div>
+                  <OpenDatabaseLink
+                    href={databaseUrl}
+                    label={t('databasePanel.button')}
+                    ariaLabel={t('databasePanel.buttonAria', {
+                      module: selected.group.name,
+                    })}
+                  />
+                </div>
+              )}
               <div className="flex flex-col gap-3 rounded-lg border border-destructive/25 bg-destructive/5 p-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-primary">
@@ -414,6 +458,29 @@ function InstalledModuleDialog(props: {
         )}
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** Opens db-manager, on its own domain, in a new tab. */
+function OpenDatabaseLink(props: {
+  href: string;
+  label: string;
+  ariaLabel: string;
+}) {
+  const { ariaLabel, href, label } = props;
+
+  return (
+    <Button asChild variant="outline" size="sm" className="shrink-0">
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={ariaLabel}
+      >
+        <DatabaseIcon className="size-4" />
+        {label}
+      </a>
+    </Button>
   );
 }
 
