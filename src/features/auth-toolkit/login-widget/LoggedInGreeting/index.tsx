@@ -1,11 +1,17 @@
 import { useNavigate } from '@tanstack/react-router';
-import { LayoutDashboard, LogOutIcon, UserIcon } from 'lucide-react';
+import {
+  ExternalLinkIcon,
+  LayoutDashboard,
+  LogOutIcon,
+  UserIcon,
+} from 'lucide-react';
 
 import { useAuthLoggedIn } from '@/services/auth/usecase';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 
+import { readReturnUrl } from '../-lib/return-url';
 import UserAvatar from '../-presentation/UserAvatar';
 import useLogoutUsecase from '../-usecase/use-logout';
 
@@ -17,6 +23,9 @@ export default function LoggedInGreeting() {
   const { userProfile } = useAuthLoggedIn();
 
   const { handleLogout } = useLogoutUsecase();
+
+  // A signed-in visitor sent here by another dPanel service goes straight back.
+  const returnUrl = readReturnUrl();
 
   const handleClickLogout = () => {
     handleLogout(true);
@@ -47,7 +56,23 @@ export default function LoggedInGreeting() {
         </h1>
 
         <div className="flex flex-col w-full gap-y-2">
-          <Button buttonStyle="3d" onClick={handleGoToDashboard}>
+          {returnUrl && (
+            <Button
+              buttonStyle="3d"
+              onClick={() => window.location.assign(returnUrl)}
+            >
+              <ExternalLinkIcon />
+              {t('page.landing.asideGreeting.continueTo', {
+                host: new URL(returnUrl).host,
+              })}
+            </Button>
+          )}
+
+          <Button
+            buttonStyle="3d"
+            buttonColor={returnUrl ? 'secondary' : undefined}
+            onClick={handleGoToDashboard}
+          >
             <LayoutDashboard />
             {t('page.landing.asideGreeting.goToDashboard')}
           </Button>

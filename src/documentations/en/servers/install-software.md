@@ -42,6 +42,18 @@ If it reads **Failed**, open the module to see why, fix the cause, and install i
 You don't have to install a language runtime first. When you [create an application](../applications/create-an-application.md), you pick its runtime as a dependency, and dPanel installs it on the server.
 :::
 
+## Manage the database
+
+Once MariaDB or PostgreSQL reads **Installed**, its row on the **Modules** tab has **Open database**. It opens the database manager at `dbmanager.devetek.app` in a new tab, already signed in with your dPanel account and pointed at that server.
+
+1. Press **Open database**. You can also open the module and press **Open database** there.
+2. Check the engine, enter the database user (MariaDB uses `root`, PostgreSQL uses the admin user you chose) and the password you set when you installed it.
+3. Press **Connect**.
+
+From there you can browse tables, run queries, and create databases and users with read-only or read-write access.
+
+The database manager reaches the database through the server's SSH connection, so the database never needs to be open to the internet. You can open it on servers you can edit: your own servers, and servers in a workspace where you have editor access or more.
+
 ## Many servers at once
 
 A server group installs the same module on every member in one operation, and shows the result per server. Groups are under **Servers**, then **Server groups**.
