@@ -36,6 +36,8 @@ import {
   StateBlock,
 } from '../-view/-presentation/fields';
 
+import { ApplicationReach } from './ApplicationReach';
+
 export function RoutingModePicker(props: { form: Form }) {
   const { form } = props;
   const t = useDevetekTranslations();
@@ -203,6 +205,8 @@ export function L7RulesBuilder(props: { form: Form }) {
               type: 'proxy-pass',
               upstreamsIfProxyPass: [{ address: 'localhost', port: 80 }],
               applicationIdIfProxyPassApp: '',
+              addressModeIfProxyPassApp: 'registered',
+              customTargetsIfProxyPassApp: [],
             })
           }
         >
@@ -433,6 +437,16 @@ export function ApplicationDestination(props: {
     name: `l7rules.${ruleIndex}.applicationIdIfProxyPassApp`,
   });
   const ruleErrors = form.formState.errors.l7rules?.[ruleIndex];
+  // Kept apart from the list, which a new search replaces.
+  const [selected, setSelected] = useState<ApplicationCard>();
+  const selectedApplication =
+    selected?.id === applicationId.field.value
+      ? selected
+      : applications.$status === 'success'
+        ? applications.list.find(
+            (application) => application.id === applicationId.field.value,
+          )
+        : undefined;
 
   return (
     <FormField
@@ -472,10 +486,21 @@ export function ApplicationDestination(props: {
                 key={application.id}
                 application={application}
                 selected={applicationId.field.value === application.id}
-                onSelect={() => applicationId.field.onChange(application.id)}
+                onSelect={() => {
+                  setSelected(application);
+                  applicationId.field.onChange(application.id);
+                }}
               />
             ))}
           </div>
+        )}
+
+        {selectedApplication && (
+          <ApplicationReach
+            form={form}
+            ruleIndex={ruleIndex}
+            application={selectedApplication}
+          />
         )}
 
         <ErrorInline

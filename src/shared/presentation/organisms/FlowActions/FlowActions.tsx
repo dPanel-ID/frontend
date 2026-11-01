@@ -4,6 +4,7 @@ import {
   Loader2Icon,
   RocketIcon,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/Button';
@@ -18,8 +19,10 @@ interface FlowActionsProps {
   isBackDisabled?: boolean;
   isNextDisabled?: boolean;
   isNextLoading?: boolean;
-  /** Renders the rocket instead of the arrow, for the last step. */
+  /** Renders the submit icon instead of the arrow, for the last step. */
   isSubmit?: boolean;
+  /** The last step's icon; a rocket unless the flow names another. */
+  submitIcon?: LucideIcon;
   onBack: () => void;
   onNext: () => void;
 }
@@ -44,6 +47,7 @@ export default function FlowActions(props: FlowActionsProps) {
     nextLabel,
     onBack,
     onNext,
+    submitIcon: SubmitIcon = RocketIcon,
   } = props;
 
   const showHint = Boolean(blockedHint) && isNextDisabled && !isNextLoading;
@@ -95,7 +99,7 @@ export default function FlowActions(props: FlowActionsProps) {
             {isNextLoading ? (
               <Loader2Icon className="size-4 animate-spin" />
             ) : isSubmit ? (
-              <RocketIcon className="size-4" />
+              <SubmitIcon className="size-4" />
             ) : null}
             {nextLabel}
             {!isNextLoading && !isSubmit && (

@@ -28,6 +28,8 @@ export interface RecipeRule {
   wildcard?: boolean;
   upstreams?: RecipeUpstream[];
   applicationId?: string;
+  /** How an application target is reached; see the backend's address modes. */
+  addressMode?: 'registered' | 'private' | 'custom';
 }
 
 export interface RecipeRuntimeItem {
@@ -124,6 +126,7 @@ export function toRulePayload(rule: RecipeRule) {
     wildcard: rule.wildcard,
     target: {
       application_id: rule.applicationId,
+      address_mode: rule.addressMode,
       upstreams: rule.upstreams,
     },
   };
