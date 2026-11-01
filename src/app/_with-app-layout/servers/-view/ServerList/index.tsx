@@ -8,7 +8,6 @@ import {
   couple,
   guardedSelects,
 } from '@/shared/libs/react-factories/guardedSelect';
-import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
 
 import { useFilterModel } from '../../-model/filters';
 import { useServersModel } from '../../-model/servers';
@@ -35,7 +34,6 @@ const [guard, useServers] = guardedSelects({
 );
 
 export default guard(function ServerList() {
-  const isDesktop = useBreakpoint('lg');
   const handlersFor = useServerHandlers();
 
   const [servers] = useServers((s) => [s.servers]);
@@ -75,8 +73,7 @@ export default guard(function ServerList() {
     return counts;
   }, [applicationsData]);
 
-  const resolvedViewMode =
-    viewMode === 'auto' ? (isDesktop ? 'list' : 'grid') : viewMode;
+  const resolvedViewMode = viewMode === 'auto' ? 'table' : viewMode;
 
   if (servers.length < 1) {
     return (

@@ -8,7 +8,7 @@ export const schemaQueryString = z.object({
   viewMode: z
     .preprocess(
       (val) => val ?? 'auto',
-      FilterRules.schemaViewMode.default('auto'),
+      FilterRules.schemaViewMode.default('table'),
     )
     .optional(),
 });

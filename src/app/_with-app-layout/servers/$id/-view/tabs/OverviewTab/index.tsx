@@ -149,7 +149,7 @@ export default function OverviewTab() {
           onClick={() =>
             navigate({
               to: '/backend/load-balancers',
-              search: { page: 1, viewMode: 'auto' },
+              search: { page: 1, viewMode: 'table' },
             })
           }
         />

@@ -55,7 +55,7 @@ const TILES: TileSpec[] = [
     key: 'cloudProjects',
     icon: CloudIcon,
     to: '/backend/cloud-projects',
-    search: { page: 1, viewMode: 'auto' },
+    search: { page: 1, viewMode: 'table' },
   },
   { key: 'domains', icon: Globe2Icon, to: '/backend/domain' },
   { key: 'databases', icon: DatabaseIcon, to: '/backend/database' },

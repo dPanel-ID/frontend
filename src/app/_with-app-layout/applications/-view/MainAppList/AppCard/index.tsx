@@ -151,7 +151,7 @@ export default function AppCard(props: AppCardProps) {
 
         <Link
           to="/backend/load-balancers"
-          search={{ page: 1, viewMode: 'auto' }}
+          search={{ page: 1, viewMode: 'table' }}
           className={TILE_LINK_CLASS}
         >
           <StatTile
