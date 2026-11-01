@@ -287,7 +287,8 @@
         "helloAgain": "Hello again,",
         "goToDashboard": "Go to dashboard",
         "viewProfile": "View profile",
-        "logout": "Logout"
+        "logout": "Logout",
+        "continueTo": "Continue to {host}"
       }
     },
     "dashboard": {
@@ -1475,6 +1476,12 @@
         "emptyState": {
           "title": "You haven't installed any modules yet.",
           "subtitle": "Our modules discovery has tons of modules you can add for your server."
+        },
+        "databasePanel": {
+          "title": "Manage databases and users",
+          "description": "Opens the database manager in a new tab. Sign in with the database account set when this module was installed; dPanel does not store database passwords.",
+          "button": "Open database",
+          "buttonAria": "Open {module} in the database manager"
         }
       },
       "hero": {
@@ -1560,7 +1567,8 @@
         "table": {
           "module": "Module",
           "versions": "Versions",
-          "status": "Status"
+          "status": "Status",
+          "actions": "Actions"
         },
         "status": {
           "installed": "Installed",
@@ -1569,7 +1577,9 @@
           "mixed": "Mixed"
         },
         "searchPlaceholder": "Search modules",
-        "noMatch": "No modules match your search."
+        "noMatch": "No modules match your search.",
+        "openDatabase": "Open database",
+        "openDatabaseAria": "Open {module} in the database manager"
       },
       "files": {
         "title": "Files",

@@ -42,6 +42,18 @@ Kalau statusnya **Gagal**, buka modulnya untuk melihat penyebabnya, perbaiki, la
 Runtime bahasa tidak harus dipasang lebih dulu. Saat [membuat aplikasi](../applications/create-an-application.md), Anda memilih runtime-nya sebagai dependensi, dan dPanel memasangnya di server.
 :::
 
+## Mengelola basis data
+
+Setelah MariaDB atau PostgreSQL berstatus **Terpasang**, barisnya di tab **Modul** menampilkan **Buka database**. Tombol itu membuka pengelola basis data di `dbmanager.devetek.app` pada tab baru, sudah masuk dengan akun dPanel Anda dan langsung mengarah ke server itu.
+
+1. Tekan **Buka database**. Anda juga bisa membuka modulnya lalu menekan **Buka database** di sana.
+2. Periksa mesin basis datanya, lalu isi pengguna basis data (MariaDB memakai `root`, PostgreSQL memakai pengguna admin yang Anda pilih) dan kata sandi yang Anda tentukan saat memasangnya.
+3. Tekan **Connect**.
+
+Dari sana Anda bisa melihat tabel, menjalankan kueri, serta membuat basis data dan pengguna dengan akses baca saja atau baca-tulis.
+
+Pengelola basis data menjangkau basis data lewat koneksi SSH server, jadi basis data tidak perlu dibuka ke internet. Anda bisa membukanya di server yang boleh Anda ubah: server milik Anda sendiri, dan server di workspace tempat Anda punya akses editor atau lebih tinggi.
+
 ## Banyak server sekaligus
 
 Grup server memasang modul yang sama ke semua anggotanya dalam satu operasi, dan menampilkan hasilnya per server. Grup ada di **Server**, lalu **Server groups**.

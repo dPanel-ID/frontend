@@ -6,6 +6,7 @@ import { useToaster } from '@/services/toaster';
 import { ApiUser } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
+import { readReturnUrl } from '../-lib/return-url';
 import type { LoginTraditional } from '../-rules/login';
 
 export default function useLoginUsecase() {
@@ -20,12 +21,13 @@ export default function useLoginUsecase() {
   const handleLoginWithGoogle = useHandler(() => {
     const backendEndpoint = import.meta.env.VITE_BACKEND ?? '';
 
-    const redirectUrl =
-      window.location.href.at(-1) === '/'
-        ? window.location.href
-        : `${window.location.href}/`;
+    // Another dPanel service (such as db-manager) may have sent the user here
+    // to sign in; the backend checks the state again before redirecting.
+    const returnUrl =
+      readReturnUrl() ??
+      new URL('/dashboard', window.location.origin).toString();
 
-    const constructedUrl = `${backendEndpoint}/v1/auth/google?state=${encodeURI(`${redirectUrl}dashboard`)}`;
+    const constructedUrl = `${backendEndpoint}/v1/auth/google?state=${encodeURIComponent(returnUrl)}`;
 
     window.open(constructedUrl, '_self', 'noreferer');
 
@@ -42,6 +44,11 @@ export default function useLoginUsecase() {
       });
 
       if (response.$status === 'success') {
+        const returnUrl = readReturnUrl();
+        if (returnUrl) {
+          window.location.assign(returnUrl);
+          return;
+        }
         await navigate({
           to: '/dashboard',
           reloadDocument: true,
