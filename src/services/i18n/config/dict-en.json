@@ -1969,7 +1969,7 @@
         "proxiedHint": "Traffic goes through Cloudflare, which hides the gateway address. The certificate is issued over DNS-01, which works for Caddy and APISIX alike.",
         "dnsOnlyHint": "Visitors reach the gateway directly. The certificate is issued over HTTP-01.",
         "proxiedToggle": "Proxy through Cloudflare",
-        "proxiedToggleHint": "Turn off to point the name straight at the gateway (grey cloud)."
+        "proxiedToggleHint": "Hides the gateway address behind Cloudflare. For HTTPS, set the zone’s SSL/TLS mode to Full (strict) in Cloudflare first, or visitors loop on a redirect."
       }
     },
     "loadBalancersDetail": {

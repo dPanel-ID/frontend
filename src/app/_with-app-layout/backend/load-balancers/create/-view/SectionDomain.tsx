@@ -66,7 +66,7 @@ export function DomainField(props: {
     form.setValue(
       'internalDomainMetadata.cloudflare',
       selected.provider === ProviderIdent.cloudflare
-        ? { proxied: true }
+        ? { proxied: false }
         : undefined,
     );
   };
@@ -232,7 +232,7 @@ function DnsRecordPanel(props: {
             </span>
           </span>
           <Switch
-            checked={proxied.field.value ?? true}
+            checked={proxied.field.value ?? false}
             onCheckedChange={proxied.field.onChange}
             aria-label={t('proxiedToggle')}
           />
