@@ -2041,7 +2041,16 @@
         "routes": "Routes",
         "routesHint": "{kind} routing",
         "gateway": "Gateway server",
-        "engine": "Engine"
+        "engine": "Engine",
+        "certificate": "Certificate",
+        "certificateNone": "Not used",
+        "certificateNoneHint": "This load balancer serves plain HTTP.",
+        "certificateValid": "Valid",
+        "certificateExpiring": "Expiring soon",
+        "certificateExpired": "Expired",
+        "certificateMissing": "Not issued yet",
+        "certificateUnavailable": "Unavailable",
+        "certificateExpires": "{issuer} · {days} days left"
       }
     },
     "domain": {

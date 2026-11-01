@@ -1,3 +1,4 @@
+import * as Certificate$Id from './load-balancer.certificate.$id';
 import * as Create from './load-balancer.create';
 import * as Delete$Id from './load-balancer.delete.$id';
 import * as Detail$Id from './load-balancer.detail.$id';
@@ -7,6 +8,9 @@ import * as Logs$Id from './load-balancer.logs.$id';
 import * as Update$Id from './load-balancer.update.$id';
 
 const Root = {
+  Certificate: {
+    $Id: Certificate$Id,
+  },
   Create,
   Delete: {
     $Id: Delete$Id,
