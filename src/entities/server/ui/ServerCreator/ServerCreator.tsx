@@ -33,7 +33,10 @@ export function ServerCreator(props: ServerCreatorProps) {
 
   return (
     <span
-      className={cn('inline-flex min-w-0 items-center gap-1.5', className)}
+      className={cn(
+        'inline-flex min-w-0 max-w-full items-center gap-1.5',
+        className,
+      )}
       title={
         creator.email && creator.email !== creator.name
           ? t('tooltip', { name: creator.name, email: creator.email })
@@ -48,10 +51,17 @@ export function ServerCreator(props: ServerCreatorProps) {
           {initialsOf(creator.name)}
         </AvatarFallback>
       </Avatar>
-      <span className="truncate">
-        {nameOnly ? creator.name : t('createdBy', { name: creator.name })}
+      {/* On narrow screens the email moves under the name, so neither one
+          runs off the screen. */}
+      <span className="min-w-0 sm:truncate">
+        <span className="block truncate sm:inline">
+          {nameOnly ? creator.name : t('createdBy', { name: creator.name })}
+        </span>
         {showEmailText && (
-          <span className="text-muted-foreground"> · {creator.email}</span>
+          <span className="block truncate text-muted-foreground sm:inline">
+            <span className="hidden sm:inline"> · </span>
+            {creator.email}
+          </span>
         )}
       </span>
     </span>
