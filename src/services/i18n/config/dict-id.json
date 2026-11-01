@@ -1844,7 +1844,36 @@
         "sslHint": "Sajikan situs lewat HTTPS. Matikan hanya untuk setup HTTP biasa.",
         "l7Hint": "Setiap aturan mencocokkan path dan mengirimnya ke aplikasi atau alamat.",
         "l4Hint": "L4 meneruskan trafik ke satu atau beberapa alamat upstream tanpa inspeksi path HTTP.",
-        "wildcard": "Wildcard"
+        "wildcard": "Wildcard",
+        "reach": {
+          "title": "Cara gateway menjangkau aplikasi ini",
+          "hintRemote": "{count} deployment berjalan di server lain, mungkin di penyedia lain. IP internalnya tidak bisa dijangkau dari sini.",
+          "hintLocal": "Deployment di server gateway sendiri dijangkau lewat localhost.",
+          "default": "Bawaan",
+          "modes": {
+            "registered": {
+              "title": "Alamat terdaftar",
+              "description": "Alamat server yang terdaftar di dPanel. Berlaku lintas penyedia."
+            },
+            "private": {
+              "title": "Jaringan privat",
+              "description": "IP privat server. Hanya jika keduanya satu jaringan."
+            },
+            "custom": {
+              "title": "Target kustom",
+              "description": "Ketik IP atau domain lain yang sudah melayani aplikasi."
+            }
+          },
+          "customTitle": "Target",
+          "customPlaceholder": "203.0.113.10 atau origin.example.com",
+          "customAddress": "Alamat target",
+          "customPort": "Port target",
+          "customRemove": "Hapus target",
+          "customAdd": "Tambah target",
+          "noDeployments": "Aplikasi ini belum di-deploy.",
+          "privateResolved": "IP privat, dicari saat load balancer dibuat",
+          "sameServer": "Server yang sama"
+        }
       },
       "preview": {
         "title": "Preview deployment",
@@ -1871,15 +1900,19 @@
       "steps": {
         "gateway": {
           "title": "Gateway",
-          "description": "Server yang menjawab trafik publik, dan mesin web server yang dijalankannya."
+          "description": "Pilih server yang menerima trafik publik dan pasang engine-nya. Lanjut setelah engine terpasang."
         },
         "domain": {
-          "title": "Domain dan HTTPS",
-          "description": "Nama yang diketik pengunjung. dNocs meminta dan memperbarui sertifikatnya."
+          "title": "Domain",
+          "description": "Nama yang diketik pengunjung, dan record DNS yang dibuat dNocs untuknya."
         },
         "routing": {
           "title": "Routing",
-          "description": "Tujuan tiap permintaan: aplikasi, port di server, atau berkas statis."
+          "description": "Ke mana setiap request diteruskan, dan cara gateway menjangkau aplikasi di server lain."
+        },
+        "review": {
+          "title": "Tinjau",
+          "description": "Periksa sekali lagi, lalu buat load balancer."
         }
       },
       "review": {
@@ -1894,8 +1927,32 @@
         "httpsOff": "Mati",
         "mode": "Mode routing",
         "routes": "Rute",
-        "footnote": "dNocs memasang mesinnya di server gateway bila belum ada, lalu menerbitkan rutenya.",
+        "footnote": "dNocs menulis rute ke gateway dan meminta sertifikat. Biasanya butuh sekitar satu menit.",
         "startTitle": "Mulai dengan server gateway"
+      },
+      "flow": {
+        "back": "Kembali",
+        "continue": "Lanjut",
+        "edit": "Ubah",
+        "blocked": {
+          "gateway": "Pilih server yang siap dan engine yang sudah terpasang untuk lanjut.",
+          "domain": "Isi domain, atau pilih domain terdaftar beserta subdomainnya.",
+          "routing": "Setiap rute butuh path dan target yang bisa dijangkau.",
+          "review": "Masih ada yang belum lengkap di atas."
+        }
+      },
+      "dns": {
+        "externalTitle": "Record yang perlu ditambahkan di penyedia DNS Anda",
+        "managedTitle": "Record yang dibuat dNocs di {provider}",
+        "proxied": "Proxied",
+        "dnsOnly": "Hanya DNS",
+        "hostPending": "domain-anda",
+        "gatewayPending": "alamat gateway",
+        "externalHint": "Arahkan A record ini ke gateway sebelum trafik masuk. Sertifikat diterbitkan setelah nama mengarah ke gateway.",
+        "proxiedHint": "Trafik melewati Cloudflare, yang menyembunyikan alamat gateway. Sertifikat diterbitkan lewat DNS-01, berlaku untuk Caddy maupun APISIX.",
+        "dnsOnlyHint": "Pengunjung langsung menuju gateway. Sertifikat diterbitkan lewat HTTP-01.",
+        "proxiedToggle": "Proxy lewat Cloudflare",
+        "proxiedToggleHint": "Matikan agar nama langsung mengarah ke gateway (awan abu-abu)."
       }
     },
     "loadBalancersDetail": {
