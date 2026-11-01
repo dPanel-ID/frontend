@@ -1,13 +1,13 @@
 ---
 title: Members and roles
-description: Add people to a team, give each the access they need, and move resources between workspaces.
+description: Add people to a dPanel team and pick their role, from Viewer to Owner, so each person can see, deploy or delete only what they should.
 sidebar_position: 2
 sidebar_icon: user-cog
 ---
 
-Each member of a team has one or more roles. A role decides what that person can see and change in the team's workspace.
+In dPanel, each member of a team has one or more roles, and a role decides what that person can see, create, change and delete in the team's workspace: from **Viewer**, who can only look, to **Owner**, who can do everything.
 
-![A team page listing members with their roles and join dates](../../assets/teams/team-detail.webp 'A team page: members, their roles, and when they joined.')
+![A team page with its member count, your role and status, above the Members table with roles and join dates](../../assets/teams/team-detail.webp 'A team page: members, their roles, and when they joined.')
 
 ## Add a member
 
@@ -51,7 +51,7 @@ Start people on the narrowest role that lets them do their job. **Developer** su
 ## Change a member's roles
 
 1. Open the team.
-2. On the member's row, open the menu and choose **Manage roles**.
+2. On the member's row, press **Manage roles**.
 3. Tick the roles they should have. **Select group** ticks a whole group; **Clear** unticks everything.
 4. Press **Save roles**.
 
@@ -62,7 +62,7 @@ Owner and Admin are marked **Protected**. Only a workspace owner can tick them, 
 ## Remove a member
 
 1. Open the team.
-2. On the member's row, open the menu and choose **Remove**.
+2. On the member's row, press **Remove from team**.
 3. Confirm **Remove Member**.
 
 They lose access to the team's workspace immediately. Resources they created stay with the team.
@@ -71,16 +71,24 @@ They lose access to the team's workspace immediately. Resources they created sta
 
 Your **Profile** lists every workspace with your role in it. **View active workspace roles** shows the full role list for the workspace you are in.
 
-## Move a resource to another workspace
+## Resources stay in their workspace
 
-Servers, applications, load balancers, domains, cloud accounts and SSH keys can move between workspaces, for example from your personal workspace into a team.
+Servers, applications, load balancers, domains, cloud accounts and SSH keys stay in the workspace they were created in. dPanel does not move them between workspaces, so create shared resources in the team workspace from the start. See [Workspaces](../getting-started/workspaces.md).
 
-1. Find the resource in its list and open the row menu. For a server, open it and go to **Settings**.
-2. Choose **Migrate Ownership** (on a server: **Migrate ownership**).
-3. Under **New Owner**, pick the team, or **Personal**.
-4. Leave **Move what it needs too** on to bring along the SSH key, cloud account or server it depends on, when nothing else still uses them.
-5. Confirm.
+## Frequently asked questions
 
-:::warning
-The move takes effect immediately. People in the old workspace lose management access to the resource.
-:::
+### Which role should a developer get?
+
+**Developer**. It can create applications, build and deploy them, and read everything else, but cannot delete anything.
+
+### Who can give someone the Owner or Admin role?
+
+Only a workspace owner. Owner and Admin are marked **Protected**; for everyone else they are shown but disabled.
+
+### Does a new member need a dPanel account?
+
+Yes. Ask them to [sign up](../getting-started/sign-in.md#create-an-account) first, then find them by username or name in **Add New People**.
+
+### What happens to resources when I remove a member?
+
+They stay with the team. The member loses access to the team's workspace immediately.

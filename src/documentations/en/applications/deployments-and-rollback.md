@@ -1,11 +1,11 @@
 ---
 title: Deployments and rollback
-description: Build the latest commit, follow it onto the server, and go back to an earlier build when you need to.
+description: Release a new commit with Build and release, follow the build onto your server, and roll back to an earlier build in dPanel without rebuilding.
 sidebar_position: 4
 sidebar_icon: history
 ---
 
-Two words matter here. A **build** is your code packaged once, from one commit. A **release** is that build placed on one server.
+In dPanel, every push you want to ship becomes a build, and every build is kept, so you can release the latest commit or roll back to an earlier build in one step. Two words matter here. A **build** is your code packaged once, from one commit. A **release** is that build placed on one server.
 
 ## What is running now
 
@@ -38,8 +38,10 @@ The build appears at the top of the list as **Building**, then **Passed** or **F
 
 **Builds and releases** has two views.
 
-- **Builds**: every build, newest first, with its build ID, commit, branch and how long it took.
+- **Builds**: every build, newest first, with its build ID, commit, branch and how long it took. A build that has been released to a server carries a **Used** badge, and one being released right now carries **In Progress**.
 - **On servers**: each server the application is released to, with its service state.
+
+Switch views with the **Builds** and **On servers** toggle beside **Build and release**.
 
 ![The Deployments tab, listing builds with their status and actions](../../assets/applications/app-deployments.webp)
 

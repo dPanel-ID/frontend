@@ -1,11 +1,11 @@
 ---
 title: How applications work
-description: dPanel builds your code from GitHub and runs it on a server you already have.
+description: How dPanel deploys an app from GitHub: it builds your repository on your own server, runs it as a systemd service and keeps every build for rollback.
 sidebar_position: 1
 sidebar_icon: app-window
 ---
 
-An application is your code, running as a service on one of your servers. dPanel does not host the code itself. It reads the GitHub repository you point it at, builds it on the server, and keeps the service running there.
+An application in dPanel is your code from a GitHub repository, built and running as a systemd service on one of your own servers. dPanel does not host the code itself: it reads the repository and branch you point it at, runs your build commands on the server, starts the result as a service, and keeps each build so you can roll back.
 
 ## The three steps
 
@@ -27,7 +27,7 @@ A build is not shared between machines. Each server builds and installs the appl
 
 Open **Applications** in the sidebar. The page lists every application in the current workspace, with counts at the top.
 
-![The Applications page, listing the demo application Go Example Docs with its status and server](../../assets/applications/apps-list.webp 'Applications, with one application running.')
+![The Applications page in table view, listing an application with its status, source repository, server and address](../../assets/applications/apps-list.webp 'Applications, with one application running.')
 
 | Status          | What it means                                                      |
 | --------------- | ------------------------------------------------------------------ |
@@ -36,7 +36,7 @@ Open **Applications** in the sidebar. The page lists every application in the cu
 | Needs attention | The last build or release failed. Open the application to see why. |
 | Not running     | Nothing has been released yet, or the service is stopped.          |
 
-Use **Search by application name** to find one quickly. Select a row to open the application.
+The list opens as a table, with the status, the source repository, the servers and the public address of each application. Use **Search by application name** to find one quickly. Select a row to open the application.
 
 The GitHub button in the header shows which account dPanel reads repositories with, such as **Connected to GitHub as** your login. If it says **Reconnect GitHub**, GitHub stopped accepting the saved sign-in. Sign in again before you build.
 
@@ -53,5 +53,7 @@ Each application has four tabs.
 
 ## Next steps
 
-- [Create an application](./create-an-application.md)
-- [Deployments and rollback](./deployments-and-rollback.md)
+- [Create an application](./create-an-application.md) from a GitHub repository.
+- [Deployments and rollback](./deployments-and-rollback.md): release a new commit, or go back to an earlier build.
+- [Environment variables](./environment-variables.md) for settings and secrets.
+- Publish it on a domain with HTTPS through a [load balancer](../networking/load-balancers.md).

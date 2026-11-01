@@ -1,11 +1,12 @@
 ---
-title: DigitalOcean
-description: Create a custom-scoped DigitalOcean token, connect it to dPanel, and launch a Droplet.
+title: DigitalOcean Droplets
+description: Create a custom-scoped DigitalOcean API token, connect it to dPanel, and launch an Ubuntu Droplet in your own DigitalOcean team.
 sidebar_position: 4
 sidebar_icon: provider:digitalocean
+sidebar_label: DigitalOcean
 ---
 
-dPanel launches Droplets in your DigitalOcean team. It signs in with a personal access token that you create for it.
+dPanel launches Ubuntu Droplets in your own DigitalOcean team. It signs in with a custom-scoped personal access token that you create for it, limited to Droplets, SSH keys and the lists the launch form reads.
 
 ## What you need first
 
@@ -26,7 +27,7 @@ DigitalOcean lets you choose exactly what a token may do. Don't give dPanel a **
 | `droplet:create`, `droplet:read`, `droplet:delete` | Create the Droplet, wait for it, delete it later     |
 | `ssh_key:create`, `ssh_key:read`                   | Import your dPanel SSH key as `dpanel-<server name>` |
 | `regions:read`                                     | The **Region** list                                  |
-| `sizes:read`                                       | The **Droplet Size** list                            |
+| `sizes:read`                                       | The **Size** sliders and the Droplet size list       |
 | `image:read`                                       | The Ubuntu image list                                |
 | `vpc:read`                                         | The networks in a region                             |
 
@@ -55,12 +56,12 @@ dPanel saves the account as **Ready** without testing it. The launch form is the
 
 ![The launch form with DigitalOcean selected](../../../assets/servers/create-provider-digitalocean.webp)
 
-| Field              | What to pick                                       |
-| ------------------ | -------------------------------------------------- |
-| **Region**         | The datacenter, such as `sgp1`.                    |
-| **Droplet Size**   | The size slug, such as `s-1vcpu-2gb`.              |
-| **Ubuntu release** | 24.04 LTS or 26.04 LTS.                            |
-| **Network**        | The region's default VPC, unless you pick another. |
+| Field              | What to pick                                                                                                                                                                           |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Region**         | The datacenter, such as `sgp1`.                                                                                                                                                        |
+| **Size**           | Move **CPU** and **RAM**. dPanel launches the cheapest Basic Droplet that fits, such as `s-1vcpu-2gb`; the disk comes with it. **Choose the instance type yourself** lists every size. |
+| **Ubuntu release** | 24.04 LTS or 26.04 LTS.                                                                                                                                                                |
+| **Network**        | The region's default VPC, unless you pick another.                                                                                                                                     |
 
 DigitalOcean adds a fourth step, **Access**, with **Default User**: the Linux user dPanel creates and signs in as. `dpanel` by default.
 

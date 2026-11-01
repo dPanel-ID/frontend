@@ -1,11 +1,11 @@
 ---
 title: Variabel environment
-description: Beri build dan layanan yang berjalan pengaturan yang mereka butuhkan, tanpa menaruhnya di repositori.
+description: Atur variabel environment build-time dan runtime aplikasi di dPanel, jauhkan rahasia dari repositori, dan terapkan nilai baru lewat rilis.
 sidebar_position: 3
 sidebar_icon: variable
 ---
 
-dPanel menyimpan dua daftar terpisah, jadi pengaturan yang hanya dibutuhkan build tidak pernah sampai ke layanan yang berjalan.
+dPanel meneruskan variabel environment ke aplikasi Anda dari dua daftar terpisah, jadi pengaturan yang hanya dibutuhkan build tidak pernah sampai ke layanan yang berjalan, dan rahasia seperti API key tidak perlu ada di repositori Git Anda.
 
 | Daftar              | Dipakai                             | Contoh isi                             |
 | ------------------- | ----------------------------------- | -------------------------------------- |

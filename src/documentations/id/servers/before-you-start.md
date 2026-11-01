@@ -1,9 +1,11 @@
 ---
 title: Sebelum mulai
-description: Dua hal yang cukup disiapkan sekali, lalu dipakai ulang untuk setiap server.
+description: Sebelum menambah server ke dPanel, buat SSH key, dan hubungkan akun cloud jika dPanel perlu meluncurkan VPS. Keduanya disiapkan sekali saja.
 sidebar_position: 2
 sidebar_icon: list-checks
 ---
+
+dPanel butuh dua hal sebelum server pertama Anda, lalu memakai keduanya lagi untuk setiap server berikutnya: SSH key untuk masuk ke mesin, dan akun cloud yang terhubung, tetapi hanya jika dPanel perlu meluncurkan VPS baru untuk Anda.
 
 ## SSH key
 
@@ -21,7 +23,7 @@ Anda tidak perlu membuatnya sendiri.
 
 Separuh privatnya tidak akan ditampilkan lagi. dPanel menyimpannya terenkripsi dan memakainya untuk Anda. Halaman kunci menampilkan separuh publiknya, yang aman disalin ke mana saja, beserta fingerprint yang bisa Anda cocokkan dengan laporan server.
 
-![Halaman Kunci SSH dengan satu kunci](../../assets/getting-started/ssh-keys.webp)
+![Halaman Kunci SSH berisi dua kunci beserta jenisnya, siapa yang boleh memakainya, dan pemiliknya](../../assets/getting-started/ssh-keys.webp)
 
 ## Akun cloud
 

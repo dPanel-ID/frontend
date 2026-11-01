@@ -1,11 +1,12 @@
 ---
-title: Tencent Cloud
-description: Buat sub-user CAM dengan API key dan hak pembayaran, hubungkan ke dPanel, lalu luncurkan server CVM.
+title: Tencent Cloud CVM
+description: Buat sub-user CAM Tencent Cloud dengan API key dan hak pembayaran, hubungkan ke dPanel, lalu luncurkan server CVM Ubuntu.
 sidebar_position: 7
 sidebar_icon: provider:tencent
+sidebar_label: Tencent Cloud
 ---
 
-dPanel meluncurkan instance CVM di akun Tencent Cloud Anda. dPanel masuk dengan API key (SecretId dan SecretKey) milik sub-user CAM yang Anda buat khusus untuknya.
+dPanel meluncurkan instance CVM Ubuntu di akun Tencent Cloud Anda sendiri. dPanel masuk dengan API key (SecretId dan SecretKey) milik sub-user CAM yang Anda buat khusus untuknya, dengan hanya izin yang tercantum di halaman ini.
 
 ## Yang perlu disiapkan
 
@@ -57,13 +58,13 @@ dPanel langsung menyimpan akun itu sebagai **Siap**, tanpa menguji kuncinya. Uji
 
 ![Formulir peluncuran dengan Tencent Cloud terpilih](../../../assets/servers/create-provider-tencent.webp)
 
-| Kolom              | Yang dipilih                                                                            |
-| ------------------ | --------------------------------------------------------------------------------------- |
-| **Region**         | Tempat server berjalan, misalnya `ap-jakarta`.                                          |
-| **Zone**           | Zona di dalam region itu, misalnya `ap-jakarta-1`.                                      |
-| **Network**        | `dpanel-network`. Tidak perlu dipilih.                                                  |
-| **Instance Type**  | Ukurannya, misalnya `SA5.MEDIUM2`. Daftarnya hanya berisi tipe yang dijual di zona itu. |
-| **Ubuntu release** | 24.04 LTS atau 26.04 LTS. dPanel memilih image Tencent Cloud terbaru untuk rilis itu.   |
+| Kolom              | Yang dipilih                                                                                                                                                                                     |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Region**         | Tempat server berjalan, misalnya `ap-jakarta`.                                                                                                                                                   |
+| **Zone**           | Zona di dalam region itu, misalnya `ap-jakarta-1`.                                                                                                                                               |
+| **Network**        | `dpanel-network`. Tidak perlu dipilih.                                                                                                                                                           |
+| **Size**           | Geser **CPU** dan **RAM**. dPanel meluncurkan tipe `SA2`, `SA5`, atau `S5` termurah yang dijual di zona itu. **Choose the instance type yourself** menampilkan semuanya, misalnya `SA5.MEDIUM2`. |
+| **Ubuntu release** | 24.04 LTS atau 26.04 LTS. dPanel memilih image Tencent Cloud terbaru untuk rilis itu.                                                                                                            |
 
 Untuk Tencent Cloud tidak ada langkah **Access**. dPanel masuk sebagai `ubuntu` dengan SSH key Anda; image Ubuntu di Tencent Cloud tidak mengizinkan `root` login.
 
@@ -83,7 +84,7 @@ Kalau peluncuran gagal dengan `UnauthorizedOperation` dan pesan tentang **paymen
 - **Satu security group per server**, bernama `dpanel-<nama server>`, terbuka ke internet di TCP 22, 80, dan 443, dengan trafik keluar diizinkan. dPanel menghapusnya bersama server.
 - **Satu key pair per server**, bernama `dpanel_<lingkungan>_<ID server>`, karena Tencent Cloud hanya menerima huruf, angka, dan garis bawah di sana. dPanel menghapusnya bersama server, termasuk saat peluncurannya gagal.
 - **Nama server dipakai sebagai hostname.** Gunakan 2 sampai 63 huruf, angka, atau tanda hubung, diawali huruf. dPanel menolak nama yang sudah dipakai instance lain di region itu.
-- **Disk.** Ukuran dan tipe system disk mengikuti pilihan Tencent Cloud untuk image itu. Formulir peluncuran tidak punya pilihan disk.
+- **Disk.** Ukuran dan tipe system disk mengikuti pilihan Tencent Cloud untuk image itu. Formulir peluncuran tidak punya slider storage untuk Tencent Cloud.
 - **IP publik dan bandwidth.** Instance mendapat alamat IPv4 publik, ditagih berdasarkan trafik, dibatasi 100 Mbps.
 - **Tagihan berjalan sejak peluncuran.** Anda membayar Tencent Cloud untuk instance, disk, dan trafiknya selama masih ada, termasuk saat setup berjalan atau gagal. Hapus server yang sudah tidak dipakai.
 

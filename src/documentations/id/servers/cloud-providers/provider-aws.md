@@ -1,11 +1,12 @@
 ---
-title: AWS
-description: Buat IAM user dengan hak akses minimum, hubungkan ke dPanel, lalu luncurkan server EC2.
+title: AWS EC2
+description: Hubungkan AWS ke dPanel dengan IAM user dan policy berhak akses minimum, lalu luncurkan server EC2 Ubuntu di akun AWS Anda sendiri.
 sidebar_position: 2
 sidebar_icon: provider:aws
+sidebar_label: AWS
 ---
 
-dPanel meluncurkan instance EC2 di akun AWS Anda. dPanel masuk dengan access key IAM yang Anda buat khusus untuknya.
+dPanel meluncurkan instance EC2 Ubuntu di akun AWS Anda sendiri. dPanel masuk dengan access key milik IAM user khusus yang Anda buat untuknya, yang dibatasi oleh policy IAM minimum di halaman ini sehingga hanya bisa mengelola instance EC2 yang diberinya tag, di region yang Anda izinkan.
 
 ## Yang perlu disiapkan
 
@@ -168,12 +169,12 @@ dPanel langsung menyimpan akun itu sebagai **Siap**, tanpa menguji kuncinya. Uji
 
 ![Formulir peluncuran dengan AWS terpilih](../../../assets/servers/create-provider-aws.webp)
 
-| Kolom              | Yang dipilih                                                                       |
-| ------------------ | ---------------------------------------------------------------------------------- |
-| **Region**         | Region mana pun yang diizinkan untuk kunci Anda, misalnya `ap-southeast-1`.        |
-| **Instance Type**  | Ukurannya, misalnya `t3.small`. Daftarnya diambil dari akun Anda untuk region itu. |
-| **Ubuntu release** | 24.04 LTS atau 26.04 LTS. dPanel mencari image yang cocok di region itu.           |
-| **Network**        | `dpanel-network`. Tidak perlu dipilih.                                             |
+| Kolom              | Yang dipilih                                                                                                                                                                                                                                                                                  |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Region**         | Region mana pun yang diizinkan untuk kunci Anda, misalnya `ap-southeast-1`.                                                                                                                                                                                                                   |
+| **Size**           | Geser **CPU**, **RAM**, dan **Storage** (20 sampai 500 GB). dPanel meluncurkan tipe `t3a` atau `t3` termurah yang cukup, lalu `c6a`, `m6a`, `c6i`, atau `m6i` untuk ukuran yang lebih besar. **Choose the instance type yourself** menampilkan semua tipe di region itu, misalnya `t3.small`. |
+| **Ubuntu release** | 24.04 LTS atau 26.04 LTS. dPanel mencari image yang cocok di region itu.                                                                                                                                                                                                                      |
+| **Network**        | `dpanel-network`. Tidak perlu dipilih.                                                                                                                                                                                                                                                        |
 
 Untuk AWS tidak ada langkah **Access**. dPanel masuk sebagai `ubuntu`.
 
@@ -196,3 +197,21 @@ Ikuti [Membuat server cloud](./create-a-cloud-server.md). Pilih AWS di langkah 1
 - Untuk merotasi kunci, buat kunci baru untuk IAM user yang sama, lalu ganti lewat **Perbarui kredensial** pada akun cloud. Lihat [Merotasi kredensial](./cloud-credentials-security.md#merotasi-kredensial).
 - Untuk memutus akses dPanel, nonaktifkan access key-nya di IAM. Server yang sedang berjalan tetap berjalan. Lihat [apa yang terjadi saat kunci dicabut](./cloud-credentials-security.md#kalau-kredensial-dicabut).
 - Selengkapnya di [Kredensial cloud dan keamanan](./cloud-credentials-security.md).
+
+## Pertanyaan yang sering diajukan
+
+### Izin IAM apa yang dibutuhkan dPanel di AWS?
+
+Hanya EC2: panggilan describe yang mengisi formulir peluncuran, panggilan yang membuat `dpanel-network` dan security group, serta `RunInstances`, `TerminateInstances`, dan `CreateTags`. [Policy IAM minimum](#policy-iam-minimum) di atas mencantumkannya, tanpa izin IAM, S3, atau `iam:PassRole`.
+
+### Bisakah saya membatasi dPanel ke satu region AWS?
+
+Bisa. Syarat `aws:RequestedRegion` di policy membatasi peluncuran ke region yang Anda sebut. Ubah daftarnya sebelum memasang policy itu.
+
+### Tipe instance EC2 apa yang diluncurkan dPanel?
+
+Tipe `t3a` atau `t3` termurah dengan CPU dan RAM minimal sebesar pilihan Anda, atau tipe `c6a`, `m6a`, `c6i`, atau `m6i` untuk ukuran yang lebih besar. Tekan **Choose the instance type yourself** untuk memilih tipe apa pun, misalnya `t3.small`.
+
+### Apakah menghapus server di dPanel juga menghentikan (terminate) instance EC2-nya?
+
+Ya. dPanel menghentikan instance itu dan menghapus security group-nya. VPC `dpanel-network` tetap ada, sehingga peluncuran berikutnya di region itu memakainya lagi.

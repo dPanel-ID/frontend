@@ -1,11 +1,12 @@
 ---
-title: DigitalOcean
-description: Buat token DigitalOcean dengan cakupan khusus, hubungkan ke dPanel, lalu luncurkan Droplet.
+title: DigitalOcean Droplets
+description: Buat API token DigitalOcean dengan cakupan khusus, hubungkan ke dPanel, lalu luncurkan Droplet Ubuntu di team DigitalOcean Anda sendiri.
 sidebar_position: 4
 sidebar_icon: provider:digitalocean
+sidebar_label: DigitalOcean
 ---
 
-dPanel meluncurkan Droplet di team DigitalOcean Anda. dPanel masuk dengan personal access token yang Anda buat khusus untuknya.
+dPanel meluncurkan Droplet Ubuntu di team DigitalOcean Anda sendiri. dPanel masuk dengan personal access token bercakupan khusus yang Anda buat untuknya, yang hanya bisa mengelola Droplet, SSH key, dan daftar yang dibaca formulir peluncuran.
 
 ## Yang perlu disiapkan
 
@@ -26,7 +27,7 @@ DigitalOcean membolehkan Anda menentukan persis apa yang boleh dilakukan sebuah 
 | `droplet:create`, `droplet:read`, `droplet:delete` | Membuat Droplet, menunggunya siap, menghapusnya nanti        |
 | `ssh_key:create`, `ssh_key:read`                   | Mengimpor SSH key dPanel Anda sebagai `dpanel-<nama server>` |
 | `regions:read`                                     | Daftar **Region**                                            |
-| `sizes:read`                                       | Daftar **Droplet Size**                                      |
+| `sizes:read`                                       | Slider **Size** dan daftar ukuran Droplet                    |
 | `image:read`                                       | Daftar image Ubuntu                                          |
 | `vpc:read`                                         | Daftar jaringan di sebuah region                             |
 
@@ -55,12 +56,12 @@ dPanel menyimpan akun itu sebagai **Siap** tanpa mengujinya. Ujian pertamanya ad
 
 ![Formulir peluncuran dengan DigitalOcean terpilih](../../../assets/servers/create-provider-digitalocean.webp)
 
-| Kolom              | Yang dipilih                                           |
-| ------------------ | ------------------------------------------------------ |
-| **Region**         | Pusat datanya, misalnya `sgp1`.                        |
-| **Droplet Size**   | Slug ukurannya, misalnya `s-1vcpu-2gb`.                |
-| **Ubuntu release** | 24.04 LTS atau 26.04 LTS.                              |
-| **Network**        | VPC bawaan region itu, kecuali Anda memilih yang lain. |
+| Kolom              | Yang dipilih                                                                                                                                                                                     |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Region**         | Pusat datanya, misalnya `sgp1`.                                                                                                                                                                  |
+| **Size**           | Geser **CPU** dan **RAM**. dPanel meluncurkan Droplet Basic termurah yang cukup, misalnya `s-1vcpu-2gb`; disknya sudah termasuk. **Choose the instance type yourself** menampilkan semua ukuran. |
+| **Ubuntu release** | 24.04 LTS atau 26.04 LTS.                                                                                                                                                                        |
+| **Network**        | VPC bawaan region itu, kecuali Anda memilih yang lain.                                                                                                                                           |
 
 DigitalOcean menambahkan langkah keempat, **Access**, berisi **Default User**: user Linux yang dibuat dPanel dan dipakainya untuk masuk. Bawaannya `dpanel`.
 

@@ -1,13 +1,15 @@
 ---
 title: Tim
-description: Buat ruang kerja tim, ganti namanya, dan hapus kalau sudah tidak diperlukan.
+description: Buat ruang kerja tim di dPanel untuk berbagi server, aplikasi, dan akun cloud dengan tim Anda, lalu ganti namanya atau hapus setelah selesai.
 sidebar_position: 1
 sidebar_icon: users
 ---
 
-Tim adalah ruang kerja bersama. Server, aplikasi, load balancer, domain, akun cloud, dan kunci SSH yang dibuat di dalamnya menjadi milik tim, dan setiap anggota bisa mengaksesnya sesuai perannya.
+Tim di dPanel adalah ruang kerja bersama. Server, aplikasi, load balancer, domain, akun cloud, dan kunci SSH yang dibuat di dalamnya menjadi milik tim, dan setiap anggota bisa mengaksesnya sesuai [perannya](./members-and-roles.md). Dengan tim, rekan kerja tidak perlu lagi berbagi password server atau kunci SSH.
 
-![Halaman Tim yang menampilkan ruang kerja tim beserta waktu pembaruan terakhirnya](../../assets/teams/teams-list.webp 'Tim: semua ruang kerja tim tempat Anda bergabung.')
+![Halaman Tim dalam tampilan tabel, menampilkan sebuah tim beserta statusnya, peran Anda, dan jumlah anggotanya](../../assets/teams/teams-list.webp 'Tim: semua ruang kerja tim tempat Anda bergabung, beserta peran Anda di masing-masing.')
+
+Halaman ini diawali dengan ringkasan jumlah: tim yang Anda ikuti, tim yang **Milik Anda**, tim yang **Dibagikan ke Anda**, dan **Workspace aktif** Anda. Tabelnya mencantumkan setiap tim dengan **Status**, **Peran Anda**, **Anggota**, serta kapan tim itu dibuat dan diperbarui.
 
 ## Membuat tim
 
@@ -24,7 +26,7 @@ Pindah ke ruang kerja baru itu (lihat [Ruang kerja](../getting-started/workspace
 
 ## Membuka tim
 
-Di halaman **Tim**, tekan tanda panah di baris tim. Halaman tim menampilkan anggotanya, beserta peran dan waktu mereka bergabung.
+Di halaman **Tim**, pilih baris sebuah tim, atau tekan **Detil** (ikon mata) di baris itu. Halaman tim menampilkan jumlah anggota, **Peran Anda**, status tim, dan kapan tim dibuat, lalu tabel **Anggota** berisi peran setiap anggota dan kapan mereka bergabung.
 
 ## Mengganti nama tim
 
@@ -35,9 +37,9 @@ Di halaman **Tim**, tekan tanda panah di baris tim. Halaman tim menampilkan angg
 
 ## Menghapus tim
 
-1. Di halaman **Tim**, tekan ikon tempat sampah di baris tim tersebut.
+1. Di halaman **Tim**, tekan **Hapus** (ikon tempat sampah) di baris tim tersebut. Hanya tim yang **Milik Anda** yang bisa dihapus.
 2. Konfirmasi **Hapus Tim**.
 
-:::danger[Pindahkan dulu yang masih dibutuhkan]
-Menghapus tim berarti menghapus ruang kerjanya. Pindahkan server, aplikasi, atau resource lain yang ingin dipertahankan ke ruang kerja lain sebelum menghapus. Lihat [Memindahkan resource ke ruang kerja lain](./members-and-roles.md#memindahkan-resource-ke-ruang-kerja-lain).
+:::danger[Pastikan tidak ada lagi yang dibutuhkan]
+Menghapus tim berarti menghapus ruang kerjanya. Resource tidak bisa dipindahkan ke ruang kerja lain, jadi hapus tim hanya jika Anda tidak lagi membutuhkan apa pun di dalamnya. Hapus dulu server-servernya kalau Anda ingin penyedia cloud berhenti menagih. Lihat [Menghapus server](../servers/delete-a-server.md).
 :::

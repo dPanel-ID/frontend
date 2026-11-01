@@ -17,7 +17,10 @@ export const Route = createFileRoute('/')({
     seoHead({
       title: `${SITE.name} | Server, deployment and DNS control panel`,
       exactTitle: true,
-      description: SITE.description,
+      // Search results show about 160 characters; the full description is
+      // in the structured data below.
+      description:
+        'dPanel - dNocs is a control panel to launch servers on any cloud, deploy apps from GitHub, and manage domains, HTTPS load balancers and logs.',
       path: '/',
       jsonLd: [
         organizationJsonLd(),

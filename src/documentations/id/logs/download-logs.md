@@ -1,11 +1,11 @@
 ---
 title: Mengunduh log
-description: Simpan satu halaman baris log, atau seluruh rentang waktu, sebagai file .log.
+description: Unduh log aplikasi dan load balancer dari dPanel sebagai file .log: satu halaman, atau seluruh rentang waktu hingga 100.000 baris.
 sidebar_position: 3
 sidebar_icon: download
 ---
 
-Unduh log saat Anda perlu mencarinya dengan alat sendiri, atau melampirkannya ke permintaan bantuan.
+dPanel mengunduh log aplikasi dan load balancer sebagai file `.log` biasa, baik halaman yang sedang dibuka maupun semua baris di rentang waktu, hingga 100.000 baris. Unduh log saat Anda perlu mencarinya dengan alat sendiri, atau melampirkannya ke permintaan bantuan.
 
 ## Log aplikasi dan load balancer
 

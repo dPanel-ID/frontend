@@ -1,11 +1,11 @@
 ---
 title: Connect GitHub
-description: Link a GitHub account so dPanel can read your repositories and build them.
+description: Connect GitHub to dPanel so it can read your repositories and deploy apps from GitHub, including repositories that belong to a GitHub organisation.
 sidebar_position: 4
 sidebar_icon: git-branch
 ---
 
-dPanel builds applications from GitHub repositories. Before you create an application, link a GitHub account. You do it once per dPanel account.
+dPanel deploys applications from GitHub repositories, so before your first application you link a GitHub account. You do it once per dPanel account, and dPanel then lists every repository and branch that account, and the GitHub organisations you install the dnocs-id GitHub App on, can read.
 
 ## What you need first
 
@@ -43,4 +43,4 @@ Press the button and sign in to GitHub again. Nothing else changes. Your applica
 
 ## What happens next
 
-Create your first application. See [Applications](../applications/overview.md).
+Create your first application. See [How applications work](../applications/overview.md) and [Create an application](../applications/create-an-application.md).

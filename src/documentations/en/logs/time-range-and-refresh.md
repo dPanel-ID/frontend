@@ -1,11 +1,11 @@
 ---
 title: Time range and refresh
-description: Choose how far back to look, page through older lines, and keep the view up to date.
+description: Pick a log time range up to 10 days back, page through older lines 200 at a time, and turn on auto-refresh to follow application logs live.
 sidebar_position: 2
 sidebar_icon: clock
 ---
 
-These controls are on application runtime logs and load balancer logs.
+In dPanel you can read application and load balancer logs from the last 10 minutes up to 10 days back, 200 lines per page, and refresh them by hand or automatically. These controls are on application runtime logs and load balancer logs; see [Reading logs](./reading-logs.md) for where each log lives.
 
 ## Choose a time range
 

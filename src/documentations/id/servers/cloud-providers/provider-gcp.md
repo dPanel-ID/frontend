@@ -1,11 +1,12 @@
 ---
-title: Google Cloud
+title: Google Compute Engine
 description: Buat service account dengan hak akses minimum di project khusus, hubungkan ke dPanel, lalu luncurkan server Compute Engine.
 sidebar_position: 3
 sidebar_icon: provider:gcp
+sidebar_label: Google Cloud
 ---
 
-dPanel meluncurkan VM Compute Engine di salah satu project Google Cloud Anda. dPanel masuk dengan kunci JSON service account yang Anda buat khusus untuknya.
+dPanel meluncurkan VM Compute Engine Ubuntu di salah satu project Google Cloud Anda. dPanel masuk dengan kunci JSON milik service account yang Anda buat khusus untuknya, di project tersendiri, dengan hanya izin yang tercantum di halaman ini.
 
 ## Yang perlu disiapkan
 
@@ -93,18 +94,18 @@ dPanel menyimpan akun itu sebagai **Siap** tanpa mengujinya. Ujian pertamanya ad
 
 ![Langkah 1 formulir peluncuran dengan Google Cloud terpilih](../../../assets/servers/create-step1-provider.webp)
 
-| Kolom              | Yang dipilih                                                                        |
-| ------------------ | ----------------------------------------------------------------------------------- |
-| **Region**         | Lokasi VM, misalnya `asia-southeast2`.                                              |
-| **Zone**           | Satu zone di region itu, misalnya `asia-southeast2-a`.                              |
-| **Machine Type**   | Ukurannya, misalnya `e2-small`. Daftarnya diambil dari project Anda untuk zone itu. |
-| **Ubuntu release** | 24.04 LTS atau 26.04 LTS, dari image family Ubuntu publik milik Google.             |
-| **Disk**           | Ukuran boot disk dalam GB. Bawaannya 20.                                            |
-| **Network**        | `dpanel-network`. Tidak perlu dipilih.                                              |
+| Kolom              | Yang dipilih                                                                                                                                                                              |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Region**         | Lokasi VM, misalnya `asia-southeast2`.                                                                                                                                                    |
+| **Zone**           | Satu zone di region itu, misalnya `asia-southeast2-a`.                                                                                                                                    |
+| **Size**           | Geser **CPU** dan **RAM**. dPanel memilih machine type E2: `e2-micro`, `e2-small`, atau `e2-medium` (shared core) untuk 1 vCPU, tipe E2 standar jika ada yang cocok, atau tipe E2 custom. |
+| **Ubuntu release** | 24.04 LTS atau 26.04 LTS, dari image family Ubuntu publik milik Google.                                                                                                                   |
+| **Storage**        | Ukuran boot disk, 20 sampai 500 GB. Bawaannya 20.                                                                                                                                         |
+| **Network**        | `dpanel-network`. Tidak perlu dipilih.                                                                                                                                                    |
 
 Untuk Google Cloud tidak ada langkah **Access**. dPanel masuk sebagai `ubuntu`.
 
-![Langkah 2 dan 3 sudah terisi untuk Google Cloud](../../../assets/servers/create-step2-location-size.webp)
+![Langkah 3 untuk Google Cloud, dengan slider CPU, RAM, dan Storage serta machine type E2 yang akan diluncurkan dPanel](../../../assets/servers/create-step2-location-size.webp)
 
 ## 4. Luncurkan
 

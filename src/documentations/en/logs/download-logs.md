@@ -1,11 +1,11 @@
 ---
 title: Download logs
-description: Save a page of log lines, or a whole time range, as a .log file.
+description: Download application and load balancer logs from dPanel as a .log file: one page, or a whole time range of up to 100,000 lines.
 sidebar_position: 3
 sidebar_icon: download
 ---
 
-Download a log when you need to search it with your own tools, or attach it to a support request.
+dPanel downloads application and load balancer logs as a plain `.log` file, either the page you are on or every line in the time range, up to 100,000 lines. Download a log when you need to search it with your own tools, or attach it to a support request.
 
 ## Application and load balancer logs
 

@@ -1,11 +1,11 @@
 ---
 title: Terhubung lewat SSH
-description: Terminal di browser, dan cara masuk dari komputer Anda sendiri.
+description: Buka terminal SSH ke server Anda langsung di browser dengan dPanel, atau masuk dari komputer sendiri memakai ssh dan kunci publik Anda.
 sidebar_position: 7
 sidebar_icon: square-terminal
 ---
 
-Biasanya Anda tidak butuh terminal: tab-tab di halaman server sudah mencakup layanan, pengguna, berkas, dan log. Kalau perlu, tekan **Buka terminal** di bagian atas halaman server. dPanel masuk dengan kunci yang disimpannya dan membuka shell.
+dPanel menyediakan terminal SSH di browser: tekan **Buka terminal** di bagian atas halaman server, lalu dPanel masuk dengan kunci yang disimpannya dan membuka shell. Biasanya Anda tidak membutuhkannya, karena tab-tab di halaman server sudah mencakup layanan, pengguna, berkas, dan log.
 
 ![Sesi shell di server, langsung di dalam browser](../../assets/servers/server-terminal.webp)
 

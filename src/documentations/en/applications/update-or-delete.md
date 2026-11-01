@@ -1,9 +1,12 @@
 ---
-title: Update or delete an application
-description: Change how an application is built and run, or remove it and stop its service.
+title: Update or delete an app
+description: Change an application's build steps, start command, port and variables in dPanel, or delete it and stop its systemd service on every server.
 sidebar_position: 6
 sidebar_icon: settings-2
+sidebar_label: Update or delete an application
 ---
+
+You can change how a dPanel application is built and run at any time, from one setting to the whole form, or delete it. Changes take effect from the next release.
 
 ## Review the setup
 

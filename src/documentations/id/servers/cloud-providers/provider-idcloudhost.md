@@ -1,11 +1,12 @@
 ---
-title: IDCloudHost
-description: Buat API key IDCloudHost, hubungkan ke dPanel, lalu luncurkan server di Indonesia.
+title: IDCloudHost VPS
+description: Buat API key IDCloudHost, hubungkan ke dPanel, lalu luncurkan VPS cloud Ubuntu di Indonesia dari billing account IDCloudHost Anda sendiri.
 sidebar_position: 5
 sidebar_icon: provider:idcloudhost
+sidebar_label: IDCloudHost
 ---
 
-dPanel meluncurkan VM cloud di akun IDCloudHost Anda. dPanel masuk dengan API key dari profil IDCloudHost Anda.
+dPanel meluncurkan VM cloud Ubuntu di Indonesia, di akun IDCloudHost Anda sendiri. dPanel masuk dengan API key dari profil IDCloudHost Anda dan menagihkannya ke billing account IDCloudHost Anda.
 
 ## Yang perlu disiapkan
 
@@ -53,15 +54,14 @@ dPanel menyimpan akun itu sebagai **Siap** tanpa mengujinya. Ujian pertamanya ad
 
 ![Formulir peluncuran dengan IDCloudHost terpilih](../../../assets/servers/create-provider-idcloudhost.webp)
 
-| Kolom               | Yang dipilih                                                                                    |
-| ------------------- | ----------------------------------------------------------------------------------------------- |
-| **Region**          | Lokasinya, misalnya `jkt01`.                                                                    |
-| **Billing Account** | Biarkan **Auto-select billing account** untuk memakai akun aktif bawaan, atau pilih salah satu. |
-| **Network**         | Dipilihkan dari jaringan di lokasi itu. Kalau belum ada, buat dulu di konsol IDCloudHost.       |
-| **CPU Cores**       | 2, 4, 6, atau 8.                                                                                |
-| **RAM**             | 2 sampai 16 GB.                                                                                 |
-| **Disk**            | 20 sampai 160 GB.                                                                               |
-| **Ubuntu release**  | 24.04 LTS atau 26.04 LTS.                                                                       |
+| Kolom               | Yang dipilih                                                                                              |
+| ------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Region**          | Lokasinya, misalnya `jkt01`.                                                                              |
+| **Billing Account** | Biarkan **Auto-select billing account** untuk memakai akun aktif bawaan, atau pilih salah satu.           |
+| **Network**         | Dipilihkan dari jaringan di lokasi itu. Kalau belum ada, buat dulu di konsol IDCloudHost.                 |
+| **Size**            | Geser **CPU** (2 sampai 16 vCPU) dan **RAM** (2 sampai 64 GB). IDCloudHost meluncurkan ukuran persis itu. |
+| **Storage**         | 20 sampai 500 GB.                                                                                         |
+| **Ubuntu release**  | 24.04 LTS atau 26.04 LTS.                                                                                 |
 
 IDCloudHost menambahkan langkah keempat, **Access**:
 

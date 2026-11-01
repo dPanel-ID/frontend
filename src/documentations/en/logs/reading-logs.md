@@ -1,11 +1,11 @@
 ---
 title: Reading logs
-description: Where each log lives in dPanel, and how to read and narrow the log table.
+description: Where to find server, application, load balancer and build logs in dPanel, and how to read, filter and search the log table by level and text.
 sidebar_position: 1
 sidebar_icon: file-text
 ---
 
-dPanel shows four kinds of log. They share one table, so once you can read one you can read them all.
+dPanel shows four kinds of log in the browser, so you don't need SSH, `journalctl` or `tail -f`: server log files, application runtime logs, load balancer request logs and build logs. They share one table, so once you can read one you can read them all.
 
 ## Where logs live
 
@@ -66,3 +66,21 @@ Server logs read the newest lines of a file, not a time window. The time range, 
 ## Build logs
 
 **Artifact Logs** opens over the page with the newest 500 lines of that build. It has **Filter this page**, the level chips, **Download**, and **Refresh** with **Auto-refresh**, which is handy while a build is still running. Select a line to expand it in place.
+
+## Frequently asked questions
+
+### How far back can I read logs in dPanel?
+
+Application and load balancer logs go back 10 days. Server logs show the newest 20 to 500 lines of a file, and build logs the newest 500 lines of a build.
+
+### Does Filter this page search the whole time range?
+
+No. It searches the lines already loaded on the current page. To look further back, go to an older page or narrow the time range. See [Time range and refresh](./time-range-and-refresh.md).
+
+### Can I follow logs live?
+
+Yes. Turn on **Auto-refresh** next to **Refresh**, every 30 seconds, minute or 5 minutes. It pauses while you read an older page.
+
+### Can I save logs to a file?
+
+Yes. Application and load balancer logs have **Download**, for one page or the whole time range. See [Download logs](./download-logs.md).

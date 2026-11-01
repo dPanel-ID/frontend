@@ -1,26 +1,29 @@
 ---
 title: Cloud providers
-description: The six providers dPanel launches servers on, and what differs between them.
+description: The six cloud providers dPanel launches servers on: AWS EC2, Google Compute Engine, DigitalOcean, IDCloudHost, Alibaba Cloud ECS and Tencent Cloud CVM.
 sidebar_position: 0
 ---
 
-dPanel launches servers on **AWS**, **Google Cloud**, **IDCloudHost**, **DigitalOcean**, **Alibaba Cloud** and **Tencent Cloud**. Each one has its own page: how to create the credential, how to connect it, the launch-form fields, and the provider's gotchas.
+dPanel launches Ubuntu servers in your own account at six cloud providers: **AWS** (EC2), **Google Cloud** (Compute Engine), **IDCloudHost**, **DigitalOcean** (Droplets), **Alibaba Cloud** (ECS) and **Tencent Cloud** (CVM). Each one has its own page: how to create a least-privilege credential, how to connect it, the launch-form fields, and the provider's gotchas.
 
 Whichever you pick, the finished server is the same: same agent, same tabs, same modules.
 
 ## At a glance
 
-|                        | [AWS](./provider-aws.md)                   | [Google Cloud](./provider-gcp.md)         | [IDCloudHost](./provider-idcloudhost.md) | [DigitalOcean](./provider-digitalocean.md) | [Alibaba Cloud](./provider-alibabacloud.md) | [Tencent Cloud](./provider-tencent.md)     |
-| ---------------------- | ------------------------------------------ | ----------------------------------------- | ---------------------------------------- | ------------------------------------------ | ------------------------------------------- | ------------------------------------------ |
-| Credential             | Access key + secret key                    | Service account JSON key                  | API key                                  | API token                                  | AccessKey ID + secret                       | SecretId + SecretKey                       |
-| Location               | Region                                     | Region, then zone                         | Region, such as `jkt01`                  | Region                                     | Region, then zone                           | Region, then zone                          |
-| Size                   | **Instance Type**                          | **Machine Type**                          | **CPU Cores** and **RAM**                | **Droplet Size**                           | **Instance Type** and **System disk**       | **Instance Type**                          |
-| Network                | `dpanel-network`, created on first use     | `dpanel-network`, created on first use    | Chosen for you per region                | Provider default, or a VPC you pick        | `dpanel-network`, created on first use      | `dpanel-network`, created on first use     |
-| Firewall               | Security group per server, TCP 22, 80, 443 | Firewall rule per server, TCP 22, 80, 443 | None created by dPanel                   | None created by dPanel                     | Security group per server, TCP 22, 80, 443  | Security group per server, TCP 22, 80, 443 |
-| Login user             | `ubuntu`                                   | `ubuntu`                                  | **Default User**, `dpanel` by default    | **Default User**, `dpanel` by default      | `root`                                      | `ubuntu`                                   |
-| Extra step in the form | None                                       | None                                      | **Access**: user and bootstrap password  | **Access**: user                           | None                                        | None                                       |
+|                        | [AWS](./provider-aws.md)                            | [Google Cloud](./provider-gcp.md)         | [IDCloudHost](./provider-idcloudhost.md) | [DigitalOcean](./provider-digitalocean.md) | [Alibaba Cloud](./provider-alibabacloud.md) | [Tencent Cloud](./provider-tencent.md)     |
+| ---------------------- | --------------------------------------------------- | ----------------------------------------- | ---------------------------------------- | ------------------------------------------ | ------------------------------------------- | ------------------------------------------ |
+| Credential             | Access key + secret key                             | Service account JSON key                  | API key                                  | API token                                  | AccessKey ID + secret                       | SecretId + SecretKey                       |
+| Location               | Region                                              | Region, then zone                         | Region, such as `jkt01`                  | Region                                     | Region, then zone                           | Region, then zone                          |
+| Size                   | CPU and RAM sliders, cheapest `t3a`/`t3` type first | CPU and RAM sliders, an E2 machine type   | CPU and RAM sliders, exact size          | CPU and RAM sliders, cheapest Droplet      | CPU and RAM sliders, cheapest ECS type      | CPU and RAM sliders, cheapest CVM type     |
+| Network                | `dpanel-network`, created on first use              | `dpanel-network`, created on first use    | Chosen for you per region                | Provider default, or a VPC you pick        | `dpanel-network`, created on first use      | `dpanel-network`, created on first use     |
+| Firewall               | Security group per server, TCP 22, 80, 443          | Firewall rule per server, TCP 22, 80, 443 | None created by dPanel                   | None created by dPanel                     | Security group per server, TCP 22, 80, 443  | Security group per server, TCP 22, 80, 443 |
+| Login user             | `ubuntu`                                            | `ubuntu`                                  | **Default User**, `dpanel` by default    | **Default User**, `dpanel` by default      | `root`                                      | `ubuntu`                                   |
+| Disk                   | 20 to 500 GB                                        | 20 to 500 GB                              | 20 to 500 GB                             | Comes with the Droplet size                | 40 to 500 GB                                | Provider default                           |
+| Extra step in the form | None                                                | None                                      | **Access**: user and bootstrap password  | **Access**: user                           | None                                        | None                                       |
 
-The launch form also lists **Biznet Gio**. It follows the same steps and is not covered in detail here.
+The launch form also lists **Biznet Gio**. It follows the same steps, with its own **Product** and **Billing Cycle** pickers instead of the size sliders, and is not covered in detail here.
+
+Whichever provider you use, the finished server runs Ubuntu 24.04 LTS or 26.04 LTS.
 
 ## Before any provider
 
