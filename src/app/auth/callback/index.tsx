@@ -1,9 +1,9 @@
 import { Navigate, createFileRoute, redirect } from '@tanstack/react-router';
 
+import { noIndexHead } from '@/shared/libs/seo';
+
 export const Route = createFileRoute('/auth/callback/')({
-  head: () => ({
-    meta: [{ title: 'Signing in | dnocs' }],
-  }),
+  head: () => noIndexHead('Signing in'),
   loader: () => {
     throw redirect({
       href: '/applications/create',

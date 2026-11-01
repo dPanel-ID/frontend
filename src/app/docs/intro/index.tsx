@@ -2,6 +2,12 @@ import { createFileRoute } from '@tanstack/react-router';
 
 import { useDevetekLocale } from '@/services/i18n';
 
+import {
+  breadcrumbJsonLd,
+  seoHead,
+  softwareApplicationJsonLd,
+} from '@/shared/libs/seo';
+
 import { docsSections } from '../-lib/registry';
 import { DocsFooter } from '../-view/-presentation/DocsFooter';
 
@@ -9,18 +15,17 @@ import { DocsIntroContent } from './-view/DocsIntroContent';
 
 export const Route = createFileRoute('/docs/intro/')({
   ssr: true,
-  head: () => ({
-    meta: [
-      {
-        title: 'Introduction | Documentation | dnocs',
-      },
-      {
-        name: 'description',
-        content:
-          'dPanel launches a server at your cloud provider, or connects one you already run, then sets it up and deploys your application.',
-      },
-    ],
-  }),
+  head: () =>
+    seoHead({
+      title: 'Documentation: servers, applications and domains in one place',
+      description:
+        'Learn dPanel - dNocs: launch a server on AWS, Google Cloud, DigitalOcean or IDCloudHost, or connect your own over SSH, then deploy your application and point a domain at it.',
+      path: '/docs/intro',
+      jsonLd: [
+        softwareApplicationJsonLd(),
+        breadcrumbJsonLd([{ name: 'Documentation', path: '/docs/intro' }]),
+      ],
+    }),
   component: DocsIntroPage,
 });
 

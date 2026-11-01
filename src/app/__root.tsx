@@ -10,7 +10,6 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { createServerFn } from '@tanstack/react-start';
 import { getRequestHeaders } from '@tanstack/react-start/server';
 
-
 import { AuthModelProvider } from '@/services/auth/model';
 import { DialogController } from '@/services/dialog';
 import { DevetekIntlProvider } from '@/services/i18n';
@@ -24,6 +23,7 @@ import { ToasterController } from '@/services/toaster';
 import { AssistantLauncher } from '@/features/ai-assistant';
 
 import { EventsProvider } from '@/shared/libs/events';
+import { SITE, siteUrl } from '@/shared/libs/seo';
 
 import appCss from '../styles.css?url';
 
@@ -56,15 +56,26 @@ export const Route = createRootRoute({
         name: 'viewport',
         content: 'width=device-width, initial-scale=1',
       },
-      {
-        title: 'dnocs | Managing Your Services',
-      },
+      // Defaults for every page; public pages override them with `seoHead`,
+      // and the signed-in app with `noIndexHead`.
+      { title: SITE.name },
+      { name: 'description', content: SITE.description },
+      { name: 'application-name', content: SITE.name },
+      { name: 'apple-mobile-web-app-title', content: SITE.shortName },
+      { name: 'theme-color', content: SITE.themeColor },
+      { property: 'og:site_name', content: SITE.name },
+      { property: 'og:image', content: siteUrl(SITE.image) },
+      { name: 'twitter:card', content: 'summary_large_image' },
     ],
     links: [
       {
         rel: 'stylesheet',
         href: appCss,
       },
+      { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+      { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+      { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+      { rel: 'manifest', href: '/manifest.json' },
     ],
   }),
   shellComponent: ShellComponent,

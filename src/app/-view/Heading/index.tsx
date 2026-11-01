@@ -13,7 +13,14 @@ import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import BrandLogo from '../-presentation/BrandLogo';
 import { LocaleToggler, ThemeToggler } from '../-presentation/Togglers';
 
-export default function Heading() {
+interface HeadingProps {
+  /** Whether this copy of the header carries the page's `<h1>`. */
+  primary?: boolean;
+}
+
+export default function Heading(props: HeadingProps) {
+  const { primary = true } = props;
+
   const router = useRouter();
 
   const emit = useEmit();
@@ -41,7 +48,7 @@ export default function Heading() {
 
   return (
     <div className="h-max w-full flex items-center justify-between">
-      <BrandLogo />
+      <BrandLogo asHeading={primary} />
 
       <div className="flex items-center gap-x-2">
         {!fullView && viewReady && !isResponsiveFormVisible && (

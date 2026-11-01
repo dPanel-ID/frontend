@@ -1,9 +1,9 @@
 import { Navigate, createFileRoute, redirect } from '@tanstack/react-router';
 
+import { noIndexHead } from '@/shared/libs/seo';
+
 export const Route = createFileRoute('/docs/')({
-  head: () => ({
-    meta: [{ title: 'Documentation | dnocs' }],
-  }),
+  head: () => noIndexHead('Documentation'),
   loader: () => {
     throw redirect({
       href: '/docs/intro',

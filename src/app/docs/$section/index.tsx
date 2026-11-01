@@ -2,14 +2,13 @@ import { Navigate, createFileRoute } from '@tanstack/react-router';
 
 import { useDevetekLocale } from '@/services/i18n';
 
+import { noIndexHead } from '@/shared/libs/seo';
 import { FailedState } from '@/widgets/failed-state';
 
 import { firstDocsPageSlug } from '../-lib/registry';
 
 export const Route = createFileRoute('/docs/$section/')({
-  head: () => ({
-    meta: [{ title: 'Documentation | dnocs' }],
-  }),
+  head: () => noIndexHead('Documentation'),
   component: DocsSectionRedirect,
 });
 

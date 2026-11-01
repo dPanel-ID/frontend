@@ -9,6 +9,28 @@ import viteTsConfigPaths from 'vite-tsconfig-paths';
 const isEnabled = (value: string | undefined) =>
   value === 'true' || value === '1';
 
+/** The signed-in app's empty shell, written to `app-shell.html`. */
+const APP_SHELL_PATH = '/app-shell';
+
+/** Where the static build starts crawling for public pages. */
+const PUBLIC_ENTRY_PAGES = ['/', '/docs/intro'];
+
+/**
+ * The pages the static build writes out: the home page and every docs page.
+ * Bare `/docs` and `/docs/<section>` only redirect, so `_redirects` handles
+ * them; the signed-in app is never prerendered.
+ */
+function isPublicPrerenderPath(path: string) {
+  // `/page#heading` is the same page; fetching it again only rewrites it.
+  if (/[?#]/.test(path)) return false;
+  const clean = path;
+  return (
+    clean === '/' ||
+    clean === APP_SHELL_PATH ||
+    /^\/docs\/(intro|[a-z0-9-]+\/[a-z0-9-]+)$/.test(clean)
+  );
+}
+
 const config = defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const isStaticPrerender: boolean =
@@ -62,19 +84,31 @@ const config = defineConfig(({ mode }) => {
         },
         ...(isStaticSpa
           ? {
+              // The public pages (home and docs) are written out as real HTML
+              // for search engines and AI crawlers. The signed-in app is
+              // served from one empty shell, `app-shell.html`, through the
+              // `_redirects` that `scripts/seo/postbuild.mjs` writes.
               spa: {
                 enabled: true,
-                maskPath: '/',
+                // Not `/`: prerendering dedupes by path, and `/` is the home
+                // page. The shell renders no route, so its own path will do.
+                maskPath: APP_SHELL_PATH,
                 prerender: {
-                  outputPath: '/index',
+                  outputPath: APP_SHELL_PATH,
                   crawlLinks: false,
                   retryCount: 0,
                 },
               },
+              pages: PUBLIC_ENTRY_PAGES.map((path) => ({ path })),
               prerender: {
                 enabled: true,
                 autoStaticPathsDiscovery: false,
-                crawlLinks: false,
+                // `/docs/intro.html`, served at `/docs/intro` with no slash.
+                autoSubfolderIndex: false,
+                // Follow links from the entry pages to find every docs page,
+                // but only ever write out public ones.
+                crawlLinks: true,
+                filter: ({ path }) => isPublicPrerenderPath(path),
                 failOnError: true,
               },
             }
