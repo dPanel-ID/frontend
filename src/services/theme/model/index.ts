@@ -10,6 +10,15 @@ import { useIsomorphicEffect } from '@/shared/libs/react-hooks/useIsomorphicEffe
 import type { Theme } from '../config';
 import { SUPPORTED_THEME, THEME_COOKIE } from '../config';
 
+/**
+ * The parent domain the theme cookie is shared on, so sibling dPanel services
+ * (such as dbmanager.devetek.app) follow the same theme. None on localhost.
+ */
+function themeCookieDomain(): string | undefined {
+  const labels = window.location.hostname.split('.');
+  return labels.length > 2 ? labels.slice(1).join('.') : undefined;
+}
+
 export const [DevetekThemeModel, useDevetekThemeModel] = buildContext(
   'DevetekThemeModel',
   () => {
@@ -71,10 +80,13 @@ export const [DevetekThemeModel, useDevetekThemeModel] = buildContext(
     // document starts in the right theme. Re-running the route loaders would
     // fetch the same markup back to change nothing.
     const setUserTheme = useHandler((newTheme?: Theme | null) => {
+      const domain = themeCookieDomain();
+      // Drop the host-only cookie older versions wrote, so only one remains.
+      Cookies.remove(THEME_COOKIE);
       if (!newTheme) {
-        Cookies.remove(THEME_COOKIE);
+        if (domain) Cookies.remove(THEME_COOKIE, { domain });
       } else {
-        Cookies.set(THEME_COOKIE, newTheme, { expires: 365 });
+        Cookies.set(THEME_COOKIE, newTheme, { expires: 365, domain });
       }
 
       setUserThemeInternal(newTheme || null);
