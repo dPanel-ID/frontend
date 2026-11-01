@@ -14,6 +14,7 @@ import { useController, useWatch } from 'react-hook-form';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import type { ServerCard } from '@/entities/server/rules/schema';
+import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
 import type { ServerModule } from '@/entities/server-modules/model/types';
 
 import { useServerModulesDetailModal } from '@/features/server-modules-detail-modal';
@@ -25,6 +26,7 @@ import { Card } from '@/shared/presentation/atoms/Card';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
+
 import {
   getSelectedServer,
   getServerName,
@@ -34,6 +36,7 @@ import {
 } from '../-lib/modules';
 import type { Form } from '../-model/form';
 import type { CreateResources } from '../-model/resources';
+
 import { StateBlock } from './-presentation/fields';
 
 export function ServerPicker(props: {
@@ -89,7 +92,7 @@ export function ServerPicker(props: {
         </div>
       </div>
 
-      <div className="grid gap-2 p-3">
+      <div className="grid gap-2 p-3 2xl:grid-cols-2">
         {servers.$status === 'loading' && (
           <StateBlock>
             <Spinner />
@@ -182,48 +185,57 @@ export function ServerOption(props: {
   onSelect: () => void;
 }) {
   const { onSelect, selected, server } = props;
+  const t = useDevetekTranslations();
+  // Only a server dNocs can reach and configure can run the engine.
+  const selectable = server.state.status === 'ready';
 
   return (
     <button
       type="button"
       onClick={onSelect}
+      disabled={!selectable}
       aria-pressed={selected}
+      title={
+        selectable ? undefined : t('page.loadBalancersCreate.gateway.notReady')
+      }
       className={cn(
-        'grid gap-3 rounded-lg border bg-background p-4 text-left transition-colors lg:grid-cols-[auto_minmax(0,1fr)_auto]',
+        'flex min-w-0 items-center gap-3 rounded-lg border bg-background p-3 text-left transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35',
-        selected && 'border-primary bg-primary/10',
+        selectable && 'hover:border-sky-400/40',
+        selected && 'border-sky-400/60 bg-sky-500/10',
+        !selectable && 'cursor-not-allowed opacity-55',
       )}
     >
-      <span className="flex size-12 items-center justify-center rounded-lg border bg-card">
-        <ServerIcon className="size-5" />
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-card">
+        <ServerIcon className="size-4" />
       </span>
-      <span className="min-w-0">
-        <span className="flex flex-wrap items-center gap-2">
-          <span className="truncate text-lg font-bold">
+      <span className="min-w-0 flex-1">
+        <span className="flex min-w-0 items-center gap-2">
+          <span className="truncate text-sm font-bold">
             {getServerName(server)}
           </span>
-          <Badge variant="outline" className="text-emerald-600">
-            {server.state.status}
-          </Badge>
+          <ServerStatusPill state={server.state} size="sm" />
         </span>
-        <span className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
-          <Badge variant="secondary">{server.host.address}</Badge>
-          <Badge variant="secondary">SSH {server.ssh.port}</Badge>
-          <Badge variant="secondary">{server.ssh.defaultUser}</Badge>
-          <Badge variant="secondary">
-            {server.system.name} {server.system.version}
-          </Badge>
+        <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+          {[
+            server.host.address,
+            [server.system.name, server.system.version]
+              .filter(Boolean)
+              .join(' '),
+          ]
+            .filter(Boolean)
+            .join(' · ')}
         </span>
       </span>
       <span
         className={cn(
-          'flex size-9 items-center justify-center rounded-full border',
+          'flex size-6 shrink-0 items-center justify-center rounded-full border',
           selected
-            ? 'border-primary bg-primary text-primary-foreground'
-            : 'bg-card text-muted-foreground',
+            ? 'border-sky-500 bg-sky-500 text-white'
+            : 'bg-card text-transparent',
         )}
       >
-        {selected && <CheckCircle2Icon className="size-5" />}
+        <CheckCircle2Icon className="size-4" />
       </span>
     </button>
   );

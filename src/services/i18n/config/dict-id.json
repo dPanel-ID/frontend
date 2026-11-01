@@ -1804,41 +1804,42 @@
         "internalDomain": "Terkelola",
         "subdomain": "Subdomain",
         "selectDomain": "Pilih domain",
-        "engineHint": "Pilih modul infrastruktur dari katalog server terpilih. dPanel akan memakai metadata modul ini untuk playbook load balancer yang dibuat.",
+        "engineHint": "Web server yang menjawab permintaan di gateway. Pilih yang sudah ada di server, atau instal baru.",
         "engineRuntime": "Runtime gateway",
-        "searchEngine": "Cari modul infrastruktur...",
-        "selectServerFirst": "Pilih server gateway sebelum memilih modul engine.",
-        "loadingEngines": "Memuat modul infrastruktur...",
-        "engineLoadFailed": "Tidak dapat memuat modul infrastruktur untuk server ini.",
-        "engineDetailFailed": "Tidak dapat membaca kontrak modul infrastruktur terpilih.",
-        "noInfrastructureEngines": "Tidak ada modul infrastruktur dari katalog IaC workspace untuk server ini.",
-        "noEnginesForSearch": "Tidak ada modul infrastruktur yang cocok dengan pencarian ini.",
+        "searchEngine": "Cari engine…",
+        "selectServerFirst": "Pilih server gateway dulu; engine-nya muncul di sini.",
+        "loadingEngines": "Memuat engine…",
+        "engineLoadFailed": "Gagal memuat engine untuk server ini.",
+        "engineDetailFailed": "Gagal membaca pengaturan engine yang dipilih.",
+        "noInfrastructureEngines": "Tidak ada engine web server untuk server ini.",
+        "noEnginesForSearch": "Tidak ada engine yang cocok dengan pencarian ini.",
         "installedInfrastructureTitle": "Dilaporkan di gateway terpilih",
-        "installedInfrastructureDescription": "Pilih modul infrastruktur terpasang yang sudah dilaporkan oleh mesin terpilih. Modul yang masih diinstal tetap ditampilkan dan bisa dipilih setelah siap.",
-        "availableInfrastructureTitle": "Instal modul infrastruktur",
+        "installedInfrastructureDescription": "Engine yang sudah ada di server ini. Engine yang masih diinstal bisa dipilih setelah siap.",
+        "availableInfrastructureTitle": "Instal engine",
         "availableInfrastructureDescription": "Cari katalog IaC workspace dan buka modal instalasi yang sama seperti detail server.",
-        "noInstalledInfrastructure": "Belum ada modul infrastruktur terpasang atau sedang diinstal yang dilaporkan untuk server gateway ini.",
-        "noAvailableInfrastructure": "Semua modul infrastruktur dari katalog ini sudah dilaporkan pada gateway terpilih.",
+        "noInstalledInfrastructure": "Server ini belum punya engine web server. Instal di bawah.",
+        "noAvailableInfrastructure": "Semua engine yang tersedia sudah ada di server ini.",
         "infrastructureCategory": "Infrastruktur",
         "installedBadge": "Terpasang",
         "installingBadge": "Sedang diinstal",
         "loadingMetadata": "Memuat metadata",
         "playbookReady": "Playbook siap",
-        "serverHint": "Pilih server yang akan menerima dan menjalankan load balancer ini.",
+        "serverHint": "Server yang menerima trafik publik. Hanya server yang siap yang bisa dipakai.",
         "searchServer": "Cari server...",
         "openInstallModal": "Instal",
         "noServers": "Tidak ada server yang cocok.",
         "selectedServer": "Gateway dipilih: {server}",
         "noSelectedServer": "Belum ada server gateway dipilih.",
-        "pageOf": "Halaman {page} dari {total}"
+        "pageOf": "Halaman {page} dari {total}",
+        "notReady": "Hanya server yang siap yang bisa menjalankan load balancer."
       },
       "routing": {
         "title": "Routing trafik",
         "description": "Pilih layer trafik dan arahkan request masuk ke aplikasi atau alamat upstream langsung.",
         "kindHint": "L7 cocok untuk routing path HTTP. L4 cocok untuk TCP, UDP, atau port database.",
-        "featuresHint": "Protokol dan SSL disimpan di konfigurasi load balancer.",
-        "sslHint": "Aktifkan TLS jika gateway ini harus melayani trafik aman.",
-        "l7Hint": "Setiap aturan mencocokkan path masuk dan meneruskannya ke aplikasi atau upstream.",
+        "featuresHint": "Cara pengunjung terhubung. Dengan HTTPS, dNocs meminta dan memperbarui sertifikat untuk Anda.",
+        "sslHint": "Sajikan situs lewat HTTPS. Matikan hanya untuk setup HTTP biasa.",
+        "l7Hint": "Setiap aturan mencocokkan path dan mengirimnya ke aplikasi atau alamat.",
         "l4Hint": "L4 meneruskan trafik ke satu atau beberapa alamat upstream tanpa inspeksi path HTTP.",
         "wildcard": "Wildcard"
       },
@@ -1890,7 +1891,8 @@
         "httpsOff": "Mati",
         "mode": "Mode routing",
         "routes": "Rute",
-        "footnote": "dNocs memasang mesinnya di server gateway bila belum ada, lalu menerbitkan rutenya."
+        "footnote": "dNocs memasang mesinnya di server gateway bila belum ada, lalu menerbitkan rutenya.",
+        "startTitle": "Mulai dengan server gateway"
       }
     },
     "loadBalancersDetail": {
@@ -3202,8 +3204,8 @@
     },
     "loadBalancerCreation": {
       "title": "Buat Load Balancer",
-      "sectionLbKind": "Alokasi Jenis LB",
-      "sectionFeatures": "Protokol & Fitur",
+      "sectionLbKind": "Mode routing",
+      "sectionFeatures": "Protokol dan HTTPS",
       "fieldDescription": {
         "title": "Nama"
       },
@@ -3214,24 +3216,24 @@
         "useExternalDomain": "Gunakan Domain Eksternal"
       },
       "fieldServer": {
-        "title": "Server Gateway",
+        "title": "Server gateway",
         "placeholder": "Pilih server",
         "onError": "Gagal memuat daftar server."
       },
       "fieldEngine": {
-        "title": "Mesin Web Server",
+        "title": "Engine web server",
         "placeholder": "Pilih mesin"
       },
       "fieldLbKind": {
-        "hintL7": "Alokasi L7 mengaktifkan inspeksi protokol HTTP/HTTPS dan routing berbasis URI.",
-        "hintL4": "Alokasi L4 mengaktifkan penerusan berbasis port TCP/UDP tanpa inspeksi protokol."
+        "hintL7": "Routing berdasarkan path, untuk situs dan API HTTP (/api, /app…).",
+        "hintL4": "Meneruskan port TCP/UDP mentah, untuk database dan layanan non-HTTP."
       },
       "fieldProtocol": {
         "title": "Protokol",
         "placeholder": "Pilih protokol"
       },
       "fieldSslEnabled": {
-        "title": "SSL Diaktifkan"
+        "title": "HTTPS"
       },
       "l4rule": {
         "title": "Tujuan L4",
@@ -3242,7 +3244,7 @@
         }
       },
       "upstreamRules": {
-        "title": "Konfigurasi Aturan Upstream",
+        "title": "Rute",
         "addRule": "Tambah Aturan Baru",
         "removeRule": "Hapus",
         "ruleLabel": "Aturan",
