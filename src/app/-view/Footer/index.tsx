@@ -7,7 +7,7 @@ const LINKS = [
   },
   {
     text: 'GitHub',
-    url: 'https://github.com/devetek',
+    url: 'https://github.com/dPanel-ID',
   },
   {
     text: 'YouTube',
