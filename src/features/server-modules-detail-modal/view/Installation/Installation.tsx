@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 
 import { ApiModule } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
-import type { ExplicitTarget } from '@/shared/rules/host-group';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
@@ -17,14 +16,18 @@ import {
 } from '@/shared/presentation/atoms/Select';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { TextArea } from '@/shared/presentation/atoms/TextArea';
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 import { FailedState } from '@/widgets/failed-state';
 
 import { useBaseContext } from '../../config/base-context';
 import useHandleInstallModule from '../../model/handle-install-module';
+
 import {
   getAvailableModuleActions,
   isBlockedHostGroupAction,
 } from './action-options';
+import { isAcceptedValue } from './version-choice';
+import { VersionChoiceField } from './VersionChoiceField';
 
 type FieldValue = unknown;
 
@@ -175,6 +178,19 @@ export default function Installation() {
       return;
     }
 
+    const malformed = moduleDetail.inputs.filter(
+      (input) =>
+        !isHiddenInput(input) &&
+        typeof (values[input.name] ?? '') === 'string' &&
+        !isAcceptedValue(input, String(values[input.name] ?? '')),
+    );
+    if (malformed.length > 0) {
+      setFormError(
+        `Check the format of ${malformed.map((input) => input.label || input.name).join(', ')}.`,
+      );
+      return;
+    }
+
     try {
       setFormError('');
       const variables = buildVariables(moduleDetail.inputs, values);
@@ -264,21 +280,11 @@ export default function Installation() {
           )}
 
           {input.options?.length ? (
-            <Select
+            <VersionChoiceField
+              input={input}
               value={String(value)}
-              onValueChange={(next) => handleChange(input.name, next)}
-            >
-              <SelectTrigger className="bg-card">
-                <SelectValue placeholder="Select option" />
-              </SelectTrigger>
-              <SelectContent>
-                {input.options.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onChange={(next) => handleChange(input.name, next)}
+            />
           ) : input.type === 'boolean' ? (
             <div className="flex items-center gap-2 rounded-lg border bg-background px-3 py-2">
               <Checkbox
