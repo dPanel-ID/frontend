@@ -1,6 +1,6 @@
 ---
 title: Menghapus server
-description: Berhenti membayar mesin yang sudah tidak dipakai.
+description: Hapus server yang tidak lagi dipakai: apa yang dihancurkan dPanel di penyedia cloud, dan apa yang terjadi pada server yang Anda hubungkan sendiri.
 sidebar_position: 8
 sidebar_icon: trash-2
 ---
