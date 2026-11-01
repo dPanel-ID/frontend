@@ -302,7 +302,13 @@ function CreateFlow() {
 
         <ReviewPanel
           eyebrow={t('page.loadBalancersCreate.review.eyebrow')}
-          title={t('page.loadBalancersCreate.review.title')}
+          title={
+            // Defaults (L7, HTTPS, one route) are not progress; choosing a
+            // gateway server is where the work starts.
+            values.serverId
+              ? t('page.loadBalancersCreate.review.title')
+              : t('page.loadBalancersCreate.review.startTitle')
+          }
           readyTitle={t('page.loadBalancersCreate.review.readyTitle')}
           rows={rows}
           footnote={t('page.loadBalancersCreate.review.footnote')}
