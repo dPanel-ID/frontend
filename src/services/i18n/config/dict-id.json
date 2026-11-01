@@ -1961,7 +1961,7 @@
         "proxiedHint": "Trafik melewati Cloudflare, yang menyembunyikan alamat gateway. Sertifikat diterbitkan lewat DNS-01, berlaku untuk Caddy maupun APISIX.",
         "dnsOnlyHint": "Pengunjung langsung menuju gateway. Sertifikat diterbitkan lewat HTTP-01.",
         "proxiedToggle": "Proxy lewat Cloudflare",
-        "proxiedToggleHint": "Menyembunyikan alamat gateway di balik Cloudflare. Untuk HTTPS, ubah mode SSL/TLS zona ke Full (strict) di Cloudflare terlebih dulu, atau pengunjung akan terjebak redirect berulang."
+        "proxiedToggleHint": "Menyembunyikan alamat gateway di balik Cloudflare. Berfungsi di semua mode SSL/TLS; Full (strict) juga mengenkripsi jalur dari Cloudflare ke gateway."
       }
     },
     "loadBalancersDetail": {
