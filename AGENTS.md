@@ -55,14 +55,13 @@ Default parallel lanes:
 - Frontend Architect: owns route, slice, API, state, permissions, feature-flag, and UI-state architecture.
 - QA: owns requirement traceability, compatibility validation, risk matrix, regression coverage, and release confidence.
 
-Use the dPanel documents at `https://github.com/devetek/d-panel/tree/main/docs` as the source of truth for product intent, especially:
+Use the dPanel documents at `https://github.com/dPanel-ID/backend/tree/dev/docs` as the source of truth for product intent, especially:
 
+- `features/README.md` (what dPanel does today, and the platform rules)
 - `PRODUCT_REQUIREMENTS.md`
 - `ARCHITECTURE.md`
-- `PLATFORM_V2_IMPLEMENTATION.md`
-- `PRODUCTION_DATA_COMPATIBILITY.md`
-- `LOCAL_DEVELOPMENT.md`
 - `SOFTWARE_ARCHITECTURE_ALIGNMENT.md`
+- `operations/LOCAL_DEVELOPMENT.md`
 
 For frontend implementation, also follow `RULES.md` in this repository. The frontend stack is React, Vite, `@tanstack/router`, `zod`, and the custom API client under `src/shared/libs/api-client`. Follow FSD dependency direction and the local slice anatomy.
 
