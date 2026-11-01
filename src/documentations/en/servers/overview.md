@@ -1,11 +1,12 @@
 ---
-title: What a server is here
-description: One Linux machine that dPanel looks after for you, and the two ways to add one.
+title: Servers in dPanel
+description: A server in dPanel is a Linux VPS it manages for you: launched at AWS, Google Cloud, DigitalOcean and others, or an Ubuntu server you connect over SSH.
 sidebar_position: 1
 sidebar_icon: server
+sidebar_label: What a server is here
 ---
 
-A server is one Linux machine that dPanel looks after for you. It can be a machine dPanel launched in your cloud account, or one you already run and connect yourself.
+A server in dPanel is one Linux machine that the control panel looks after for you: a VPS dPanel launched in your own cloud account (AWS EC2, Google Compute Engine, a DigitalOcean Droplet, IDCloudHost, Alibaba Cloud ECS or Tencent Cloud CVM), or an Ubuntu or Debian server you already run and connect over SSH.
 
 Once a server is in dPanel, you manage it from your browser. You don't need a terminal on your own computer.
 
@@ -15,9 +16,11 @@ Once a server is in dPanel, you manage it from your browser. You don't need a te
 - Manage its Linux user accounts.
 - Browse its files and read its logs.
 - Open a terminal on it.
-- Deploy [applications](../applications/overview.md) to it.
+- Deploy [applications](../applications/overview.md) to it, and put a [load balancer](../networking/load-balancers.md) with HTTPS in front of them.
 
-![The Servers page listing servers with their status, provider and live usage](../../assets/servers/servers-list.webp 'Servers: each card shows the status, the address, what runs on it and live CPU, memory and disk.')
+![The Servers page in table view, listing servers with their status, provider, system, address and owner](../../assets/servers/servers-list.webp 'Servers: one row per server, with its status, provider and region, Ubuntu release, address and who created it.')
+
+The list opens as a table. Switch to **Card Grid View** to see live CPU, memory and disk on each server's card.
 
 ## The two ways to add a server
 
@@ -33,10 +36,11 @@ Open **Servers**, then **Create Server**. The page offers both paths.
 | You need         | A cloud account and an SSH key in dPanel                                               | An SSH key, and the server's address |
 | Time             | About 10 to 20 minutes                                                                 | About 5 minutes                      |
 
-Either way, dPanel creates the `dpanel` user, installs its agent and starts monitoring the machine.
+Either way, dPanel installs its agent and starts monitoring the machine. Servers dPanel launches run Ubuntu 24.04 LTS or 26.04 LTS.
 
 ## Where to go next
 
 - New to dPanel? Start with [Before you start](./before-you-start.md).
 - Launching a machine: [Create a cloud server](./cloud-providers/create-a-cloud-server.md).
 - Bringing your own: [Connect your own server](./connect-your-own-server.md).
+- Already have one: [Your server page](./your-server-page.md) explains every tab.

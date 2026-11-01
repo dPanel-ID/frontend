@@ -1,11 +1,11 @@
 ---
 title: Masuk dan profil Anda
-description: Buat akun, masuk, dan perbarui nama, avatar, serta password Anda.
+description: Masuk ke panel kontrol dPanel dengan Google atau username dan password, buat akun, serta perbarui nama, avatar, dan password Anda.
 sidebar_position: 1
 sidebar_icon: log-in
 ---
 
-dPanel berjalan di browser, jadi tidak ada yang perlu dipasang. Buka halaman utama, masuk, dan Anda langsung tiba di dasbor.
+dPanel berjalan di browser Anda di [dnocs.devetek.app](https://dnocs.devetek.app), jadi tidak ada yang perlu dipasang. Masuk dengan Google atau username dan password, dan Anda langsung tiba di dasbor. Baru mengenal dPanel? Baca dulu [Apa itu dPanel - dNocs?](./what-is-dpanel.md).
 
 ## Masuk
 
@@ -51,4 +51,4 @@ Tekan kartu bernama Anda di bagian bawah sidebar, lalu **View Profile**. Menu ya
 
 ## Langkah berikutnya
 
-Pilih ruang kerja yang akan dipakai. Lihat [Ruang kerja](./workspaces.md).
+Pilih ruang kerja yang akan dipakai. Lihat [Ruang kerja](./workspaces.md). Setelah itu, kenali [dasbor](./dashboard.md).

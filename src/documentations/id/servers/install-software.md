@@ -1,11 +1,11 @@
 ---
 title: Memasang perangkat lunak
-description: Tambahkan basis data atau runtime lewat katalog modul.
+description: Pasang basis data seperti MariaDB, runtime seperti Go, atau web server di server Ubuntu dari katalog modul dPanel, tanpa perlu SSH.
 sidebar_position: 6
 sidebar_icon: package-plus
 ---
 
-dPanel memasang perangkat lunak lewat modul. Modul adalah resep yang sudah teruji: Anda menjawab beberapa pertanyaan, dPanel memasang, mengatur, dan menjalankannya di server, lalu mencatat apa saja yang dipasangnya.
+dPanel memasang perangkat lunak di server lewat modul. Modul adalah resep yang sudah teruji untuk basis data, runtime bahasa pemrograman, atau perkakas: Anda menjawab beberapa pertanyaan, lalu dPanel memasang, mengatur, dan menjalankannya di server sebagai layanan systemd, lalu mencatat apa saja yang dipasangnya. Anda tidak perlu SSH atau `apt`.
 
 ## Buka katalognya
 

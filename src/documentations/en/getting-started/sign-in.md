@@ -1,11 +1,11 @@
 ---
 title: Sign in and your profile
-description: Create an account, sign in, and keep your name, avatar and password up to date.
+description: Sign in to the dPanel control panel with Google or a username and password, create an account, and keep your name, avatar and password up to date.
 sidebar_position: 1
 sidebar_icon: log-in
 ---
 
-dPanel runs in your browser. There is nothing to install. Open the home page, sign in, and you land on the dashboard.
+dPanel runs in your browser at [dnocs.devetek.app](https://dnocs.devetek.app), so there is nothing to install. Sign in with Google or a username and password, and you land on the dashboard. New to dPanel? Read [What is dPanel - dNocs?](./what-is-dpanel.md) first.
 
 ## Sign in
 
@@ -51,4 +51,4 @@ Press the card with your name at the bottom of the sidebar, then **View Profile*
 
 ## What happens next
 
-Pick the workspace you want to work in. See [Workspaces](./workspaces.md).
+Pick the workspace you want to work in. See [Workspaces](./workspaces.md). Then take a look around [the dashboard](./dashboard.md).

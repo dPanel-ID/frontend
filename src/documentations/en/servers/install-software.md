@@ -1,11 +1,11 @@
 ---
 title: Install software
-description: Add a database or a runtime through the module catalogue.
+description: Install a database such as MariaDB, a runtime such as Go, or a web server on an Ubuntu server from the dPanel module catalogue, without SSH.
 sidebar_position: 6
 sidebar_icon: package-plus
 ---
 
-dPanel installs software through modules. A module is a tested recipe: you answer a few questions, dPanel installs, configures and starts it on the server, then keeps track of what it put there.
+dPanel installs software on a server through modules. A module is a tested recipe for a database, a language runtime or a tool: you answer a few questions, and dPanel installs, configures and starts it on the server as a systemd service, then keeps track of what it put there. You don't need SSH or `apt`.
 
 ## Open the catalogue
 

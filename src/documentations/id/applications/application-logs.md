@@ -1,11 +1,11 @@
 ---
 title: Log aplikasi
-description: Baca apa yang dicetak layanan yang berjalan, dan permintaan yang masuk lewat load balancer.
+description: Baca log runtime aplikasi dan request HTTP yang masuk lewat load balancer di dPanel, lengkap dengan rentang waktu, saringan level, dan pencarian.
 sidebar_position: 5
 sidebar_icon: scroll-text
 ---
 
-Buka aplikasinya dan masuk ke **Log**, atau tekan **Lihat log** di tab Ringkasan.
+dPanel menampilkan dua jenis log untuk sebuah aplikasi: apa yang dicetak layanan yang berjalan (log runtime-nya), dan setiap request HTTP yang sampai kepadanya lewat load balancer. Buka aplikasinya dan masuk ke **Log**, atau tekan **Lihat log** di tab Ringkasan.
 
 ![Tab Log sebuah aplikasi: sumber runtime, rentang waktu, saringan, serta tombol unduh dan muat ulang di atas tabel log](../../assets/applications/app-runtime-logs.webp)
 
@@ -16,7 +16,7 @@ Buka aplikasinya dan masuk ke **Log**, atau tekan **Lihat log** di tab Ringkasan
 | Runtime       | Apa yang ditulis layanan ke keluarannya selama berjalan. Judul tabelnya **Log Aplikasi**.                     |
 | Load balancer | Setiap permintaan yang masuk ke load balancer di depan aplikasi. Judul tabelnya **Permintaan load balancer**. |
 
-![Sumber Load balancer di tab Log aplikasi, berisi request yang sampai ke docs-demo.terpusat.me](../../assets/applications/app-lb-logs.webp)
+![Sumber Load balancer di tab Log aplikasi, berisi request yang sampai ke domainnya](../../assets/applications/app-lb-logs.webp)
 
 Pilihan **Load balancer** hanya muncul jika aplikasi ini dilayani load balancer. Tanpa itu, tab langsung menampilkan log runtime.
 
@@ -33,7 +33,7 @@ Kontrolnya sama di semua tampilan log. Lihat [Rentang waktu dan pembaruan](../lo
 
 ## Log build ada di tempat lain
 
-Keluaran build, misalnya kompilasi yang gagal, tidak ada di tab ini. Buka **Rilis**, cari build-nya, lalu tekan **Log**. Lihat [Rilis dan rollback](./deployments-and-rollback.md#membaca-log-build).
+Keluaran build, misalnya kompilasi yang gagal, tidak ada di tab ini. Untuk file log milik server sendiri, seperti `auth.log` atau web server, lihat [Membaca log](../logs/reading-logs.md#log-server). Buka **Rilis**, cari build-nya, lalu tekan **Log**. Lihat [Rilis dan rollback](./deployments-and-rollback.md#membaca-log-build).
 
 :::tip[Tidak ada apa-apa?]
 **Tidak ada log runtime pada rentang ini.** berarti tidak ada yang dicetak pada periode itu. Coba rentang waktu yang lebih lebar dulu. Jika tetap kosong, pastikan layanannya berjalan di tab **Rilis**, bagian **Di server**.

@@ -1,11 +1,11 @@
 ---
 title: Batas waktu build
-description: Berapa lama build boleh berjalan, dan cara memberi waktu lebih untuk build yang lambat.
+description: dPanel menghentikan build setelah 20 menit secara bawaan. Atur build.timeout antara 1 menit dan 3 jam untuk memberi build aplikasi yang lambat waktu lebih.
 sidebar_position: 7
 sidebar_icon: timer
 ---
 
-Setiap build dan rilis berjalan sebagai satu pekerjaan: clone, menyiapkan runtime, langkah build, lalu menjalankan layanan. Secara bawaan, pekerjaan itu dihentikan setelah **20 menit**.
+dPanel menghentikan build setelah **20 menit** secara bawaan, dan Anda bisa menaikkan batas itu per aplikasi hingga 3 jam dengan `build.timeout`. Setiap build dan rilis berjalan sebagai satu pekerjaan: clone, menyiapkan runtime, langkah build, lalu menjalankan layanan.
 
 Sebagian besar aplikasi selesai jauh sebelum itu. Build yang banyak mengompilasi, misalnya image Docker dengan banyak ekstensi PHP di server kecil, bisa tidak sempat. Saat batasnya tercapai, build gagal dan log-nya berakhir dengan `context deadline exceeded`.
 
@@ -27,4 +27,5 @@ Formulir **Buat aplikasi baru** dan **Update Aplikasi** belum punya kolom untuk 
 ## Sebelum menaikkannya
 
 - Baca dulu **Log** build yang gagal. Langkah yang macet menunggu input juga gagal dengan cara yang sama, dan waktu tambahan tidak akan membantu.
-- Coba server yang lebih besar. Build yang butuh satu jam di ukuran terkecil sering selesai dalam hitungan menit di ukuran berikutnya.
+- Coba server yang lebih besar. Build yang butuh satu jam di ukuran terkecil sering selesai dalam hitungan menit di ukuran berikutnya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
+- Lihat seluruh keluaran build di [Rilis dan rollback](./deployments-and-rollback.md#membaca-log-build).

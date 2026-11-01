@@ -1,11 +1,11 @@
 ---
 title: Menghubungkan GitHub
-description: Tautkan akun GitHub agar dPanel bisa membaca dan membangun repositori Anda.
+description: Hubungkan GitHub ke dPanel agar dPanel bisa membaca repositori Anda dan deploy aplikasi dari GitHub, termasuk repositori milik organisasi GitHub.
 sidebar_position: 4
 sidebar_icon: git-branch
 ---
 
-dPanel membangun aplikasi dari repositori GitHub. Sebelum membuat aplikasi, tautkan dulu akun GitHub. Cukup sekali untuk setiap akun dPanel.
+dPanel men-deploy aplikasi dari repositori GitHub, jadi sebelum aplikasi pertama Anda, tautkan dulu akun GitHub. Cukup sekali untuk setiap akun dPanel. Setelah itu dPanel menampilkan setiap repositori dan branch yang bisa dibaca oleh akun tersebut dan oleh organisasi GitHub tempat Anda memasang GitHub App dnocs-id.
 
 ## Yang perlu disiapkan
 
@@ -43,4 +43,4 @@ Tekan tombolnya dan masuk lagi ke GitHub. Tidak ada yang lain berubah. Aplikasi 
 
 ## Langkah berikutnya
 
-Buat aplikasi pertama Anda. Lihat [Aplikasi](../applications/overview.md).
+Buat aplikasi pertama Anda. Lihat [Cara kerja aplikasi](../applications/overview.md) dan [Membuat aplikasi](../applications/create-an-application.md).

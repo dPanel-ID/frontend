@@ -1,9 +1,12 @@
 ---
-title: Mengubah atau menghapus aplikasi
-description: Ubah cara aplikasi dibangun dan dijalankan, atau hapus aplikasinya dan hentikan layanannya.
+title: Ubah atau hapus aplikasi
+description: Ubah langkah build, perintah jalan, port, dan variabel aplikasi di dPanel, atau hapus aplikasinya dan hentikan layanan systemd-nya di setiap server.
 sidebar_position: 6
 sidebar_icon: settings-2
+sidebar_label: Mengubah atau menghapus aplikasi
 ---
+
+Anda bisa mengubah cara aplikasi dPanel dibangun dan dijalankan kapan saja, dari satu pengaturan sampai seluruh formulir, atau menghapusnya. Perubahan berlaku mulai rilis berikutnya.
 
 ## Meninjau pengaturannya
 

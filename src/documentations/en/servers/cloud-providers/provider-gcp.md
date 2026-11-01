@@ -1,11 +1,12 @@
 ---
-title: Google Cloud
+title: Google Compute Engine
 description: Create a least-privilege service account in a dedicated project, connect it to dPanel, and launch a Compute Engine server.
 sidebar_position: 3
 sidebar_icon: provider:gcp
+sidebar_label: Google Cloud
 ---
 
-dPanel launches Compute Engine VMs in one of your Google Cloud projects. It signs in with a service account JSON key that you create for it.
+dPanel launches Ubuntu Compute Engine VMs in one of your Google Cloud projects. It signs in with the JSON key of a service account that you create for it, in a dedicated project, with only the permissions listed on this page.
 
 ## What you need first
 
@@ -93,18 +94,18 @@ dPanel saves the account as **Ready** without testing it. The launch form is the
 
 ![Step 1 of the launch form with Google Cloud selected](../../../assets/servers/create-step1-provider.webp)
 
-| Field              | What to pick                                                                  |
-| ------------------ | ----------------------------------------------------------------------------- |
-| **Region**         | Where the VM runs, such as `asia-southeast2`.                                 |
-| **Zone**           | One zone in that region, such as `asia-southeast2-a`.                         |
-| **Machine Type**   | The size, such as `e2-small`. The list comes from your project for that zone. |
-| **Ubuntu release** | 24.04 LTS or 26.04 LTS, from Google's public Ubuntu image family.             |
-| **Disk**           | Boot disk size in GB. 20 by default.                                          |
-| **Network**        | `dpanel-network`. You don't choose it.                                        |
+| Field              | What to pick                                                                                                                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Region**         | Where the VM runs, such as `asia-southeast2`.                                                                                                                                         |
+| **Zone**           | One zone in that region, such as `asia-southeast2-a`.                                                                                                                                 |
+| **Size**           | Move **CPU** and **RAM**. dPanel picks an E2 machine type: `e2-micro`, `e2-small` or `e2-medium` (shared core) for 1 vCPU, a standard E2 type when one matches, or an E2 custom type. |
+| **Ubuntu release** | 24.04 LTS or 26.04 LTS, from Google's public Ubuntu image family.                                                                                                                     |
+| **Storage**        | Boot disk size, 20 to 500 GB. 20 by default.                                                                                                                                          |
+| **Network**        | `dpanel-network`. You don't choose it.                                                                                                                                                |
 
 There is no **Access** step for Google Cloud. dPanel signs in as `ubuntu`.
 
-![Steps 2 and 3 filled in for Google Cloud](../../../assets/servers/create-step2-location-size.webp)
+![Step 3 for Google Cloud, with the CPU, RAM and Storage sliders and the E2 machine type dPanel will launch](../../../assets/servers/create-step2-location-size.webp)
 
 ## 4. Launch
 

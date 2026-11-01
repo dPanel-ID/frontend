@@ -1,11 +1,12 @@
 ---
-title: AWS
-description: Create a least-privilege IAM user, connect it to dPanel, and launch an EC2 server.
+title: AWS EC2
+description: Connect AWS to dPanel with a least-privilege IAM user and policy, then launch an Ubuntu EC2 server from the control panel in your own AWS account.
 sidebar_position: 2
 sidebar_icon: provider:aws
+sidebar_label: AWS
 ---
 
-dPanel launches EC2 instances in your AWS account. It signs in with an IAM access key that you create for it.
+dPanel launches Ubuntu EC2 instances in your own AWS account. It signs in with the access key of a dedicated IAM user that you create for it, limited by the minimum IAM policy on this page to managing EC2 instances it tagged, in the regions you allow.
 
 ## What you need first
 
@@ -168,12 +169,12 @@ dPanel saves the account as **Ready** straight away. It does not test the key on
 
 ![The launch form with AWS selected](../../../assets/servers/create-provider-aws.webp)
 
-| Field              | What to pick                                                                    |
-| ------------------ | ------------------------------------------------------------------------------- |
-| **Region**         | Any region your key may use, such as `ap-southeast-1`.                          |
-| **Instance Type**  | The size, such as `t3.small`. The list comes from your account for that region. |
-| **Ubuntu release** | 24.04 LTS or 26.04 LTS. dPanel looks up the matching image in that region.      |
-| **Network**        | `dpanel-network`. You don't choose it.                                          |
+| Field              | What to pick                                                                                                                                                                                                                                                    |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Region**         | Any region your key may use, such as `ap-southeast-1`.                                                                                                                                                                                                          |
+| **Size**           | Move **CPU**, **RAM** and **Storage** (20 to 500 GB). dPanel launches the cheapest `t3a` or `t3` type that fits, then `c6a`, `m6a`, `c6i` or `m6i` for bigger sizes. **Choose the instance type yourself** lists every type in that region, such as `t3.small`. |
+| **Ubuntu release** | 24.04 LTS or 26.04 LTS. dPanel looks up the matching image in that region.                                                                                                                                                                                      |
+| **Network**        | `dpanel-network`. You don't choose it.                                                                                                                                                                                                                          |
 
 There is no **Access** step for AWS. dPanel signs in as `ubuntu`.
 
@@ -196,3 +197,21 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick AWS in step 1.
 - To rotate the key, create a new one for the same IAM user and replace it with **Update credentials** on the cloud account. See [Rotating a credential](./cloud-credentials-security.md#rotating-a-credential).
 - To cut dPanel off, deactivate the access key in IAM. Running servers keep running. See [what happens when you revoke](./cloud-credentials-security.md#if-you-revoke-a-credential).
 - More in [Cloud credentials and security](./cloud-credentials-security.md).
+
+## Frequently asked questions
+
+### What IAM permissions does dPanel need on AWS?
+
+Only EC2: the describe calls that fill the launch form, the calls that create `dpanel-network` and a security group, and `RunInstances`, `TerminateInstances` and `CreateTags`. The [minimum IAM policy](#minimum-iam-policy) above lists them, and needs no IAM, S3 or `iam:PassRole` permission.
+
+### Can I keep dPanel to one AWS region?
+
+Yes. The policy's `aws:RequestedRegion` condition limits launches to the regions you name. Edit the list before you attach the policy.
+
+### Which EC2 instance type does dPanel launch?
+
+The cheapest `t3a` or `t3` type with at least the CPU and RAM you pick, or a `c6a`, `m6a`, `c6i` or `m6i` type for bigger sizes. Press **Choose the instance type yourself** to pick any type, such as `t3.small`.
+
+### Does deleting the server in dPanel terminate the EC2 instance?
+
+Yes. dPanel terminates the instance and deletes its security group. The `dpanel-network` VPC stays, so later launches in that region reuse it.

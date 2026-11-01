@@ -1,11 +1,11 @@
 ---
 title: The dashboard
-description: What each dashboard tab tells you, and where to look first when something is wrong.
+description: The dPanel dashboard shows server health, failed jobs, CPU, memory and disk usage, and recent activity for a workspace. Learn what each tab tells you.
 sidebar_position: 3
 sidebar_icon: layout-dashboard
 ---
 
-The dashboard is the first page after sign-in. It answers one question: is everything in this workspace all right? Open it any time from **Dashboard** in the sidebar.
+The dPanel dashboard is the first page after sign-in. It answers one question: is everything in this workspace all right? It shows a health verdict, resource counts, failed jobs and CPU, memory and disk usage across your servers. Open it any time from **Dashboard** in the sidebar.
 
 ![The dashboard Overview tab with the health verdict, resource counts and platform activity](../../assets/getting-started/dashboard-overview.webp 'Overview: the verdict at the top, then counts, activity and usage.')
 
@@ -51,6 +51,14 @@ Shown only in a team workspace.
 - **Workspace Members**: who has access. **Manage** opens the team page.
 - **Cloud Projects**: the provider accounts this team can launch servers in.
 - **Workspace configuration**: the IaC repository dPanel writes this workspace's infrastructure to.
+
+## Lists, tables and cards
+
+Every list in dPanel (servers, applications, load balancers, domains, cloud accounts, SSH keys and teams) opens as a table. The view switch beside the search box changes it to **Card Grid View** or **Card List View**, and back to **Table View**. Each row ends with its actions, such as **Details**, or a **More** (⋯) menu with **Delete**.
+
+## Ask a question instead
+
+The **Ask dPanel** button at the bottom right of every page opens the AI assistant. Ask it, for example, "Did any job fail in the last 24 hours?". See [Ask dPanel](./ask-dpanel.md).
 
 ## If the dashboard says it cannot check
 

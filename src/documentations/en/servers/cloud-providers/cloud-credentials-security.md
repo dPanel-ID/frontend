@@ -1,11 +1,11 @@
 ---
 title: Cloud credentials and security
-description: What dPanel keeps when you connect a cloud account, what that credential can do, and how to limit, rotate and revoke it.
+description: What dPanel stores when you connect a cloud account, what the API key can do, and how to limit, rotate, replace and revoke your cloud credentials safely.
 sidebar_position: 8
 sidebar_icon: shield-check
 ---
 
-To launch servers for you, dPanel holds a credential for your cloud account. This page says plainly what that means, so you can decide how much to trust it and how to limit the damage if something goes wrong.
+To launch servers for you, dPanel holds an encrypted credential (an API key) for your cloud account. This page says plainly what dPanel stores, what that key can do, and how to limit, rotate and revoke it, so you can decide how much to trust it and how to limit the damage if something goes wrong.
 
 ## The risk, in one paragraph
 
@@ -61,10 +61,12 @@ Don't connect your AWS root user, an AWS administrator, a Google Cloud owner, or
 You can replace the key inside an existing cloud account without disconnecting it. The account keeps its ID, so servers launched with it keep working and can still be deleted.
 
 1. Create a new key at the provider for the same identity. AWS allows two access keys per user, and Google Cloud several keys per service account. On DigitalOcean and IDCloudHost, create a second token or API key.
-2. In the sidebar, open **Cloud Projects**. On the account, open its actions (the menu in list view, or the icon row in card view) and choose **Update credentials**.
+2. In the sidebar, open **Cloud Projects**. On the account's row, open the **More** (⋯) menu and choose **Update credentials**.
 3. Fill in the same fields as when you connected the account, then press **Save credentials**.
 4. Confirm the new key works: open the launch form and check that the regions load.
 5. Delete or deactivate the old key at the provider.
+
+![The Update credentials dialog for a cloud account, with empty credential fields and Save credentials](../../../assets/getting-started/cloud-credentials-update.webp 'The current key is never shown. Fill in the new one and save.')
 
 From the command line, run `dnocs cloud-project update-credentials --id <ID>`. It asks for each field, like `dnocs cloud-project create`. For a multi-line value such as the Google Cloud service account JSON, answer the prompt with `@path/to/key.json` to read it from a file. You can also pass every field at once with `--credential-file credential.json`, a JSON object such as `{"project_id":"my-project","service_account_json":"..."}`, and skip the confirmation with `--yes`.
 
@@ -97,8 +99,22 @@ To fix a revoked or expired key, create a new key for the same account and [upda
 
 1. Delete every server launched with it. See [Delete a server](../delete-a-server.md).
 2. In the sidebar, open **Cloud Projects**.
-3. On the account, open the menu and choose **Disconnect cloud account**, then confirm.
+3. On the account's row, open the **More** (⋯) menu, choose **Delete**, and confirm **Disconnect cloud account**.
 
 dPanel deletes the stored credential. That does not revoke the key at the provider: delete it there too.
 
 ![The Cloud accounts page listing connected provider accounts](../../../assets/getting-started/cloud-projects.webp)
+
+## Frequently asked questions
+
+### Can anyone read my cloud API key back from dPanel?
+
+No. Once saved, the key is never sent back to a browser or shown again, to you or to your teammates. dPanel decrypts it only on its own server and worker to call your provider.
+
+### How do I replace a leaked or expired key?
+
+Create a new key at the provider, choose **Update credentials** on the cloud account in dPanel, save it, then revoke the old key at the provider. The account keeps its ID, so your servers keep working. See [Rotating a credential](#rotating-a-credential).
+
+### What happens to my servers if I revoke the key?
+
+They keep running, and applications, logs and the terminal keep working. Only new launches and deleting servers at the provider stop until you add a working key.

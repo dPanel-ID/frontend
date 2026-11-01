@@ -1,11 +1,11 @@
 ---
 title: Ruang kerja
-description: Ruang kerja personal, ruang kerja tim, dan cara berpindah di antaranya.
+description: Cara kerja ruang kerja di dPanel: ruang kerja personal, ruang kerja tim bersama, dan cara berpindah agar Anda melihat server dan aplikasi yang tepat.
 sidebar_position: 2
 sidebar_icon: building-2
 ---
 
-Semua yang ada di dPanel berada di dalam sebuah ruang kerja: server, aplikasi, load balancer, domain, akun cloud, dan kunci SSH. Ruang kerja adalah batas akses. Anda hanya melihat isi ruang kerja yang sedang aktif.
+Ruang kerja di dPanel adalah batas yang mengelilingi sekumpulan server, aplikasi, load balancer, domain, akun cloud, dan kunci SSH. Anda hanya melihat isi ruang kerja yang sedang aktif, dan Anda berpindah ruang kerja dari bagian atas sidebar.
 
 ## Dua jenis ruang kerja
 
@@ -37,6 +37,6 @@ Berpindah ruang kerja mengubah isi semua halaman. Kalau server atau aplikasi tam
 - **Ruang kerja baru** membuat ruang kerja tim. Lihat [Membuat tim](../teams/teams.md#membuat-tim).
 - Ikon orang di ujung baris tim (**Kelola ruang kerja**) membuka halaman anggota tim tersebut.
 
-## Memindahkan resource antar ruang kerja
+## Resource tetap di ruang kerjanya
 
-Server, aplikasi, load balancer, domain, akun cloud, dan kunci SSH bisa dipindahkan ke ruang kerja lain. Pakai **Pindah Pemilik** di menu item tersebut, atau **Pindahkan kepemilikan** di tab **Pengaturan** server. Lihat [Memindahkan resource ke ruang kerja lain](../teams/members-and-roles.md#memindahkan-resource-ke-ruang-kerja-lain).
+Server, aplikasi, load balancer, domain, akun cloud, atau kunci SSH tetap berada di ruang kerja tempat ia dibuat. dPanel tidak memindahkan resource antar ruang kerja, jadi pindahlah ke ruang kerja yang benar sebelum membuat sesuatu. Untuk berbagi pekerjaan dengan orang lain, buat resource-nya di [ruang kerja tim](../teams/teams.md).

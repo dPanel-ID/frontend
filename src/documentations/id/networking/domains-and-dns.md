@@ -1,11 +1,13 @@
 ---
 title: Domain dan DNS
-description: Biarkan dPanel mengelola record DNS domain milik Anda, lewat penyedia DNS yang sudah Anda pakai.
+description: Tambahkan domain dari Cloudflare atau DigitalOcean ke dPanel dengan token API terbatas, agar dPanel bisa mengelola record DNS dan mengarahkannya ke server.
 sidebar_position: 2
 sidebar_icon: globe
 ---
 
-dPanel tidak menjual atau memindahkan domain. Anda tetap membeli domain di tempat biasa. Yang dibutuhkan dPanel hanyalah akses ke penyedia yang menjawab DNS domain itu, agar dPanel bisa membuat record yang mengarahkan sebuah nama ke server Anda.
+dPanel mengelola DNS untuk domain yang sudah Anda miliki. Tambahkan domain yang di-host di Cloudflare atau DigitalOcean dengan token API, lalu dPanel membaca record-nya, memungkinkan Anda mencarinya, dan membuat record `A` yang mengarahkan sebuah nama ke server Anda ketika load balancer memakai domain itu.
+
+dPanel tidak menjual atau memindahkan domain, dan tidak pernah mengubah registrar Anda. Anda tetap membeli domain di tempat biasa. Yang dibutuhkan dPanel hanyalah akses ke penyedia yang menjawab DNS domain itu.
 
 ## Yang perlu disiapkan
 
@@ -16,7 +18,7 @@ dPanel tidak menjual atau memindahkan domain. Anda tetap membeli domain di tempa
 Gunakan token dengan cakupan terbatas. Di Cloudflare, token khusus "DNS edit" untuk satu zona itu sudah cukup.
 :::
 
-![Halaman Domain & DNS dengan dua domain yang dikelola lewat Cloudflare](../../assets/networking/domains-list.webp 'Domain & DNS: setiap kartu menampilkan penyedia DNS, siapa yang bisa memakainya, dan record wildcard-nya.')
+![Halaman Domain & DNS dalam tampilan tabel, berisi dua domain yang dikelola lewat Cloudflare](../../assets/networking/domains-list.webp 'Domain & DNS: setiap baris menampilkan penyedia DNS, pemilik domain, dan siapa yang bisa memakainya.')
 
 ## Menambahkan domain
 
@@ -34,26 +36,39 @@ Gunakan token dengan cakupan terbatas. Di Cloudflare, token khusus "DNS edit" un
 
 dPanel membaca zona itu terlebih dahulu dan menampilkan record yang sudah ada. Tidak ada yang diubah sampai domain itu dipakai, misalnya sebagai domain **Terkelola** pada load balancer.
 
+## Halaman domain
+
+Pilih domain di daftar, atau tekan **Detil** di barisnya, untuk membuka halamannya sendiri. Halaman ini menampilkan:
+
+- **Penyedia DNS**, jumlah **Record** di zona itu, workspace **Pemilik**, dan kapan domain itu **Ditambahkan**.
+- **Muat ulang**, yang membaca zona itu lagi, dan **Buka situs**, yang membuka `https://` beserta domainnya di tab baru.
+- **Record DNS**: setiap record di zona itu, yang bisa Anda cari, saring berdasarkan jenis, dan hapus. Lihat [Record DNS](./dns-records.md).
+
+![Halaman domain terpusat.me: penyedia, jumlah record, pemilik, dan tanggal ditambahkan, di atas tabel record DNS](../../assets/networking/domain-detail.webp)
+
 ## Memakai domain di load balancer
 
-Di load balancer, pilih **Managed** pada **Domain Name**, ketik **Subdomain**, lalu pilih domainnya. dPanel membuat record `A` dari nama itu ke server gateway. dPanel menolak nama yang sudah punya record, jadi record yang ada tetap aman.
+Di load balancer, pilih **Terkelola** pada **Nama Domain**, ketik **Subdomain**, lalu pilih domainnya. dPanel membuat record `A` dari nama itu ke alamat publik server gateway. dPanel menolak nama yang sudah punya record, jadi record yang ada tetap aman. Lihat [Load balancer dan HTTPS](./load-balancers.md).
 
-Di panduan kami, `docs-demo` pada `terpusat.me` menjadi `docs-demo.terpusat.me`, mengarah ke gateway `103.183.75.207`. Lihat [Load balancer](./load-balancers.md).
+## Membagikan atau menghapus domain
 
-## Melihat dan menghapus record
+- Domain yang ditambahkan di workspace tim otomatis dibagikan ke tim itu. Domain tetap berada di workspace tempat ia ditambahkan; domain tidak bisa dipindahkan ke workspace lain.
+- Untuk mengeluarkan domain dari dPanel, buka menu **Lebih** (⋯) di barisnya, pilih **Hapus**, lalu konfirmasi **Hapus Domain**. Ini hanya mengeluarkannya dari dPanel; zona dan record-nya tetap ada di penyedia DNS Anda.
 
-1. Di daftar, buka domain lewat **Detil**.
-2. **Detil Domain** menampilkan setiap record beserta tipe, nama, isi, dan TTL-nya.
-3. Untuk menghapus record, tekan ikon tempat sampah di barisnya lalu konfirmasi **Hapus Catatan Domain**.
+## Pertanyaan yang sering diajukan
 
-Tidak ada formulir untuk menambah record secara manual. dPanel membuat record sendiri ketika sebuah load balancer memakai domain tersebut. Lihat [Load balancer](./load-balancers.md).
+### Penyedia DNS apa saja yang didukung dPanel?
 
-:::warning
-Menghapus record langsung berlaku di penyedia DNS Anda. Apa pun yang masih memakai nama itu tidak akan bisa diakses lagi.
-:::
+Cloudflare dan DigitalOcean. Domain Anda boleh didaftarkan di mana saja, asalkan DNS-nya di-host di salah satu penyedia itu.
 
-## Membagikan, memindahkan, atau menghapus domain
+### Apakah saya harus memindahkan domain ke dPanel?
 
-- Domain yang ditambahkan di ruang kerja tim otomatis dibagikan ke tim itu.
-- **Pindah Pemilik** di menu baris memindahkannya ke ruang kerja lain.
-- **Hapus** mengeluarkan domain dari dPanel setelah Anda mengonfirmasi **Hapus Domain**.
+Tidak. dPanel tidak pernah menjual, mendaftarkan, atau memindahkan domain. dPanel hanya memakai token API untuk membaca dan menulis record DNS di penyedia DNS Anda.
+
+### Bisakah saya menambah record DNS secara manual di dPanel?
+
+Belum. dPanel membuat record sendiri ketika sebuah load balancer memakai domain itu. Anda bisa mencari, menyalin, dan menghapus record di halaman domain.
+
+### Apakah token API DNS saya aman?
+
+Token hanya dikirim sekali, saat Anda menambahkan domain, dan tidak pernah ditampilkan lagi. Ringkasan tidak pernah menampilkannya, dan dPanel menampilkan **Disimpan aman** sebagai gantinya.

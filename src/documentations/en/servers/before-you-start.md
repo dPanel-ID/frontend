@@ -1,9 +1,11 @@
 ---
 title: Before you start
-description: The two things dPanel needs once, then reuses for every server.
+description: Before you add a server to dPanel, create an SSH key, and connect a cloud account if dPanel should launch the VPS. Both are set up once and reused.
 sidebar_position: 2
 sidebar_icon: list-checks
 ---
+
+dPanel needs two things before your first server, and reuses both for every server after it: an SSH key to sign in to the machine, and, only if dPanel should launch a new VPS for you, a connected cloud account.
 
 ## An SSH key
 
@@ -21,7 +23,7 @@ You don't have to make one by hand.
 
 The private half is never shown again. dPanel keeps it encrypted and uses it for you. The key's page shows the public half, which is safe to copy anywhere, and a fingerprint you can compare with what a server reports.
 
-![The SSH keys page with one key](../../assets/getting-started/ssh-keys.webp)
+![The SSH keys page listing two keys with their type, who can use them and their owner](../../assets/getting-started/ssh-keys.webp)
 
 ## A cloud account
 

@@ -1,11 +1,11 @@
 ---
 title: Cara kerja aplikasi
-description: dPanel membangun kode Anda dari GitHub dan menjalankannya di server yang sudah Anda miliki.
+description: Cara dPanel men-deploy aplikasi dari GitHub: membangun repositori di server Anda, menjalankannya sebagai layanan systemd, dan menyimpan build untuk rollback.
 sidebar_position: 1
 sidebar_icon: app-window
 ---
 
-Aplikasi adalah kode Anda yang berjalan sebagai layanan di salah satu server Anda. dPanel tidak menyimpan kodenya sendiri. dPanel membaca repositori GitHub yang Anda tunjuk, membangunnya di server, lalu menjaga layanannya tetap berjalan di sana.
+Aplikasi di dPanel adalah kode Anda dari repositori GitHub, yang dibangun dan berjalan sebagai layanan systemd di salah satu server milik Anda sendiri. dPanel tidak menyimpan kodenya: dPanel membaca repositori dan branch yang Anda tunjuk, menjalankan perintah build Anda di server, menjalankan hasilnya sebagai layanan, dan menyimpan setiap build agar Anda bisa melakukan rollback.
 
 ## Tiga langkahnya
 
@@ -27,7 +27,7 @@ Build tidak dibagikan antar mesin. Setiap server membangun dan memasang aplikasi
 
 Buka **Aplikasi** di sidebar. Halaman ini menampilkan semua aplikasi di workspace aktif, dengan jumlahnya di bagian atas.
 
-![Halaman Aplikasi yang menampilkan aplikasi demo Go Example Docs beserta status dan servernya](../../assets/applications/apps-list.webp 'Halaman Aplikasi dengan satu aplikasi yang berjalan.')
+![Halaman Aplikasi dalam tampilan tabel, menampilkan sebuah aplikasi beserta status, repositori sumber, server, dan alamatnya](../../assets/applications/apps-list.webp 'Halaman Aplikasi dengan satu aplikasi yang berjalan.')
 
 | Status          | Artinya                                                                      |
 | --------------- | ---------------------------------------------------------------------------- |
@@ -36,7 +36,7 @@ Buka **Aplikasi** di sidebar. Halaman ini menampilkan semua aplikasi di workspac
 | Perlu perhatian | Build atau rilis terakhir gagal. Buka aplikasinya untuk melihat penyebabnya. |
 | Tidak berjalan  | Belum ada yang dirilis, atau layanannya sedang berhenti.                     |
 
-Gunakan **Cari berdasarkan nama aplikasi** untuk menemukan aplikasi dengan cepat. Pilih salah satu baris untuk membukanya.
+Daftarnya terbuka sebagai tabel, berisi status, repositori sumber, server, dan alamat publik setiap aplikasi. Gunakan **Cari berdasarkan nama aplikasi** untuk menemukan aplikasi dengan cepat. Pilih salah satu baris untuk membukanya.
 
 Tombol GitHub di bagian atas menunjukkan akun yang dipakai dPanel untuk membaca repositori, misalnya **Terhubung ke GitHub sebagai** login Anda. Jika tertulis **Hubungkan ulang GitHub**, GitHub tidak lagi menerima sesi yang tersimpan. Masuk kembali sebelum membangun aplikasi.
 
@@ -53,5 +53,7 @@ Setiap aplikasi punya empat tab.
 
 ## Langkah berikutnya
 
-- [Membuat aplikasi](./create-an-application.md)
-- [Rilis dan rollback](./deployments-and-rollback.md)
+- [Membuat aplikasi](./create-an-application.md) dari repositori GitHub.
+- [Rilis dan rollback](./deployments-and-rollback.md): rilis commit baru, atau kembali ke build sebelumnya.
+- [Variabel environment](./environment-variables.md) untuk pengaturan dan rahasia.
+- Publikasikan di domain dengan HTTPS lewat [load balancer](../networking/load-balancers.md).

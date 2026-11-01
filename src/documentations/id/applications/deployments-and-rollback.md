@@ -1,11 +1,11 @@
 ---
 title: Rilis dan rollback
-description: Bangun commit terbaru, ikuti sampai ke server, dan kembali ke build sebelumnya saat perlu.
+description: Rilis commit baru dengan Bangun dan rilis, ikuti build sampai ke server Anda, dan rollback ke build sebelumnya di dPanel tanpa membangun ulang.
 sidebar_position: 4
 sidebar_icon: history
 ---
 
-Ada dua istilah penting. **Build** adalah kode Anda yang dikemas sekali, dari satu commit. **Rilis** adalah build itu yang dipasang di satu server.
+Di dPanel, setiap push yang ingin Anda kirim menjadi sebuah build, dan setiap build disimpan, jadi Anda bisa merilis commit terbaru atau rollback ke build sebelumnya dalam satu langkah. Ada dua istilah penting. **Build** adalah kode Anda yang dikemas sekali, dari satu commit. **Rilis** adalah build itu yang dipasang di satu server.
 
 ## Apa yang sedang berjalan
 
@@ -38,8 +38,10 @@ Build baru muncul di urutan teratas dengan status **Membangun**, lalu **Berhasil
 
 **Build dan rilis** punya dua tampilan.
 
-- **Build**: semua build, terbaru lebih dulu, dengan ID build, commit, branch, dan lama build-nya.
+- **Build**: semua build, terbaru lebih dulu, dengan ID build, commit, branch, dan lama build-nya. Build yang sudah dirilis ke server diberi lencana **Digunakan**, dan build yang sedang dirilis diberi lencana **Dalam Proses**.
 - **Di server**: setiap server tempat aplikasi dirilis, beserta status layanannya.
+
+Pindah tampilan dengan tombol **Build** dan **Di server** di samping **Bangun dan rilis**.
 
 ![Tab Rilis yang menampilkan daftar build beserta status dan tombol aksinya](../../assets/applications/app-deployments.webp)
 

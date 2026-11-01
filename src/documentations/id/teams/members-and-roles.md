@@ -1,13 +1,13 @@
 ---
 title: Anggota dan peran
-description: Tambahkan orang ke tim, beri akses sesuai kebutuhannya, dan pindahkan resource antar ruang kerja.
+description: Tambahkan orang ke tim dPanel dan pilih perannya, dari Viewer sampai Owner, agar setiap orang hanya bisa melihat, men-deploy, atau menghapus yang semestinya.
 sidebar_position: 2
 sidebar_icon: user-cog
 ---
 
-Setiap anggota tim punya satu peran atau lebih. Peran menentukan apa yang bisa dilihat dan diubah orang itu di ruang kerja tim.
+Di dPanel, setiap anggota tim punya satu peran atau lebih, dan peran menentukan apa yang bisa dilihat, dibuat, diubah, dan dihapus orang itu di ruang kerja tim: dari **Viewer**, yang hanya bisa melihat, sampai **Owner**, yang bisa melakukan semuanya.
 
-![Halaman tim yang menampilkan anggota beserta peran dan tanggal bergabung](../../assets/teams/team-detail.webp 'Halaman tim: anggota, peran mereka, dan kapan mereka bergabung.')
+![Halaman tim dengan jumlah anggota, peran dan status Anda, di atas tabel Anggota berisi peran dan tanggal bergabung](../../assets/teams/team-detail.webp 'Halaman tim: anggota, peran mereka, dan kapan mereka bergabung.')
 
 ## Menambahkan anggota
 
@@ -51,7 +51,7 @@ Mulailah dengan peran tersempit yang masih cukup untuk pekerjaannya. **Developer
 ## Mengubah peran anggota
 
 1. Buka timnya.
-2. Di baris anggota, buka menu lalu pilih **Kelola peran**.
+2. Di baris anggota, tekan **Kelola peran**.
 3. Centang peran yang seharusnya mereka miliki. Tombol pilih grup mencentang satu grup sekaligus, dan tombol hapus pilihan mengosongkan semuanya.
 4. Tekan **Simpan peran**.
 
@@ -62,7 +62,7 @@ Owner dan Admin ditandai **Dilindungi**. Hanya owner ruang kerja yang bisa mence
 ## Mengeluarkan anggota
 
 1. Buka timnya.
-2. Di baris anggota, buka menu lalu pilih **Hapus**.
+2. Di baris anggota, tekan **Hapus dari tim**.
 3. Konfirmasi **Hapus Anggota**.
 
 Aksesnya ke ruang kerja tim langsung dicabut. Resource yang pernah ia buat tetap menjadi milik tim.
@@ -71,16 +71,24 @@ Aksesnya ke ruang kerja tim langsung dicabut. Resource yang pernah ia buat tetap
 
 **Profil** Anda mencantumkan setiap ruang kerja beserta peran Anda di dalamnya. **Lihat role workspace aktif** menampilkan daftar peran lengkap di ruang kerja yang sedang aktif.
 
-## Memindahkan resource ke ruang kerja lain
+## Resource tetap di ruang kerjanya
 
-Server, aplikasi, load balancer, domain, akun cloud, dan kunci SSH bisa dipindahkan antar ruang kerja, misalnya dari ruang kerja personal ke tim.
+Server, aplikasi, load balancer, domain, akun cloud, dan kunci SSH tetap berada di ruang kerja tempat mereka dibuat. dPanel tidak memindahkannya antar ruang kerja, jadi buat resource bersama di ruang kerja tim sejak awal. Lihat [Ruang kerja](../getting-started/workspaces.md).
 
-1. Cari resource-nya di daftar dan buka menu barisnya. Untuk server, buka servernya lalu ke tab **Pengaturan**.
-2. Pilih **Pindah Pemilik** (di server: **Pindahkan kepemilikan**).
-3. Di **Pemilik Baru**, pilih timnya, atau **Personal**.
-4. Biarkan **Pindahkan juga dependensinya** menyala agar kunci SSH, akun cloud, atau server yang dibutuhkannya ikut pindah, selama tidak dipakai resource lain.
-5. Konfirmasi.
+## Pertanyaan yang sering diajukan
 
-:::warning
-Pemindahan langsung berlaku. Orang di ruang kerja lama kehilangan akses pengelolaan atas resource tersebut.
-:::
+### Peran apa yang sebaiknya diberikan kepada developer?
+
+**Developer**. Peran ini bisa membuat aplikasi, membangun dan men-deploy-nya, serta membaca semua yang lain, tetapi tidak bisa menghapus apa pun.
+
+### Siapa yang bisa memberikan peran Owner atau Admin?
+
+Hanya owner ruang kerja. Owner dan Admin ditandai **Dilindungi**; bagi yang lain, keduanya tampil tetapi tidak aktif.
+
+### Apakah anggota baru perlu punya akun dPanel?
+
+Ya. Minta mereka [mendaftar](../getting-started/sign-in.md#membuat-akun) dulu, lalu cari berdasarkan username atau nama di **Tambah Anggota Baru**.
+
+### Apa yang terjadi pada resource ketika saya mengeluarkan anggota?
+
+Resource tetap menjadi milik tim. Anggota tersebut langsung kehilangan akses ke ruang kerja tim.

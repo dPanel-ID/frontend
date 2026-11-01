@@ -1,11 +1,12 @@
 ---
-title: SSH keys and cloud accounts
-description: The two things dPanel needs before it can launch or connect a server.
+title: SSH keys & cloud accounts
+description: Create the SSH key dPanel signs in to your servers with, and connect an AWS, Google Cloud, DigitalOcean or other cloud account to launch VPS servers.
 sidebar_position: 5
 sidebar_icon: key-round
+sidebar_label: SSH keys and cloud accounts
 ---
 
-Before your first server, set up two things. Both live under **Backend** in the sidebar, and both are reused for every server after that.
+Before dPanel can launch or connect your first server, it needs an SSH key, and to launch a new VPS it also needs a cloud account. Both live under **Backend** in the sidebar, and both are reused for every server after that.
 
 | You need        | Where                                  | Why                                              |
 | --------------- | -------------------------------------- | ------------------------------------------------ |
@@ -53,9 +54,9 @@ dPanel does not resell servers. Machines are created inside your own provider ac
 ## Sharing and removing
 
 - A key or account created in a team workspace is shared with that team. One created in your personal workspace is yours alone.
-- **Migrate Ownership** in the item's menu moves it to another workspace.
-- **Update credentials** replaces the key inside a cloud account, for example after you rotate it at the provider. Servers launched with it keep working. See [Rotating a credential](../servers/cloud-providers/cloud-credentials-security.md#rotating-a-credential).
-- **Disconnect cloud account** makes dPanel forget the API key. Servers already running at the provider keep running.
+- A key or account stays in the workspace it was created in. It cannot be moved to another workspace.
+- **Update credentials**, in the **More** (⋯) menu on a cloud account's row, replaces the key inside the account, for example after you rotate it at the provider. Servers launched with it keep working. See [Rotating a credential](../servers/cloud-providers/cloud-credentials-security.md#rotating-a-credential).
+- **Delete**, in the same menu, disconnects the cloud account: dPanel forgets the API key after you confirm **Disconnect cloud account**. Servers already running at the provider keep running.
 
 ## What happens next
 

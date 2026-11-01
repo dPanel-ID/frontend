@@ -1,9 +1,11 @@
 ---
 title: Create an application
-description: The five-step form, from a GitHub repository to a running service.
+description: Deploy an app from GitHub with dPanel: pick the repository, a ready server, the runtime and build commands, and dPanel runs it as a service.
 sidebar_position: 2
 sidebar_icon: square-plus
 ---
+
+To deploy an app from GitHub with dPanel, you fill in a five-step form: the repository and branch, the server and runtime, the build and start commands, the environment, and a final preview. dPanel then clones, builds and starts your code as a systemd service on your server.
 
 This walkthrough deploys [dPanel-ID/go-example](https://github.com/dPanel-ID/go-example), a small Go web service. Any repository works the same way. Expect it to take 5 to 15 minutes, most of it the first build.
 
@@ -27,7 +29,7 @@ Open **Applications** and press **Create Application**. The form has five steps.
 
 ## Step 2: Server & modules
 
-1. Under **Select Server**, select the server that will run the application. Use **Search server...** if you have many.
+1. Under **Select Server**, select the server that will run the application. Only servers that are **Ready** are listed; use **Search server...** if you have many. If none is ready, the list says **No ready servers found**: add a server, or wait for one to finish setup.
 2. Under **Select dependencies**, add what the application needs to build and run. Type in **Search modules**, then press **Add** on a module. For go-example that is **Go**.
 3. The module's options open beside the list. Required fields are marked. Check them, then press **Save options**.
 4. Press **Continue**.
@@ -78,3 +80,25 @@ The application shows **Building** until the release finishes, then **Running**.
 :::note[Give it a public address]
 A new application listens on its port on the server. To serve it on a domain with HTTPS, put a load balancer in front of it. See [Load balancers](../networking/load-balancers.md).
 :::
+
+## Frequently asked questions
+
+### Which languages and frameworks can I deploy?
+
+Any that run on Ubuntu. You pick the runtime, such as Go, as a module in step 2, and give the commands that build and start your code in step 3. dPanel runs them as you wrote them.
+
+### Why does the form refuse my application name?
+
+The name may only contain letters, numbers and spaces. `my-app` or `my_app` is refused; use `My App` instead.
+
+### Why is my server not in the list?
+
+Only servers that are **Ready** can host an application. A server that is still being set up, failed setup or was deleted is not listed. See [Your server page](../servers/your-server-page.md).
+
+### Can I deploy from a GitHub organisation?
+
+Yes. Install the dnocs-id GitHub App on the organisation with **Add GitHub account**, and it appears under **GitHub team**. See [Connect GitHub](../getting-started/connect-github.md#add-a-github-organisation).
+
+### How do I give the application a domain with HTTPS?
+
+Create a [load balancer](../networking/load-balancers.md) that routes your domain to the application. dPanel adds the DNS record and a Let's Encrypt certificate.

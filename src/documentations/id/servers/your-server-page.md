@@ -1,17 +1,28 @@
 ---
 title: Halaman server Anda
-description: Isi setiap tab di halaman server: ringkasan, modul, layanan, pengguna, jaringan, berkas, log, dan pengaturan.
+description: Setiap tab halaman server dPanel: pemakaian CPU dan memori langsung, modul, layanan systemd, pengguna Linux, port terbuka, berkas, log, dan pengaturan.
 sidebar_position: 5
 sidebar_icon: gauge
 ---
 
-Setiap server punya satu halaman, dan semua tindakan terhadap server itu ada di sana.
+Setiap server di dPanel punya satu halaman, dan semua tindakan terhadap server itu ada di sana: pemakaian langsung, modul terpasang, layanan systemd, pengguna Linux, port terbuka, berkas, log, dan pengaturan. Buka dari **Server** dengan memilih baris server tersebut.
 
-Bagian kepalanya menampilkan nama, status, alamat, versi Ubuntu, lokasi, login SSH yang dipakai dPanel, agen, workspace pemiliknya, dan waktu pembuatannya. Tombol **Buka terminal** juga ada di sana. Lihat [Terhubung lewat SSH](./connect-over-ssh.md).
+## Bagian kepala
+
+Bagian kepala menampilkan nama, status, alamat, versi Ubuntu, dan lokasi server, lalu sebaris keterangan: login SSH yang dipakai dPanel (misalnya `ubuntu@203.0.113.10:22`), versi agen, workspace, siapa yang membuat server, dan kapan.
+
+| Kontrol               | Fungsinya                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------- |
+| Segarkan (↻)          | Membaca ulang status, pemakaian, layanan, dan modul server.                                          |
+| **Ubah server** (✎)   | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel.                                       |
+| **Buka terminal**     | Membuka shell di browser. Lihat [Terhubung lewat SSH](./connect-over-ssh.md).                        |
+| **Tindakan lain** (⋯) | **Pasang ulang server** menjalankan setup lagi; **Hapus server** menghapusnya. Lihat tabel di bawah. |
+
+Pilih lencana status untuk melihat arti status tersebut. Selama dPanel menyiapkan server, banner biru memberi tahu hal itu, dengan tombol **Ikuti log**. Jika setup gagal, banner merah **Penyiapan tidak selesai** menawarkan **Lihat penyebabnya**.
 
 ## Ringkasan
 
-**Pemakaian langsung** membaca CPU, memori, dan disk dari agen setiap beberapa detik selama halaman terbuka. Di bawahnya ada jumlah aplikasi, load balancer, basis data, dan modul, lalu **Detail server** dan **Yang berjalan di sini**.
+**Pemakaian langsung** membaca CPU, memori, dan disk dari agen setiap beberapa detik selama halaman terbuka. Di bawahnya ada jumlah aplikasi, load balancer, basis data, dan modul, lalu **Detail server** (alamat, login SSH, sistem operasi, agen, penyedia, kepemilikan, **Dibuat oleh**, dan kapan server ditambahkan) dan **Yang berjalan di sini**.
 
 ![Halaman server pada tab Ringkasan](../../assets/servers/server-overview.webp)
 
@@ -68,11 +79,12 @@ Tab ini membaca baris terbaru dari sebuah berkas. Rentang waktu, halaman, dan un
 
 Perubahan yang jarang dibutuhkan, masing-masing dengan penjelasan.
 
-| Kartu          | Tombol                    | Fungsinya                                                               |
-| -------------- | ------------------------- | ----------------------------------------------------------------------- |
-| Koneksi        | **Edit koneksi**          | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel.          |
-| Penyiapan      | **Instal ulang**          | Masuk ulang lewat SSH, memasang ulang agen, dan menyegarkan inventaris. |
-| Kepemilikan    | **Pindahkan kepemilikan** | Memindahkan server ke workspace lain atau ke ruang pribadi Anda.        |
-| Zona berbahaya | **Hapus server**          | Menghapus server. Lihat [Menghapus server](./delete-a-server.md).       |
+| Kartu          | Tombol           | Fungsinya                                                               |
+| -------------- | ---------------- | ----------------------------------------------------------------------- |
+| Koneksi        | **Edit koneksi** | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel.          |
+| Penyiapan      | **Instal ulang** | Masuk ulang lewat SSH, memasang ulang agen, dan menyegarkan inventaris. |
+| Zona berbahaya | **Hapus server** | Menghapus server. Lihat [Menghapus server](./delete-a-server.md).       |
 
-![Tab Pengaturan dengan Koneksi, Penyiapan, Kepemilikan, dan Zona berbahaya](../../assets/servers/server-settings.webp)
+**Penyiapan** disembunyikan selama server sedang disiapkan atau dihapus, dan pada server yang sudah dihapus, karena saat itu tidak ada yang bisa dipasang ulang. Server tetap berada di workspace tempat ia dibuat; server tidak bisa dipindahkan ke workspace lain.
+
+![Tab Pengaturan dengan kartu Koneksi, Penyiapan, dan Zona berbahaya](../../assets/servers/server-settings.webp)

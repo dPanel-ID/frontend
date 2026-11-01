@@ -1,11 +1,12 @@
 ---
-title: Alibaba Cloud
-description: Buat RAM user dengan AccessKey, hubungkan ke dPanel, lalu luncurkan server ECS.
+title: Alibaba Cloud ECS
+description: Buat RAM user Alibaba Cloud dengan AccessKey, hubungkan ke dPanel, lalu luncurkan server ECS Ubuntu di akun Alibaba Cloud Anda sendiri.
 sidebar_position: 6
 sidebar_icon: provider:alibabacloud
+sidebar_label: Alibaba Cloud
 ---
 
-dPanel meluncurkan instance ECS di akun Alibaba Cloud Anda. dPanel masuk dengan AccessKey milik RAM user yang Anda buat khusus untuknya.
+dPanel meluncurkan instance ECS Ubuntu di akun Alibaba Cloud Anda sendiri. dPanel masuk dengan AccessKey milik RAM user yang Anda buat khusus untuknya, dengan hanya izin ECS dan VPC yang tercantum di halaman ini.
 
 ## Yang perlu disiapkan
 
@@ -56,14 +57,14 @@ dPanel langsung menyimpan akun itu sebagai **Siap**, tanpa menguji kuncinya. Uji
 
 ![Formulir peluncuran dengan Alibaba Cloud terpilih](../../../assets/servers/create-provider-alibabacloud.webp)
 
-| Kolom              | Yang dipilih                                                                                   |
-| ------------------ | ---------------------------------------------------------------------------------------------- |
-| **Region**         | Tempat server berjalan, misalnya `ap-southeast-5` (Jakarta).                                   |
-| **Zone**           | Zona di dalam region itu, misalnya `ap-southeast-5a`.                                          |
-| **Network**        | `dpanel-network`. Tidak perlu dipilih.                                                         |
-| **Instance Type**  | Ukurannya, misalnya `ecs.e-c1m2.large`. Daftarnya hanya berisi tipe yang tersedia di zona itu. |
-| **Ubuntu release** | 24.04 LTS atau 26.04 LTS. dPanel memilih image Alibaba Cloud terbaru untuk rilis itu.          |
-| **System disk**    | 40 sampai 200 GB, ESSD.                                                                        |
+| Kolom              | Yang dipilih                                                                                                                                                                                                                                  |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Region**         | Tempat server berjalan, misalnya `ap-southeast-5` (Jakarta).                                                                                                                                                                                  |
+| **Zone**           | Zona di dalam region itu, misalnya `ap-southeast-5a`.                                                                                                                                                                                         |
+| **Network**        | `dpanel-network`. Tidak perlu dipilih.                                                                                                                                                                                                        |
+| **Size**           | Geser **CPU** dan **RAM**. dPanel meluncurkan tipe termurah yang tersedia di zona itu, `ecs.e-` lebih dulu, lalu `ecs.u1-`, `ecs.c7`, atau `ecs.g7`. **Choose the instance type yourself** menampilkan semuanya, misalnya `ecs.e-c1m2.large`. |
+| **Ubuntu release** | 24.04 LTS atau 26.04 LTS. dPanel memilih image Alibaba Cloud terbaru untuk rilis itu.                                                                                                                                                         |
+| **Storage**        | System disk, 40 sampai 500 GB, ESSD.                                                                                                                                                                                                          |
 
 Untuk Alibaba Cloud tidak ada langkah **Access**. dPanel masuk sebagai `root` dengan SSH key Anda.
 

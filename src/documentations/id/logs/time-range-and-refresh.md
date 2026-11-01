@@ -1,11 +1,11 @@
 ---
 title: Rentang waktu dan pembaruan
-description: Pilih seberapa jauh ke belakang, telusuri baris yang lebih lama, dan jaga tampilan tetap terbaru.
+description: Pilih rentang waktu log hingga 10 hari ke belakang di dPanel, telusuri baris lama 200 per halaman, dan nyalakan muat ulang otomatis untuk log aplikasi.
 sidebar_position: 2
 sidebar_icon: clock
 ---
 
-Kontrol ini ada di log runtime aplikasi dan log load balancer.
+Di dPanel Anda bisa membaca log aplikasi dan load balancer mulai dari 10 menit terakhir hingga 10 hari ke belakang, 200 baris per halaman, dan memperbaruinya secara manual atau otomatis. Kontrol ini ada di log runtime aplikasi dan log load balancer; lihat [Membaca log](./reading-logs.md) untuk letak setiap log.
 
 ## Memilih rentang waktu
 

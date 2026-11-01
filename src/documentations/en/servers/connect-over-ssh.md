@@ -1,11 +1,11 @@
 ---
 title: Connect over SSH
-description: The terminal in your browser, and connecting from your own machine.
+description: Open an SSH terminal to your server in the browser with dPanel, or connect from your own machine with ssh and your own public key.
 sidebar_position: 7
 sidebar_icon: square-terminal
 ---
 
-Most of the time you won't need a terminal: the tabs cover services, users, files and logs. When you do, press **Open terminal** at the top of the server page. dPanel signs in with the key it holds and opens a shell.
+dPanel gives you an SSH terminal in the browser: press **Open terminal** at the top of a server page, and dPanel signs in with the key it holds and opens a shell. Most of the time you won't need one, because the tabs cover services, users, files and logs.
 
 ![A shell session on the server, inside the browser](../../assets/servers/server-terminal.webp)
 
