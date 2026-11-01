@@ -120,6 +120,10 @@ export interface ModuleInputV1 {
   required: boolean;
   default?: unknown;
   options?: string[];
+  /** A value outside `options` is accepted when it matches `pattern`. */
+  allow_custom?: boolean;
+  /** Regular expression every value must match in full. */
+  pattern?: string;
   min?: number;
   max?: number;
   sensitive?: boolean;
