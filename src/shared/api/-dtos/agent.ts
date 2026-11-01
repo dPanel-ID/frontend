@@ -11,7 +11,6 @@ export const schemaAgentV2 = z.object({
   version: z.string().optional(),
   status: z.string().optional(),
   last_seen_at: z.string().optional(),
-  nsq_topic: z.string().optional(),
   otel_resource_id: z.string().optional(),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),

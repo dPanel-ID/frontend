@@ -122,7 +122,7 @@ You are probably in a different workspace. Check the workspace name at the top o
 
 ### I cannot find Migrate Ownership
 
-dPanel no longer moves resources between workspaces. A server, application, load balancer, domain, cloud account or SSH key stays in the workspace it was created in. Create new resources in the right workspace.
+dPanel does not move resources between workspaces, so the action is hidden. A server, application, load balancer, domain, cloud account or SSH key stays in the workspace it was created in. Create new resources in the right workspace.
 
 ### "You cannot see this workspace's health"
 

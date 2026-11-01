@@ -122,7 +122,7 @@ Kemungkinan besar Anda sedang berada di ruang kerja lain. Periksa nama ruang ker
 
 ### Saya tidak menemukan Pindah Pemilik
 
-dPanel tidak lagi memindahkan resource antar ruang kerja. Server, aplikasi, load balancer, domain, akun cloud, atau kunci SSH tetap berada di ruang kerja tempat ia dibuat. Buat resource baru di ruang kerja yang benar.
+dPanel tidak memindahkan resource antar ruang kerja, jadi tindakan ini disembunyikan. Server, aplikasi, load balancer, domain, akun cloud, atau kunci SSH tetap berada di ruang kerja tempat ia dibuat. Buat resource baru di ruang kerja yang benar.
 
 ### "Anda tidak bisa melihat kesehatan ruang kerja ini"
 
