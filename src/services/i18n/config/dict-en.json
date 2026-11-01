@@ -1914,8 +1914,8 @@
       },
       "backendUpdateRequired": "Save changes",
       "hero": {
-        "descriptionNamed": "Welcome back, {name}. Here is how your infrastructure is doing.",
-        "description": "Here is how your infrastructure is doing."
+        "updated": "Updated {when}",
+        "openSite": "Open site"
       },
       "tabs": {
         "graph": "Graph",
@@ -2031,6 +2031,13 @@
         "emptyError": "No 4xx or 5xx gateway requests were found in the access log.",
         "unavailableTitle": "Logs unavailable",
         "unavailableDesc": "This load balancer does not have enough gateway metadata to resolve log files."
+      },
+      "tiles": {
+        "status": "Status",
+        "routes": "Routes",
+        "routesHint": "{kind} routing",
+        "gateway": "Gateway server",
+        "engine": "Engine"
       }
     },
     "domain": {
