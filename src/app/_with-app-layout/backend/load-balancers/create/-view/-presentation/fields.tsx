@@ -59,19 +59,22 @@ export function ChoiceButton(props: {
   selected: boolean;
   title: string;
   description: string;
+  disabled?: boolean;
   onClick: () => void;
 }) {
-  const { description, icon: Icon, onClick, selected, title } = props;
+  const { description, disabled, icon: Icon, onClick, selected, title } = props;
 
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       aria-pressed={selected}
       className={cn(
         'rounded-lg border bg-background p-4 text-left transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40',
         selected && 'border-primary bg-primary/10',
+        disabled && 'cursor-not-allowed opacity-50',
       )}
     >
       <span className="flex items-start gap-3">
