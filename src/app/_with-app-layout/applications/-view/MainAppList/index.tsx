@@ -5,7 +5,6 @@ import type { ApplicationCard } from '@/entities/application/rules/schema';
 import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
 
 import { ApiLoadBalancer } from '@/shared/api';
-import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
 import { buildResponseView } from '@/widgets/response-view-builder';
 
 import { AppListState } from '../-presentation/AppListState';
@@ -28,7 +27,6 @@ export default buildResponseView({
     const { list } = props;
 
     const emit = useEmit();
-    const isDesktop = useBreakpoint('lg');
 
     // One lookup for the page, the way the servers list counts
     // applications. A router has no application id of its own, so the
@@ -52,8 +50,7 @@ export default buildResponseView({
     const { searchQuery, setSearchQuery, setPagination, viewMode } =
       useFilterModel();
 
-    const derivedViewMode =
-      viewMode === 'auto' ? (isDesktop ? 'list' : 'grid') : viewMode;
+    const derivedViewMode = viewMode === 'auto' ? 'table' : viewMode;
 
     const handlersFor = (application: ApplicationCard): AppTableHandlers => ({
       edit: () => emit('@applications/application-edit', application),

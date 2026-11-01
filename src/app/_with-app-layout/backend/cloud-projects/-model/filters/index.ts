@@ -4,7 +4,6 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 
 import { iife } from '@/shared/libs/browser/fn';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
-import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import type { FilterRules } from '../../-rules';
@@ -14,8 +13,6 @@ import { useSubscribe } from '../events';
 export const [FilterModelProvider, useFilterModel] = buildSelector(
   'FilterModel',
 )(() => {
-  const isDesktop = useBreakpoint('lg');
-
   const navigate = useNavigate({
     from: '/backend/cloud-projects',
   });
@@ -41,7 +38,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
   });
 
   useSubscribe('@cloud-projects/filters/view-mode--change', (newViewMode) => {
-    updateQs('viewMode', newViewMode !== 'auto' ? newViewMode : undefined);
+    updateQs('viewMode', newViewMode !== 'table' ? newViewMode : undefined);
   });
 
   useSubscribe('@cloud-projects/filters/pagination--set', (newPage) => {
@@ -57,11 +54,11 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
     const currentPage: FilterRules.CurrentPage = qs.page;
     const status: FilterRules.Status = qs.status ?? '';
     const viewMode: FilterRules.ViewMode =
-      qs.viewMode != null ? qs.viewMode : 'auto';
+      qs.viewMode != null ? qs.viewMode : 'table';
 
     const derivedViewMode = iife((): Exclude<FilterRules.ViewMode, 'auto'> => {
       if (viewMode !== 'auto') return viewMode;
-      return isDesktop ? 'list' : 'grid';
+      return 'table';
     });
 
     return {
@@ -71,7 +68,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
       viewMode,
       derivedViewMode,
     };
-  }, [qs, isDesktop]);
+  }, [qs]);
 
   return mappedFilters;
 });

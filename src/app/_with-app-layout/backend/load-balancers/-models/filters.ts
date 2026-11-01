@@ -4,7 +4,6 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 
 import { iife } from '@/shared/libs/browser/fn';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
-import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import type { FilterRules } from '../-rules';
@@ -15,8 +14,6 @@ import { useSubscribe } from './events';
 export const [FilterModelProvider, useFilterModel] = buildSelector(
   'FilterModel',
 )(() => {
-  const isDesktop = useBreakpoint('lg');
-
   const navigate = useNavigate({
     from: '/backend/load-balancers',
   });
@@ -42,7 +39,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
   });
 
   useSubscribe('@load-balancers/filters/view-mode--change', (newViewMode) => {
-    updateQs('viewMode', newViewMode !== 'auto' ? newViewMode : undefined);
+    updateQs('viewMode', newViewMode !== 'table' ? newViewMode : undefined);
   });
 
   useSubscribe('@load-balancers/filters/pagination--set', (newPage) => {
@@ -58,7 +55,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
     const currentPage: FilterRules.CurrentPage = qs.page;
     const status: FilterRules.Status = qs.status ?? '';
     const viewMode: FilterRules.ViewMode =
-      qs.viewMode != null ? qs.viewMode : 'auto';
+      qs.viewMode != null ? qs.viewMode : 'table';
 
     // The same four modes as every other list. This module used to map
     // `list` onto the table and resolve `auto` to it as well, leaving it
@@ -68,7 +65,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
       if (viewMode === 'grid') return 'grid';
       if (viewMode === 'table') return 'table';
 
-      return isDesktop ? 'list' : 'grid';
+      return 'table';
     });
 
     return {
@@ -78,7 +75,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
       viewMode,
       derivedViewMode,
     };
-  }, [qs, isDesktop]);
+  }, [qs]);
 
   return mappedFilters;
 });

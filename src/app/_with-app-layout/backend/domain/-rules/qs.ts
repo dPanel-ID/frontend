@@ -11,7 +11,7 @@ export const schemaQueryString = z.object({
       if (val === 'table') return 'list';
 
       return val;
-    }, FilterRules.schemaViewMode.default('auto'))
+    }, FilterRules.schemaViewMode.default('table'))
     .optional(),
 });
 

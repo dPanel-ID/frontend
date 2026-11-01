@@ -25,9 +25,9 @@ export function DetailSurface(props: {
             <Icon className="size-5" />
           </span>
           <div className="min-w-0">
-            <h3 className="text-lg font-bold tracking-normal">{title}</h3>
+            <h3 className="text-base font-bold leading-tight">{title}</h3>
             {description ? (
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-0.5 text-sm text-muted-foreground">
                 {description}
               </p>
             ) : null}
@@ -69,10 +69,10 @@ export function StatusPill(props: {
 
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-bold"
+      className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-semibold"
       style={{ borderColor: color, color }}
     >
-      <Icon className="size-4" />
+      <Icon className="size-3.5" />
       {label}
     </span>
   );

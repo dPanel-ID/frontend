@@ -40,9 +40,9 @@ export function GraphTab(props: { details: LoadBalancerDetails }) {
             className="p-4"
             aria-label={t('page.loadBalancersDetail.graph.requestPath')}
           >
-            {/* Left to right where there is room, top to bottom where there
-                is not; never wider than the page. */}
-            <div className="grid items-stretch gap-1 xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1.25fr)]">
+            {/* Left to right from tablet width up, top to bottom on phones;
+                never wider than the page. */}
+            <div className="grid items-stretch gap-1 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1.25fr)]">
               <GraphNode
                 icon={Globe2Icon}
                 label={t('page.loadBalancersDetail.graph.domain')}
@@ -116,19 +116,19 @@ export function GraphConnector(props: { label: string }) {
 
   return (
     <div
-      className="flex items-center justify-center gap-2 py-1 text-muted-foreground xl:px-1 xl:py-0"
+      className="flex items-center justify-center gap-2 py-1 text-muted-foreground md:px-1 md:py-0"
       aria-hidden="true"
     >
-      <span className="hidden h-px w-3 border-t border-dashed xl:block" />
-      <span className="flex items-center gap-1.5 xl:grid xl:justify-items-center xl:gap-1">
+      <span className="hidden h-px w-3 border-t border-dashed md:block" />
+      <span className="flex items-center gap-1.5 md:grid md:justify-items-center md:gap-1">
         <span className="flex size-7 items-center justify-center rounded-full border bg-card">
-          <ArrowRightIcon className="size-3.5 rotate-90 xl:rotate-0" />
+          <ArrowRightIcon className="size-3.5 rotate-90 md:rotate-0" />
         </span>
         <span className="max-w-16 truncate text-[10px] font-bold uppercase leading-none">
           {label}
         </span>
       </span>
-      <span className="hidden h-px w-3 border-t border-dashed xl:block" />
+      <span className="hidden h-px w-3 border-t border-dashed md:block" />
     </div>
   );
 }

@@ -46,7 +46,7 @@ export const [FilterModelProvider, useFilterModel] = buildQsFilterContext(
         if (value === 'list' || value === 'grid' || value === 'table') {
           return value;
         }
-        return 'auto';
+        return 'table';
       },
     },
   },

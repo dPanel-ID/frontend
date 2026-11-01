@@ -38,7 +38,7 @@ export default function CloudProjectsPanel(props: {
           to="/backend/cloud-projects"
           search={{
             page: 1,
-            viewMode: 'auto',
+            viewMode: 'table',
           }}
           className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-primary"
         >

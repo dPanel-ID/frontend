@@ -149,7 +149,7 @@ export default function AppRow(props: AppRowProps) {
               {domains.length > 1 && (
                 <Link
                   to="/backend/load-balancers"
-                  search={{ page: 1, viewMode: 'auto' }}
+                  search={{ page: 1, viewMode: 'table' }}
                   className="shrink-0 text-muted-foreground hover:underline"
                 >
                   +{domains.length - 1}

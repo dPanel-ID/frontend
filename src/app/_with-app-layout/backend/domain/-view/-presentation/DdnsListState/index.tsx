@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import type { ResponseErrors } from '@/shared/libs/api-client/rules/types';
-import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { FailedState } from '@/widgets/failed-state';
 
@@ -10,9 +9,8 @@ import { useFilterModel } from '../../../-models/filters';
 
 /** Placeholders shaped like the view that is loading, so nothing jumps. */
 function Loading() {
-  const isDesktop = useBreakpoint('lg');
   const [viewMode] = useFilterModel((s) => [s.viewMode]);
-  const mode = viewMode === 'auto' ? (isDesktop ? 'list' : 'grid') : viewMode;
+  const mode = viewMode === 'auto' ? 'table' : viewMode;
 
   if (mode === 'table') {
     return (

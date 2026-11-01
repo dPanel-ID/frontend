@@ -1,13 +1,11 @@
-import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { FailedState } from '@/widgets/failed-state';
 
 import { useFilterModel } from '../../../-model/filters';
 
 function Loading() {
-  const isDesktop = useBreakpoint('lg');
   const { viewMode } = useFilterModel();
-  const mode = viewMode === 'auto' ? (isDesktop ? 'list' : 'grid') : viewMode;
+  const mode = viewMode === 'auto' ? 'table' : viewMode;
 
   if (mode === 'table') {
     return (
