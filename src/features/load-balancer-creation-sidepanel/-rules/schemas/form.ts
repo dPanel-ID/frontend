@@ -17,6 +17,25 @@ const upstream = z.object({
   port: z.number().int().positive('formErrors.portPositive'),
 });
 
+/**
+ * A custom application target: an IP, a host or an origin URL such as
+ * https://origin.example.com. The port may be left out; a URL then uses its
+ * scheme's port and a plain address the application's.
+ */
+const customTarget = z.object({
+  address: z.string().trim().min(1, 'formErrors.required'),
+  port: z
+    .number()
+    .int()
+    .min(1, 'formErrors.portPositive')
+    .max(65_535, 'formErrors.portPositive')
+    .optional(),
+});
+
+export function isOriginUrl(address: string) {
+  return /^https?:\/\//i.test(address.trim());
+}
+
 const l7Rule = z
   .object({
     pathMatch: z.string().min(1, 'formErrors.required'),
@@ -30,7 +49,7 @@ const l7Rule = z
     addressModeIfProxyPassApp: z
       .enum(['registered', 'private', 'custom'])
       .optional(),
-    customTargetsIfProxyPassApp: z.array(upstream).optional(),
+    customTargetsIfProxyPassApp: z.array(customTarget).optional(),
   })
   .superRefine((data, ctx) => {
     if (
@@ -54,6 +73,21 @@ const l7Rule = z
         code: 'custom',
         path: ['customTargetsIfProxyPassApp'],
         message: 'formErrors.required',
+      });
+    }
+
+    // Each engine reaches one route's targets the same way, so they are all
+    // origin URLs or all plain addresses.
+    const custom = data.customTargetsIfProxyPassApp ?? [];
+    if (
+      data.type === 'proxy-pass-app' &&
+      data.addressModeIfProxyPassApp === 'custom' &&
+      new Set(custom.map((target) => isOriginUrl(target.address))).size > 1
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['customTargetsIfProxyPassApp'],
+        message: 'formErrors.mixedTargetForms',
       });
     }
 

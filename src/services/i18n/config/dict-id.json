@@ -242,6 +242,13 @@
           "5m": "5m"
         }
       }
+    },
+    "moduleVersion": {
+      "release": "Versi {version}",
+      "latest": "Terbaru",
+      "branch": "Cabang {branch}",
+      "build": "Build {build}",
+      "default": "Bawaan"
     }
   },
   "page": {
@@ -1865,14 +1872,16 @@
             }
           },
           "customTitle": "Target",
-          "customPlaceholder": "203.0.113.10 atau origin.example.com",
+          "customPlaceholder": "https://origin.example.com atau 203.0.113.10",
           "customAddress": "Alamat target",
           "customPort": "Port target",
           "customRemove": "Hapus target",
           "customAdd": "Tambah target",
           "noDeployments": "Aplikasi ini belum di-deploy.",
           "privateResolved": "IP privat, dicari saat load balancer dibuat",
-          "sameServer": "Server yang sama"
+          "sameServer": "Server yang sama",
+          "customPortAuto": "otomatis",
+          "customHint": "Gunakan URL origin seperti https://origin-gcp.example.com untuk menjangkau aplikasi yang sudah dilayani domain lain: gateway terhubung lewat HTTPS dan meminta domain tersebut. Kosongkan port untuk memakai 443 (https), 80 (http), atau port aplikasi untuk IP. Satu rute berisi URL semua atau IP semua."
         }
       },
       "preview": {
@@ -3598,7 +3607,9 @@
     "parseDomain": {
       "invalidTld": "Gagal memvalidasi domain: TLD tidak dikenal.",
       "invalidDomain": "Gagal memvalidasi domain: Domain tidak sah."
-    }
+    },
+    "mixedTargetForms": "Satu rute hanya boleh berisi URL origin saja atau alamat IP saja.",
+    "portPositive": "Gunakan port antara 1 dan 65535."
   },
   "sidebar": {
     "teamsWidget": {

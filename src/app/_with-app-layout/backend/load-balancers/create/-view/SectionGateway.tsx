@@ -13,8 +13,10 @@ import { useController, useWatch } from 'react-hook-form';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+
 import type { ServerCard } from '@/entities/server/rules/schema';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
+import { useModuleVersionLabel } from '@/entities/server-modules/lib/version';
 import type { ServerModule } from '@/entities/server-modules/model/types';
 
 import { useServerModulesDetailModal } from '@/features/server-modules-detail-modal';
@@ -507,6 +509,7 @@ export function InstalledEngineOption(props: {
   const { detailStatus, installed, module, onSelect, runtimeReady, selected } =
     props;
   const t = useDevetekTranslations();
+  const versionLabel = useModuleVersionLabel();
   const installedLabels = moduleInstallationLabels(module);
 
   return (
@@ -563,19 +566,20 @@ export function InstalledEngineOption(props: {
             t('page.loadBalancersCreate.gateway.engineRuntime')}
         </span>
         <span className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
-          <Badge variant="secondary">{module.installerName ?? module.id}</Badge>
-          {installedLabels.map((label) => (
-            <Badge key={label} variant="secondary">
-              {label}
-            </Badge>
-          ))}
-          {module.refName && (
-            <Badge variant="secondary">{module.refName}</Badge>
-          )}
-          {module.resolvedCommit && (
-            <Badge variant="secondary">
-              {module.resolvedCommit.slice(0, 12)}
-            </Badge>
+          {(installedLabels.length > 0
+            ? installedLabels
+            : [module.refName]
+          ).map(
+            (label) =>
+              label && (
+                <Badge
+                  key={label}
+                  variant="secondary"
+                  title={module.resolvedCommit}
+                >
+                  {versionLabel(label)}
+                </Badge>
+              ),
           )}
         </span>
       </span>
@@ -600,6 +604,7 @@ export function AvailableEngineModuleCard(props: {
 }) {
   const { module, onOpen } = props;
   const t = useDevetekTranslations();
+  const versionLabel = useModuleVersionLabel();
 
   return (
     <div className="grid gap-3 rounded-lg border bg-background p-4 md:grid-cols-[auto_minmax(0,1fr)_auto]">
@@ -624,9 +629,10 @@ export function AvailableEngineModuleCard(props: {
             t('page.loadBalancersCreate.gateway.engineRuntime')}
         </span>
         <span className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
-          <Badge variant="secondary">{module.installerName ?? module.id}</Badge>
           {module.refName && (
-            <Badge variant="secondary">{module.refName}</Badge>
+            <Badge variant="secondary" title={module.resolvedCommit}>
+              {versionLabel(module.refName)}
+            </Badge>
           )}
         </span>
       </span>
