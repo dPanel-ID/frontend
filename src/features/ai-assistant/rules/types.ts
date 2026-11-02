@@ -9,6 +9,14 @@ export const ChatSecretSchema = z.object({
 
 export type ChatSecret = z.infer<typeof ChatSecretSchema>;
 
+/** A secret value a change needs, typed by the user when approving. */
+export const ChatSecretInputSchema = z.object({
+  name: z.string(),
+  label: z.string(),
+});
+
+export type ChatSecretInput = z.infer<typeof ChatSecretInputSchema>;
+
 /** A change the assistant proposed, waiting for the user's decision. */
 export const ChatActionSchema = z.object({
   id: z.string(),
@@ -20,6 +28,8 @@ export const ChatActionSchema = z.object({
    * memory only: the server sends them once and they are never persisted.
    */
   secrets: z.array(ChatSecretSchema).optional(),
+  /** Values the user types when approving; sent with the approval only. */
+  secretInputs: z.array(ChatSecretInputSchema).optional(),
 });
 
 export type ChatAction = z.infer<typeof ChatActionSchema>;

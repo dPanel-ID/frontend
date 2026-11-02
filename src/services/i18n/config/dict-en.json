@@ -3477,7 +3477,10 @@
         "secretsTitle": "Generated secrets: save them now",
         "secretsHint": "Shown only this once. dPanel keeps no copy, and closing or reloading the panel hides them for good. Change a database password in DB Manager after you sign in.",
         "copy": "Copy",
-        "copied": "Copied"
+        "copied": "Copied",
+        "secretInputsHint": "Type the secret values below. They are sent with your approval only and never shown to the assistant.",
+        "revealSecret": "Show value",
+        "hideSecret": "Hide value"
       }
     }
   },
