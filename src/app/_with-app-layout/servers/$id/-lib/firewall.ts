@@ -266,17 +266,11 @@ export function applyRequest(
   return { version: policy.version, enable: !policy.enabled };
 }
 
-/**
- * Whether the page should keep re-reading the firewall: an apply is running,
- * or one was just queued and the API has not reported it yet.
- */
+/** Whether an apply or disable job is queued or running on the server. */
 export function isAwaitingApply(
-  policy: Pick<FirewallPolicyView, 'applyInProgress' | 'lastExecutionId'>,
-  queuedExecutionId: string | null,
+  policy: Pick<FirewallPolicyView, 'applyInProgress'>,
 ): boolean {
-  if (policy.applyInProgress) return true;
-  if (!queuedExecutionId) return false;
-  return policy.lastExecutionId !== queuedExecutionId;
+  return policy.applyInProgress;
 }
 
 /** A timestamp in the viewer's locale; an unparseable value is shown as sent. */

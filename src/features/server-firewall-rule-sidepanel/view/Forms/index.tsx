@@ -8,6 +8,7 @@ import {
   StickyNoteIcon,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { useWatch } from 'react-hook-form';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -28,11 +29,12 @@ export default function Forms() {
   const t = useDevetekTranslations('sidepanel.firewallRule');
   const { errors } = form.formState;
 
-  const action = form.watch('action');
-  const docker = form.watch('docker');
-  const protocol = form.watch('protocol');
-  const port = form.watch('port');
-  const source = form.watch('source');
+  // useWatch, not form.watch: the React Compiler memoizes form.watch() and
+  // the fields would keep their first values.
+  const [action, docker, protocol, port, source] = useWatch({
+    control: form.control,
+    name: ['action', 'docker', 'protocol', 'port', 'source'],
+  });
 
   const errorText = (message?: string) =>
     message ? t(`errors.${message}`) : undefined;

@@ -199,15 +199,9 @@ describe('apply helpers', () => {
     });
   });
 
-  it('keeps waiting until the queued execution is reported and finished', () => {
-    expect(isAwaitingApply({ applyInProgress: true }, null)).toBe(true);
-    expect(
-      isAwaitingApply({ applyInProgress: false, lastExecutionId: 'a' }, 'b'),
-    ).toBe(true);
-    expect(
-      isAwaitingApply({ applyInProgress: false, lastExecutionId: 'b' }, 'b'),
-    ).toBe(false);
-    expect(isAwaitingApply({ applyInProgress: false }, null)).toBe(false);
+  it('waits only while the API reports a job in progress', () => {
+    expect(isAwaitingApply({ applyInProgress: true })).toBe(true);
+    expect(isAwaitingApply({ applyInProgress: false })).toBe(false);
   });
 
   it('colors apply results and recognises any-source values', () => {
