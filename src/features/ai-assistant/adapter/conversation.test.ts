@@ -9,7 +9,7 @@ import {
 import { toolLabel } from '../lib/tool-label';
 import { ChatInputSchema } from '../rules/types';
 
-import { toChatEntries } from './conversation';
+import { toChatEntries, toChatSecrets } from './conversation';
 
 describe('toChatEntries', () => {
   test('keeps user and assistant text and tolerates production-shaped gaps', () => {
@@ -80,5 +80,25 @@ describe('input and labels', () => {
 
   test('tool labels are readable', () => {
     expect(toolLabel('dns_record_list')).toBe('dns record list');
+  });
+});
+
+describe('toChatSecrets', () => {
+  test('keeps complete secrets and labels them', () => {
+    expect(
+      toChatSecrets([
+        { name: 'mariadb_root_password', label: 'Root password', value: 'a1' },
+        { name: 'postgresql_password', value: 'b2' },
+        { name: 'broken' },
+      ]),
+    ).toEqual([
+      { name: 'mariadb_root_password', label: 'Root password', value: 'a1' },
+      {
+        name: 'postgresql_password',
+        label: 'postgresql_password',
+        value: 'b2',
+      },
+    ]);
+    expect(toChatSecrets(null)).toEqual([]);
   });
 });
