@@ -582,7 +582,9 @@
         "ansible": "Proses konfigurasi",
         "agentCommand": "Perintah agen",
         "deploymentCreate": "Deployment",
-        "deploymentDelete": "Penghapusan deployment"
+        "deploymentDelete": "Penghapusan deployment",
+        "firewallApply": "Penerapan firewall",
+        "firewallDisable": "Firewall dimatikan"
       },
       "resourceMix": {
         "title": "Komposisi Resource Bisnis",
@@ -1465,6 +1467,12 @@
           "description": "Membuka pengelola database di tab baru. Masuk dengan akun database yang dibuat saat modul ini diinstal; dPanel tidak menyimpan kata sandi database.",
           "button": "Buka database",
           "buttonAria": "Buka {module} di pengelola database"
+        },
+        "firewallPanel": {
+          "title": "Kelola firewall",
+          "description": "Membuka tampilan firewall server ini, tempat Anda menambah aturan dan menerapkannya.",
+          "button": "Kelola firewall",
+          "buttonAria": "Kelola firewall server ini"
         }
       },
       "hero": {
@@ -1562,7 +1570,9 @@
         "searchPlaceholder": "Cari modul",
         "noMatch": "Tidak ada modul yang cocok.",
         "openDatabase": "Buka database",
-        "openDatabaseAria": "Buka {module} di pengelola database"
+        "openDatabaseAria": "Buka {module} di pengelola database",
+        "manageFirewall": "Kelola firewall",
+        "manageFirewallAria": "Kelola firewall server ini"
       },
       "files": {
         "title": "Berkas",
@@ -1645,10 +1655,11 @@
       },
       "network": {
         "title": "Jaringan",
-        "description": "Port terbuka dan alamat antarmuka sebagaimana dilihat agen.",
+        "description": "Port yang terbuka, alamat antarmuka, dan firewall, seperti yang dilihat agen.",
         "tiles": {
           "ports": "Port aktif",
-          "interfaces": "Antarmuka"
+          "interfaces": "Antarmuka",
+          "firewall": "Firewall"
         },
         "ports": "Port aktif",
         "interfacesTab": "Antarmuka",
@@ -1662,10 +1673,182 @@
           "address": "Alamat",
           "ipv4": "IPv4",
           "ipv6": "IPv6",
-          "subnet": "Subnet"
+          "subnet": "Subnet",
+          "firewall": "Firewall"
         },
         "emptyPorts": "Agen tidak melaporkan port yang dipakai.",
-        "emptyInterfaces": "Agen tidak melaporkan antarmuka jaringan."
+        "emptyInterfaces": "Agen tidak melaporkan antarmuka jaringan.",
+        "coverage": {
+          "hint": "Apakah aturan firewall yang tersimpan membuat port ini bisa dijangkau dari luar.",
+          "anywhere": "Diizinkan dari mana saja",
+          "restricted": "{count, plural, other {Diizinkan dari # sumber}}",
+          "none": "Tidak ada aturan izin",
+          "notEnforced": "Belum berlaku: firewall mati"
+        },
+        "firewall": {
+          "title": "Firewall",
+          "description": "Lalu lintas mana yang boleh masuk ke server ini. dPanel menyimpan aturannya lalu menerapkan semuanya sekaligus ke server.",
+          "guide": {
+            "title": "Cara kerja firewall",
+            "step1": "Tambahkan aturan untuk setiap port yang harus bisa dijangkau orang, misalnya 443 untuk situs web.",
+            "step2": "Pilih Tinjau dan terapkan. dPanel menunjukkan apa yang berubah, lalu memasang firewall di server.",
+            "step3": "Lalu lintas tanpa aturan diblokir. SSH selalu tetap terbuka agar dPanel bisa menjangkau server.",
+            "docs": "Baca panduan firewall"
+          },
+          "actions": {
+            "addRule": "Tambah aturan",
+            "reviewApply": "Tinjau dan terapkan",
+            "disable": "Matikan firewall"
+          },
+          "module": {
+            "title": "Modul firewall belum terpasang",
+            "message": "Penerapan pertama memasangnya di server, lalu menerapkan aturan di bawah."
+          },
+          "inProgress": {
+            "title": "Menerapkan firewall",
+            "message": "dPanel sedang mengubah firewall di server. Tampilan ini diperbarui setiap beberapa detik sampai selesai."
+          },
+          "status": {
+            "firewall": "Firewall",
+            "on": "Nyala",
+            "off": "Mati",
+            "defaultsValue": "Masuk {incoming} · keluar {outgoing} · diteruskan {routed}",
+            "docker": "Port Docker",
+            "dockerOn": "Disaring",
+            "dockerOff": "Tidak disaring",
+            "dockerToggle": "Saring port yang dipublikasikan Docker",
+            "dockerHint": "Kalau nyala, aturan Docker menentukan siapa yang bisa menjangkau port kontainer yang dipublikasikan.",
+            "version": "Tersimpan dan diterapkan",
+            "versionValue": "Tersimpan v{version} · diterapkan v{applied}",
+            "neverApplied": "Tersimpan v{version} · belum pernah diterapkan",
+            "pending": "Perubahan belum diterapkan",
+            "appliedAt": "Diterapkan {time}",
+            "lastApply": "Penerapan terakhir",
+            "lastApplyNone": "Belum ada",
+            "applying": "Menerapkan",
+            "drift": "Server berbeda dari dPanel",
+            "driftHint": "Firewall di server diubah di luar dPanel. Tinjau dan terapkan untuk mengembalikan aturan yang tersimpan."
+          },
+          "applyStatus": {
+            "succeeded": "Berhasil",
+            "failed": "Gagal",
+            "running": "Berjalan",
+            "queued": "Dalam antrean",
+            "pending": "Menunggu",
+            "cancelled": "Dibatalkan"
+          },
+          "policyValue": {
+            "allow": "izinkan",
+            "deny": "tolak",
+            "reject": "tolak dengan balasan"
+          },
+          "rulesTitle": "Aturan",
+          "rulesDescription": "Aturan sistem ada di urutan pertama dan terkunci, agar dPanel selalu bisa menjangkau server.",
+          "rulesEmpty": "Belum ada aturan. Tambahkan satu untuk setiap port yang harus bisa dijangkau orang.",
+          "table": {
+            "action": "Tindakan",
+            "target": "Berlaku untuk",
+            "protocol": "Protokol",
+            "port": "Port",
+            "source": "Dari",
+            "comment": "Catatan",
+            "origin": "Ditambahkan oleh",
+            "actions": "Aksi"
+          },
+          "action": {
+            "allow": "Izinkan",
+            "deny": "Tolak",
+            "limit": "Batasi",
+            "reject": "Tolak dengan balasan"
+          },
+          "target": {
+            "host": "Host",
+            "docker": "Docker"
+          },
+          "protocol": {
+            "tcp": "TCP",
+            "udp": "UDP",
+            "any": "Semua"
+          },
+          "anyPort": "Semua",
+          "anySource": "Mana saja",
+          "origin": {
+            "system": "Sistem",
+            "legacy": "Lama",
+            "user": "Anda",
+            "module": "Modul",
+            "other": "Lainnya"
+          },
+          "locked": "Terkunci: dPanel membutuhkan aturan ini",
+          "removeRule": "Hapus aturan",
+          "removeRuleAria": "Hapus aturan {rule}",
+          "foreign": {
+            "title": "Tidak dikelola dPanel",
+            "description": "Aturan yang ditambahkan seseorang langsung di server. Penerapan tetap menyimpannya, tetapi dPanel tidak melacaknya sampai Anda mengadopsinya.",
+            "loading": "Membaca firewall di server…",
+            "failed": "Firewall di server tidak dapat dibaca",
+            "unavailable": "Firewall di server tidak dapat dibaca: {reason}",
+            "noReason": "tanpa keterangan",
+            "empty": "Semua aturan di server dikelola dPanel.",
+            "adopt": "Adopsi",
+            "adoptAria": "Adopsi {rule} dan semua aturan lain yang bisa diadopsi dPanel",
+            "adoptHint": "Mengadopsi semua aturan di server yang bisa disimpan dPanel, bukan hanya yang ini"
+          },
+          "adoptDialog": {
+            "title": "Adopsi aturan dari server",
+            "message": "dPanel menyimpan semua aturan di server yang bisa diwakilinya, bukan hanya yang Anda pilih, agar tetap ada pada penerapan berikutnya. Aturan yang tidak bisa diwakili dilewati dan dibiarkan apa adanya.",
+            "confirm": "Adopsi aturan",
+            "success": "{created} aturan diadopsi, {skipped} dilewati.",
+            "errorTitle": "Aturan tidak dapat diadopsi"
+          },
+          "deleteDialog": {
+            "title": "Hapus aturan ini?",
+            "message": "{rule} dihapus dari firewall yang tersimpan. Server tetap memakainya sampai penerapan berikutnya.",
+            "confirm": "Hapus aturan",
+            "success": "Aturan dihapus. Tinjau dan terapkan untuk memperbarui server.",
+            "errorTitle": "Aturan tidak dapat dihapus"
+          },
+          "disableDialog": {
+            "title": "Matikan firewall?",
+            "message": "dPanel menjalankan tugas yang mematikan firewall di server ini, sehingga semua port bisa dijangkau lagi. Aturan Anda tetap disimpan untuk saat firewall dinyalakan lagi.",
+            "confirm": "Matikan firewall",
+            "queued": "Mematikan firewall. Tampilan ini diperbarui saat selesai.",
+            "errorTitle": "Firewall tidak dapat dimatikan"
+          },
+          "dockerFiltering": {
+            "enabled": "Port Docker akan disaring. Tinjau dan terapkan untuk memperbarui server.",
+            "disabled": "Port Docker tidak lagi disaring. Tinjau dan terapkan untuk memperbarui server.",
+            "errorTitle": "Penyaringan Docker tidak dapat diubah"
+          },
+          "apply": {
+            "title": "Tinjau dan terapkan",
+            "description": "Apa yang berubah di {server} saat dPanel menerapkan firewall yang tersimpan.",
+            "loading": "Membandingkan dengan firewall di server…",
+            "failed": "Tidak dapat membandingkan dengan server",
+            "unavailable": "Firewall di server tidak dapat dibaca ({reason}). Penerapan memasang modul firewall dan menyiapkan semuanya.",
+            "noReason": "tanpa keterangan",
+            "inProgress": "Penerapan lain sedang berjalan di server ini. Tunggu sampai selesai.",
+            "inSync": "Tidak ada yang berubah: server sudah sesuai. Menerapkan lagi akan memeriksanya sekali lagi.",
+            "changes": "Perubahan",
+            "turnOn": "Menyalakan firewall. Lalu lintas masuk yang tidak diizinkan aturan akan diblokir.",
+            "turnOff": "Mematikan firewall.",
+            "defaultChange": "Bawaan {direction}: {live} → {desired}",
+            "dockerHook": "Mulai menyaring port yang dipublikasikan Docker.",
+            "dockerUnhook": "Berhenti menyaring port yang dipublikasikan Docker.",
+            "add": "Akan ditambahkan ({count})",
+            "remove": "Akan dihapus ({count})",
+            "kept": "Tetap ada, tidak dikelola dPanel ({count})",
+            "none": "Tidak ada",
+            "sshOpen": "SSH tetap terbuka, jadi dPanel selalu bisa menjangkau server.",
+            "sshClosed": "Ini akan menutup SSH, jadi dPanel tidak akan menerapkannya. Periksa aturannya.",
+            "rollback": "Kalau SSH atau agen berhenti bekerja setelah perubahan, server mengembalikan firewall sebelumnya dengan sendirinya dalam beberapa menit.",
+            "confirmOn": "Saya paham bahwa menyalakan firewall memblokir setiap port tanpa aturan izin.",
+            "confirm": "Terapkan firewall",
+            "confirmTurnOn": "Nyalakan dan terapkan",
+            "queued": "Menerapkan firewall. Tampilan ini diperbarui saat selesai.",
+            "errorTitle": "Firewall tidak dapat diterapkan"
+          }
+        }
       },
       "logs": {
         "title": "Log",
@@ -3473,6 +3656,71 @@
         "secretInputsHint": "Ketik nilai rahasia di bawah. Nilai ini hanya dikirim bersama persetujuan Anda dan tidak pernah ditampilkan ke asisten.",
         "revealSecret": "Tampilkan nilai",
         "hideSecret": "Sembunyikan nilai"
+      }
+    },
+    "firewallRule": {
+      "title": "Tambah aturan",
+      "nextApply": "Aturan disimpan sekarang dan sampai ke server pada penerapan berikutnya.",
+      "submit": "Tambah aturan",
+      "success": "Aturan ditambahkan. Tinjau dan terapkan untuk memperbarui server.",
+      "errorTitle": "dPanel tidak menambahkan aturan",
+      "sections": {
+        "what": {
+          "title": "Apa yang diizinkan",
+          "description": "Port yang dihubungi orang dan apa yang terjadi pada lalu lintas itu."
+        },
+        "who": {
+          "title": "Siapa yang boleh terhubung",
+          "description": "Kosongkan untuk menerima semua orang, atau isi satu alamat atau jaringan."
+        },
+        "docker": {
+          "title": "Kontainer Docker",
+          "description": "Nyalakan kalau port ini milik kontainer yang dipublikasikan Docker, misalnya aplikasi yang di-deploy dengan Docker."
+        },
+        "note": {
+          "title": "Catatan",
+          "description": "Pengingat mengapa aturan ini ada. Ditampilkan di tabel aturan."
+        }
+      },
+      "fields": {
+        "action": "Tindakan",
+        "port": "Port",
+        "protocol": "Protokol",
+        "source": "Dari",
+        "docker": "Port ini milik kontainer Docker",
+        "comment": "Catatan"
+      },
+      "actions": {
+        "allow": "Izinkan",
+        "deny": "Tolak",
+        "limit": "Batasi",
+        "reject": "Tolak dengan balasan"
+      },
+      "actionHint": {
+        "allow": "Mengizinkan lalu lintas masuk.",
+        "deny": "Membuang lalu lintas tanpa jawaban.",
+        "limit": "Mengizinkan lalu lintas, tetapi memblokir alamat yang terlalu sering terhubung, berguna untuk SSH. Hanya untuk port host.",
+        "reject": "Menolak lalu lintas dan memberi tahu pengirimnya."
+      },
+      "protocols": {
+        "tcp": "TCP",
+        "udp": "UDP",
+        "any": "Semua"
+      },
+      "portHint": "Satu port seperti 443, rentang seperti 8000:8100, atau kosongkan untuk semua port.",
+      "sourcePlaceholder": "Mana saja",
+      "sourceHint": "Alamat seperti 203.0.113.10 atau jaringan seperti 10.0.0.0/8.",
+      "commentPlaceholder": "Situs web",
+      "opensEverything": "Tanpa port dan tanpa alamat, aturan ini membuat semua orang bisa menjangkau semua port.",
+      "dockerFilteringOff": "Penyaringan Docker di server ini mati, jadi aturan Docker belum berlaku sampai Anda menyalakannya di tampilan firewall.",
+      "errors": {
+        "port": "Gunakan port antara 1 dan 65535, atau rentang seperti 8000:8100.",
+        "portLength": "Gunakan paling banyak 11 karakter.",
+        "rangeProtocol": "Rentang port membutuhkan TCP atau UDP.",
+        "limitDocker": "Batasi hanya untuk port host. Matikan opsi Docker atau pilih tindakan lain.",
+        "source": "Gunakan satu alamat atau jaringan, tanpa spasi.",
+        "sourceLength": "Gunakan paling banyak 64 karakter.",
+        "commentLength": "Gunakan paling banyak 64 karakter."
       }
     }
   },

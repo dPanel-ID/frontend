@@ -54,6 +54,11 @@ describe('executionTypeKey', () => {
     );
   });
 
+  it('maps firewall jobs', () => {
+    expect(executionTypeKey('firewall_apply')).toBe('firewallApply');
+    expect(executionTypeKey(' FIREWALL_DISABLE ')).toBe('firewallDisable');
+  });
+
   it('returns undefined for unknown types so the caller can fall back', () => {
     expect(executionTypeKey('brand_new_type')).toBeUndefined();
     expect(executionTypeKey('')).toBeUndefined();

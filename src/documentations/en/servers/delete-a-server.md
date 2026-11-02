@@ -1,7 +1,7 @@
 ---
 title: Delete a server
 description: Delete a server you no longer need in dPanel: what it destroys at your cloud provider, and why a server you connected yourself keeps running.
-sidebar_position: 8
+sidebar_position: 9
 sidebar_icon: trash-2
 ---
 

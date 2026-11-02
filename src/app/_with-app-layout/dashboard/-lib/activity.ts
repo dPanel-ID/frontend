@@ -122,6 +122,10 @@ export function executionTypeKey(type?: string): string | undefined {
       return 'deploymentCreate';
     case 'deployment_deployment.delete':
       return 'deploymentDelete';
+    case 'firewall_apply':
+      return 'firewallApply';
+    case 'firewall_disable':
+      return 'firewallDisable';
     default:
       return undefined;
   }

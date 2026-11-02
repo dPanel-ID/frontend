@@ -3,6 +3,14 @@ import * as Delete$Id from './server.delete.$id';
 import * as Detail$Id from './server.detail.$id';
 import * as Detail$IdLog from './server.detail.$id.log';
 import * as Find from './server.find';
+import * as Firewall$Id from './server.firewall.$id';
+import * as Firewall$IdApply from './server.firewall.$id.apply';
+import * as Firewall$IdDisable from './server.firewall.$id.disable';
+import * as Firewall$IdImport from './server.firewall.$id.import';
+import * as Firewall$IdLive from './server.firewall.$id.live';
+import * as Firewall$IdPlan from './server.firewall.$id.plan';
+import * as Firewall$IdRules from './server.firewall.$id.rules';
+import * as Firewall$IdRules$RuleId from './server.firewall.$id.rules.$ruleId';
 import * as Modules$Id from './server.modules.$id';
 import * as Modules$Id$InstallationId from './server.modules.$id.$installationId';
 import * as Modules$IdRefresh from './server.modules.$id.refresh';
@@ -31,6 +39,20 @@ const Root = {
     },
   },
   Find,
+  Firewall: {
+    $Id: {
+      ...Firewall$Id,
+      Apply: Firewall$IdApply,
+      Disable: Firewall$IdDisable,
+      Import: Firewall$IdImport,
+      Live: Firewall$IdLive,
+      Plan: Firewall$IdPlan,
+      Rules: {
+        ...Firewall$IdRules,
+        $RuleId: Firewall$IdRules$RuleId,
+      },
+    },
+  },
   Modules: {
     $Id: {
       ...Modules$Id,

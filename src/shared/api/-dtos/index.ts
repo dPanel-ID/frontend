@@ -21,6 +21,7 @@ export * from './user';
 export * from './cloud';
 export * from './secret';
 export * from './module';
+export * from './firewall';
 
 export interface Pagination {
   page: number;

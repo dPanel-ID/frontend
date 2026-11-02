@@ -591,7 +591,9 @@
         "ansible": "Configuration run",
         "agentCommand": "Agent command",
         "deploymentCreate": "Deployment",
-        "deploymentDelete": "Deployment removal"
+        "deploymentDelete": "Deployment removal",
+        "firewallApply": "Firewall apply",
+        "firewallDisable": "Firewall turned off"
       },
       "resourceMix": {
         "title": "Business Resource Mix",
@@ -1474,6 +1476,12 @@
           "description": "Opens the database manager in a new tab. Sign in with the database account set when this module was installed; dPanel does not store database passwords.",
           "button": "Open database",
           "buttonAria": "Open {module} in the database manager"
+        },
+        "firewallPanel": {
+          "title": "Manage the firewall",
+          "description": "Opens the firewall view of this server, where you add rules and apply them.",
+          "button": "Manage firewall",
+          "buttonAria": "Manage the firewall of this server"
         }
       },
       "hero": {
@@ -1571,7 +1579,9 @@
         "searchPlaceholder": "Search modules",
         "noMatch": "No modules match your search.",
         "openDatabase": "Open database",
-        "openDatabaseAria": "Open {module} in the database manager"
+        "openDatabaseAria": "Open {module} in the database manager",
+        "manageFirewall": "Manage firewall",
+        "manageFirewallAria": "Manage the firewall of this server"
       },
       "files": {
         "title": "Files",
@@ -1654,10 +1664,11 @@
       },
       "network": {
         "title": "Network",
-        "description": "Open ports and interface addresses as the agent sees them.",
+        "description": "Open ports, interface addresses and the firewall, as the agent sees them.",
         "tiles": {
           "ports": "Active ports",
-          "interfaces": "Interfaces"
+          "interfaces": "Interfaces",
+          "firewall": "Firewall"
         },
         "ports": "Active ports",
         "interfacesTab": "Interfaces",
@@ -1671,10 +1682,182 @@
           "address": "Address",
           "ipv4": "IPv4",
           "ipv6": "IPv6",
-          "subnet": "Subnet"
+          "subnet": "Subnet",
+          "firewall": "Firewall"
         },
         "emptyPorts": "The agent did not report any ports in use.",
-        "emptyInterfaces": "The agent did not report any network interfaces."
+        "emptyInterfaces": "The agent did not report any network interfaces.",
+        "coverage": {
+          "hint": "Whether a stored firewall rule lets the outside reach this port.",
+          "anywhere": "Allowed from anywhere",
+          "restricted": "{count, plural, one {Allowed from # source} other {Allowed from # sources}}",
+          "none": "No allow rule",
+          "notEnforced": "Not enforced: the firewall is off"
+        },
+        "firewall": {
+          "title": "Firewall",
+          "description": "Which traffic may reach this server. dPanel stores the rules and applies them to the server all at once.",
+          "guide": {
+            "title": "How the firewall works",
+            "step1": "Add a rule for each port people must reach, such as 443 for a website.",
+            "step2": "Select Review and apply. dPanel shows what changes, then sets the firewall on the server.",
+            "step3": "Traffic without a rule is blocked. SSH always stays open so dPanel can reach the server.",
+            "docs": "Read the firewall guide"
+          },
+          "actions": {
+            "addRule": "Add rule",
+            "reviewApply": "Review and apply",
+            "disable": "Turn off firewall"
+          },
+          "module": {
+            "title": "The firewall module is not installed yet",
+            "message": "The first apply installs it on the server, then sets the rules below."
+          },
+          "inProgress": {
+            "title": "Applying the firewall",
+            "message": "dPanel is changing the firewall on the server. This view refreshes every few seconds until it finishes."
+          },
+          "status": {
+            "firewall": "Firewall",
+            "on": "On",
+            "off": "Off",
+            "defaultsValue": "Incoming {incoming} · outgoing {outgoing} · routed {routed}",
+            "docker": "Docker ports",
+            "dockerOn": "Filtered",
+            "dockerOff": "Not filtered",
+            "dockerToggle": "Filter Docker-published ports",
+            "dockerHint": "When on, Docker rules decide who reaches a published container port.",
+            "version": "Stored and applied",
+            "versionValue": "Stored v{version} · applied v{applied}",
+            "neverApplied": "Stored v{version} · never applied",
+            "pending": "Changes not applied yet",
+            "appliedAt": "Applied {time}",
+            "lastApply": "Last apply",
+            "lastApplyNone": "None yet",
+            "applying": "Applying",
+            "drift": "Server differs from dPanel",
+            "driftHint": "The firewall on the server was changed outside dPanel. Review and apply to restore the stored rules."
+          },
+          "applyStatus": {
+            "succeeded": "Succeeded",
+            "failed": "Failed",
+            "running": "Running",
+            "queued": "Queued",
+            "pending": "Pending",
+            "cancelled": "Cancelled"
+          },
+          "policyValue": {
+            "allow": "allow",
+            "deny": "deny",
+            "reject": "reject"
+          },
+          "rulesTitle": "Rules",
+          "rulesDescription": "System rules come first and are locked, so dPanel can always reach the server.",
+          "rulesEmpty": "No rules yet. Add one for each port people must reach.",
+          "table": {
+            "action": "Action",
+            "target": "Applies to",
+            "protocol": "Protocol",
+            "port": "Port",
+            "source": "From",
+            "comment": "Note",
+            "origin": "Added by",
+            "actions": "Actions"
+          },
+          "action": {
+            "allow": "Allow",
+            "deny": "Deny",
+            "limit": "Limit",
+            "reject": "Reject"
+          },
+          "target": {
+            "host": "Host",
+            "docker": "Docker"
+          },
+          "protocol": {
+            "tcp": "TCP",
+            "udp": "UDP",
+            "any": "Any"
+          },
+          "anyPort": "Any",
+          "anySource": "Anywhere",
+          "origin": {
+            "system": "System",
+            "legacy": "Legacy",
+            "user": "You",
+            "module": "Module",
+            "other": "Other"
+          },
+          "locked": "Locked: dPanel needs this rule",
+          "removeRule": "Remove rule",
+          "removeRuleAria": "Remove rule {rule}",
+          "foreign": {
+            "title": "Not managed by dPanel",
+            "description": "Rules someone added on the server by hand. Applying keeps them, but dPanel does not track them until you adopt them.",
+            "loading": "Reading the firewall on the server…",
+            "failed": "Could not read the firewall on the server",
+            "unavailable": "The live firewall cannot be read: {reason}",
+            "noReason": "no reason given",
+            "empty": "Every rule on the server is managed by dPanel.",
+            "adopt": "Adopt",
+            "adoptAria": "Adopt {rule} and every other rule dPanel can adopt",
+            "adoptHint": "Adopts every rule on the server that dPanel can store, not only this one"
+          },
+          "adoptDialog": {
+            "title": "Adopt rules from the server",
+            "message": "dPanel stores every rule on the server that it can represent, not only the one you selected, so they stay on the next apply. Rules it cannot represent are skipped and stay as they are.",
+            "confirm": "Adopt rules",
+            "success": "{created, plural, one {# rule adopted} other {# rules adopted}}, {skipped} skipped.",
+            "errorTitle": "Could not adopt the rules"
+          },
+          "deleteDialog": {
+            "title": "Remove this rule?",
+            "message": "{rule} is removed from the stored firewall. The server keeps it until the next apply.",
+            "confirm": "Remove rule",
+            "success": "Rule removed. Review and apply to update the server.",
+            "errorTitle": "Could not remove the rule"
+          },
+          "disableDialog": {
+            "title": "Turn off the firewall?",
+            "message": "dPanel queues a job that turns the firewall off on this server, so every port becomes reachable again. Your rules are kept for the next time you turn it on.",
+            "confirm": "Turn off firewall",
+            "queued": "Turning the firewall off. This view updates when it finishes.",
+            "errorTitle": "Could not turn off the firewall"
+          },
+          "dockerFiltering": {
+            "enabled": "Docker ports will be filtered. Review and apply to update the server.",
+            "disabled": "Docker ports will no longer be filtered. Review and apply to update the server.",
+            "errorTitle": "Could not change Docker filtering"
+          },
+          "apply": {
+            "title": "Review and apply",
+            "description": "What changes on {server} when dPanel applies the stored firewall.",
+            "loading": "Comparing with the firewall on the server…",
+            "failed": "Could not compare with the server",
+            "unavailable": "The live firewall cannot be read ({reason}). The apply installs the firewall module and sets everything up.",
+            "noReason": "no reason given",
+            "inProgress": "An apply is already running on this server. Wait for it to finish.",
+            "inSync": "Nothing to change: the server already matches. Applying again checks it once more.",
+            "changes": "Changes",
+            "turnOn": "Turns the firewall ON. Incoming traffic that no rule allows is blocked.",
+            "turnOff": "Turns the firewall OFF.",
+            "defaultChange": "Default {direction}: {live} → {desired}",
+            "dockerHook": "Starts filtering Docker-published ports.",
+            "dockerUnhook": "Stops filtering Docker-published ports.",
+            "add": "Will be added ({count})",
+            "remove": "Will be removed ({count})",
+            "kept": "Kept, not managed by dPanel ({count})",
+            "none": "Nothing",
+            "sshOpen": "SSH stays open, so dPanel can always reach the server.",
+            "sshClosed": "This would close SSH, so dPanel will not apply it. Check the rules.",
+            "rollback": "If SSH or the agent stop working after the change, the server restores its previous firewall by itself within a few minutes.",
+            "confirmOn": "I understand that turning the firewall on blocks every port without an allow rule.",
+            "confirm": "Apply firewall",
+            "confirmTurnOn": "Turn on and apply",
+            "queued": "Applying the firewall. This view updates when it finishes.",
+            "errorTitle": "Could not apply the firewall"
+          }
+        }
       },
       "logs": {
         "title": "Logs",
@@ -3481,6 +3664,71 @@
         "secretInputsHint": "Type the secret values below. They are sent with your approval only and never shown to the assistant.",
         "revealSecret": "Show value",
         "hideSecret": "Hide value"
+      }
+    },
+    "firewallRule": {
+      "title": "Add rule",
+      "nextApply": "The rule is stored now and reaches the server on the next apply.",
+      "submit": "Add rule",
+      "success": "Rule added. Review and apply to update the server.",
+      "errorTitle": "dPanel did not add the rule",
+      "sections": {
+        "what": {
+          "title": "What to allow",
+          "description": "The port people connect to and what happens to that traffic."
+        },
+        "who": {
+          "title": "Who can connect",
+          "description": "Leave it empty to accept everyone, or name one address or network."
+        },
+        "docker": {
+          "title": "Docker container",
+          "description": "Turn this on when the port belongs to a container published by Docker, such as an app deployed with Docker."
+        },
+        "note": {
+          "title": "Note",
+          "description": "A reminder of why the rule exists. Shown in the rules table."
+        }
+      },
+      "fields": {
+        "action": "Action",
+        "port": "Port",
+        "protocol": "Protocol",
+        "source": "From",
+        "docker": "This port belongs to a Docker container",
+        "comment": "Note"
+      },
+      "actions": {
+        "allow": "Allow",
+        "deny": "Deny",
+        "limit": "Limit",
+        "reject": "Reject"
+      },
+      "actionHint": {
+        "allow": "Lets the traffic in.",
+        "deny": "Drops the traffic without an answer.",
+        "limit": "Lets the traffic in but blocks an address that connects too often, useful for SSH. Host ports only.",
+        "reject": "Refuses the traffic and tells the sender."
+      },
+      "protocols": {
+        "tcp": "TCP",
+        "udp": "UDP",
+        "any": "Any"
+      },
+      "portHint": "One port such as 443, a range such as 8000:8100, or empty for every port.",
+      "sourcePlaceholder": "Anywhere",
+      "sourceHint": "An address such as 203.0.113.10 or a network such as 10.0.0.0/8.",
+      "commentPlaceholder": "Website",
+      "opensEverything": "With no port and no address, this rule lets everyone reach every port.",
+      "dockerFilteringOff": "Docker filtering is off on this server, so Docker rules have no effect until you turn it on in the firewall view.",
+      "errors": {
+        "port": "Use a port between 1 and 65535, or a range such as 8000:8100.",
+        "portLength": "Use at most 11 characters.",
+        "rangeProtocol": "A port range needs TCP or UDP.",
+        "limitDocker": "Limit works on host ports only. Turn off the Docker option or pick another action.",
+        "source": "Use one address or network, without spaces.",
+        "sourceLength": "Use at most 64 characters.",
+        "commentLength": "Use at most 64 characters."
       }
     }
   },

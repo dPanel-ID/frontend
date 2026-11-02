@@ -44,3 +44,4 @@ Apa pun jalurnya, dPanel memasang agennya dan mulai memantau mesin itu. Server y
 - Meluncurkan mesin baru: [Membuat server cloud](./cloud-providers/create-a-cloud-server.md).
 - Membawa mesin sendiri: [Menghubungkan server Anda](./connect-your-own-server.md).
 - Sudah punya server: [Halaman server Anda](./your-server-page.md) menjelaskan setiap tab.
+- Mengatur port mana yang bisa dijangkau: [Firewall](./firewall.md).

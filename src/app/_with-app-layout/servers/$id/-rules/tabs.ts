@@ -24,8 +24,20 @@ export const SERVER_DETAIL_TABS = [
 
 export type ServerDetailTab = (typeof SERVER_DETAIL_TABS)[number];
 
+/** Views inside the Network tab; `view` is ignored on the other tabs. */
+export const SERVER_NETWORK_VIEWS = [
+  'ports',
+  'interfaces',
+  'firewall',
+] as const;
+
+export type ServerNetworkView = (typeof SERVER_NETWORK_VIEWS)[number];
+
 export const schemaServerDetailSearch = z.object({
   tab: z.enum(SERVER_DETAIL_TABS).catch('overview').default('overview'),
+  // Optional so links that only name a tab stay valid; an unknown value falls
+  // back to the ports view instead of failing the route.
+  view: z.enum(SERVER_NETWORK_VIEWS).optional().catch(undefined),
 });
 
 export type ServerDetailSearch = z.infer<typeof schemaServerDetailSearch>;
