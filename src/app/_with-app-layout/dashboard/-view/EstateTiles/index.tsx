@@ -1,9 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import {
   AppWindowIcon,
-  CloudIcon,
   Globe2Icon,
-  KeyRoundIcon,
   NetworkIcon,
   ServerIcon,
 } from 'lucide-react';
@@ -24,9 +22,7 @@ export interface EstateTilesProps {
   servers: EstateCount;
   applications: EstateCount;
   loadBalancers: EstateCount;
-  cloudProjects: EstateCount;
   domains: EstateCount;
-  sshKeys: EstateCount;
 }
 
 interface TileSpec {
@@ -47,26 +43,15 @@ const TILES: TileSpec[] = [
   { key: 'servers', icon: ServerIcon, to: '/servers' },
   { key: 'applications', icon: AppWindowIcon, to: '/applications' },
   { key: 'loadBalancers', icon: NetworkIcon, to: '/backend/load-balancers' },
-  {
-    key: 'cloudProjects',
-    icon: CloudIcon,
-    to: '/backend/cloud-projects',
-    search: { page: 1, viewMode: 'table' },
-  },
   { key: 'domains', icon: Globe2Icon, to: '/backend/domain' },
-  {
-    key: 'sshKeys',
-    icon: KeyRoundIcon,
-    to: '/backend/secret-managers/ssh-key',
-  },
 ];
 
 export default function EstateTiles(props: EstateTilesProps) {
   const t = useDevetekTranslations('page.dashboard.estate');
 
-  // Four columns at most, matching the servers list. Six across fits on a
-  // wide screen but leaves each tile too narrow for its label and status
-  // line, which then truncate; wrapping to a second row keeps them whole.
+  // One row of four on wide screens, matching the servers list. Cloud
+  // projects and SSH keys have their own panels and pages, so the estate
+  // shows what runs: servers, applications, load balancers and domains.
   return (
     <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
       {TILES.map(({ icon, key, search, to }) => {
