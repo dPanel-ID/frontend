@@ -20,14 +20,14 @@ const issues = (value: unknown) => {
 };
 
 describe('isValidPortSpec', () => {
-  it.each(['', '22', '8000:8100', '8000-8100', '80,443'])(
+  it.each(['', '22', '8000:8100', '8000-8100'])(
     'accepts %s',
     (spec) => {
       expect(isValidPortSpec(spec)).toBe(true);
     },
   );
 
-  it.each(['0', '65536', 'http', '9000:8000', '22:', '1,,2'])(
+  it.each(['0', '65536', 'http', '9000:8000', '22:', '1,,2', '80,443'])(
     'rejects %s',
     (spec) => {
       expect(isValidPortSpec(spec)).toBe(false);
