@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   countLogLevels,
   formatLogTime,
+  logEntryFields,
   parseLogEntryTime,
   readableLogTimestamp,
   summarizeHttpAccessLog,
@@ -239,5 +240,124 @@ describe('summarizeHttpAccessLog', () => {
     expect(line?.level).toBe('warn');
     expect(line?.sourceLabel).toBe('app.example.com');
     expect(line?.jsonLabel).toBe('HTTP');
+  });
+
+  // The logs API splits Caddy's JSON into a message and fields: the line is
+  // "handled request" and the request is in the attributes. Shapes taken
+  // from load balancer 31 and application 25 on production.
+  it('summarises an access line whose fields arrive beside it', () => {
+    const attributes = {
+      bytes_read: 0,
+      dpanel_agent_id: '42',
+      dpanel_event_type: 'var_log',
+      duration: 0.147857207,
+      host_name: 'dpanel-wordpress',
+      log_file_path: '/var/log/caddy/dbmanager.devetek.app.log',
+      log_severity: 'INFO',
+      logger: 'http.log.access.log4',
+      otel_library_name: 'dpanel',
+      request: {
+        host: 'dbmanager.devetek.app',
+        method: 'GET',
+        uri: '/api/info',
+        remote_ip: '203.0.113.9',
+      },
+      service_name: 'dpanel-active-agent',
+      size: 8161,
+      status: 200,
+      ts: 1793566603.83,
+    };
+
+    const [line] = toParsedLogLines(
+      [
+        {
+          line: 'handled request',
+          severity: 'INFO',
+          fields: logEntryFields(attributes),
+        },
+      ],
+      OPTIONS,
+    );
+
+    expect(line?.message).toBe(
+      'GET dbmanager.devetek.app/api/info → 200 · 148 ms',
+    );
+    expect(line?.level).toBe('info');
+    expect(line?.sourceLabel).toBe('dbmanager.devetek.app');
+    // The details show the event, not the shipping.
+    expect(line?.jsonPayload).toEqual({
+      msg: 'handled request',
+      bytes_read: 0,
+      duration: 0.147857207,
+      logger: 'http.log.access.log4',
+      request: attributes.request,
+      size: 8161,
+      status: 200,
+    });
+    expect(line?.searchText).toContain('/api/info');
+  });
+
+  it('reads flattened request fields too', () => {
+    expect(
+      summarizeHttpAccessLog({
+        request_method: 'post',
+        request_host: 'api.example.com',
+        request_uri: '/login',
+        status: 502,
+        duration: 1.5,
+      }),
+    ).toEqual({
+      message: 'POST api.example.com/login → 502 · 1.50 s',
+      level: 'error',
+      host: 'api.example.com',
+    });
+  });
+
+  it('shows the fields of a structured app log that is not an access line', () => {
+    const [line] = toParsedLogLines(
+      [
+        {
+          line: 'connection opened',
+          severity: 'INFO',
+          fields: logEntryFields({
+            caller: 'client/ssh.go:88',
+            server_id: 113,
+            dpanel_application_id: '25',
+            host_name: 'dpanel-wordpress',
+          }),
+        },
+      ],
+      OPTIONS,
+    );
+
+    expect(line?.message).toBe('connection opened');
+    expect(line?.jsonPayload).toEqual({
+      msg: 'connection opened',
+      caller: 'client/ssh.go:88',
+      server_id: 113,
+    });
+  });
+});
+
+describe('logEntryFields', () => {
+  it('drops pipeline attributes and keeps the event', () => {
+    expect(
+      logEntryFields({
+        dpanel_machine_id: '113',
+        otel_library_version: '1',
+        service_name: 'dpanel-app-25',
+        systemd_unit: 'devetek-db-manager.service',
+        log_severity: 'WARN',
+        status: 404,
+        user_id: 'abc',
+      }),
+    ).toEqual({ status: 404, user_id: 'abc' });
+  });
+
+  it('returns nothing when only pipeline attributes are left', () => {
+    expect(logEntryFields({ host_name: 'h', dpanel_agent_id: '1' })).toBe(
+      undefined,
+    );
+    expect(logEntryFields(null)).toBe(undefined);
   });
 });

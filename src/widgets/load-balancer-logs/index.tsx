@@ -12,6 +12,7 @@ import {
   LogsPanel,
   canDownloadAllLogs,
   formatUtcOffset,
+  logEntryFields,
   logTimeRangeKey,
   resolveLogTimeRange,
   toLogsPanelStatus,
@@ -173,6 +174,7 @@ function toLogEntryInputs(
         severity: entry.severity ?? undefined,
         time: entry.time == null ? undefined : String(entry.time),
         stream: typeof stream === 'string' ? stream : undefined,
+        fields: logEntryFields(entry.attributes),
       };
     });
   }
