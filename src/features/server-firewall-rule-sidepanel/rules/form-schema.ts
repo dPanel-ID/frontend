@@ -14,25 +14,23 @@ function isPort(value: number) {
   return Number.isInteger(value) && value >= 1 && value <= 65535;
 }
 
-/** A port (`443`), a range (`8000:8100`) or a comma list of them; empty is any port. */
+/** A port (`443`) or a range (`8000:8100`), as the API accepts; empty is any port. */
 export function isValidPortSpec(value: string): boolean {
   const spec = value.trim();
   if (!spec) return true;
 
-  return spec.split(',').every((part) => {
-    const match = PORT_PART.exec(part.trim());
-    if (!match) return false;
-    const from = Number(match[1]);
-    if (!isPort(from)) return false;
-    if (match[2] == null) return true;
-    const to = Number(match[2]);
-    return isPort(to) && from < to;
-  });
+  const match = PORT_PART.exec(spec);
+  if (!match) return false;
+  const from = Number(match[1]);
+  if (!isPort(from)) return false;
+  if (match[2] == null) return true;
+  const to = Number(match[2]);
+  return isPort(to) && from < to;
 }
 
 /** Whether the port field names more than one port. */
 export function isMultiPort(value: string): boolean {
-  return /[:,-]/.test(value.trim());
+  return /[:-]/.test(value.trim());
 }
 
 export const schemaFirewallRuleForm = z
