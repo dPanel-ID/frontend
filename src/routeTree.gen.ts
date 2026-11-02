@@ -22,6 +22,7 @@ import { Route as WithAppLayoutProfileIndexRouteImport } from './app/_with-app-l
 import { Route as WithAppLayoutDashboardIndexRouteImport } from './app/_with-app-layout/dashboard/index'
 import { Route as WithAppLayoutApplicationsIndexRouteImport } from './app/_with-app-layout/applications/index'
 import { Route as DocsSectionPageIndexRouteImport } from './app/docs/$section/$page/index'
+import { Route as WithAppLayoutUUsernameIndexRouteImport } from './app/_with-app-layout/u/$username/index'
 import { Route as WithAppLayoutTeamsIdIndexRouteImport } from './app/_with-app-layout/teams/$id/index'
 import { Route as WithAppLayoutServersGroupsIndexRouteImport } from './app/_with-app-layout/servers/groups/index'
 import { Route as WithAppLayoutServersCreateIndexRouteImport } from './app/_with-app-layout/servers/create/index'
@@ -112,6 +113,12 @@ const DocsSectionPageIndexRoute = DocsSectionPageIndexRouteImport.update({
   path: '/docs/$section/$page/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WithAppLayoutUUsernameIndexRoute =
+  WithAppLayoutUUsernameIndexRouteImport.update({
+    id: '/u/$username/',
+    path: '/u/$username/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
 const WithAppLayoutTeamsIdIndexRoute =
   WithAppLayoutTeamsIdIndexRouteImport.update({
     id: '/teams/$id/',
@@ -266,6 +273,7 @@ export interface FileRoutesByFullPath {
   '/servers/create': typeof WithAppLayoutServersCreateIndexRoute
   '/servers/groups': typeof WithAppLayoutServersGroupsIndexRoute
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
+  '/u/$username': typeof WithAppLayoutUUsernameIndexRoute
   '/docs/$section/$page': typeof DocsSectionPageIndexRoute
   '/applications/$id/update': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/backend/domain/$domainId': typeof WithAppLayoutBackendDomainDomainIdIndexRoute
@@ -301,6 +309,7 @@ export interface FileRoutesByTo {
   '/servers/create': typeof WithAppLayoutServersCreateIndexRoute
   '/servers/groups': typeof WithAppLayoutServersGroupsIndexRoute
   '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
+  '/u/$username': typeof WithAppLayoutUUsernameIndexRoute
   '/docs/$section/$page': typeof DocsSectionPageIndexRoute
   '/applications/$id/update': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/backend/domain/$domainId': typeof WithAppLayoutBackendDomainDomainIdIndexRoute
@@ -338,6 +347,7 @@ export interface FileRoutesById {
   '/_with-app-layout/servers/create/': typeof WithAppLayoutServersCreateIndexRoute
   '/_with-app-layout/servers/groups/': typeof WithAppLayoutServersGroupsIndexRoute
   '/_with-app-layout/teams/$id/': typeof WithAppLayoutTeamsIdIndexRoute
+  '/_with-app-layout/u/$username/': typeof WithAppLayoutUUsernameIndexRoute
   '/docs/$section/$page/': typeof DocsSectionPageIndexRoute
   '/_with-app-layout/applications/$id/update/': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   '/_with-app-layout/backend/domain/$domainId/': typeof WithAppLayoutBackendDomainDomainIdIndexRoute
@@ -375,6 +385,7 @@ export interface FileRouteTypes {
     | '/servers/create'
     | '/servers/groups'
     | '/teams/$id'
+    | '/u/$username'
     | '/docs/$section/$page'
     | '/applications/$id/update'
     | '/backend/domain/$domainId'
@@ -410,6 +421,7 @@ export interface FileRouteTypes {
     | '/servers/create'
     | '/servers/groups'
     | '/teams/$id'
+    | '/u/$username'
     | '/docs/$section/$page'
     | '/applications/$id/update'
     | '/backend/domain/$domainId'
@@ -446,6 +458,7 @@ export interface FileRouteTypes {
     | '/_with-app-layout/servers/create/'
     | '/_with-app-layout/servers/groups/'
     | '/_with-app-layout/teams/$id/'
+    | '/_with-app-layout/u/$username/'
     | '/docs/$section/$page/'
     | '/_with-app-layout/applications/$id/update/'
     | '/_with-app-layout/backend/domain/$domainId/'
@@ -564,6 +577,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/docs/$section/$page'
       preLoaderRoute: typeof DocsSectionPageIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_with-app-layout/u/$username/': {
+      id: '/_with-app-layout/u/$username/'
+      path: '/u/$username'
+      fullPath: '/u/$username'
+      preLoaderRoute: typeof WithAppLayoutUUsernameIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
     }
     '/_with-app-layout/teams/$id/': {
       id: '/_with-app-layout/teams/$id/'
@@ -730,6 +750,7 @@ interface WithAppLayoutRouteRouteChildren {
   WithAppLayoutServersCreateIndexRoute: typeof WithAppLayoutServersCreateIndexRoute
   WithAppLayoutServersGroupsIndexRoute: typeof WithAppLayoutServersGroupsIndexRoute
   WithAppLayoutTeamsIdIndexRoute: typeof WithAppLayoutTeamsIdIndexRoute
+  WithAppLayoutUUsernameIndexRoute: typeof WithAppLayoutUUsernameIndexRoute
   WithAppLayoutApplicationsIdUpdateIndexRoute: typeof WithAppLayoutApplicationsIdUpdateIndexRoute
   WithAppLayoutBackendDomainDomainIdIndexRoute: typeof WithAppLayoutBackendDomainDomainIdIndexRoute
   WithAppLayoutBackendDomainCreateIndexRoute: typeof WithAppLayoutBackendDomainCreateIndexRoute
@@ -762,6 +783,7 @@ const WithAppLayoutRouteRouteChildren: WithAppLayoutRouteRouteChildren = {
   WithAppLayoutServersCreateIndexRoute: WithAppLayoutServersCreateIndexRoute,
   WithAppLayoutServersGroupsIndexRoute: WithAppLayoutServersGroupsIndexRoute,
   WithAppLayoutTeamsIdIndexRoute: WithAppLayoutTeamsIdIndexRoute,
+  WithAppLayoutUUsernameIndexRoute: WithAppLayoutUUsernameIndexRoute,
   WithAppLayoutApplicationsIdUpdateIndexRoute:
     WithAppLayoutApplicationsIdUpdateIndexRoute,
   WithAppLayoutBackendDomainDomainIdIndexRoute:

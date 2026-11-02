@@ -5,6 +5,7 @@ import * as Profile from './user.profile';
 import * as ProfileUpdate from './user.profile.update';
 import * as Register from './user.register';
 import * as Update$Id from './user.update.$id';
+import * as Username$Username from './user.username.$username';
 
 const Root = {
   Detail: {
@@ -19,6 +20,9 @@ const Root = {
   Register,
   Update: {
     $Id: Update$Id,
+  },
+  Username: {
+    $Username: Username$Username,
   },
 };
 

@@ -17,6 +17,8 @@ import {
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
+import { UserLink } from '@/entities/user/ui/UserLink';
+
 import {
   getDistanceFromNow,
   humanizeSeconds,
@@ -179,9 +181,13 @@ export default function ArtifactCard(props: ArtifactCardProps) {
             </div>
 
             <div className="flex items-center flex-wrap gap-x-4 gap-y-1 mt-2">
-              <p className="text-xs text-primary/70 flex items-center gap-0.5">
-                <UserCogIcon className="size-3" />
-                {data.executor.userName}
+              <p className="text-xs text-primary/70 flex min-w-0 items-center gap-1">
+                <UserCogIcon className="size-3 shrink-0" />
+                <UserLink
+                  name={data.executor.userName}
+                  username={data.executor.username}
+                  avatarUrl={data.executor.avatarUrl}
+                />
               </p>
 
               <p className="text-xs text-primary/70 flex items-center gap-0.5">
