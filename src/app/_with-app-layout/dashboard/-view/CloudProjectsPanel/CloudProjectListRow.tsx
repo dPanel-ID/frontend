@@ -3,6 +3,10 @@ import { CloudIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { personOf } from '@/entities/user/lib/person';
+import { UserLink } from '@/entities/user/ui/UserLink';
+
+
 import type { DTOs } from '@/shared/api';
 import { Badge } from '@/shared/presentation/atoms/Badge';
 
@@ -14,12 +18,8 @@ export default function CloudProjectListRow(props: {
   const t = useDevetekTranslations('page.dashboard.cloudProjects');
   const displayName = cloudProject.name || t('unknown');
   const provider = cloudProject.provider || t('unknownProvider');
-  const owner =
-    cloudProject.organization?.name ||
-    cloudProject.user?.fullname ||
-    cloudProject.user?.username ||
-    cloudProject.user?.email ||
-    t('unknownOwner');
+  const team = cloudProject.organization?.name;
+  const person = personOf(cloudProject.user);
   const updatedAt = cloudProject.updated_at
     ? t('updated', {
         date: dayjs(cloudProject.updated_at).format('YYYY-MM-DD HH:mm'),
@@ -35,8 +35,14 @@ export default function CloudProjectListRow(props: {
         <span className="block truncate text-sm font-semibold text-primary">
           {displayName}
         </span>
-        <span className="block truncate text-xs text-muted-foreground">
-          {provider} / {owner} / {updatedAt}
+        <span className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
+          <span className="shrink-0">{provider} /</span>
+          {team || !person ? (
+            <span className="truncate">{team || t('unknownOwner')}</span>
+          ) : (
+            <UserLink {...person} className="shrink" />
+          )}
+          <span className="shrink-0">/ {updatedAt}</span>
         </span>
       </span>
       <Badge variant="outline" className="shrink-0">

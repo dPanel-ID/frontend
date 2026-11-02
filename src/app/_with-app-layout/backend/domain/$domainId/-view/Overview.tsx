@@ -11,6 +11,7 @@ import {
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { getDomainProviderLabel } from '@/entities/domain/ui/constants/provider';
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
 
@@ -74,7 +75,7 @@ export default function Overview() {
       <StatTile
         icon={UserIcon}
         label={t('page.domainDetail.tiles.owner')}
-        value={card?.ownership.team || card?.ownership.owner || '-'}
+        value={card ? <OwnerLink ownership={card.ownership} preferTeam /> : '-'}
         loading={isLoading}
       />
       <StatTile

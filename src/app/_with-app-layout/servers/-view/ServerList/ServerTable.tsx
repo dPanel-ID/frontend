@@ -9,6 +9,7 @@ import type { ServerCard } from '@/entities/server/rules/schema';
 import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import {
@@ -86,9 +87,11 @@ export function ServerTable(props: ServerTableProps) {
                   {server.host.address || '-'}
                 </TableCell>
                 <TableCell className="max-w-[14rem] text-muted-foreground">
-                  <span className="block truncate">
-                    {server.ownership.team || server.ownership.owner}
-                  </span>
+                  <OwnerLink
+                    ownership={server.ownership}
+                    preferTeam
+                    className="block truncate"
+                  />
                   {server.ownership.team && (
                     <ServerCreator
                       creator={server.creator}

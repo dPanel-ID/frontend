@@ -31,7 +31,7 @@ describe('toSshKeyCard', () => {
       name: 'work-laptop',
       type: 'ssh-key',
       length: '4096',
-      ownerName: 'Dina',
+      owner: { name: 'Dina' },
       teamName: 'Platform',
       teamId: 'group-1',
       sharedWithTeam: true,

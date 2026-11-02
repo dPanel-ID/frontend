@@ -1,5 +1,7 @@
 import type z from 'zod';
 
+import { personOf } from '@/entities/user/lib/person';
+
 import type { DTOs } from '@/shared/api';
 import type { KeysOnly, KeysOnlyDeep } from '@/shared/libs/types/keys-only';
 
@@ -9,16 +11,14 @@ import type { cloud, creator, specs } from '../rules/schema/parts';
 export function ctorCreator(
   raw: DTOs.MachineV1,
 ): KeysOnly<z.input<typeof creator>> | undefined {
-  const { user } = raw;
-  const email = user?.email?.trim() || undefined;
-  const name = user?.fullname?.trim() || user?.username?.trim() || email;
+  const person = personOf(raw.user);
 
-  if (!name) return undefined;
+  if (!person) return undefined;
 
   return {
-    name,
-    email,
-    avatarUrl: user?.avatar_url?.trim() || undefined,
+    name: person.name,
+    username: person.username,
+    avatarUrl: person.avatarUrl,
   };
 }
 

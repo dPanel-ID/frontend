@@ -1,7 +1,10 @@
 import type { z } from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
-import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
+import {
+  resolveOwnershipOwner,
+  resolveOwnershipPerson,
+} from '@/entities/shared/lib/resolveOwnershipOwner';
 import { resolveOwnershipTeamId } from '@/entities/shared/lib/resolveOwnershipTeamId';
 
 import type { DTOs } from '@/shared/api';
@@ -34,6 +37,7 @@ export const toLoadBalancerCard = createAdapter<
     description: raw.name,
     ownership: {
       owner: resolveOwnershipOwner(raw),
+      ...resolveOwnershipPerson(raw),
       team: raw.organization?.name,
       teamId: resolveOwnershipTeamId(raw),
     },
@@ -59,6 +63,7 @@ export const toLoadBalancerDetails = createAdapter<
     description: raw.name,
     ownership: {
       owner: resolveOwnershipOwner(raw),
+      ...resolveOwnershipPerson(raw),
       team: raw.organization?.name,
       teamId: resolveOwnershipTeamId(raw),
     },

@@ -1,11 +1,22 @@
 import { z } from 'zod';
 
+/** A person as the API names them: never an email. */
+export const schemaPublicUser = z.object({
+  id: z.union([z.string(), z.number()]).optional(),
+  username: z.string().optional(),
+  fullname: z.string().optional(),
+  avatar_url: z.string().optional(),
+});
+
 export const schemaExecutionV2 = z.object({
   id: z.string().optional(),
   type: z.string().optional(),
   status: z.string().optional(),
   organization_id: z.string().optional(),
   actor_subject: z.string().optional(),
+  // Who started the execution, as a public profile (never email). Absent
+  // when the API could not resolve the actor.
+  actor: schemaPublicUser.optional(),
   machine_id: z.string().optional(),
   module: z.string().optional(),
   module_id: z.string().optional(),

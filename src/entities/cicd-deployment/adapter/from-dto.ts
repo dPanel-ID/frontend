@@ -3,6 +3,7 @@ import type z from 'zod';
 import { AdapterOsServiceFromDto } from '@/entities/os-service/adapter';
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
 import { resolveExecutionErrorMessage } from '@/entities/shared/lib/resolveExecutionErrorMessage';
+import { personOf } from '@/entities/user/lib/person';
 
 import type { DTOs } from '@/shared/api';
 import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
@@ -45,6 +46,7 @@ export const toCicdDeployment = createAdapter<DTOs.DeployV1, CicdDeployment>(
             ).unwrap(),
           }
         : undefined,
+      deployer: personOf(raw.user),
     } satisfies KeysOnlyDeep<z.input<typeof schemaCicdDeployment>>);
   },
 );

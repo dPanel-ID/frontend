@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 
 import { Link, useParams } from '@tanstack/react-router';
 import {
@@ -31,6 +32,7 @@ import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import { ServerErrorDialog } from '@/entities/server/ui/ServerErrorDialog';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
 
@@ -214,7 +216,10 @@ export default guard(function Hero() {
             <Fact icon={BuildingIcon} value={server.ownership.team} />
           ) : (
             !server.creator && (
-              <Fact icon={UserIcon} value={server.ownership.owner} />
+              <Fact
+                icon={UserIcon}
+                value={<OwnerLink ownership={server.ownership} />}
+              />
             )
           )}
           <ServerCreator creator={server.creator} />
@@ -285,7 +290,7 @@ export default guard(function Hero() {
   );
 });
 
-function Fact(props: { icon: LucideIcon; value?: string; mono?: boolean }) {
+function Fact(props: { icon: LucideIcon; value?: ReactNode; mono?: boolean }) {
   const { icon: Icon, mono, value } = props;
   if (!value) return null;
 
