@@ -9,7 +9,6 @@ import {
   ApiLoadBalancer,
   ApiModule,
   ApiOrganization,
-  ApiSecret,
   ApiServer,
   ApiUser,
 } from '@/shared/api';
@@ -88,10 +87,6 @@ export default function DashboardView(props: DashboardViewProps) {
     page: 1,
     perPage: 1,
   });
-  const [sshKeysResponse] = ApiSecret.SshKey.Find.useGet({
-    page: 1,
-    pageSize: 1,
-  });
   const [cloudProjectsResponse] = ApiCloud.Project.Find.useGet({
     page: 1,
     pageSize: 6,
@@ -106,7 +101,6 @@ export default function DashboardView(props: DashboardViewProps) {
   const applicationsData = responseData(applicationsResponse);
   const loadBalancersData = responseData(loadBalancersResponse);
   const domainsData = responseData(domainsResponse);
-  const sshKeysData = responseData(sshKeysResponse);
   const cloudProjectsData = responseData(cloudProjectsResponse);
   const iacRepositoryData = responseData(iacRepositoryResponse);
 
@@ -216,10 +210,6 @@ export default function DashboardView(props: DashboardViewProps) {
     domainsData,
     domainsData?.domains?.length,
   );
-  const totalSshKeys = countFromPagination(
-    sshKeysData,
-    sshKeysData?.secrets?.length,
-  );
   const totalCloudProjects = countFromPagination(
     cloudProjectsData,
     cloudProjectsData?.clouds.length,
@@ -262,9 +252,7 @@ export default function DashboardView(props: DashboardViewProps) {
           ? ('red' as const)
           : ('neutral' as const),
     },
-    cloudProjects: { value: totalCloudProjects },
     domains: { value: totalDomains },
-    sshKeys: { value: totalSshKeys },
   };
 
   return (
