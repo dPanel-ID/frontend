@@ -24,6 +24,8 @@ export const toCicdArtifact = createAdapter<DTOs.ArtifactV1, CicdArtifact>(
       state: ctorState(raw),
       executor: {
         userName: resolveOwnershipOwner(raw),
+        username: raw.user?.username?.trim() || undefined,
+        avatarUrl: raw.user?.avatar_url?.trim() || undefined,
       },
       pointerIds: ctorPointerIds(raw),
       commitMetadata: ctorCommitMetadata(raw),
