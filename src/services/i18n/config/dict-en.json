@@ -3473,7 +3473,11 @@
         "failed": "Approved, but it did not start",
         "approve": "Approve",
         "reject": "Reject",
-        "working": "Working on it…"
+        "working": "Working on it…",
+        "secretsTitle": "Generated secrets: save them now",
+        "secretsHint": "Shown only this once. dPanel keeps no copy, and closing or reloading the panel hides them for good. Change a database password in DB Manager after you sign in.",
+        "copy": "Copy",
+        "copied": "Copied"
       }
     }
   },

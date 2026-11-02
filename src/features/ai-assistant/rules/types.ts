@@ -1,11 +1,25 @@
 import { z } from 'zod';
 
+/** A value an approved change generated, shown to the user once. */
+export const ChatSecretSchema = z.object({
+  name: z.string(),
+  label: z.string(),
+  value: z.string(),
+});
+
+export type ChatSecret = z.infer<typeof ChatSecretSchema>;
+
 /** A change the assistant proposed, waiting for the user's decision. */
 export const ChatActionSchema = z.object({
   id: z.string(),
   tool: z.string(),
   summary: z.string(),
   status: z.enum(['pending', 'deciding', 'executed', 'rejected', 'failed']),
+  /**
+   * Secrets the change generated, such as database passwords. Kept in
+   * memory only: the server sends them once and they are never persisted.
+   */
+  secrets: z.array(ChatSecretSchema).optional(),
 });
 
 export type ChatAction = z.infer<typeof ChatActionSchema>;

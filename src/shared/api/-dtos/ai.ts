@@ -23,9 +23,18 @@ export interface AiPendingActionV1 {
   summary?: string;
 }
 
+/** A value an approved action generated, such as a database password. */
+export interface AiUserSecretV1 {
+  name?: string;
+  label?: string;
+  value?: string;
+}
+
 export interface AiActionResultV1 {
   action_id?: string;
   status?: string;
+  /** Returned once, on the first poll of the completed turn; never stored. */
+  secrets?: AiUserSecretV1[] | null;
 }
 
 export interface AiChatResultV1 {

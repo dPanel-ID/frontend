@@ -1,6 +1,10 @@
+import { useState } from 'react';
+
 import {
   CheckIcon,
   CircleAlertIcon,
+  CopyIcon,
+  KeyRoundIcon,
   RotateCcwIcon,
   ShieldQuestionIcon,
   WrenchIcon,
@@ -25,7 +29,7 @@ import {
 } from '@/shared/presentation/atoms/Table';
 
 import { toolLabel } from '../../../lib/tool-label';
-import type { ChatAction, ChatEntry } from '../../../rules/types';
+import type { ChatAction, ChatEntry, ChatSecret } from '../../../rules/types';
 
 interface Props {
   entry: ChatEntry;
@@ -230,6 +234,77 @@ function ActionCard(props: ActionCardProps) {
           {t('sidepanel.aiAssistant.action.working')}
         </span>
       )}
+      {action.secrets && action.secrets.length > 0 && (
+        <SecretList secrets={action.secrets} />
+      )}
     </div>
+  );
+}
+
+/** Generated secrets, shown once; the server keeps no copy. */
+function SecretList(props: { secrets: ChatSecret[] }) {
+  const { secrets } = props;
+
+  const t = useDevetekTranslations();
+
+  return (
+    <div
+      className="flex flex-col gap-2 rounded-lg border border-amber-400/50 bg-amber-500/10 p-2"
+      role="alert"
+    >
+      <p className="flex items-center gap-2 font-medium">
+        <KeyRoundIcon className="size-4 shrink-0" aria-hidden />
+        {t('sidepanel.aiAssistant.action.secretsTitle')}
+      </p>
+      <ul className="flex flex-col gap-1.5">
+        {secrets.map((secret) => (
+          <SecretRow key={secret.name} secret={secret} />
+        ))}
+      </ul>
+      <p className="text-xs text-muted-foreground">
+        {t('sidepanel.aiAssistant.action.secretsHint')}
+      </p>
+    </div>
+  );
+}
+
+function SecretRow(props: { secret: ChatSecret }) {
+  const { secret } = props;
+
+  const t = useDevetekTranslations();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(secret.value);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // Clipboard access can be refused; the value stays selectable.
+    }
+  };
+
+  return (
+    <li className="flex flex-col gap-1">
+      <span className="text-xs text-muted-foreground">
+        {secret.label} ({secret.name})
+      </span>
+      <div className="flex items-center gap-2">
+        <code className="min-w-0 flex-1 select-all break-all rounded bg-black/5 px-1.5 py-1 font-mono text-xs dark:bg-white/10">
+          {secret.value}
+        </code>
+        <Button
+          size="sm"
+          buttonColor="secondary"
+          onClick={handleCopy}
+          aria-label={`${t('sidepanel.aiAssistant.action.copy')} ${secret.label}`}
+        >
+          {copied ? <CheckIcon aria-hidden /> : <CopyIcon aria-hidden />}
+          {copied
+            ? t('sidepanel.aiAssistant.action.copied')
+            : t('sidepanel.aiAssistant.action.copy')}
+        </Button>
+      </div>
+    </li>
   );
 }
