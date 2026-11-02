@@ -1,3 +1,5 @@
+import { personOf } from '@/entities/user/lib/person';
+import type { Person } from '@/entities/user/lib/person';
 
 import type { DTOs } from '@/shared/api';
 import { getCloudProviderLabel } from '@/shared/presentation/molecules/CloudProviderLogo';
@@ -13,7 +15,8 @@ export interface CloudProjectCard {
   providerLabel: string;
   /** Raw `installer_status`; '' and undefined are production-valid. */
   status: string;
-  ownerName: string | null;
+  /** Who owns it; null when the API could not resolve them. */
+  owner: Person | null;
   teamName: string | null;
   /** Casdoor workspace group ID; absent for personal accounts. */
   teamId: string | null;
@@ -45,8 +48,7 @@ export function toCloudProjectCard(
       provider ??
       unknownProvider,
     status: cloud.installer_status?.trim() ?? '',
-    ownerName:
-      cloud.user?.fullname || cloud.user?.username || cloud.user?.email || null,
+    owner: personOf(cloud.user) ?? null,
     teamName,
     teamId:
       cloud.workspace_type === 'group' ? (cloud.workspace_id ?? null) : null,

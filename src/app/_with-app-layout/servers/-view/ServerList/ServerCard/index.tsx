@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { MouseEvent } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 
 import { useNavigate } from '@tanstack/react-router';
 import {
@@ -34,6 +34,7 @@ import {
 } from '@/entities/server-modules/lib/installations';
 import type { OverviewModuleGroup } from '@/entities/server-modules/lib/installations';
 import { POLL_INTERVAL_MS__SERVER_CARD } from '@/entities/server-statistics/config';
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { ApiLoadBalancer, ApiServer } from '@/shared/api';
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
@@ -239,7 +240,10 @@ export default function ServerCard(props: ServerCardProps) {
               <InlineInfo icon={BuildingIcon} value={server.ownership.team} />
             ) : (
               !server.creator && (
-                <InlineInfo icon={UserIcon} value={server.ownership.owner} />
+                <InlineInfo
+                  icon={UserIcon}
+                  value={<OwnerLink ownership={server.ownership} />}
+                />
               )
             )}
             <ServerCreator creator={server.creator} />
@@ -349,7 +353,7 @@ function ErrorSummaryBanner(props: {
   );
 }
 
-function InlineInfo(props: { icon: LucideIcon; value?: string }) {
+function InlineInfo(props: { icon: LucideIcon; value?: ReactNode }) {
   const { icon: Icon, value } = props;
 
   if (!value) return null;

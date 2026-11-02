@@ -9,7 +9,7 @@ function machine(user?: Partial<DTOs.MachineV1['user']>): DTOs.MachineV1 {
 }
 
 describe('ctorCreator', () => {
-  it('uses the display name, with email and avatar for the tooltip', () => {
+  it('uses the display name and links by username, never the email', () => {
     expect(
       ctorCreator(
         machine({
@@ -22,21 +22,24 @@ describe('ctorCreator', () => {
       ),
     ).toEqual({
       name: 'Amrih Prakasa',
-      email: 'prakasa@devetek.com',
+      username: 'prakasa',
       avatarUrl: 'https://cdn.example/a.png',
     });
   });
 
-  it.each([
-    [{ id: '1', fullname: ' ', username: 'nickyrolly1' }, 'nickyrolly1'],
-    [{ id: '1', email: 'ops@example.com' }, 'ops@example.com'],
-  ])('falls back from an empty display name: %o', (user, name) => {
-    expect(ctorCreator(machine(user))?.name).toBe(name);
+  it('falls back from an empty display name to the username', () => {
+    expect(
+      ctorCreator(machine({ id: '1', fullname: ' ', username: 'nickyrolly1' }))
+        ?.name,
+    ).toBe('nickyrolly1');
   });
 
   it('is absent when the API could not resolve the creator', () => {
     expect(ctorCreator(machine())).toBeUndefined();
     expect(ctorCreator(machine({ id: '1' }))).toBeUndefined();
+    expect(
+      ctorCreator(machine({ id: '1', email: 'ops@example.com' })),
+    ).toBeUndefined();
   });
 });
 

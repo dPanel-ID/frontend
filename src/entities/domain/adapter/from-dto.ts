@@ -1,7 +1,10 @@
 import type { z } from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
-import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
+import {
+  resolveOwnershipOwner,
+  resolveOwnershipPerson,
+} from '@/entities/shared/lib/resolveOwnershipOwner';
 import { resolveOwnershipTeamId } from '@/entities/shared/lib/resolveOwnershipTeamId';
 
 import type { DTOs } from '@/shared/api';
@@ -17,6 +20,7 @@ export const toDomainCard = createAdapter<DTOs.DomainV1, DomainCard>((raw) => {
     id: String(raw.id),
     ownership: {
       owner: resolveOwnershipOwner(raw),
+      ...resolveOwnershipPerson(raw),
       team: raw.organization?.name,
       teamId: resolveOwnershipTeamId(raw),
     },

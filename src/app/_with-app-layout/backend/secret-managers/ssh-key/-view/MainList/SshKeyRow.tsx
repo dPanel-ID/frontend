@@ -1,8 +1,13 @@
+import type { ReactNode } from 'react';
+
+
 import dayjs from 'dayjs';
 import { CalendarIcon, Clock3Icon, UserIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+
+import { UserLink } from '@/entities/user/ui/UserLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 
@@ -31,11 +36,11 @@ export function SshKeyRow(props: SshKeyRowProps) {
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <SshKeyAccessPill sshKey={sshKey} />
 
-          {sshKey.ownerName && (
+          {sshKey.owner && (
             <Fact
               icon={UserIcon}
               label={t('common.terms.owner')}
-              value={sshKey.ownerName}
+              value={<UserLink {...sshKey.owner} />}
             />
           )}
           {sshKey.createdAt && (
@@ -75,7 +80,7 @@ function wasEdited(sshKey: SshKeyCard) {
 interface FactProps {
   icon: LucideIcon;
   label: string;
-  value: string;
+  value: ReactNode;
   /** Renders the label beside the value instead of only for screen readers. */
   showLabel?: boolean;
 }

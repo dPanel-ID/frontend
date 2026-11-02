@@ -12,6 +12,8 @@ import type { Locale } from 'use-intl';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
+import { UserLink } from '@/entities/user/ui/UserLink';
+
 import { ServerManagementState } from '@/features/server-management-sidepanel-ui';
 
 import { ApiExecution } from '@/shared/api';
@@ -241,8 +243,17 @@ function ActivityRow(props: { item: ActivityItem; currentUserId?: string }) {
             </span>
           </div>
 
-          <p className="mt-0.5 truncate text-xs text-muted-foreground">
-            {activityMeta(item, t, locale, currentUserId)}
+          <p className="mt-0.5 flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
+            {showActorPerson(item, currentUserId) && item.actorPerson && (
+              <>
+                <span className="shrink-0">{t('byPerson')}</span>
+                <UserLink {...item.actorPerson} className="shrink-0" />
+                <span className="shrink-0">·</span>
+              </>
+            )}
+            <span className="truncate">
+              {activityMeta(item, t, locale, currentUserId)}
+            </span>
           </p>
 
           {item.failureSummary && (
@@ -288,6 +299,11 @@ function TechnicalRow(props: { label: string; value?: string }) {
   );
 }
 
+/** Whether to link the actor as a person rather than say "by you". */
+function showActorPerson(item: ActivityItem, currentUserId?: string) {
+  return Boolean(item.actorPerson) && item.actor !== currentUserId;
+}
+
 /** The secondary line: who, when and how long. */
 function activityMeta(
   item: ActivityItem,
@@ -297,12 +313,16 @@ function activityMeta(
 ) {
   const parts: string[] = [];
 
-  // Actors are account subjects: the signed-in user's own runs read "by
-  // you", and another opaque numeric subject is left out rather than shown
-  // as "by 7897268911411869309".
+  // The signed-in user's own runs read "by you"; anyone the API resolved is
+  // linked beside this line instead. An unresolved numeric subject is left
+  // out rather than shown as "by 7897268911411869309".
   if (item.actor && item.actor === currentUserId) {
     parts.push(t('byYou'));
-  } else if (item.actor && !/^\d+$/.test(item.actor)) {
+  } else if (
+    !showActorPerson(item, currentUserId) &&
+    item.actor &&
+    !/^\d+$/.test(item.actor)
+  ) {
     parts.push(t('byActor', { actor: item.actor }));
   }
 

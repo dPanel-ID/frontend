@@ -33,6 +33,7 @@ import {
   groupModules,
   moduleInstanceLabel,
 } from '@/entities/server-modules/lib/installations';
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { ApiApplication, ApiLoadBalancer } from '@/shared/api';
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
@@ -215,14 +216,16 @@ export default function OverviewTab() {
             <Row
               icon={server?.ownership.team ? BuildingIcon : UserIcon}
               label={t('ownership')}
-              value={server?.ownership.team || server?.ownership.owner}
+              value={
+                server && <OwnerLink ownership={server.ownership} preferTeam />
+              }
             />
             <Row
               icon={UserIcon}
               label={t('createdBy')}
               value={
                 server?.creator && (
-                  <ServerCreator creator={server.creator} nameOnly showEmail />
+                  <ServerCreator creator={server.creator} nameOnly />
                 )
               }
             />

@@ -17,6 +17,13 @@ export interface DeployV1 {
   error?: string;
   error_detail?: ExecutionErrorDetailV1 | null;
   user_id?: number;
+  /** Who started the deployment, as a public profile (never email). */
+  user?: {
+    id?: number | string;
+    username?: string;
+    fullname?: string;
+    avatar_url?: string;
+  };
   artifact_id?: number;
   artifact?: ArtifactV1;
   created_at?: string;

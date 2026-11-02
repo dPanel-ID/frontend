@@ -1,3 +1,6 @@
+import { personOf } from '@/entities/user/lib/person';
+import type { Person } from '@/entities/user/lib/person';
+
 import type { DTOs } from '@/shared/api';
 
 /**
@@ -236,6 +239,8 @@ export interface ActivityItem {
   typeFallback: string;
   target?: string;
   actor?: string;
+  /** The actor as a person to link to, when the API resolved them. */
+  actorPerson?: Person;
   module?: string;
   timestamp?: string;
   sortTime: number;
@@ -265,6 +270,7 @@ export function toActivityItem(execution: DTOs.ExecutionV2): ActivityItem {
     typeFallback: humanizeIdentifier(execution.type),
     target: executionTarget(execution),
     actor: execution.actor_subject?.trim() || undefined,
+    actorPerson: personOf(execution.actor),
     module: execution.module?.trim() || undefined,
     timestamp: executionTimestamp(execution),
     sortTime: executionSortTime(execution),

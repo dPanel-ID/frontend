@@ -1,3 +1,6 @@
+import { personOf } from '@/entities/user/lib/person';
+import type { Person } from '@/entities/user/lib/person';
+
 import type { DTOs } from '@/shared/api';
 
 /** One SSH key as every list view needs it, with nothing left to decode. */
@@ -16,7 +19,8 @@ export interface SshKeyCard {
   comment: string | null;
   /** Safe to show and copy; the private half never leaves the backend. */
   publicKey: string | null;
-  ownerName: string | null;
+  /** Who owns it; null when the API could not resolve them. */
+  owner: Person | null;
   teamName: string | null;
   /** Casdoor workspace group ID; absent for personal keys. */
   teamId: string | null;
@@ -46,11 +50,7 @@ export function toSshKeyCard(
     fingerprint: secret.data?.fingerprint?.trim() || null,
     comment: secret.data?.comment?.trim() || null,
     publicKey: secret.data?.public?.trim() || null,
-    ownerName:
-      secret.user?.fullname ||
-      secret.user?.username ||
-      secret.user?.email ||
-      null,
+    owner: personOf(secret.user) ?? null,
     teamName,
     teamId:
       secret.workspace_type === 'group' ? (secret.workspace_id ?? null) : null,
