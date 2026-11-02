@@ -3469,7 +3469,10 @@
         "secretsTitle": "Rahasia yang dibuat: simpan sekarang",
         "secretsHint": "Hanya ditampilkan sekali ini. dPanel tidak menyimpan salinannya, dan menutup atau memuat ulang panel akan menyembunyikannya selamanya. Ubah kata sandi database di DB Manager setelah Anda masuk.",
         "copy": "Salin",
-        "copied": "Tersalin"
+        "copied": "Tersalin",
+        "secretInputsHint": "Ketik nilai rahasia di bawah. Nilai ini hanya dikirim bersama persetujuan Anda dan tidak pernah ditampilkan ke asisten.",
+        "revealSecret": "Tampilkan nilai",
+        "hideSecret": "Sembunyikan nilai"
       }
     }
   },

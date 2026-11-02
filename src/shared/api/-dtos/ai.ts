@@ -9,6 +9,8 @@ export interface AiApprovalPayloadV1 {
   action_id: string;
   decision: 'approve' | 'reject';
   async: true;
+  /** Values of the action's secret inputs by name; sent with the approval only. */
+  secrets?: Record<string, string>;
 }
 
 export interface AiTurnStartedV1 {
@@ -17,10 +19,17 @@ export interface AiTurnStartedV1 {
   status?: string;
 }
 
+/** A secret value a proposed change needs from the user when approving. */
+export interface AiSecretInputV1 {
+  name?: string;
+  label?: string;
+}
+
 export interface AiPendingActionV1 {
   action_id?: string;
   tool?: string;
   summary?: string;
+  secret_inputs?: AiSecretInputV1[] | null;
 }
 
 /** A value an approved action generated, such as a database password. */
