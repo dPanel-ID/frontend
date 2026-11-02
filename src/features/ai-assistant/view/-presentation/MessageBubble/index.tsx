@@ -18,6 +18,7 @@ import { useDevetekTranslations } from '@/services/i18n';
 
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { PasswordInput } from '@/shared/presentation/atoms/PasswordInput';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import {
   Table,
@@ -35,7 +36,11 @@ interface Props {
   entry: ChatEntry;
   onRetry?: (entry: ChatEntry) => void;
   retryDisabled?: boolean;
-  onDecide?: (action: ChatAction, approve: boolean) => void;
+  onDecide?: (
+    action: ChatAction,
+    approve: boolean,
+    secrets?: Record<string, string>,
+  ) => void;
   decideDisabled?: boolean;
 }
 
@@ -180,7 +185,11 @@ const ACTION_STATUS_TONE: Record<ChatAction['status'], string> = {
 
 interface ActionCardProps {
   action: ChatAction;
-  onDecide?: (action: ChatAction, approve: boolean) => void;
+  onDecide?: (
+    action: ChatAction,
+    approve: boolean,
+    secrets?: Record<string, string>,
+  ) => void;
   disabled?: boolean;
 }
 
@@ -189,6 +198,13 @@ function ActionCard(props: ActionCardProps) {
   const { action, onDecide, disabled } = props;
 
   const t = useDevetekTranslations();
+  // Secret input values stay in this card until approval sends them; they
+  // never go into the conversation.
+  const [secretValues, setSecretValues] = useState<Record<string, string>>({});
+  const secretInputs = action.secretInputs ?? [];
+  const secretsComplete = secretInputs.every(
+    (input) => (secretValues[input.name] ?? '') !== '',
+  );
 
   return (
     <div
@@ -204,12 +220,39 @@ function ActionCard(props: ActionCardProps) {
         </span>
       </p>
       <p className="break-words text-primary">{action.summary}</p>
+      {action.status === 'pending' && secretInputs.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <p className="text-xs text-muted-foreground">
+            {t('sidepanel.aiAssistant.action.secretInputsHint')}
+          </p>
+          {secretInputs.map((input) => (
+            <label key={input.name} className="flex flex-col gap-1">
+              <span className="text-xs font-medium">{input.label}</span>
+              <PasswordInput
+                value={secretValues[input.name] ?? ''}
+                onChange={(event) =>
+                  setSecretValues((current) => ({
+                    ...current,
+                    [input.name]: event.target.value,
+                  }))
+                }
+                revealLabel={t('sidepanel.aiAssistant.action.revealSecret')}
+                hideLabel={t('sidepanel.aiAssistant.action.hideSecret')}
+              />
+            </label>
+          ))}
+        </div>
+      )}
       {action.status === 'pending' && onDecide && (
         <div className="flex gap-2">
           <Button
             size="sm"
-            disabled={disabled}
-            onClick={() => onDecide(action, true)}
+            disabled={disabled || !secretsComplete}
+            onClick={() => {
+              const values = secretInputs.length > 0 ? secretValues : undefined;
+              setSecretValues({});
+              onDecide(action, true, values);
+            }}
           >
             <CheckIcon aria-hidden />
             {t('sidepanel.aiAssistant.action.approve')}

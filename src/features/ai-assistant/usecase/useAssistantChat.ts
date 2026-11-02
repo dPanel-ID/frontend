@@ -34,6 +34,12 @@ function toActions(result: DTOs.AiChatResultV1): ChatAction[] {
       tool: action.tool ?? '',
       summary: action.summary ?? '',
       status: 'pending' as const,
+      secretInputs: (action.secret_inputs ?? [])
+        .filter((input) => input.name)
+        .map((input) => ({
+          name: input.name ?? '',
+          label: input.label || input.name || '',
+        })),
     }));
 }
 
@@ -236,7 +242,11 @@ export default function useAssistantChat() {
 
   /** Approves or rejects a proposed change; the assistant then reports. */
   const decide = useCallback(
-    async (action: ChatAction, approve: boolean) => {
+    async (
+      action: ChatAction,
+      approve: boolean,
+      secretValues?: Record<string, string>,
+    ) => {
       if (isSending || action.status !== 'pending') return;
       setIsSending(true);
       setActionStatus(action.id, 'deciding');
@@ -247,6 +257,7 @@ export default function useAssistantChat() {
             action_id: action.id,
             decision: approve ? 'approve' : 'reject',
             async: true,
+            ...(approve && secretValues ? { secrets: secretValues } : {}),
           },
         }),
       );
