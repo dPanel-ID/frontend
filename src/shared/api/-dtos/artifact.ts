@@ -18,11 +18,14 @@ export interface ArtifactV1 {
   app_definition?: AppDefinition;
   machine_id?: number;
   user_id?: number;
+  /** Who ran the build, as a public profile (the API never sends email). */
   user?: {
-    id?: number;
+    id?: number | string;
     username?: string;
     fullname?: string;
     email?: string;
+    avatar_url?: string;
+    created_at?: string;
   };
   application_id?: number;
   created_at?: string;

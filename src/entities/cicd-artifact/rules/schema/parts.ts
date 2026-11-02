@@ -51,6 +51,9 @@ export const configSnapshot = z.object({
 export type Executor = z.output<typeof executor>;
 export const executor = z.object({
   userName: z.string(),
+  /** Set when the API resolved the person; links to their profile. */
+  username: z.string().optional(),
+  avatarUrl: z.string().optional(),
 });
 
 export type Timestamp = z.output<typeof timestamp>;
