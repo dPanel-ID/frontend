@@ -101,6 +101,7 @@ export const specs = z.object({
 export type Creator = z.output<typeof creator>;
 export const creator = z.object({
   name: z.string(),
-  email: z.string().optional(),
+  /** Links to /u/{username}; the creator's email is never shown. */
+  username: z.string().optional(),
   avatarUrl: z.string().optional(),
 });

@@ -270,6 +270,27 @@ describe('toActivityItem', () => {
       failureSummary: 'apt lock held',
     });
     expect(item.durationMs).toBe(60_000);
+    expect(item.actorPerson).toBeUndefined();
+  });
+
+  it('names the actor the API resolved', () => {
+    const item = toActivityItem(
+      execution({
+        actor_subject: '7897268911411869309',
+        actor: {
+          id: '7897268911411869309',
+          username: 'prakasa',
+          fullname: 'Prakasa',
+          avatar_url: 'https://cdn.example/p.png',
+        },
+      }),
+    );
+
+    expect(item.actorPerson).toEqual({
+      name: 'Prakasa',
+      username: 'prakasa',
+      avatarUrl: 'https://cdn.example/p.png',
+    });
   });
 
   it('survives a legacy row with empty strings and no machine', () => {

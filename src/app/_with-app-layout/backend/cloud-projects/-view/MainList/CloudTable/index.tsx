@@ -1,6 +1,9 @@
+
 import dayjs from 'dayjs';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+
+import { UserLink } from '@/entities/user/ui/UserLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import {
@@ -67,7 +70,11 @@ export default function CloudTable(props: CloudTableProps) {
                 <TableCell>
                   <div className="flex flex-col gap-1">
                     <span className="text-xs text-primary/80">
-                      {cloudProject.ownerName ?? '—'}
+                      {cloudProject.owner ? (
+                        <UserLink {...cloudProject.owner} />
+                      ) : (
+                        '—'
+                      )}
                     </span>
                     <CloudProjectAccessPill cloudProject={cloudProject} />
                   </div>

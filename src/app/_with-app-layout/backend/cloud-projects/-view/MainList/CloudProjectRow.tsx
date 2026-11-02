@@ -1,7 +1,12 @@
+import type { ReactNode } from 'react';
+
+
 import { CalendarIcon, UserIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+
+import { UserLink } from '@/entities/user/ui/UserLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { cn } from '@/shared/libs/tailwind/cn';
@@ -47,11 +52,11 @@ export function CloudProjectRow(props: CloudProjectRowProps) {
           <CloudProjectStatusPill cloudProject={cloudProject} />
           <CloudProjectAccessPill cloudProject={cloudProject} />
 
-          {cloudProject.ownerName && (
+          {cloudProject.owner && (
             <Fact
               icon={UserIcon}
               label={t('common.terms.owner')}
-              value={cloudProject.ownerName}
+              value={<UserLink {...cloudProject.owner} />}
             />
           )}
           {cloudProject.updatedAt && (
@@ -73,7 +78,7 @@ export function CloudProjectRow(props: CloudProjectRowProps) {
 interface FactProps {
   icon: LucideIcon;
   label: string;
-  value: string;
+  value: ReactNode;
   showLabel?: boolean;
 }
 

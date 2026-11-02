@@ -546,6 +546,7 @@
         "refreshAria": "Refresh recent activity",
         "headline": "{activity} on {target}",
         "byActor": "by {actor}",
+        "byPerson": "by",
         "took": "took {duration}",
         "warnings": "{count} warnings",
         "noMetadata": "No further detail reported",
@@ -1444,7 +1445,6 @@
       },
       "creator": {
         "createdBy": "Created by {name}",
-        "tooltip": "Created by {name} ({email})",
         "label": "Created by"
       }
     },

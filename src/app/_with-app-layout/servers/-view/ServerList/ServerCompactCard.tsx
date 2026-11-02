@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import {
   BuildingIcon,
   Clock3Icon,
@@ -14,6 +16,7 @@ import type { ServerCard } from '@/entities/server/rules/schema';
 import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { cn } from '@/shared/libs/tailwind/cn';
@@ -58,7 +61,7 @@ export function ServerCompactCard(props: ServerCompactCardProps) {
         <Fact icon={TerminalIcon} value={serverSystemLabel(server) ?? '-'} />
         <Fact
           icon={server.ownership.team ? BuildingIcon : UserIcon}
-          value={server.ownership.team || server.ownership.owner}
+          value={<OwnerLink ownership={server.ownership} preferTeam />}
         />
         {server.ownership.team && server.creator && (
           <div className="text-muted-foreground">
@@ -80,7 +83,7 @@ export function ServerCompactCard(props: ServerCompactCardProps) {
   );
 }
 
-function Fact(props: { icon: LucideIcon; value: string }) {
+function Fact(props: { icon: LucideIcon; value: ReactNode }) {
   const { icon: Icon, value } = props;
 
   return (

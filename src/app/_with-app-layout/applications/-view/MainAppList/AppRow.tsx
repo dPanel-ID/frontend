@@ -23,6 +23,7 @@ import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import type { ApplicationCard } from '@/entities/application/rules/schema';
 import { getBundleIcon, getSourceBadge } from '@/entities/application/ui/lib';
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { capitalizeFirstLetter } from '@/shared/libs/browser/string';
@@ -202,7 +203,7 @@ export default function AppRow(props: AppRowProps) {
           <Fact
             icon={data.ownership.team ? BuildingIcon : UserIcon}
             label={t('common.terms.owner')}
-            value={data.ownership.team || data.ownership.owner}
+            value={<OwnerLink ownership={data.ownership} preferTeam />}
           />
           <Fact
             icon={Clock3Icon}

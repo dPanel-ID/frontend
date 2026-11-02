@@ -1,6 +1,9 @@
+
 import dayjs from 'dayjs';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+
+import { UserLink } from '@/entities/user/ui/UserLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import {
@@ -63,7 +66,7 @@ export default function SshTable(props: SshTableProps) {
                 </TableCell>
                 <TableCell>
                   <span className="text-xs text-primary/80">
-                    {sshKey.ownerName ?? '—'}
+                    {sshKey.owner ? <UserLink {...sshKey.owner} /> : '—'}
                   </span>
                 </TableCell>
                 <TableCell>

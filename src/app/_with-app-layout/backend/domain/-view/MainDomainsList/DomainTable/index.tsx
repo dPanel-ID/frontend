@@ -2,6 +2,8 @@ import dayjs from 'dayjs';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
+
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import {
   Table,
@@ -55,7 +57,7 @@ export default function DomainTable(props: Props) {
               <TableCell>
                 <div className="flex flex-col gap-1">
                   <span className="text-xs text-primary/80">
-                    {domain.ownership.owner || '—'}
+                    <OwnerLink ownership={domain.ownership} />
                   </span>
                   <DomainAccessPill domain={domain} />
                 </div>

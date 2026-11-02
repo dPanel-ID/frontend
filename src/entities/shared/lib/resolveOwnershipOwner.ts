@@ -1,26 +1,24 @@
+import { personOf } from '@/entities/user/lib/person';
+import type { PublicUserSource } from '@/entities/user/lib/person';
+
 type OwnershipOwnerSource = {
-  owner?: number | string | null;
-  user_id?: number | string | null;
-  user?: {
-    email?: string | null;
-    fullname?: string | null;
-    username?: string | null;
-  } | null;
+  user?: PublicUserSource | null;
 };
 
+/**
+ * The owner's display name. Never an email or a raw user ID: when the API
+ * could not resolve the person, say so instead.
+ */
 export function resolveOwnershipOwner(source: OwnershipOwnerSource) {
-  const userOwner = [
-    source.user?.fullname,
-    source.user?.username,
-    source.user?.email,
-  ]
-    .map((value) => value?.trim())
-    .find((value): value is string => Boolean(value));
+  return personOf(source.user)?.name || 'Unknown owner';
+}
 
-  return (
-    userOwner ||
-    (source.user_id != null ? String(source.user_id) : undefined) ||
-    (source.owner != null ? String(source.owner) : undefined) ||
-    'Unknown owner'
-  );
+/** What links the owner to their public profile, when the API resolved them. */
+export function resolveOwnershipPerson(source: OwnershipOwnerSource) {
+  const person = personOf(source.user);
+
+  return {
+    ownerUsername: person?.username,
+    ownerAvatarUrl: person?.avatarUrl,
+  };
 }

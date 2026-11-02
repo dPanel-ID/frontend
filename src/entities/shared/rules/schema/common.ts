@@ -18,6 +18,9 @@ export const ownership = z.object({
   /** Casdoor workspace group ID; absent for personal resources. */
   teamId: z.string().optional(),
   owner: z.string(),
+  /** Links the owner to /u/{username} when the API resolved them. */
+  ownerUsername: z.string().optional(),
+  ownerAvatarUrl: z.string().optional(),
 });
 
 export type Timestamp = z.output<typeof timestamp>;

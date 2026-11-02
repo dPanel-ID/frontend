@@ -21,10 +21,12 @@ import {
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import type { CicdArtifact } from '@/entities/cicd-artifact/rules/schema';
+import { whoDeployed } from '@/entities/cicd-deployment/lib/who-deployed';
 import type { CicdDeployment } from '@/entities/cicd-deployment/rules/schema';
 import { AdapterOsServiceFromDto } from '@/entities/os-service/adapter';
 import { ServiceState } from '@/entities/os-service/ui/presentation/ServiceState';
 import usePushServiceActivityUsecase from '@/entities/os-service/usecase/push-activity';
+import { UserLink } from '@/entities/user/ui/UserLink';
 
 import { ApiService } from '@/shared/api';
 import {
@@ -201,6 +203,7 @@ function DeploymentCard({
   const locale = useDevetekLocale();
   const t = useDevetekTranslations();
   const updatedAt = getDistanceFromNow(data.timestamp.updated, locale);
+  const deployer = whoDeployed(data, artifact);
   const router = useRouter();
   const serverHref = router.buildLocation({
     to: '/servers/$id',
@@ -305,10 +308,10 @@ function DeploymentCard({
             </p>
           )}
 
-          {artifact && (
+          {deployer && (
             <p className="text-xs text-primary/70 flex items-center gap-0.5">
               <UserCogIcon className="size-3" />
-              {artifact.executor.userName}
+              <UserLink {...deployer} />
             </p>
           )}
 

@@ -15,6 +15,8 @@ import {
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
+
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import {
   couple,
@@ -240,7 +242,7 @@ export default guard(function OverviewTab() {
             <Row
               icon={UserIcon}
               label={t('ownership')}
-              value={ownership.team || ownership.owner}
+              value={<OwnerLink ownership={ownership} preferTeam />}
             />
             <Row
               icon={CalendarIcon}

@@ -14,6 +14,14 @@ export const schemaCicdDeployment = z.object({
   timestamp: SchemaCommon.timestamp,
   serverSnapshot,
   osService: schemaOsService.optional(),
+  /** Who started the deployment, when the API resolved them. */
+  deployer: z
+    .object({
+      name: z.string(),
+      username: z.string().optional(),
+      avatarUrl: z.string().optional(),
+    })
+    .optional(),
 });
 
 export type CicdDeployment = z.output<typeof schemaCicdDeployment>;

@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
-import {
-  schemaScopedExecutionStatus,
-} from '@/shared/rules/host-group';
+import { schemaScopedExecutionStatus } from '@/shared/rules/host-group';
+
+import { schemaPublicUser } from './execution';
+
 
 export const schemaHostGroupOperationExecutionV1 = z
   .object({
@@ -11,6 +12,7 @@ export const schemaHostGroupOperationExecutionV1 = z
     status: schemaScopedExecutionStatus,
     organization_id: z.string().optional(),
     actor_subject: z.string().optional(),
+    actor: schemaPublicUser.optional(),
     machine_id: z.string().min(1),
     module: z.string().optional(),
     module_id: z.string().optional(),

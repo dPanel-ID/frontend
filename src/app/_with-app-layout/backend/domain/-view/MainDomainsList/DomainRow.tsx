@@ -1,9 +1,12 @@
+import type { ReactNode } from 'react';
+
 import { Clock3Icon, SignpostIcon, UserIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import type { DomainCard } from '@/entities/domain/rules/schema';
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 
@@ -42,7 +45,7 @@ export function DomainRow(props: DomainRowProps) {
             <Fact
               icon={UserIcon}
               label={t('common.terms.owner')}
-              value={domain.ownership.owner}
+              value={<OwnerLink ownership={domain.ownership} />}
             />
           )}
           <Fact
@@ -62,7 +65,7 @@ export function DomainRow(props: DomainRowProps) {
 interface FactProps {
   icon: LucideIcon;
   label: string;
-  value: string;
+  value: ReactNode;
   showLabel?: boolean;
 }
 

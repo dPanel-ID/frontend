@@ -1,4 +1,10 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { Link, createFileRoute } from '@tanstack/react-router';
+
+import { personOf } from '@/entities/user/lib/person';
+import type { PublicUserSource } from '@/entities/user/lib/person';
+import { UserLink } from '@/entities/user/ui/UserLink';
+
+import { DetailSummaryTable } from '@/features/server-groups/view/DetailSummaryTable';
 
 import * as ApiHostGroupOperationExecution from '@/shared/api/host-group.operation.execution.$operationId.$machineId';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
@@ -7,7 +13,6 @@ import {
   PageHeader,
   PageHeaderShimmer,
 } from '@/shared/presentation/organisms/PageHeader';
-import { DetailSummaryTable } from '@/features/server-groups/view/DetailSummaryTable';
 import { FailedState } from '@/widgets/failed-state';
 import { FallbackState } from '@/widgets/fallback-state';
 
@@ -116,7 +121,7 @@ function ExecutionDetailPage() {
             },
             {
               label: 'Actor',
-              value: execution.actor_subject ?? '-',
+              value: actorLabel(execution),
             },
             {
               label: 'Started',
@@ -147,4 +152,16 @@ function ExecutionDetailPage() {
       </section>
     </>
   );
+}
+
+/** Who started the execution; an unresolved numeric subject is not shown. */
+function actorLabel(execution: {
+  actor?: PublicUserSource;
+  actor_subject?: string;
+}) {
+  const person = personOf(execution.actor);
+  if (person) return <UserLink {...person} />;
+
+  const subject = execution.actor_subject?.trim();
+  return subject && !/^\d+$/.test(subject) ? subject : '-';
 }

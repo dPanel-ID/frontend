@@ -26,6 +26,7 @@ import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 import type { SchemaLoadBalancerParts } from '@/entities/load-balancer/rules/schema';
 import { LOAD_BALANCER_STATUS_METADATA } from '@/entities/load-balancer/ui/constants/state-metadata';
 import { LOAD_BALANCER_WEBSERVER_ENGINE } from '@/entities/load-balancer/ui/constants/webserver';
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { excludeFalsy } from '@/shared/libs/browser/typeguards';
@@ -162,7 +163,10 @@ export default function LbCard(props: LbCardProps) {
             icon={NetworkIcon}
             value={`${kindLabel} - ${routingSummary}`}
           />
-          <InlineInfo icon={UserIcon} value={data.ownership.owner} />
+          <InlineInfo
+            icon={UserIcon}
+            value={<OwnerLink ownership={data.ownership} />}
+          />
         </div>
 
         <div className="mt-4 flex items-center justify-between gap-2 border-t pt-3">
@@ -294,7 +298,7 @@ export default function LbCard(props: LbCardProps) {
           />
           <InlineInfo
             icon={data.ownership.team ? BuildingIcon : UserIcon}
-            value={data.ownership.team || data.ownership.owner}
+            value={<OwnerLink ownership={data.ownership} preferTeam />}
           />
           <InlineInfo icon={Clock3Icon} value={lastUpdated} />
         </div>

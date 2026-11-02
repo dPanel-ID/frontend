@@ -537,6 +537,7 @@
         "refreshAria": "Muat ulang aktivitas terbaru",
         "headline": "{activity} di {target}",
         "byActor": "oleh {actor}",
+        "byPerson": "oleh",
         "took": "memakan waktu {duration}",
         "warnings": "{count} peringatan",
         "noMetadata": "Tidak ada detail lain yang dilaporkan",
@@ -1435,7 +1436,6 @@
       },
       "creator": {
         "createdBy": "Dibuat oleh {name}",
-        "tooltip": "Dibuat oleh {name} ({email})",
         "label": "Dibuat oleh"
       }
     },

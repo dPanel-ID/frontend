@@ -2,7 +2,10 @@ import type z from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
 import { resolveExecutionErrorMessage } from '@/entities/shared/lib/resolveExecutionErrorMessage';
-import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
+import {
+  resolveOwnershipOwner,
+  resolveOwnershipPerson,
+} from '@/entities/shared/lib/resolveOwnershipOwner';
 import { resolveOwnershipTeamId } from '@/entities/shared/lib/resolveOwnershipTeamId';
 
 import type { DTOs } from '@/shared/api';
@@ -39,6 +42,7 @@ export const toServerCard = createAdapter<DTOs.MachineV1, ServerCard>((raw) =>
     },
     ownership: {
       owner: resolveOwnershipOwner(raw),
+      ...resolveOwnershipPerson(raw),
       team: raw.organization?.name,
       teamId: resolveOwnershipTeamId(raw),
     },
@@ -80,6 +84,7 @@ export const toServerDetail = createAdapter<DTOs.MachineV1, ServerDetail>(
       },
       ownership: {
         owner: resolveOwnershipOwner(raw),
+        ...resolveOwnershipPerson(raw),
         team: raw.organization?.name,
         teamId: resolveOwnershipTeamId(raw),
       },

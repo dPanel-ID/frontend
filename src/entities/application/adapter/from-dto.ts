@@ -1,7 +1,10 @@
 import type z from 'zod';
 
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
-import { resolveOwnershipOwner } from '@/entities/shared/lib/resolveOwnershipOwner';
+import {
+  resolveOwnershipOwner,
+  resolveOwnershipPerson,
+} from '@/entities/shared/lib/resolveOwnershipOwner';
 import { resolveOwnershipTeamId } from '@/entities/shared/lib/resolveOwnershipTeamId';
 
 import type { DTOs } from '@/shared/api';
@@ -33,6 +36,7 @@ export const toApplicationCard = createAdapter<
       team: raw.organization?.name,
       teamId: resolveOwnershipTeamId(raw),
       owner: resolveOwnershipOwner(raw),
+      ...resolveOwnershipPerson(raw),
     },
     timestamp: {
       created: raw.created_at,
@@ -76,6 +80,7 @@ export const toApplicationDetail = createAdapter<
       team: raw.organization?.name,
       teamId: resolveOwnershipTeamId(raw),
       owner: resolveOwnershipOwner(raw),
+      ...resolveOwnershipPerson(raw),
     },
     timestamp: {
       created: raw.created_at,

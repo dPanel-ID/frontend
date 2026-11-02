@@ -13,7 +13,9 @@ import {
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import type { CicdArtifact } from '@/entities/cicd-artifact/rules/schema';
+import { whoDeployed } from '@/entities/cicd-deployment/lib/who-deployed';
 import type { CicdDeployment } from '@/entities/cicd-deployment/rules/schema';
+import { UserLink } from '@/entities/user/ui/UserLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { cn } from '@/shared/libs/tailwind/cn';
@@ -103,9 +105,9 @@ export default function CurrentDeployment(props: CurrentDeploymentProps) {
                       <GitCommitHorizontalIcon className="size-3.5 shrink-0" />
                       {artifact.commitMetadata.head.slice(0, 7)}
                     </span>
-                    <span className="inline-flex items-center gap-1">
+                    <span className="inline-flex min-w-0 items-center gap-1">
                       <UserCogIcon className="size-3.5 shrink-0" />
-                      {artifact.executor.userName}
+                      <UserLink {...whoDeployed(deployment, artifact)!} />
                     </span>
                   </>
                 )}

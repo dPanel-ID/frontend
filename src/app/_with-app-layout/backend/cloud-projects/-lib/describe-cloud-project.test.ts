@@ -37,7 +37,7 @@ describe('toCloudProjectCard', () => {
       provider: 'IDCloudHost',
       providerLabel: 'IDCloudHost',
       status: 'ready',
-      ownerName: 'Dina',
+      owner: { name: 'Dina' },
       teamName: 'Platform',
       teamId: 'group-7',
       sharedWithTeam: true,

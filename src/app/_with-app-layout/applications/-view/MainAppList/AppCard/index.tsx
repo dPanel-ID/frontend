@@ -22,6 +22,7 @@ import type { LucideIcon } from 'lucide-react';
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import { getBundleIcon, getSourceBadge } from '@/entities/application/ui/lib';
+import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { capitalizeFirstLetter } from '@/shared/libs/browser/string';
@@ -181,7 +182,7 @@ export default function AppCard(props: AppCardProps) {
       <div className="relative flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-medium text-muted-foreground">
         <InlineInfo
           icon={data.ownership.team ? BuildingIcon : UserIcon}
-          value={data.ownership.team || data.ownership.owner}
+          value={<OwnerLink ownership={data.ownership} preferTeam />}
         />
         <InlineInfo icon={GitBranchIcon} value={branch} />
         <InlineInfo
