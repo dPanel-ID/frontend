@@ -1,7 +1,7 @@
 ---
 title: Menghapus server
 description: Hapus server yang tidak lagi dipakai di dPanel: apa yang dihancurkan di penyedia cloud, dan mengapa server yang Anda hubungkan sendiri tetap berjalan.
-sidebar_position: 8
+sidebar_position: 9
 sidebar_icon: trash-2
 ---
 

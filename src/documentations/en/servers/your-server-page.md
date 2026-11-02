@@ -48,7 +48,9 @@ The Linux accounts on the machine, with their UID, home directory and login shel
 
 ## Network
 
-Which ports are open, which process holds each one, where connections are allowed from, and their state. Check this tab when something can't be reached. An application listening on its port shows up here as **LISTEN**.
+Which ports are open, which process holds each one, where connections are allowed from, and their state. Check this tab when something can't be reached. An application listening on its port shows up here as **LISTEN**. The **Firewall** column says whether a firewall rule lets the outside reach each port.
+
+The **Firewall** tile opens the server's firewall: the rules, whether they are applied, and **Review and apply**. See [Firewall](./firewall.md).
 
 ![The Network tab listing open ports](../../assets/servers/server-network.webp)
 

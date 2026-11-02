@@ -44,3 +44,4 @@ Either way, dPanel installs its agent and starts monitoring the machine. Servers
 - Launching a machine: [Create a cloud server](./cloud-providers/create-a-cloud-server.md).
 - Bringing your own: [Connect your own server](./connect-your-own-server.md).
 - Already have one: [Your server page](./your-server-page.md) explains every tab.
+- Control which ports can be reached: [Firewall](./firewall.md).
