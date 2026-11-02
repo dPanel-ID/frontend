@@ -6,13 +6,13 @@ import { ApiAi } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 
-import { toChatEntries } from '../adapter/conversation';
+import { toChatEntries, toChatSecrets } from '../adapter/conversation';
 import {
   readLastConversationId,
   writeLastConversationId,
 } from '../lib/conversation-storage';
 import { pollTurn } from '../lib/poll-turn';
-import type { ChatAction, ChatEntry } from '../rules/types';
+import type { ChatAction, ChatEntry, ChatSecret } from '../rules/types';
 import { ChatInputSchema } from '../rules/types';
 
 type HistoryState = 'loading' | 'ready';
@@ -216,6 +216,24 @@ export default function useAssistantChat() {
     [],
   );
 
+  const setActionSecrets = useCallback(
+    (actionId: string, secrets: ChatSecret[]) => {
+      setEntries((prev) =>
+        prev.map((entry) =>
+          entry.actions?.some((action) => action.id === actionId)
+            ? {
+                ...entry,
+                actions: entry.actions.map((action) =>
+                  action.id === actionId ? { ...action, secrets } : action,
+                ),
+              }
+            : entry,
+        ),
+      );
+    },
+    [],
+  );
+
   /** Approves or rejects a proposed change; the assistant then reports. */
   const decide = useCallback(
     async (action: ChatAction, approve: boolean) => {
@@ -233,9 +251,14 @@ export default function useAssistantChat() {
         }),
       );
 
-      const reported = result?.action_results?.find(
+      const actionResult = result?.action_results?.find(
         (entry) => entry.action_id === action.id,
-      )?.status as ChatAction['status'] | undefined;
+      );
+      const reported = actionResult?.status as ChatAction['status'] | undefined;
+      const secrets = toChatSecrets(actionResult?.secrets);
+      if (secrets.length > 0) {
+        setActionSecrets(action.id, secrets);
+      }
       if (reported && ACTION_STATUSES.includes(reported)) {
         setActionStatus(action.id, reported);
       } else if (result) {
@@ -247,7 +270,7 @@ export default function useAssistantChat() {
       }
       setIsSending(false);
     },
-    [isSending, runTurn, setActionStatus],
+    [isSending, runTurn, setActionSecrets, setActionStatus],
   );
 
   const retry = useCallback(

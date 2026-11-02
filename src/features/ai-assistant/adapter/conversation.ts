@@ -1,6 +1,6 @@
 import type { DTOs } from '@/shared/api';
 
-import type { ChatEntry } from '../rules/types';
+import type { ChatEntry, ChatSecret } from '../rules/types';
 
 /** Maps stored messages to chat entries; tolerates missing fields. */
 export function toChatEntries(
@@ -21,5 +21,18 @@ export function toChatEntries(
       content: message.content ?? '',
       tools: message.tools ?? [],
       status: 'done' as const,
+    }));
+}
+
+/** Keeps the complete secrets of an action result; drops malformed ones. */
+export function toChatSecrets(
+  secrets: DTOs.AiUserSecretV1[] | null | undefined,
+): ChatSecret[] {
+  return (secrets ?? [])
+    .filter((secret) => secret.name && secret.value)
+    .map((secret) => ({
+      name: secret.name ?? '',
+      label: secret.label || secret.name || '',
+      value: secret.value ?? '',
     }));
 }

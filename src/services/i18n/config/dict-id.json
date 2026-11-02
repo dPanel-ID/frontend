@@ -3465,7 +3465,11 @@
         "failed": "Disetujui, tetapi gagal dijalankan",
         "approve": "Setujui",
         "reject": "Tolak",
-        "working": "Sedang dikerjakan…"
+        "working": "Sedang dikerjakan…",
+        "secretsTitle": "Rahasia yang dibuat: simpan sekarang",
+        "secretsHint": "Hanya ditampilkan sekali ini. dPanel tidak menyimpan salinannya, dan menutup atau memuat ulang panel akan menyembunyikannya selamanya. Ubah kata sandi database di DB Manager setelah Anda masuk.",
+        "copy": "Salin",
+        "copied": "Tersalin"
       }
     }
   },
