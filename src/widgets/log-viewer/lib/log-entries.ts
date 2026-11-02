@@ -14,6 +14,35 @@ export interface LogEntryInput {
   source?: string;
   /** The output stream the line was read from, e.g. "stderr". */
   stream?: string;
+  /**
+   * The line's own structured fields, when the log pipeline already split a
+   * JSON line into a message and fields (see `logEntryFields`). Caddy's
+   * access log arrives this way: the line is "handled request" and the
+   * method, path, status and duration are here.
+   */
+  fields?: Record<string, unknown>;
+}
+
+/**
+ * Attributes the log pipeline adds to every line: who shipped it and where it
+ * was read from. They describe the shipping, not the event, so they are left
+ * out of what a reader sees.
+ */
+const PIPELINE_ATTRIBUTE =
+  /^(dpanel_|otel_|service_|host_name$|log_|syslog_|systemd_|_?time$|ts$|severity$|message$|msg$)/;
+
+/** An entry's own fields, from the attributes the logs API returns. */
+export function logEntryFields(
+  attributes: Record<string, unknown> | null | undefined,
+): Record<string, unknown> | undefined {
+  if (!attributes) return undefined;
+
+  const fields = Object.fromEntries(
+    Object.entries(attributes).filter(
+      ([key, value]) => !PIPELINE_ATTRIBUTE.test(key) && value != null,
+    ),
+  );
+  return Object.keys(fields).length > 0 ? fields : undefined;
 }
 
 /** Most severe first; also the order the level filters are shown in. */
@@ -138,7 +167,11 @@ export function toParsedLogLines(
         ? entry.line
         : entry.line.replace(GO_LOG_TIMESTAMP, '');
     const parsed = parseLogLine(line, index, undefined);
-    const access = summarizeHttpAccessLog(parsed.jsonPayload);
+    // A line that is not JSON itself may still have its fields alongside.
+    const payload =
+      parsed.jsonPayload ??
+      (entry.fields && { msg: parsed.message, ...entry.fields });
+    const access = summarizeHttpAccessLog(payload);
     // A line read from stderr is stamped ERROR, but tools such as Docker
     // BuildKit write all their progress there; only the text can tell.
     const stamped =
@@ -165,11 +198,15 @@ export function toParsedLogLines(
       id: `${baseId}|${seen}`,
       lineNumber: lineOffset + index + 1,
       raw: entry.line,
+      ...(payload !== parsed.jsonPayload && {
+        jsonPayload: payload,
+        jsonLabel: 'JSON',
+      }),
       ...(access && { message: access.message, jsonLabel: 'HTTP' }),
       level,
       timestamp,
       sourceLabel: source,
-      searchText: `${parsed.searchText} ${timestamp ?? ''} ${source}`,
+      searchText: `${parsed.searchText} ${access?.message ?? ''} ${timestamp ?? ''} ${source}`,
     };
   });
 }
@@ -186,15 +223,21 @@ export function summarizeHttpAccessLog(
   if (!isRecord(payload)) return undefined;
 
   const request = isRecord(payload.request) ? payload.request : payload;
-  const method = textOf(request.method);
-  const path = textOf(request.uri) ?? textOf(request.path);
+  // A pipeline that flattens nested JSON stores `request.method` as
+  // `request_method`.
+  const method = textOf(request.method) ?? textOf(payload.request_method);
+  const path =
+    textOf(request.uri) ??
+    textOf(request.path) ??
+    textOf(payload.request_uri) ??
+    textOf(payload.request_path);
   const status =
     numberOf(payload.status) ??
     numberOf(payload.status_code) ??
     numberOf(payload.http_response_status_code);
   if (!method || !path || status === undefined) return undefined;
 
-  const host = textOf(request.host);
+  const host = textOf(request.host) ?? textOf(payload.request_host);
   const duration = numberOf(payload.duration);
   const parts = [`${method.toUpperCase()} ${host ?? ''}${path} → ${status}`];
   if (duration !== undefined) parts.push(formatDurationSeconds(duration));

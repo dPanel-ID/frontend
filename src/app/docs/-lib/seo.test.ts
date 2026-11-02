@@ -79,7 +79,10 @@ describe('pageFaq', () => {
 describe('docsPageHead', () => {
   /** The JSON-LD types a page's head carries. */
   function jsonLdTypes(section: string, page: string) {
-    return docsPageHead('en', section, page).scripts?.map(
+    // A missing page gets a noindex head, which has no scripts.
+    const head = docsPageHead('en', section, page);
+    const scripts = 'scripts' in head ? head.scripts : [];
+    return scripts.map(
       (script) => (JSON.parse(script.children) as { '@type': string })['@type'],
     );
   }
@@ -93,7 +96,7 @@ describe('docsPageHead', () => {
     expect(withFaq.length).toBeGreaterThan(0);
     for (const { page, section } of pages) {
       const hasFaq = withFaq.some((entry) => entry.page === page);
-      expect(jsonLdTypes(section, page.slug)?.includes('FAQPage')).toBe(hasFaq);
+      expect(jsonLdTypes(section, page.slug).includes('FAQPage')).toBe(hasFaq);
     }
   });
 });

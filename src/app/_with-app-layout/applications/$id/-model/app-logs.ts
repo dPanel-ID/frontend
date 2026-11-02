@@ -9,6 +9,7 @@ import buildSelector from '@/shared/libs/react-factories/buildSelector';
 import {
   DEFAULT_LOG_TIME_RANGE,
   LOG_DOWNLOAD_PAGE_SIZE,
+  logEntryFields,
   resolveLogTimeRange,
 } from '@/widgets/log-viewer';
 import type {
@@ -186,6 +187,7 @@ export function toLogEntryInput(entry: AppLogEntryView): LogEntryInput {
     time: entry.time,
     source: typeof hostName === 'string' ? hostName : undefined,
     stream: typeof stream === 'string' ? stream : undefined,
+    fields: logEntryFields(entry.attributes),
   };
 }
 
