@@ -48,7 +48,9 @@ Akun Linux di mesin itu, dengan UID, direktori home, dan shell-nya. **Tambah pen
 
 ## Jaringan
 
-Port mana yang terbuka, proses mana yang memakainya, dari mana koneksi diizinkan, dan statusnya. Buka tab ini kalau ada yang tidak bisa dijangkau. Aplikasi yang sedang mendengarkan port-nya muncul di sini sebagai **LISTEN**.
+Port mana yang terbuka, proses mana yang memakainya, dari mana koneksi diizinkan, dan statusnya. Buka tab ini kalau ada yang tidak bisa dijangkau. Aplikasi yang sedang mendengarkan port-nya muncul di sini sebagai **LISTEN**. Kolom **Firewall** menunjukkan apakah aturan firewall membuat setiap port bisa dijangkau dari luar.
+
+Kotak **Firewall** membuka firewall server: aturannya, apakah sudah diterapkan, dan **Tinjau dan terapkan**. Lihat [Firewall](./firewall.md).
 
 ![Tab Jaringan berisi port yang terbuka](../../assets/servers/server-network.webp)
 

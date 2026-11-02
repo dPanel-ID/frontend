@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 
-import { DatabaseIcon, Trash2Icon } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { DatabaseIcon, ShieldIcon, Trash2Icon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -34,6 +35,8 @@ import type { StatusTone } from '@/shared/presentation/molecules/StatusPill';
 import { dataTable } from '@/shared/presentation/organisms/DataPanel';
 
 import { dbManagerUrl, firstDbManagerUrl } from '../-lib/db-manager';
+import { firewallViewSearch, firstFirewallViewSearch } from '../-lib/firewall';
+import type { ServerDetailSearch } from '../../../../-rules/tabs';
 import useModuleInstallationDelete from '../../../../-usecase/module-installation-delete';
 
 import type { ModulesListProps } from './types';
@@ -101,6 +104,7 @@ export default function ModulesList(props: ModulesListProps) {
               serverId,
               group.installations,
             );
+            const firewallSearch = firstFirewallViewSearch(group.installations);
 
             return (
               <TableRow key={group.id}>
@@ -159,6 +163,14 @@ export default function ModulesList(props: ModulesListProps) {
                       href={databaseUrl}
                       label={t('openDatabase')}
                       ariaLabel={t('openDatabaseAria', { module: group.name })}
+                    />
+                  )}
+                  {firewallSearch && (
+                    <ManageFirewallLink
+                      serverId={serverId}
+                      search={firewallSearch}
+                      label={t('manageFirewall')}
+                      ariaLabel={t('manageFirewallAria')}
                     />
                   )}
                 </TableCell>
@@ -312,6 +324,9 @@ function InstalledModuleDialog(props: {
   const databaseUrl = selected
     ? dbManagerUrl(DB_MANAGER_HOST, serverId, selected.installation)
     : null;
+  const firewallSearch = selected
+    ? firewallViewSearch(selected.installation)
+    : null;
 
   const handleClickUninstall = () => {
     if (!selected) return;
@@ -426,6 +441,24 @@ function InstalledModuleDialog(props: {
                   />
                 </div>
               )}
+              {firewallSearch && (
+                <div className="flex flex-col gap-3 rounded-lg border border-sky-400/30 bg-sky-500/5 p-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-primary">
+                      {t('firewallPanel.title')}
+                    </p>
+                    <p className="mt-1 text-xs text-primary/55">
+                      {t('firewallPanel.description')}
+                    </p>
+                  </div>
+                  <ManageFirewallLink
+                    serverId={serverId}
+                    search={firewallSearch}
+                    label={t('firewallPanel.button')}
+                    ariaLabel={t('firewallPanel.buttonAria')}
+                  />
+                </div>
+              )}
               <div className="flex flex-col gap-3 rounded-lg border border-destructive/25 bg-destructive/5 p-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-primary">
@@ -480,6 +513,30 @@ function OpenDatabaseLink(props: {
         <DatabaseIcon className="size-4" />
         {label}
       </a>
+    </Button>
+  );
+}
+
+/** Opens the Network tab's firewall view of this server. */
+function ManageFirewallLink(props: {
+  serverId: string;
+  search: ServerDetailSearch;
+  label: string;
+  ariaLabel: string;
+}) {
+  const { ariaLabel, label, search, serverId } = props;
+
+  return (
+    <Button asChild variant="outline" size="sm" className="shrink-0">
+      <Link
+        to="/servers/$id"
+        params={{ id: serverId }}
+        search={search}
+        aria-label={ariaLabel}
+      >
+        <ShieldIcon className="size-4" />
+        {label}
+      </Link>
     </Button>
   );
 }
