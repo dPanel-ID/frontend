@@ -54,6 +54,18 @@ Dari sana Anda bisa melihat tabel, menjalankan kueri, serta membuat basis data d
 
 Pengelola basis data menjangkau basis data lewat koneksi SSH server, jadi basis data tidak perlu dibuka ke internet. Anda bisa membukanya di server yang boleh Anda ubah: server milik Anda sendiri, dan server di workspace tempat Anda punya akses editor atau lebih tinggi.
 
+## Membuat basis data untuk aplikasi
+
+Aplikasi seperti WordPress butuh basis data sendiri dan pengguna yang hanya bisa menjangkaunya. Modul **MariaDB Database** membuat keduanya di server yang sudah punya MariaDB, tanpa kata sandi root:
+
+1. Tekan **Install** pada **MariaDB Database**.
+2. Isi **Database Name** dan **Database User** (huruf, angka, dan garis bawah), serta **Database Password** minimal 8 karakter.
+3. Tekan **Install**.
+
+dPanel membuat basis data (`utf8mb4`) dan penggunanya, memberi pengguna itu semua hak hanya pada basis data tersebut, dan mengizinkannya masuk dari server itu sendiri (`127.0.0.1` dan `localhost`), yaitu cara aplikasi di server yang sama terhubung. Setiap basis data tampil sendiri di tab **Modul**, jadi membuat basis data lain tidak pernah menyentuh yang pertama. Memasang nama basis data yang sama lagi dengan kata sandi baru akan mengganti kata sandi penggunanya.
+
+Arahkan aplikasi ke sana dengan variabel runtime seperti `DB_HOST=127.0.0.1:3306`, nama basis data, pengguna, dan kata sandinya. Lihat [Variabel lingkungan](../applications/environment-variables.md). [Tanya dPanel](../getting-started/ask-dpanel.md) bisa melakukannya untuk Anda dan membuatkan kata sandinya, yang ditampilkan sekali saja.
+
 ## Banyak server sekaligus
 
 Grup server memasang modul yang sama ke semua anggotanya dalam satu operasi, dan menampilkan hasilnya per server. Grup ada di **Server**, lalu **Server groups**.
