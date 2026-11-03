@@ -87,6 +87,10 @@ Aplikasi baru mendengarkan di port-nya di server. Untuk menyajikannya di domain 
 
 Apa saja yang berjalan di Ubuntu. Anda memilih runtime, misalnya Go, sebagai modul di langkah 2, lalu memberikan perintah untuk membangun dan menjalankan kode Anda di langkah 3. dPanel menjalankannya persis seperti yang Anda tulis.
 
+### Build saya butuh lebih dari satu runtime
+
+Tambahkan setiap runtime sebagai modul di langkah 2, misalnya PHP dan Node.js untuk aplikasi Laravel yang membangun front end dengan `npm`. Langkah 3 memilih semuanya di **Binary yang dibutuhkan** dan menyimpannya di aplikasi. Hanya runtime yang terpilih yang ada di path build, jadi runtime yang terlewat gagal dengan `command not found`. Anda bisa menambahkannya nanti di pengaturan aplikasi. Lihat [Deploy Laravel dengan PostgreSQL](../tutorials/deploy-laravel.md).
+
 ### Mengapa formulir menolak nama aplikasi saya?
 
 Nama hanya boleh berisi huruf, angka, dan spasi. `my-app` atau `my_app` ditolak; pakai `My App` sebagai gantinya.

@@ -1,0 +1,11 @@
+{
+  "label": "Tutorial",
+  "position": 2,
+  "description": "Ikuti satu halaman dari akun kosong sampai situs yang aktif: server, perangkat lunaknya, database, aplikasi, dan domain dengan HTTPS.",
+  "app": {
+    "label": "Buka dasbor",
+    "href": "/dashboard"
+  },
+  "icon": "list-checks",
+  "color": "emerald"
+}

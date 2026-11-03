@@ -1,6 +1,6 @@
 {
   "label": "Servers",
-  "position": 2,
+  "position": 3,
   "description": "Create a server at a cloud provider, see what runs on it, install a database, and remove it when you are done.",
   "app": {
     "label": "Go to servers",
