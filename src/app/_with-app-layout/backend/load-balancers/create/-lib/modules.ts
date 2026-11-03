@@ -54,6 +54,8 @@ export function normalizeLoadBalancerEngine(engine?: string) {
       return 'caddy';
     case 'apache-apisix':
       return 'apisix';
+    case 'ha-proxy':
+      return 'haproxy';
     default:
       return engine ?? 'unknown';
   }

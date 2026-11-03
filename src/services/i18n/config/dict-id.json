@@ -2031,11 +2031,11 @@
         "title": "Routing trafik",
         "description": "Pilih layer trafik dan arahkan request masuk ke aplikasi atau alamat upstream langsung.",
         "kindHint": "L7 cocok untuk routing path HTTP. L4 cocok untuk TCP, UDP, atau port database.",
-        "l4UnsupportedByEngine": "Apache APISIX hanya melayani load balancer HTTP (L7). Pilih Caddy untuk port TCP, UDP, atau database.",
+        "l4UnsupportedByEngine": "Engine ini hanya melayani load balancer HTTP (L7). Pilih Caddy, Apache APISIX, atau HAProxy untuk TCP, dan Caddy atau Apache APISIX untuk UDP.",
         "featuresHint": "Cara pengunjung terhubung. Dengan HTTPS, dNocs meminta dan memperbarui sertifikat untuk Anda.",
         "sslHint": "Sajikan situs lewat HTTPS. Matikan hanya untuk setup HTTP biasa.",
         "l7Hint": "Setiap aturan mencocokkan path dan mengirimnya ke aplikasi atau alamat.",
-        "l4Hint": "L4 meneruskan trafik ke satu atau beberapa alamat upstream tanpa inspeksi path HTTP.",
+        "l4Hint": "L4 meneruskan koneksi TCP atau UDP mentah ke satu atau beberapa upstream, misalnya database. Protokolnya diteruskan apa adanya.",
         "wildcard": "Wildcard",
         "reach": {
           "title": "Cara gateway menjangkau aplikasi ini",
@@ -2067,7 +2067,8 @@
           "sameServer": "Server yang sama",
           "customPortAuto": "otomatis",
           "customHint": "Gunakan URL origin seperti https://origin-gcp.example.com untuk menjangkau aplikasi yang sudah dilayani domain lain: gateway terhubung lewat HTTPS dan meminta domain tersebut. Kosongkan port untuk memakai 443 (https), 80 (http), atau port aplikasi untuk IP. Satu rute berisi URL semua atau IP semua."
-        }
+        },
+        "l4TlsHint": "Tidak dipakai untuk L4: koneksi diteruskan apa adanya, jadi database tetap memakai TLS-nya sendiri dari ujung ke ujung."
       },
       "preview": {
         "title": "Preview deployment",
@@ -2147,6 +2148,27 @@
         "dnsOnlyHint": "Pengunjung langsung menuju gateway. Sertifikat diterbitkan lewat HTTP-01.",
         "proxiedToggle": "Proxy lewat Cloudflare",
         "proxiedToggleHint": "Menyembunyikan alamat gateway di balik Cloudflare. Berfungsi di semua mode SSL/TLS; Full (strict) juga mengenkripsi jalur dari Cloudflare ke gateway."
+      },
+      "l4": {
+        "service": "Layanan",
+        "listenPort": "Port listen",
+        "listenAddress": "Alamat listen",
+        "listenAddressHint": "0.0.0.0 mendengarkan di semua alamat server; alamat privat menjauhkan port dari jaringan publik.",
+        "idleTimeout": "Batas waktu idle",
+        "idleTimeoutHint": "Tutup koneksi yang idle selama ini, dari 1m sampai 24h, misalnya 30m atau 2h.",
+        "allowFrom": "Sumber yang diizinkan",
+        "allowFromHint": "Alamat IPv4 atau CIDR yang boleh terhubung, dipisahkan koma, atau \"any\". Wajib untuk database. Jika firewall server aktif, sumber ini dibuka otomatis.",
+        "allowFromAnyWarning": "\"any\" membuat semua alamat di internet bisa mencapai port ini. Sebaiknya isi alamat klien yang membutuhkannya.",
+        "balance": "Penyeimbangan",
+        "balanceRoundRobin": "Round robin: sebar koneksi ke semua upstream",
+        "balanceFirst": "First: upstream pertama sebagai utama, sisanya cadangan",
+        "services": {
+          "generic": "TCP/UDP umum",
+          "postgresql": "PostgreSQL",
+          "mariadb": "MariaDB / MySQL",
+          "mongodb": "MongoDB",
+          "redis": "Redis"
+        }
       }
     },
     "loadBalancersDetail": {
@@ -3858,7 +3880,14 @@
       "invalidDomain": "Gagal memvalidasi domain: Domain tidak sah."
     },
     "mixedTargetForms": "Satu rute hanya boleh berisi URL origin saja atau alamat IP saja.",
-    "portPositive": "Gunakan port antara 1 dan 65535."
+    "portPositive": "Gunakan port antara 1 dan 65535.",
+    "l4PortRange": "Gunakan port antara 1024 dan 65535.",
+    "l4PortReserved": "Port ini dipakai oleh server atau engine load balancer.",
+    "ipv4": "Masukkan alamat IPv4 seperti 10.0.0.5.",
+    "allowFrom": "Gunakan alamat IPv4 atau CIDR seperti 203.0.113.10 atau 10.0.0.0/8, atau \"any\".",
+    "allowFromAny": "\"any\" tidak bisa digabung dengan alamat lain.",
+    "allowFromRequired": "Isi alamat yang boleh mencapai database ini, atau \"any\".",
+    "idleTimeout": "Gunakan menit atau jam, misalnya 30m atau 2h."
   },
   "sidebar": {
     "teamsWidget": {

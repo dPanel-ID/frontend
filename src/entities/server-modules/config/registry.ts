@@ -14,6 +14,7 @@ import LogoCaddyServer from '@/shared/assets/server-modules/module-ut-caddyserve
 import LogoDocker from '@/shared/assets/server-modules/module-ut-docker.svg';
 import LogoFFMPEG from '@/shared/assets/server-modules/module-ut-ffmpeg.svg';
 import LogoFrankenPHP from '@/shared/assets/server-modules/module-ut-frankenPHP.svg';
+import LogoHAProxy from '@/shared/assets/server-modules/module-ut-haproxy.svg';
 
 import type {
   ServerModule,
@@ -31,6 +32,7 @@ export const SERVER_MODULE_LOGOS: Record<string, string> = {
   frankenphp: LogoFrankenPHP,
   go: LogoGolang,
   golang: LogoGolang,
+  haproxy: LogoHAProxy,
   mariadb: LogoMariaDB,
   mongodb: LogoMongoDB,
   nodejs: LogoNodejs,
@@ -208,6 +210,16 @@ export const HARDCODED_SERVER_MODULES: ServerModule[] = [
     description:
       'Apache APISIX is a dynamic, high-performance API gateway and load balancer.',
     logoUrl: LogoAPISIX,
+    has_submodule: false,
+  },
+  {
+    category: ['infrastructure'],
+    platform: ['vm'],
+    id: 'haproxy',
+    name: 'HAProxy',
+    description:
+      'HAProxy is a fast, reliable load balancer and proxy for HTTP and TCP.',
+    logoUrl: LogoHAProxy,
     has_submodule: false,
   },
 ];

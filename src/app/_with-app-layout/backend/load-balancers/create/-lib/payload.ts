@@ -2,6 +2,7 @@ import type { ApplicationCard } from '@/entities/application/rules/schema';
 import { normalizeLoadBalancerPathMatchForPayload } from '@/entities/load-balancer/lib/path-match';
 
 import type { LoadBalancerCreationFormValues } from '@/features/load-balancer-creation-sidepanel';
+import { LoadBalancerCreationRules } from '@/features/load-balancer-creation-sidepanel';
 
 import type { LoadBalancerRuntimeItem } from '../-model/form';
 
@@ -106,6 +107,20 @@ export function toCreateLoadBalancerPayload(
     return undefined;
   })();
 
+  const l4 =
+    values.lbKind === 'l4' && values.l4rule
+      ? {
+          listenAddress: values.l4rule.listenAddress || undefined,
+          listenPort: values.l4rule.listenPort,
+          service: values.l4rule.service,
+          balance: values.l4rule.balance,
+          allowFrom: LoadBalancerCreationRules.parseAllowFrom(
+            values.l4rule.allowFrom,
+          ),
+          idleTimeout: values.l4rule.idleTimeout || undefined,
+        }
+      : undefined;
+
   return {
     domain: values.domain,
     name: values.description,
@@ -116,7 +131,10 @@ export function toCreateLoadBalancerPayload(
       : undefined,
     lbKind: values.lbKind,
     protocol: values.features.protocol ?? 'http',
-    sslEnabled: values.features.sslEnabled ?? true,
+    // L4 traffic passes through untouched; TLS stays the database's own.
+    sslEnabled:
+      values.lbKind === 'l4' ? false : (values.features.sslEnabled ?? true),
+    l4,
     defaultUpstream,
     rules,
     runtimeItems: runtimeItem ? [runtimeItem] : undefined,
