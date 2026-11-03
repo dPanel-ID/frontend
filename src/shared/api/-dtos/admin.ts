@@ -1,0 +1,56 @@
+import { z } from 'zod';
+
+/**
+ * The queue workflow that holds an execution. Absent on the task when no
+ * workflow holds it, for example after a restart lost it.
+ */
+export const schemaAdminTaskGatewayV2 = z.object({
+  task_id: z.string().optional(),
+  /** "queued" or "claimed"; read as a string so a new state cannot crash. */
+  state: z.string().optional(),
+  worker_id: z.string().optional(),
+  queued_at: z.string().optional(),
+  claimed_at: z.string().optional(),
+  last_heartbeat_at: z.string().optional(),
+});
+
+/** An execution of any workspace that has not finished yet. */
+export const schemaAdminTaskV2 = z.object({
+  execution_id: z.string().optional(),
+  type: z.string().optional(),
+  /** "pending", "queued" or "running"; any other string is kept as-is. */
+  status: z.string().optional(),
+  workspace_id: z.string().optional(),
+  machine_id: z.string().optional(),
+  machine_hostname: z.string().optional(),
+  module: z.string().optional(),
+  module_id: z.string().optional(),
+  created_at: z.string().optional(),
+  started_at: z.string().optional(),
+  handoff_at: z.string().optional(),
+  last_event_at: z.string().optional(),
+  last_event_message: z.string().optional(),
+  idle_seconds: z.number().optional(),
+  gateway: schemaAdminTaskGatewayV2.nullish(),
+  can_reclaim: z.boolean().optional(),
+});
+
+/** What the API did when an administrator reclaimed a task. */
+export const schemaAdminTaskReclaimV2 = z.object({
+  execution_id: z.string().optional(),
+  /** "requeued" or "restarted". */
+  action: z.string().optional(),
+  previous_worker_id: z.string().optional(),
+});
+
+/** What the API did when an administrator deleted (failed) a task. */
+export const schemaAdminTaskDeleteV2 = z.object({
+  execution_id: z.string().optional(),
+  status: z.string().optional(),
+  worker_stopped: z.boolean().optional(),
+});
+
+export type AdminTaskGatewayV2 = z.infer<typeof schemaAdminTaskGatewayV2>;
+export type AdminTaskV2 = z.infer<typeof schemaAdminTaskV2>;
+export type AdminTaskReclaimV2 = z.infer<typeof schemaAdminTaskReclaimV2>;
+export type AdminTaskDeleteV2 = z.infer<typeof schemaAdminTaskDeleteV2>;

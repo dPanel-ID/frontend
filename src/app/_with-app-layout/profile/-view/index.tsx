@@ -4,6 +4,7 @@ import { useAuthEmit } from '@/services/auth/model/events';
 import { useUserEditSidepanel } from '@/features/user-edit-sidepanel';
 
 import Layout from './-presentation/Layout';
+import AdminAccess from './AdminAccess';
 import { Header } from './Header';
 import Overview from './Overview';
 import { Personal, ProfileSidebar } from './Personal';
@@ -37,6 +38,7 @@ export default function ProfileView() {
       <Layout>
         <Layout.Main>
           <Personal onEditProfile={handleEditProfile} />
+          <AdminAccess />
         </Layout.Main>
 
         <Layout.Aside>
