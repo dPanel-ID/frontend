@@ -56,15 +56,21 @@ Pengelola basis data menjangkau basis data lewat koneksi SSH server, jadi basis 
 
 ## Membuat basis data untuk aplikasi
 
-Aplikasi seperti WordPress butuh basis data sendiri dan pengguna yang hanya bisa menjangkaunya. Modul **MariaDB Database** membuat keduanya di server yang sudah punya MariaDB, tanpa kata sandi root:
+Aplikasi seperti WordPress atau Laravel butuh basis data sendiri dan pengguna yang hanya bisa menjangkaunya. Keduanya dibuat dari modul server basis datanya sendiri, tanpa kata sandi administrator:
 
-1. Tekan **Install** pada **MariaDB Database**.
-2. Isi **Database Name** dan **Database User** (huruf, angka, dan garis bawah), serta **Database Password** minimal 8 karakter.
-3. Tekan **Install**.
+1. Di tab **Modul**, tekan **Add module**, lalu **Manage** pada **MariaDB** atau **PostgreSQL**. Modul itu harus sudah **Terpasang**.
+2. Di bagian **Databases**, tekan **Create database**. Bagian ini menampilkan basis data yang sudah Anda buat di server ini.
 
-dPanel membuat basis data (`utf8mb4`) dan penggunanya, memberi pengguna itu semua hak hanya pada basis data tersebut, dan mengizinkannya masuk dari server itu sendiri (`127.0.0.1` dan `localhost`), yaitu cara aplikasi di server yang sama terhubung. Setiap basis data tampil sendiri di tab **Modul**, jadi membuat basis data lain tidak pernah menyentuh yang pertama. Memasang nama basis data yang sama lagi dengan kata sandi baru akan mengganti kata sandi penggunanya.
+![Bagian Databases di tampilan Manage MariaDB, dengan satu basis data dan tombol Create database](../../assets/servers/server-module-databases.webp)
 
-Arahkan aplikasi ke sana dengan variabel runtime seperti `DB_HOST=127.0.0.1:3306`, nama basis data, pengguna, dan kata sandinya. Lihat [Variabel lingkungan](../applications/environment-variables.md). [Tanya dPanel](../getting-started/ask-dpanel.md) bisa melakukannya untuk Anda dan membuatkan kata sandinya, yang ditampilkan sekali saja.
+3. Isi **Database Name** dan **Database User**, serta **Database Password** minimal 8 karakter. Nama di PostgreSQL memakai huruf kecil, angka, dan garis bawah.
+4. Tekan **Install role**.
+
+![Formulir Create database: nama basis data, pengguna, dan kata sandi](../../assets/servers/server-module-create-database.webp)
+
+dPanel membuat basis data dan penggunanya, memberi pengguna itu semua hak hanya pada basis data tersebut, dan mengizinkannya masuk dari server itu sendiri (`127.0.0.1`), yaitu cara aplikasi di server yang sama terhubung. Membuat nama basis data yang sama lagi dengan kata sandi baru akan mengganti kata sandi penggunanya.
+
+Arahkan aplikasi ke sana dengan variabel runtime: host `127.0.0.1`, port `3306` untuk MariaDB atau `5432` untuk PostgreSQL, nama basis data, pengguna, dan kata sandinya. Lihat [Variabel lingkungan](../applications/environment-variables.md). [Tanya dPanel](../getting-started/ask-dpanel.md) bisa melakukan semuanya untuk Anda dan membuatkan kata sandinya, yang ditampilkan sekali saja.
 
 ## Banyak server sekaligus
 
