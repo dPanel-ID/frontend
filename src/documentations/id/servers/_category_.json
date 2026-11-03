@@ -1,6 +1,6 @@
 {
   "label": "Server",
-  "position": 2,
+  "position": 3,
   "description": "Membuat server di penyedia cloud, melihat isinya, memasang basis data, lalu menghapusnya setelah selesai.",
   "app": {
     "label": "Buka halaman server",

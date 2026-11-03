@@ -1,6 +1,6 @@
 {
   "label": "Aplikasi",
-  "position": 3,
+  "position": 4,
   "description": "Bangun aplikasi dari repositori GitHub, jalankan di salah satu server Anda, dan pantau setiap build dan rilisnya.",
   "app": {
     "label": "Buka halaman aplikasi",
