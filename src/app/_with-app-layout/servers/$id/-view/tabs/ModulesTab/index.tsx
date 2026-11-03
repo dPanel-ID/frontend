@@ -11,6 +11,12 @@ import {
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
+import {
+  childModuleIds,
+  indexCatalogModules,
+} from '@/entities/server-modules/lib/catalog-index';
+
+import { ApiModule } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import {
   couple,
@@ -54,23 +60,39 @@ export default guard(function ModulesTab() {
     (s) => [String(s.serverId), s.refreshModuleInventory, s.refreshModules],
   );
 
-  const installed = modules.filter(
+  // Child modules, such as databases created on MariaDB, show in their
+  // parent's Manage view, so they count neither here nor in the list.
+  const [catalogResponse] = ApiModule.Find.useGet({ serverId });
+  const catalogModules =
+    catalogResponse.$status === 'success'
+      ? catalogResponse.modules
+      : catalogResponse.$status === 'loading'
+        ? catalogResponse.prevData?.modules
+        : undefined;
+  const ownModules = useMemo(() => {
+    const children = childModuleIds(indexCatalogModules(catalogModules));
+    return modules.filter(
+      (module) => !children.has(module.module_name || module.name || ''),
+    );
+  }, [catalogModules, modules]);
+
+  const installed = ownModules.filter(
     (module) => module.status === 'installed',
   ).length;
   const moduleCount = new Set(
-    modules.map((module) => module.module_name || module.name),
+    ownModules.map((module) => module.module_name || module.name),
   ).size;
-  const attention = modules.length - installed;
+  const attention = ownModules.length - installed;
 
   const visibleModules = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    if (!query) return modules;
-    return modules.filter((module) =>
+    if (!query) return ownModules;
+    return ownModules.filter((module) =>
       [module.module_name, module.name, module.display_name]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(query)),
     );
-  }, [modules, searchQuery]);
+  }, [ownModules, searchQuery]);
 
   const handleClickAdd = () => {
     emit('@servers::detail/favorite-navigation', { to: 'modules-discover' });
