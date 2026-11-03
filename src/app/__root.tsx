@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import {
   ClientOnly,
@@ -5,6 +7,7 @@ import {
   Outlet,
   Scripts,
   createRootRoute,
+  useRouter,
 } from '@tanstack/react-router';
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { createServerFn } from '@tanstack/react-start';
@@ -97,6 +100,7 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   const { locale, messages } = Route.useLoaderData();
+  useSavedLocale(locale);
 
   return (
     <EventsProvider>
@@ -121,6 +125,25 @@ function RootComponent() {
       </DevetekIntlProvider>
     </EventsProvider>
   );
+}
+
+/**
+ * A static build prerenders every page in the default language, so a page
+ * opened or refreshed starts in English whatever the reader picked. Once it
+ * is running, reload the root data when the saved language differs, so the
+ * choice in the locale cookie survives a refresh. A server-rendered page
+ * reads the cookie itself and needs none of this.
+ */
+function useSavedLocale(locale: string) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isStaticBuild) return;
+
+    void getLocale().then((saved) => {
+      if (saved !== locale) void router.invalidate();
+    });
+  }, [locale, router]);
 }
 
 function ShellComponent({ children }: { children: React.ReactNode }) {

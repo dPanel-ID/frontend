@@ -12,12 +12,15 @@ import { DocsThemeToggle } from '../DocsThemeToggle';
  * It carries the language and theme controls, which otherwise have nowhere
  * to live on these pages: they sit outside the app shell, so without this
  * there is no way to switch language or to leave dark mode.
+ *
+ * mb-20 lets the page scroll the footer clear of the floating "Ask dPanel"
+ * button, which sits 20px from the bottom right and is about 44px tall.
  */
 export function DocsFooter() {
   const t = useDevetekTranslations('page.docs');
 
   return (
-    <footer className="mt-2 flex flex-col gap-3 rounded-2xl border bg-card px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <footer className="mt-2 mb-20 flex flex-col gap-3 rounded-2xl border bg-card px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
       <Link
         to="/docs/intro"
         className="inline-flex min-w-0 items-center gap-2 rounded-lg text-sm font-semibold text-primary/80 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50"
