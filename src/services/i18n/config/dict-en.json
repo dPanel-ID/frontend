@@ -707,6 +707,13 @@
         "passwordUpdate": "Password update",
         "available": "Available",
         "githubAccess": "GitHub access"
+      },
+      "administrator": {
+        "title": "Administrator",
+        "description": "Tools for operating dPanel itself. Only accounts with the dpanel-admin role see this.",
+        "tasksTitle": "Executor tasks",
+        "tasksDescription": "See unfinished tasks of every workspace, and reclaim or delete a task that is stuck on a worker.",
+        "tasksCta": "Open executor tasks"
       }
     },
     "applications": {
@@ -3221,6 +3228,105 @@
         "copyContent": "Copy content",
         "copied": "Copied {value}",
         "delete": "Delete"
+      }
+    },
+    "adminTasks": {
+      "breadcrumbProfile": "Profile",
+      "breadcrumbAdmin": "Administrator",
+      "badge": "Administrator only",
+      "headerTitle": "Executor tasks",
+      "headerDesc": "Every task in every workspace that has not finished yet, oldest first. Use this page to recover a task that is stuck on a worker.",
+      "guide": {
+        "title": "What you can do here",
+        "list": {
+          "title": "Find the stuck task",
+          "description": "A task is one job a worker runs, such as a deployment or a module install. Look for a long idle time or an old heartbeat."
+        },
+        "reclaim": {
+          "title": "Reclaim it",
+          "description": "The task goes to the next free worker, possibly a different one. The worker that holds it now stops within a minute."
+        },
+        "delete": {
+          "title": "Or delete it",
+          "description": "The task is marked as failed, so the deployment, server or module that started it can be retried from its own page."
+        }
+      },
+      "overview": {
+        "total": "Unfinished tasks",
+        "totalHint": "Across all workspaces",
+        "running": "Running",
+        "waiting": "Waiting for a worker",
+        "waitingHint": "Queued, or held by nothing",
+        "claimed": "Claimed by a worker",
+        "claimedHint": "A worker is holding it",
+        "limitNote": "Showing the oldest {limit} tasks only; newer ones are not counted."
+      },
+      "toolbar": {
+        "autoRefresh": "Refreshes every {seconds} seconds while this tab is open."
+      },
+      "table": {
+        "execution": "Task",
+        "status": "Status",
+        "workspace": "Workspace",
+        "server": "Server",
+        "worker": "Worker",
+        "gateway": "Queue",
+        "heartbeat": "Last heartbeat",
+        "idle": "Idle for",
+        "created": "Created",
+        "actions": "Actions",
+        "ago": "{duration} ago",
+        "unknownType": "Unknown type",
+        "unnamedServer": "Unnamed server",
+        "noServer": "no server",
+        "noWorker": "no worker"
+      },
+      "status": {
+        "pending": "Pending",
+        "queued": "Queued",
+        "running": "Running",
+        "unknown": "Unknown"
+      },
+      "gateway": {
+        "waiting": "Waiting",
+        "waitingHint": "In the queue; no worker has picked it up yet.",
+        "claimed": "Claimed",
+        "claimedHint": "A worker picked it up and is running it.",
+        "none": "Not held",
+        "noneHint": "No queue holds this task, for example after a restart. Reclaim it to queue it again, or delete it."
+      },
+      "actions": {
+        "menu": "Actions for task {id}",
+        "reclaim": "Reclaim task",
+        "reclaimHint": "Hand it to the next free worker",
+        "reclaimUnavailable": "Not available: it is already waiting, or its worker reported progress recently",
+        "delete": "Delete task",
+        "deleteHint": "Mark it as failed so it can be retried"
+      },
+      "reclaimDialog": {
+        "title": "Reclaim this task?",
+        "message": "Task {id} ({type}) on {server} goes back to the queue, and the next free worker runs it again from the start. The current worker ({worker}) is told to stop and stops within a minute. Nothing is deleted.",
+        "confirm": "Reclaim task"
+      },
+      "deleteDialog": {
+        "title": "Delete this task?",
+        "message": "Task {id} ({type}) on {server} is marked as failed and its worker is stopped. The work it was doing is abandoned and cannot be resumed; retry the deployment, server or module from its own page afterwards.",
+        "confirm": "Delete task"
+      },
+      "toaster": {
+        "reclaimSuccess": "Task reclaimed",
+        "reclaimRequeued": "The next free worker will pick it up.",
+        "reclaimRequeuedFrom": "Taken from {worker}; the next free worker will pick it up.",
+        "reclaimRestarted": "The task was queued again from the start.",
+        "reclaimError": "Could not reclaim the task",
+        "deleteSuccess": "Task deleted",
+        "deleteWorkerStopped": "It is marked as failed and its worker was told to stop.",
+        "deleteNoWorker": "It is marked as failed. No worker was running it.",
+        "deleteError": "Could not delete the task"
+      },
+      "empty": {
+        "title": "No unfinished tasks",
+        "message": "Every task in every workspace has finished. New ones appear here while they wait for or run on a worker."
       }
     }
   },
