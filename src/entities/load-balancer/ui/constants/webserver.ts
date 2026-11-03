@@ -59,3 +59,16 @@ export const LOAD_BALANCER_WEBSERVER_ENGINE: Record<
     },
   },
 };
+
+/**
+ * The L4 protocols each engine proxies. Keep in step with each engine's
+ * L4Protocols in the backend registry (pkg/drouter); an engine missing here
+ * serves HTTP load balancers only.
+ */
+export const LOAD_BALANCER_L4_PROTOCOLS: Partial<
+  Record<SchemaLoadBalancerParts.Webserver['engine'], Array<'tcp' | 'udp'>>
+> = {
+  caddy: ['tcp', 'udp'],
+  apisix: ['tcp', 'udp'],
+  haproxy: ['tcp'],
+};

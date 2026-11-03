@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="HAProxy">
+  <rect width="64" height="64" rx="12" fill="#106da9"/>
+  <g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round">
+    <path d="M14 32h12"/>
+    <path d="M26 32l10-12h14"/>
+    <path d="M26 32h24"/>
+    <path d="M26 32l10 12h14"/>
+  </g>
+  <circle cx="14" cy="32" r="5" fill="#fff"/>
+</svg>

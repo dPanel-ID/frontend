@@ -59,6 +59,12 @@ export const DEFAULT_VALUES: LoadBalancerCreationFormValues = {
     },
   ],
   l4rule: {
-    upstreams: [{ address: 'localhost', port: 80 }],
+    upstreams: [{ address: '127.0.0.1', port: 5432 }],
+    service: 'generic',
+    listenPort: 15432,
+    listenAddress: '0.0.0.0',
+    allowFrom: '',
+    balance: 'roundrobin',
+    idleTimeout: '1h',
   },
 };
