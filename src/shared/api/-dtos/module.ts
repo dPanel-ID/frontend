@@ -57,6 +57,10 @@ export interface ModuleCatalogItemV1 {
   actions?: string[];
   installation?: ModuleInstallationSummaryV1;
   installations?: ModuleInstallationSummaryV1[];
+  /** Set on a child module, such as mariadb-database under mariadb. */
+  parent?: string;
+  /** Modules offered only from this one; the catalog nests them here. */
+  children?: ModuleCatalogItemV1[];
 }
 
 export interface ModuleInstallationSummaryV1 {
