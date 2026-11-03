@@ -56,15 +56,21 @@ The database manager reaches the database through the server's SSH connection, s
 
 ## Create a database for an application
 
-An application such as WordPress needs its own database and a user that can only reach it. The **MariaDB Database** module creates both on a server that already has MariaDB, without the root password:
+An application such as WordPress or Laravel needs its own database and a user that can only reach it. You create both from the database server's own module, without its administrator password:
 
-1. Press **Install** on **MariaDB Database**.
-2. Enter **Database Name** and **Database User** (letters, digits and underscores), and a **Database Password** of at least 8 characters.
-3. Press **Install**.
+1. On the **Modules** tab, press **Add module**, then **Manage** on **MariaDB** or **PostgreSQL**. It must already be **Installed**.
+2. Under **Databases**, press **Create database**. The section lists the databases you created on this server.
 
-dPanel creates the database (`utf8mb4`) and the user, gives the user every privilege on that database only, and allows it to sign in from the server itself (`127.0.0.1` and `localhost`), which is how an application on the same server connects. Each database is listed on its own on the **Modules** tab, so creating another one never touches the first. Installing the same database name again with a new password changes the user's password.
+![The Databases section in MariaDB's Manage view, with one database and the Create database button](../../assets/servers/server-module-databases.webp)
 
-Point the application at it with runtime variables such as `DB_HOST=127.0.0.1:3306`, the database name, the user, and the password. See [Environment variables](../applications/environment-variables.md). [Ask dPanel](../getting-started/ask-dpanel.md) can do this for you and generates the password, which it shows you once.
+3. Enter **Database Name** and **Database User**, and a **Database Password** of at least 8 characters. PostgreSQL names use lowercase letters, digits and underscores.
+4. Press **Install role**.
+
+![The Create database form: database name, user and password](../../assets/servers/server-module-create-database.webp)
+
+dPanel creates the database and the user, gives the user every privilege on that database only, and lets it sign in from the server itself (`127.0.0.1`), which is how an application on the same server connects. Creating the same database name again with a new password changes the user's password.
+
+Point the application at it with runtime variables: host `127.0.0.1`, port `3306` for MariaDB or `5432` for PostgreSQL, the database name, the user and the password. See [Environment variables](../applications/environment-variables.md). [Ask dPanel](../getting-started/ask-dpanel.md) can do all of this for you and generates the password, which it shows you once.
 
 ## Many servers at once
 
