@@ -8,6 +8,8 @@ import {
   getFileIconFromFilename,
 } from '@/entities/file-manager/ui/mapper';
 
+import { matchesSearch } from '@/shared/libs/browser/string';
+
 import { GridItem, RowHeader, RowItem } from './_Partials';
 import type { FilesystemBrowserProps as Props } from './types';
 
@@ -27,7 +29,7 @@ export default function FilesystemBrowser(props: Props) {
     const listFile: SchemaFileManagerParts.ContentFile[] = [];
 
     const filteredContents = contents.filter((content) =>
-      content.name.includes(searchQuery),
+      matchesSearch(content.name, searchQuery),
     );
 
     for (const content of filteredContents) {
