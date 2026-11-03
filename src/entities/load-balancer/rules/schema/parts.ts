@@ -30,7 +30,9 @@ export const state = SchemaCommon.createState(
     'unknown',
   ],
   'unknown',
-);
+).extend({
+  errorDetail: SchemaCommon.executionErrorDetail.nullable().optional(),
+});
 
 export type Feature = z.output<typeof feature>;
 export const feature = z.enum(['http', 'http/2', 'quic', 'ssl/tls', 'brotli']);

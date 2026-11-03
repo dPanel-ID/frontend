@@ -257,6 +257,11 @@
       "branch": "Branch {branch}",
       "build": "Build {build}",
       "default": "Default"
+    },
+    "executionError": {
+      "noDetail": "No error detail was returned.",
+      "viewDetail": "View detail",
+      "noStructured": "No structured error detail was returned."
     }
   },
   "page": {
@@ -1972,7 +1977,12 @@
         "filteredMessage": "Try another domain, or clear the filters to see every load balancer.",
         "clear": "Clear filters"
       },
-      "unnamedTeam": "Team workspace"
+      "unnamedTeam": "Team workspace",
+      "failure": {
+        "title": "Load balancer change failed",
+        "dialogTitle": "Load balancer error detail",
+        "viewDetail": "See why it failed"
+      }
     },
     "loadBalancersCreate": {
       "headerTitle": "Create a load balancer",

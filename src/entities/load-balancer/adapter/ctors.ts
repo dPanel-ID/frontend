@@ -20,6 +20,7 @@ type LoadBalancerDto = DTOs.RouterV1 | DTOs.LoadBalancerV2;
 
 export function ctorState(raw: LoadBalancerDto) {
   return {
+    errorDetail: raw.error_detail,
     message: resolveExecutionErrorMessage(raw),
     status: raw.installer_status,
   } as KeysOnlyDeep<z.input<typeof state>>;
