@@ -2,12 +2,14 @@ import LogoMariaDB from '@/shared/assets/server-modules/module-db-mariadb.svg';
 import LogoMongoDB from '@/shared/assets/server-modules/module-db-mongo.svg';
 import LogoPostgreSQL from '@/shared/assets/server-modules/module-db-postgresql.svg';
 import LogoRedis from '@/shared/assets/server-modules/module-db-redis.svg';
+import LogoGeneric from '@/shared/assets/server-modules/module-generic.svg';
 import LogoBun from '@/shared/assets/server-modules/module-pl-bun.svg';
 import LogoGolang from '@/shared/assets/server-modules/module-pl-golang.svg';
 import LogoNodejs from '@/shared/assets/server-modules/module-pl-nodejs.svg';
 import LogoPHP from '@/shared/assets/server-modules/module-pl-php.svg';
 import LogoPython from '@/shared/assets/server-modules/module-pl-python.svg';
 import LogoRuby from '@/shared/assets/server-modules/module-pl-ruby.png';
+import LogoAPISIX from '@/shared/assets/server-modules/module-ut-apisix.svg';
 import LogoCaddyServer from '@/shared/assets/server-modules/module-ut-caddyserver.svg';
 import LogoDocker from '@/shared/assets/server-modules/module-ut-docker.svg';
 import LogoFFMPEG from '@/shared/assets/server-modules/module-ut-ffmpeg.svg';
@@ -20,6 +22,7 @@ import type {
 } from '../model/types';
 
 export const SERVER_MODULE_LOGOS: Record<string, string> = {
+  apisix: LogoAPISIX,
   bun: LogoBun,
   caddy: LogoCaddyServer,
   caddyserver: LogoCaddyServer,
@@ -55,7 +58,8 @@ export function resolveServerModuleLogo(module: {
     return SERVER_MODULE_LOGOS[idKey];
   }
 
-  return LogoDocker;
+  // A neutral mark: an unknown module must not borrow another one's logo.
+  return LogoGeneric;
 }
 
 export const HARDCODED_SERVER_MODULES: ServerModule[] = [
@@ -196,6 +200,16 @@ export const HARDCODED_SERVER_MODULES: ServerModule[] = [
     logoUrl: LogoCaddyServer,
     has_submodule: false,
   },
+  {
+    category: ['infrastructure'],
+    platform: ['vm'],
+    id: 'apisix',
+    name: 'Apache APISIX',
+    description:
+      'Apache APISIX is a dynamic, high-performance API gateway and load balancer.',
+    logoUrl: LogoAPISIX,
+    has_submodule: false,
+  },
 ];
 
 export const SERVER_MODULES_CATEGORY: ServerModuleCategory[] = [
@@ -218,6 +232,10 @@ export const SERVER_MODULES_CATEGORY: ServerModuleCategory[] = [
   {
     id: 'container',
     name: 'Containers',
+  },
+  {
+    id: 'security',
+    name: 'Security',
   },
   {
     id: 'utilities',
