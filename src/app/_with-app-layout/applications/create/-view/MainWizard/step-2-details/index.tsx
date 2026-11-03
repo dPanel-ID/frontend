@@ -21,6 +21,10 @@ import {
   titleizeModuleValue,
   toServerModuleFromCatalog,
 } from '@/entities/server-modules/lib/catalog';
+import {
+  childModuleIds,
+  indexCatalogModules,
+} from '@/entities/server-modules/lib/catalog-index';
 import type { ServerModule } from '@/entities/server-modules/model/types';
 
 import { ApiModule, ApiServer } from '@/shared/api';
@@ -924,15 +928,21 @@ const SectionDependencies = () => {
       skip: !hostedServerID,
     },
   });
-  const installedModuleGroups = useMemo(
-    () =>
-      groupInstalledModules(
-        inventoryResponse.$status === 'success'
-          ? (inventoryResponse.modules ?? [])
-          : [],
-      ),
-    [inventoryResponse],
-  );
+  // Child modules, such as databases created on MariaDB, are not
+  // dependencies an application picks; they belong to their parent.
+  const installedModuleGroups = useMemo(() => {
+    const children = childModuleIds(indexCatalogModules(catalog?.modules));
+    return groupInstalledModules(
+      inventoryResponse.$status === 'success'
+        ? (inventoryResponse.modules ?? []).filter(
+            (installation) =>
+              !children.has(
+                installation.module_name || installation.name || '',
+              ),
+          )
+        : [],
+    );
+  }, [catalog, inventoryResponse]);
   const installedSelectionIds = useMemo(() => {
     return new Set(
       installedModuleGroups.flatMap((moduleGroup) =>
