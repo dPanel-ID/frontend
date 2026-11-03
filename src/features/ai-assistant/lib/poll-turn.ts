@@ -7,7 +7,15 @@ const POLL_LIMIT_MS = 6 * 60 * 1000;
 
 export type TurnOutcome =
   | { ok: true; result: DTOs.AiChatResultV1 }
-  | { ok: false; error: string };
+  | {
+      ok: false;
+      error: string;
+      /**
+       * What the turn produced before it failed, such as an approved change
+       * and the secrets it generated, which the server gives out only once.
+       */
+      result?: DTOs.AiChatResultV1;
+    };
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -30,7 +38,11 @@ export async function pollTurn(
       return { ok: true, result: response.result ?? {} };
     }
     if (response.status === 'failed') {
-      return { ok: false, error: response.error || fallbackError };
+      return {
+        ok: false,
+        error: response.error || fallbackError,
+        result: response.result ?? undefined,
+      };
     }
     await wait(POLL_INTERVAL_MS);
   }
