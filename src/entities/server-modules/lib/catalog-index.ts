@@ -33,3 +33,14 @@ export function indexCatalogModules(
   }
   return index;
 }
+
+/** IDs of child modules, which are shown under their parent only. */
+export function childModuleIds(
+  index: Map<string, CatalogModuleLook>,
+): Set<string> {
+  const ids = new Set<string>();
+  for (const [id, look] of index) {
+    if (look.parent) ids.add(id);
+  }
+  return ids;
+}
