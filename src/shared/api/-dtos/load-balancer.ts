@@ -45,6 +45,15 @@ export interface LoadBalancerConfigV2 {
   lb_kind?: string;
   protocol?: string;
   ssl_enabled?: boolean;
+  /** The listener of an L4 load balancer. */
+  l4?: {
+    listen_address?: string;
+    listen_port?: number;
+    service?: string;
+    balance?: string;
+    allow_from?: string[];
+    idle_timeout?: string;
+  };
 }
 
 export interface LoadBalancerV2 {

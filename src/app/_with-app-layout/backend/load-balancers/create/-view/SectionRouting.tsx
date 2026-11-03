@@ -14,6 +14,9 @@ import { useDevetekTranslations } from '@/services/i18n';
 
 import { AdapterApplicationFromDto } from '@/entities/application/adapter';
 import type { ApplicationCard } from '@/entities/application/rules/schema';
+import { LOAD_BALANCER_L4_PROTOCOLS } from '@/entities/load-balancer/ui/constants/webserver';
+
+import { LoadBalancerCreationRules } from '@/features/load-balancer-creation-sidepanel';
 
 import { ApiApplication } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
@@ -43,8 +46,7 @@ export function RoutingModePicker(props: { form: Form }) {
   const t = useDevetekTranslations();
   const lbKind = useController({ control: form.control, name: 'lbKind' });
   const engine = useWatch({ control: form.control, name: 'engine' });
-  // Apache APISIX serves HTTP load balancers only; Caddy keeps layer 4.
-  const layer4Unsupported = normalizeLoadBalancerEngine(engine) === 'apisix';
+  const layer4Unsupported = !l4ProtocolsOf(engine).length;
 
   const selectKind = (kind: 'l7' | 'l4') => {
     lbKind.field.onChange(kind);
@@ -56,6 +58,15 @@ export function RoutingModePicker(props: { form: Form }) {
     const l4rule = form.getValues('l4rule');
     if (kind === 'l4' && (!l4rule || l4rule.upstreams.length < 1)) {
       form.setValue('l4rule', DEFAULT_VALUES.l4rule);
+    }
+    if (kind === 'l4') {
+      form.setValue(
+        'features.protocol',
+        l4ProtocolsOf(form.getValues('engine'))[0],
+      );
+      form.setValue('features.sslEnabled', false);
+    } else {
+      form.setValue('features.protocol', 'http');
     }
   };
 
@@ -104,10 +115,19 @@ export function RoutingModePicker(props: { form: Form }) {
   );
 }
 
+/** The L4 protocols the selected engine proxies; empty for HTTP only. */
+function l4ProtocolsOf(engine?: string) {
+  const normalized = normalizeLoadBalancerEngine(
+    engine,
+  ) as keyof typeof LOAD_BALANCER_L4_PROTOCOLS;
+  return LOAD_BALANCER_L4_PROTOCOLS[normalized] ?? [];
+}
+
 export function FeatureConfiguration(props: { form: Form }) {
   const { form } = props;
   const t = useDevetekTranslations();
   const lbKind = useWatch({ control: form.control, name: 'lbKind' });
+  const engine = useWatch({ control: form.control, name: 'engine' });
   const protocol = useController({
     control: form.control,
     name: 'features.protocol',
@@ -141,15 +161,10 @@ export function FeatureConfiguration(props: { form: Form }) {
               )}
               value={protocol.field.value}
               onChange={protocol.field.onChange}
-              items={[
-                { label: 'HTTP', value: 'http' },
-                { label: 'TCP', value: 'tcp' },
-                { label: 'UDP', value: 'udp' },
-                { label: 'PostgreSQL', value: 'postgresql' },
-                { label: 'MySQL', value: 'mysql' },
-                { label: 'MongoDB', value: 'mongodb' },
-                { label: 'Redis', value: 'redis' },
-              ]}
+              items={l4ProtocolsOf(engine).map((value) => ({
+                label: value.toUpperCase(),
+                value,
+              }))}
             />
           ) : (
             <div className="mt-2 flex h-10 items-center rounded-md border bg-card px-3 text-sm font-semibold">
@@ -164,11 +179,14 @@ export function FeatureConfiguration(props: { form: Form }) {
               {t('sidepanel.loadBalancerCreation.fieldSslEnabled.title')}
             </p>
             <p className="mt-1 text-sm text-muted-foreground">
-              {t('page.loadBalancersCreate.routing.sslHint')}
+              {lbKind === 'l4'
+                ? t('page.loadBalancersCreate.routing.l4TlsHint')
+                : t('page.loadBalancersCreate.routing.sslHint')}
             </p>
           </div>
           <Switch
-            checked={sslEnabled.field.value}
+            checked={lbKind !== 'l4' && sslEnabled.field.value}
+            disabled={lbKind === 'l4'}
             onCheckedChange={sslEnabled.field.onChange}
             aria-label={t(
               'sidepanel.loadBalancerCreation.fieldSslEnabled.title',
@@ -520,6 +538,34 @@ export function L4RuleBuilder(props: { form: Form }) {
     name: 'l4rule.upstreams',
   });
   const upstreamErrors = form.formState.errors.l4rule?.upstreams;
+  const l4Errors = form.formState.errors.l4rule;
+  const service = useController({
+    control: form.control,
+    name: 'l4rule.service',
+  });
+  const balance = useController({
+    control: form.control,
+    name: 'l4rule.balance',
+  });
+  const allowFrom = useWatch({
+    control: form.control,
+    name: 'l4rule.allowFrom',
+  });
+  const allowsAny = LoadBalancerCreationRules.parseAllowFrom(allowFrom).some(
+    (entry) => entry.toLowerCase() === 'any',
+  );
+
+  // A database service starts from its usual port, on both sides.
+  const selectService = (value: string) => {
+    const next =
+      value as (typeof LoadBalancerCreationRules.L4_SERVICES)[number];
+    service.field.onChange(next);
+    const port = LoadBalancerCreationRules.L4_SERVICE_PORTS[next];
+    if (!port) return;
+    form.setValue('l4rule.listenPort', port + 10_000);
+    form.setValue('l4rule.upstreams.0.port', port);
+    form.setValue('features.protocol', 'tcp');
+  };
 
   return (
     <Card className="rounded-lg p-4 shadow-none">
@@ -530,6 +576,88 @@ export function L4RuleBuilder(props: { form: Form }) {
         <p className="text-xs text-muted-foreground">
           {t('page.loadBalancersCreate.routing.l4Hint')}
         </p>
+      </div>
+
+      <div className="mb-4 grid gap-3 md:grid-cols-2">
+        <FormField label={t('page.loadBalancersCreate.l4.service')}>
+          <Combobox
+            classNameButton="w-full"
+            value={service.field.value}
+            onChange={selectService}
+            items={LoadBalancerCreationRules.L4_SERVICES.map((value) => ({
+              label: t(`page.loadBalancersCreate.l4.services.${value}`),
+              value,
+            }))}
+          />
+        </FormField>
+        <FormField label={t('page.loadBalancersCreate.l4.listenPort')}>
+          <Input
+            type="number"
+            min={1024}
+            max={65_535}
+            className="font-mono"
+            {...form.register('l4rule.listenPort', { valueAsNumber: true })}
+          />
+          <ErrorInline t={t} message={l4Errors?.listenPort?.message} />
+        </FormField>
+        <FormField
+          label={t('page.loadBalancersCreate.l4.listenAddress')}
+          description={t('page.loadBalancersCreate.l4.listenAddressHint')}
+        >
+          <Input
+            className="font-mono"
+            placeholder="0.0.0.0"
+            {...form.register('l4rule.listenAddress')}
+          />
+          <ErrorInline t={t} message={l4Errors?.listenAddress?.message} />
+        </FormField>
+        <FormField
+          label={t('page.loadBalancersCreate.l4.idleTimeout')}
+          description={t('page.loadBalancersCreate.l4.idleTimeoutHint')}
+        >
+          <Input
+            className="font-mono"
+            placeholder="1h"
+            {...form.register('l4rule.idleTimeout')}
+          />
+          <ErrorInline t={t} message={l4Errors?.idleTimeout?.message} />
+        </FormField>
+        <div className="md:col-span-2">
+          <FormField
+            label={t('page.loadBalancersCreate.l4.allowFrom')}
+            description={
+              allowsAny
+                ? t('page.loadBalancersCreate.l4.allowFromAnyWarning')
+                : t('page.loadBalancersCreate.l4.allowFromHint')
+            }
+          >
+            <Input
+              className="font-mono"
+              placeholder="203.0.113.10, 10.0.0.0/8"
+              {...form.register('l4rule.allowFrom')}
+            />
+            <ErrorInline t={t} message={l4Errors?.allowFrom?.message} />
+          </FormField>
+        </div>
+        <div className="md:col-span-2">
+          <FormField label={t('page.loadBalancersCreate.l4.balance')}>
+            <Combobox
+              classNameButton="w-full"
+              value={balance.field.value}
+              onChange={balance.field.onChange}
+              items={[
+                {
+                  label: t('page.loadBalancersCreate.l4.balanceRoundRobin'),
+                  value: 'roundrobin',
+                },
+                {
+                  label: t('page.loadBalancersCreate.l4.balanceFirst'),
+                  value: 'first',
+                },
+              ]}
+            />
+          </FormField>
+        </div>
       </div>
 
       <div className="grid gap-2">

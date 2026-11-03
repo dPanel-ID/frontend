@@ -22,6 +22,16 @@ export interface RecipeInternalDomainMetadata {
   ttl?: number;
 }
 
+/** The listener of an L4 load balancer; the backend fills defaults. */
+export interface RecipeL4 {
+  listenAddress?: string;
+  listenPort: number;
+  service?: string;
+  balance?: string;
+  allowFrom?: string[];
+  idleTimeout?: string;
+}
+
 export interface RecipeRule {
   pathMatch: string;
   type: string;
@@ -59,6 +69,7 @@ export interface RecipeParams {
   rules?: RecipeRule[];
   runtimeItems?: RecipeRuntimeItem[];
   port?: string;
+  l4?: RecipeL4;
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
@@ -74,6 +85,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
     sslEnabled,
     rules,
     runtimeItems,
+    l4,
   } = params;
 
   return {
@@ -101,6 +113,16 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
         lb_kind: lbKind,
         protocol,
         ssl_enabled: sslEnabled,
+        l4: l4
+          ? {
+              listen_address: l4.listenAddress,
+              listen_port: l4.listenPort,
+              service: l4.service,
+              balance: l4.balance,
+              allow_from: l4.allowFrom,
+              idle_timeout: l4.idleTimeout,
+            }
+          : undefined,
       },
       rules: rules?.map(toRulePayload),
       runtime_items: runtimeItems?.map((item) => ({
