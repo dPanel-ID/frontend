@@ -38,32 +38,6 @@ export const ssh = z.object({
 });
 
 export type State = z.output<typeof state>;
-export const errorDetail = z
-  .object({
-    action: z.string().optional(),
-    command: z.string().optional(),
-    detail: z.string().optional(),
-    event_type: z.string().optional(),
-    execution_id: z.string().optional(),
-    exit_code: z.number().nullable().optional(),
-    host: z.string().optional(),
-    machine_id: z.string().optional(),
-    message: z.string().optional(),
-    module: z.string().optional(),
-    module_id: z.string().optional(),
-    organization_id: z.string().optional(),
-    play: z.string().optional(),
-    playbook: z.string().optional(),
-    role: z.string().optional(),
-    stderr: z.string().optional(),
-    stdout: z.string().optional(),
-    summary: z.string().optional(),
-    task: z.string().optional(),
-    task_path: z.string().optional(),
-    traceparent: z.string().optional(),
-    type: z.string().optional(),
-  })
-  .passthrough();
 export const state = SchemaCommon.createState(
   [
     'pending',
@@ -77,7 +51,7 @@ export const state = SchemaCommon.createState(
   ],
   'unknown',
 ).extend({
-  errorDetail: errorDetail.nullable().optional(),
+  errorDetail: SchemaCommon.executionErrorDetail.nullable().optional(),
 });
 
 export type System = z.output<typeof system>;

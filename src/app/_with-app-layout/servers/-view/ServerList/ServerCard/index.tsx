@@ -5,7 +5,6 @@ import { useNavigate } from '@tanstack/react-router';
 import {
   AppWindowIcon,
   BuildingIcon,
-  CircleAlertIcon,
   Clock3Icon,
   CpuIcon,
   DatabaseIcon,
@@ -22,7 +21,6 @@ import type { LucideIcon } from 'lucide-react';
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import { serverDisplayName } from '@/entities/server/lib/describeServer';
-import { getServerErrorSummary } from '@/entities/server/lib/error-detail';
 import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import { ServerErrorDialog } from '@/entities/server/ui/ServerErrorDialog';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
@@ -34,12 +32,12 @@ import {
 } from '@/entities/server-modules/lib/installations';
 import type { OverviewModuleGroup } from '@/entities/server-modules/lib/installations';
 import { POLL_INTERVAL_MS__SERVER_CARD } from '@/entities/server-statistics/config';
+import { ExecutionErrorBanner } from '@/entities/shared/ui/ExecutionErrorBanner';
 import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { ApiLoadBalancer, ApiServer } from '@/shared/api';
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { cn } from '@/shared/libs/tailwind/cn';
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
 
 import { ServerActions } from '../ServerActions';
@@ -224,8 +222,10 @@ export default function ServerCard(props: ServerCardProps) {
           </div>
 
           {status === 'failed' && (
-            <ErrorSummaryBanner
-              message={getServerErrorSummary(server.state)}
+            <ExecutionErrorBanner
+              title={t('page.servers.card.setupFailed')}
+              state={server.state}
+              emptyMessage={t('page.servers.card.noErrorDetail')}
               onClickDetail={(event) => {
                 event.stopPropagation();
                 setIsErrorDialogOpen(true);
@@ -317,40 +317,6 @@ function responseData<T>(
   if (response.$status === 'success') return response as T;
   if (response.$status === 'loading') return response.prevData;
   return undefined;
-}
-
-function ErrorSummaryBanner(props: {
-  message?: string;
-  onClickDetail: (event: MouseEvent<HTMLButtonElement>) => void;
-}) {
-  const { message, onClickDetail } = props;
-  const t = useDevetekTranslations();
-
-  return (
-    <div className="flex flex-col gap-3 rounded-xl border border-red-400/30 bg-red-500/10 px-3 py-2 text-xs sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex min-w-0 items-start gap-2">
-        <CircleAlertIcon className="mt-0.5 size-4 shrink-0 text-red-500 dark:text-red-300" />
-        <div className="min-w-0">
-          <p className="font-bold text-red-700 dark:text-red-200">
-            {t('page.servers.card.setupFailed')}
-          </p>
-          <p className="mt-0.5 line-clamp-2 break-words text-red-700/80 dark:text-red-100/75">
-            {message || t('page.servers.card.noErrorDetail')}
-          </p>
-        </div>
-      </div>
-
-      <Button
-        buttonStyle="outline"
-        buttonColor="secondary"
-        size="sm"
-        className="shrink-0 border-red-400/30 text-red-700 hover:bg-red-500/15 dark:text-red-100"
-        onClick={onClickDetail}
-      >
-        {t('page.servers.card.viewDetail')}
-      </Button>
-    </div>
-  );
 }
 
 function InlineInfo(props: { icon: LucideIcon; value?: ReactNode }) {
