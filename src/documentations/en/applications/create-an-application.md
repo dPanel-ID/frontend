@@ -87,6 +87,10 @@ A new application listens on its port on the server. To serve it on a domain wit
 
 Any that run on Ubuntu. You pick the runtime, such as Go, as a module in step 2, and give the commands that build and start your code in step 3. dPanel runs them as you wrote them.
 
+### My build needs more than one runtime
+
+Add every runtime as a module in step 2, such as PHP and Node.js for a Laravel app that builds its front end with `npm`. Step 3 selects all of them under **Required binaries** and stores them on the application. Only selected runtimes are on the build's path, so a missing one fails with `command not found`. You can add one later under the application's settings. See [Deploy Laravel with PostgreSQL](../tutorials/deploy-laravel.md).
+
 ### Why does the form refuse my application name?
 
 The name may only contain letters, numbers and spaces. `my-app` or `my_app` is refused; use `My App` instead.

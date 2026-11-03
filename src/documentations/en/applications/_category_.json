@@ -1,6 +1,6 @@
 {
   "label": "Applications",
-  "position": 3,
+  "position": 4,
   "description": "Build an application from a GitHub repository, run it on one of your servers, and follow every build and release.",
   "app": {
     "label": "Go to applications",

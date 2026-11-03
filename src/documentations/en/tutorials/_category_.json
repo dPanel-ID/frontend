@@ -1,0 +1,11 @@
+{
+  "label": "Tutorials",
+  "position": 2,
+  "description": "Follow one page from an empty account to a live website: a server, its software, a database, the application and a domain with HTTPS.",
+  "app": {
+    "label": "Open the dashboard",
+    "href": "/dashboard"
+  },
+  "icon": "list-checks",
+  "color": "emerald"
+}
