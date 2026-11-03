@@ -54,6 +54,18 @@ From there you can browse tables, run queries, and create databases and users wi
 
 The database manager reaches the database through the server's SSH connection, so the database never needs to be open to the internet. You can open it on servers you can edit: your own servers, and servers in a workspace where you have editor access or more.
 
+## Create a database for an application
+
+An application such as WordPress needs its own database and a user that can only reach it. The **MariaDB Database** module creates both on a server that already has MariaDB, without the root password:
+
+1. Press **Install** on **MariaDB Database**.
+2. Enter **Database Name** and **Database User** (letters, digits and underscores), and a **Database Password** of at least 8 characters.
+3. Press **Install**.
+
+dPanel creates the database (`utf8mb4`) and the user, gives the user every privilege on that database only, and allows it to sign in from the server itself (`127.0.0.1` and `localhost`), which is how an application on the same server connects. Each database is listed on its own on the **Modules** tab, so creating another one never touches the first. Installing the same database name again with a new password changes the user's password.
+
+Point the application at it with runtime variables such as `DB_HOST=127.0.0.1:3306`, the database name, the user, and the password. See [Environment variables](../applications/environment-variables.md). [Ask dPanel](../getting-started/ask-dpanel.md) can do this for you and generates the password, which it shows you once.
+
 ## Many servers at once
 
 A server group installs the same module on every member in one operation, and shows the result per server. Groups are under **Servers**, then **Server groups**.

@@ -6,7 +6,7 @@ sidebar_icon: circle-help
 sidebar_label: Ask dPanel
 ---
 
-**Ask dPanel** is the AI assistant built into dPanel. It answers questions about the servers, applications, domains, load balancers, SSH keys, cloud accounts and recent jobs in your current workspace, and it can prepare a change for you to approve.
+**Ask dPanel** is the AI assistant built into dPanel. It answers questions about the servers, applications, databases, domains, load balancers, SSH keys, cloud accounts and recent jobs in your current workspace, answers how-to questions from this documentation, and prepares changes for you to approve: launching a server, installing software, creating a database, creating and deploying an application with its environment variables, and putting a load balancer in front of it.
 
 ![The dPanel assistant panel, open beside the dashboard with example questions](../../assets/getting-started/assistant.webp 'The assistant works in your current workspace, with your own access.')
 
@@ -28,6 +28,11 @@ The assistant reads dPanel through the same API you use, with your own role. Goo
 - "List my domains and their DNS providers."
 - "Which application runs on dpanel-web-01, and on which port?"
 - "Why did the last build of My App fail?"
+- "On server 145, create a MariaDB database named wordpress with a user named wp."
+- "Which databases are on server 145? Give me the database manager links."
+- "How do I roll back an application to an earlier build?"
+
+To create an application from a repository that has no `.devetek` definition, tell it the language and version, the build commands and the start command; it asks for them rather than guessing. You don't need to choose a port: dPanel picks a free one on the server when it deploys, and the approval says which.
 
 It only sees the workspace you are in. Switch workspace first to ask about another one. See [Workspaces](./workspaces.md).
 
@@ -46,6 +51,15 @@ When you ask for a change, such as creating an application, releasing a build, c
 | Approved, but it did not start | dPanel refused the change; the chat says why    |
 
 Your role still applies: the assistant cannot do anything your account is not allowed to do. See [Members and roles](../teams/members-and-roles.md).
+
+## Passwords and other secrets
+
+Never type a password, token or key in the chat: messages go to the AI service. If you already did, treat that value as exposed. The assistant handles secrets in two ways that keep them out of the conversation:
+
+- **Secrets dPanel generates for you**, such as the root password of a new MariaDB or the password of a new database user, appear once on the approval card after you press **Approve**, under **Generated secrets: save them now**, each with a **Copy** button. dPanel keeps no copy, and closing or reloading the panel hides them for good. You can change a database password later in the database manager.
+- **Secrets you supply**, such as an application's database password variable, appear as fields on the approval card. Type each value there; **Approve** stays disabled until every field is filled. The values go with your approval only and the assistant never sees them.
+
+The assistant itself only ever sees variable names, never values.
 
 ## Start over
 

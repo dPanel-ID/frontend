@@ -36,6 +36,8 @@ If your code reads its port from a variable, as go-example reads `PORT`, set it 
 
 You can also change both lists in **Edit settings**, the full form. See [Update or delete an application](./update-or-delete.md).
 
+[Ask dPanel](../getting-started/ask-dpanel.md) can set and remove variables too, when it creates an application or later. Secret values are never typed in the chat: the approval card asks for them, and the assistant only sees the names.
+
 ## Keeping secrets safe
 
 - dPanel never shows a variable's value after you save it. **Settings** lists the names only, with the value masked.

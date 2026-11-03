@@ -36,6 +36,8 @@ Jika kode Anda membaca port dari variabel, seperti go-example membaca `PORT`, is
 
 Kedua daftar juga bisa diubah lewat **Ubah pengaturan**, yaitu formulir lengkapnya. Lihat [Mengubah atau menghapus aplikasi](./update-or-delete.md).
 
+[Tanya dPanel](../getting-started/ask-dpanel.md) juga bisa mengatur dan menghapus variabel, saat membuat aplikasi maupun sesudahnya. Nilai rahasia tidak pernah diketik di chat: kartu persetujuan yang memintanya, dan asisten hanya melihat namanya.
+
 ## Menjaga rahasia tetap aman
 
 - dPanel tidak pernah menampilkan nilai variabel setelah disimpan. **Pengaturan** hanya menampilkan namanya, dengan nilai yang disamarkan.
