@@ -1,3 +1,4 @@
+export { default as ApiAdmin } from './admin';
 export { default as ApiAgent } from './agent';
 export { default as ApiAi } from './ai';
 export { default as ApiApplication } from './application';

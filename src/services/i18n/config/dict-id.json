@@ -698,6 +698,13 @@
         "passwordUpdate": "Update password",
         "available": "Tersedia",
         "githubAccess": "Akses GitHub"
+      },
+      "administrator": {
+        "title": "Administrator",
+        "description": "Alat untuk mengoperasikan dPanel itu sendiri. Hanya akun dengan role dpanel-admin yang melihat ini.",
+        "tasksTitle": "Tugas executor",
+        "tasksDescription": "Lihat tugas yang belum selesai di semua workspace, lalu ambil alih atau hapus tugas yang macet di sebuah worker.",
+        "tasksCta": "Buka tugas executor"
       }
     },
     "applications": {
@@ -3213,6 +3220,105 @@
         "copyContent": "Salin isi",
         "copied": "{value} disalin",
         "delete": "Hapus"
+      }
+    },
+    "adminTasks": {
+      "breadcrumbProfile": "Profil",
+      "breadcrumbAdmin": "Administrator",
+      "badge": "Khusus administrator",
+      "headerTitle": "Tugas executor",
+      "headerDesc": "Semua tugas di semua workspace yang belum selesai, dari yang paling lama. Gunakan halaman ini untuk memulihkan tugas yang macet di sebuah worker.",
+      "guide": {
+        "title": "Yang bisa Anda lakukan di sini",
+        "list": {
+          "title": "Temukan tugas yang macet",
+          "description": "Tugas adalah satu pekerjaan yang dijalankan worker, misalnya deployment atau instalasi modul. Perhatikan waktu diam yang lama atau heartbeat yang sudah lama."
+        },
+        "reclaim": {
+          "title": "Ambil alih",
+          "description": "Tugas diberikan ke worker berikutnya yang kosong, bisa jadi worker lain. Worker yang memegangnya sekarang berhenti dalam satu menit."
+        },
+        "delete": {
+          "title": "Atau hapus",
+          "description": "Tugas ditandai gagal, sehingga deployment, server, atau modul yang memulainya bisa dicoba lagi dari halamannya sendiri."
+        }
+      },
+      "overview": {
+        "total": "Tugas belum selesai",
+        "totalHint": "Di semua workspace",
+        "running": "Berjalan",
+        "waiting": "Menunggu worker",
+        "waitingHint": "Dalam antrean, atau tidak dipegang siapa pun",
+        "claimed": "Dipegang worker",
+        "claimedHint": "Sebuah worker sedang memegangnya",
+        "limitNote": "Hanya menampilkan {limit} tugas terlama; tugas yang lebih baru tidak dihitung."
+      },
+      "toolbar": {
+        "autoRefresh": "Diperbarui setiap {seconds} detik selama tab ini terbuka."
+      },
+      "table": {
+        "execution": "Tugas",
+        "status": "Status",
+        "workspace": "Workspace",
+        "server": "Server",
+        "worker": "Worker",
+        "gateway": "Antrean",
+        "heartbeat": "Heartbeat terakhir",
+        "idle": "Diam selama",
+        "created": "Dibuat",
+        "actions": "Aksi",
+        "ago": "{duration} yang lalu",
+        "unknownType": "Jenis tidak diketahui",
+        "unnamedServer": "Server tanpa nama",
+        "noServer": "tanpa server",
+        "noWorker": "tanpa worker"
+      },
+      "status": {
+        "pending": "Tertunda",
+        "queued": "Dalam antrean",
+        "running": "Berjalan",
+        "unknown": "Tidak diketahui"
+      },
+      "gateway": {
+        "waiting": "Menunggu",
+        "waitingHint": "Dalam antrean; belum ada worker yang mengambilnya.",
+        "claimed": "Diambil",
+        "claimedHint": "Sebuah worker sudah mengambil dan menjalankannya.",
+        "none": "Tidak dipegang",
+        "noneHint": "Tidak ada antrean yang memegang tugas ini, misalnya setelah restart. Ambil alih untuk mengantrekannya lagi, atau hapus."
+      },
+      "actions": {
+        "menu": "Aksi untuk tugas {id}",
+        "reclaim": "Ambil alih tugas",
+        "reclaimHint": "Berikan ke worker berikutnya yang kosong",
+        "reclaimUnavailable": "Tidak tersedia: tugas sudah menunggu, atau worker-nya baru saja melaporkan progres",
+        "delete": "Hapus tugas",
+        "deleteHint": "Tandai gagal agar bisa dicoba lagi"
+      },
+      "reclaimDialog": {
+        "title": "Ambil alih tugas ini?",
+        "message": "Tugas {id} ({type}) di {server} kembali ke antrean, dan worker berikutnya yang kosong menjalankannya lagi dari awal. Worker saat ini ({worker}) diminta berhenti dan berhenti dalam satu menit. Tidak ada yang dihapus.",
+        "confirm": "Ambil alih tugas"
+      },
+      "deleteDialog": {
+        "title": "Hapus tugas ini?",
+        "message": "Tugas {id} ({type}) di {server} ditandai gagal dan worker-nya dihentikan. Pekerjaan yang sedang berjalan ditinggalkan dan tidak bisa dilanjutkan; coba lagi deployment, server, atau modulnya dari halamannya sendiri setelah ini.",
+        "confirm": "Hapus tugas"
+      },
+      "toaster": {
+        "reclaimSuccess": "Tugas diambil alih",
+        "reclaimRequeued": "Worker berikutnya yang kosong akan mengambilnya.",
+        "reclaimRequeuedFrom": "Diambil dari {worker}; worker berikutnya yang kosong akan mengambilnya.",
+        "reclaimRestarted": "Tugas diantrekan lagi dari awal.",
+        "reclaimError": "Tidak bisa mengambil alih tugas",
+        "deleteSuccess": "Tugas dihapus",
+        "deleteWorkerStopped": "Tugas ditandai gagal dan worker-nya diminta berhenti.",
+        "deleteNoWorker": "Tugas ditandai gagal. Tidak ada worker yang menjalankannya.",
+        "deleteError": "Tidak bisa menghapus tugas"
+      },
+      "empty": {
+        "title": "Tidak ada tugas yang belum selesai",
+        "message": "Semua tugas di semua workspace sudah selesai. Tugas baru muncul di sini selama menunggu atau berjalan di worker."
       }
     }
   },
