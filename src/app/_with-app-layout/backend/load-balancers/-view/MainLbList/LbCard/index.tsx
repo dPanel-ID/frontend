@@ -26,6 +26,7 @@ import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 import type { SchemaLoadBalancerParts } from '@/entities/load-balancer/rules/schema';
 import { LOAD_BALANCER_STATUS_METADATA } from '@/entities/load-balancer/ui/constants/state-metadata';
 import { LOAD_BALANCER_WEBSERVER_ENGINE } from '@/entities/load-balancer/ui/constants/webserver';
+import { LoadBalancerFailure } from '@/entities/load-balancer/ui/LoadBalancerFailure';
 import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
@@ -168,6 +169,12 @@ export default function LbCard(props: LbCardProps) {
             value={<OwnerLink ownership={data.ownership} />}
           />
         </div>
+
+        <LoadBalancerFailure
+          domain={data.domain.fqdn}
+          state={data.state}
+          className="mt-4"
+        />
 
         <div className="mt-4 flex items-center justify-between gap-2 border-t pt-3">
           <StatusPill
@@ -312,16 +319,11 @@ export default function LbCard(props: LbCardProps) {
         </div>
       </div>
 
-      {data.state.message && (
-        <div className="border-t border-dashed px-4 py-3">
-          <div className="rounded-lg border border-red-500/25 bg-red-500/10 px-3 py-2 text-sm text-red-600 dark:text-red-400">
-            <span className="font-semibold">
-              {t('page.loadBalancers.statusMessage')}:{' '}
-            </span>
-            <span className="break-words">{data.state.message}</span>
-          </div>
-        </div>
-      )}
+      <LoadBalancerFailure
+        domain={data.domain.fqdn}
+        state={data.state}
+        className="border-t border-dashed px-4 py-3"
+      />
     </article>
   );
 }

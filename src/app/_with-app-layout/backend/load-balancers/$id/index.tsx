@@ -4,6 +4,7 @@ import { AlertTriangleIcon, RefreshCwIcon } from 'lucide-react';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { AdapterLoadBalancerFromDto } from '@/entities/load-balancer/adapter';
+import { LoadBalancerFailure } from '@/entities/load-balancer/ui/LoadBalancerFailure';
 
 import { ApiLoadBalancer } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
@@ -69,6 +70,10 @@ function LoadBalancerDetailPage() {
       {details.$status === 'success' ? (
         <>
           <Overview details={details} />
+          <LoadBalancerFailure
+            domain={details.domain.fqdn}
+            state={details.state}
+          />
           <DetailTabs
             details={details}
             rawDetails={

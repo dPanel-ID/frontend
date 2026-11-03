@@ -248,6 +248,11 @@
       "branch": "Cabang {branch}",
       "build": "Build {build}",
       "default": "Bawaan"
+    },
+    "executionError": {
+      "noDetail": "Tidak ada detail error yang dikirim.",
+      "viewDetail": "Lihat detail",
+      "noStructured": "Tidak ada detail error terstruktur yang dikirim."
     }
   },
   "page": {
@@ -1964,7 +1969,12 @@
         "filteredMessage": "Coba domain lain, atau hapus filter untuk melihat semuanya.",
         "clear": "Hapus filter"
       },
-      "unnamedTeam": "Workspace tim"
+      "unnamedTeam": "Workspace tim",
+      "failure": {
+        "title": "Perubahan load balancer gagal",
+        "dialogTitle": "Detail error load balancer",
+        "viewDetail": "Lihat penyebab gagal"
+      }
     },
     "loadBalancersCreate": {
       "headerTitle": "Buat load balancer",

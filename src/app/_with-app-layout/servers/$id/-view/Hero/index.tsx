@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import { Link, useParams } from '@tanstack/react-router';
 import {
   BuildingIcon,
-  CircleAlertIcon,
   Clock3Icon,
   HardHatIcon,
   KeyRoundIcon,
@@ -27,11 +26,11 @@ import {
   isCloudServer,
   serverDisplayName,
 } from '@/entities/server/lib/describeServer';
-import { getServerErrorSummary } from '@/entities/server/lib/error-detail';
 import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import { ServerErrorDialog } from '@/entities/server/ui/ServerErrorDialog';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
+import { ExecutionErrorBanner } from '@/entities/shared/ui/ExecutionErrorBanner';
 import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 
 import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
@@ -249,28 +248,12 @@ export default guard(function Hero() {
         )}
 
         {status === 'failed' && (
-          <div className="flex flex-col gap-3 rounded-xl border border-red-400/30 bg-red-500/10 px-3 py-2 text-xs sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex min-w-0 items-start gap-2">
-              <CircleAlertIcon className="mt-0.5 size-4 shrink-0 text-red-500 dark:text-red-300" />
-              <div className="min-w-0">
-                <p className="font-bold text-red-700 dark:text-red-200">
-                  {t('setupFailed')}
-                </p>
-                <p className="mt-0.5 line-clamp-2 break-words text-red-700/80 dark:text-red-100/75">
-                  {getServerErrorSummary(server.state) || t('noErrorDetail')}
-                </p>
-              </div>
-            </div>
-            <Button
-              buttonStyle="outline"
-              buttonColor="secondary"
-              size="sm"
-              className="shrink-0 border-red-400/30 text-red-700 hover:bg-red-500/15 dark:text-red-100"
-              onClick={() => setIsErrorDialogOpen(true)}
-            >
-              {t('viewDetail')}
-            </Button>
-          </div>
+          <ExecutionErrorBanner
+            title={t('setupFailed')}
+            state={server.state}
+            emptyMessage={t('noErrorDetail')}
+            onClickDetail={() => setIsErrorDialogOpen(true)}
+          />
         )}
       </div>
 

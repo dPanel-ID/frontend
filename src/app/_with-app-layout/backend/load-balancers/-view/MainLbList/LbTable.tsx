@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import dayjs from 'dayjs';
 import { ExternalLinkIcon, ServerIcon } from 'lucide-react';
 
@@ -6,6 +8,7 @@ import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 import type { LoadBalancerCard } from '@/entities/load-balancer/rules/schema';
 import { LOAD_BALANCER_STATUS_METADATA } from '@/entities/load-balancer/ui/constants/state-metadata';
 import { LOAD_BALANCER_WEBSERVER_ENGINE } from '@/entities/load-balancer/ui/constants/webserver';
+import { LoadBalancerErrorDialog } from '@/entities/load-balancer/ui/LoadBalancerFailure';
 
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import {
@@ -32,6 +35,8 @@ export default function LbTable(props: LbTableProps) {
   const { list } = props;
   const t = useDevetekTranslations();
   const locale = useDevetekLocale();
+  // The status pill of a failed row opens why it failed, as on servers.
+  const [failed, setFailed] = useState<LoadBalancerCard>();
 
   return (
     <div className="overflow-x-auto rounded-2xl border bg-card">
@@ -93,7 +98,14 @@ export default function LbTable(props: LbTableProps) {
                     }
                     pulse={bucket === 'progress'}
                     label={t(stateMeta.i18n.statusLabel)}
-                    title={lb.state.message || undefined}
+                    title={
+                      bucket === 'failed'
+                        ? t('page.loadBalancers.failure.viewDetail')
+                        : undefined
+                    }
+                    onClick={
+                      bucket === 'failed' ? () => setFailed(lb) : undefined
+                    }
                   />
                 </TableCell>
                 <TableCell>
@@ -133,6 +145,15 @@ export default function LbTable(props: LbTableProps) {
           })}
         </TableBody>
       </Table>
+
+      {failed && (
+        <LoadBalancerErrorDialog
+          open
+          onOpenChange={(open) => !open && setFailed(undefined)}
+          domain={failed.domain.fqdn}
+          state={failed.state}
+        />
+      )}
     </div>
   );
 }

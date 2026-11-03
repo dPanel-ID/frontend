@@ -1,9 +1,15 @@
-import type { SchemaServerParts } from '../rules/schema';
+import type { SchemaCommon } from '../rules/schema';
 
-type ErrorDetail = SchemaServerParts.State['errorDetail'];
+type ErrorDetail = SchemaCommon.ExecutionErrorDetail | null | undefined;
 
-/** The first useful line of a failed server's error, for a banner. */
-export function getServerErrorSummary(state: SchemaServerParts.State) {
+/** The state of a resource whose last execution can fail. */
+export interface ExecutionErrorState {
+  message?: string;
+  errorDetail?: ErrorDetail;
+}
+
+/** The first useful line of a failed execution's error, for a banner. */
+export function getExecutionErrorSummary(state: ExecutionErrorState) {
   const rows = getErrorDetailRows(state.errorDetail, state.message);
   return rows[0]?.value || state.message;
 }
