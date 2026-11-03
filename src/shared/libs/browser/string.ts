@@ -38,3 +38,15 @@ export const kebabCaseToCamelCase = (sentence?: string) => {
   if (!sentence) return '';
   return sentence.replace(/-([a-z])/g, (_, p1) => p1.toUpperCase());
 };
+
+/**
+ * Whether `text` contains `query`, ignoring letter case and surrounding
+ * whitespace in the query. This is the standard match for every search box:
+ * "dnoc", "DNOC" and "dnoC" all find "dnocs worker 01". An empty query
+ * matches everything.
+ */
+export const matchesSearch = (text?: string | null, query?: string | null) => {
+  const needle = query?.trim().toLocaleLowerCase() ?? '';
+  if (!needle) return true;
+  return (text ?? '').toLocaleLowerCase().includes(needle);
+};
