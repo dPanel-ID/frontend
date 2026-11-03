@@ -9,9 +9,12 @@ import {
   SERVER_MODULES_CATEGORY,
   resolveServerModuleLogo,
 } from '@/entities/server-modules/config/registry';
+import { indexCatalogModules } from '@/entities/server-modules/lib/catalog-index';
+import type { CatalogModuleLook } from '@/entities/server-modules/lib/catalog-index';
 import { useModuleVersionLabel } from '@/entities/server-modules/lib/version';
 import { getModuleInfoByFind } from '@/entities/server-modules/model/getModuleInfo';
 
+import { ApiModule } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/Button';
@@ -69,9 +72,23 @@ export default function ModulesList(props: ModulesListProps) {
   const [selectedInstallation, setSelectedInstallation] =
     useState<SelectedInstallation | null>(null);
 
+  // The catalog names each module's category and icon; the frontend
+  // registry only knows the modules it was written for.
+  const [catalogResponse] = ApiModule.Find.useGet({ serverId });
+  const catalogModules =
+    catalogResponse.$status === 'success'
+      ? catalogResponse.modules
+      : catalogResponse.$status === 'loading'
+        ? catalogResponse.prevData?.modules
+        : undefined;
+  const catalog = useMemo(
+    () => indexCatalogModules(catalogModules),
+    [catalogModules],
+  );
+
   const groupedModules = useMemo(
-    () => groupInstalledModules(modules),
-    [modules],
+    () => groupInstalledModules(modules, catalog),
+    [modules, catalog],
   );
 
   return (
@@ -223,6 +240,7 @@ export function groupStatus(
 
 function groupInstalledModules(
   modules: DTOs.ModuleInstallationV1[],
+  catalog: Map<string, CatalogModuleLook>,
 ): InstalledModuleGroup[] {
   const groups = new Map<string, InstalledModuleGroup>();
 
@@ -231,7 +249,9 @@ function groupInstalledModules(
     if (!moduleName) continue;
 
     const staticModule = getModuleInfoByFind({ id: moduleName });
-    const categoryID = staticModule?.category[0] ?? 'utilities';
+    const catalogModule = catalog.get(moduleName);
+    const categoryID =
+      catalogModule?.category ?? staticModule?.category[0] ?? 'utilities';
     const current = groups.get(moduleName);
     if (current) {
       current.installations.push(installation);
@@ -241,10 +261,16 @@ function groupInstalledModules(
     groups.set(moduleName, {
       id: moduleName,
       categoryID,
-      name: staticModule?.name || installation.display_name || moduleName,
+      name:
+        staticModule?.name ||
+        catalogModule?.name ||
+        installation.display_name ||
+        moduleName,
       description: staticModule?.description || '',
-      logoUrl:
-        staticModule?.logoUrl || resolveServerModuleLogo({ id: moduleName }),
+      logoUrl: resolveServerModuleLogo({
+        id: moduleName,
+        logoUrl: staticModule?.logoUrl || catalogModule?.iconUrl,
+      }),
       installations: [installation],
     });
   }
