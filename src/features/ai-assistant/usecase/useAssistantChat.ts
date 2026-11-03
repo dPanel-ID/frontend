@@ -141,7 +141,10 @@ export default function useAssistantChat() {
       );
       if (!outcome.ok) {
         fail(outcome.error);
-        return null;
+        // An approved change can have run before the assistant's report
+        // failed; hand its result back so its status and one-time secrets
+        // still reach the approval card.
+        return outcome.result?.action_results?.length ? outcome.result : null;
       }
 
       const { result } = outcome;
