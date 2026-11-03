@@ -250,6 +250,9 @@ function groupInstalledModules(
 
     const staticModule = getModuleInfoByFind({ id: moduleName });
     const catalogModule = catalog.get(moduleName);
+    // A child module, such as a database created on MariaDB, is shown in
+    // its parent's Manage view, not as a module of its own.
+    if (catalogModule?.parent) continue;
     const categoryID =
       catalogModule?.category ?? staticModule?.category[0] ?? 'utilities';
     const current = groups.get(moduleName);

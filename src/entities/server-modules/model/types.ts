@@ -22,6 +22,10 @@ export interface ServerModule {
   installation?: DTOs.ModuleInstallationV1 | DTOs.ModuleInstallationSummaryV1;
   installations?: DTOs.ModuleInstallationSummaryV1[];
   installationStatus?: string;
+  /** The module this one is offered under, such as mariadb. */
+  parent?: string;
+  /** Modules offered from this one, such as databases on MariaDB. */
+  children?: ServerModule[];
 }
 
 export interface ServerModuleCategory {

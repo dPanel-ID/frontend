@@ -78,5 +78,9 @@ export function toServerModuleFromCatalog(
     installation: module.installation,
     installations: module.installations,
     installationStatus: module.installation?.status,
+    parent: module.parent,
+    children: module.children?.map((child) =>
+      toServerModuleFromCatalog(child, refName, resolvedCommit),
+    ),
   };
 }

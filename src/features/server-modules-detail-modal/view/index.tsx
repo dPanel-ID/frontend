@@ -3,6 +3,7 @@ import { ModalLayoutGeneral } from '@/services/modal/ui/presentation';
 import { BaseContext } from '../config/base-context';
 import { ModuleHero } from '../presentation/ModuleHero';
 
+import { ChildModules } from './ChildModules';
 import { Installation } from './Installation';
 import type { ServerModulesDetailModalProps as Props } from './types';
 
@@ -28,6 +29,8 @@ export default function ServerModulesDetailModal(props: Props) {
           />
 
           <Installation />
+
+          <ChildModules />
         </ModalLayoutGeneral.Content>
       </ModalLayoutGeneral>
     </BaseContext>
