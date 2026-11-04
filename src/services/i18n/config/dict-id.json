@@ -4051,6 +4051,8 @@
         "executed": "Disetujui dan dijalankan",
         "rejected": "Ditolak; tidak ada yang diubah",
         "failed": "Disetujui, tetapi gagal dijalankan",
+        "running": "Disetujui; dPanel masih menerapkannya",
+        "expired": "Kedaluwarsa; minta asisten mengusulkannya lagi",
         "approve": "Setujui",
         "reject": "Tolak",
         "working": "Sedang dikerjakan…",

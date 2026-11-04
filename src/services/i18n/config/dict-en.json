@@ -4059,6 +4059,8 @@
         "executed": "Approved and started",
         "rejected": "Rejected; nothing was changed",
         "failed": "Approved, but it did not start",
+        "running": "Approved; dPanel is still applying it",
+        "expired": "Expired; ask the assistant to propose it again",
         "approve": "Approve",
         "reject": "Reject",
         "working": "Working on it…",

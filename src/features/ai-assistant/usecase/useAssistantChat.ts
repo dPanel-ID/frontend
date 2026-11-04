@@ -6,7 +6,11 @@ import { ApiAi } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 
-import { toChatEntries, toChatSecrets } from '../adapter/conversation';
+import {
+  toChatActions,
+  toChatEntries,
+  toChatSecrets,
+} from '../adapter/conversation';
 import {
   readLastConversationId,
   writeLastConversationId,
@@ -27,20 +31,12 @@ const ACTION_STATUSES: Array<ChatAction['status']> = [
 ];
 
 function toActions(result: DTOs.AiChatResultV1): ChatAction[] {
-  return (result.pending_actions ?? [])
-    .filter((action) => action.action_id)
-    .map((action) => ({
-      id: action.action_id ?? '',
-      tool: action.tool ?? '',
-      summary: action.summary ?? '',
-      status: 'pending' as const,
-      secretInputs: (action.secret_inputs ?? [])
-        .filter((input) => input.name)
-        .map((input) => ({
-          name: input.name ?? '',
-          label: input.label || input.name || '',
-        })),
-    }));
+  return toChatActions(
+    (result.pending_actions ?? []).map((action) => ({
+      ...action,
+      status: 'pending',
+    })),
+  );
 }
 
 /**

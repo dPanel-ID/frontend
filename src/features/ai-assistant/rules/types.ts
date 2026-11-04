@@ -22,7 +22,15 @@ export const ChatActionSchema = z.object({
   id: z.string(),
   tool: z.string(),
   summary: z.string(),
-  status: z.enum(['pending', 'deciding', 'executed', 'rejected', 'failed']),
+  status: z.enum([
+    'pending',
+    'deciding',
+    'running',
+    'executed',
+    'rejected',
+    'failed',
+    'expired',
+  ]),
   /**
    * Secrets the change generated, such as database passwords. Kept in
    * memory only: the server sends them once and they are never persisted.

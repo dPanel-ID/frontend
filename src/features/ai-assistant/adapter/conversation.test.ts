@@ -9,7 +9,7 @@ import {
 import { toolLabel } from '../lib/tool-label';
 import { ChatInputSchema } from '../rules/types';
 
-import { toChatEntries, toChatSecrets } from './conversation';
+import { toChatActions, toChatEntries, toChatSecrets } from './conversation';
 
 describe('toChatEntries', () => {
   test('keeps user and assistant text and tolerates production-shaped gaps', () => {
@@ -45,6 +45,56 @@ describe('toChatEntries', () => {
         status: 'done',
       },
     ]);
+  });
+
+  test('restores the approval cards an answer proposed', () => {
+    const entries = toChatEntries({
+      messages: [
+        { id: 'aim_1', role: 'user', content: 'install php' },
+        {
+          id: 'aim_2',
+          role: 'assistant',
+          content: 'Approve it.',
+          actions: [
+            {
+              action_id: 'aipa_a',
+              tool: 'application_create',
+              summary: 'Create app',
+              status: 'pending',
+              secret_inputs: [{ name: 'runtime:DB_PASSWORD' }, { label: 'x' }],
+            },
+            { action_id: 'aipa_b', tool: 'server_delete', status: 'running' },
+            { tool: 'module_install', status: 'pending' },
+          ],
+        },
+      ],
+    });
+
+    expect(entries[0]?.actions).toBeUndefined();
+    expect(entries[1]?.actions).toEqual([
+      {
+        id: 'aipa_a',
+        tool: 'application_create',
+        summary: 'Create app',
+        status: 'pending',
+        secretInputs: [
+          { name: 'runtime:DB_PASSWORD', label: 'runtime:DB_PASSWORD' },
+        ],
+      },
+      {
+        id: 'aipa_b',
+        tool: 'server_delete',
+        summary: '',
+        status: 'running',
+        secretInputs: [],
+      },
+    ]);
+  });
+
+  test('treats an unknown stored status as expired, never as pending', () => {
+    expect(
+      toChatActions([{ action_id: 'aipa_c', status: 'surprise' }])[0]?.status,
+    ).toBe('expired');
   });
 
   test('handles a missing detail', () => {
