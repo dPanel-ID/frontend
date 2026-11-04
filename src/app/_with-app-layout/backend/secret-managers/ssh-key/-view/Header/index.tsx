@@ -38,7 +38,7 @@ export default function Header() {
       title={t('page.sshKeys.headerTitle')}
       description={t('page.sshKeys.headerDesc')}
       aside={
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+        <div className="flex flex-wrap items-center gap-2 lg:justify-end">
           <Button variant="outline" size="sm" asChild>
             <Link to="/servers">
               <ServerIcon />

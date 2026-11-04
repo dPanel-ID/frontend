@@ -179,7 +179,7 @@ export default function ServerGroupsView() {
         title={t('title')}
         description={t('hero.description')}
         aside={
-          <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <div className="flex flex-wrap items-center gap-2 lg:justify-end">
             <Link
               to="/servers"
               className="inline-flex h-9 items-center gap-2 rounded-lg border bg-background/50 px-3 text-sm font-semibold text-primary/75 transition-colors hover:bg-border/40 hover:text-primary"

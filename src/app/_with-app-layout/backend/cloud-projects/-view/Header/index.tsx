@@ -33,7 +33,7 @@ export default function Header() {
       title={t('page.cloudProjects.headerTitle')}
       description={t('page.cloudProjects.headerDesc')}
       aside={
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+        <div className="flex flex-wrap items-center gap-2 lg:justify-end">
           <Button variant="outline" size="sm" asChild>
             <Link to="/servers">
               <ServerIcon />

@@ -60,7 +60,7 @@ export function Header(props: {
       title={fqdn ?? t('page.loadBalancersDetail.headerTitle')}
       description={description}
       aside={
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+        <div className="flex flex-wrap items-center gap-2 lg:justify-end">
           {details && (
             <Button variant="outline" size="sm" asChild>
               <a

@@ -27,7 +27,7 @@ export default function Header() {
       title={t('page.teams.headerTitle')}
       description={t('page.teams.hero.description')}
       aside={
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+        <div className="flex flex-wrap items-center gap-2 lg:justify-end">
           <button
             type="button"
             className={flowCtaClassName('violet')}

@@ -53,8 +53,11 @@ export function FlowHero(props: FlowHeroProps) {
       <div className="relative flex flex-col gap-4 p-5 sm:p-6">
         {headnote && <div className="text-sm">{headnote}</div>}
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex min-w-0 items-start gap-4">
+        {/* Below lg the aside goes under the title. Beside it, the title keeps
+            at least 18rem and the aside shrinks and wraps its buttons, so
+            several actions never squeeze the title to nothing. */}
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex min-w-0 flex-1 items-start gap-4 lg:min-w-72">
             <span
               className={cn(
                 'flex size-12 shrink-0 items-center justify-center rounded-xl border',
@@ -91,7 +94,7 @@ export function FlowHero(props: FlowHeroProps) {
             </div>
           </div>
 
-          {aside && <div className="shrink-0">{aside}</div>}
+          {aside && <div className="min-w-0">{aside}</div>}
         </div>
       </div>
     </header>
