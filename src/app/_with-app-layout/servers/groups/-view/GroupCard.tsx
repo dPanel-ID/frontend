@@ -10,6 +10,10 @@ import type {
 import { OperationStatusPill } from '@/entities/host-group/ui/OperationStatusPill';
 import { SERVER_STATE_METADATA } from '@/entities/server/ui/constants/state-metadata';
 
+import {
+  clusterEngineLabel,
+  clusterKindLabel,
+} from '@/features/server-groups/shared/lib/cluster';
 import { ClusterKindIcon } from '@/features/server-groups/view/ClusterKindIcon';
 import { ClusterStatusPill } from '@/features/server-groups/view/ClusterStatusPill';
 
@@ -74,8 +78,11 @@ export function GroupCard(props: {
           </p>
           {group.cluster && (
             <div className="mt-2 flex flex-wrap items-center gap-1.5">
-              <span className="inline-flex items-center rounded-full border bg-background/60 px-2.5 py-0.5 text-xs font-semibold capitalize">
-                {[group.cluster.kind, group.cluster.engine]
+              <span className="inline-flex items-center rounded-full border bg-background/60 px-2.5 py-0.5 text-xs font-semibold">
+                {[
+                  clusterKindLabel(group.cluster.kind),
+                  clusterEngineLabel(group.cluster.engine),
+                ]
                   .filter(Boolean)
                   .join(' · ')}
               </span>

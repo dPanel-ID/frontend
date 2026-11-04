@@ -8,6 +8,9 @@ export function toClusterCandidate(
   machine: DTOs.MachineV1,
 ): ClusterCandidate | null {
   if (machine.id == null || String(machine.id).trim() === '') return null;
+  // Deleted servers stay in the list API for history; they can't join.
+  if (machine.status === 'deleted' || machine.status === 'deleting')
+    return null;
 
   const id = String(machine.id);
 
