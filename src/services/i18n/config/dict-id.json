@@ -147,6 +147,15 @@
       "digitalOcean": "DigitalOcean",
       "caddy": "Caddy",
       "apisix": "Apache APISIX",
+      "nginx": "Nginx",
+      "haproxy": "HAProxy",
+      "envoy": "Envoy",
+      "traefik": "Traefik",
+      "http": "HTTP",
+      "http2": "HTTP/2",
+      "quic": "QUIC",
+      "ssltls": "SSL/TLS",
+      "brotli": "Brotli",
       "aws": "AWS",
       "alibabaCloud": "Alibaba Cloud",
       "tencentCloud": "Tencent Cloud"
@@ -2367,7 +2376,9 @@
         "certificateExpiring": "Segera kedaluwarsa",
         "certificateExpired": "Kedaluwarsa",
         "certificateMissing": "Belum terbit",
+        "certificateMissingHint": "Server belum memiliki sertifikat untuk domain ini.",
         "certificateUnavailable": "Tidak tersedia",
+        "certificateUnavailableHint": "Sertifikat di server tidak dapat diperiksa.",
         "certificateExpires": "{issuer} · sisa {days} hari"
       }
     },
