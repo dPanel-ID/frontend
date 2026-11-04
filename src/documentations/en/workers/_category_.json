@@ -1,0 +1,11 @@
+{
+  "label": "Workers",
+  "position": 7,
+  "description": "Choose where your workspace's jobs run: dPanel's shared workers, or your own GitHub Actions workflow or VM.",
+  "app": {
+    "label": "Open your profile",
+    "href": "/profile"
+  },
+  "icon": "settings-2",
+  "color": "sky"
+}
