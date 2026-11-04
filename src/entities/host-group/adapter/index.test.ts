@@ -31,6 +31,46 @@ describe('host-group adapter', () => {
     });
   });
 
+  it('maps the cluster summary of a cluster group', () => {
+    const group = toHostGroupSummary({
+      id: 'hg_2',
+      name: 'Edge',
+      workspace_id: 'org_1',
+      workspace_type: 'group',
+      kind: 'kubernetes',
+      cluster: {
+        id: 'cl_1',
+        kind: 'kubernetes',
+        engine: 'k3s',
+        status: 'ready',
+      },
+      created_at: '2026-08-15T10:00:00Z',
+      updated_at: '2026-08-16T10:00:00Z',
+    }).unwrap();
+
+    expect(group.cluster).toEqual({
+      id: 'cl_1',
+      kind: 'kubernetes',
+      engine: 'k3s',
+      status: 'ready',
+    });
+  });
+
+  it('leaves generic groups without a cluster', () => {
+    const group = toHostGroupSummary({
+      id: 'hg_3',
+      name: 'Fleet',
+      workspace_id: 'org_1',
+      workspace_type: 'group',
+      kind: 'generic',
+      cluster: null,
+      created_at: '2026-08-15T10:00:00Z',
+      updated_at: '2026-08-16T10:00:00Z',
+    }).unwrap();
+
+    expect(group.cluster).toBeUndefined();
+  });
+
   it('maps host-group detail members with current assignment visibility', () => {
     expect(
       toHostGroupDetail({

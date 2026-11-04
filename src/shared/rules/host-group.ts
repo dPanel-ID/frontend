@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { schemaHostGroupClusterSummaryDto } from './cluster';
+
 const schemaScopedExecutionStatus = z.enum([
   'pending',
   'queued',
@@ -227,6 +229,10 @@ export const schemaHostGroupSummaryDto = z
     description: z.string().optional(),
     workspace_id: z.string().min(1),
     workspace_type: z.string().min(1),
+    /** "generic" or the cluster kind the group backs. */
+    kind: z.string().optional(),
+    /** Set when the group is a cluster group; absent on generic groups. */
+    cluster: schemaHostGroupClusterSummaryDto.nullish(),
     created_at: z.string().min(1),
     updated_at: z.string().min(1),
   })

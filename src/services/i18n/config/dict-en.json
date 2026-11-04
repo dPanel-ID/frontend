@@ -2928,7 +2928,7 @@
       "title": "Server groups",
       "hero": {
         "description": "Put servers that belong together in a group, then install modules, deploy and run maintenance on all of them at once.",
-        "create": "Create group",
+        "create": "New group",
         "back": "All servers"
       },
       "overview": {
@@ -2969,23 +2969,12 @@
         "agentUpgrade": "Upgrade agent",
         "systemReboot": "Reboot"
       },
-      "createDialog": {
-        "title": "Create server group",
-        "description": "Name the group now; add servers next, from the group page.",
-        "name": "Name",
-        "namePlaceholder": "Production API",
-        "descriptionLabel": "Description",
-        "descriptionPlaceholder": "What these servers have in common",
-        "nameRequired": "Group name is required.",
-        "cancel": "Cancel",
-        "create": "Create group",
-        "creating": "Creating…"
-      },
       "detail": {
         "tabs": {
           "ariaLabel": "Group sections",
           "members": "Servers",
-          "operations": "Operations"
+          "operations": "Operations",
+          "cluster": "Cluster"
         },
         "hero": {
           "members": "{count} servers",
@@ -3167,6 +3156,156 @@
             "cancel": "Close",
             "noMatch": "No modules match your search."
           }
+        }
+      },
+      "clusterStatus": {
+        "pending": "Pending",
+        "installing": "Installing",
+        "ready": "Ready",
+        "failed": "Failed",
+        "uninstalling": "Uninstalling",
+        "uninstalled": "Uninstalled",
+        "unknown": "Unknown"
+      },
+      "wizard": {
+        "title": "New group",
+        "description": "Pick what the group is for, configure it, review and create it.",
+        "position": "Step {current} of {total}",
+        "steps": {
+          "type": "Type",
+          "configure": "Configuration",
+          "review": "Review",
+          "install": "Installing"
+        },
+        "back": "Back",
+        "next": "Next",
+        "cancel": "Cancel",
+        "close": "Close",
+        "type": {
+          "heading": "What should this group be?",
+          "generic": "Generic",
+          "genericDescription": "A saved set of servers. Install modules, deploy and run maintenance on all of them at once.",
+          "genericMin": "Any number of servers",
+          "minServers": "At least {count} servers",
+          "minServer": "At least 1 server",
+          "comingSoon": "Coming soon",
+          "kindsFailed": "Cluster types could not be loaded; you can still create a generic group.",
+          "retry": "Retry",
+          "loading": "Loading cluster types…"
+        },
+        "generic": {
+          "note": "Name the group now; add servers next, from the group page."
+        },
+        "fields": {
+          "name": "Name",
+          "namePlaceholder": "Production API",
+          "description": "Description",
+          "descriptionPlaceholder": "What these servers have in common",
+          "nameRequired": "Group name is required."
+        },
+        "cluster": {
+          "engine": "Engine",
+          "recommended": "Recommended",
+          "engineUnsupported": "Cannot run on {servers} ({arch}).",
+          "architectures": "Runs on {list}",
+          "version": "Version",
+          "versionPlaceholder": "Choose a version",
+          "servers": "Servers",
+          "serversHint": "Pick the servers and give each one a role. Servers already in a group cannot be picked.",
+          "searchPlaceholder": "Search servers",
+          "picked": "{count} picked",
+          "inGroup": "Already in a group",
+          "archUnknown": "arch unknown",
+          "noServers": "No servers found.",
+          "noMatch": "No servers match your search.",
+          "loadFailed": "Servers could not be loaded.",
+          "remove": "Remove",
+          "role": "Role",
+          "options": "Options",
+          "builtinIngress": "Built-in ingress",
+          "builtinIngressHint": "Install the engine's own ingress controller on ports 80 and 443.",
+          "recommendArm": "{engine} is recommended because a picked server is arm.",
+          "noEngine": "No engine can run on every picked server."
+        },
+        "issues": {
+          "noServers": "Pick at least one server.",
+          "minServers": "This type needs at least {min} servers.",
+          "roleMin": "At least {min} server(s) need the {role} role.",
+          "roleMax": "At most {max} servers can have the {role} role.",
+          "roleOdd": "{role} count must be odd when there is more than one (now {count}).",
+          "engineUnsupported": "{engine} cannot run on {servers}.",
+          "unknownArch": "Architecture unknown for {servers}; refresh their inventory or the backend will refuse them.",
+          "mixedRegions": "Servers are in different regions ({regions}); cluster traffic between regions is slow."
+        },
+        "review": {
+          "group": "Group",
+          "type": "Type",
+          "engine": "Engine",
+          "version": "Version",
+          "ingress": "Built-in ingress",
+          "on": "On",
+          "off": "Off",
+          "installs": "What will be installed where",
+          "installsLine": "{engine} {version} as {role}",
+          "warnings": "Warnings",
+          "permissions": "Creating a cluster needs the cluster editor and server editor permissions in this workspace.",
+          "genericSummary": "An empty generic group. Add servers from the group page.",
+          "create": "Create group",
+          "install": "Create and install",
+          "creating": "Creating…"
+        },
+        "install": {
+          "heading": "Installing {name}",
+          "queued": "The group is created and the install is queued.",
+          "polling": "Refreshing every few seconds while it installs.",
+          "done": "The cluster is ready.",
+          "failed": "The install failed. Open the group to see the execution and retry or delete.",
+          "warnings": "Warnings from the backend",
+          "openGroup": "Open group page"
+        }
+      },
+      "cluster": {
+        "title": "Cluster",
+        "description": "The cluster that runs on this group's servers.",
+        "kind": "Kind",
+        "engine": "Engine",
+        "version": "Version",
+        "status": "Status",
+        "apiEndpoint": "API endpoint",
+        "notAvailable": "Not available yet",
+        "lastExecution": "Last execution",
+        "noExecution": "No execution yet",
+        "executionId": "Execution {id}",
+        "nodes": "Nodes",
+        "table": {
+          "server": "Server",
+          "role": "Role",
+          "status": "Status",
+          "arch": "Arch",
+          "region": "Region"
+        },
+        "noNodes": "No nodes recorded.",
+        "loadFailed": "The cluster could not be loaded.",
+        "polling": "Still changing; refreshing every few seconds.",
+        "uninstall": "Uninstall",
+        "delete": "Delete cluster",
+        "deleteDisabled": "Uninstall the cluster first; only pending, failed or uninstalled clusters can be deleted.",
+        "membersNote": "Members of a cluster group change through cluster operations.",
+        "dialogs": {
+          "uninstallTitle": "Uninstall cluster",
+          "uninstallDescription": "Removes {engine} from every node of <strong>{name}</strong>.",
+          "uninstallStep1": "Workloads running in the cluster stop and their data on the nodes is removed.",
+          "uninstallStep2": "The servers and the group stay; the cluster becomes uninstalled.",
+          "uninstallConfirm": "Uninstall",
+          "uninstalling": "Uninstalling…",
+          "deleteTitle": "Delete cluster",
+          "deleteDescription": "Deletes the cluster record of <strong>{name}</strong>.",
+          "deleteStep1": "The group stays as a generic group with the same servers.",
+          "deleteStep2": "Nothing is changed on the servers.",
+          "deleteConfirm": "Delete cluster",
+          "deleting": "Deleting…",
+          "happens": "What happens",
+          "cancel": "Cancel"
         }
       }
     },
