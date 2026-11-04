@@ -23,6 +23,8 @@ Grup dimulai kosong. Di halamannya, tekan **Add servers** lalu pilih servernya. 
 
 Buka grupnya dan masuk ke **Operations**. Di **Run on this group**:
 
+![Tab Operations grup umum: Run on this group dengan Install module, Deploy artifact, Refresh inventory, Reboot, dan Upgrade agent, di atas Operation history yang masih kosong](../../assets/clusters/generic-group-operations.webp 'Operations: satu tombol per aksi, dan riwayat semua yang pernah berjalan.')
+
 | Aksi                  | Fungsinya                                                       |
 | --------------------- | --------------------------------------------------------------- |
 | **Install module**    | Memasang modul dari katalog di setiap server                    |

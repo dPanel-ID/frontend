@@ -12,7 +12,6 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { clusterEngineLabel } from '@/features/server-groups/shared/lib/cluster';
 import { ConsequenceList } from '@/features/server-lifecycle-dialogs';
 
-
 import { ApiCluster } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
