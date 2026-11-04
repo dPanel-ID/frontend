@@ -1,6 +1,6 @@
 {
   "label": "Logs",
-  "position": 8,
+  "position": 9,
   "description": "Find the log you need, read it, narrow it down, and take a copy with you.",
   "app": {
     "label": "Go to servers",

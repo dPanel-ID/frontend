@@ -66,7 +66,7 @@ Anda kembali ke daftar dengan pesan **Load balancer berhasil dibuat.** Barisnya 
 2. Memasang Caddy di gateway kalau belum ada.
 3. Menerbitkan rute dan meminta sertifikat HTTPS.
 
-Prosesnya biasanya sekitar satu menit. Barisnya lalu berstatus **Siap**, dan penghitung di atas memindahkannya ke **Melayani trafik**.
+Prosesnya biasanya sekitar satu menit. Load balancer pertama di sebuah server juga memasang Caddy, yang memakan waktu sekitar 10 menit. Barisnya lalu berstatus **Siap**, dan penghitung di atas memindahkannya ke **Melayani trafik**.
 
 ![Daftar Load balancer dalam tampilan tabel, berisi engine, status, server gateway beserta alamatnya, dan routing setiap load balancer](../../assets/networking/lb-list.webp)
 
