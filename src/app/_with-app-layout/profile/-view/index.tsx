@@ -2,6 +2,9 @@ import { useAuthLoggedIn } from '@/services/auth';
 import { useAuthEmit } from '@/services/auth/model/events';
 
 import { useUserEditSidepanel } from '@/features/user-edit-sidepanel';
+import { WorkersCard } from '@/features/workspace-workers';
+
+import { PERSONAL_WORKSPACE_ID } from '@/shared/libs/api-client/config';
 
 import Layout from './-presentation/Layout';
 import AdminAccess from './AdminAccess';
@@ -38,6 +41,13 @@ export default function ProfileView() {
       <Layout>
         <Layout.Main>
           <Personal onEditProfile={handleEditProfile} />
+          {/* The profile always acts on the personal workspace, whichever
+              workspace the app shell has selected. */}
+          <WorkersCard
+            workspaceId={PERSONAL_WORKSPACE_ID}
+            canManage
+            accent="sky"
+          />
           <AdminAccess />
         </Layout.Main>
 

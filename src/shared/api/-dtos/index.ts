@@ -23,6 +23,7 @@ export * from './secret';
 export * from './module';
 export * from './firewall';
 export * from './admin';
+export * from './worker';
 
 export interface Pagination {
   page: number;

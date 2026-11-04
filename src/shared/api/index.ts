@@ -28,5 +28,6 @@ export { default as ApiServer } from './server';
 export { default as ApiService } from './service';
 export { default as ApiTask } from './task';
 export { default as ApiUser } from './user';
+export { default as ApiWorkers } from './workers';
 
 export * as DTOs from './-dtos';

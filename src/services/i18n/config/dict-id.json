@@ -3521,6 +3521,127 @@
         "application": "membuat dan mengatur aplikasi",
         "server": "membuat dan mengatur server"
       }
+    },
+    "workers": {
+      "title": "Worker",
+      "description": "Worker adalah program yang menjalankan pekerjaan workspace ini: deployment, setup server, dan instalasi modul. Worker bersama dPanel menjalankannya kecuali Anda beralih ke worker sendiri.",
+      "refresh": "Muat ulang worker",
+      "addWorker": "Tambah worker",
+      "readOnly": "Anda bisa melihat di mana pekerjaan tim ini berjalan. Hanya pemilik dan admin tim yang bisa mengubahnya.",
+      "empty": {
+        "title": "Belum ada worker privat",
+        "description": "Tambahkan VM milik Anda, atau workflow GitHub Actions di salah satu repositori Anda, untuk menjalankan pekerjaan workspace ini di infrastruktur sendiri."
+      },
+      "mode": {
+        "label": "Tempat pekerjaan berjalan",
+        "current": "Saat ini",
+        "note": "Worker privat: setiap pekerjaan workspace ini hanya dikirim ke worker di bawah. Jika tidak ada yang berjalan, pekerjaan menunggu sampai ada yang berjalan.",
+        "shared": {
+          "title": "Worker bersama (dPanel)",
+          "subtitle": "dPanel menjalankan pekerjaan Anda. Tidak perlu setup."
+        },
+        "private": {
+          "title": "Worker privat",
+          "subtitle": "Hanya worker Anda di bawah yang menjalankan pekerjaan workspace ini.",
+          "needsWorker": "Tambahkan worker terlebih dahulu."
+        }
+      },
+      "modeDialog": {
+        "privateTitle": "Beralih ke worker privat?",
+        "privateMessage": "Mulai sekarang, setiap pekerjaan workspace ini hanya dikirim ke worker yang terdaftar di sini. Worker bersama dPanel berhenti mengambilnya. Jika tidak ada worker Anda yang berjalan, pekerjaan menunggu sampai ada. Pekerjaan yang sedang berjalan tetap selesai di tempatnya.",
+        "privateConfirm": "Beralih ke worker privat",
+        "sharedTitle": "Kembali ke worker bersama?",
+        "sharedMessage": "Mulai sekarang, worker bersama dPanel menjalankan pekerjaan workspace ini. Worker Anda tetap terdaftar, jadi Anda bisa beralih lagi nanti. Pekerjaan yang sedang berjalan tetap selesai di tempatnya.",
+        "sharedConfirm": "Beralih ke worker bersama"
+      },
+      "removeDialog": {
+        "title": "Hapus {name}?",
+        "messageVm": "Worker ini berhenti mengambil pekerjaan dan tokennya tidak berlaku lagi. Hentikan executor di host tersebut setelahnya. Pekerjaan yang sedang dijalankannya bisa gagal.",
+        "messageGithub": "dPanel berhenti memulai workflow ini dan menolak run-nya. File workflow tetap ada di repositori Anda; hapus di sana jika tidak diperlukan lagi.",
+        "confirm": "Hapus worker"
+      },
+      "rotateDialog": {
+        "title": "Buat token baru untuk {name}?",
+        "message": "dPanel membuat token baru dan token saat ini langsung tidak berlaku. Pasang token baru di host lalu jalankan ulang executor, atau worker berhenti mengambil pekerjaan.",
+        "confirm": "Buat token baru"
+      },
+      "tokenModal": {
+        "title": "Token baru untuk {name}",
+        "description": "Ganti token lama di host, lalu jalankan ulang executor."
+      },
+      "toaster": {
+        "modeError": "Tidak bisa mengubah tempat pekerjaan berjalan",
+        "modePrivate": "Pekerjaan workspace ini sekarang hanya berjalan di worker privat Anda.",
+        "modeShared": "Pekerjaan workspace ini sekarang berjalan di worker bersama dPanel.",
+        "addError": "Tidak bisa menambahkan {name}",
+        "removeError": "Tidak bisa menghapus {name}",
+        "removeSuccess": "{name} dihapus.",
+        "rotateError": "Tidak bisa membuat token baru untuk {name}"
+      },
+      "list": {
+        "lastSeen": "Terakhir terlihat {time}",
+        "neverSeen": "Belum pernah terlihat",
+        "tokenHint": "Token {hint}",
+        "rotate": "Token baru",
+        "rotateAria": "Buat token baru untuk {name}",
+        "removeAria": "Hapus {name}"
+      },
+      "types": {
+        "vm": "VM",
+        "github": "Workflow GitHub",
+        "unknown": "Lainnya"
+      },
+      "copy": {
+        "copy": "Salin",
+        "copied": "Tersalin",
+        "failed": "Tidak bisa menyalin. Pilih teksnya dan salin sendiri."
+      },
+      "secret": {
+        "title": "Simpan token ini sekarang",
+        "warning": "Token hanya ditampilkan sekali ini. dPanel hanya menyimpan sidik jarinya, jadi menutup dialog ini menyembunyikannya untuk selamanya. Hilang? Buat token baru dari daftar worker.",
+        "token": "Token worker",
+        "noToken": "API tidak mengembalikan token. Buat token baru dari daftar worker.",
+        "env": "Environment untuk executor",
+        "envHint": "Pasang nilai ini di host yang menjalankan executor (misalnya di file environment systemd-nya), lalu jalankan.",
+        "done": "Sudah saya simpan"
+      },
+      "workflowResult": {
+        "intro": "dPanel memulai workflow ini setiap kali workspace ini punya pekerjaan yang menunggu. Workflow masuk dengan token identitas milik GitHub, jadi tidak ada secret yang perlu disimpan.",
+        "noWorkflow": "API tidak mengembalikan file workflow. Hapus worker ini lalu tambahkan lagi.",
+        "stepCommit": "Commit file di atas ke {repository} sebagai {path}.",
+        "stepInstallApp": "Pasang GitHub App dPanel ({app}) di {repository}, agar dPanel bisa memulai workflow.",
+        "stepSwitch": "Alihkan workspace ini ke worker privat."
+      },
+      "add": {
+        "title": "Tambah worker",
+        "description": "Worker yang Anda jalankan sendiri, untuk pekerjaan workspace ini.",
+        "createdTitle": "{name} ditambahkan",
+        "vmIntro": "Server atau VM milik Anda yang bisa menjangkau server workspace ini lewat SSH. dPanel memberi Anda token untuknya sekali.",
+        "githubIntro": "Workflow GitHub Actions di repositori Anda. dPanel memulainya saat ada pekerjaan yang menunggu; tidak perlu token.",
+        "name": "Nama",
+        "nameHint": "Hanya untuk Anda, untuk membedakan worker.",
+        "executorId": "ID executor",
+        "executorIdHint": "2 sampai 63 huruf kecil, angka, atau tanda hubung, unik di workspace ini, misalnya office-vm-01.",
+        "repository": "Repositori",
+        "repositoryHint": "owner/nama, atau tempel tautan GitHub.",
+        "workflow": "File workflow",
+        "workflowHint": "Nama file di .github/workflows.",
+        "ref": "Branch atau tag",
+        "refHint": "Tempat file workflow berada.",
+        "submit": "Tambah worker"
+      },
+      "errors": {
+        "nameRequired": "Beri nama worker.",
+        "nameTooLong": "Gunakan paling banyak 100 karakter.",
+        "executorIdRequired": "Masukkan ID executor.",
+        "executorIdInvalid": "Gunakan 2 sampai 63 huruf kecil, angka, atau tanda hubung, diawali huruf atau angka.",
+        "repositoryRequired": "Masukkan repositori.",
+        "repositoryInvalid": "Gunakan owner/nama, misalnya acme/dpanel-workers.",
+        "workflowRequired": "Masukkan nama file workflow.",
+        "workflowInvalid": "Gunakan nama file yang berakhiran .yml atau .yaml.",
+        "refRequired": "Masukkan branch atau tag.",
+        "refInvalid": "Gunakan hanya huruf, angka, titik, tanda hubung, garis bawah, dan garis miring."
+      }
     }
   },
   "dialog": {

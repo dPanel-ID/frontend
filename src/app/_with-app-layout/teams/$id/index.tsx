@@ -5,7 +5,7 @@ import EventController from './-EventController';
 import { FilterModelProvider } from './-model/filters';
 import { MembersDataModelProvider } from './-model/members-data';
 import { schemaQueryString } from './-rules/qs';
-import { Header, MembersPanel, Overview } from './-view';
+import { Header, MembersPanel, Overview, Workers } from './-view';
 
 export const Route = createFileRoute('/_with-app-layout/teams/$id/')({
   head: () => ({
@@ -27,6 +27,7 @@ function TeamDetailPage() {
           <Header />
           <Overview />
           <MembersPanel />
+          <Workers />
         </div>
       </MembersDataModelProvider>
     </FilterModelProvider>

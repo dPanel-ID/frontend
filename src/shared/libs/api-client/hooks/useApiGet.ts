@@ -29,6 +29,9 @@ export default function useApiGet<D>(
     refreshIntervalMs = 0,
   } = options ?? {};
   const { url } = config;
+  // Headers take part in identity (a workspace header changes the answer),
+  // so a change refetches like a new URL does.
+  const headersKey = config.headers ? JSON.stringify(config.headers) : '';
 
   const [response, setResponse] = useState<Response<D>>({
     $status: 'initial',
@@ -89,6 +92,7 @@ export default function useApiGet<D>(
       axiosClient<BaseResponse<D>>({
         method: 'GET',
         url,
+        headers: headersKey ? JSON.parse(headersKey) : undefined,
         signal: controller.signal,
       })
         .then((axiosResponse) => {
@@ -157,7 +161,7 @@ export default function useApiGet<D>(
           refBusy.current = false;
         });
     },
-    [url, abortFetch],
+    [url, headersKey, abortFetch],
   );
 
   useEffect(() => {
@@ -174,7 +178,7 @@ export default function useApiGet<D>(
 
     fetchData();
     return abortFetch;
-  }, [skip, url, fetchData, abortFetch]);
+  }, [skip, url, headersKey, fetchData, abortFetch]);
 
   useEffect(() => {
     if (skip || refreshIntervalMs <= 0) return;
