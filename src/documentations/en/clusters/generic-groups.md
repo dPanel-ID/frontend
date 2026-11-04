@@ -23,6 +23,8 @@ The group starts empty. On its page, press **Add servers** and pick the servers.
 
 Open the group and go to **Operations**. Under **Run on this group**:
 
+![A generic group's Operations tab: Run on this group with Install module, Deploy artifact, Refresh inventory, Reboot and Upgrade agent, above an empty Operation history](../../assets/clusters/generic-group-operations.webp 'Operations: one button per action, and the history of everything that ran.')
+
 | Action                | What it does                                                |
 | --------------------- | ----------------------------------------------------------- |
 | **Install module**    | Installs a module from the catalog on every server          |

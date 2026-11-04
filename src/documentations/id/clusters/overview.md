@@ -27,7 +27,7 @@ Saat Anda menekan **New group**, dPanel pertama-tama bertanya **What should this
 
 Bayangkan grup umum sebagai **milis**: satu pesan, semua orang dapat salinannya, masing-masing bertindak sendiri. Klaster adalah **tim**: anggotanya membagi pekerjaan dan saling menggantikan.
 
-Panduan: [Grup umum](./generic-groups.md) dan [Klaster Kubernetes](./kubernetes.md).
+Panduan: [Grup umum](./generic-groups.md), [Kubernetes dengan k3s](./kubernetes-k3s.md), dan [Kubernetes dengan RKE2](./kubernetes-rke2.md).
 
 ## Apa itu Kubernetes
 
@@ -51,13 +51,14 @@ Satu server cukup untuk mulai. Agar klaster tetap jalan saat kehilangan satu ser
 
 dPanel memasang Kubernetes dengan salah satu dari dua **engine**. Keduanya Kubernetes bersertifikat, jadi aplikasi dan perintah `kubectl` yang sama berjalan di keduanya.
 
-|                 | k3s                                          | RKE2                                                               |
-| --------------- | -------------------------------------------- | ------------------------------------------------------------------ |
-| Singkatnya      | Kubernetes ringan dalam satu program kecil   | Kubernetes dari Rancher yang fokus pada keamanan, siap CIS         |
-| Berjalan di     | amd64, arm64, dan armhf (Raspberry Pi)       | amd64 dan arm64                                                    |
-| Server terkecil | 1 CPU, memori 1 GB (2 GB lebih nyaman)       | 2 CPU, memori 4 GB                                                 |
-| Cocok untuk     | Belajar, VM kecil, Raspberry Pi, lokasi edge | Produksi, pekerjaan yang diatur regulasi, tim yang butuh hardening |
-| Lama pemasangan | Sekitar 10 menit untuk dua server            | Sekitar 12 menit untuk dua server                                  |
+|                              | k3s                                          | RKE2                                                               |
+| ---------------------------- | -------------------------------------------- | ------------------------------------------------------------------ |
+| Singkatnya                   | Kubernetes ringan dalam satu program kecil   | Kubernetes dari Rancher yang fokus pada keamanan, siap CIS         |
+| Berjalan di                  | amd64, arm64, dan armhf (Raspberry Pi)       | amd64 dan arm64                                                    |
+| Server terkecil              | 1 CPU, memori 1 GB (2 GB lebih nyaman)       | 2 CPU, memori 4 GB                                                 |
+| Cocok untuk                  | Belajar, VM kecil, Raspberry Pi, lokasi edge | Produksi, pekerjaan yang diatur regulasi, tim yang butuh hardening |
+| Lama pemasangan              | Sekitar 10 menit untuk dua server            | Sekitar 12 menit untuk dua server                                  |
+| Panduan langkah demi langkah | [Kubernetes dengan k3s](./kubernetes-k3s.md) | [Kubernetes dengan RKE2](./kubernetes-rke2.md)                     |
 
 Ragu? Mulai dengan **k3s**. Anda bisa membuat klaster RKE2 nanti di server lain.
 
