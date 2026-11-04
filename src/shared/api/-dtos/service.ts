@@ -38,6 +38,7 @@ export interface ServiceOriginV1 {
   active: string;
   state: string;
   installer: string;
+  installer_status?: string;
 }
 
 export interface ServiceOriginDetailV1 {
