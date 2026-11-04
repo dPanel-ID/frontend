@@ -10,7 +10,13 @@ A GitHub Actions worker runs your workspace's jobs in your own GitHub repository
 ## Before you start
 
 - A GitHub repository you can push to. A new, private repository is fine.
-- Your servers accept SSH from GitHub's runners.
+- Servers you already connected to dPanel. Nothing else to prepare on them.
+
+:::info[No SSH keys to add]
+You do **not** add any SSH key to GitHub, to the repository's secrets or to your servers. With each job, dPanel gives the run the same SSH access it already uses for your server, and the run forgets it when it ends.
+
+The only thing to check: if a firewall on your server allows SSH (port 22) only from certain IP addresses, GitHub's runners cannot connect. In that case use a [VM worker](./vm.md) inside your network instead.
+:::
 
 ## 1. Register the repository in dPanel
 
@@ -88,6 +94,6 @@ Each job gets its own run, so several jobs run at the same time, up to 10 per wo
 | The run fails with "Add 'permissions: id-token: write'" | Add the `permissions` block from the file above. |
 | No run starts when a job is waiting | Install the **dnocs-id** app on the repository, and check the workspace is on **Private workers**. |
 | The run starts but takes no job | The `workspace` value, repository, workflow file or branch differs from what you registered in dPanel. |
-| The job fails to connect to your server | Allow SSH from GitHub's runners on that server. |
+| The job fails to connect to your server | A firewall blocks SSH (port 22) from GitHub's runners. Open port 22 on that server, or use a [VM worker](./vm.md) inside your network. No key is missing: dPanel supplies it. |
 
 To stop, choose **Shared workers (dPanel)** again, or remove the worker. The workflow file stays in your repository; delete it there if you no longer need it.

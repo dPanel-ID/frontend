@@ -9,7 +9,7 @@ Worker VM adalah server atau VM yang Anda jalankan untuk mengambil job workspace
 
 ## Sebelum mulai
 
-- Server atau VM Linux (Ubuntu 22.04 atau 24.04) yang bisa menjangkau server Anda lewat SSH dan `https://pawon.devetek.app` lewat HTTPS.
+- Server atau VM Linux (Ubuntu 22.04 atau 24.04) yang bisa menjangkau server Anda lewat SSH dan `https://pawon.devetek.app` lewat HTTPS. Anda tidak perlu menambahkan kunci SSH: dPanel memberi worker akses SSH ke server Anda pada setiap job.
 - Python 3 dan `pip`.
 
 ## 1. Tambahkan worker di dPanel
