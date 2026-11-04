@@ -1,0 +1,11 @@
+{
+  "label": "Worker",
+  "position": 7,
+  "description": "Pilih tempat job workspace Anda dijalankan: worker bersama dPanel, atau workflow GitHub Actions maupun VM milik Anda sendiri.",
+  "app": {
+    "label": "Buka profil",
+    "href": "/profile"
+  },
+  "icon": "settings-2",
+  "color": "sky"
+}
