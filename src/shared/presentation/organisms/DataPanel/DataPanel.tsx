@@ -50,7 +50,7 @@ export function DataPanel(props: DataPanelProps) {
   return (
     <section className="overflow-hidden rounded-2xl border bg-card">
       <header className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex min-w-0 items-start gap-3">
+        <div className="flex min-w-0 flex-1 items-start gap-3 sm:min-w-60">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-background text-muted-foreground">
             <Icon className="size-5" />
           </span>
@@ -62,7 +62,8 @@ export function DataPanel(props: DataPanelProps) {
           </div>
         </div>
         {actions && (
-          <div className="flex shrink-0 flex-wrap items-center gap-2">
+          // Shrinks and wraps rather than squeezing the title beside it.
+          <div className="flex min-w-0 flex-wrap items-center gap-2 sm:justify-end">
             {actions}
           </div>
         )}

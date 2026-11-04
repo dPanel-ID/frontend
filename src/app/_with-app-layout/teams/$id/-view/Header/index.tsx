@@ -43,7 +43,7 @@ export default function Header() {
       title={orgName ?? '…'}
       description={orgDescription || t('page.teamDetail.hero.description')}
       aside={
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+        <div className="flex flex-wrap items-center gap-2 lg:justify-end">
           <Button
             variant="outline"
             size="sm"

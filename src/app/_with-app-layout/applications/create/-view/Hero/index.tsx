@@ -39,7 +39,7 @@ export default function Hero(props: HeroProps) {
       description={description}
       duration={t('page.applicationsCreate.heroDuration')}
       aside={
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+        <div className="flex flex-wrap items-center gap-2 lg:justify-end">
           <GithubAccountButton />
           <Button variant="outline" size="sm" asChild>
             <a

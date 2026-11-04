@@ -39,7 +39,7 @@ export default function Header() {
           : t('page.dashboard.hero.description')
       }
       aside={
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+        <div className="flex flex-wrap items-center gap-2 lg:justify-end">
           <Button variant="outline" size="sm" asChild>
             <a
               href={LINK__DOCUMENTATION}
