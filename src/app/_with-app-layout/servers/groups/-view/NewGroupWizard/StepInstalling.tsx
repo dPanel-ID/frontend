@@ -8,7 +8,10 @@ import {
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { isClusterTransitioning } from '@/features/server-groups/shared/lib/cluster';
+import {
+  clusterEngineLabel,
+  isClusterTransitioning,
+} from '@/features/server-groups/shared/lib/cluster';
 import { ClusterExecution } from '@/features/server-groups/view/ClusterExecution';
 import { ClusterStatusPill } from '@/features/server-groups/view/ClusterStatusPill';
 
@@ -85,7 +88,9 @@ export function StepInstalling(props: { created: CreatedCluster }) {
           },
           {
             label: tCluster('engine'),
-            value: [latest.engine, latest.version].filter(Boolean).join(' '),
+            value: [clusterEngineLabel(latest.engine), latest.version]
+              .filter(Boolean)
+              .join(' '),
           },
           {
             label: tCluster('lastExecution'),
