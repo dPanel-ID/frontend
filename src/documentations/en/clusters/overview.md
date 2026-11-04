@@ -27,7 +27,7 @@ When you press **New group**, dPanel first asks **What should this group be?**
 
 Think of a generic group as a **mailing list**: one message, everybody gets a copy, each person acts alone. A cluster is a **team**: the members split the work and cover for each other.
 
-Guides: [Generic groups](./generic-groups.md) and [Kubernetes clusters](./kubernetes.md).
+Guides: [Generic groups](./generic-groups.md), [Kubernetes with k3s](./kubernetes-k3s.md) and [Kubernetes with RKE2](./kubernetes-rke2.md).
 
 ## What Kubernetes is
 
@@ -51,13 +51,14 @@ One server is enough to start. For a cluster that survives losing a server, use 
 
 dPanel installs Kubernetes with one of two **engines**. Both are certified Kubernetes, so the same apps and `kubectl` commands work on either.
 
-|                 | k3s                                              | RKE2                                                  |
-| --------------- | ------------------------------------------------ | ----------------------------------------------------- |
-| In one line     | Lightweight Kubernetes in a single small program | Security-focused Kubernetes from Rancher, CIS-ready   |
-| Runs on         | amd64, arm64 and armhf (Raspberry Pi)            | amd64 and arm64                                       |
-| Smallest server | 1 CPU, 1 GB memory (2 GB comfortable)            | 2 CPU, 4 GB memory                                    |
-| Good for        | Learning, small VMs, Raspberry Pis, edge sites   | Production, regulated work, teams that need hardening |
-| Install time    | About 10 minutes for two servers                 | About 12 minutes for two servers                      |
+|                    | k3s                                              | RKE2                                                  |
+| ------------------ | ------------------------------------------------ | ----------------------------------------------------- |
+| In one line        | Lightweight Kubernetes in a single small program | Security-focused Kubernetes from Rancher, CIS-ready   |
+| Runs on            | amd64, arm64 and armhf (Raspberry Pi)            | amd64 and arm64                                       |
+| Smallest server    | 1 CPU, 1 GB memory (2 GB comfortable)            | 2 CPU, 4 GB memory                                    |
+| Good for           | Learning, small VMs, Raspberry Pis, edge sites   | Production, regulated work, teams that need hardening |
+| Install time       | About 10 minutes for two servers                 | About 12 minutes for two servers                      |
+| Step-by-step guide | [Kubernetes with k3s](./kubernetes-k3s.md)       | [Kubernetes with RKE2](./kubernetes-rke2.md)          |
 
 Not sure? Start with **k3s**. You can create an RKE2 cluster later on other servers.
 
