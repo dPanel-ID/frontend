@@ -1,5 +1,5 @@
 import { useSearch } from '@tanstack/react-router';
-import { ActivityIcon, ServerIcon } from 'lucide-react';
+import { ActivityIcon, BoxesIcon, ServerIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -11,7 +11,9 @@ import { FallbackState } from '@/widgets/fallback-state';
 import { useGroupDetailModel } from '../-model/group';
 import type { GroupDetailTab } from '../-rules/search';
 
+import ClusterTab from './ClusterTab';
 import { BulkActionDialog } from './dialogs/BulkActionDialog';
+import { ClusterDialogs } from './dialogs/ClusterDialogs';
 import { DeleteGroupDialog } from './dialogs/DeleteGroupDialog';
 import { DeployDialog } from './dialogs/DeployDialog';
 import { EditGroupDialog } from './dialogs/EditGroupDialog';
@@ -67,6 +69,15 @@ export default function ServerGroupDetailView() {
   if (!group) return null;
 
   const tabs = [
+    ...(group.cluster
+      ? [
+          {
+            id: 'cluster' as const,
+            label: t('detail.tabs.cluster'),
+            icon: BoxesIcon,
+          },
+        ]
+      : []),
     {
       id: 'members' as const,
       label: t('detail.tabs.members'),
@@ -80,17 +91,27 @@ export default function ServerGroupDetailView() {
       count: operations.length,
     },
   ];
+  // A deep link to the Cluster tab of a group that no longer has a cluster
+  // falls back to its servers.
+  const activeTab: GroupDetailTab =
+    tab === 'cluster' && !group.cluster ? 'members' : tab;
 
   return (
     <div className="flex flex-col gap-4">
       <Hero />
       <SectionTabs<GroupDetailTab>
         items={tabs}
-        active={tab}
+        active={activeTab}
         ariaLabel={t('detail.tabs.ariaLabel')}
         onSelect={(next) => goTo({ tab: next })}
       />
-      {tab === 'members' ? <MembersTab /> : <OperationsTab />}
+      {activeTab === 'cluster' ? (
+        <ClusterTab />
+      ) : activeTab === 'members' ? (
+        <MembersTab />
+      ) : (
+        <OperationsTab />
+      )}
 
       <EditGroupDialog />
       <DeleteGroupDialog />
@@ -98,6 +119,7 @@ export default function ServerGroupDetailView() {
       <DeployDialog />
       <RetryDialog />
       <InstallModuleDialog />
+      <ClusterDialogs />
     </div>
   );
 }

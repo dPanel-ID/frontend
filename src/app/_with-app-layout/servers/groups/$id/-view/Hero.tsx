@@ -39,8 +39,14 @@ export default function Hero() {
   const t = useDevetekTranslations('page.serverGroups.detail.hero');
   const tPage = useDevetekTranslations();
   const locale = useDevetekLocale();
-  const { group, isDetailDegraded, members, refreshDetail, setDialog } =
-    useGroupDetailModel();
+  const {
+    group,
+    isClusterGroup,
+    isDetailDegraded,
+    members,
+    refreshDetail,
+    setDialog,
+  } = useGroupDetailModel();
   const { openMembersPicker } = useMembersPicker();
 
   useMetaTags({ title: `${group?.name ?? ''} | dnocs` }, [group?.name]);
@@ -91,15 +97,17 @@ export default function Hero() {
               title={t('edit')}
               onClick={() => setDialog({ kind: 'edit' })}
             />
-            <button
-              type="button"
-              className={flowCtaClassName('sky')}
-              disabled={members.isMutatingMembers}
-              onClick={() => openMembersPicker('add')}
-            >
-              <PlusIcon className="size-4" />
-              {t('addServers')}
-            </button>
+            {!isClusterGroup && (
+              <button
+                type="button"
+                className={flowCtaClassName('sky')}
+                disabled={members.isMutatingMembers}
+                onClick={() => openMembersPicker('add')}
+              >
+                <PlusIcon className="size-4" />
+                {t('addServers')}
+              </button>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -112,14 +120,18 @@ export default function Hero() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  disabled={members.isMutatingMembers}
-                  onClick={() => openMembersPicker('replace')}
-                >
-                  <ReplaceIcon className="size-4" />
-                  {t('replaceServers')}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                {!isClusterGroup && (
+                  <>
+                    <DropdownMenuItem
+                      disabled={members.isMutatingMembers}
+                      onClick={() => openMembersPicker('replace')}
+                    >
+                      <ReplaceIcon className="size-4" />
+                      {t('replaceServers')}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={() => setDialog({ kind: 'delete' })}

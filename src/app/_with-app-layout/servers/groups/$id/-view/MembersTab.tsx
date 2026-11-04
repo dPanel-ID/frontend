@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import {
   CircleCheckIcon,
+  InfoIcon,
   PlusIcon,
   ServerIcon,
   ShieldAlertIcon,
@@ -60,7 +61,8 @@ export default function MembersTab() {
   const t = useDevetekTranslations('page.serverGroups.detail.members');
   const tCommon = useDevetekTranslations('common.dataPanel');
   const tTerms = useDevetekTranslations();
-  const { group, members } = useGroupDetailModel();
+  const { group, isClusterGroup, members } = useGroupDetailModel();
+  const tCluster = useDevetekTranslations('page.serverGroups.cluster');
   const { openMembersPicker } = useMembersPicker();
   const [openDialog] = useDialog();
   const [searchQuery, setSearchQuery] = useState('');
@@ -106,15 +108,17 @@ export default function MembersTab() {
       title={t('title')}
       description={t('description')}
       actions={
-        <button
-          type="button"
-          className={flowCtaClassName('sky', 'h-8 px-3 text-xs')}
-          disabled={members.isMutatingMembers}
-          onClick={() => openMembersPicker('add')}
-        >
-          <PlusIcon className="size-4" />
-          {t('add')}
-        </button>
+        isClusterGroup ? undefined : (
+          <button
+            type="button"
+            className={flowCtaClassName('sky', 'h-8 px-3 text-xs')}
+            disabled={members.isMutatingMembers}
+            onClick={() => openMembersPicker('add')}
+          >
+            <PlusIcon className="size-4" />
+            {t('add')}
+          </button>
+        )
       }
       tiles={
         <>
@@ -161,6 +165,13 @@ export default function MembersTab() {
         />
       }
     >
+      {isClusterGroup && (
+        <p className="flex items-center gap-2 border-b px-4 py-2.5 text-sm text-muted-foreground">
+          <InfoIcon className="size-4 shrink-0 text-sky-600 dark:text-sky-300" />
+          {tCluster('membersNote')}
+        </p>
+      )}
+
       {members.memberActionError && (
         <div className="border-b p-3" aria-live="polite" role="status">
           <FailedState.BannerRetryable
@@ -179,14 +190,16 @@ export default function MembersTab() {
           title={t('empty')}
           description={t('emptyHint')}
           action={
-            <button
-              type="button"
-              className={flowCtaClassName('sky')}
-              onClick={() => openMembersPicker('add')}
-            >
-              <PlusIcon className="size-4" />
-              {t('add')}
-            </button>
+            isClusterGroup ? undefined : (
+              <button
+                type="button"
+                className={flowCtaClassName('sky')}
+                onClick={() => openMembersPicker('add')}
+              >
+                <PlusIcon className="size-4" />
+                {t('add')}
+              </button>
+            )
           }
         />
       ) : filtered.length === 0 ? (
@@ -201,9 +214,11 @@ export default function MembersTab() {
               <TableHead className={cn(dataTable.head, 'w-40')}>
                 {t('table.status')}
               </TableHead>
-              <TableHead className={cn(dataTable.head, 'w-32 text-right')}>
-                {t('table.actions')}
-              </TableHead>
+              {!isClusterGroup && (
+                <TableHead className={cn(dataTable.head, 'w-32 text-right')}>
+                  {t('table.actions')}
+                </TableHead>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -261,19 +276,21 @@ export default function MembersTab() {
                       <span className="text-muted-foreground">-</span>
                     )}
                   </TableCell>
-                  <TableCell className={cn(dataTable.cell, 'text-right')}>
-                    <Button
-                      size="sm"
-                      buttonStyle="outline"
-                      buttonColor="secondary"
-                      className="text-red-600 hover:border-red-400/40 hover:bg-red-500/10 dark:text-red-300"
-                      disabled={members.isMutatingMembers}
-                      onClick={() => handleRemove(member)}
-                    >
-                      <Trash2Icon className="size-4" />
-                      {isRemoving ? t('removing') : t('remove')}
-                    </Button>
-                  </TableCell>
+                  {!isClusterGroup && (
+                    <TableCell className={cn(dataTable.cell, 'text-right')}>
+                      <Button
+                        size="sm"
+                        buttonStyle="outline"
+                        buttonColor="secondary"
+                        className="text-red-600 hover:border-red-400/40 hover:bg-red-500/10 dark:text-red-300"
+                        disabled={members.isMutatingMembers}
+                        onClick={() => handleRemove(member)}
+                      >
+                        <Trash2Icon className="size-4" />
+                        {isRemoving ? t('removing') : t('remove')}
+                      </Button>
+                    </TableCell>
+                  )}
                 </TableRow>
               );
             })}

@@ -30,10 +30,10 @@ import {
 import { FailedState } from '@/widgets/failed-state';
 import { FallbackState } from '@/widgets/fallback-state';
 
-import { CreateGroupDialog } from './CreateGroupDialog';
 import { GroupCard } from './GroupCard';
 import type { GroupExtras } from './GroupCard';
 import { GroupsEmptyState } from './GroupsEmptyState';
+import { NewGroupWizard } from './NewGroupWizard';
 
 /**
  * fetchGet spreads a list payload into the response object, so the items sit
@@ -261,15 +261,16 @@ export default function ServerGroupsView() {
         </div>
       )}
 
-      <CreateGroupDialog
+      <NewGroupWizard
         open={createOpen}
         onOpenChange={setCreateOpen}
-        onCreated={(groupId) => {
+        onCreated={() => refreshGroups()}
+        onOpenGroup={(groupId, tab) => {
           refreshGroups();
           navigate({
             to: '/servers/groups/$id',
             params: { id: groupId },
-            search: { tab: 'members' },
+            search: { tab },
           });
         }}
       />

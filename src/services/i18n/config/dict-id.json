@@ -2920,7 +2920,7 @@
       "title": "Grup server",
       "hero": {
         "description": "Satukan server yang saling terkait dalam satu grup, lalu pasang modul, deploy dan jalankan pemeliharaan ke semuanya sekaligus.",
-        "create": "Buat grup",
+        "create": "Grup baru",
         "back": "Semua server"
       },
       "overview": {
@@ -2940,7 +2940,7 @@
       "empty": {
         "title": "Belum ada grup server",
         "message": "Grup adalah kumpulan server tersimpan. Pasang modul, deploy artefak atau reboot seluruh kumpulan dengan satu aksi, dan pantau hasil tiap server di satu tempat.",
-        "cta": "Buat grup pertama"
+        "cta": "Buat grup pertama Anda"
       },
       "unavailable": "Grup server tidak tersedia di lingkungan ini.",
       "operationStatus": {
@@ -2961,23 +2961,12 @@
         "agentUpgrade": "Perbarui agen",
         "systemReboot": "Reboot"
       },
-      "createDialog": {
-        "title": "Buat grup server",
-        "description": "Beri nama grupnya sekarang; tambahkan server berikutnya dari halaman grup.",
-        "name": "Nama",
-        "namePlaceholder": "API Produksi",
-        "descriptionLabel": "Deskripsi",
-        "descriptionPlaceholder": "Kesamaan server-server ini",
-        "nameRequired": "Nama grup wajib diisi.",
-        "cancel": "Batal",
-        "create": "Buat grup",
-        "creating": "Membuat…"
-      },
       "detail": {
         "tabs": {
           "ariaLabel": "Bagian grup",
           "members": "Server",
-          "operations": "Operasi"
+          "operations": "Operasi",
+          "cluster": "Klaster"
         },
         "hero": {
           "members": "{count} server",
@@ -3159,6 +3148,156 @@
             "cancel": "Tutup",
             "noMatch": "Tidak ada modul yang cocok."
           }
+        }
+      },
+      "clusterStatus": {
+        "pending": "Menunggu",
+        "installing": "Memasang",
+        "ready": "Siap",
+        "failed": "Gagal",
+        "uninstalling": "Mencopot",
+        "uninstalled": "Dicopot",
+        "unknown": "Tidak diketahui"
+      },
+      "wizard": {
+        "title": "Grup baru",
+        "description": "Pilih kegunaan grup, atur, tinjau, lalu buat.",
+        "position": "Langkah {current} dari {total}",
+        "steps": {
+          "type": "Jenis",
+          "configure": "Konfigurasi",
+          "review": "Tinjau",
+          "install": "Memasang"
+        },
+        "back": "Kembali",
+        "next": "Lanjut",
+        "cancel": "Batal",
+        "close": "Tutup",
+        "type": {
+          "heading": "Grup ini untuk apa?",
+          "generic": "Umum",
+          "genericDescription": "Kumpulan server tersimpan. Pasang modul, deploy, dan jalankan pemeliharaan di semuanya sekaligus.",
+          "genericMin": "Jumlah server bebas",
+          "minServers": "Minimal {count} server",
+          "minServer": "Minimal 1 server",
+          "comingSoon": "Segera hadir",
+          "kindsFailed": "Jenis klaster gagal dimuat; Anda tetap bisa membuat grup umum.",
+          "retry": "Coba lagi",
+          "loading": "Memuat jenis klaster…"
+        },
+        "generic": {
+          "note": "Beri nama grup sekarang; tambahkan server berikutnya dari halaman grup."
+        },
+        "fields": {
+          "name": "Nama",
+          "namePlaceholder": "API Produksi",
+          "description": "Deskripsi",
+          "descriptionPlaceholder": "Kesamaan server-server ini",
+          "nameRequired": "Nama grup wajib diisi."
+        },
+        "cluster": {
+          "engine": "Engine",
+          "recommended": "Disarankan",
+          "engineUnsupported": "Tidak bisa berjalan di {servers} ({arch}).",
+          "architectures": "Berjalan di {list}",
+          "version": "Versi",
+          "versionPlaceholder": "Pilih versi",
+          "servers": "Server",
+          "serversHint": "Pilih server dan beri peran untuk masing-masing. Server yang sudah ada di grup tidak bisa dipilih.",
+          "searchPlaceholder": "Cari server",
+          "picked": "{count} dipilih",
+          "inGroup": "Sudah ada di grup",
+          "archUnknown": "arsitektur tidak diketahui",
+          "noServers": "Server tidak ditemukan.",
+          "noMatch": "Tidak ada server yang cocok.",
+          "loadFailed": "Server gagal dimuat.",
+          "remove": "Hapus",
+          "role": "Peran",
+          "options": "Opsi",
+          "builtinIngress": "Ingress bawaan",
+          "builtinIngressHint": "Pasang ingress controller milik engine di port 80 dan 443.",
+          "recommendArm": "{engine} disarankan karena ada server arm yang dipilih.",
+          "noEngine": "Tidak ada engine yang bisa berjalan di semua server yang dipilih."
+        },
+        "issues": {
+          "noServers": "Pilih minimal satu server.",
+          "minServers": "Jenis ini butuh minimal {min} server.",
+          "roleMin": "Minimal {min} server harus berperan {role}.",
+          "roleMax": "Maksimal {max} server boleh berperan {role}.",
+          "roleOdd": "Jumlah {role} harus ganjil bila lebih dari satu (sekarang {count}).",
+          "engineUnsupported": "{engine} tidak bisa berjalan di {servers}.",
+          "unknownArch": "Arsitektur {servers} tidak diketahui; segarkan inventarisnya atau backend akan menolaknya.",
+          "mixedRegions": "Server berada di region berbeda ({regions}); lalu lintas klaster antar-region lambat."
+        },
+        "review": {
+          "group": "Grup",
+          "type": "Jenis",
+          "engine": "Engine",
+          "version": "Versi",
+          "ingress": "Ingress bawaan",
+          "on": "Aktif",
+          "off": "Nonaktif",
+          "installs": "Apa yang dipasang di mana",
+          "installsLine": "{engine} {version} sebagai {role}",
+          "warnings": "Peringatan",
+          "permissions": "Membuat klaster butuh izin cluster editor dan server editor di workspace ini.",
+          "genericSummary": "Grup umum kosong. Tambahkan server dari halaman grup.",
+          "create": "Buat grup",
+          "install": "Buat dan pasang",
+          "creating": "Membuat…"
+        },
+        "install": {
+          "heading": "Memasang {name}",
+          "queued": "Grup sudah dibuat dan pemasangan sudah diantrekan.",
+          "polling": "Disegarkan setiap beberapa detik selama pemasangan.",
+          "done": "Klaster siap.",
+          "failed": "Pemasangan gagal. Buka grup untuk melihat eksekusi lalu coba lagi atau hapus.",
+          "warnings": "Peringatan dari backend",
+          "openGroup": "Buka halaman grup"
+        }
+      },
+      "cluster": {
+        "title": "Klaster",
+        "description": "Klaster yang berjalan di server-server grup ini.",
+        "kind": "Jenis",
+        "engine": "Engine",
+        "version": "Versi",
+        "status": "Status",
+        "apiEndpoint": "Endpoint API",
+        "notAvailable": "Belum tersedia",
+        "lastExecution": "Eksekusi terakhir",
+        "noExecution": "Belum ada eksekusi",
+        "executionId": "Eksekusi {id}",
+        "nodes": "Node",
+        "table": {
+          "server": "Server",
+          "role": "Peran",
+          "status": "Status",
+          "arch": "Arsitektur",
+          "region": "Region"
+        },
+        "noNodes": "Belum ada node tercatat.",
+        "loadFailed": "Klaster gagal dimuat.",
+        "polling": "Masih berubah; disegarkan setiap beberapa detik.",
+        "uninstall": "Copot",
+        "delete": "Hapus klaster",
+        "deleteDisabled": "Copot klaster terlebih dahulu; hanya klaster menunggu, gagal, atau dicopot yang bisa dihapus.",
+        "membersNote": "Anggota grup klaster berubah melalui operasi klaster.",
+        "dialogs": {
+          "uninstallTitle": "Copot klaster",
+          "uninstallDescription": "Menghapus {engine} dari setiap node <strong>{name}</strong>.",
+          "uninstallStep1": "Workload di klaster berhenti dan datanya di node dihapus.",
+          "uninstallStep2": "Server dan grup tetap ada; klaster menjadi dicopot.",
+          "uninstallConfirm": "Copot",
+          "uninstalling": "Mencopot…",
+          "deleteTitle": "Hapus klaster",
+          "deleteDescription": "Menghapus catatan klaster <strong>{name}</strong>.",
+          "deleteStep1": "Grup tetap ada sebagai grup umum dengan server yang sama.",
+          "deleteStep2": "Tidak ada yang diubah di server.",
+          "deleteConfirm": "Hapus klaster",
+          "deleting": "Menghapus…",
+          "happens": "Apa yang terjadi",
+          "cancel": "Batal"
         }
       }
     },
