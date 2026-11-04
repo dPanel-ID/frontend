@@ -178,9 +178,11 @@ export default function MessageBubble(props: Props) {
 const ACTION_STATUS_TONE: Record<ChatAction['status'], string> = {
   pending: 'border-amber-400/40 bg-amber-500/10',
   deciding: 'border-sky-400/40 bg-sky-500/10',
+  running: 'border-sky-400/40 bg-sky-500/10',
   executed: 'border-emerald-400/40 bg-emerald-500/10',
   rejected: 'border-neutral-400/40 bg-neutral-500/10',
   failed: 'border-red-400/40 bg-red-500/10',
+  expired: 'border-neutral-400/40 bg-neutral-500/10',
 };
 
 interface ActionCardProps {

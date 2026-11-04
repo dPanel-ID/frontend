@@ -70,12 +70,19 @@ export interface AiConversationV1 {
   updated_at?: string;
 }
 
+/** A change an answer proposed, with its current status. */
+export interface AiConversationActionV1 extends AiPendingActionV1 {
+  status?: string;
+}
+
 export interface AiMessageV1 {
   id?: string;
   role?: string;
   content?: string;
   tools?: string[] | null;
   created_at?: string;
+  /** Changes this answer proposed; pending ones can still be decided. */
+  actions?: AiConversationActionV1[] | null;
 }
 
 export interface AiConversationDetailV1 extends AiConversationV1 {
