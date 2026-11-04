@@ -81,7 +81,17 @@ function retryWithoutStoredWorkspace(config: WorkspaceRetryRequestConfig) {
   return axiosClient.request(retryConfig);
 }
 
+function hasExplicitWorkspace(config: AxiosRequestConfig) {
+  const headers = AxiosHeaders.from(
+    config.headers as Parameters<typeof AxiosHeaders.from>[0],
+  );
+  return Boolean(headers.get(X_AUTH_ORGANIZATION_ID));
+}
+
 axiosClient.interceptors.request.use((config) => {
+  // A request that names its workspace keeps it; the selection is the default.
+  if (hasExplicitWorkspace(config)) return config;
+
   const organizationId = iife(() => {
     if (!isBrowser()) return null;
 

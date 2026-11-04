@@ -72,6 +72,12 @@ export type Adapter<Raw, Data> = (raw: Raw) => Data;
 
 export interface BaseRequestRecipe {
   url: string;
+  /**
+   * Extra request headers. An explicit workspace header here wins over the
+   * workspace selected in the app shell, for surfaces that act on one
+   * workspace regardless of the selection (a team page, the profile).
+   */
+  headers?: Record<string, string>;
 }
 
 export type GetRequestRecipe = BaseRequestRecipe;
