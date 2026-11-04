@@ -272,6 +272,11 @@ export function canDeleteCluster(status?: string) {
   );
 }
 
+/** Install again reruns a failed install, or reinstalls after an uninstall. */
+export function canInstallCluster(status?: string) {
+  return status === 'failed' || status === 'uninstalled';
+}
+
 export function canUninstallCluster(status?: string) {
   return status === 'ready' || status === 'failed';
 }
@@ -300,4 +305,31 @@ export function clusterStatusTone(status?: string): {
     default:
       return { tone: 'neutral', pulse: false };
   }
+}
+
+const KIND_LABELS: Record<string, string> = {
+  kubernetes: 'Kubernetes',
+  postgresql: 'PostgreSQL',
+  mariadb: 'MariaDB',
+  redis: 'Redis',
+  kafka: 'Kafka',
+  mongodb: 'MongoDB',
+  emqx: 'EMQX',
+};
+
+const ENGINE_LABELS: Record<string, string> = {
+  k3s: 'k3s',
+  rke2: 'RKE2',
+};
+
+/** A cluster kind as its product writes it ("Kubernetes"). */
+export function clusterKindLabel(kind?: string) {
+  if (!kind) return '';
+  return KIND_LABELS[kind] ?? kind;
+}
+
+/** An engine as its project writes it ("k3s", "RKE2"), never capitalized. */
+export function clusterEngineLabel(engine?: string) {
+  if (!engine) return '';
+  return ENGINE_LABELS[engine] ?? engine;
 }

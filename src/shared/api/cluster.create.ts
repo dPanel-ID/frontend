@@ -35,6 +35,19 @@ export function doUninstall(payload: ClusterIdPayload) {
 }
 
 /**
+ * Installs the cluster again on the same nodes, engine, version and roles,
+ * after a failed install or an uninstall.
+ */
+export function doInstall(payload: ClusterIdPayload) {
+  return apiDoPost<unknown>({
+    method: 'POST',
+    url: `/v1/clusters/${payload.id}/install`,
+  }).then((response) =>
+    adaptMutationResponse(response, parseClusterMutationPayload),
+  );
+}
+
+/**
  * Deletes an uninstalled, failed or never-installed cluster. The group stays
  * as a generic group.
  */
