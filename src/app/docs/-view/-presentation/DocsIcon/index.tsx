@@ -1,5 +1,6 @@
 import {
   AppWindowIcon,
+  BoxesIcon,
   Building2Icon,
   CircleHelpIcon,
   ClockIcon,
@@ -45,6 +46,7 @@ import type {
 
 const ICONS: Record<DocsIconName, LucideIcon> = {
   'app-window': AppWindowIcon,
+  boxes: BoxesIcon,
   'building-2': Building2Icon,
   'circle-help': CircleHelpIcon,
   clock: ClockIcon,

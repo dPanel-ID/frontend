@@ -66,7 +66,7 @@ You land on the list with **Load balancer created successfully.** The row reads 
 2. Installs Caddy on the gateway if it is not there yet.
 3. Publishes the routes and requests the HTTPS certificate.
 
-This usually takes about a minute. The row then reads **Ready**, and the counters at the top move it to **Serving traffic**.
+This usually takes about a minute. The first load balancer on a server also installs Caddy, which takes about 10 minutes. The row then reads **Ready**, and the counters at the top move it to **Serving traffic**.
 
 ![The Load balancers list in table view, with each load balancer's engine, status, gateway server and address, and routing](../../assets/networking/lb-list.webp)
 
