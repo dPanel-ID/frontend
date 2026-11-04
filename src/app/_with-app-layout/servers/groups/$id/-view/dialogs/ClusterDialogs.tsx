@@ -9,7 +9,9 @@ import {
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { clusterEngineLabel } from '@/features/server-groups/shared/lib/cluster';
 import { ConsequenceList } from '@/features/server-lifecycle-dialogs';
+
 
 import { ApiCluster } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
@@ -78,7 +80,7 @@ export function ClusterDialogs() {
   };
 
   const name = group?.name ?? '';
-  const engine = cluster?.engine ?? '';
+  const engine = clusterEngineLabel(cluster?.engine);
   const strong = (chunks: React.ReactNode) => (
     <strong className="text-primary">{chunks}</strong>
   );
