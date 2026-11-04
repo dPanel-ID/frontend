@@ -16,6 +16,17 @@ function memberCountOf(raw: DTOs.HostGroupV1) {
   return raw.members?.length ?? 0;
 }
 
+function clusterOf(raw: DTOs.HostGroupV1) {
+  if (!raw.cluster) return undefined;
+
+  return {
+    id: raw.cluster.id,
+    kind: raw.cluster.kind,
+    engine: raw.cluster.engine || undefined,
+    status: raw.cluster.status,
+  };
+}
+
 export const toHostGroupSummary = createAdapter<
   DTOs.HostGroupV1,
   ReturnType<typeof schemaHostGroupSummary.parse>
@@ -27,6 +38,7 @@ export const toHostGroupSummary = createAdapter<
     workspaceId: raw.workspace_id || undefined,
     workspaceType: raw.workspace_type || undefined,
     memberCount: memberCountOf(raw),
+    cluster: clusterOf(raw),
     timestamp: {
       created: raw.created_at,
       updated: raw.updated_at,
@@ -45,6 +57,7 @@ export const toHostGroupDetail = createAdapter<
     workspaceId: raw.workspace_id || undefined,
     workspaceType: raw.workspace_type || undefined,
     memberCount: memberCountOf(raw),
+    cluster: clusterOf(raw),
     timestamp: {
       created: raw.created_at,
       updated: raw.updated_at,

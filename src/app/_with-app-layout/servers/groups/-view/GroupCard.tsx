@@ -10,6 +10,9 @@ import type {
 import { OperationStatusPill } from '@/entities/host-group/ui/OperationStatusPill';
 import { SERVER_STATE_METADATA } from '@/entities/server/ui/constants/state-metadata';
 
+import { ClusterKindIcon } from '@/features/server-groups/view/ClusterKindIcon';
+import { ClusterStatusPill } from '@/features/server-groups/view/ClusterStatusPill';
+
 import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { cn } from '@/shared/libs/tailwind/cn';
 import {
@@ -41,12 +44,16 @@ export function GroupCard(props: {
     <Link
       to="/servers/groups/$id"
       params={{ id: group.id }}
-      search={{ tab: 'members' }}
+      search={{ tab: group.cluster ? 'cluster' : 'members' }}
       className="group flex flex-col gap-4 rounded-2xl border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-sky-400/40 hover:shadow-lg hover:shadow-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50"
     >
       <div className="flex items-start gap-3">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-sky-400/30 bg-sky-500/10 text-sky-600 dark:text-sky-300">
-          <FolderTreeIcon className="size-5" />
+          {group.cluster ? (
+            <ClusterKindIcon kind={group.cluster.kind} className="size-5" />
+          ) : (
+            <FolderTreeIcon className="size-5" />
+          )}
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
@@ -65,6 +72,16 @@ export function GroupCard(props: {
           <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">
             {group.description || t('card.noDescription')}
           </p>
+          {group.cluster && (
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              <span className="inline-flex items-center rounded-full border bg-background/60 px-2.5 py-0.5 text-xs font-semibold capitalize">
+                {[group.cluster.kind, group.cluster.engine]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </span>
+              <ClusterStatusPill status={group.cluster.status} />
+            </div>
+          )}
         </div>
       </div>
 

@@ -7,6 +7,16 @@ import { schemaExplicitTarget } from '@/shared/rules/host-group';
 export type Target = z.output<typeof schemaExplicitTarget>;
 export const schemaTarget = schemaExplicitTarget;
 
+export type HostGroupClusterSummary = z.output<
+  typeof schemaHostGroupClusterSummary
+>;
+export const schemaHostGroupClusterSummary = z.object({
+  id: z.string(),
+  kind: z.string(),
+  engine: z.string().optional(),
+  status: z.string(),
+});
+
 export type HostGroupSummary = z.output<typeof schemaHostGroupSummary>;
 export const schemaHostGroupSummary = z.object({
   id: SchemaCommon.unitId,
@@ -15,6 +25,8 @@ export const schemaHostGroupSummary = z.object({
   workspaceId: z.string().optional(),
   workspaceType: z.string().optional(),
   memberCount: z.number().int().nonnegative(),
+  /** Set on cluster groups; their members change through the cluster. */
+  cluster: schemaHostGroupClusterSummary.optional(),
   timestamp: SchemaCommon.timestamp,
 });
 

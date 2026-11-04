@@ -11,11 +11,12 @@ import type {
   HostGroupOperation,
 } from '@/entities/host-group/rules/schema';
 
+import { isClusterTransitioning } from '@/features/server-groups/shared/lib/cluster';
 import { getOperationRefreshInterval } from '@/features/server-groups/shared/lib/operation';
 import { useServerGroupMemberMutations } from '@/features/server-groups/usecase/member-mutations';
 import { useRetainedResponseData } from '@/features/server-groups/usecase/use-retained-response-data';
 
-import { ApiHostGroup } from '@/shared/api';
+import { ApiCluster, ApiHostGroup } from '@/shared/api';
 import { buildContext } from '@/shared/libs/react-factories/buildContext';
 
 import type { GroupDetailTab } from '../-rules/search';
@@ -41,6 +42,8 @@ export type GroupDialog =
   | { kind: 'deploy' }
   | { kind: 'module' }
   | { kind: 'retry' }
+  | { kind: 'clusterUninstall' }
+  | { kind: 'clusterDelete' }
   | { kind: 'bulk'; action: 'inventory' | 'reboot' | 'upgrade' };
 
 /**
@@ -92,6 +95,30 @@ export const [GroupDetailModelProvider, useGroupDetailModel] = buildContext(
       operationId && operationData.data
         ? toHostGroupOperation(operationData.data).unwrap()
         : null;
+
+    // Cluster groups: the cluster detail, polled while it installs or
+    // uninstalls. The group's summary says whether there is one at all.
+    const clusterId = group?.cluster?.id;
+    const [clusterStatus, setClusterStatus] = useState<string>();
+    const [clusterResponse, refreshCluster] = ApiCluster.Detail.$Id.useGet({
+      id: clusterId ?? '',
+      options: {
+        skip: !clusterId,
+        refreshIntervalMs: isClusterTransitioning(
+          clusterStatus ?? group?.cluster?.status,
+        )
+          ? 3000
+          : 0,
+      },
+    });
+    const clusterData = useRetainedResponseData(clusterResponse);
+    const cluster =
+      clusterId && clusterData.data?.id === clusterId ? clusterData.data : null;
+
+    const latestClusterStatus = cluster?.status;
+    useEffect(() => {
+      setClusterStatus(latestClusterStatus);
+    }, [latestClusterStatus]);
 
     const latestStatus = operation?.status;
     useEffect(() => {
@@ -154,6 +181,11 @@ export const [GroupDetailModelProvider, useGroupDetailModel] = buildContext(
       setDialog,
       goTo,
       showOperation,
+      isClusterGroup: Boolean(group?.cluster),
+      cluster,
+      clusterResponse,
+      isClusterDegraded: clusterData.isDegraded,
+      refreshCluster,
       canRunActions: (group?.memberCount ?? 0) > 0 && !detail.isDegraded,
     };
   },

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const GROUP_DETAIL_TABS = ['members', 'operations'] as const;
+export const GROUP_DETAIL_TABS = ['members', 'operations', 'cluster'] as const;
 
 export type GroupDetailTab = (typeof GROUP_DETAIL_TABS)[number];
 
