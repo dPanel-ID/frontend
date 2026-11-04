@@ -42,6 +42,7 @@ export type GroupDialog =
   | { kind: 'deploy' }
   | { kind: 'module' }
   | { kind: 'retry' }
+  | { kind: 'clusterInstall' }
   | { kind: 'clusterUninstall' }
   | { kind: 'clusterDelete' }
   | { kind: 'bulk'; action: 'inventory' | 'reboot' | 'upgrade' };

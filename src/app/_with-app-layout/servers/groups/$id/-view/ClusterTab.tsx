@@ -1,11 +1,20 @@
 import { Link } from '@tanstack/react-router';
-import { BoxesIcon, PowerOffIcon, ServerIcon, Trash2Icon } from 'lucide-react';
+import {
+  BoxesIcon,
+  PlayIcon,
+  PowerOffIcon,
+  ServerIcon,
+  Trash2Icon,
+} from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
 import {
   canDeleteCluster,
+  canInstallCluster,
   canUninstallCluster,
+  clusterEngineLabel,
+  clusterKindLabel,
   isClusterTransitioning,
 } from '@/features/server-groups/shared/lib/cluster';
 import { ClusterExecution } from '@/features/server-groups/view/ClusterExecution';
@@ -58,6 +67,16 @@ export default function ClusterTab() {
 
   const actions = (
     <div className="flex flex-wrap items-center gap-2">
+      {canInstallCluster(status) && (
+        <Button
+          size="sm"
+          disabled={!cluster}
+          onClick={() => setDialog({ kind: 'clusterInstall' })}
+        >
+          <PlayIcon className="size-4" />
+          {t('install')}
+        </Button>
+      )}
       <Button
         size="sm"
         buttonStyle="outline"
@@ -122,15 +141,15 @@ export default function ClusterTab() {
 
       <dl className="grid gap-x-6 gap-y-3 border-b p-4 text-sm sm:grid-cols-2 lg:grid-cols-3">
         <Fact label={t('kind')}>
-          <span className="inline-flex items-center gap-1.5 capitalize">
+          <span className="inline-flex items-center gap-1.5">
             <ClusterKindIcon kind={kind} className="size-4" />
-            {kind}
+            {clusterKindLabel(kind)}
           </span>
         </Fact>
         <Fact label={t('engine')}>
           <span className="inline-flex items-center gap-1.5">
             <ClusterEngineIcon engine={engine} kind={kind} className="size-4" />
-            {engine || '-'}
+            {clusterEngineLabel(engine) || '-'}
           </span>
         </Fact>
         <Fact label={t('version')}>{cluster.version || '-'}</Fact>

@@ -4,6 +4,9 @@ import { schemaClusterKindDto } from '@/shared/rules/cluster';
 
 import {
   canDeleteCluster,
+  canInstallCluster,
+  clusterEngineLabel,
+  clusterKindLabel,
   defaultRoleFor,
   defaultVersionOf,
   hasBlockingIssue,
@@ -169,5 +172,31 @@ describe('canDeleteCluster', () => {
     ['installing', false],
   ])('%s → %s', (status, expected) => {
     expect(canDeleteCluster(status)).toBe(expected);
+  });
+});
+
+describe('canInstallCluster', () => {
+  it.each([
+    ['failed', true],
+    ['uninstalled', true],
+    ['ready', false],
+    ['installing', false],
+    ['pending', false],
+  ])('%s → %s', (status, expected) => {
+    expect(canInstallCluster(status)).toBe(expected);
+  });
+});
+
+describe('cluster labels', () => {
+  it('writes engines and kinds as their projects do', () => {
+    expect(clusterEngineLabel('k3s')).toBe('k3s');
+    expect(clusterEngineLabel('rke2')).toBe('RKE2');
+    expect(clusterKindLabel('kubernetes')).toBe('Kubernetes');
+    expect(clusterKindLabel('postgresql')).toBe('PostgreSQL');
+  });
+
+  it('keeps unknown names and empty values', () => {
+    expect(clusterEngineLabel('patroni')).toBe('patroni');
+    expect(clusterKindLabel(undefined)).toBe('');
   });
 });
