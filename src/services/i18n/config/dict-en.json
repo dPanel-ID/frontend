@@ -3529,6 +3529,127 @@
         "application": "creating and managing applications",
         "server": "creating and managing servers"
       }
+    },
+    "workers": {
+      "title": "Workers",
+      "description": "Workers are the programs that run this workspace's jobs: deployments, server setup and module installs. dPanel's shared workers run them unless you switch to your own.",
+      "refresh": "Refresh workers",
+      "addWorker": "Add worker",
+      "readOnly": "You can see where this team's jobs run. Only team owners and admins can change it.",
+      "empty": {
+        "title": "No private workers yet",
+        "description": "Add a VM you run, or a GitHub Actions workflow in one of your repositories, to run this workspace's jobs on your own infrastructure."
+      },
+      "mode": {
+        "label": "Where jobs run",
+        "current": "Current",
+        "note": "Private workers: every job of this workspace goes only to the workers listed below. If none of them is running, jobs wait until one is.",
+        "shared": {
+          "title": "Shared workers (dPanel)",
+          "subtitle": "dPanel runs your jobs. Nothing to set up."
+        },
+        "private": {
+          "title": "Private workers",
+          "subtitle": "Only your own workers below run this workspace's jobs.",
+          "needsWorker": "Add a worker first."
+        }
+      },
+      "modeDialog": {
+        "privateTitle": "Switch to private workers?",
+        "privateMessage": "From now on, every job of this workspace goes only to the workers listed here. dPanel's shared workers stop taking them. If none of your workers is running, jobs wait until one is. Jobs already running finish where they are.",
+        "privateConfirm": "Switch to private workers",
+        "sharedTitle": "Switch back to shared workers?",
+        "sharedMessage": "From now on, dPanel's shared workers run this workspace's jobs. Your workers stay registered, so you can switch back later. Jobs already running finish where they are.",
+        "sharedConfirm": "Switch to shared workers"
+      },
+      "removeDialog": {
+        "title": "Remove {name}?",
+        "messageVm": "This worker stops taking jobs and its token stops working. Stop the executor on that host afterwards. Jobs it is running now may fail.",
+        "messageGithub": "dPanel stops starting this workflow and refuses its runs. The workflow file stays in your repository; delete it there if you no longer need it.",
+        "confirm": "Remove worker"
+      },
+      "rotateDialog": {
+        "title": "Create a new token for {name}?",
+        "message": "dPanel creates a new token and the current one stops working right away. Put the new token on the host and restart the executor, or the worker stops taking jobs.",
+        "confirm": "Create new token"
+      },
+      "tokenModal": {
+        "title": "New token for {name}",
+        "description": "Replace the old token on the host, then restart the executor."
+      },
+      "toaster": {
+        "modeError": "Could not change where jobs run",
+        "modePrivate": "Jobs of this workspace now run only on your private workers.",
+        "modeShared": "Jobs of this workspace now run on dPanel's shared workers.",
+        "addError": "Could not add {name}",
+        "removeError": "Could not remove {name}",
+        "removeSuccess": "{name} removed.",
+        "rotateError": "Could not create a new token for {name}"
+      },
+      "list": {
+        "lastSeen": "Last seen {time}",
+        "neverSeen": "Not seen yet",
+        "tokenHint": "Token {hint}",
+        "rotate": "New token",
+        "rotateAria": "Create a new token for {name}",
+        "removeAria": "Remove {name}"
+      },
+      "types": {
+        "vm": "VM",
+        "github": "GitHub workflow",
+        "unknown": "Other"
+      },
+      "copy": {
+        "copy": "Copy",
+        "copied": "Copied",
+        "failed": "Could not copy. Select the text and copy it yourself."
+      },
+      "secret": {
+        "title": "Save this token now",
+        "warning": "It is shown only this once. dPanel keeps only a fingerprint of it, so closing this dialog hides it for good. Lost it? Create a new token from the worker list.",
+        "token": "Worker token",
+        "noToken": "The API did not return a token. Create a new token from the worker list.",
+        "env": "Environment for the executor",
+        "envHint": "Set these on the host that runs the executor (for example in its systemd environment file), then start it.",
+        "done": "I have saved it"
+      },
+      "workflowResult": {
+        "intro": "dPanel starts this workflow whenever this workspace has jobs waiting. It signs in with GitHub's own identity token, so there is no secret to store.",
+        "noWorkflow": "The API did not return the workflow file. Remove this worker and add it again.",
+        "stepCommit": "Commit the file above to {repository} as {path}.",
+        "stepInstallApp": "Install the dPanel GitHub App ({app}) on {repository}, so dPanel can start the workflow.",
+        "stepSwitch": "Switch this workspace to private workers."
+      },
+      "add": {
+        "title": "Add worker",
+        "description": "A worker you run yourself, for this workspace's jobs.",
+        "createdTitle": "{name} added",
+        "vmIntro": "A server or VM you run that can reach this workspace's servers over SSH. dPanel gives you a token for it once.",
+        "githubIntro": "A GitHub Actions workflow in your repository. dPanel starts it when jobs are waiting; it needs no token.",
+        "name": "Name",
+        "nameHint": "Only for you, to tell workers apart.",
+        "executorId": "Executor ID",
+        "executorIdHint": "2 to 63 lowercase letters, digits or hyphens, unique in this workspace, for example office-vm-01.",
+        "repository": "Repository",
+        "repositoryHint": "owner/name, or paste the GitHub link.",
+        "workflow": "Workflow file",
+        "workflowHint": "The file name in .github/workflows.",
+        "ref": "Branch or tag",
+        "refHint": "Where the workflow file lives.",
+        "submit": "Add worker"
+      },
+      "errors": {
+        "nameRequired": "Give the worker a name.",
+        "nameTooLong": "Use 100 characters or fewer.",
+        "executorIdRequired": "Enter an executor ID.",
+        "executorIdInvalid": "Use 2 to 63 lowercase letters, digits or hyphens, starting with a letter or digit.",
+        "repositoryRequired": "Enter the repository.",
+        "repositoryInvalid": "Use owner/name, for example acme/dpanel-workers.",
+        "workflowRequired": "Enter the workflow file name.",
+        "workflowInvalid": "Use a file name ending in .yml or .yaml.",
+        "refRequired": "Enter a branch or tag.",
+        "refInvalid": "Use letters, digits, dots, dashes, underscores and slashes only."
+      }
     }
   },
   "dialog": {
