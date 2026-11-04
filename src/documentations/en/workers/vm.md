@@ -1,0 +1,92 @@
+---
+title: VM worker
+description: Run your dPanel jobs on a server or VM you control. Add a VM worker in dPanel, copy its token once, and run the dPanel executor on the machine as a service.
+sidebar_position: 3
+sidebar_icon: server
+---
+
+A VM worker is a server or VM you run that takes your workspace's jobs. It runs all the time, asks dPanel for jobs, and runs them against your servers over SSH. Use it when your servers are reachable only from your own network.
+
+## Before you start
+
+- A Linux server or VM (Ubuntu 22.04 or 24.04) that can reach your servers over SSH and `https://pawon.devetek.app` over HTTPS.
+- Python 3 and `pip`.
+
+## 1. Add the worker in dPanel
+
+1. Open **Profile** for your personal workspace, or your team's page.
+2. In **Workers**, press **Add worker** and choose **VM**.
+3. **Name**: for example "Office VM".
+4. **Executor ID**: 2 to 63 lowercase letters, digits or hyphens, for example `office-vm-01`.
+5. Press **Add worker**.
+
+![The Add worker dialog on the VM tab, with Name Office VM and Executor ID office-vm-01](../../assets/workers/add-vm-worker.webp 'Add worker → VM, filled in.')
+
+dPanel shows a **token** and the settings for the machine. **Save the token now**: it is shown only once.
+
+![The Office VM added dialog with a masked worker token and the environment for the executor: token, workspace ID, manager URL and worker ID](../../assets/workers/vm-worker-token.webp 'Copy the environment block now; the token is shown only once. (The token is hidden in this picture.)')
+
+## 2. Install the executor on the machine
+
+```bash
+python3 -m pip install --user "ansible-core>=2.16,<2.17" jmespath
+base=https://raw.githubusercontent.com/dPanel-ID/artifacts/main/executor
+version=$(curl -fsSL "$base/LATEST")
+curl -fsSL -o dpanelprod-executor "$base/$version/dpanelprod-executor-linux-amd64"
+curl -fsSL "$base/$version/SHA256SUMS" | sed 's/dpanelprod-executor-linux-amd64/dpanelprod-executor/' | grep ' dpanelprod-executor$' | sha256sum -c -
+chmod +x dpanelprod-executor && sudo mv dpanelprod-executor /usr/local/bin/
+```
+
+Use `dpanelprod-executor-linux-arm64` on an ARM machine.
+
+## 3. Run it as a service
+
+Create `/etc/dpanel-worker.env` with the settings dPanel showed you (readable only by root):
+
+```bash
+DPANEL_EXECUTOR_MANAGER_URL=https://pawon.devetek.app
+DPANEL_EXECUTOR_TOKEN=dpw_your_token
+DPANEL_EXECUTOR_WORKSPACE_ID=group:1234567890
+DPANEL_EXECUTOR_WORKER_ID=office-vm-01
+ENV=production
+```
+
+Then create `/etc/systemd/system/dpanel-worker.service`:
+
+```ini
+[Unit]
+Description=dPanel worker
+After=network-online.target
+
+[Service]
+EnvironmentFile=/etc/dpanel-worker.env
+WorkingDirectory=/var/lib/dpanel-worker
+ExecStart=/usr/local/bin/dpanelprod-executor
+Restart=always
+User=dpanel-worker
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo useradd --system --create-home --home-dir /var/lib/dpanel-worker dpanel-worker
+sudo chmod 600 /etc/dpanel-worker.env
+sudo systemctl daemon-reload && sudo systemctl enable --now dpanel-worker
+```
+
+Run Ansible as that user too: install it with `sudo -u dpanel-worker python3 -m pip install --user ...` if you created a new user.
+
+## 4. Switch to private workers
+
+In **Workers**, choose **Private workers** and confirm. The worker's **Last seen** time updates once it asks for jobs.
+
+![The Workers card listing a VM worker office-vm-01 and a GitHub workflow worker acme/dpanel-workers, with the Private workers option next to Shared workers](../../assets/workers/worker-list.webp 'Your workers are listed under the mode switch. Choose Private workers to send jobs to them.')
+
+:::tip[Run several jobs at once]
+Set `DPANEL_EXECUTOR_SLOTS=3` in the settings file to let one VM run three jobs at the same time.
+:::
+
+## Lost the token?
+
+Press **New token** on the worker. The old token stops working right away; put the new one in `/etc/dpanel-worker.env` and restart the service with `sudo systemctl restart dpanel-worker`.
