@@ -37,6 +37,7 @@ describe('host-group adapter', () => {
       name: 'Edge',
       workspace_id: 'org_1',
       workspace_type: 'group',
+      kind: 'kubernetes',
       cluster: {
         id: 'cl_1',
         kind: 'kubernetes',
@@ -61,6 +62,7 @@ describe('host-group adapter', () => {
       name: 'Fleet',
       workspace_id: 'org_1',
       workspace_type: 'group',
+      kind: 'generic',
       cluster: null,
       created_at: '2026-08-15T10:00:00Z',
       updated_at: '2026-08-16T10:00:00Z',
