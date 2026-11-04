@@ -10,7 +10,13 @@ Worker GitHub Actions menjalankan job workspace Anda di repositori GitHub Anda s
 ## Sebelum mulai
 
 - Repositori GitHub yang bisa Anda push. Repositori baru yang privat pun boleh.
-- Server Anda menerima SSH dari runner GitHub.
+- Server yang sudah terhubung ke dPanel. Tidak ada yang perlu disiapkan lagi di server.
+
+:::info[Tidak perlu menambahkan kunci SSH]
+Anda **tidak** perlu menambahkan kunci SSH apa pun ke GitHub, ke secrets repositori, maupun ke server Anda. Pada setiap job, dPanel memberi run akses SSH yang sama dengan yang sudah dipakai dPanel untuk server Anda, dan run melupakannya begitu selesai.
+
+Satu-satunya yang perlu dicek: jika firewall di server Anda hanya mengizinkan SSH (port 22) dari alamat IP tertentu, runner GitHub tidak bisa terhubung. Dalam kasus itu, gunakan [worker VM](./vm.md) di dalam jaringan Anda.
+:::
 
 ## 1. Daftarkan repositori di dPanel
 
@@ -88,6 +94,6 @@ Setiap job mendapat run sendiri, jadi beberapa job berjalan bersamaan, hingga 10
 | Run gagal dengan "Add 'permissions: id-token: write'" | Tambahkan blok `permissions` dari file di atas. |
 | Tidak ada run saat job menunggu | Pasang aplikasi **dnocs-id** di repositori, dan pastikan workspace memakai **Private workers**. |
 | Run berjalan tetapi tidak mengambil job | Nilai `workspace`, repositori, file workflow atau branch berbeda dari yang didaftarkan di dPanel. |
-| Job gagal terhubung ke server | Izinkan SSH dari runner GitHub di server tersebut. |
+| Job gagal terhubung ke server | Firewall memblokir SSH (port 22) dari runner GitHub. Buka port 22 di server tersebut, atau gunakan [worker VM](./vm.md) di dalam jaringan Anda. Tidak ada kunci yang kurang: dPanel yang menyediakannya. |
 
 Untuk berhenti, pilih lagi **Shared workers (dPanel)**, atau hapus worker. File workflow tetap ada di repositori; hapus di sana jika tidak diperlukan lagi.

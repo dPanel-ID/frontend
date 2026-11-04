@@ -9,7 +9,7 @@ A VM worker is a server or VM you run that takes your workspace's jobs. It runs 
 
 ## Before you start
 
-- A Linux server or VM (Ubuntu 22.04 or 24.04) that can reach your servers over SSH and `https://pawon.devetek.app` over HTTPS.
+- A Linux server or VM (Ubuntu 22.04 or 24.04) that can reach your servers over SSH and `https://pawon.devetek.app` over HTTPS. You do not add SSH keys: dPanel gives the worker your servers' SSH access with each job.
 - Python 3 and `pip`.
 
 ## 1. Add the worker in dPanel
