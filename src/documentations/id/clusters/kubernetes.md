@@ -69,7 +69,7 @@ Buka grupnya. Tab **Cluster** menampilkan **Status**, engine dan versi, **API en
 
 ![Halaman grup kube-k3s di tab Cluster: Kubernetes, k3s v1.37.1+k3s1, status Ready, API endpoint di port 6443, cluster_install Succeeded, dan dua node, Server dan Agent, keduanya ready](../../assets/clusters/cluster-detail.webp 'Klaster yang siap: kedua node sudah bergabung dan pemasangan berhasil.')
 
-Untuk melihat isinya, buka node berperan **Server**, masuk ke **Terminal**-nya, lalu jalankan:
+Untuk melihat isinya, buka halaman node berperan **Server** (pilih di tabel **Nodes**) lalu tekan **Open terminal** di bagian atas. dPanel membuka shell di server itu langsung di browser, tanpa perlu kunci SSH di sisi Anda; lihat [Terhubung lewat SSH](../servers/connect-over-ssh.md). Lalu jalankan:
 
 ```bash
 # k3s
@@ -89,7 +89,7 @@ kube-k3s-2.c.dnocs-demo.internal   Ready    <none>          4m    v1.37.1+k3s1
 
 ## 5. Jalankan aplikasi pertama
 
-Masih di terminal node server, simpan ini sebagai `hello.yaml`. Isinya menjalankan dua salinan halaman web kecil dan membukanya di port `30080` setiap node (sebuah **NodePort**):
+Di terminal yang sama, simpan ini sebagai `hello.yaml`. Isinya menjalankan dua salinan halaman web kecil dan membukanya di port `30080` setiap node (sebuah **NodePort**). Untuk membuat filenya, jalankan `nano hello.yaml`, tempel teksnya, lalu tekan `Ctrl+O`, `Enter`, dan `Ctrl+X`.
 
 ```yaml
 apiVersion: apps/v1
@@ -165,7 +165,7 @@ Hapus dulu load balancer yang Anda buat untuk klaster itu.
 ## Belum tersedia
 
 - Menambah atau mengeluarkan node setelah pemasangan, dan meng-upgrade versi Kubernetes.
-- Mengunduh kubeconfig untuk memakai `kubectl` dari komputer Anda sendiri. Untuk sementara gunakan **Terminal** node server.
+- Mengunduh kubeconfig untuk memakai `kubectl` dari komputer Anda sendiri. Untuk sementara, tekan **Open terminal** di halaman node Server.
 - Membuka port klaster di firewall dPanel secara otomatis; itulah sebabnya firewall node harus mati.
 
 ## Pemecahan masalah
