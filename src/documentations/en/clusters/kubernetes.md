@@ -69,7 +69,7 @@ Open the group. The **Cluster** tab shows the **Status**, the engine and version
 
 ![The kube-k3s group page on the Cluster tab: Kubernetes, k3s v1.37.1+k3s1, status Ready, API endpoint on port 6443, cluster_install Succeeded, and two nodes, Server and Agent, both ready](../../assets/clusters/cluster-detail.webp 'A ready cluster: both nodes joined and the install succeeded.')
 
-To look inside, open the node with the **Server** role, go to its **Terminal**, and run:
+To look inside, open the page of the node with the **Server** role (select it in the **Nodes** table) and press **Open terminal** at the top. dPanel opens a shell on that server in your browser, with no SSH key needed on your side; see [Connect over SSH](../servers/connect-over-ssh.md). Then run:
 
 ```bash
 # k3s
@@ -89,7 +89,7 @@ kube-k3s-2.c.dnocs-demo.internal   Ready    <none>          4m    v1.37.1+k3s1
 
 ## 5. Run your first app
 
-Still in the server node's terminal, save this as `hello.yaml`. It runs two copies of a tiny web page and opens it on port `30080` of every node (a **NodePort**):
+In the same terminal, save this as `hello.yaml`. It runs two copies of a tiny web page and opens it on port `30080` of every node (a **NodePort**). To create the file, run `nano hello.yaml`, paste the text, then press `Ctrl+O`, `Enter` and `Ctrl+X`.
 
 ```yaml
 apiVersion: apps/v1
@@ -165,7 +165,7 @@ Delete the load balancer first if you made one for the cluster.
 ## Not available yet
 
 - Adding or removing nodes after the install, and upgrading the Kubernetes version.
-- Downloading a kubeconfig to use `kubectl` from your own computer. Use the server node's **Terminal** for now.
+- Downloading a kubeconfig to use `kubectl` from your own computer. For now, press **Open terminal** on the Server node's page.
 - Opening the cluster ports in the dPanel firewall automatically; that is why nodes need the firewall off.
 
 ## Troubleshooting
