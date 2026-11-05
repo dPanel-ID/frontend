@@ -16,28 +16,26 @@ export default function useFormSubmissionUsecase() {
   const sidepanelEmit = useEmit();
 
   const handleSubmit = form.handleSubmit(async (values) => {
-    const { autoDeploy, workdir, port } = values;
+    const { autoDeploy, buildTimeout, description } = values;
+    const dirty = form.formState.dirtyFields;
+
+    // The API merges what it receives over the stored definition, so only
+    // the parts that changed are sent.
+    const appDefinition: Record<string, unknown> = {};
+    if (dirty.description) appDefinition.run = { description };
+    if (dirty.buildTimeout) appDefinition.build = { timeout: buildTimeout };
 
     const response = await ApiApplication.Update.$Id.doPost({
-      applicationId: props.applicationId,
+      applicationId: String(props.applicationId),
       payload: {
-        workdir: workdir || undefined,
         app_config: {
           auto_deploy: {
-            branch: autoDeploy.fromBranch,
             enabled: autoDeploy.isEnabled,
+            branch: autoDeploy.isEnabled ? autoDeploy.fromBranch : '',
           },
         },
-        ...(port != null && props.rawAppDefinition != null
-          ? {
-              app_definition: {
-                ...props.rawAppDefinition,
-                run: {
-                  ...props.rawAppDefinition.run,
-                  port,
-                },
-              },
-            }
+        ...(Object.keys(appDefinition).length > 0
+          ? { app_definition: appDefinition }
           : {}),
       },
     });

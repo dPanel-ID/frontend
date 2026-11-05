@@ -29,7 +29,7 @@ export default function ApplicationEditSidepanel(props: Props) {
       <GitBranchModelProvider applicationId={applicationId}>
         <Controller />
 
-        <Layout classNameFrame="w-[100vw] sm:w-[80vw] sm:max-w-[380px]">
+        <Layout classNameFrame="w-[calc(100svw_-_16px)] max-w-[480px]">
           <Layout.Title
             title={t('sidepanel.editApplication.title')}
             subtitle={applicationName || `Id: ${applicationId}`}

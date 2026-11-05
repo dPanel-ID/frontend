@@ -28,7 +28,9 @@ export default function FormItemFromBranch() {
     return <GitBranchError />;
   }
 
-  const branches = (branchState as { branches: Array<{ name: string; commitHead: string }> }).branches;
+  const branches = (
+    branchState as { branches: Array<{ name: string; commitHead: string }> }
+  ).branches;
 
   return (
     <ComboboxWithSearch

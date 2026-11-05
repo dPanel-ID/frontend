@@ -1,9 +1,13 @@
 import {
   CodeIcon,
+  FileTextIcon,
   GitBranchIcon,
   HammerIcon,
+  PencilIcon,
   PlayIcon,
+  RocketIcon,
   SlidersHorizontalIcon,
+  TimerIcon,
 } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
@@ -14,6 +18,7 @@ import {
   guardedSelects,
 } from '@/shared/libs/react-factories/guardedSelect';
 import { Badge } from '@/shared/presentation/atoms/Badge';
+import { Button } from '@/shared/presentation/atoms/Button';
 
 import { useAppDataModel } from '../../../-model/app-data';
 import { useEmit } from '../../../-model/events';
@@ -74,6 +79,16 @@ export default guard(function SettingsTab() {
     });
   };
 
+  const editDeployment = () => {
+    emit('@applications::detail/application-edit', {
+      applicationId: appId,
+      applicationName: appName,
+    });
+  };
+  const autoDeploy = configDefs.cicd.autoDeploy;
+  const buildTimeout = rawAppDefinition?.build?.timeout;
+  const description = rawAppDefinition?.run?.description;
+
   const editSetup = () => {
     if (!rawAppDefinition || !lifecycle?.setup) return;
     emit('@applications::detail/application-setup-edit', {
@@ -129,6 +144,55 @@ export default guard(function SettingsTab() {
           </dl>
         </Section>
       )}
+
+      <Section
+        icon={RocketIcon}
+        title={t('sections.deployment')}
+        description={t('sections.deploymentHint')}
+        action={
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={editDeployment}
+          >
+            <PencilIcon className="size-3.5" />
+            {t('editDeployment')}
+          </Button>
+        }
+      >
+        <dl className="divide-y">
+          <Row
+            icon={RocketIcon}
+            label={t('labels.autoDeploy')}
+            value={
+              autoDeploy.enabled ? (
+                <span className="inline-flex flex-wrap items-center gap-1.5">
+                  <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
+                    {t('autoDeployOn')}
+                  </Badge>
+                  <span className="font-mono text-xs">
+                    {autoDeploy.fromBranch}
+                  </span>
+                </span>
+              ) : (
+                <Badge variant="secondary">{t('autoDeployOff')}</Badge>
+              )
+            }
+          />
+          <Row
+            icon={TimerIcon}
+            label={t('labels.buildTimeout')}
+            value={buildTimeout || t('defaultTimeout')}
+            mono={!!buildTimeout}
+          />
+          <Row
+            icon={FileTextIcon}
+            label={t('labels.description')}
+            value={description || '-'}
+          />
+        </dl>
+      </Section>
 
       <div className="grid gap-4 xl:grid-cols-2">
         {lifecycle?.build && (

@@ -929,7 +929,9 @@
           "build": "Build",
           "run": "Jalan",
           "buildHint": "Cara kode Anda diubah menjadi sesuatu yang bisa dipasang",
-          "runHint": "Cara aplikasi yang terpasang dijalankan dan dijaga tetap hidup"
+          "runHint": "Cara aplikasi yang terpasang dijalankan dan dijaga tetap hidup",
+          "deployment": "Deployment",
+          "deploymentHint": "Kapan aplikasi ini di-deploy dan berapa lama satu deployment boleh berjalan."
         },
         "labels": {
           "repository": "Repositori",
@@ -939,14 +941,21 @@
           "port": "Port",
           "command": "Perintah jalan",
           "buildSteps": "Langkah build",
-          "envVars": "Variabel lingkungan"
+          "envVars": "Variabel lingkungan",
+          "autoDeploy": "Deploy otomatis",
+          "buildTimeout": "Batas waktu build",
+          "description": "Deskripsi"
         },
         "empty": {
           "repository": "Belum ada repositori terhubung",
           "envVars": "Tidak ada variabel lingkungan",
           "buildSteps": "Tidak ada langkah build",
           "configuration": "Tidak ada konfigurasi"
-        }
+        },
+        "editDeployment": "Ubah",
+        "autoDeployOn": "Aktif",
+        "autoDeployOff": "Nonaktif",
+        "defaultTimeout": "Bawaan"
       },
       "tabs": {
         "ariaLabel": "Bagian aplikasi",
@@ -1188,7 +1197,8 @@
             "portPlaceholder": "7000",
             "portUsed": "Port {port} sudah digunakan di server ini.",
             "usedPorts": "Port yang sudah digunakan",
-            "noPorts": "Tidak ada port terpakai yang dilaporkan."
+            "noPorts": "Tidak ada port terpakai yang dilaporkan.",
+            "portLocked": "Tetap setelah aplikasi dibuat: load balancer dan server yang sudah di-deploy memakai port ini."
           }
         },
         "step5": {
@@ -3805,18 +3815,41 @@
       "hideConfirmPassword": "Sembunyikan konfirmasi password"
     },
     "editApplication": {
-      "title": "Ubah Aplikasi",
+      "title": "Ubah aplikasi",
+      "loadFailed": "Aplikasi tidak bisa dimuat. Tutup panel ini lalu coba lagi.",
       "autoDeployment": {
         "title": "Deploy otomatis",
-        "enable": "Gunakan deploy otomatis",
-        "deployFromBranch": "Deploy dari branch"
+        "description": "Build dan deploy otomatis setiap kali Anda push ke sebuah branch di GitHub.",
+        "enable": "Deploy di setiap push",
+        "stateOn": "Aktif: setiap push mem-build dan men-deploy commit yang di-push.",
+        "stateOff": "Nonaktif: deploy secara manual dari halaman aplikasi.",
+        "deployFromBranch": "Branch",
+        "branchHint": "Hanya push ke branch ini yang memulai deployment.",
+        "branchRequired": "Pilih branch yang akan di-deploy.",
+        "summary": "Setiap push ke {branch} mem-build commit yang di-push dan men-deploy-nya ke {count, plural, =0 {server tempat aplikasi ini berjalan} other {# server tempat aplikasi ini berjalan}}."
       },
-      "general": {
-        "title": "Umum",
-        "workdir": "Direktori Kerja",
-        "workdirPlaceholder": "/app",
+      "build": {
+        "title": "Build",
+        "description": "Berapa lama satu deployment boleh berjalan: clone, memasang runtime, build, dan menjalankan layanan.",
+        "timeout": "Batas waktu",
+        "timeoutHint": "Deployment yang lebih lama dihentikan dan ditandai gagal.",
+        "default": "Bawaan",
+        "buildTimeoutInvalid": "Gunakan durasi seperti 30m atau 2h."
+      },
+      "description": {
+        "title": "Deskripsi",
+        "description": "Catatan singkat tentang fungsi aplikasi ini.",
+        "label": "Deskripsi",
+        "placeholder": "mis. Situs pelanggan",
+        "descriptionTooLong": "Maksimal 200 karakter."
+      },
+      "fixed": {
+        "title": "Pengaturan tetap",
+        "description": "Ditentukan saat aplikasi dibuat dan tidak bisa diubah: server menyimpannya di folder ini dan menjalankannya sebagai layanan ini, dan load balancer mengirim lalu lintas ke port ini. Untuk memakai nilai lain, buat aplikasi baru.",
+        "repository": "Repositori",
+        "workdir": "Direktori kerja",
         "port": "Port",
-        "portPlaceholder": "misal 3000"
+        "service": "Nama layanan"
       }
     },
     "artifactNew": {

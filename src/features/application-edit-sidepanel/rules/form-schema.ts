@@ -1,11 +1,13 @@
 import { z } from 'zod';
 
-export const schemaEnvironmentVars = z.array(
-  z.object({
-    key: z.string(),
-    value: z.string(),
-  }),
-);
+/** Build time limits offered in the panel, as Go durations (the API allows 1m to 3h). */
+export const BUILD_TIMEOUT_PRESETS = [
+  '15m',
+  '30m',
+  '60m',
+  '120m',
+  '180m',
+] as const;
 
 export const schemaAutoDeploy = z.object({
   isEnabled: z.boolean(),
@@ -17,19 +19,26 @@ export const schemaAutoDeploy = z.object({
     ),
 });
 
-export type SchemaEnvironmentVars = z.infer<typeof schemaEnvironmentVars>;
+// Work directory, port and service name are fixed once the application
+// exists (servers and load balancers depend on them), so they are not part of
+// the form.
+export const schemaApplicationEdit = z
+  .object({
+    autoDeploy: schemaAutoDeploy,
+    buildTimeout: z
+      .string()
+      .regex(/^(\d+(h|m))*$/, 'buildTimeoutInvalid')
+      .default(''),
+    description: z.string().max(200, 'descriptionTooLong').default(''),
+  })
+  .superRefine((values, ctx) => {
+    if (values.autoDeploy.isEnabled && !values.autoDeploy.fromBranch) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['autoDeploy', 'fromBranch'],
+        message: 'branchRequired',
+      });
+    }
+  });
 
-export const schemaCommand = z.array(z.string());
-
-export const schemaApplicationEdit = z.object({
-  autoDeploy: schemaAutoDeploy,
-  workdir: z.string().optional(),
-  // An empty port field means "leave the port as it is"; coercing it would
-  // turn it into 0 and block every save.
-  port: z.preprocess(
-    (value) => (value === '' || value == null ? undefined : value),
-    z.coerce.number().int().min(1).max(65535).optional(),
-  ),
-});
-
-export type SchemaApplicationEdit = z.infer<typeof schemaApplicationEdit>;
+export type SchemaApplicationEdit = z.input<typeof schemaApplicationEdit>;
