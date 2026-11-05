@@ -112,6 +112,10 @@ Choose **Open terminal** at the top of the server page. You get a root shell on 
 
 If the machine is off or offline when you start an install or a deploy, the job waits and then fails; start it again once the machine is back.
 
+## Share it with your team
+
+A machine registered from your personal space is only yours. To give a team access, register it into a team workspace or move it there: see [Share a homelab with your team](../tutorials/team-homelab.md).
+
 ## Register it again
 
 Running `sudo dnocs machine register` again on the same machine keeps the same server in dPanel and gives its agent a new credential. A machine belongs to one workspace at a time, and a workspace can hold up to 10 private machines.
