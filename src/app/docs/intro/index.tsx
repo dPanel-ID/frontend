@@ -9,7 +9,7 @@ import {
 } from '@/shared/libs/seo';
 
 import { docsSections } from '../-lib/registry';
-import { DocsFooter } from '../-view/-presentation/DocsFooter';
+import { DocsTopBar } from '../-view/-presentation/DocsTopBar';
 
 import { DocsIntroContent } from './-view/DocsIntroContent';
 
@@ -56,9 +56,10 @@ function DocsIntroPage() {
         tabIndex={-1}
         className="min-h-svh bg-background text-foreground"
       >
-        <div className="flex w-full flex-col gap-4 p-3 sm:p-4 lg:p-6">
+        {/* pb-24 lets the page scroll clear of the floating "Ask dPanel" button. */}
+        <div className="flex w-full flex-col gap-4 p-3 pb-24 sm:p-4 sm:pb-24 lg:p-6 lg:pb-24">
+          <DocsTopBar />
           <DocsIntroContent locale={locale} sections={sections} />
-          <DocsFooter />
         </div>
       </main>
     </>
