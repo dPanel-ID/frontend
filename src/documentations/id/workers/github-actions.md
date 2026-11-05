@@ -1,11 +1,11 @@
 ---
 title: Worker GitHub Actions
-description: Jalankan job dPanel Anda di GitHub Actions dalam lima menit. Tambahkan satu workflow pendek yang memakai dPanel-ID/worker-action, daftarkan repositorinya di dPanel, lalu beralih ke worker pribadi. Tanpa rahasia.
+description: Jalankan job dPanel di GitHub Actions dalam lima menit. Daftarkan repositori, commit workflow pendek dengan dPanel-ID/worker-action, lalu beralih.
 sidebar_position: 2
 sidebar_icon: git-branch
 ---
 
-Worker GitHub Actions menjalankan job workspace Anda di repositori GitHub Anda sendiri. dPanel memulai workflow Anda setiap kali ada job yang menunggu; setiap run mengambil satu job, menjalankannya ke server Anda lewat SSH, lalu selesai. Tidak ada token yang perlu disalin: run masuk ke dPanel dengan token identitas GitHub, dan dPanel memastikan run itu berasal dari repositori dan workflow yang Anda daftarkan.
+Worker GitHub Actions menjalankan job workspace dPanel Anda di repositori GitHub Anda sendiri. GitHub Actions adalah fitur bawaan GitHub untuk menjalankan skrip, yang disebut workflow, di mesin milik GitHub. dPanel memulai workflow Anda setiap kali ada job yang menunggu; setiap run mengambil satu job, menjalankannya ke server Anda lewat SSH, lalu selesai. Tidak ada token yang perlu disalin: run masuk ke dPanel dengan token identitas GitHub, dan dPanel memastikan run itu berasal dari repositori dan workflow yang Anda daftarkan.
 
 ## Sebelum mulai
 
@@ -89,11 +89,29 @@ Setiap job mendapat run sendiri, jadi beberapa job berjalan bersamaan, hingga 10
 
 ## Pemecahan masalah
 
-| Yang Anda lihat | Perbaikan |
-| --- | --- |
-| Run gagal dengan "Add 'permissions: id-token: write'" | Tambahkan blok `permissions` dari file di atas. |
-| Tidak ada run saat job menunggu | Pasang aplikasi **dnocs-id** di repositori, dan pastikan workspace memakai **Private workers**. |
-| Run berjalan tetapi tidak mengambil job | Nilai `workspace`, repositori, file workflow atau branch berbeda dari yang didaftarkan di dPanel. |
-| Job gagal terhubung ke server | Firewall memblokir SSH (port 22) dari runner GitHub. Buka port 22 di server tersebut, atau gunakan [worker VM](./vm.md) di dalam jaringan Anda. Tidak ada kunci yang kurang: dPanel yang menyediakannya. |
+| Yang Anda lihat                                       | Perbaikan                                                                                                                                                                                                |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Run gagal dengan "Add 'permissions: id-token: write'" | Tambahkan blok `permissions` dari file di atas.                                                                                                                                                          |
+| Tidak ada run saat job menunggu                       | Pasang aplikasi **dnocs-id** di repositori, dan pastikan workspace memakai **Private workers**.                                                                                                          |
+| Run berjalan tetapi tidak mengambil job               | Nilai `workspace`, repositori, file workflow atau branch berbeda dari yang didaftarkan di dPanel.                                                                                                        |
+| Job gagal terhubung ke server                         | Firewall memblokir SSH (port 22) dari runner GitHub. Buka port 22 di server tersebut, atau gunakan [worker VM](./vm.md) di dalam jaringan Anda. Tidak ada kunci yang kurang: dPanel yang menyediakannya. |
 
 Untuk berhenti, pilih lagi **Shared workers (dPanel)**, atau hapus worker. File workflow tetap ada di repositori; hapus di sana jika tidak diperlukan lagi.
+
+## Pertanyaan yang sering diajukan
+
+### Apakah ini memakai menit GitHub Actions saya?
+
+Ya. Setiap job berjalan sebagai satu run workflow di repositori Anda, jadi dihitung ke menit Actions repositori itu. Run di repositori publik gratis di runner standar GitHub.
+
+### Apakah saya perlu menyimpan token dPanel di GitHub?
+
+Tidak. Run masuk dengan token identitas milik GitHub sendiri. Itu sebabnya workflow membutuhkan `permissions: id-token: write`.
+
+### Bisakah saya mendaftarkan worker dari terminal?
+
+Bisa. `dnocs worker add --type github --name ci --repository owner/name` mendaftarkannya dan mencetak file workflow-nya. Tambahkan `--workflow` atau `--ref` jika berbeda dari `dpanel-worker.yml` dan `main`.
+
+### Berapa job yang berjalan bersamaan?
+
+Hingga 10 per workspace, satu job per run. Job di server yang sama tetap berjalan bergantian.

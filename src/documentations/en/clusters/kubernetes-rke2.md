@@ -1,12 +1,12 @@
 ---
 title: Kubernetes with RKE2
-description: Create an RKE2 Kubernetes cluster on your dPanel servers step by step, open a terminal on its node, run your first app, and serve it on your own domain with HTTPS.
+description: Create a RKE2 Kubernetes cluster on your dPanel servers step by step, run your first app, and serve it on your own domain with HTTPS.
 sidebar_position: 4
 sidebar_icon: shield-check
 sidebar_label: Kubernetes with RKE2
 ---
 
-This guide builds a real RKE2 cluster, **kube-rke**, on two servers and serves a web app from it at `https://kube-rke.devetek.app`. Follow along with your own servers and domain; it takes about 30 minutes, most of it waiting.
+This guide builds a real RKE2 Kubernetes cluster with dPanel, **kube-rke**, on two servers and serves a web app from it at `https://kube-rke.devetek.app`. Follow along with your own servers and domain; it takes about 30 minutes, most of it waiting.
 
 RKE2 is Rancher's security-focused Kubernetes: CIS-ready defaults, the Canal network plugin, and its control plane (etcd, API server, scheduler) running as visible pods. It needs bigger servers than k3s and runs on amd64 and arm64 only. For small machines or a Raspberry Pi, see [Kubernetes with k3s](./kubernetes-k3s.md). New to the words? Read [Server groups and clusters](./overview.md) first.
 
@@ -20,7 +20,7 @@ You need servers that dPanel already manages and that read **Ready**. This guide
 | kube-rke-2 | **Agent**           | 2 CPU, 4 GB, Ubuntu 24.04 |
 
 - **Size:** 2 CPU and 4 GB of memory or more per server, amd64 or arm64. RKE2 runs more system pods than k3s; smaller servers struggle.
-- **System:** Ubuntu 22.04 or 24.04.
+- **System:** Ubuntu. This guide was tested on Ubuntu 24.04.
 - **Same region** for every server, not in any group, without Docker, k3s or RKE2, and with the dPanel firewall off.
 
 A fresh server launched from dPanel meets all of this. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
@@ -189,3 +189,32 @@ Delete the load balancer first if you made one for the cluster.
 | The status reads **Failed**                                 | Open the last execution from the **Cluster** tab to read the error, fix it, then press **Install again**.                                                               |
 | `kubectl: command not found`                                | Run the `sudo -i` and two `export` lines from step 6 in that terminal first.                                                                                            |
 | The domain doesn't answer                                   | Check `curl http://127.0.0.1:30080` on kube-rke-1 first, then the load balancer's status and **Logs**.                                                                  |
+
+## From the terminal
+
+The same cluster can be created with the `dnocs` CLI, using the server IDs from `dnocs server list`:
+
+```bash
+dnocs cluster create --name kube-rke --engine rke2 --server <ID of the Server node> --agent <ID of the Agent node>
+dnocs cluster detail --id <cluster ID>
+```
+
+`dnocs cluster install` installs again after a failure, and `dnocs cluster uninstall` and `dnocs cluster delete` remove it. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install `dnocs`.
+
+## Frequently asked questions
+
+### How long does the install take?
+
+About 12 minutes for two servers. You can close the wizard; the install keeps running and the **Cluster** tab shows its progress.
+
+### Can I add a node to the cluster later?
+
+Not yet. The servers and their roles are fixed when you create the cluster. To change them, uninstall and delete the cluster, then create a new one.
+
+### How do I use kubectl from my own computer?
+
+Downloading a kubeconfig is not available yet. Use **Open terminal** on the **Server** node and run `kubectl` there after the `sudo -i` and `export` lines from step 6.
+
+### The install failed. What now?
+
+Open the last execution from the **Cluster** tab to read the error, fix the cause, then press **Install again**. It uses the same servers, roles, engine and version.

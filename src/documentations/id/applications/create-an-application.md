@@ -34,7 +34,9 @@ Buka **Aplikasi**, lalu tekan **Buat Aplikasi**. Formulirnya punya lima langkah.
 3. Opsi modul terbuka di samping daftar. Kolom wajib diberi tanda. Periksa, lalu tekan **Simpan opsi**.
 4. Tekan **Lanjut**.
 
-Jika modul sudah terpasang di server, modul itu muncul di **Terinstal di server terpilih**. Pilih dari sana agar dipakai ulang, bukan dipasang lagi.
+**Modul** adalah perangkat lunak yang dipasang dPanel di server untuk Anda, misalnya runtime bahasa pemrograman atau database. Lihat [Glosarium](../getting-started/glossary.md).
+
+Jika modul sudah terpasang di server, modul itu muncul di **Terinstal di server terpilih**. Pilih dari sana agar dipakai ulang, bukan dipasang lagi. Database yang Anda buat di dalam MariaDB atau PostgreSQL, misalnya **PostgreSQL Database**, tidak ditampilkan: database itu milik server database-nya, bukan dependency aplikasi. Untuk memberi aplikasi database, buat dulu database-nya di server, lalu masukkan detailnya sebagai variabel runtime di langkah 4. Lihat [Membuat database untuk aplikasi](../servers/install-software.md#membuat-basis-data-untuk-aplikasi).
 
 ![Langkah 2 formulir, dengan server terpilih dan modul Go ditambahkan beserta opsi Go Version](../../assets/applications/apps-create-server-modules.webp)
 
@@ -71,11 +73,13 @@ Periksa ringkasannya: aplikasi, repositori, branch, server, perintah, port, dan 
 
 Muncul dialog **Successfully created your app!**. Tekan **OK** untuk kembali ke daftar. Lalu dPanel:
 
-1. Membuat playbook untuk aplikasi ini dan memasang modul yang Anda pilih.
+1. Membuat playbook untuk aplikasi ini (daftar langkah penyiapan yang dijalankan worker-nya) dan memasang modul yang Anda pilih.
 2. Meng-clone branch di server dan menjalankan langkah build.
 3. Memasang hasilnya dan menjalankannya sebagai layanan.
 
 Aplikasi berstatus **Sedang dibangun** sampai rilis selesai, lalu **Berjalan**. Buka aplikasinya untuk mengikuti build, dan baca [Rilis dan rollback](./deployments-and-rollback.md).
+
+Anda juga bisa meminta **Ask dPanel** mengerjakannya untuk Anda; lihat [Kumpulan prompt](../ai/prompt-cookbook.md).
 
 :::note[Beri alamat publik]
 Aplikasi baru mendengarkan di port-nya di server. Untuk menyajikannya di domain dengan HTTPS, pasang load balancer di depannya. Lihat [Load balancer](../networking/load-balancers.md).
@@ -102,6 +106,14 @@ Hanya server berstatus **Ready** yang bisa menjalankan aplikasi. Server yang mas
 ### Bisakah saya men-deploy dari organisasi GitHub?
 
 Bisa. Pasang GitHub App dnocs-id di organisasi itu lewat **Tambah akun GitHub**, lalu organisasinya muncul di **Tim GitHub**. Lihat [Menghubungkan GitHub](../getting-started/connect-github.md#menambahkan-organisasi-github).
+
+### Di mana database saya di daftar dependency?
+
+Database bukan dependency. Pilih server database-nya, seperti **MariaDB** atau **PostgreSQL**, jika aplikasi membutuhkannya di server yang sama. Database yang Anda buat di dalamnya tidak ditampilkan; hubungkan aplikasi ke database itu dengan variabel runtime. Lihat [Membuat database untuk aplikasi](../servers/install-software.md#membuat-basis-data-untuk-aplikasi).
+
+### Berapa lama sebuah build boleh berjalan?
+
+Bawaannya 20 menit. Build yang lambat bisa diberi waktu sampai 3 jam. Lihat [Batas waktu build](./build-timeout.md).
 
 ### Bagaimana cara memberi aplikasi domain dengan HTTPS?
 

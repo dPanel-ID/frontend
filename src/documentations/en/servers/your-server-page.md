@@ -28,9 +28,11 @@ Select the status badge to see what the status means. While dPanel is setting a 
 
 ## Modules
 
-Everything dPanel installed, with its version and status: **Installed**, **Installing** or **Failed**. **Add module** opens the catalogue. **Refresh inventory** asks the agent again. See [Install software](./install-software.md).
+Everything dPanel installed, one row per module, with its versions and status: **Installed**, **Installing**, **Failed**, or **Mixed**. **Add module** opens the catalogue. **Refresh inventory** asks the agent again and drops modules it no longer reports. The counts include top-level modules only; databases you create on MariaDB or PostgreSQL live inside that module's **Manage** view.
 
-![The Modules tab listing installed modules and their status](../../assets/servers/server-modules.webp)
+Some rows have a shortcut: **Open database** on MariaDB and PostgreSQL opens DB Manager, a database tool in your browser, already pointed at this server; **Manage firewall** on the Firewall module opens the [Firewall](./firewall.md) view. See [Install software](./install-software.md).
+
+![The Modules tab listing installed modules, with Manage firewall on the Firewall row and Open database on the MariaDB row](../../assets/servers/server-modules.webp)
 
 ## Services
 
@@ -48,11 +50,13 @@ The Linux accounts on the machine, with their UID, home directory and login shel
 
 ## Network
 
-Which ports are open, which process holds each one, where connections are allowed from, and their state. Check this tab when something can't be reached. An application listening on its port shows up here as **LISTEN**. The **Firewall** column says whether a firewall rule lets the outside reach each port.
+Three tiles switch the view:
 
-The **Firewall** tile opens the server's firewall: the rules, whether they are applied, and **Review and apply**. See [Firewall](./firewall.md).
+- **Active ports**: which ports are open, which process holds each one, where connections come from (**Allow from**), their state, and a **Firewall** column that says whether a firewall rule lets the outside reach each port. An application listening on its port shows up here as **LISTEN**. Check this view when something can't be reached.
+- **Interfaces**: the server's network cards and their IPv4 and IPv6 addresses.
+- **Firewall**: whether the firewall is **On** or **Off**, its rules, and **Review and apply**. See [Firewall](./firewall.md).
 
-![The Network tab listing open ports](../../assets/servers/server-network.webp)
+![The Network tab on Active ports: a table of ports with their process, state and a Firewall column reading Allowed from anywhere or No allow rule](../../assets/servers/server-network.webp 'Active ports: 22, 443 and 3306 are allowed from anywhere; the rest only listen inside the server.')
 
 ## Files
 
@@ -81,12 +85,36 @@ This tab reads the newest lines of a file. The time range, paging and download a
 
 The changes you rarely need, each saying what it does.
 
-| Card        | Button              | What it does                                                           |
-| ----------- | ------------------- | ---------------------------------------------------------------------- |
-| Connection  | **Edit connection** | Changes the address, SSH login and agent ports dPanel uses.            |
-| Setup       | **Reinstall**       | Reconnects over SSH, reinstalls the agent and refreshes the inventory. |
-| Danger zone | **Delete server**   | Removes the server. See [Delete a server](./delete-a-server.md).       |
+| Card        | Button              | What it does                                                                                                                          |
+| ----------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Connection  | **Edit connection** | Changes the address, SSH login and agent ports dPanel uses.                                                                           |
+| Setup       | **Reinstall**       | Runs server setup again: reconnects over SSH, reinstalls the agent and refreshes the inventory. Installed modules and your data stay. |
+| Danger zone | **Delete server**   | Removes the server. See [Delete a server](./delete-a-server.md).                                                                      |
 
 **Setup** is hidden while a server is being set up or deleted, and on a deleted server, because there is nothing to reinstall then. A server stays in the workspace it was created in; it cannot be moved to another one.
 
+From the terminal, `dnocs server setup --id 140` does the same as **Reinstall**. Add `--force` to run it even while the server still reads in progress, for example when a setup hung. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install `dnocs`.
+
 ![The Settings tab with the Connection, Setup and Danger zone cards](../../assets/servers/server-settings.webp)
+
+## Frequently asked questions
+
+### How do I find a server quickly?
+
+Type in the search box on **Servers**. The search ignores letter case, so `WEB` finds `web-01`.
+
+### Why does the header show a person's name?
+
+**Created by** names the person who added the server, so a team can see who to ask. Select the name to open their public profile.
+
+### What does Reinstall change on my server?
+
+It reconnects over SSH, reinstalls the dPanel agent and refreshes the inventory. Installed modules, applications and data stay as they are.
+
+### Where do I open a database that runs on this server?
+
+On the **Modules** tab, press **Open database** on the MariaDB or PostgreSQL row. See [Install software](./install-software.md#manage-the-database).
+
+### Why does a port I opened not work from outside?
+
+Check the **Firewall** column on **Network → Active ports**. **No allow rule** means the firewall blocks it; add a rule in [Firewall](./firewall.md). Also check that the program listens on `0.0.0.0` rather than `127.0.0.1`.

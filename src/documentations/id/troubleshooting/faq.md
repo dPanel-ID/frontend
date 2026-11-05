@@ -1,12 +1,12 @@
 ---
 title: Masalah umum & solusi
-description: Solusi masalah umum di dPanel seputar server, peluncuran cloud, build aplikasi, GitHub, load balancer, HTTPS, DNS, log, dan akses ruang kerja.
+description: Solusi masalah umum di dPanel: server, peluncuran cloud, build, GitHub, load balancer, firewall, HTTPS, DNS, log, worker, dan asisten AI.
 sidebar_position: 1
 sidebar_icon: circle-help
 sidebar_label: Masalah umum
 ---
 
-Halaman ini mengumpulkan masalah yang paling sering dialami pengguna dPanel, beserta apa yang Anda lihat dan apa yang perlu dilakukan. Setiap jawaban dimulai dari pesan atau gejala seperti yang ditampilkan dPanel. Kalau masalah Anda tidak ada di sini, tanyakan ke [Tanya dPanel](../getting-started/ask-dpanel.md) atau [hubungi dukungan](#meminta-bantuan).
+Halaman ini mengumpulkan masalah yang paling sering dialami pengguna dPanel, beserta apa yang Anda lihat dan apa yang perlu dilakukan. Setiap jawaban dimulai dari pesan atau gejala seperti yang ditampilkan dPanel. Kalau masalah Anda tidak ada di sini, minta [Ask dPanel](../ai/diagnose-problems.md) menelusurinya, atau [hubungi dukungan](#meminta-bantuan). Istilah yang belum Anda kenal dijelaskan di [Glosarium](../getting-started/glossary.md).
 
 ## Server
 
@@ -38,6 +38,14 @@ Penyedia menolak kuncinya. Periksa kunci itu di penyedia, lalu ganti dengan **Pe
 ### Server tidak bisa dihapus
 
 Penghapusan ditolak selama masih ada aplikasi atau load balancer yang memakai server itu. Hapus dulu keduanya, lalu coba lagi. Lihat [Menghapus server](../servers/delete-a-server.md).
+
+### Sebuah port terblokir setelah firewall dinyalakan
+
+Saat firewall menyala, hanya port yang punya aturan **Izinkan** yang bisa dijangkau; sisanya diblokir. SSH (22) selalu terbuka, begitu juga 80 dan 443 di server yang menjalankan load balancer dPanel. Untuk port lain, misalnya port basis data yang dipublikasikan load balancer TCP, tambahkan aturan **Izinkan** untuk port dan protokol itu, lalu tinjau dan terapkan. Kolom **Firewall** di tampilan **Port aktif** pada tab **Jaringan** server menunjukkan port mana yang diizinkan. Lihat [Firewall](../servers/firewall.md).
+
+### Perubahan firewall gagal dan aturan lama kembali
+
+Kalau SSH atau agen dPanel berhenti bekerja setelah sebuah perubahan, server mengembalikan firewall sebelumnya dengan sendirinya dalam beberapa menit, dan job-nya ditandai gagal. Periksa aturan yang Anda tambahkan, lalu terapkan lagi. Lihat [Keamanan: SSH dan pemulihan otomatis](../servers/firewall.md#keamanan-ssh-dan-pemulihan-otomatis).
 
 ### Dasbor menampilkan "Tidak ada kontak dengan" sebuah server
 
@@ -84,6 +92,21 @@ Buka **Tim GitHub** di **Buat Aplikasi** lalu pilih **Tambah akun GitHub**. Pasa
 
 ## Load balancer, HTTPS, dan DNS
 
+### Load balancer menampilkan "Perubahan load balancer gagal"
+
+Banner merah di daftar dan di halaman load balancer berarti perubahan terakhir tidak selesai. Tekan **Lihat penyebab gagal** untuk membaca alasannya; di tabel, tekan status yang gagal. Alasannya berbentuk seperti `Load balancer create failed. Ansible task failed on <server>: <langkah>. Detail: …`, dengan langkah yang menyebut apa yang sedang dikerjakan dPanel di gateway (Ansible adalah alat yang dipakai dPanel untuk menjalankan langkah setup di server). Periksa secara berurutan:
+
+1. Server gateway berstatus siap, dan dasbor tidak menampilkan **Tidak ada kontak dengan** server itu.
+2. Engine sudah terpasang di gateway. Load balancer pertama di server baru ikut memasang engine, sekitar 10 menit.
+3. Dengan domain **Terkelola**, domain itu masih terhubung di **Domain & DNS**, dan namanya belum ada di zona.
+4. Aplikasinya berjalan, dan pilihan cara gateway menjangkau aplikasi sesuai dengan tempat aplikasi berjalan.
+
+Perbaiki penyebabnya, lalu hapus load balancer yang gagal dan buat lagi. **Ask dPanel** juga bisa memperbarui load balancer yang sudah ada untuk Anda setujui. Lihat [Load balancer](../networking/load-balancers.md).
+
+### Load balancer TCP atau UDP tidak menjawab di port-nya
+
+Load balancer L4 mendengarkan di port yang Anda pilih. Kalau firewall gateway menyala dan tidak punya aturan **Izinkan** untuk port dan protokol itu, koneksinya dibuang. Tambahkan aturannya lalu terapkan. Lihat [Firewall](../servers/firewall.md). Saat Anda meminta **Ask dPanel** membuat load balancer seperti ini, kartu persetujuannya memperingatkan kalau firewall akan memblokir port tersebut.
+
 ### Server saya tidak bisa dipilih sebagai gateway
 
 Hanya server yang siap yang bisa menjalankan load balancer. Tunggu sampai penyiapan selesai, atau perbaiki servernya dulu.
@@ -100,6 +123,12 @@ Let's Encrypt harus bisa menjangkau gateway di port 80 dan 443, dan nama domainn
 
 Untuk domain **Terkelola**, dPanel tidak akan menimpa record DNS yang sudah ada. Pilih nama yang belum ada di zona; cari di [record DNS](../networking/dns-records.md) domain tersebut untuk memeriksanya.
 
+## Worker dan job
+
+### Job menunggu dan tidak pernah mulai
+
+Sebuah job, misalnya deployment, setup server, atau pemasangan modul, terus menunggu. Kalau ruang kerja Anda memakai **Worker privat**, job-nya hanya dikirim ke worker milik Anda sendiri dan menunggu sampai salah satunya berjalan. Jalankan worker Anda, atau kembalikan ruang kerja ke **Worker bersama (dPanel)** di halaman profil atau halaman tim. Lihat [Worker](../workers/overview.md).
+
 ## Log
 
 ### "Aplikasi ini belum punya perintah run atau server"
@@ -113,6 +142,10 @@ Log hanya menampilkan rentang waktu yang Anda pilih. Perlebar rentangnya; yang p
 ### "Lebih dari 100.000 baris" dan log tidak bisa diunduh
 
 **Semua di rentang waktu ini** berhenti di 100.000 baris. Persempit rentang waktunya, atau unduh per halaman. Lihat [Mengunduh log](../logs/download-logs.md).
+
+### Pencarian tidak menemukan sesuatu yang jelas ada
+
+Pencarian tidak membedakan huruf besar dan kecil, jadi `WordPress` dan `wordpress` menemukan hal yang sama. Kalau daftar tetap kosong, pastikan Anda berada di ruang kerja yang benar, dan hapus filter di samping kotak pencarian.
 
 ## Ruang kerja dan akses
 
@@ -130,7 +163,11 @@ Setiap anggota ruang kerja bisa membaca status eksekusi dan agennya. Jika pesan 
 
 ### Asisten menyebut "Asisten belum tersedia"
 
-dPanel tidak bisa menjangkau layanan asisten. Tekan **Periksa lagi** setelah beberapa saat. Lihat [Tanya dPanel](../getting-started/ask-dpanel.md).
+**Asisten belum tersedia** berarti dPanel tidak bisa menjangkau layanan asisten, atau asisten belum diaktifkan untuk Anda. Tekan **Periksa lagi** setelah beberapa saat. Bagian dPanel lainnya tetap berjalan tanpa asisten. Lihat [Batasan dan privasi](../ai/limits-and-privacy.md).
+
+### Di mana Manajemen Kunci untuk password saya?
+
+**Manajemen Kunci** di sidebar membuka halaman **Kunci SSH**; isinya hanya kunci SSH. Simpan password aplikasi di [variabel lingkungan](../applications/environment-variables.md).
 
 ## Meminta bantuan
 
@@ -141,3 +178,17 @@ Sebagian besar halaman daftar diakhiri dengan **Bantuan & Dukungan**:
 - **Dukungan Email** menulis ke tim lewat email.
 
 Saat menghubungi, sertakan nama server atau aplikasinya, apa yang Anda tekan, dan apa yang Anda lihat.
+
+## Pertanyaan yang sering diajukan
+
+### Di mana saya melihat penyebab sesuatu gagal?
+
+Pada item itu sendiri: server menampilkan tombol untuk melihat apa yang terjadi, load balancer punya **Lihat penyebab gagal**, dan build punya log di **Rilis**. Daftar **Perlu perhatian Anda** di dasbor mengumpulkan semua kegagalan terbaru di satu tempat.
+
+### Bisakah asisten memperbaiki masalah untuk saya?
+
+Asisten bisa membaca apa yang gagal dan mengusulkan perbaikan, misalnya aturan firewall atau pengaturan yang dikoreksi. Tidak ada yang berubah sampai Anda menyetujuinya. Lihat [Mendiagnosis masalah](../ai/diagnose-problems.md).
+
+### Apakah kegagalan di satu server memengaruhi server lain?
+
+Tidak. Setiap job berjalan pada satu server, dan job yang gagal tidak menyentuh server lain.

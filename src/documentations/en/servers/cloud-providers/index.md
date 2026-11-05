@@ -32,3 +32,17 @@ Whichever provider you use, the finished server runs Ubuntu 24.04 LTS or 26.04 L
 - Read [Cloud credentials and security](./cloud-credentials-security.md) once. It explains what dPanel keeps and what happens if you revoke a key, and how to replace one.
 
 The launch itself is the same for every provider: [Create a cloud server](./create-a-cloud-server.md).
+
+## Frequently asked questions
+
+### Which provider should I pick?
+
+The one you already have an account with. dPanel works the same on every provider once the server is up. If you have none, any of them is fine for a first server.
+
+### My provider is not listed. Can I still use dPanel?
+
+Yes. Create the machine at your provider yourself, then [connect your own server](../connect-your-own-server.md) over SSH.
+
+### Do I pay dPanel for the machine?
+
+No. The provider bills you for the machine directly; dPanel does not resell machines.

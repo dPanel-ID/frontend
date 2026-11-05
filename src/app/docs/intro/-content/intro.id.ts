@@ -23,7 +23,7 @@ export const DOCS_INTRO_ID: DocsIntroCopy = {
       },
       {
         title: 'Deploy aplikasi Anda',
-        text: 'Arahkan dPanel ke repositori Git Anda. Ia membangun rilisnya, mengirimkannya ke server, dan mencatat setiap percobaan.',
+        text: 'Arahkan dPanel ke repositori Git Anda. Ia membangun rilisnya, mengirimkannya ke server, dan mencatat setiap percobaan. Atau minta asisten AI bawaan, Ask dPanel, menyiapkannya bersama Anda.',
       },
       {
         title: 'Beri domain',

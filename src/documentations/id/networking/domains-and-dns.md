@@ -7,6 +7,8 @@ sidebar_icon: globe
 
 dPanel mengelola DNS untuk domain yang sudah Anda miliki. Tambahkan domain yang di-host di Cloudflare atau DigitalOcean dengan token API, lalu dPanel membaca record-nya, memungkinkan Anda mencarinya, dan membuat record `A` yang mengarahkan sebuah nama ke server Anda ketika load balancer memakai domain itu.
 
+**DNS** adalah buku alamat internet: mengubah nama seperti `app.example.com` menjadi alamat IP sebuah server. **Record DNS** adalah satu entri di buku itu, dan **zona** adalah semua record milik satu domain. Lihat [Glosarium](../getting-started/glossary.md).
+
 dPanel tidak menjual atau memindahkan domain, dan tidak pernah mengubah registrar Anda. Anda tetap membeli domain di tempat biasa. Yang dibutuhkan dPanel hanyalah akses ke penyedia yang menjawab DNS domain itu.
 
 ## Yang perlu disiapkan
@@ -18,7 +20,9 @@ dPanel tidak menjual atau memindahkan domain, dan tidak pernah mengubah registra
 Gunakan token dengan cakupan terbatas. Di Cloudflare, token khusus "DNS edit" untuk satu zona itu sudah cukup.
 :::
 
-![Halaman Domain & DNS dalam tampilan tabel, berisi dua domain yang dikelola lewat Cloudflare](../../assets/networking/domains-list.webp 'Domain & DNS: setiap baris menampilkan penyedia DNS, pemilik domain, dan siapa yang bisa memakainya.')
+![Halaman Domain & DNS dalam tampilan tabel, berisi devetek.app dan terpusat.me, keduanya di Cloudflare, dimiliki satu orang dan dibagikan ke tim dPanel](../../assets/networking/domains-list.webp 'Domain & DNS: setiap baris menampilkan penyedia DNS, pemilik domain, dan siapa yang bisa memakainya.')
+
+Setiap baris menampilkan domain, **Penyedia DNS**-nya, **Kepemilikan** (nama orang yang menambahkannya dan tim tempat domain itu dibagikan), serta kapan terakhir diubah. Pilih nama orangnya untuk membuka [profil publik](../teams/public-profiles.md)-nya. Kotak pencarian di atas tabel menemukan domain berdasarkan nama; huruf besar dan kecil tidak dibedakan.
 
 ## Menambahkan domain
 
@@ -44,7 +48,7 @@ Pilih domain di daftar, atau tekan **Detil** di barisnya, untuk membuka halamann
 - **Muat ulang**, yang membaca zona itu lagi, dan **Buka situs**, yang membuka `https://` beserta domainnya di tab baru.
 - **Record DNS**: setiap record di zona itu, yang bisa Anda cari, saring berdasarkan jenis, dan hapus. Lihat [Record DNS](./dns-records.md).
 
-![Halaman domain terpusat.me: penyedia, jumlah record, pemilik, dan tanggal ditambahkan, di atas tabel record DNS](../../assets/networking/domain-detail.webp)
+![Halaman domain terpusat.me: Cloudflare sebagai penyedia DNS, 47 record, ruang kerja dPanel sebagai pemilik, dan tanggal ditambahkan, di atas tabel record DNS](../../assets/networking/domain-detail.webp)
 
 ## Memakai domain di load balancer
 
@@ -72,3 +76,7 @@ Belum. dPanel membuat record sendiri ketika sebuah load balancer memakai domain 
 ### Apakah token API DNS saya aman?
 
 Token hanya dikirim sekali, saat Anda menambahkan domain, dan tidak pernah ditampilkan lagi. Ringkasan tidak pernah menampilkannya, dan dPanel menampilkan **Disimpan aman** sebagai gantinya.
+
+### Bisakah saya menampilkan daftar domain dari terminal?
+
+Bisa. `dnocs domain list` mencetak setiap domain beserta ID dan penyedianya. Load balancer yang dibuat dari terminal memakai ID itu. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang dnocs.

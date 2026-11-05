@@ -1,6 +1,6 @@
 ---
 title: Deploy Laravel with PostgreSQL
-description: From an empty account to a Laravel app on your own domain with HTTPS: launch a server, install PostgreSQL, PHP, FrankenPHP and Node.js, create the database, deploy with two runtimes and publish.
+description: Go from an empty dPanel account to a Laravel app on your domain with HTTPS: a server, PostgreSQL, PHP, FrankenPHP, Node.js, two runtimes and a load balancer.
 sidebar_position: 3
 sidebar_icon: rocket
 sidebar_label: Laravel
@@ -16,7 +16,7 @@ Laravel differs from WordPress in two ways that matter here:
 It takes about 45 minutes, most of it waiting for the server and the installs. Every step happens in the dPanel web app; you never need SSH.
 
 :::tip[New to servers?]
-Read [How a website runs on your server](./how-a-website-runs.md) first. It explains every word this page uses, such as module, build, port and load balancer, in a few minutes.
+Read [How a website runs on your server](./how-a-website-runs.md) first. It explains every word this page uses, such as module, build, port and load balancer, in a few minutes. The [Glossary](../getting-started/glossary.md) has the rest.
 :::
 
 ## What you need first
@@ -109,33 +109,48 @@ If the build log stops at `npm: command not found`, Node.js is not declared on t
 
 ## Step 5: Publish it on your domain with HTTPS
 
-1. Open **Load Balancers** and press **Create a load balancer**.
-2. **Gateway**: select the same server. Under **Web server engine**, pick **Caddy Server** and press **Install** if it is not installed yet.
-3. **Domain and HTTPS**: choose **Managed**, type the **Subdomain** (for example `app`), and **Select domain**. Keep **HTTP / HTTPS** and leave **HTTPS** on.
-4. **Routing**: keep **L7**. In the first rule, set **Type** to **Application**, **Matching Path** to `/*`, and pick the **Laravel** application.
-5. When the review panel reads **Ready to create**, press **Create load balancer**.
+1. Open **Load Balancers** and press **Create a load balancer**. The form has four steps: **Gateway**, **Domain**, **Routing** and **Review**.
+2. **Gateway**: under **Gateway server**, select the same server. Under **Web server engine**, pick **Caddy Server** and press **Install** if it is not installed yet.
+3. **Domain**: under **Domain Name**, choose **Managed**, type the **Subdomain** (for example `app`), and **Select domain**.
+4. **Routing**: keep **L7** under **Routing mode**, and **HTTP / HTTPS** with **HTTPS** on under **Protocol and HTTPS**. In the first rule, set **Type** to **Application**, **Matching Path** to `/*`, and pick the **Laravel** application.
+5. **Review**: when the review panel reads **Ready to create**, press **Create load balancer**.
 
 After a minute or two, open `https://app.example.com/`: the Laravel welcome page appears. See [Load balancers](../networking/load-balancers.md).
 
 ## When something does not work
 
-| What you see | What to check |
-| --- | --- |
-| `npm: command not found` in the build log | Declare Node.js on the application, as in the warning above. |
-| The build fails at `php artisan migrate` | The `DB_*` variables must also be in **Build-time variables**, and match the database from step 3. |
-| The application starts, then stops | Read its runtime log. See [Application logs](../applications/application-logs.md). |
-| The domain does not answer | Wait a few minutes for DNS and the certificate, then check the load balancer's detail page and logs. |
+| What you see                              | What to check                                                                                                                                                                |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm: command not found` in the build log | Declare Node.js on the application, as in the warning above.                                                                                                                 |
+| The build fails at `php artisan migrate`  | The `DB_*` variables must also be in **Build-time variables**, and match the database from step 3.                                                                           |
+| The application starts, then stops        | Read its runtime log. See [Application logs](../applications/application-logs.md).                                                                                           |
+| The domain does not answer                | Wait a few minutes for DNS and the certificate, then check the load balancer's detail page and logs. A red **Load balancer change failed** banner has **See why it failed**. |
+| Anything else                             | See [Common problems and fixes](../troubleshooting/faq.md).                                                                                                                  |
 
 A variable change applies from the next release: deploy again after changing one.
 
-## Let the assistant do it
+## Prefer to chat? Do the same with Ask dPanel
 
-[Ask dPanel](../getting-started/ask-dpanel.md) can prepare every step for you to approve. Name both runtimes when you ask it to create the application, for example:
+[Ask dPanel](../ai/overview.md) can prepare every step for you to approve. Name both runtimes when you ask it to create the application, for example:
 
 > Create an application named Laravel from github.com/my-org/laravel-example on server laravel-1. Language PHP 8.5 with Node.js as an extra runtime, build command ./scripts/build.sh, start command ./scripts/start.sh.
 
-It asks for `DB_PASSWORD` as a field on the approval card, so the password never goes into the chat.
+It asks for `DB_PASSWORD` as a field on the approval card, so the password never goes into the chat. More ready-made requests are in the [Prompt cookbook](../ai/prompt-cookbook.md).
 
 ## Clean up
 
 Delete in this order: the load balancer, the application, then the server. See [Load balancers](../networking/load-balancers.md#delete-a-load-balancer), [Update or delete an application](../applications/update-or-delete.md) and [Delete a server](../servers/delete-a-server.md).
+
+## Frequently asked questions
+
+### Why does the application need Node.js if Laravel is PHP?
+
+The build runs `npm` to bundle the front end with Vite. dPanel puts only the runtimes declared on the application on the build's path, so Node.js must be declared next to PHP.
+
+### Why do the database variables go in both lists?
+
+The build runs the migrations, so it needs the database while building. The running application needs it too. **Build-time variables** reach only the build; **Runtime variables** reach only the running service.
+
+### Can I use MariaDB instead of PostgreSQL?
+
+Yes. Install **MariaDB**, create the database from its **Manage** page, and set `DB_CONNECTION=mysql` and `DB_PORT=3306`.

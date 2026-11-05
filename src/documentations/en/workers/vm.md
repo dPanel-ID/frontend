@@ -5,7 +5,7 @@ sidebar_position: 3
 sidebar_icon: server
 ---
 
-A VM worker is a server or VM you run that takes your workspace's jobs. It runs all the time, asks dPanel for jobs, and runs them against your servers over SSH. Use it when your servers are reachable only from your own network.
+A VM worker is a server or VM (virtual machine: a computer rented or run in software) that takes your dPanel workspace's jobs. It runs all the time, asks dPanel for jobs, and runs them against your servers over SSH. Use it when your servers are reachable only from your own network.
 
 ## Before you start
 
@@ -90,3 +90,21 @@ Set `DPANEL_EXECUTOR_SLOTS=3` in the settings file to let one VM run three jobs 
 ## Lost the token?
 
 Press **New token** on the worker. The old token stops working right away; put the new one in `/etc/dpanel-worker.env` and restart the service with `sudo systemctl restart dpanel-worker`.
+
+## Frequently asked questions
+
+### Which machine can be a VM worker?
+
+Any Linux server or VM, Ubuntu 22.04 or 24.04, that can reach your servers over SSH and `https://pawon.devetek.app` over HTTPS. It can sit inside your private network.
+
+### How do I know the worker is connected?
+
+Its **Last seen** time in the **Workers** card updates once it asks dPanel for jobs. A worker that never connected reads **Not seen yet**.
+
+### Can I add a VM worker from the terminal?
+
+Yes. `dnocs worker add --type vm --name office --executor-id office-01` prints the token once. `dnocs worker rotate-token --id <worker ID>` gives it a new one.
+
+### What happens when I remove a VM worker?
+
+It stops taking jobs and its token stops working. Stop the executor service on the machine too, with `sudo systemctl disable --now dpanel-worker`.

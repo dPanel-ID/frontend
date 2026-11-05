@@ -31,7 +31,7 @@ Panduan: [Grup umum](./generic-groups.md), [Kubernetes dengan k3s](./kubernetes-
 
 ## Apa itu Kubernetes
 
-**Kubernetes** (sering ditulis **K8s**) menjalankan aplikasi Anda di dalam **kontainer** di beberapa server, dan menjaganya tetap berjalan.
+**Kubernetes** (sering ditulis **K8s**) menjalankan aplikasi Anda di dalam **kontainer** di beberapa server, dan menjaganya tetap berjalan. Kontainer adalah aplikasi yang dikemas bersama semua yang dibutuhkannya, sehingga berjalan dengan cara yang sama di server mana pun. Istilah lain seperti ini ada di [Glosarium](../getting-started/glossary.md).
 
 - Anda menyebutkan yang Anda mau, misalnya "dua salinan aplikasi web saya".
 - Kubernetes memutuskan server mana yang menjalankan setiap salinan.
@@ -68,8 +68,32 @@ Untuk satu mesin Anda tidak butuh grup. `k3s` dan `rke2` juga modul biasa: buka 
 
 ## Aturan yang menjaga server Anda
 
-- **Satu server hanya bisa masuk satu grup.** Pemilih server menandai server yang **Already in a group**.
+- **Satu server hanya bisa masuk satu grup.** Pemilih server menandai server yang **Already in a group**. Wizard Kubernetes tidak menawarkan server yang sudah dihapus.
 - **Server sebuah klaster hanya berubah lewat klaster.** Server tidak bisa dikeluarkan dari grup klaster secara manual, dan server yang menjadi node klaster tidak bisa dihapus. Ini mencegah node yang setengah dikeluarkan merusak klaster.
-- **Kubernetes memiliki servernya sendiri.** dPanel menolak server yang sudah menjalankan Docker, k3s, atau RKE2, dan server yang firewall dPanel-nya aktif, karena mereka akan berebut aturan jaringan yang sama.
-- **Satu region per klaster.** Server harus berada di region yang sama. Anggota klaster terus-menerus berkomunikasi, dan koneksi lambat antar-region membuat klaster tidak stabil.
+- **Kubernetes memiliki servernya sendiri.** dPanel menolak server yang sudah menjalankan Docker, k3s, atau RKE2, dan server yang [firewall](../servers/firewall.md) dPanel-nya aktif, karena mereka akan berebut aturan jaringan yang sama.
+- **Satu region untuk control plane.** Server dengan peran **Server** harus berada di region yang sama. Anggota klaster terus-menerus berkomunikasi, dan koneksi lambat antar-region membuat klaster tidak stabil. **Agent** di region lain boleh, tetapi dPanel memperingatkan bahwa lalu lintasnya menyeberang region.
 - **Izin.** Membuat, mencopot, dan menghapus klaster butuh izin **cluster editor** dan **server editor** di workspace. Owner dan admin punya keduanya.
+
+## Dari terminal
+
+CLI `dnocs` punya perintah yang sama: `dnocs server group` untuk grup dan `dnocs cluster` untuk klaster (`kinds`, `create`, `detail`, `install`, `uninstall`, `delete`). `dnocs cluster kinds` menampilkan engine dan versi yang bisa dipilih. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasangnya.
+
+Anda juga bisa meminta **Ask dPanel** membuat grup atau klaster untuk Anda; asisten menampilkan rencananya dulu untuk Anda setujui. Lihat [Kumpulan prompt](../ai/prompt-cookbook.md).
+
+## Pertanyaan yang sering diajukan
+
+### Apakah aplikasi saya butuh klaster?
+
+Tidak. Kebanyakan aplikasi berjalan baik di satu server sebagai [aplikasi](../applications/overview.md) dPanel. Pakai klaster kalau aplikasi harus tetap berjalan saat sebuah server mati, atau kalau Anda memang sudah bekerja dengan Kubernetes.
+
+### Berapa server yang dibutuhkan klaster?
+
+Satu sudah cukup untuk mulai. Agar control plane tetap hidup saat kehilangan satu server, beri tiga server peran **Server**. Jumlah node **Server** harus ganjil, paling banyak tujuh.
+
+### Bisakah grup umum yang sudah ada dijadikan klaster?
+
+Tidak. Jenisnya dipilih saat Anda menekan **New group**. Menghapus klaster justru sebaliknya: grupnya tetap ada sebagai grup umum dengan server yang sama.
+
+### Engine mana yang sebaiknya saya pilih?
+
+Mulai dengan **k3s**. Lebih ringan dan bisa berjalan di Raspberry Pi. Pilih **RKE2** untuk server produksi yang diperketat dengan memori minimal 4 GB.

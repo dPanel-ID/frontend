@@ -6,21 +6,21 @@ sidebar_icon: file-text
 sidebar_label: Record DNS
 ---
 
-Setiap domain di dPanel punya halaman sendiri yang menampilkan semua record DNS-nya, dibaca langsung dari Cloudflare atau DigitalOcean. Anda bisa mencari record berdasarkan nama atau isi, menyaringnya ke satu jenis record, menyalin nama atau nilainya, dan menghapus record, tanpa membuka konsol penyedia DNS Anda.
+Setiap domain di dPanel punya halaman sendiri yang menampilkan semua record DNS-nya (entri yang mengarahkan sebuah nama ke sebuah alamat), dibaca langsung dari Cloudflare atau DigitalOcean. Anda bisa mencari record berdasarkan nama atau isi, menyaringnya ke satu jenis record, menyalin nama atau nilainya, dan menghapus record, tanpa membuka konsol penyedia DNS Anda.
 
 ## Membuka record sebuah domain
 
 1. Buka **Domain & DNS** di sidebar.
 2. Pilih domainnya, atau tekan **Detil** di barisnya.
-3. Gulir ke **Record DNS**. Angka di samping kotak pencarian, misalnya **46 record**, adalah ukuran zona itu.
+3. Gulir ke **Record DNS**. Angka di samping kotak pencarian, misalnya **47 record**, adalah ukuran zona itu.
 
 ![Tabel record DNS terpusat.me dengan kotak pencarian, chip jenis record, serta kolom Jenis, Nama, Isi, dan TTL](../../assets/networking/domain-detail.webp)
 
-Setiap baris menampilkan **Jenis**, **Nama**, **Isi**, dan **TTL** record itu. Nama di apex zona tertulis **root**, dan TTL Cloudflare 1 detik tertulis **Otomatis**. Record ditampilkan 20 per halaman; pakai tombol halaman di bawah tabel untuk melihat lebih banyak.
+Setiap baris menampilkan **Jenis**, **Nama**, **Isi**, dan **TTL** record itu (time to live: berapa lama komputer lain boleh mengingat jawabannya sebelum bertanya lagi). Nama di apex zona tertulis **root**, dan TTL Cloudflare 1 detik tertulis **Otomatis**. Record ditampilkan 20 per halaman; pakai tombol halaman di bawah tabel untuk melihat lebih banyak.
 
 ## Menemukan record
 
-1. Ketik sebagian nama atau nilai di **Cari record, mis. demo**. Daftarnya diperbarui saat Anda mengetik, dan teks yang cocok disorot.
+1. Ketik sebagian nama atau nilai di **Cari record, mis. demo**. Daftarnya diperbarui saat Anda mengetik, huruf besar dan kecil tidak dibedakan, dan teks yang cocok disorot.
 2. Untuk menyaring daftar ke satu jenis record, tekan sebuah chip: **A**, **AAAA**, **CNAME**, **MX**, **TXT**, **NS**, **SRV**, atau **CAA**. Tekan lagi, atau tekan **Semua**, untuk melihat semua jenis.
 3. Angkanya berubah menjadi jumlah yang cocok, misalnya **2 cocok**.
 
@@ -60,3 +60,7 @@ Ya. dPanel membaca zona dari penyedia DNS Anda setiap kali Anda membuka halaman,
 ### Apa yang perlu dibersihkan setelah menghapus load balancer?
 
 Periksa apakah record `A`-nya masih ada di zona. Cari nama host-nya, lalu hapus record itu jika namanya sudah tidak Anda pakai.
+
+### Apakah pencariannya membedakan huruf besar dan kecil?
+
+Tidak. `Demo`, `DEMO`, dan `demo` menemukan record yang sama.

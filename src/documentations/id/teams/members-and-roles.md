@@ -15,7 +15,7 @@ Orang yang ditambahkan harus sudah punya akun dPanel. Minta mereka mendaftar dul
 
 1. Buka **Tim**, lalu buka timnya.
 2. Tekan **Tambah Anggota**.
-3. Di **Tambah Anggota Baru**, buka **Pilih pengguna…** dan cari berdasarkan username atau nama.
+3. Di **Tambah Anggota Baru**, buka **Pilih pengguna…** dan cari berdasarkan username atau nama. Huruf besar dan kecil tidak dibedakan.
 4. Di **Peran workspace**, pilih akses yang akan diberikan. Lihat tabel di bawah. Owner dan Admin berstatus **Dilindungi**: hanya owner ruang kerja yang bisa memberikannya.
 5. Tekan **Tambah anggota**.
 
@@ -73,7 +73,11 @@ Aksesnya ke ruang kerja tim langsung dicabut. Resource yang pernah ia buat tetap
 
 ## Resource tetap di ruang kerjanya
 
-Server, aplikasi, load balancer, domain, akun cloud, dan kunci SSH tetap berada di ruang kerja tempat mereka dibuat. dPanel tidak memindahkannya antar ruang kerja, jadi buat resource bersama di ruang kerja tim sejak awal. Lihat [Ruang kerja](../getting-started/workspaces.md).
+Server, aplikasi, load balancer, domain, akun cloud, dan kunci SSH tetap berada di ruang kerja tempat mereka dibuat, jadi buat resource bersama di ruang kerja tim sejak awal. Satu pengecualian: resource di ruang kerja pribadi Anda bisa dipindahkan ke sebuah tim satu kali, dengan `dnocs transfer`. Lihat [Tim](./teams.md#bisakah-saya-memindahkan-server-dari-ruang-kerja-pribadi-ke-tim) dan [Ruang kerja](../getting-started/workspaces.md).
+
+## Melihat siapa melakukan apa
+
+Di seluruh dPanel, orang ditampilkan dengan nama dan avatarnya: siapa yang menjalankan build, siapa pemilik server atau domain, siapa yang melakukan setiap aksi di aktivitas dashboard. Pilih sebuah nama untuk membuka [profil publik](./public-profiles.md)-nya.
 
 ## Pertanyaan yang sering diajukan
 

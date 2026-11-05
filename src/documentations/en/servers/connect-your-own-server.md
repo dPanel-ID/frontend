@@ -56,3 +56,7 @@ dPanel must be able to reach the **Server address** and **SSH port** you enter. 
 ### What happens if I remove the server from dPanel?
 
 dPanel forgets it and your machine keeps running, with everything on it. See [Delete a server](./delete-a-server.md).
+
+### Setup failed. How do I try again?
+
+Fix the cause shown under **See what happened** (often the key is not in `authorized_keys`, or the user can't use `sudo`), then press **Reinstall** on the server's **Settings** tab. From the terminal, `dnocs server setup --id <server ID>` does the same.

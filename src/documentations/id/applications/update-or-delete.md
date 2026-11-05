@@ -43,7 +43,7 @@ Tekan **Simpan** di panel. Perubahan berlaku mulai rilis berikutnya, jadi rilis 
 
 ![Formulir Update Aplikasi yang dibuka dari Ubah pengaturan](../../assets/applications/app-edit.webp)
 
-dPanel memperbarui definisi aplikasi dan mengirim input playbook untuknya.
+dPanel memperbarui definisi aplikasi (deskripsi tersimpan tentang cara membangun dan menjalankannya) dan mengirim input playbook untuknya.
 
 ## Menghapus aplikasi
 
@@ -55,3 +55,21 @@ dPanel memperbarui definisi aplikasi dan mengirim input playbook untuknya.
 :::danger[Tidak bisa dibatalkan]
 Menghapus aplikasi akan menghapus aplikasi, build, dan riwayat rilisnya dari dPanel, serta menghentikan layanannya di setiap server tempatnya berjalan. Server dan repositori Git Anda tidak diubah.
 :::
+
+## Pertanyaan yang sering diajukan
+
+### Apakah perubahan saya langsung berlaku?
+
+Tidak. Perubahan berlaku mulai rilis berikutnya. Tekan **Bangun dan rilis** atau **Rilis ulang** setelah menyimpan.
+
+### Kapan saya perlu mencentang Jalankan playbook bootstrap?
+
+Saat Anda menambah atau mengubah modul, misalnya versi runtime baru. dPanel lalu memasangnya lagi di server sebelum build berikutnya.
+
+### Apakah menghapus aplikasi juga menghapus repositori atau server saya?
+
+Tidak. Repositori Git dan server Anda tetap ada. dPanel menghentikan layanannya dan menghapus aplikasi, build, serta riwayat rilisnya.
+
+### Bisakah saya menghapus aplikasi dari terminal?
+
+`dnocs application delete` menghapus aplikasi yang tidak punya deployment. Hapus dulu rilisnya, atau gunakan **Hapus aplikasi ini** di web.

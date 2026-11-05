@@ -174,7 +174,9 @@ describe('buildDocsTree', () => {
     ],
     [
       'an icon that does not exist',
-      { [`${ROOT}/en/s/p.md`]: page('T', 1, 'sidebar_icon: sparkles\n') },
+      {
+        [`${ROOT}/en/s/p.md`]: page('T', 1, 'sidebar_icon: not-a-real-icon\n'),
+      },
       /not a docs icon/,
     ],
     [

@@ -1,5 +1,6 @@
 import {
   AppWindowIcon,
+  BotIcon,
   BoxesIcon,
   Building2Icon,
   CircleHelpIcon,
@@ -17,6 +18,7 @@ import {
   LifeBuoyIcon,
   ListChecksIcon,
   LogInIcon,
+  MessageSquareIcon,
   NetworkIcon,
   PackagePlusIcon,
   RocketIcon,
@@ -24,6 +26,7 @@ import {
   ServerIcon,
   Settings2Icon,
   ShieldCheckIcon,
+  SparklesIcon,
   SquarePlusIcon,
   SquareTerminalIcon,
   TerminalIcon,
@@ -46,6 +49,7 @@ import type {
 
 const ICONS: Record<DocsIconName, LucideIcon> = {
   'app-window': AppWindowIcon,
+  bot: BotIcon,
   boxes: BoxesIcon,
   'building-2': Building2Icon,
   'circle-help': CircleHelpIcon,
@@ -63,6 +67,7 @@ const ICONS: Record<DocsIconName, LucideIcon> = {
   'life-buoy': LifeBuoyIcon,
   'list-checks': ListChecksIcon,
   'log-in': LogInIcon,
+  'message-square': MessageSquareIcon,
   network: NetworkIcon,
   'package-plus': PackagePlusIcon,
   rocket: RocketIcon,
@@ -70,6 +75,7 @@ const ICONS: Record<DocsIconName, LucideIcon> = {
   server: ServerIcon,
   'settings-2': Settings2Icon,
   'shield-check': ShieldCheckIcon,
+  sparkles: SparklesIcon,
   'square-plus': SquarePlusIcon,
   'square-terminal': SquareTerminalIcon,
   terminal: TerminalIcon,

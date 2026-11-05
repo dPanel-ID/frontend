@@ -13,10 +13,10 @@ An SSH key is a pair of files that replaces a password when a computer signs in 
 
 You don't have to make one by hand.
 
-1. In the sidebar, open **Secret Managers**, then **SSH keys**.
+1. In the sidebar, under **Backend**, open **Secret Managers**. It opens the **SSH keys** page.
 2. Press **Create SSH key**.
-3. Give it a name you will recognise, such as `work-laptop`.
-4. Pick the key type, then save.
+3. Type a **Key name** you will recognise, such as `work-laptop`, and pick the **Key type**.
+4. Press **Generate SSH key**.
 
 - **For current servers** is the right choice unless something refuses it. It is shorter and faster, and every current Linux accepts it.
 - **For older servers** is the fallback. It also asks for a key size.
@@ -46,3 +46,17 @@ The machine is created inside your own cloud account, so your provider bills you
 ## What happens next
 
 Go to [Create a cloud server](./cloud-providers/create-a-cloud-server.md). More on keys and accounts, including sharing them with a team, is in [SSH keys and cloud accounts](../getting-started/ssh-keys-and-cloud-projects.md).
+
+## Frequently asked questions
+
+### Can I use an SSH key I already have?
+
+dPanel creates the key pair for you so the private half never leaves dPanel. To sign in from your own computer as well, add your own public key to the server; see [Connect over SSH](./connect-over-ssh.md).
+
+### Do I need a cloud account to try dPanel?
+
+No. [Connect your own server](./connect-your-own-server.md) needs only an SSH key and a machine you can reach over SSH.
+
+### Can my team use the same key and cloud account?
+
+Yes. Keys and cloud accounts created in a workspace can be used by its members. See [SSH keys and cloud accounts](../getting-started/ssh-keys-and-cloud-projects.md).
