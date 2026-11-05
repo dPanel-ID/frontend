@@ -24,7 +24,12 @@ export const schemaCommand = z.array(z.string());
 export const schemaApplicationEdit = z.object({
   autoDeploy: schemaAutoDeploy,
   workdir: z.string().optional(),
-  port: z.coerce.number().int().min(1).max(65535).optional(),
+  // An empty port field means "leave the port as it is"; coercing it would
+  // turn it into 0 and block every save.
+  port: z.preprocess(
+    (value) => (value === '' || value == null ? undefined : value),
+    z.coerce.number().int().min(1).max(65535).optional(),
+  ),
 });
 
 export type SchemaApplicationEdit = z.infer<typeof schemaApplicationEdit>;
