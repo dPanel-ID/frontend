@@ -27,6 +27,9 @@ export function ctorCloud(
 ): KeysOnly<z.input<typeof cloud>> | undefined {
   const { provider, region } = raw;
 
+  // A private server is the user's own machine, never a cloud VM.
+  if (raw.connectivity === 'private') return undefined;
+
   // Own servers have no provider; the schema treats a missing cloud as optional.
   if (!provider) return undefined;
 
@@ -94,5 +97,19 @@ export function ctorSpecs(
       coreCount: 0,
       virtualCoreCount: 0,
     },
+  };
+}
+
+/**
+ * Where the server is. A private server has no public address: its own LAN
+ * address is shown instead, for reference only.
+ */
+export function ctorHost(raw: DTOs.MachineV1) {
+  const isPrivate = raw.connectivity === 'private';
+
+  return {
+    address: isPrivate ? (raw.lan_address ?? '') : (raw.address ?? raw.domain),
+    name: raw.hostname,
+    private: isPrivate,
   };
 }

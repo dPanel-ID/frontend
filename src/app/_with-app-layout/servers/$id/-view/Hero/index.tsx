@@ -6,6 +6,7 @@ import {
   BuildingIcon,
   Clock3Icon,
   HardHatIcon,
+  HouseIcon,
   KeyRoundIcon,
   LoaderIcon,
   MoreHorizontalIcon,
@@ -24,6 +25,7 @@ import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 import {
   canReinstallServer,
   isCloudServer,
+  isPrivateServer,
   serverDisplayName,
 } from '@/entities/server/lib/describeServer';
 import { ServerCreator } from '@/entities/server/ui/ServerCreator';
@@ -84,6 +86,8 @@ export default guard(function Hero() {
   const name = serverDisplayName(server);
   const status = server.state.status;
   const busy = status === 'progress';
+  // A private server has no public IP: no terminal, no SSH connection.
+  const isPrivate = isPrivateServer(server);
   const accent = isCloudServer(server) ? FLOW_ACCENTS.sky : FLOW_ACCENTS.violet;
   const sshUser = server.ssh.defaultUser || 'root';
   const sshHint = t('sshHint', {
@@ -140,22 +144,26 @@ export default guard(function Hero() {
               spinning={isRefreshing}
               onClick={handleClickRefresh}
             />
-            <ActionIcon
-              icon={PencilIcon}
-              title={t('edit')}
-              disabled={busy}
-              onClick={() => emit('@servers::detail/server-edit', null)}
-            />
-            <Button
-              buttonStyle="outline"
-              buttonColor="secondary"
-              size="sm"
-              title={sshHint}
-              onClick={() => setIsTerminalOpen(true)}
-            >
-              <TerminalIcon />
-              {t('connectSsh')}
-            </Button>
+            {!isPrivate && (
+              <>
+                <ActionIcon
+                  icon={PencilIcon}
+                  title={t('edit')}
+                  disabled={busy}
+                  onClick={() => emit('@servers::detail/server-edit', null)}
+                />
+                <Button
+                  buttonStyle="outline"
+                  buttonColor="secondary"
+                  size="sm"
+                  title={sshHint}
+                  onClick={() => setIsTerminalOpen(true)}
+                >
+                  <TerminalIcon />
+                  {t('connectSsh')}
+                </Button>
+              </>
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -202,7 +210,11 @@ export default guard(function Hero() {
         </div>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-medium text-muted-foreground">
-          <Fact icon={KeyRoundIcon} value={sshHint} mono />
+          {isPrivate ? (
+            <Fact icon={HouseIcon} value={t('privateHint')} />
+          ) : (
+            <Fact icon={KeyRoundIcon} value={sshHint} mono />
+          )}
           <Fact
             icon={HardHatIcon}
             value={

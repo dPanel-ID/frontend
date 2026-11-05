@@ -11,6 +11,8 @@ export function toClusterCandidate(
   // Deleted servers stay in the list API for history; they can't join.
   if (machine.status === 'deleted' || machine.status === 'deleting')
     return null;
+  // Cluster nodes are installed over SSH; a private server has none.
+  if (machine.connectivity === 'private') return null;
 
   const id = String(machine.id);
 

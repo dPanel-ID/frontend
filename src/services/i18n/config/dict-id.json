@@ -103,7 +103,10 @@
       "branch": "Branch",
       "command": "Command",
       "ownServer": "Server sendiri",
-      "type": "Tipe"
+      "type": "Tipe",
+      "privateServer": "Server privat, tanpa IP publik",
+      "privateServerHint": "Server ini tidak punya IP publik. dPanel menjangkaunya lewat agennya, jadi server ini tidak bisa memakai load balancer atau terminal di browser.",
+      "privateBadge": "Privat"
     },
     "actions": {
       "refresh": "Segarkan",
@@ -1333,6 +1336,22 @@
               "title": "Mulai berkarya",
               "description": "Pasang modul, deploy aplikasi, dan tambah load balancer dari satu tempat."
             }
+          },
+          "private": {
+            "badge": "Tanpa IP publik",
+            "title": "Daftarkan mesin privat",
+            "description": "Tambahkan PC, server rumahan, atau VM di balik router. Mesin ini tidak perlu bisa dijangkau dari internet: Anda menjalankan satu perintah di mesin itu, lalu dPanel berkomunikasi lewat agen yang dipasangnya.",
+            "limits": "Anda bisa langsung melihat file, layanan, log, dan pemakaiannya. Load balancer dan terminal di browser tidak tersedia, sedangkan pemasangan modul dan deploy aplikasi hadir di rilis berikutnya.",
+            "steps": {
+              "cli": "Pasang alat baris perintah dnocs di mesin itu (Linux dengan systemd, Intel/AMD atau ARM).",
+              "signIn": "Masuk dengan dnocs auth login lalu pilih ruang kerja tempat mesin ini berada.",
+              "register": "Jalankan perintah di bawah sebagai root. Server akan muncul di sini dalam status siap dalam satu menit."
+            },
+            "runOnMachine": "Jalankan di mesin",
+            "copy": "Salin",
+            "copied": "Tersalin",
+            "copyFailed": "Perintah tidak bisa disalin. Pilih teksnya lalu salin secara manual.",
+            "guide": "Baca panduan langkah demi langkah"
           }
         },
         "manual": {
@@ -1507,7 +1526,8 @@
         "noErrorDetail": "Penyedia tidak memberi alasan.",
         "viewDetail": "Lihat penyebabnya",
         "terminalTitle": "Terminal di {name}",
-        "closeTerminal": "Tutup terminal"
+        "closeTerminal": "Tutup terminal",
+        "privateHint": "Server privat: dPanel menjangkaunya lewat agen, tanpa IP publik atau SSH"
       },
       "tabs": {
         "ariaLabel": "Bagian server",

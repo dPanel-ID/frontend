@@ -12,7 +12,16 @@ export function serverDisplayName(server: ServerLike) {
 /** True when dPanel created the VM at a cloud provider it knows. */
 export function isCloudServer(server: ServerLike) {
   const provider = server.cloud?.provider;
-  return !!provider && provider !== 'other';
+  return !!provider && provider !== 'other' && !server.host.private;
+}
+
+/**
+ * True for a server with no public IP, reached only through its agent: it
+ * cannot have load balancers, a browser terminal or an SSH connection, and
+ * dPanel does not run setup on it.
+ */
+export function isPrivateServer(server: Pick<ServerCard, 'host'>) {
+  return server.host.private;
 }
 
 /** Display name of the server's provider, or undefined for own servers. */
@@ -37,7 +46,8 @@ export function serverSystemLabel(server: ServerLike) {
  * setup in progress, and the API refuses it for a cancelled, deleting or
  * deleted server: that host comes back only as a new server with a new ID.
  */
-export function canReinstallServer(server: Pick<ServerCard, 'state'>) {
+export function canReinstallServer(server: Pick<ServerCard, 'state' | 'host'>) {
+  if (server.host.private) return false;
   return !['progress', 'cancelled', 'deleting', 'deleted'].includes(
     server.state.status,
   );
