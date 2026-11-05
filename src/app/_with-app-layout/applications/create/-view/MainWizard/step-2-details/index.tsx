@@ -6,6 +6,7 @@ import {
   ChevronRightIcon,
   CloudIcon,
   Globe2Icon,
+  HouseIcon,
   Layers3Icon,
   PlusCircleIcon,
   SearchIcon,
@@ -493,24 +494,30 @@ function ServerPicker(props: {
         const osLabel = [server.osName, server.osVersion]
           .filter(Boolean)
           .join(' ');
-        const metadata = [
-          {
-            icon: Globe2Icon,
-            label: server.publicIP,
-          },
-          {
-            icon: TerminalIcon,
-            label: `${t('ssh')} ${server.sshPort || '22'}`,
-          },
-          {
-            icon: UserRoundIcon,
-            label: server.defaultUser || t('unknown'),
-          },
-          {
-            icon: CloudIcon,
-            label: server.provider || t('unknown'),
-          },
-        ];
+        // A private server has no SSH: it is reached through its agent.
+        const metadata = server.private
+          ? [
+              { icon: HouseIcon, label: server.publicIP },
+              { icon: TerminalIcon, label: t('private') },
+            ]
+          : [
+              {
+                icon: Globe2Icon,
+                label: server.publicIP,
+              },
+              {
+                icon: TerminalIcon,
+                label: `${t('ssh')} ${server.sshPort || '22'}`,
+              },
+              {
+                icon: UserRoundIcon,
+                label: server.defaultUser || t('unknown'),
+              },
+              {
+                icon: CloudIcon,
+                label: server.provider || t('unknown'),
+              },
+            ];
 
         return (
           <button

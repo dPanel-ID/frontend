@@ -17,8 +17,9 @@ export function isCloudServer(server: ServerLike) {
 
 /**
  * True for a server with no public IP, reached only through its agent: it
- * cannot have load balancers, a browser terminal or an SSH connection, and
- * dPanel does not run setup on it.
+ * has no SSH and cannot have load balancers or domains, and dPanel does not
+ * run setup on it. Its terminal, module installs, deploys and databases go
+ * through the agent.
  */
 export function isPrivateServer(server: Pick<ServerCard, 'host'>) {
   return server.host.private;

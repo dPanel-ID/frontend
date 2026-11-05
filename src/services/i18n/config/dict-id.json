@@ -1084,7 +1084,8 @@
             "ssh": "SSH",
             "agent": "Agent",
             "unknown": "unknown",
-            "retry": "Coba lagi"
+            "retry": "Coba lagi",
+            "private": "Privat · lewat agen"
           },
           "sectionDependencies": {
             "title": "Pilih dependency",
@@ -1569,7 +1570,11 @@
         "noModules": "Inventaris modul belum dilaporkan.",
         "manageModules": "Kelola modul",
         "more": "+{count} lagi",
-        "createdBy": "Dibuat oleh"
+        "createdBy": "Dibuat oleh",
+        "lanAddress": "Alamat lokal",
+        "connection": "Koneksi",
+        "connectionPrivate": "Lewat agen dPanel (tanpa IP publik atau SSH)",
+        "loadBalancersPrivate": "Tidak tersedia di server privat"
       },
       "modules": {
         "title": "Modul terpasang",
