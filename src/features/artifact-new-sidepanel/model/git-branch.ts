@@ -1,4 +1,4 @@
-import { ApiGitBranch } from '@/shared/api';
+import { ApiApplication } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import type { Response } from '@/shared/libs/api-client/rules/types';
 import { excludeNully } from '@/shared/libs/browser/typeguards';
@@ -24,11 +24,10 @@ function getConfigFiles(): Response<ConfigFilesData> {
 export const [GitBranchModelProvider, useGitBranchModel] = buildSelector(
   'GitBranchModel',
 )((props: ModelProps) => {
-  const { repoName, repoOrganization } = props;
+  const { applicationId } = props;
 
-  const [responseGitBranch, refreshGitBranch] = ApiGitBranch.Find.useGet({
-    repoOrganization,
-    repoName,
+  const [responseGitBranch, refreshGitBranch] = ApiApplication.Branches.$Id.useGet({
+    applicationId: String(applicationId),
   });
 
   useSubscribe('#artifact-new-sidepanel/git-branch-refresh', () =>

@@ -1,3 +1,5 @@
+import * as Branch$Id from './application.branch.$id';
+import * as Branches$Id from './application.branches.$id';
 import * as Create from './application.create';
 import * as Delete$Id from './application.delete.$id';
 import * as Detail$Id from './application.detail.$id';
@@ -7,6 +9,12 @@ import * as Logs$Id from './application.logs.$id';
 import * as Update$Id from './application.update.$id';
 
 const Root = {
+  Branch: {
+    $Id: Branch$Id,
+  },
+  Branches: {
+    $Id: Branches$Id,
+  },
   Create,
   Delete: {
     $Id: Delete$Id,

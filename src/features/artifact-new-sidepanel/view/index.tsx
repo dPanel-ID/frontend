@@ -21,16 +21,13 @@ const Controller = () => {
 };
 
 export default function ArtifactNewSidepanel(props: Props) {
-  const { repoName, repoOrganization } = props;
+  const { applicationId } = props;
 
   const t = useDevetekTranslations();
 
   return (
     <ArtifactNewGeneralModelProvider {...props}>
-      <GitBranchModelProvider
-        repoName={repoName}
-        repoOrganization={repoOrganization}
-      >
+      <GitBranchModelProvider applicationId={applicationId}>
         <WorkersModelProvider>
           <Controller />
 

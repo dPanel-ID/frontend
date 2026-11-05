@@ -13,6 +13,5 @@ export interface ApplicationEditSidepanelProps extends SchemaApplicationEdit {
 }
 
 export interface GitBranchModelProps {
-  repoOrganization: string;
-  repoName: string;
+  applicationId: SchemaCommon.UnitId;
 }
