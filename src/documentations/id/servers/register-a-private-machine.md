@@ -112,6 +112,10 @@ Pilih **Open terminal** di bagian atas halaman server. Anda mendapat shell root 
 
 Jika mesin mati atau offline saat Anda memulai pemasangan atau deploy, pekerjaannya menunggu lalu gagal; jalankan lagi setelah mesin kembali menyala.
 
+## Berbagi dengan tim
+
+Mesin yang didaftarkan dari ruang kerja personal hanya milik Anda. Agar tim bisa mengaksesnya, daftarkan ke ruang kerja tim atau pindahkan ke sana: lihat [Berbagi homelab dengan tim](../tutorials/team-homelab.md).
+
 ## Mendaftarkannya lagi
 
 Menjalankan `sudo dnocs machine register` lagi di mesin yang sama akan mempertahankan server yang sama di dPanel dan memberi agennya kredensial baru. Satu mesin hanya bisa berada di satu ruang kerja pada satu waktu, dan satu ruang kerja bisa menampung hingga 10 mesin privat.
