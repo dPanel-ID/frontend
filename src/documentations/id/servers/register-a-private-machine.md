@@ -39,11 +39,16 @@ Server kini muncul di [halaman server](/servers) dengan label **Privat**.
 
 | Bisa | Belum |
 | --- | --- |
-| Melihat pemakaian CPU, memori, dan disk | Memasang modul seperti MariaDB atau Docker (rilis berikutnya) |
-| Menjelajahi dan mengubah file | Build dan deploy aplikasi (rilis berikutnya) |
-| Menjalankan, menghentikan, dan memulai ulang layanan | Membuka terminal di browser |
+| Melihat pemakaian CPU, memori, dan disk | Build dan deploy aplikasi (rilis berikutnya) |
+| Menjelajahi dan mengubah file | Membuka terminal di browser |
+| Menjalankan, menghentikan, dan memulai ulang layanan | |
 | Membaca log | |
 | Mengelola pengguna Linux | |
+| Memasang modul seperti MariaDB, Redis, atau Docker | |
+
+## Cara modul dipasang
+
+Mesin privat menjalankan pemasangnya sendiri, jadi tidak ada yang perlu menjangkaunya dari internet. Saat pertama kali Anda memasang modul, agen menyiapkan pemasang di mesin itu (Python dan Ansible, sekitar satu setengah menit), lalu pemasang menjalankan tugas di mesin itu sendiri dan berhenti lagi setelah 10 menit tanpa tugas. Jika mesin mati atau offline saat Anda memulai pemasangan, pemasangan akan menunggu lalu gagal; mulai lagi setelah mesin kembali online.
 
 Mesin privat tidak akan pernah bisa memakai load balancer atau domain, karena tidak ada yang bisa menjangkaunya dari internet. Aplikasi yang berjalan di mesin itu bisa diakses dari jaringan Anda sendiri.
 
