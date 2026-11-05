@@ -1,6 +1,9 @@
 import { useNavigate } from '@tanstack/react-router';
 
-import { canReinstallServer } from '@/entities/server/lib/describeServer';
+import {
+  canReinstallServer,
+  isPrivateServer,
+} from '@/entities/server/lib/describeServer';
 import type { ServerCard } from '@/entities/server/rules/schema';
 
 import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
@@ -60,9 +63,10 @@ export function useServerHandlers() {
               serverId: server.id,
               serverName: server.host.name || server.host.address,
             }),
-      edit: busy
-        ? undefined
-        : () => emit('@resources::servers/server-edit-sidepanel', server),
+      edit:
+        busy || isPrivateServer(server)
+          ? undefined
+          : () => emit('@resources::servers/server-edit-sidepanel', server),
     };
   };
 }

@@ -7,7 +7,6 @@ import { AdapterDomainFromDto } from '@/entities/domain/adapter';
 import { AdapterServerFromDto } from '@/entities/server/adapter';
 import { toServerModuleFromCatalog } from '@/entities/server-modules/lib/catalog';
 
-
 import { ApiApplication, ApiDomain, ApiModule, ApiServer } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 
@@ -17,7 +16,6 @@ import {
 } from '../-lib/modules';
 import type { InfrastructureModuleCatalog } from '../-model/form';
 import { SERVER_PAGE_SIZE } from '../-model/form';
-
 
 /** Everything the create flow needs to fetch, in one hook. */
 export type CreateResources = ReturnType<typeof useLoadBalancerCreateResources>;
@@ -66,9 +64,11 @@ export function useLoadBalancerCreateResources(
     });
 
   const servers = useAdapter(responseServers, (raw) => ({
-    list: (raw.machines ?? []).map((machine) =>
-      AdapterServerFromDto.toServerCard(machine).unwrap(),
-    ),
+    // A private server has no public IP, so nothing could reach a load
+    // balancer on it, nor an upstream it serves.
+    list: (raw.machines ?? [])
+      .filter((machine) => machine.connectivity !== 'private')
+      .map((machine) => AdapterServerFromDto.toServerCard(machine).unwrap()),
     pagination: raw.pagination,
   }));
 

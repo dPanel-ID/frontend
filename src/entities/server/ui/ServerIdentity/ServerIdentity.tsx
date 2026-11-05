@@ -1,6 +1,12 @@
 import type { ReactNode } from 'react';
 
-import { GlobeIcon, MapPinIcon, ServerIcon, TerminalIcon } from 'lucide-react';
+import {
+  GlobeIcon,
+  HouseIcon,
+  MapPinIcon,
+  ServerIcon,
+  TerminalIcon,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
@@ -106,6 +112,14 @@ export function ServerIdentity(props: ServerIdentityProps) {
               {serverDisplayName(server)}
             </span>
           )}
+          {server.host.private && (
+            <span
+              className="shrink-0 rounded-full border border-violet-400/30 bg-violet-500/10 px-2 py-0.5 text-[11px] font-semibold text-violet-700 dark:text-violet-300"
+              title={t('common.terms.privateServerHint')}
+            >
+              {t('common.terms.privateBadge')}
+            </span>
+          )}
           {trailing}
         </div>
 
@@ -117,13 +131,15 @@ export function ServerIdentity(props: ServerIdentityProps) {
             />
             <MetaItem icon={TerminalIcon} value={serverSystemLabel(server)} />
             <MetaItem
-              icon={MapPinIcon}
+              icon={server.host.private ? HouseIcon : MapPinIcon}
               value={
                 cloud
                   ? [serverProviderLabel(server), server.cloud?.region]
                       .filter(Boolean)
                       .join(' · ')
-                  : t('common.terms.ownServer')
+                  : server.host.private
+                    ? t('common.terms.privateServer')
+                    : t('common.terms.ownServer')
               }
             />
           </div>
