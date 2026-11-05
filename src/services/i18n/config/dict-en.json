@@ -1594,7 +1594,7 @@
         "refreshFailed": "Could not refresh the inventory",
         "empty": {
           "title": "No modules yet",
-          "message": "Add a runtime, database or web server from the catalog; dPanel installs it over SSH."
+          "message": "Add a runtime, database or web server from the catalog; dPanel installs it on this server for you."
         },
         "tiles": {
           "modules": "Modules",
@@ -3996,7 +3996,7 @@
     "modulesDiscover": {
       "title": "Add module",
       "heading": "Module catalog",
-      "description": "Runtimes, databases and web servers dPanel can install on this server over SSH.",
+      "description": "Runtimes, databases and web servers dPanel can install on this server.",
       "reload": "Reload catalog",
       "refreshInstalled": "Refresh installed",
       "refreshed": "Installed modules refreshed.",
