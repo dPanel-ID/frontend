@@ -1093,7 +1093,8 @@
             "ssh": "SSH",
             "agent": "Agent",
             "unknown": "unknown",
-            "retry": "Retry"
+            "retry": "Retry",
+            "private": "Private · through the agent"
           },
           "sectionDependencies": {
             "title": "Select dependencies",
@@ -1578,7 +1579,11 @@
         "noModules": "No module inventory reported yet.",
         "manageModules": "Manage modules",
         "more": "+{count} more",
-        "createdBy": "Created by"
+        "createdBy": "Created by",
+        "lanAddress": "Local address",
+        "connection": "Connection",
+        "connectionPrivate": "Through the dPanel agent (no public IP or SSH)",
+        "loadBalancersPrivate": "Not available on a private server"
       },
       "modules": {
         "title": "Installed modules",
