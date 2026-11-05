@@ -39,18 +39,19 @@ Server kini muncul di [halaman server](/servers) dengan label **Privat**.
 
 | Bisa | Belum |
 | --- | --- |
-| Melihat pemakaian CPU, memori, dan disk | Build dan deploy aplikasi (rilis berikutnya) |
-| Menjelajahi dan mengubah file | Membuka terminal di browser |
+| Melihat pemakaian CPU, memori, dan disk | Membuka terminal di browser |
+| Menjelajahi dan mengubah file | Deploy otomatis setiap ada push ke GitHub |
 | Menjalankan, menghentikan, dan memulai ulang layanan | |
 | Membaca log | |
 | Mengelola pengguna Linux | |
 | Memasang modul seperti MariaDB, Redis, atau Docker | |
+| Build dan deploy aplikasi | |
 
-## Cara modul dipasang
+## Cara modul dan aplikasi dipasang
 
-Mesin privat menjalankan pemasangnya sendiri, jadi tidak ada yang perlu menjangkaunya dari internet. Saat pertama kali Anda memasang modul, agen menyiapkan pemasang di mesin itu (Python dan Ansible, sekitar satu setengah menit), lalu pemasang menjalankan tugas di mesin itu sendiri dan berhenti lagi setelah 10 menit tanpa tugas. Jika mesin mati atau offline saat Anda memulai pemasangan, pemasangan akan menunggu lalu gagal; mulai lagi setelah mesin kembali online.
+Mesin privat menjalankan pemasangnya sendiri, jadi tidak ada yang perlu menjangkaunya dari internet. Saat pertama kali Anda memasang modul atau deploy aplikasi, agen menyiapkan pemasang di mesin itu (Python dan Ansible, sekitar satu setengah menit), lalu pemasang menjalankan tugas di mesin itu sendiri dan berhenti lagi setelah 10 menit tanpa tugas. Jika mesin mati atau offline saat Anda memulai pemasangan, pemasangan akan menunggu lalu gagal; mulai lagi setelah mesin kembali online.
 
-Mesin privat tidak akan pernah bisa memakai load balancer atau domain, karena tidak ada yang bisa menjangkaunya dari internet. Aplikasi yang berjalan di mesin itu bisa diakses dari jaringan Anda sendiri.
+Mesin privat tidak akan pernah bisa memakai load balancer atau domain, karena tidak ada yang bisa menjangkaunya dari internet. Aplikasi yang Anda deploy ke mesin itu berjalan di mesin itu sendiri, jadi Anda membukanya dari jaringan Anda di alamat mesin dan port aplikasinya, misalnya `http://192.168.1.20:3000`.
 
 ## Mendaftarkannya lagi
 
