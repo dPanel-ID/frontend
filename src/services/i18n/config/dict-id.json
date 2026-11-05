@@ -1585,7 +1585,7 @@
         "refreshFailed": "Tidak dapat menyegarkan inventaris",
         "empty": {
           "title": "Belum ada modul",
-          "message": "Tambahkan runtime, database atau web server dari katalog; dPanel memasangnya lewat SSH."
+          "message": "Tambahkan runtime, database atau web server dari katalog; dPanel memasangnya di server ini untuk Anda."
         },
         "tiles": {
           "modules": "Modul",
@@ -3988,7 +3988,7 @@
     "modulesDiscover": {
       "title": "Tambah modul",
       "heading": "Katalog modul",
-      "description": "Runtime, database dan web server yang bisa dipasang dPanel di server ini lewat SSH.",
+      "description": "Runtime, database dan web server yang bisa dipasang dPanel di server ini.",
       "reload": "Muat ulang katalog",
       "refreshInstalled": "Segarkan terpasang",
       "refreshed": "Modul terpasang disegarkan.",
