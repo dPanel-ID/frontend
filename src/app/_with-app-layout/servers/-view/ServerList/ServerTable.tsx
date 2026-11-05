@@ -78,7 +78,9 @@ export function ServerTable(props: ServerTableProps) {
                     ? [serverProviderLabel(server), server.cloud?.region]
                         .filter(Boolean)
                         .join(' · ')
-                    : t('common.terms.ownServer')}
+                    : server.host.private
+                      ? t('common.terms.privateServer')
+                      : t('common.terms.ownServer')}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {serverSystemLabel(server) ?? '-'}

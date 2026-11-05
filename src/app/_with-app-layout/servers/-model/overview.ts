@@ -61,7 +61,14 @@ export function summarizeServers(raw: {
     if (machine.status === 'ready') overview.ready += 1;
     if (machine.status === 'progress') overview.progress += 1;
     if (machine.status === 'failed') overview.failed += 1;
-    if (machine.provider) overview.cloud += 1;
+    // Same rule as isCloudServer: manual servers report provider "other"
+    // and private servers "private"; both are the user's own machines.
+    if (
+      machine.provider &&
+      machine.provider !== 'other' &&
+      machine.connectivity !== 'private'
+    )
+      overview.cloud += 1;
     else overview.own += 1;
   }
 
