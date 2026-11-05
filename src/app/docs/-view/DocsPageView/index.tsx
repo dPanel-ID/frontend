@@ -10,10 +10,10 @@ import {
   flowCtaClassName,
 } from '@/shared/presentation/organisms/FlowHero';
 
-import { DocsFooter } from '../-presentation/DocsFooter';
 import { DocsMarkdown } from '../-presentation/DocsMarkdown';
 import { DocsNav } from '../-presentation/DocsNav';
 import { DocsToc } from '../-presentation/DocsToc';
+import { DocsTopBar } from '../-presentation/DocsTopBar';
 import { pageHeadings } from '../../-lib/headings';
 import type { DocsPageLocation } from '../../-lib/registry';
 import { docsImageUrl, docsLinkTarget } from '../../-lib/registry';
@@ -40,7 +40,9 @@ export function DocsPageView(props: DocsPageViewProps) {
   const headings = pageHeadings(page.markdown);
 
   return (
-    <div className="flex w-full flex-col gap-4 p-3 sm:p-4 lg:p-6">
+    // pb-24 lets the page scroll clear of the floating "Ask dPanel" button.
+    <div className="flex w-full flex-col gap-4 p-3 pb-24 sm:p-4 sm:pb-24 lg:p-6 lg:pb-24">
+      <DocsTopBar />
       <FlowHero
         accent="sky"
         icon={BookOpenIcon}
@@ -137,8 +139,6 @@ export function DocsPageView(props: DocsPageViewProps) {
           </aside>
         )}
       </div>
-
-      <DocsFooter />
     </div>
   );
 }

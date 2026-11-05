@@ -7,20 +7,18 @@ import { DocsLanguageToggle } from '../DocsLanguageToggle';
 import { DocsThemeToggle } from '../DocsThemeToggle';
 
 /**
- * The foot of every documentation page.
+ * The top of every documentation page: the way home to the docs, and the
+ * language and theme controls.
  *
- * It carries the language and theme controls, which otherwise have nowhere
- * to live on these pages: they sit outside the app shell, so without this
- * there is no way to switch language or to leave dark mode.
- *
- * mb-20 lets the page scroll the footer clear of the floating "Ask dPanel"
- * button, which sits 20px from the bottom right and is about 44px tall.
+ * The docs sit outside the app shell, so these controls have nowhere else to
+ * live. They lead the page rather than close it, so a reader sees at once
+ * that the docs come in English and Indonesian, and in light and dark.
  */
-export function DocsFooter() {
+export function DocsTopBar() {
   const t = useDevetekTranslations('page.docs');
 
   return (
-    <footer className="mt-2 mb-20 flex flex-col gap-3 rounded-2xl border bg-card px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <header className="flex items-center justify-between gap-3 rounded-2xl border bg-card px-4 py-3">
       <Link
         to="/docs/intro"
         className="inline-flex min-w-0 items-center gap-2 rounded-lg text-sm font-semibold text-primary/80 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50"
@@ -29,10 +27,10 @@ export function DocsFooter() {
         <span className="truncate">{t('breadcrumb')}</span>
       </Link>
 
-      <div className="flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-2">
         <DocsLanguageToggle />
         <DocsThemeToggle />
       </div>
-    </footer>
+    </header>
   );
 }
