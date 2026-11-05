@@ -1,12 +1,14 @@
 ---
 title: Mendaftarkan mesin privat
-description: Tambahkan PC, server rumahan, atau VM di balik router ke dPanel dengan satu perintah. Tidak perlu IP publik atau port yang terbuka.
+description: Tambahkan PC, server rumahan, atau VM di balik router ke dPanel dengan satu perintah, lalu pasang database, deploy aplikasi, dan buka terminal di mesin itu. Tidak perlu IP publik atau port yang terbuka.
 sidebar_position: 4
 sidebar_icon: log-in
 sidebar_label: Mesin privat
 ---
 
-Mesin privat adalah komputer yang tidak bisa dijangkau dari internet: PC, server rumahan, atau VM di balik router. dPanel tidak pernah menghubunginya. Sebagai gantinya, Anda menjalankan satu perintah di mesin itu untuk memasang agen dPanel, dan agen tersebut menjaga koneksi keluar ke dPanel. Mesin itu lalu muncul di halaman server Anda.
+Mesin privat adalah komputer yang tidak bisa dijangkau dari internet: PC, server rumahan, atau VM di balik router. dPanel tidak pernah menghubunginya. Sebagai gantinya, Anda menjalankan satu perintah di mesin itu untuk memasang agen dPanel, dan agen tersebut menjaga koneksi keluar ke dPanel. Semua hal lain (memasang perangkat lunak, deploy aplikasi, terminal, membuka database) berjalan lewat koneksi itu.
+
+Panduan ini menunjukkan seluruh langkahnya dengan mesin sungguhan bernama `home-server`.
 
 ## Yang perlu disiapkan
 
@@ -14,9 +16,15 @@ Mesin privat adalah komputer yang tidak bisa dijangkau dari internet: PC, server
 - Terminal di mesin itu yang bisa memakai `sudo`.
 - Akses internet dari mesin itu. Mesin hanya terhubung keluar, jadi tidak perlu port forwarding.
 
-## Mendaftarkannya
+## Langkah 1: Daftarkan mesinnya
 
-1. Pasang alat baris perintah dnocs di mesin itu. Ikuti [Memasang dnocs](../ai/ai-in-the-terminal.md#memasang-dnocs).
+Di dPanel, buka **Servers**, lalu **Create Server**. Kartu **Register a private machine** menampilkan satu perintah yang perlu dijalankan dan tautan ke panduan ini.
+
+![Halaman Create Server dengan kartu Register a private machine: lencana No public IP, tiga langkah, dan perintah sudo dnocs machine register](../../assets/servers/private-create-chooser.webp)
+
+Di mesin itu:
+
+1. Pasang alat baris perintah dnocs. Ikuti [Memasang dnocs](../ai/ai-in-the-terminal.md#memasang-dnocs).
 2. Masuk, lalu pilih ruang kerja tempat mesin ini berada (lewati langkah ini agar mesin tetap di ruang kerja personal Anda):
 
    ```bash
@@ -31,36 +39,86 @@ Mesin privat adalah komputer yang tidak bisa dijangkau dari internet: PC, server
    sudo dnocs machine register
    ```
 
-   dnocs meminta konfirmasi, memasang agen, lalu menunggu sampai server siap. Biasanya kurang dari satu menit.
+dnocs meminta konfirmasi, membuat pengguna Linux untuk akun dPanel Anda, memasang agen, dan menunggu sampai server siap. Biasanya kurang dari satu menit.
 
-Server kini muncul di [halaman server](/servers) dengan label **Privat**.
+![Terminal di home-server yang menjalankan sudo dnocs machine register: konfirmasi, pembuatan pengguna Linux, pemasangan agen, lalu pesan bahwa server 206 sudah siap](../../assets/servers/private-register-terminal.webp)
+
+Mesin itu kini muncul di halaman server dengan lencana **Private**. Alamatnya adalah alamat mesin di jaringan Anda sendiri.
+
+![Halaman server yang menampilkan home-server dengan lencana Private, status Ready, penyedia Private server, no public IP, dan alamat lokalnya](../../assets/servers/private-servers-list.webp)
+
+## Langkah 2: Kenali halaman servernya
+
+Buka servernya. Server privat punya tab yang sama dengan server lain: pemakaian langsung, modul, layanan, pengguna, jaringan, berkas, log, dan pengaturan. Bagian detail menjelaskan cara dPanel menjangkaunya: **Local address** dan **Connection: Through the dPanel agent**, bukan login SSH. Load balancer ditandai tidak tersedia, karena mesin ini tidak bisa dijangkau dari internet.
+
+![Halaman home-server: pemakaian CPU, memori, dan disk secara langsung, load balancer tidak tersedia di server privat, serta detail Local address 172.17.0.2, koneksi lewat agen dPanel, dan Agent v0.1.15](../../assets/servers/private-overview.webp)
+
+## Langkah 3: Pasang database atau perangkat lunak lain
+
+Buka tab **Modules** lalu pilih **Add module**. Pilih dari katalog yang sama dengan server lain: database seperti MariaDB, PostgreSQL, atau Redis, runtime bahasa pemrograman, Docker, dan lainnya.
+
+![Katalog Add module untuk home-server dengan MariaDB, PostgreSQL, dan Redis terpasang, serta Docker, k3s, MongoDB, dan lainnya siap dipasang](../../assets/servers/private-module-catalog.webp)
+
+Pemasangan pertama butuh beberapa menit lebih lama: agen menyiapkan installer dPanel di mesin itu (Python dan Ansible, sekitar satu setengah menit). Setelah itu installer menjalankan setiap pekerjaan di mesin itu sendiri dan berhenti lagi setelah 10 menit tanpa pekerjaan.
+
+Anda juga bisa memasang dari terminal mesin, misalnya `dnocs module install mariadb --server-id <id> --generate-secrets`, yang menyimpan kata sandi admin buatannya ke berkas yang hanya bisa Anda baca.
+
+![Tab Modules di home-server yang menampilkan Go, MariaDB, PostgreSQL, dan Redis terpasang, dengan tombol Open database di MariaDB dan PostgreSQL](../../assets/servers/private-modules-installed.webp)
+
+## Langkah 4: Buka database di browser
+
+Pilih **Open database** di samping MariaDB atau PostgreSQL. Pengelola database dPanel akan terbuka. Masuk dengan akun database, misalnya akun admin yang dibuat saat database dipasang.
+
+![Formulir Open a database untuk home-server: MariaDB di port 3306, pengguna dan nama database, serta kolom kata sandi](../../assets/servers/private-dbm-login.webp)
+
+Telusuri tabel, jalankan query, dan gunakan **Import** serta **Export**. Ekspor dan impor menjalankan alat bawaan database itu sendiri di mesin Anda, lewat agen. Database tidak perlu terbuka ke internet, bahkan ke jaringan Anda.
+
+![Pengelola database yang terhubung ke database shop di home-server, menampilkan tabel products dengan tiga baris](../../assets/servers/private-dbm-connected.webp)
+
+## Langkah 5: Deploy aplikasi
+
+Buat aplikasi dari repositori GitHub Anda seperti biasa (lihat [Membuat aplikasi](../applications/create-an-application.md)). Saat memilih server, server privat menampilkan alamat lokalnya dan **Private · through the agent**.
+
+Build dan deploy berjalan di mesin itu sendiri. Aplikasi mendengarkan di mesin itu, jadi Anda membukanya dari jaringan sendiri di alamat mesin dan port aplikasinya, misalnya `http://192.168.1.20:3000`.
+
+![Halaman aplikasi goexample: Live, deployment yang sedang berjalan dari branch private-autodeploy-test di home-server, satu server melayani, build terakhir berhasil, port 3000](../../assets/servers/private-app-detail.webp)
+
+## Langkah 6: Deploy otomatis di setiap push
+
+Di halaman **Applications**, buka menu aplikasinya, pilih **Edit**, centang **Enable auto deployment**, lalu pilih branch-nya. Simpan.
+
+![Panel Edit Application dengan Enable auto deployment dicentang dan Deploy from branch berisi private-autodeploy-test](../../assets/servers/private-app-edit.webp)
+
+Mulai sekarang, setiap push ke branch itu akan mem-build dan men-deploy commit yang di-push ke mesin itu. Dalam uji coba kami, sebuah push sudah tayang di `home-server` sekitar satu setengah menit kemudian.
+
+## Langkah 7: Buka terminal
+
+Pilih **Open terminal** di bagian atas halaman server. Anda mendapat shell root di mesin itu langsung dari browser, diteruskan lewat agen, tanpa SSH. Dari komputer Anda, `dnocs server exec --id <id> --command '<perintah>'` menjalankan perintah dengan cara yang sama.
+
+![Terminal di browser untuk home-server: curl ke localhost:3000 mengembalikan judul halaman yang baru di-deploy, dan layanan aplikasi serta MariaDB aktif](../../assets/servers/private-terminal.webp)
 
 ## Yang bisa dilakukan
 
-| Bisa | Belum |
+| Bisa | Tidak tersedia |
 | --- | --- |
-| Melihat pemakaian CPU, memori, dan disk | Deploy otomatis setiap ada push ke GitHub |
-| Menjelajahi dan mengubah file | |
-| Menjalankan, menghentikan, dan memulai ulang layanan | |
-| Membaca log | |
+| Melihat pemakaian CPU, memori, dan disk | Load balancer dan domain |
+| Menelusuri dan mengubah berkas | Cluster Kubernetes bersama server lain |
+| Menyalakan, mematikan, dan memulai ulang layanan, membaca log | Mengubah detail koneksi SSH (memang tidak ada) |
 | Mengelola pengguna Linux | |
-| Memasang modul seperti MariaDB, Redis, atau Docker | |
-| Build dan deploy aplikasi | |
+| Memasang modul seperti MariaDB, PostgreSQL, Redis, atau Docker | |
+| Membuka MariaDB dan PostgreSQL di pengelola database, termasuk impor dan ekspor | |
+| Build dan deploy aplikasi, juga otomatis di setiap push | |
 | Membuka terminal di browser atau dengan `dnocs server exec` | |
 
-## Cara modul dan aplikasi dipasang
-
-Mesin privat menjalankan pemasangnya sendiri, jadi tidak ada yang perlu menjangkaunya dari internet. Saat pertama kali Anda memasang modul atau deploy aplikasi, agen menyiapkan pemasang di mesin itu (Python dan Ansible, sekitar satu setengah menit), lalu pemasang menjalankan tugas di mesin itu sendiri dan berhenti lagi setelah 10 menit tanpa tugas. Jika mesin mati atau offline saat Anda memulai pemasangan, pemasangan akan menunggu lalu gagal; mulai lagi setelah mesin kembali online.
-
-Mesin privat tidak akan pernah bisa memakai load balancer atau domain, karena tidak ada yang bisa menjangkaunya dari internet. Aplikasi yang Anda deploy ke mesin itu berjalan di mesin itu sendiri, jadi Anda membukanya dari jaringan Anda di alamat mesin dan port aplikasinya, misalnya `http://192.168.1.20:3000`.
+Jika mesin mati atau offline saat Anda memulai pemasangan atau deploy, pekerjaannya menunggu lalu gagal; jalankan lagi setelah mesin kembali menyala.
 
 ## Mendaftarkannya lagi
 
-Menjalankan `sudo dnocs machine register` lagi di mesin yang sama tetap memakai server yang sama di dPanel dan memberi agennya kredensial baru. Satu mesin hanya bisa berada di satu ruang kerja, dan satu ruang kerja bisa menampung hingga 10 mesin privat.
+Menjalankan `sudo dnocs machine register` lagi di mesin yang sama akan mempertahankan server yang sama di dPanel dan memberi agennya kredensial baru. Satu mesin hanya bisa berada di satu ruang kerja pada satu waktu, dan satu ruang kerja bisa menampung hingga 10 mesin privat.
 
 ## Menghapusnya
 
-Hapus server di dPanel (dari halamannya, atau dengan `dnocs server delete --id <id>`). dPanel langsung menghapusnya, dan kredensial agen berhenti berlaku. Lalu hentikan agen di mesin itu:
+Hapus server itu di dPanel (dari halamannya, atau dengan `dnocs server delete --id <id>`). dPanel langsung menghapusnya, dan kredensial agennya tidak berlaku lagi. Setelah itu hentikan agen di mesin itu:
 
 ```bash
 sudo systemctl disable --now dpanel-active-agent
