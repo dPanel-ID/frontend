@@ -1,12 +1,14 @@
 ---
 title: Register a private machine
-description: Add a PC, a home server or a VM behind a router to dPanel with one command. It needs no public IP and no open port.
+description: Add a PC, a home server or a VM behind a router to dPanel with one command, then install databases, deploy apps and open a terminal on it. It needs no public IP and no open port.
 sidebar_position: 4
 sidebar_icon: log-in
 sidebar_label: Private machine
 ---
 
-A private machine is a computer that nothing on the internet can reach: a PC, a home server, or a VM behind a router. dPanel never connects to it. Instead, you run one command on the machine, which installs the dPanel agent, and the agent keeps an outgoing connection to dPanel. The machine then shows up on your servers page.
+A private machine is a computer that nothing on the internet can reach: a PC, a home server, or a VM behind a router. dPanel never connects to it. Instead, you run one command on the machine, which installs the dPanel agent, and the agent keeps an outgoing connection to dPanel. Everything else (installing software, deploying apps, the terminal, opening databases) travels over that connection.
+
+This guide walks through the whole thing with a real machine called `home-server`.
 
 ## What you need first
 
@@ -14,9 +16,15 @@ A private machine is a computer that nothing on the internet can reach: a PC, a 
 - A terminal on that machine where you can use `sudo`.
 - Internet access from the machine. It only connects out, so no port forwarding is needed.
 
-## Register it
+## Step 1: Register the machine
 
-1. Install the dnocs command line tool on the machine. Follow [Install dnocs](../ai/ai-in-the-terminal.md#install-dnocs).
+In dPanel, open **Servers**, then **Create Server**. The **Register a private machine** card shows the one command to run and links back to this guide.
+
+![The Create Server page with the Register a private machine card: a No public IP badge, three steps and the command sudo dnocs machine register](../../assets/servers/private-create-chooser.webp)
+
+On the machine:
+
+1. Install the dnocs command line tool. Follow [Install dnocs](../ai/ai-in-the-terminal.md#install-dnocs).
 2. Sign in, and pick the workspace the machine belongs to (skip this to keep it in your personal space):
 
    ```bash
@@ -31,28 +39,78 @@ A private machine is a computer that nothing on the internet can reach: a PC, a 
    sudo dnocs machine register
    ```
 
-   dnocs asks you to confirm, installs the agent, and waits until the server is ready. That usually takes under a minute.
+dnocs asks you to confirm, creates a Linux user for your dPanel account, installs the agent and waits until the server is ready. That usually takes under a minute.
 
-The server now appears on your [servers page](/servers) with a **Private** badge.
+![A terminal on home-server running sudo dnocs machine register: it confirms, creates the Linux user, installs the agent and prints that server 206 is ready](../../assets/servers/private-register-terminal.webp)
+
+The machine now appears on your servers page with a **Private** badge. Its address is its address on your own network.
+
+![The servers page listing home-server with a Private badge, status Ready, provider Private server, no public IP, and its local address](../../assets/servers/private-servers-list.webp)
+
+## Step 2: Look around the server page
+
+Open the server. A private server has the same tabs as any other server: live usage, modules, services, users, network, files, logs and settings. The details say how dPanel reaches it: **Local address** and **Connection: Through the dPanel agent**, instead of an SSH login. Load balancers are marked as not available, because nothing on the internet can reach the machine.
+
+![The home-server page: live CPU, memory and disk usage, Load balancers not available on a private server, and details with Local address 172.17.0.2, Connection through the dPanel agent and Agent v0.1.15](../../assets/servers/private-overview.webp)
+
+## Step 3: Install a database or other software
+
+Open the **Modules** tab and choose **Add module**. Pick from the same catalog as any other server: databases such as MariaDB, PostgreSQL or Redis, language runtimes, Docker and more.
+
+![The Add module catalog for home-server with MariaDB, PostgreSQL and Redis installed and Docker, k3s, MongoDB and others ready to install](../../assets/servers/private-module-catalog.webp)
+
+The first install takes a few minutes longer: the agent sets up dPanel's installer on the machine (Python and Ansible, about a minute and a half). After that the installer runs each job on the machine itself and stops again after 10 quiet minutes.
+
+You can also install from the machine's terminal, for example `dnocs module install mariadb --server-id <id> --generate-secrets`, which saves the generated admin password to a file only you can read.
+
+![The Modules tab of home-server listing Go, MariaDB, PostgreSQL and Redis as installed, with Open database on MariaDB and PostgreSQL](../../assets/servers/private-modules-installed.webp)
+
+## Step 4: Open a database in the browser
+
+Choose **Open database** next to MariaDB or PostgreSQL. dPanel's database manager opens. Sign in with a database account, such as the admin account set when the database was installed.
+
+![The Open a database form for home-server: MariaDB on port 3306, a database user and database name, and the password field](../../assets/servers/private-dbm-login.webp)
+
+Browse tables, run queries, and use **Import** and **Export**. Exports and imports run the database's own tools on your machine, through the agent. The database never has to be open to the internet or even to your network.
+
+![The database manager connected to the shop database on home-server, showing the products table with three rows](../../assets/servers/private-dbm-connected.webp)
+
+## Step 5: Deploy an application
+
+Create an application from your GitHub repository as usual (see [Create an application](../applications/create-an-application.md)). When you pick the server, private servers show their local address and **Private · through the agent**.
+
+The build and the deploy run on the machine itself. Apps listen on the machine, so you open them on your own network at the machine's address and the app's port, for example `http://192.168.1.20:3000`.
+
+![The goexample application page: Live, the current deployment from the private-autodeploy-test branch on home-server, one server serving, the last build passed, port 3000](../../assets/servers/private-app-detail.webp)
+
+## Step 6: Deploy automatically on every push
+
+On the **Applications** page, open the application's menu, choose **Edit**, tick **Enable auto deployment** and pick the branch. Save.
+
+![The Edit Application panel with Enable auto deployment ticked and Deploy from branch set to private-autodeploy-test](../../assets/servers/private-app-edit.webp)
+
+From now on, every push to that branch builds and deploys the pushed commit on the machine. In our test, a push was live on `home-server` about a minute and a half later.
+
+## Step 7: Open a terminal
+
+Choose **Open terminal** at the top of the server page. You get a root shell on the machine in your browser, relayed through the agent, with no SSH. From your computer, `dnocs server exec --id <id> --command '<command>'` runs a command the same way.
+
+![A browser terminal on home-server: curl to localhost:3000 returns the newly deployed page title, and the app and MariaDB services are active](../../assets/servers/private-terminal.webp)
 
 ## What you can do with it
 
-| You can | Not yet |
+| You can | Not available |
 | --- | --- |
-| See CPU, memory and disk usage | Deploy automatically on every GitHub push |
-| Browse and edit files | |
-| Start, stop and restart services | |
-| Read logs | |
+| See CPU, memory and disk usage | Load balancers and domains |
+| Browse and edit files | Kubernetes clusters with other servers |
+| Start, stop and restart services, read logs | Changing SSH connection details (there are none) |
 | Manage Linux users | |
-| Install modules such as MariaDB, Redis or Docker | |
-| Build and deploy applications | |
+| Install modules such as MariaDB, PostgreSQL, Redis or Docker | |
+| Open MariaDB and PostgreSQL in the database manager, with import and export | |
+| Build and deploy applications, also automatically on every push | |
 | Open a terminal in the browser or with `dnocs server exec` | |
 
-## How modules and apps get installed
-
-A private machine runs its own installer, so nothing on the internet needs to reach it. The first time you install a module or deploy an app, the agent sets up the installer on the machine (Python and Ansible, about a minute and a half), then the installer runs the job on the machine itself and stops again after 10 quiet minutes. If the machine is off or offline when you start an install, the install waits and then fails; start it again once the machine is back.
-
-A private machine can never have a load balancer or a domain: nothing on the internet can reach it. Apps you deploy to it listen on the machine itself, so you open them on your own network at the machine's address and the app's port, for example `http://192.168.1.20:3000`.
+If the machine is off or offline when you start an install or a deploy, the job waits and then fails; start it again once the machine is back.
 
 ## Register it again
 
