@@ -20,16 +20,13 @@ const Controller = () => {
 };
 
 export default function ApplicationEditSidepanel(props: Props) {
-  const { applicationName, applicationId, repoName, repoOrganization } = props;
+  const { applicationName, applicationId } = props;
 
   const t = useDevetekTranslations();
 
   return (
     <ModelProvider {...props}>
-      <GitBranchModelProvider
-        repoName={repoName}
-        repoOrganization={repoOrganization}
-      >
+      <GitBranchModelProvider applicationId={applicationId}>
         <Controller />
 
         <Layout classNameFrame="w-[100vw] sm:w-[80vw] sm:max-w-[380px]">

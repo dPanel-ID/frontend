@@ -3,7 +3,7 @@ import { useToaster } from '@/services/toaster';
 
 import type { ExplicitTarget } from '@/shared/rules/host-group';
 
-import { ApiArtifact, ApiDeploy, ApiGitBranch } from '@/shared/api';
+import { ApiApplication, ApiArtifact, ApiDeploy } from '@/shared/api';
 import { iife } from '@/shared/libs/browser/fn';
 
 import { useEmit, useSubscribe } from '../model/events';
@@ -48,12 +48,10 @@ export default function useFormSubmissionUsecase() {
         return;
       }
 
-      const currentBranchResponse =
-        await ApiGitBranch.Detail.$RepoOrg.$RepoName.fetchGet({
-          branch: fromBranch,
-          repoName: props.repoName,
-          repoOrganization: props.repoOrganization,
-        });
+      const currentBranchResponse = await ApiApplication.Branch.$Id.fetchGet({
+        applicationId: String(props.applicationId),
+        branch: fromBranch,
+      });
 
       if (
         currentBranchResponse.$status === 'failed' ||

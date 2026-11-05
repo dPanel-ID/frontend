@@ -794,7 +794,7 @@
       },
       "githubBanner": {
         "title": "Beberapa informasi mungkin tidak tersedia",
-        "subtitle": "Anda perlu login ke akun GitHub anda untuk melihatnya.",
+        "subtitle": "Anda perlu login ke akun GitHub anda untuk melihatnya. Build dan deploy tetap berjalan tanpanya.",
         "loginCta": "Login GitHub",
         "reloginTitle": "Sesi GitHub kedaluwarsa",
         "reloginSubtitle": "Hubungkan ulang akun GitHub agar dPanel dapat membaca data repositori lagi.",
