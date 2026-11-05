@@ -18,15 +18,6 @@ export default function useApplicationEditUsecase(params: Params) {
       onSuccess,
       applicationId: payload.applicationId,
       applicationName: payload.applicationName,
-      repoName: payload.repoName,
-      repoOrganization: payload.repoOrganization,
-      rawAppDefinition: payload.rawAppDefinition,
-      workdir: payload.workdir,
-      port: payload.port,
-      autoDeploy: {
-        fromBranch: payload.autoDeploy.fromBranch,
-        isEnabled: payload.autoDeploy.isEnabled,
-      },
     });
   });
 

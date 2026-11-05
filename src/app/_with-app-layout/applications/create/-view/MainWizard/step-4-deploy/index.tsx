@@ -165,15 +165,20 @@ export function CommandSettingsSection(props: { portState: CommandPortState }) {
     appBuildCommand,
     appRunCommand,
     gitRepoConfig,
+    flowMode,
     setAppBuildCommand,
     setAppRunCommand,
   ] = useFormStore((s) => [
     s.appBuildCommand,
     s.appRunCommand,
     s.gitRepoConfig,
+    s.flowMode,
     s.setAppBuildCommand,
     s.setAppRunCommand,
   ]);
+  // Load balancers and deployed servers use the port of an existing
+  // application, so editing one keeps it.
+  const isPortLocked = flowMode === 'update';
   const [pickerState, setPickerState] = useState<{
     open: boolean;
     target: 'build' | 'runtime';
@@ -352,12 +357,15 @@ export function CommandSettingsSection(props: { portState: CommandPortState }) {
             <label className="grid gap-1.5">
               <span className="text-sm font-semibold">{t('port')}</span>
               <span className="text-xs text-muted-foreground">
-                {t('portDesc')}
+                {isPortLocked ? t('portLocked') : t('portDesc')}
               </span>
               <Input
                 value={appPort}
                 inputMode="numeric"
                 placeholder={t('portPlaceholder')}
+                readOnly={isPortLocked}
+                aria-readonly={isPortLocked}
+                className={isPortLocked ? 'bg-muted/40 font-mono' : undefined}
                 onChange={(event) => updatePort(event.target.value)}
               />
             </label>

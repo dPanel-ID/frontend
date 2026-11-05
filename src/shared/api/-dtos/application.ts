@@ -203,6 +203,8 @@ export interface AppDefinition {
     router?: unknown;
   };
   build?: {
+    /** Bounds the whole deployment job, as a Go duration such as "90m". */
+    timeout?: string;
     target?: {
       machine?: {
         workdir?: string;

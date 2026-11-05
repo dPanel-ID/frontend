@@ -278,10 +278,8 @@ export default function useHandleUpdateApplication() {
       updateOriginalRepoUrl,
       updateOriginalRuntimeItems,
       updateOriginalSource,
-      updateOriginalWorkdir,
       updateRawAppDefinition,
       updateTriggerBootstrap,
-      updateWorkdir,
     } = formValues;
 
     if (!updateApplicationId || !hostedServerID || !appSourceGithubRepo) {
@@ -366,7 +364,6 @@ export default function useHandleUpdateApplication() {
       runtimeEnvVariables,
     });
     const payload: DTOs.ApplicationPayloadV1 & Record<string, unknown> = {};
-    const nextWorkdir = updateWorkdir;
 
     setChangedPayloadField(
       payload,
@@ -412,12 +409,8 @@ export default function useHandleUpdateApplication() {
       gitProvider,
       updateOriginalSource,
     );
-    setChangedPayloadField(
-      payload,
-      'workdir',
-      nextWorkdir,
-      updateOriginalWorkdir,
-    );
+    // The work directory is fixed once the application exists; the API
+    // refuses a different one.
 
     if (updateTriggerBootstrap) {
       payload.artifact = {

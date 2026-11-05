@@ -75,13 +75,4 @@ export interface ApplicationSetupEditPayload {
 export interface ApplicationEditPayload {
   applicationId: SchemaCommon.UnitId;
   applicationName: string;
-  repoName: string;
-  repoOrganization: string;
-  rawAppDefinition?: AppDefinition;
-  workdir: string;
-  port?: number;
-  autoDeploy: {
-    fromBranch?: string;
-    isEnabled: boolean;
-  };
 }

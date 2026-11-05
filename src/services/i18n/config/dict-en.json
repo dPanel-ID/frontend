@@ -938,7 +938,9 @@
           "build": "Build",
           "run": "Run",
           "buildHint": "How your code is turned into something installable",
-          "runHint": "How the installed application is started and kept running"
+          "runHint": "How the installed application is started and kept running",
+          "deployment": "Deployment",
+          "deploymentHint": "When this application deploys and how long a deployment may take."
         },
         "labels": {
           "repository": "Repository",
@@ -948,14 +950,21 @@
           "port": "Port",
           "command": "Start command",
           "buildSteps": "Build steps",
-          "envVars": "Environment variables"
+          "envVars": "Environment variables",
+          "autoDeploy": "Auto deployment",
+          "buildTimeout": "Build time limit",
+          "description": "Description"
         },
         "empty": {
           "repository": "No repository linked",
           "envVars": "No environment variables",
           "buildSteps": "No build steps",
           "configuration": "No configuration available"
-        }
+        },
+        "editDeployment": "Edit",
+        "autoDeployOn": "On",
+        "autoDeployOff": "Off",
+        "defaultTimeout": "Default"
       },
       "tabs": {
         "ariaLabel": "Application sections",
@@ -1197,7 +1206,8 @@
             "portPlaceholder": "7000",
             "portUsed": "Port {port} is already used on this server.",
             "usedPorts": "Ports already in use",
-            "noPorts": "No used ports were reported."
+            "noPorts": "No used ports were reported.",
+            "portLocked": "Fixed once the application exists: load balancers and deployed servers use this port."
           }
         },
         "step5": {
@@ -3813,18 +3823,41 @@
       "hideConfirmPassword": "Hide confirm password"
     },
     "editApplication": {
-      "title": "Edit Application",
+      "title": "Edit application",
+      "loadFailed": "The application could not be loaded. Close this panel and try again.",
       "autoDeployment": {
-        "title": "Auto Deployment",
-        "enable": "Enable auto deployment",
-        "deployFromBranch": "Deploy from branch"
+        "title": "Auto deployment",
+        "description": "Build and deploy automatically whenever you push to a branch on GitHub.",
+        "enable": "Deploy on every push",
+        "stateOn": "On: each push builds and deploys the pushed commit.",
+        "stateOff": "Off: deploy by hand from the application page.",
+        "deployFromBranch": "Branch",
+        "branchHint": "Only pushes to this branch start a deployment.",
+        "branchRequired": "Pick the branch to deploy from.",
+        "summary": "Every push to {branch} builds the pushed commit and deploys it to {count, plural, =0 {the servers this application runs on} one {the # server this application runs on} other {the # servers this application runs on}}."
       },
-      "general": {
-        "title": "General",
-        "workdir": "Work Directory",
-        "workdirPlaceholder": "/app",
+      "build": {
+        "title": "Build",
+        "description": "How long one deployment may take: cloning, installing runtimes, building and starting the service.",
+        "timeout": "Time limit",
+        "timeoutHint": "A deployment that takes longer is stopped and marked failed.",
+        "default": "Default",
+        "buildTimeoutInvalid": "Use a duration such as 30m or 2h."
+      },
+      "description": {
+        "title": "Description",
+        "description": "A short note about what this application does.",
+        "label": "Description",
+        "placeholder": "e.g. Customer website",
+        "descriptionTooLong": "Keep it under 200 characters."
+      },
+      "fixed": {
+        "title": "Fixed settings",
+        "description": "Set when the application was created and cannot change: servers keep it in this folder and run it as this service, and load balancers send traffic to this port. To use other values, create a new application.",
+        "repository": "Repository",
+        "workdir": "Work directory",
         "port": "Port",
-        "portPlaceholder": "e.g. 3000"
+        "service": "Service name"
       }
     },
     "artifactNew": {
