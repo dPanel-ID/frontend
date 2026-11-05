@@ -12,6 +12,5 @@ export interface ArtifactNewSidepanelProps {
 }
 
 export interface GitBranchModelProps {
-  repoOrganization: string;
-  repoName: string;
+  applicationId: SchemaCommon.UnitId;
 }

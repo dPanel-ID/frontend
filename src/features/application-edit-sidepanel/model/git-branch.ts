@@ -1,4 +1,4 @@
-import { ApiGitBranch } from '@/shared/api';
+import { ApiApplication } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import { excludeNully } from '@/shared/libs/browser/typeguards';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
@@ -10,11 +10,10 @@ import { useSubscribe } from './events';
 export const [GitBranchModelProvider, useGitBranchModel] = buildSelector(
   'GitBranch',
 )((props: ModelProps) => {
-  const { repoName, repoOrganization } = props;
+  const { applicationId } = props;
 
-  const [response, refresh] = ApiGitBranch.Find.useGet({
-    repoOrganization,
-    repoName,
+  const [response, refresh] = ApiApplication.Branches.$Id.useGet({
+    applicationId: String(applicationId),
   });
 
   useSubscribe('#application-edit-sidepanel/git-branch-refresh', () =>

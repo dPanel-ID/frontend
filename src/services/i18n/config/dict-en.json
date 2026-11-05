@@ -803,7 +803,7 @@
       },
       "githubBanner": {
         "title": "Some information might be missing",
-        "subtitle": "You'll need to log in to your GitHub account to see them.",
+        "subtitle": "You'll need to log in to your GitHub account to see them. Builds and deploys work without it.",
         "loginCta": "Login GitHub",
         "reloginTitle": "GitHub session expired",
         "reloginSubtitle": "Reconnect your GitHub account so dPanel can read repository data again.",
