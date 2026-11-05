@@ -107,10 +107,14 @@ export default function Teams(props: TeamsProps) {
         ? resOrganizations.prevData
         : undefined;
 
-  const profileWorkspaces =
+  const profileWorkspacesData =
     resUserProfile.$status === 'success'
-      ? (resUserProfile.workspaces ?? [])
-      : [];
+      ? resUserProfile.workspaces
+      : undefined;
+  const profileWorkspaces = useMemo(
+    () => profileWorkspacesData ?? [],
+    [profileWorkspacesData],
+  );
 
   const selectedProfileWorkspace = profileWorkspaces.find(
     (workspace) => workspaceToOrganizationId(workspace.id) === selectedTeamId,
@@ -126,6 +130,17 @@ export default function Teams(props: TeamsProps) {
       description: t('sidebar.workspacePicker.personalDescription'),
     };
 
+    // The session lists the person's roles in each workspace.
+    const roleIn = (workspaceId: string) =>
+      profileWorkspaces
+        .find(
+          (workspace) =>
+            workspaceToOrganizationId(workspace.id) === workspaceId,
+        )
+        ?.roles?.some((role) => role.includes('owner'))
+        ? t('sidebar.workspacePicker.roleOwner')
+        : t('sidebar.workspacePicker.roleMember');
+
     const teamWorkspaces = (organizationData?.organizations ?? []).flatMap(
       (org) => {
         if (!org.id) return [];
@@ -138,7 +153,7 @@ export default function Teams(props: TeamsProps) {
             id: workspaceId,
             type: 'team' as const,
             workspaceId,
-            role: t('sidebar.workspacePicker.roleMember'),
+            role: roleIn(workspaceId),
             status: t('sidebar.workspacePicker.isolatedResources'),
             description:
               org.description ||
@@ -182,6 +197,7 @@ export default function Teams(props: TeamsProps) {
   }, [
     debouncedWorkspaceSearchQuery,
     organizationData?.organizations,
+    profileWorkspaces,
     selectedProfileWorkspace,
     t,
   ]);
