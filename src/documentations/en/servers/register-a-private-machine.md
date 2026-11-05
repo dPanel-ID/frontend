@@ -39,13 +39,14 @@ The server now appears on your [servers page](/servers) with a **Private** badge
 
 | You can | Not yet |
 | --- | --- |
-| See CPU, memory and disk usage | Open the browser terminal |
-| Browse and edit files | Deploy automatically on every GitHub push |
+| See CPU, memory and disk usage | Deploy automatically on every GitHub push |
+| Browse and edit files | |
 | Start, stop and restart services | |
 | Read logs | |
 | Manage Linux users | |
 | Install modules such as MariaDB, Redis or Docker | |
 | Build and deploy applications | |
+| Open a terminal in the browser or with `dnocs server exec` | |
 
 ## How modules and apps get installed
 

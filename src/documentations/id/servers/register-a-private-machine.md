@@ -39,13 +39,14 @@ Server kini muncul di [halaman server](/servers) dengan label **Privat**.
 
 | Bisa | Belum |
 | --- | --- |
-| Melihat pemakaian CPU, memori, dan disk | Membuka terminal di browser |
-| Menjelajahi dan mengubah file | Deploy otomatis setiap ada push ke GitHub |
+| Melihat pemakaian CPU, memori, dan disk | Deploy otomatis setiap ada push ke GitHub |
+| Menjelajahi dan mengubah file | |
 | Menjalankan, menghentikan, dan memulai ulang layanan | |
 | Membaca log | |
 | Mengelola pengguna Linux | |
 | Memasang modul seperti MariaDB, Redis, atau Docker | |
 | Build dan deploy aplikasi | |
+| Membuka terminal di browser atau dengan `dnocs server exec` | |
 
 ## Cara modul dan aplikasi dipasang
 

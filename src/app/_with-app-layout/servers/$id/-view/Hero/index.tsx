@@ -86,7 +86,8 @@ export default guard(function Hero() {
   const name = serverDisplayName(server);
   const status = server.state.status;
   const busy = status === 'progress';
-  // A private server has no public IP: no terminal, no SSH connection.
+  // A private server has no public IP or SSH: its terminal runs through the
+  // agent, and it has no connection details to edit.
   const isPrivate = isPrivateServer(server);
   const accent = isCloudServer(server) ? FLOW_ACCENTS.sky : FLOW_ACCENTS.violet;
   const sshUser = server.ssh.defaultUser || 'root';
@@ -145,25 +146,23 @@ export default guard(function Hero() {
               onClick={handleClickRefresh}
             />
             {!isPrivate && (
-              <>
-                <ActionIcon
-                  icon={PencilIcon}
-                  title={t('edit')}
-                  disabled={busy}
-                  onClick={() => emit('@servers::detail/server-edit', null)}
-                />
-                <Button
-                  buttonStyle="outline"
-                  buttonColor="secondary"
-                  size="sm"
-                  title={sshHint}
-                  onClick={() => setIsTerminalOpen(true)}
-                >
-                  <TerminalIcon />
-                  {t('connectSsh')}
-                </Button>
-              </>
+              <ActionIcon
+                icon={PencilIcon}
+                title={t('edit')}
+                disabled={busy}
+                onClick={() => emit('@servers::detail/server-edit', null)}
+              />
             )}
+            <Button
+              buttonStyle="outline"
+              buttonColor="secondary"
+              size="sm"
+              title={isPrivate ? t('privateHint') : sshHint}
+              onClick={() => setIsTerminalOpen(true)}
+            >
+              <TerminalIcon />
+              {t('connectSsh')}
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
