@@ -27,7 +27,7 @@ import FormItemFromBranch from './GitBranch';
 
 /** What can change about an application, then what is fixed and why. */
 export default function Forms() {
-  const { form, status, fixed } = useApplicationEditModel();
+  const { status, fixed } = useApplicationEditModel();
   const t = useDevetekTranslations('sidepanel.editApplication');
 
   if (status === 'failed') {
@@ -62,24 +62,7 @@ export default function Forms() {
       <SectionAutoDeploy />
       <SectionBuild />
 
-      <Section
-        icon={FileTextIcon}
-        title={t('description.title')}
-        description={t('description.description')}
-      >
-        <Field
-          label={t('description.label')}
-          htmlFor="application-edit-description"
-        >
-          <Input
-            id="application-edit-description"
-            autoComplete="off"
-            maxLength={200}
-            placeholder={t('description.placeholder')}
-            {...form.register('description')}
-          />
-        </Field>
-      </Section>
+      <SectionDescription />
 
       <SectionFixed />
     </form>
@@ -142,6 +125,37 @@ function SectionAutoDeploy() {
           {t('summary', { branch, count: serverCount })}
         </p>
       )}
+    </Section>
+  );
+}
+
+function SectionDescription() {
+  const { form } = useApplicationEditModel();
+  const t = useDevetekTranslations('sidepanel.editApplication.description');
+  // Controlled, not form.register: the stored value arrives after the panel
+  // opens, and a registered input kept showing the empty starting value.
+  const { field } = useController({
+    control: form.control,
+    name: 'description',
+  });
+
+  return (
+    <Section
+      icon={FileTextIcon}
+      title={t('title')}
+      description={t('description')}
+    >
+      <Field label={t('label')} htmlFor="application-edit-description">
+        <Input
+          id="application-edit-description"
+          autoComplete="off"
+          maxLength={200}
+          placeholder={t('placeholder')}
+          value={field.value ?? ''}
+          onChange={field.onChange}
+          onBlur={field.onBlur}
+        />
+      </Field>
     </Section>
   );
 }
