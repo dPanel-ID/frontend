@@ -34,7 +34,9 @@ Open **Applications** and press **Create Application**. The form has five steps.
 3. The module's options open beside the list. Required fields are marked. Check them, then press **Save options**.
 4. Press **Continue**.
 
-If a module is already on the server, it appears under **Installed on selected server**. Select it there to reuse it instead of installing it again.
+A **module** is a piece of software dPanel installs on the server for you, such as a language runtime or a database. See the [Glossary](../getting-started/glossary.md).
+
+If a module is already on the server, it appears under **Installed on selected server**. Select it there to reuse it instead of installing it again. Databases you created inside MariaDB or PostgreSQL, such as **PostgreSQL Database**, are not listed: they belong to their database server, not to the application. To give the application a database, create one on the server first, then pass its details as runtime variables in step 4. See [Create a database for an application](../servers/install-software.md#create-a-database-for-an-application).
 
 ![Step 2 of the form, with the server selected and the Go module added, showing its Go Version option](../../assets/applications/apps-create-server-modules.webp)
 
@@ -71,11 +73,13 @@ Check the summary: application, repository, branch, server, commands, port, and 
 
 A dialog confirms **Successfully created your app!** Press **OK** to go back to the list. dPanel then:
 
-1. Creates a playbook for this application, and installs the modules you picked.
+1. Creates a playbook for this application (the list of setup steps its worker runs), and installs the modules you picked.
 2. Clones the branch on the server and runs the build steps.
 3. Installs the result and starts it as a service.
 
 The application shows **Building** until the release finishes, then **Running**. Open it to follow the build, and see [Deployments and rollback](./deployments-and-rollback.md).
+
+You can also ask **Ask dPanel** to do this for you; see [Prompt cookbook](../ai/prompt-cookbook.md).
 
 :::note[Give it a public address]
 A new application listens on its port on the server. To serve it on a domain with HTTPS, put a load balancer in front of it. See [Load balancers](../networking/load-balancers.md).
@@ -102,6 +106,14 @@ Only servers that are **Ready** can host an application. A server that is still 
 ### Can I deploy from a GitHub organisation?
 
 Yes. Install the dnocs-id GitHub App on the organisation with **Add GitHub account**, and it appears under **GitHub team**. See [Connect GitHub](../getting-started/connect-github.md#add-a-github-organisation).
+
+### Where is my database in the dependency list?
+
+It is not a dependency. Pick the database server, such as **MariaDB** or **PostgreSQL**, if the application needs it on the same server. The databases you created inside it are not listed; connect to them with runtime variables. See [Create a database for an application](../servers/install-software.md#create-a-database-for-an-application).
+
+### How long can a build take?
+
+20 minutes by default. A slow build can get up to 3 hours. See [Build timeout](./build-timeout.md).
 
 ### How do I give the application a domain with HTTPS?
 

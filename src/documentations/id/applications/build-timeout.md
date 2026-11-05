@@ -7,6 +7,8 @@ sidebar_icon: timer
 
 dPanel menghentikan build setelah **20 menit** secara bawaan, dan Anda bisa menaikkan batas itu per aplikasi hingga 3 jam dengan `build.timeout`. Setiap build dan rilis berjalan sebagai satu pekerjaan: clone, menyiapkan runtime, langkah build, lalu menjalankan layanan.
 
+**Build** adalah pekerjaan yang mengubah repositori Anda menjadi sesuatu yang bisa dijalankan, misalnya dengan mengompilasinya. Lihat [Glosarium](../getting-started/glossary.md).
+
 Sebagian besar aplikasi selesai jauh sebelum itu. Build yang banyak mengompilasi, misalnya image Docker dengan banyak ekstensi PHP di server kecil, bisa tidak sempat. Saat batasnya tercapai, build gagal dan log-nya berakhir dengan `context deadline exceeded`.
 
 ## Memberi build waktu lebih
@@ -29,3 +31,17 @@ Formulir **Buat aplikasi baru** dan **Update Aplikasi** belum punya kolom untuk 
 - Baca dulu **Log** build yang gagal. Langkah yang macet menunggu input juga gagal dengan cara yang sama, dan waktu tambahan tidak akan membantu.
 - Coba server yang lebih besar. Build yang butuh satu jam di ukuran terkecil sering selesai dalam hitungan menit di ukuran berikutnya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
 - Lihat seluruh keluaran build di [Rilis dan rollback](./deployments-and-rollback.md#membaca-log-build).
+
+## Pertanyaan yang sering diajukan
+
+### Berapa lama build terpanjang yang diizinkan dPanel?
+
+3 jam. Isi `build.timeout: 3h`. Nilai yang lebih panjang ditolak saat build dimulai.
+
+### Apakah batas waktunya termasuk menjalankan layanan?
+
+Ya. Batasnya mencakup seluruh pekerjaan: clone, menyiapkan runtime, langkah build, dan menjalankan layanan.
+
+### Bisakah batas waktunya diatur di formulir web?
+
+Belum. Tulis `build.timeout` di definisi `.devetek/*.yml` dan kirimkan dengan `dnocs application deploy --definition`.

@@ -44,3 +44,23 @@ Tekan tombolnya dan masuk lagi ke GitHub. Tidak ada yang lain berubah. Aplikasi 
 ## Langkah berikutnya
 
 Buat aplikasi pertama Anda. Lihat [Cara kerja aplikasi](../applications/overview.md) dan [Membuat aplikasi](../applications/create-an-application.md).
+
+Anda juga bisa bertanya kepada **Ask dPanel** repositori dan branch mana yang bisa dilihatnya, atau memintanya men-deploy salah satunya; lihat [Prompt cookbook](../ai/prompt-cookbook.md).
+
+## Pertanyaan yang sering diajukan
+
+### Apakah dPanel mengubah kode saya di GitHub?
+
+Tidak. dPanel hanya membaca repositori dan branch Anda untuk membangunnya di server. dPanel tidak melakukan push.
+
+### Apakah GitHub harus dihubungkan di setiap ruang kerja?
+
+Tidak, cukup sekali per akun dPanel. Semua ruang kerja yang Anda ikuti memakai tautan yang sama.
+
+### Repositori saya privat. Bisakah dPanel men-deploy-nya?
+
+Bisa, selama akun GitHub yang Anda hubungkan, atau GitHub App dnocs-id di organisasi tersebut, bisa membacanya.
+
+### Apa yang terjadi pada aplikasi saya kalau GitHub terputus?
+
+Aplikasi tetap berjalan. Hanya pembacaan repositori dan branch yang berhenti, jadi Anda tidak bisa memulai build baru sampai GitHub terhubung lagi.

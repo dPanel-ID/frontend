@@ -6,7 +6,7 @@ sidebar_icon: rocket
 sidebar_label: Apa itu dPanel?
 ---
 
-dPanel - dNocs (distributed Node & Operations Control system) adalah panel kontrol server berbasis web. dPanel membuat server Ubuntu di akun cloud milik Anda sendiri atau menghubungkan VPS yang sudah Anda jalankan, lalu men-deploy aplikasi Anda dari GitHub, menempatkannya di belakang load balancer HTTPS, mengelola record DNS-nya, dan menampilkan log-nya. Semuanya dari browser.
+dPanel - dNocs (distributed Node & Operations Control system) adalah panel kontrol server berbasis web: situs tempat Anda mengelola server sendiri dengan mengklik, bukan mengetik perintah. dPanel membuat server Ubuntu di akun cloud milik Anda sendiri atau menghubungkan VPS yang sudah Anda jalankan, lalu men-deploy aplikasi Anda dari GitHub, menempatkannya di belakang load balancer HTTPS, mengelola record DNS-nya, dan menampilkan log-nya. Semuanya dari browser.
 
 ## Untuk siapa
 
@@ -18,16 +18,18 @@ Anda tidak memerlukan terminal di komputer sendiri. dPanel masuk ke server Anda 
 
 ## Apa yang dilakukan dPanel
 
-| Bidang        | Yang bisa Anda lakukan                                                                                                                                                                           |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Server        | Membuat VM di penyedia cloud, atau menghubungkan server Ubuntu atau Debian apa pun lewat SSH. Melihat CPU, memori, dan disk secara langsung, layanan systemd, user, port terbuka, file, dan log. |
-| Software      | Memasang basis data, runtime, dan web server dari katalog modul yang sudah teruji, misalnya MariaDB, Go, atau Caddy.                                                                             |
-| Aplikasi      | Membangun repositori GitHub di server Anda, menjalankannya sebagai layanan systemd, menyimpan setiap build, dan rollback dalam satu langkah.                                                     |
-| Load balancer | Memublikasikan aplikasi di sebuah domain dengan sertifikat HTTPS Let's Encrypt gratis yang diperpanjang otomatis.                                                                                |
-| Domain        | Mengelola record DNS domain yang di-host di Cloudflare atau DigitalOcean.                                                                                                                        |
-| Log           | Membaca log aplikasi, load balancer, build, dan server, mencarinya, dan mengunduhnya hingga 10 hari ke belakang.                                                                                 |
-| Tim           | Berbagi ruang kerja dengan tim dan memberi setiap orang peran, dari Viewer sampai Owner.                                                                                                         |
-| Asisten       | Bertanya tentang infrastruktur Anda dalam bahasa sehari-hari lewat [Tanya dPanel](./ask-dpanel.md).                                                                                              |
+| Bidang        | Yang bisa Anda lakukan                                                                                                                                                                                                           |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Server        | Membuat VM di penyedia cloud, atau menghubungkan server Ubuntu atau Debian apa pun lewat SSH. Melihat CPU, memori, dan disk secara langsung, layanan systemd, user, port terbuka, file, dan log, serta mengatur firewall server. |
+| Software      | Memasang basis data, runtime, dan web server dari katalog modul yang sudah teruji, misalnya MariaDB, Go, atau Caddy.                                                                                                             |
+| Aplikasi      | Membangun repositori GitHub di server Anda, menjalankannya sebagai layanan systemd, menyimpan setiap build, dan rollback dalam satu langkah.                                                                                     |
+| Load balancer | Memublikasikan aplikasi di sebuah domain dengan sertifikat HTTPS Let's Encrypt gratis yang diperpanjang otomatis.                                                                                                                |
+| Domain        | Mengelola record DNS domain yang di-host di Cloudflare atau DigitalOcean.                                                                                                                                                        |
+| Log           | Membaca log aplikasi, load balancer, build, dan server, mencarinya, dan mengunduhnya hingga 10 hari ke belakang.                                                                                                                 |
+| Cluster       | Mengelompokkan server, lalu menjadikan grup itu cluster Kubernetes dengan k3s atau RKE2.                                                                                                                                         |
+| Tim           | Berbagi ruang kerja dengan tim dan memberi setiap orang peran, dari Viewer sampai Owner.                                                                                                                                         |
+| Worker        | Menjalankan pekerjaan ruang kerja Anda di worker bersama milik dPanel, atau di worker pribadi yang Anda jalankan sendiri.                                                                                                        |
+| Asisten       | Bertanya dalam bahasa sehari-hari, atau membiarkan [Ask dPanel](../ai/overview.md) menyiapkan perubahan untuk Anda setujui.                                                                                                      |
 
 ## Penyedia dan sistem yang didukung
 
@@ -55,13 +57,13 @@ Anda tetap punya akses penuh ke mesinnya. dPanel bekerja lewat SSH dan alat stan
 
 ## Cara memulai
 
-1. [Masuk](./sign-in.md) dan pilih [ruang kerja](./workspaces.md).
-2. Buat [kunci SSH, dan hubungkan akun cloud](./ssh-keys-and-cloud-projects.md) kalau Anda ingin dPanel membuat server.
-3. [Buat server cloud](../servers/cloud-providers/create-a-cloud-server.md) atau [hubungkan server Anda sendiri](../servers/connect-your-own-server.md).
-4. [Hubungkan GitHub](./connect-github.md) dan [buat aplikasi](../applications/create-an-application.md).
-5. Beri aplikasi itu domain dengan [load balancer](../networking/load-balancers.md).
+Ikuti [Langkah pertama Anda](./first-steps.md): masuk, pilih ruang kerja, siapkan server, deploy aplikasi pertama lewat tutorial, lalu pasang di domain Anda. Istilah baru dijelaskan di [Glosarium](./glossary.md).
 
 ## Pertanyaan yang sering diajukan
+
+### Apakah ada tema gelap?
+
+Ada. Tekan ikon bulan di bagian bawah sidebar untuk berganti antara terang dan gelap. Layanan dPanel lain di domain yang sama, misalnya database manager, ikut memakai tema yang Anda pilih.
 
 ### Apa kepanjangan dNocs?
 

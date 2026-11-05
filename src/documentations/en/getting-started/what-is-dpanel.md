@@ -6,7 +6,7 @@ sidebar_icon: rocket
 sidebar_label: What is dPanel?
 ---
 
-dPanel - dNocs (distributed Node & Operations Control system) is a web-based server control panel. It launches Ubuntu servers in your own cloud account or connects a VPS you already run, then deploys your applications from GitHub, puts them behind an HTTPS load balancer, manages their DNS records and shows their logs, all from the browser.
+dPanel - dNocs (distributed Node & Operations Control system) is a web-based server control panel: a website where you run your own servers by clicking instead of typing commands. It launches Ubuntu servers in your own cloud account or connects a VPS you already run, then deploys your applications from GitHub, puts them behind an HTTPS load balancer, manages their DNS records and shows their logs, all from the browser.
 
 ## Who it is for
 
@@ -18,16 +18,18 @@ You need no terminal on your own computer. dPanel signs in to your servers over 
 
 ## What dPanel does
 
-| Area           | What you can do                                                                                                                                                       |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Servers        | Launch a VM at a cloud provider, or connect any Ubuntu or Debian server over SSH. See live CPU, memory and disk, systemd services, users, open ports, files and logs. |
-| Software       | Install databases, runtimes and web servers from a catalogue of tested modules, such as MariaDB, Go or Caddy.                                                         |
-| Applications   | Build a GitHub repository on your server, run it as a systemd service, keep every build, and roll back in one step.                                                   |
-| Load balancers | Publish an application on a domain with a free Let's Encrypt HTTPS certificate, renewed for you.                                                                      |
-| Domains        | Manage the DNS records of a domain hosted at Cloudflare or DigitalOcean.                                                                                              |
-| Logs           | Read application, load balancer, build and server logs, search them, and download up to 10 days back.                                                                 |
-| Teams          | Share a workspace with your team and give each person a role, from Viewer to Owner.                                                                                   |
-| Assistant      | Ask questions about your infrastructure in plain language with [Ask dPanel](./ask-dpanel.md).                                                                         |
+| Area           | What you can do                                                                                                                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Servers        | Launch a VM at a cloud provider, or connect any Ubuntu or Debian server over SSH. See live CPU, memory and disk, systemd services, users, open ports, files and logs, and manage the server's firewall. |
+| Software       | Install databases, runtimes and web servers from a catalogue of tested modules, such as MariaDB, Go or Caddy.                                                                                           |
+| Applications   | Build a GitHub repository on your server, run it as a systemd service, keep every build, and roll back in one step.                                                                                     |
+| Load balancers | Publish an application on a domain with a free Let's Encrypt HTTPS certificate, renewed for you.                                                                                                        |
+| Domains        | Manage the DNS records of a domain hosted at Cloudflare or DigitalOcean.                                                                                                                                |
+| Logs           | Read application, load balancer, build and server logs, search them, and download up to 10 days back.                                                                                                   |
+| Clusters       | Group servers, and turn a group into a Kubernetes cluster with k3s or RKE2.                                                                                                                             |
+| Teams          | Share a workspace with your team and give each person a role, from Viewer to Owner.                                                                                                                     |
+| Workers        | Run your workspace's jobs on dPanel's shared workers, or on private workers you run yourself.                                                                                                           |
+| Assistant      | Ask questions in plain language, or let [Ask dPanel](../ai/overview.md) prepare changes for you to approve.                                                                                             |
 
 ## Supported providers and systems
 
@@ -55,13 +57,13 @@ You keep full access to the machine. dPanel works through SSH and standard Ubunt
 
 ## How to start
 
-1. [Sign in](./sign-in.md) and pick a [workspace](./workspaces.md).
-2. Create an [SSH key, and connect a cloud account](./ssh-keys-and-cloud-projects.md) if you want dPanel to launch a server.
-3. [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md) or [connect your own](../servers/connect-your-own-server.md).
-4. [Connect GitHub](./connect-github.md) and [create an application](../applications/create-an-application.md).
-5. Give it a domain with a [load balancer](../networking/load-balancers.md).
+Follow [Your first steps](./first-steps.md): sign in, pick a workspace, get a server, deploy your first app with a tutorial, and put it on your domain. New words are explained in the [Glossary](./glossary.md).
 
 ## Frequently asked questions
+
+### Is there a dark theme?
+
+Yes. Press the moon icon at the bottom of the sidebar to switch between light and dark. Other dPanel services on the same domain, such as the database manager, follow the theme you pick.
 
 ### What does dNocs stand for?
 

@@ -5,7 +5,7 @@ sidebar_position: 2
 sidebar_icon: building-2
 ---
 
-A workspace in dPanel is the boundary around a set of servers, applications, load balancers, domains, cloud accounts and SSH keys. You only see what belongs to the workspace you are in, and you switch workspace from the top of the sidebar.
+A workspace in dPanel is the boundary (a separate box) around a set of servers, applications, load balancers, domains, cloud accounts and SSH keys. You only see what belongs to the workspace you are in, and you switch workspace from the top of the sidebar.
 
 ## Two kinds of workspace
 
@@ -21,10 +21,10 @@ Every account has a personal workspace. A team workspace is the same thing as a 
 The current workspace is shown at the top of the sidebar, under the dnocs logo.
 
 1. Press the workspace name at the top of the sidebar.
-2. In **Select workspace**, find the one you want. The tabs **Recent**, **All**, **Personal** and **Teams** narrow the list, and **Search workspaces** finds one by name.
+2. In **Select workspace**, find the one you want. The tabs **All**, **Personal** and **Teams** narrow the list, and **Search workspaces** finds one by name, in any letter case. The workspace you are in is marked **Current**.
 3. Press the row. dPanel reloads the data for that workspace.
 
-![The Select workspace dialog listing a personal and a team workspace](../../assets/getting-started/workspace-picker.webp 'Select workspace lists every workspace you belong to, with your role in each.')
+![The Select workspace dialog listing the personal workspace and two team workspaces, with the current one marked](../../assets/getting-started/workspace-picker.webp 'Select workspace lists every workspace you belong to, with your role in each.')
 
 dPanel remembers your choice in this browser. The next time you open dPanel here, you are in the same workspace.
 
@@ -40,3 +40,17 @@ Switching workspace changes what every page shows. If a server or application se
 ## A resource stays in its workspace
 
 A server, application, load balancer, domain, cloud account or SSH key stays in the workspace it was created in. dPanel does not move resources between workspaces, so switch to the right workspace before you create something. To share your work with other people, create it in a [team workspace](../teams/teams.md).
+
+## Frequently asked questions
+
+### Where do I find my personal workspace?
+
+At the top of **Select workspace**, named **Personal workspace**, or under the **Personal** tab. Every account has one.
+
+### Can I move a server or application to another workspace?
+
+No. Resources stay in the workspace they were created in. Create the resource again in the right workspace and delete the old one.
+
+### Why does switching workspace change the Workers card on my profile?
+
+Each workspace chooses where its jobs run, on dPanel's shared workers or on private workers. The profile shows the choice for the workspace you are in. See [Workers](../workers/overview.md).

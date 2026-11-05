@@ -7,6 +7,8 @@ sidebar_icon: timer
 
 dPanel stops a build after **20 minutes** by default, and you can raise the limit per application up to 3 hours with `build.timeout`. Every build and release runs as one job: clone, runtime setup, build steps and service start.
 
+A **build** is the job that turns your repository into something that can run, for example by compiling it. See the [Glossary](../getting-started/glossary.md).
+
 Most applications finish well inside that. A build that compiles a lot, such as a Docker image with many PHP extensions on a small server, may not. When the limit is reached the build fails, and its log ends with `context deadline exceeded`.
 
 ## Give a build more time
@@ -29,3 +31,17 @@ The **Create Application** and **Update Application** forms have no field for th
 - Read the failed build's **Logs** first. A step that hangs waiting for input fails the same way, and more time will not help.
 - Try a bigger server. A build that takes an hour on the smallest size often takes minutes on the next one. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
 - See all of a build's output in [Deployments and rollback](./deployments-and-rollback.md#read-a-builds-logs).
+
+## Frequently asked questions
+
+### What is the longest build dPanel allows?
+
+3 hours. Set `build.timeout: 3h`. Anything longer is refused when the build starts.
+
+### Does the timeout include starting the service?
+
+Yes. The limit covers the whole job: clone, runtime setup, build steps and service start.
+
+### Can I set the timeout in the web form?
+
+Not yet. Put `build.timeout` in a `.devetek/*.yml` definition and pass it with `dnocs application deploy --definition`.

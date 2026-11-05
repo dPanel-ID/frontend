@@ -32,3 +32,17 @@ Penyedia mana pun yang Anda pakai, server yang jadi menjalankan Ubuntu 24.04 LTS
 - Baca [Kredensial cloud dan keamanan](./cloud-credentials-security.md) sekali. Di sana dijelaskan apa yang disimpan dPanel dan apa yang terjadi kalau kunci dicabut, serta cara menggantinya.
 
 Peluncurannya sendiri sama untuk semua penyedia: [Membuat server cloud](./create-a-cloud-server.md).
+
+## Pertanyaan yang sering diajukan
+
+### Penyedia mana yang sebaiknya saya pilih?
+
+Yang akunnya sudah Anda punya. Setelah server menyala, dPanel bekerja sama saja di semua penyedia. Kalau belum punya akun di mana pun, penyedia mana saja cocok untuk server pertama.
+
+### Penyedia saya tidak ada di daftar. Bisakah saya tetap memakai dPanel?
+
+Bisa. Buat mesinnya sendiri di penyedia Anda, lalu [hubungkan server Anda](../connect-your-own-server.md) lewat SSH.
+
+### Apakah saya membayar mesinnya ke dPanel?
+
+Tidak. Penyedia menagih mesinnya langsung kepada Anda; dPanel tidak menjual ulang mesin.

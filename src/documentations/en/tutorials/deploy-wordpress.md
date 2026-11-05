@@ -1,6 +1,6 @@
 ---
 title: Deploy WordPress with MariaDB
-description: From an empty account to a WordPress site on your own domain with HTTPS: launch a server, install MariaDB, PHP and FrankenPHP, create the database, deploy and publish.
+description: Go from an empty dPanel account to a WordPress site on your domain with HTTPS: launch a server, install MariaDB, PHP and FrankenPHP, deploy and publish.
 sidebar_position: 2
 sidebar_icon: rocket
 sidebar_label: WordPress
@@ -11,7 +11,7 @@ This tutorial takes you from an empty dPanel account to a WordPress site answeri
 It takes about 40 minutes, most of it waiting for the server and the installs. Every step happens in the dPanel web app; you never need SSH.
 
 :::tip[New to servers?]
-Read [How a website runs on your server](./how-a-website-runs.md) first. It explains every word this page uses, such as module, build, port and load balancer, in a few minutes.
+Read [How a website runs on your server](./how-a-website-runs.md) first. It explains every word this page uses, such as module, build, port and load balancer, in a few minutes. The [Glossary](../getting-started/glossary.md) has the rest.
 :::
 
 ## What you need first
@@ -97,11 +97,11 @@ dPanel clones the repository on the server, runs the build and starts WordPress 
 
 ## Step 5: Publish it on your domain with HTTPS
 
-1. Open **Load Balancers** and press **Create a load balancer**.
-2. **Gateway**: select the same server. Under **Web server engine**, pick **Caddy Server** and press **Install** if it is not installed yet.
-3. **Domain and HTTPS**: choose **Managed**, type the **Subdomain** (for example `blog`), and **Select domain**. Keep **HTTP / HTTPS** and leave **HTTPS** on.
-4. **Routing**: keep **L7**. In the first rule, set **Type** to **Application**, **Matching Path** to `/*`, and pick the **WordPress** application.
-5. When the review panel reads **Ready to create**, press **Create load balancer**.
+1. Open **Load Balancers** and press **Create a load balancer**. The form has four steps: **Gateway**, **Domain**, **Routing** and **Review**.
+2. **Gateway**: under **Gateway server**, select the same server. Under **Web server engine**, pick **Caddy Server** and press **Install** if it is not installed yet.
+3. **Domain**: under **Domain Name**, choose **Managed**, type the **Subdomain** (for example `blog`), and **Select domain**.
+4. **Routing**: keep **L7** under **Routing mode**, and **HTTP / HTTPS** with **HTTPS** on under **Protocol and HTTPS**. In the first rule, set **Type** to **Application**, **Matching Path** to `/*`, and pick the **WordPress** application.
+5. **Review**: when the review panel reads **Ready to create**, press **Create load balancer**.
 
 ![Step 3 of the load balancer form: one rule sending /* to an application](../../assets/networking/lb-create-routing.webp)
 
@@ -109,21 +109,36 @@ dPanel creates the DNS record, configures the gateway and requests a free Let's 
 
 ## When something does not work
 
-| What you see | What to check |
-| --- | --- |
-| A module stays in installing, or fails | Open the server's **Logs**, or ask the assistant why the job failed. Install the module again after fixing the cause. |
-| The build fails | Open the application and read the build log of the failed release. See [Application logs](../applications/application-logs.md). |
+| What you see                               | What to check                                                                                                                                                                  |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| A module stays in installing, or fails     | Open the server's **Logs**, or ask the assistant why the job failed. Install the module again after fixing the cause.                                                          |
+| The build fails                            | Open the application and read the build log of the failed release. See [Application logs](../applications/application-logs.md).                                                |
 | "Error establishing a database connection" | The four `WORDPRESS_DB_*` variables must match the database from step 3. Fix them under the application's settings, then deploy again: a change applies from the next release. |
-| The domain does not answer | Wait a few minutes for DNS and the certificate. Check the load balancer's detail page and its logs. |
+| The domain does not answer                 | Wait a few minutes for DNS and the certificate. Check the load balancer's detail page and its logs. A red **Load balancer change failed** banner has **See why it failed**.    |
+| Anything else                              | See [Common problems and fixes](../troubleshooting/faq.md).                                                                                                                    |
 
-## Let the assistant do it
+## Prefer to chat? Do the same with Ask dPanel
 
-[Ask dPanel](../getting-started/ask-dpanel.md) can prepare every step above for you to approve, for example:
+[Ask dPanel](../ai/overview.md), the assistant at the bottom right of every page, can prepare each step above for you to approve, for example:
 
 > On server wordpress-1, create a MariaDB database named wordpress with a user named wp.
 
-It generates the database password and shows it once, on the approval card. When it creates the application, it asks for `WORDPRESS_DB_PASSWORD` as a field on the approval card, so the password never goes into the chat.
+It generates the database password and shows it once, on the approval card. When it creates the application, it asks for `WORDPRESS_DB_PASSWORD` as a field on the approval card, so the password never goes into the chat. More ready-made requests are in the [Prompt cookbook](../ai/prompt-cookbook.md).
 
 ## Clean up
 
 To remove the demo, delete in this order: the load balancer, the application, then the server. See [Load balancers](../networking/load-balancers.md#delete-a-load-balancer), [Update or delete an application](../applications/update-or-delete.md) and [Delete a server](../servers/delete-a-server.md). Deleting a cloud server also stops its cost at your provider.
+
+## Frequently asked questions
+
+### Can I use my own WordPress repository instead of the example?
+
+Yes, if it has a build script and a start script that serve WordPress on the port dPanel gives it. The example's `scripts/` folder shows what dPanel needs.
+
+### Do I need a domain to try this?
+
+You need one for step 5, where the load balancer publishes the site with HTTPS. Steps 1 to 4 work without one.
+
+### Why install one module at a time?
+
+dPanel queues installs on a server and runs them one after another. Waiting for each to show **Installed** makes it easy to see which one failed, if any.

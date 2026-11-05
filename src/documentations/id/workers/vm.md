@@ -1,11 +1,11 @@
 ---
 title: Worker VM
-description: Jalankan job dPanel Anda di server atau VM yang Anda kelola. Tambahkan worker VM di dPanel, salin tokennya sekali, lalu jalankan executor dPanel di mesin sebagai service.
+description: Jalankan job dPanel di server atau VM Anda sendiri. Tambahkan worker VM, salin tokennya sekali, lalu jalankan executor dPanel sebagai service.
 sidebar_position: 3
 sidebar_icon: server
 ---
 
-Worker VM adalah server atau VM yang Anda jalankan untuk mengambil job workspace Anda. Worker ini berjalan terus, meminta job ke dPanel, dan menjalankannya ke server Anda lewat SSH. Gunakan saat server Anda hanya bisa dijangkau dari jaringan Anda sendiri.
+Worker VM adalah server atau VM (virtual machine: komputer yang disewa atau dijalankan secara perangkat lunak) yang Anda jalankan untuk mengambil job workspace dPanel Anda. Worker ini berjalan terus, meminta job ke dPanel, dan menjalankannya ke server Anda lewat SSH. Gunakan saat server Anda hanya bisa dijangkau dari jaringan Anda sendiri.
 
 ## Sebelum mulai
 
@@ -90,3 +90,21 @@ Atur `DPANEL_EXECUTOR_SLOTS=3` di file pengaturan agar satu VM menjalankan tiga 
 ## Token hilang?
 
 Tekan **New token** pada worker. Token lama langsung tidak berlaku; masukkan token baru ke `/etc/dpanel-worker.env` lalu restart service dengan `sudo systemctl restart dpanel-worker`.
+
+## Pertanyaan yang sering diajukan
+
+### Mesin apa yang bisa menjadi worker VM?
+
+Server atau VM Linux apa pun, Ubuntu 22.04 atau 24.04, yang bisa menjangkau server Anda lewat SSH dan `https://pawon.devetek.app` lewat HTTPS. Mesinnya boleh berada di jaringan privat Anda.
+
+### Bagaimana saya tahu worker sudah terhubung?
+
+Waktu **Last seen** di kartu **Workers** berubah setelah worker meminta job ke dPanel. Worker yang belum pernah terhubung bertuliskan **Not seen yet**.
+
+### Bisakah saya menambah worker VM dari terminal?
+
+Bisa. `dnocs worker add --type vm --name office --executor-id office-01` mencetak token-nya satu kali. `dnocs worker rotate-token --id <ID worker>` memberinya token baru.
+
+### Apa yang terjadi jika saya menghapus worker VM?
+
+Worker berhenti mengambil job dan token-nya tidak berlaku lagi. Hentikan juga service executor di mesinnya dengan `sudo systemctl disable --now dpanel-worker`.

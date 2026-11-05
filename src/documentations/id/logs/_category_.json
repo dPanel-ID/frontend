@@ -1,6 +1,6 @@
 {
   "label": "Log",
-  "position": 9,
+  "position": 10,
   "description": "Temukan log yang Anda butuhkan, baca, persempit, lalu simpan salinannya.",
   "app": {
     "label": "Buka halaman server",

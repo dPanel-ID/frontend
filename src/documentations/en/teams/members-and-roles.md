@@ -15,7 +15,7 @@ The person needs a dPanel account first. Ask them to sign up, then:
 
 1. Open **Teams** and open the team.
 2. Press **Add Member**.
-3. In **Add New People**, open **Select a user…** and search by username or name.
+3. In **Add New People**, open **Select a user…** and search by username or name. Upper and lower case do not matter.
 4. Under **Workspace roles**, choose what they should get. See the table below. Owner and Admin are **Protected**: only a workspace owner can give them.
 5. Press **Add member**.
 
@@ -73,7 +73,11 @@ Your **Profile** lists every workspace with your role in it. **View active works
 
 ## Resources stay in their workspace
 
-Servers, applications, load balancers, domains, cloud accounts and SSH keys stay in the workspace they were created in. dPanel does not move them between workspaces, so create shared resources in the team workspace from the start. See [Workspaces](../getting-started/workspaces.md).
+Servers, applications, load balancers, domains, cloud accounts and SSH keys stay in the workspace they were created in, so create shared resources in the team workspace from the start. The one exception: a resource in your personal workspace can be moved into a team once, with `dnocs transfer`. See [Teams](./teams.md#can-i-move-a-server-from-my-personal-workspace-into-a-team) and [Workspaces](../getting-started/workspaces.md).
+
+## See who did what
+
+Across dPanel, people are shown by name with their avatar: who ran a build, who owns a server or a domain, who did each action in the dashboard's activity. Select a name to open their [public profile](./public-profiles.md).
 
 ## Frequently asked questions
 

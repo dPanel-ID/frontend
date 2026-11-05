@@ -1,80 +1,56 @@
 ---
 title: Ask dPanel (AI assistant)
-description: Ask dPanel is the built-in AI assistant. Ask about your servers, apps, domains and failed jobs in plain language; changes run only after you approve them.
+description: Ask dPanel is the AI assistant built into dPanel. Open it from any page, ask in plain language, and approve the changes it proposes. Start here in two minutes.
 sidebar_position: 6
-sidebar_icon: circle-help
+sidebar_icon: sparkles
 sidebar_label: Ask dPanel
 ---
 
-**Ask dPanel** is the AI assistant built into dPanel. It answers questions about the servers, applications, databases, domains, load balancers, SSH keys, cloud accounts and recent jobs in your current workspace, answers how-to questions from this documentation, and prepares changes for you to approve: launching a server, installing software, creating a database, creating and deploying an application with its environment variables, and putting a load balancer in front of it.
+**Ask dPanel** is the AI assistant built into dPanel. Press **Ask dPanel** at the bottom right of any page, ask a question or describe what you want in plain language, and it answers from your workspace and this documentation. Any change it prepares waits on a card until you press **Approve**.
 
-![The dPanel assistant panel, open beside the dashboard with example questions](../../assets/getting-started/assistant.webp 'The assistant works in your current workspace, with your own access.')
+![The dPanel assistant panel open beside the dashboard, with three example questions](../../assets/getting-started/assistant.webp 'The assistant works in your current workspace, with your own access.')
 
-## Open the assistant
+## Start in two minutes
 
-1. Press **Ask dPanel** at the bottom right of any page. On a phone the button shows only its chat icon.
-2. The **dPanel assistant** panel opens beside the page.
-3. Type in **Ask about your servers, apps, domains…**, or press one of the example questions.
-4. Press Enter to send. Shift+Enter starts a new line.
+1. Press **Ask dPanel** at the bottom right of any page. The **dPanel assistant** panel opens.
+2. Press an example question, such as **Which of my servers are stopped?**, or type your own in **Ask about your servers, apps, domains…**.
+3. Press Enter. While it works, the panel says **Checking dPanel…**.
+4. Read the answer. **Checked:** under it lists what the assistant looked at.
+5. When it proposes a change, read the card marked **Waiting for your approval**, then press **Approve** or **Reject**.
 
-While it works, the panel says **Checking dPanel…**. A longer question can take a minute or two. Under each answer, **Checked:** lists what the assistant looked at, so you can see where the answer came from.
+The full walkthrough, with screenshots, is [Your first AI conversation](../ai/first-conversation.md).
 
-## What to ask
+## What you can ask
 
-The assistant reads dPanel through the same API you use, with your own role. Good questions are specific:
-
-- "Which of my servers are stopped?"
-- "Did any job fail in the last 24 hours?"
-- "List my domains and their DNS providers."
-- "Which application runs on dpanel-web-01, and on which port?"
-- "Why did the last build of My App fail?"
+- "How do I connect my own server?" (answered from the docs, with a link)
+- "Why is application Shop failing on server 145?"
 - "On server 145, create a MariaDB database named wordpress with a user named wp."
-- "Which databases are on server 145? Give me the database manager links."
-- "How do I roll back an application to an earlier build?"
+- "Put application Shop on shop.example.com with HTTPS."
+- "On server 145, allow TCP port 8080 and apply the firewall."
 
-To create an application from a repository that has no `.devetek` definition, tell it the language and version, the build commands and the start command; it asks for them rather than guessing. You don't need to choose a port: dPanel picks a free one on the server when it deploys, and the approval says which.
+More in the [prompt cookbook](../ai/prompt-cookbook.md).
 
-It only sees the workspace you are in. Switch workspace first to ask about another one. See [Workspaces](./workspaces.md).
+## Everything about the assistant
 
-## Approve or reject a change
+The [AI assistant](../ai/overview.md) section covers it in full:
 
-When you ask for a change, such as creating an application, releasing a build, creating a load balancer, installing a module or deleting something, the assistant does not do it straight away. It shows the change in the chat, marked **Waiting for your approval**.
-
-1. Read what it is about to do.
-2. Press **Approve** to run it, or **Reject** to cancel it.
-
-| Status                         | Meaning                                         |
-| ------------------------------ | ----------------------------------------------- |
-| Waiting for your approval      | Nothing has changed yet                         |
-| Approved and started           | dPanel started the change; follow it in the app |
-| Rejected; nothing was changed  | The proposal was dropped                        |
-| Approved, but it did not start | dPanel refused the change; the chat says why    |
-
-Your role still applies: the assistant cannot do anything your account is not allowed to do. See [Members and roles](../teams/members-and-roles.md).
-
-## Passwords and other secrets
-
-Never type a password, token or key in the chat: messages go to the AI service. If you already did, treat that value as exposed. The assistant handles secrets in two ways that keep them out of the conversation:
-
-- **Secrets dPanel generates for you**, such as the root password of a new MariaDB or the password of a new database user, appear once on the approval card after you press **Approve**, under **Generated secrets: save them now**, each with a **Copy** button. dPanel keeps no copy, and closing or reloading the panel hides them for good. You can change a database password later in the database manager.
-- **Secrets you supply**, such as an application's database password variable, appear as fields on the approval card. Type each value there; **Approve** stays disabled until every field is filled. The values go with your approval only and the assistant never sees them.
-
-The assistant itself only ever sees variable names, never values.
-
-## Start over
-
-Press **New conversation** at the top of the panel. dPanel remembers your last conversation per workspace in this browser, so closing the panel does not lose it.
+- [What Ask dPanel is](../ai/overview.md): what it can and cannot do, and how it keeps you safe.
+- [Approve or reject changes](../ai/approvals-and-secrets.md): reading cards, secrets, and what happens when you close the chat.
+- [Diagnose problems with AI](../ai/diagnose-problems.md): let it find why something fails.
+- [Use AI in the terminal](../ai/ai-in-the-terminal.md): `dnocs ai chat` and `dnocs ai approve`.
+- [Use your own AI agent](../ai/your-own-ai-agent.md): Claude Code, Cursor and others, plus `llms.txt`.
+- [AI limits and privacy](../ai/limits-and-privacy.md): what it sees, stores and sends.
 
 ## Frequently asked questions
 
 ### Can the assistant change my servers without asking?
 
-No. Every change it proposes waits for you to press **Approve** in the chat. Questions are answered by reading dPanel only.
+No. Questions only read. Every change waits for you to press **Approve** on its card.
 
 ### Can it see other workspaces or other people's data?
 
 No. It works in your current workspace, with your own access, exactly like the pages you open yourself.
 
-### Why does the panel say the assistant isn't available yet?
+### Should I type passwords in the chat?
 
-dPanel could not reach the assistant service. Press **Check again** after a moment. If you are signed out, the panel asks you to **Sign in** first.
+Never. Messages go to an AI model service. When a change needs a password, the card gives you a field for it instead. See [Approve or reject changes](../ai/approvals-and-secrets.md).

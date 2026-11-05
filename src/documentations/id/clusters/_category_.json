@@ -1,6 +1,6 @@
 {
-  "label": "Grup server & klaster",
-  "position": 3,
+  "label": "Grup & klaster",
+  "position": 5,
   "description": "Kelompokkan server agar bisa ditangani sekaligus, atau jadikan grup sebagai klaster Kubernetes dengan k3s atau RKE2.",
   "app": {
     "label": "Buka grup server",

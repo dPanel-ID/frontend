@@ -1,6 +1,6 @@
 ---
 title: Kubernetes dengan k3s
-description: Buat klaster Kubernetes k3s di server dPanel Anda langkah demi langkah, buka terminal di node-nya, jalankan aplikasi pertama, lalu sajikan di domain Anda dengan HTTPS.
+description: Buat klaster Kubernetes k3s di server dPanel Anda langkah demi langkah, jalankan aplikasi pertama, lalu sajikan di domain Anda dengan HTTPS.
 sidebar_position: 3
 sidebar_icon: rocket
 sidebar_label: Kubernetes dengan k3s
@@ -20,7 +20,7 @@ Anda butuh server yang sudah dikelola dPanel dan berstatus **Ready**. Panduan in
 | kube-k3s-2 | **Agent**        | 2 CPU, 4 GB, Ubuntu 24.04 |
 
 - **Ukuran:** memori 2 GB atau lebih per server. amd64, arm64, atau armhf (Raspberry Pi) bisa semua.
-- **Sistem:** Ubuntu 22.04 atau 24.04.
+- **Sistem:** Ubuntu. Panduan ini diuji di Ubuntu 24.04.
 - **Region yang sama** untuk semua server, tidak masuk grup mana pun, tanpa Docker, k3s, atau RKE2, dan firewall dPanel mati.
 
 Server baru yang diluncurkan dari dPanel sudah memenuhi semuanya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
@@ -183,3 +183,32 @@ Hapus dulu load balancer yang Anda buat untuk klaster itu.
 | Status bertuliskan **Failed**                                    | Buka eksekusi terakhir dari tab **Cluster** untuk membaca galatnya, perbaiki, lalu tekan **Install again**.                                                                       |
 | `kubectl` menolak dengan permission denied                       | Awali perintahnya dengan `sudo k3s kubectl`.                                                                                                                                      |
 | Domain tidak menjawab                                            | Periksa dulu `curl http://127.0.0.1:30080` di kube-k3s-1, lalu status dan **Logs** load balancer.                                                                                 |
+
+## Dari terminal
+
+Klaster yang sama bisa dibuat dengan CLI `dnocs`, memakai ID server dari `dnocs server list`:
+
+```bash
+dnocs cluster create --name kube-k3s --engine k3s --server <ID node Server> --agent <ID node Agent>
+dnocs cluster detail --id <ID klaster>
+```
+
+`dnocs cluster install` memasang ulang setelah gagal, sedangkan `dnocs cluster uninstall` dan `dnocs cluster delete` menghapusnya. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang `dnocs`.
+
+## Pertanyaan yang sering diajukan
+
+### Berapa lama pemasangannya?
+
+Sekitar 10 menit untuk dua server. Wizard boleh ditutup; pemasangan tetap berjalan dan tab **Cluster** menampilkan progresnya.
+
+### Bisakah saya menambah node ke klaster nanti?
+
+Belum. Server dan perannya ditetapkan saat klaster dibuat. Untuk mengubahnya, uninstall dan hapus klasternya, lalu buat yang baru.
+
+### Bagaimana memakai kubectl dari komputer saya sendiri?
+
+Mengunduh kubeconfig belum tersedia. Pakai **Open terminal** di node **Server** dan jalankan `sudo k3s kubectl` di sana.
+
+### Pemasangannya gagal. Lalu bagaimana?
+
+Buka eksekusi terakhir dari tab **Cluster** untuk membaca error-nya, perbaiki penyebabnya, lalu tekan **Install again**. Server, peran, engine, dan versinya tetap sama.

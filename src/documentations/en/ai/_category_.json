@@ -1,0 +1,11 @@
+{
+  "label": "AI assistant",
+  "position": 2,
+  "description": "Ask dPanel in plain language: get answers, diagnose problems, and let the AI assistant prepare changes that run only after you approve them.",
+  "icon": "sparkles",
+  "color": "violet",
+  "app": {
+    "label": "Open the dashboard",
+    "href": "/dashboard"
+  }
+}

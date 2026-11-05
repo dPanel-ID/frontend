@@ -1,11 +1,11 @@
 ---
 title: GitHub Actions worker
-description: Run your dPanel jobs on GitHub Actions in five minutes. Add one short workflow that uses dPanel-ID/worker-action, register the repository in dPanel, and switch to private workers. No secret needed.
+description: Run dPanel jobs on GitHub Actions in five minutes. Register a repository, commit a short workflow using dPanel-ID/worker-action, and switch over.
 sidebar_position: 2
 sidebar_icon: git-branch
 ---
 
-A GitHub Actions worker runs your workspace's jobs in your own GitHub repository. dPanel starts your workflow whenever a job is waiting; each run takes one job, runs it against your server over SSH, and ends. There is no token to copy: the run signs in to dPanel with its GitHub identity token, and dPanel checks that it comes from the repository and workflow you registered.
+A GitHub Actions worker runs your dPanel workspace's jobs in your own GitHub repository. GitHub Actions is GitHub's built-in way to run scripts, called workflows, on GitHub's machines. dPanel starts your workflow whenever a job is waiting; each run takes one job, runs it against your server over SSH, and ends. There is no token to copy: the run signs in to dPanel with its GitHub identity token, and dPanel checks that it comes from the repository and workflow you registered.
 
 ## Before you start
 
@@ -89,11 +89,29 @@ Each job gets its own run, so several jobs run at the same time, up to 10 per wo
 
 ## Troubleshooting
 
-| What you see | Fix |
-| --- | --- |
-| The run fails with "Add 'permissions: id-token: write'" | Add the `permissions` block from the file above. |
-| No run starts when a job is waiting | Install the **dnocs-id** app on the repository, and check the workspace is on **Private workers**. |
-| The run starts but takes no job | The `workspace` value, repository, workflow file or branch differs from what you registered in dPanel. |
-| The job fails to connect to your server | A firewall blocks SSH (port 22) from GitHub's runners. Open port 22 on that server, or use a [VM worker](./vm.md) inside your network. No key is missing: dPanel supplies it. |
+| What you see                                            | Fix                                                                                                                                                                           |
+| ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The run fails with "Add 'permissions: id-token: write'" | Add the `permissions` block from the file above.                                                                                                                              |
+| No run starts when a job is waiting                     | Install the **dnocs-id** app on the repository, and check the workspace is on **Private workers**.                                                                            |
+| The run starts but takes no job                         | The `workspace` value, repository, workflow file or branch differs from what you registered in dPanel.                                                                        |
+| The job fails to connect to your server                 | A firewall blocks SSH (port 22) from GitHub's runners. Open port 22 on that server, or use a [VM worker](./vm.md) inside your network. No key is missing: dPanel supplies it. |
 
 To stop, choose **Shared workers (dPanel)** again, or remove the worker. The workflow file stays in your repository; delete it there if you no longer need it.
+
+## Frequently asked questions
+
+### Does this use my GitHub Actions minutes?
+
+Yes. Each job runs as one workflow run in your repository, so it counts toward that repository's Actions minutes. A public repository's runs are free on GitHub's standard runners.
+
+### Do I need to store a dPanel token in GitHub?
+
+No. The run signs in with GitHub's own identity token. That is why the workflow needs `permissions: id-token: write`.
+
+### Can I register the worker from the terminal?
+
+Yes. `dnocs worker add --type github --name ci --repository owner/name` registers it and prints the workflow file. Add `--workflow` or `--ref` if yours differ from `dpanel-worker.yml` and `main`.
+
+### How many jobs run at once?
+
+Up to 10 per workspace, one job per run. Jobs on the same server still run one after another.

@@ -13,10 +13,10 @@ SSH key adalah sepasang berkas pengganti kata sandi saat komputer masuk ke serve
 
 Anda tidak perlu membuatnya sendiri.
 
-1. Di sidebar, buka **Manajemen Kunci**, lalu **Kunci SSH**.
+1. Di sidebar, di bawah **Backend**, buka **Manajemen Kunci**. Menu ini langsung membuka halaman **Kunci SSH**.
 2. Tekan **Buat kunci SSH**.
-3. Beri nama yang mudah dikenali, misalnya `laptop-kerja`.
-4. Pilih jenis kunci, lalu simpan.
+3. Beri nama yang mudah dikenali, misalnya `laptop-kerja`, lalu pilih jenis kuncinya.
+4. Tekan **Buat kunci SSH** di bagian bawah formulir.
 
 - **Untuk server saat ini** adalah pilihan yang tepat, kecuali ada server yang menolaknya. Kuncinya lebih pendek dan lebih cepat, dan semua Linux modern menerimanya.
 - **Untuk server lama** adalah cadangannya, dan juga menanyakan ukuran kunci.
@@ -46,3 +46,17 @@ Mesin dibuat di dalam akun cloud Anda sendiri, jadi tagihannya langsung dari pen
 ## Langkah berikutnya
 
 Lanjut ke [Membuat server cloud](./cloud-providers/create-a-cloud-server.md). Penjelasan lebih lengkap soal kunci dan akun, termasuk berbagi dengan tim, ada di [SSH key dan akun cloud](../getting-started/ssh-keys-and-cloud-projects.md).
+
+## Pertanyaan yang sering diajukan
+
+### Bisakah saya memakai SSH key yang sudah saya punya?
+
+dPanel membuatkan pasangan kuncinya supaya bagian privatnya tidak pernah keluar dari dPanel. Kalau ingin masuk juga dari komputer sendiri, tambahkan kunci publik Anda ke server; lihat [Terhubung lewat SSH](./connect-over-ssh.md).
+
+### Apakah saya butuh akun cloud untuk mencoba dPanel?
+
+Tidak. [Menghubungkan server Anda](./connect-your-own-server.md) hanya butuh SSH key dan mesin yang bisa dijangkau lewat SSH.
+
+### Bisakah tim saya memakai kunci dan akun cloud yang sama?
+
+Bisa. Kunci dan akun cloud yang dibuat di sebuah workspace bisa dipakai anggotanya. Lihat [SSH key dan akun cloud](../getting-started/ssh-keys-and-cloud-projects.md).

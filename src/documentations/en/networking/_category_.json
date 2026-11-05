@@ -1,6 +1,6 @@
 {
   "label": "Networking",
-  "position": 6,
+  "position": 7,
   "description": "Put a load balancer with HTTPS in front of your applications, and let dPanel manage DNS records for the domains you own.",
   "app": {
     "label": "Open load balancers",

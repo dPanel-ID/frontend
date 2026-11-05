@@ -86,3 +86,17 @@ Ikuti [Membuat server cloud](./create-a-cloud-server.md). Pilih IDCloudHost di l
 - Untuk merotasi kunci, buat kunci baru untuk akun IDCloudHost yang sama, lalu ganti lewat **Perbarui kredensial** pada akun cloud. Lihat [Merotasi kredensial](./cloud-credentials-security.md#merotasi-kredensial).
 - Untuk memutus akses dPanel, hapus kuncinya di halaman API IDCloudHost. Server yang sedang berjalan tetap berjalan. Lihat [apa yang terjadi saat kunci dicabut](./cloud-credentials-security.md#kalau-kredensial-dicabut).
 - Selengkapnya di [Kredensial cloud dan keamanan](./cloud-credentials-security.md).
+
+## Pertanyaan yang sering diajukan
+
+### Siapa yang membayar servernya?
+
+IDCloudHost menagih Anda langsung, karena server berjalan di akun Anda sendiri. dPanel tidak menjual ulang mesin. Hapus server di dPanel kalau sudah selesai, supaya penyedia berhenti menagih. Lihat [Menghapus server](../delete-a-server.md).
+
+### Bisakah saya juga memakai firewall dPanel di server ini?
+
+Bisa. [Firewall](../firewall.md) dPanel berjalan di server itu sendiri, di belakang aturan jaringan milik IDCloudHost, jadi sebuah port harus terbuka di keduanya agar bisa dijangkau.
+
+### Apa yang terjadi pada server saya kalau kredensialnya dicabut?
+
+Server tetap berjalan, tetapi dPanel tidak bisa lagi meluncurkan atau menghapus mesin dengan kredensial itu. Lihat [Kredensial cloud dan keamanan](./cloud-credentials-security.md#kalau-kredensial-dicabut).

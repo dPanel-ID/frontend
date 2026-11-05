@@ -1,0 +1,11 @@
+{
+  "label": "Asisten AI",
+  "position": 2,
+  "description": "Tanya dPanel dengan bahasa sehari-hari: dapatkan jawaban, cari penyebab masalah, dan biarkan asisten AI menyiapkan perubahan yang baru berjalan setelah Anda menyetujuinya.",
+  "icon": "sparkles",
+  "color": "violet",
+  "app": {
+    "label": "Buka dasbor",
+    "href": "/dashboard"
+  }
+}

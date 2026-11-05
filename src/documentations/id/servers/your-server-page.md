@@ -28,9 +28,11 @@ Pilih lencana status untuk melihat arti status tersebut. Selama dPanel menyiapka
 
 ## Modul
 
-Semua yang dipasang dPanel, dengan versi dan statusnya: **Terpasang**, **Memasang**, atau **Gagal**. **Tambah modul** membuka katalog. **Segarkan inventaris** meminta data terbaru dari agen. Lihat [Memasang perangkat lunak](./install-software.md).
+Semua yang dipasang dPanel, satu baris per modul, dengan versi dan statusnya: **Terpasang**, **Memasang**, **Gagal**, atau **Campuran**. **Tambah modul** membuka katalog. **Segarkan inventaris** meminta data terbaru dari agen dan membuang modul yang tidak lagi dilaporkannya. Hitungannya hanya mencakup modul tingkat atas; basis data yang Anda buat di MariaDB atau PostgreSQL ada di tampilan **Kelola** modul tersebut.
 
-![Tab Modul berisi modul yang terpasang beserta statusnya](../../assets/servers/server-modules.webp)
+Beberapa baris punya pintasan: **Buka database** pada MariaDB dan PostgreSQL membuka DB Manager, alat basis data di browser, langsung mengarah ke server ini; **Kelola firewall** pada modul Firewall membuka tampilan [Firewall](./firewall.md). Lihat [Memasang perangkat lunak](./install-software.md).
+
+![Tab Modules berisi modul terpasang, dengan Manage firewall di baris Firewall dan Open database di baris MariaDB](../../assets/servers/server-modules.webp)
 
 ## Layanan
 
@@ -48,11 +50,13 @@ Akun Linux di mesin itu, dengan UID, direktori home, dan shell-nya. **Tambah pen
 
 ## Jaringan
 
-Port mana yang terbuka, proses mana yang memakainya, dari mana koneksi diizinkan, dan statusnya. Buka tab ini kalau ada yang tidak bisa dijangkau. Aplikasi yang sedang mendengarkan port-nya muncul di sini sebagai **LISTEN**. Kolom **Firewall** menunjukkan apakah aturan firewall membuat setiap port bisa dijangkau dari luar.
+Tiga kotak di atas mengganti tampilannya:
 
-Kotak **Firewall** membuka firewall server: aturannya, apakah sudah diterapkan, dan **Tinjau dan terapkan**. Lihat [Firewall](./firewall.md).
+- **Port aktif**: port mana yang terbuka, proses mana yang memakainya, dari mana koneksi datang (**Allow from**), statusnya, dan kolom **Firewall** yang menunjukkan apakah aturan firewall membuat port itu bisa dijangkau dari luar. Aplikasi yang sedang mendengarkan port-nya muncul di sini sebagai **LISTEN**. Buka tampilan ini kalau ada yang tidak bisa dijangkau.
+- **Antarmuka**: kartu jaringan server beserta alamat IPv4 dan IPv6-nya.
+- **Firewall**: apakah firewall **Nyala** atau **Mati**, aturannya, dan **Tinjau dan terapkan**. Lihat [Firewall](./firewall.md).
 
-![Tab Jaringan berisi port yang terbuka](../../assets/servers/server-network.webp)
+![Tab Network pada Active ports: tabel port dengan prosesnya, statusnya dan kolom Firewall berisi Allowed from anywhere atau No allow rule](../../assets/servers/server-network.webp 'Port aktif: 22, 443 dan 3306 diizinkan dari mana saja; sisanya hanya didengarkan di dalam server.')
 
 ## Berkas
 
@@ -81,12 +85,36 @@ Tab ini membaca baris terbaru dari sebuah berkas. Rentang waktu, halaman, dan un
 
 Perubahan yang jarang dibutuhkan, masing-masing dengan penjelasan.
 
-| Kartu          | Tombol           | Fungsinya                                                               |
-| -------------- | ---------------- | ----------------------------------------------------------------------- |
-| Koneksi        | **Edit koneksi** | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel.          |
-| Penyiapan      | **Instal ulang** | Masuk ulang lewat SSH, memasang ulang agen, dan menyegarkan inventaris. |
-| Zona berbahaya | **Hapus server** | Menghapus server. Lihat [Menghapus server](./delete-a-server.md).       |
+| Kartu          | Tombol           | Fungsinya                                                                                                                                           |
+| -------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Koneksi        | **Edit koneksi** | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel.                                                                                      |
+| Penyiapan      | **Instal ulang** | Menjalankan penyiapan server lagi: masuk ulang lewat SSH, memasang ulang agen, dan menyegarkan inventaris. Modul terpasang dan data Anda tetap ada. |
+| Zona berbahaya | **Hapus server** | Menghapus server. Lihat [Menghapus server](./delete-a-server.md).                                                                                   |
 
 **Penyiapan** disembunyikan selama server sedang disiapkan atau dihapus, dan pada server yang sudah dihapus, karena saat itu tidak ada yang bisa dipasang ulang. Server tetap berada di workspace tempat ia dibuat; server tidak bisa dipindahkan ke workspace lain.
 
+Dari terminal, `dnocs server setup --id 140` sama dengan **Instal ulang**. Tambahkan `--force` untuk menjalankannya walaupun server masih berstatus sedang diproses, misalnya saat penyiapan macet. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang `dnocs`.
+
 ![Tab Pengaturan dengan kartu Koneksi, Penyiapan, dan Zona berbahaya](../../assets/servers/server-settings.webp)
+
+## Pertanyaan yang sering diajukan
+
+### Bagaimana cara menemukan server dengan cepat?
+
+Ketik di kotak pencarian di **Servers**. Pencariannya tidak membedakan huruf besar dan kecil, jadi `WEB` menemukan `web-01`.
+
+### Kenapa bagian kepala menampilkan nama seseorang?
+
+**Dibuat oleh** menyebut orang yang menambahkan server, supaya tim tahu harus bertanya ke siapa. Pilih namanya untuk membuka profil publiknya.
+
+### Apa yang diubah Instal ulang di server saya?
+
+Fitur ini masuk ulang lewat SSH, memasang ulang agen dPanel, dan menyegarkan inventaris. Modul, aplikasi, dan data yang terpasang tetap seperti semula.
+
+### Di mana saya membuka basis data yang berjalan di server ini?
+
+Di tab **Modul**, tekan **Buka database** pada baris MariaDB atau PostgreSQL. Lihat [Memasang perangkat lunak](./install-software.md#mengelola-basis-data).
+
+### Kenapa port yang saya buka tidak bisa dijangkau dari luar?
+
+Periksa kolom **Firewall** di **Jaringan → Port aktif**. **Tidak ada aturan izin** berarti firewall memblokirnya; tambahkan aturan di [Firewall](./firewall.md). Periksa juga bahwa programnya mendengarkan di `0.0.0.0`, bukan `127.0.0.1`.
