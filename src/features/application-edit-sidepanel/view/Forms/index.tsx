@@ -241,7 +241,7 @@ function SectionFixed() {
       ),
     },
     { icon: FolderIcon, label: t('workdir'), value: fixed.workdir || '-' },
-    { icon: PlugIcon, label: t('port'), value: fixed.port ?? '-' },
+    { icon: PlugIcon, label: t('port'), value: fixed.port || '-' },
     {
       icon: ServerCogIcon,
       label: t('service'),
