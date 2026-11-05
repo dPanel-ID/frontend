@@ -39,18 +39,19 @@ The server now appears on your [servers page](/servers) with a **Private** badge
 
 | You can | Not yet |
 | --- | --- |
-| See CPU, memory and disk usage | Build and deploy applications (next release) |
-| Browse and edit files | Open the browser terminal |
+| See CPU, memory and disk usage | Open the browser terminal |
+| Browse and edit files | Deploy automatically on every GitHub push |
 | Start, stop and restart services | |
 | Read logs | |
 | Manage Linux users | |
 | Install modules such as MariaDB, Redis or Docker | |
+| Build and deploy applications | |
 
-## How modules get installed
+## How modules and apps get installed
 
-A private machine runs its own installer, so nothing on the internet needs to reach it. The first time you install a module, the agent sets up the installer on the machine (Python and Ansible, about a minute and a half), then the installer runs the job on the machine itself and stops again after 10 quiet minutes. If the machine is off or offline when you start an install, the install waits and then fails; start it again once the machine is back.
+A private machine runs its own installer, so nothing on the internet needs to reach it. The first time you install a module or deploy an app, the agent sets up the installer on the machine (Python and Ansible, about a minute and a half), then the installer runs the job on the machine itself and stops again after 10 quiet minutes. If the machine is off or offline when you start an install, the install waits and then fails; start it again once the machine is back.
 
-A private machine can never have a load balancer or a domain: nothing on the internet can reach it. Apps you run on it are available on your own network.
+A private machine can never have a load balancer or a domain: nothing on the internet can reach it. Apps you deploy to it listen on the machine itself, so you open them on your own network at the machine's address and the app's port, for example `http://192.168.1.20:3000`.
 
 ## Register it again
 
