@@ -29,9 +29,12 @@ import {
 } from '@/shared/presentation/organisms/FlowHero';
 import type { FlowAccent } from '@/shared/presentation/organisms/FlowHero';
 
+import PrivateMachineCard from './PrivateMachineCard';
+
 /**
  * Landing of /servers/create: a clear choice between launching a cloud VM,
- * with live shortcuts per provider, and connecting an existing server.
+ * with live shortcuts per provider, connecting an existing server over SSH,
+ * and registering a machine with no public IP from its own terminal.
  */
 export default function CreateChooser() {
   const t = useDevetekTranslations();
@@ -77,6 +80,8 @@ export default function CreateChooser() {
           </ol>
         </PathCard>
       </div>
+
+      <PrivateMachineCard />
 
       <WhatHappensNext />
     </div>

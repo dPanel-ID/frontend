@@ -85,6 +85,10 @@ export interface MachineV1 {
   id?: number | string;
   hostname?: string;
   address?: string;
+  /** `public` (reached over SSH) or `private` (no public IP; reached only through its agent). */
+  connectivity?: 'public' | 'private' | string;
+  /** A private server's own LAN address, for display only. */
+  lan_address?: string;
   http_port?: string;
   ssh_port?: string;
   organization_id?: string;

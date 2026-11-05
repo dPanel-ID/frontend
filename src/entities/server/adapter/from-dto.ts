@@ -18,7 +18,7 @@ import {
   schemaServerMinimal,
 } from '../rules/schema';
 
-import { ctorCloud, ctorCreator, ctorSpecs } from './ctors';
+import { ctorCloud, ctorCreator, ctorHost, ctorSpecs } from './ctors';
 
 export const toMinimal = createAdapter<DTOs.MachineV1, ServerMinimal>((raw) =>
   schemaServerMinimal.parse({
@@ -36,10 +36,7 @@ export const toServerCard = createAdapter<DTOs.MachineV1, ServerCard>((raw) =>
       httpPort: raw.http_port ? Number(raw.http_port) : undefined,
     },
     cloud: ctorCloud(raw),
-    host: {
-      address: raw.address ?? raw.domain,
-      name: raw.hostname,
-    },
+    host: ctorHost(raw),
     ownership: {
       owner: resolveOwnershipOwner(raw),
       ...resolveOwnershipPerson(raw),
@@ -78,10 +75,7 @@ export const toServerDetail = createAdapter<DTOs.MachineV1, ServerDetail>(
       },
       hostGroupId: raw.host_group_id || undefined,
       cloud: ctorCloud(raw),
-      host: {
-        address: raw.address ?? raw.domain,
-        name: raw.hostname,
-      },
+      host: ctorHost(raw),
       ownership: {
         owner: resolveOwnershipOwner(raw),
         ...resolveOwnershipPerson(raw),

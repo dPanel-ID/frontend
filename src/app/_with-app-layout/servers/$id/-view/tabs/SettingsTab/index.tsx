@@ -11,7 +11,10 @@ import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { canReinstallServer } from '@/entities/server/lib/describeServer';
+import {
+  canReinstallServer,
+  isPrivateServer,
+} from '@/entities/server/lib/describeServer';
 
 import { isMigrateOwnershipVisible } from '@/features/migrate-ownership-modal';
 
@@ -37,23 +40,25 @@ export default function SettingsTab() {
       description={t('description')}
     >
       <div className="grid gap-3 p-4 lg:grid-cols-2">
-        <SettingCard
-          icon={PencilIcon}
-          title={t('connection.title')}
-          description={t('connection.description')}
-          action={
-            <Button
-              buttonStyle="outline"
-              buttonColor="secondary"
-              size="sm"
-              disabled={busy}
-              onClick={() => emit('@servers::detail/server-edit', null)}
-            >
-              <PencilIcon />
-              {t('connection.action')}
-            </Button>
-          }
-        />
+        {server && !isPrivateServer(server) && (
+          <SettingCard
+            icon={PencilIcon}
+            title={t('connection.title')}
+            description={t('connection.description')}
+            action={
+              <Button
+                buttonStyle="outline"
+                buttonColor="secondary"
+                size="sm"
+                disabled={busy}
+                onClick={() => emit('@servers::detail/server-edit', null)}
+              >
+                <PencilIcon />
+                {t('connection.action')}
+              </Button>
+            }
+          />
+        )}
         {server && canReinstallServer(server) && (
           <SettingCard
             icon={RotateCcwIcon}
