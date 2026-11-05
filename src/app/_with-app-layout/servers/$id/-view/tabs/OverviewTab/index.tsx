@@ -10,6 +10,7 @@ import {
   DatabaseIcon,
   GlobeIcon,
   HardHatIcon,
+  HouseIcon,
   KeyRoundIcon,
   Layers3Icon,
   NetworkIcon,
@@ -24,6 +25,7 @@ import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import {
   isCloudServer,
+  isPrivateServer,
   serverProviderLabel,
   serverSystemLabel,
 } from '@/entities/server/lib/describeServer';
@@ -55,6 +57,7 @@ export default function OverviewTab() {
   ]);
 
   const server = responseData(detail);
+  const isPrivate = !!server && isPrivateServer(server);
 
   const [applicationsResponse, refreshApplications] =
     ApiApplication.Find.useGet({
@@ -147,6 +150,7 @@ export default function OverviewTab() {
           tone="sky"
           label={t('loadBalancers')}
           value={overview.loadBalancers}
+          hint={isPrivate ? t('loadBalancersPrivate') : undefined}
           onClick={() =>
             navigate({
               to: '/backend/load-balancers',
@@ -175,21 +179,29 @@ export default function OverviewTab() {
         <Section icon={ServerIcon} title={t('details')}>
           <dl className="divide-y">
             <Row
-              icon={GlobeIcon}
-              label={t('address')}
+              icon={isPrivate ? HouseIcon : GlobeIcon}
+              label={isPrivate ? t('lanAddress') : t('address')}
               value={server?.host.address}
               mono
             />
-            <Row
-              icon={KeyRoundIcon}
-              label={t('ssh')}
-              value={
-                server
-                  ? `${server.ssh.defaultUser || 'root'}@${server.host.address || '-'}:${server.ssh.port || 22}`
-                  : undefined
-              }
-              mono
-            />
+            {isPrivate ? (
+              <Row
+                icon={KeyRoundIcon}
+                label={t('connection')}
+                value={t('connectionPrivate')}
+              />
+            ) : (
+              <Row
+                icon={KeyRoundIcon}
+                label={t('ssh')}
+                value={
+                  server
+                    ? `${server.ssh.defaultUser || 'root'}@${server.host.address || '-'}:${server.ssh.port || 22}`
+                    : undefined
+                }
+                mono
+              />
+            )}
             <Row
               icon={TerminalIcon}
               label={t('system')}

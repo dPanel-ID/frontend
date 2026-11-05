@@ -24,6 +24,8 @@ export interface ApplicationCreateServerOption {
   inventoryRefreshedAt?: string;
   osName?: string;
   osVersion?: string;
+  /** No public IP: reached through its agent; publicIP holds its LAN address. */
+  private?: boolean;
   provider?: string;
   region?: string;
   sshPort?: string;
@@ -67,8 +69,10 @@ export const [ServersStoreProvider, useServersStore] = buildContext(
         servers: (machines ?? [])
           .map((machine) => {
             const {
-              address: publicIP,
+              address,
               agent_version,
+              connectivity,
+              lan_address,
               default_user,
               domain,
               distributor,
@@ -84,6 +88,9 @@ export const [ServersStoreProvider, useServersStore] = buildContext(
               version,
             } = machine;
 
+            // A private server has no public address; show its LAN address.
+            const isPrivate = connectivity === 'private';
+            const publicIP = isPrivate ? lan_address || '-' : address;
             const serverId = Number(id);
             if (!Number.isFinite(serverId) || !hostname || !publicIP) {
               return null;
@@ -100,6 +107,7 @@ export const [ServersStoreProvider, useServersStore] = buildContext(
               inventoryRefreshedAt: inventory_refreshed_at,
               osName: distributor ?? os_family,
               osVersion: version,
+              private: isPrivate,
               provider,
               region,
               sshPort: ssh_port,
