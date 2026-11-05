@@ -105,7 +105,7 @@
       "ownServer": "Own server",
       "type": "Type",
       "privateServer": "Private server, no public IP",
-      "privateServerHint": "This server has no public IP. dPanel reaches it through its agent, so it cannot have load balancers or a browser terminal.",
+      "privateServerHint": "This server has no public IP. dPanel reaches it through its agent, so it cannot have load balancers.",
       "privateBadge": "Private"
     },
     "actions": {
@@ -1350,7 +1350,7 @@
             "badge": "No public IP",
             "title": "Register a private machine",
             "description": "Add a PC, a home server or a VM behind a router. Nothing needs to reach it from the internet: you run one command on the machine, and dPanel talks to it through the agent it installs.",
-            "limits": "You can browse its files, services, logs and usage, install modules such as MariaDB or Docker, and deploy apps that you open on your own network. Load balancers and the browser terminal are not available.",
+            "limits": "You can browse its files, services, logs and usage, open a terminal, install modules such as MariaDB or Docker, and deploy apps that you open on your own network. Load balancers are not available.",
             "steps": {
               "cli": "Install the dnocs command line tool on the machine (Linux with systemd, Intel/AMD or ARM).",
               "signIn": "Sign in with dnocs auth login and pick the workspace the machine belongs to.",
