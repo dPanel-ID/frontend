@@ -23,7 +23,7 @@ export const DOCS_INTRO_EN: DocsIntroCopy = {
       },
       {
         title: 'Deploy your application',
-        text: 'Point dPanel at your Git repository. It builds the release, ships it to the server, and keeps a record of every attempt.',
+        text: 'Point dPanel at your Git repository. It builds the release, ships it to the server, and keeps a record of every attempt. Or ask the built-in AI assistant, Ask dPanel, to set it up with you.',
       },
       {
         title: 'Give it a domain',

@@ -33,3 +33,21 @@ echo "ssh-ed25519 AAAA... you@example.com" >> ~/.ssh/authorized_keys
 ```
 
 Paste your own public key in place of the example. On your machine it is usually `~/.ssh/id_ed25519.pub`.
+
+## Frequently asked questions
+
+### Do I need to install anything to use the browser terminal?
+
+No. **Open terminal** works in the browser with the key dPanel holds.
+
+### Can I run commands as root?
+
+The login user can use `sudo`, so start a command with `sudo` when it needs administrator rights.
+
+### Why does `ssh` from my computer say permission denied?
+
+Your computer's public key is not on the server yet. Add it to `~/.ssh/authorized_keys` as shown above, as the same login user.
+
+### Is there a terminal command instead of the browser?
+
+`dnocs server exec` runs a shell script on a server through dPanel. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install `dnocs`.

@@ -35,3 +35,17 @@ Periksa dua tempat:
 
 1. Daftar **Server**.
 2. Konsol penyedia Anda. dPanel melaporkan apa yang dikatakan penyedia, jadi penghapusan yang gagal sebagian di penyedia akan terlihat di sana.
+
+## Pertanyaan yang sering diajukan
+
+### Kenapa Hapus server ditolak?
+
+Masih ada aplikasi atau load balancer yang memakai server itu, atau server itu adalah node klaster Kubernetes. Hapus semuanya dulu, atau uninstall lalu hapus klasternya. Lihat [Grup server dan klaster](../clusters/overview.md).
+
+### Bisakah server yang sudah dihapus dikembalikan?
+
+Tidak. Disk server cloud dihancurkan di penyedia. Cadangkan apa pun yang Anda perlukan sebelum menghapusnya.
+
+### Apakah menghapus server yang saya hubungkan sendiri akan mengosongkannya?
+
+Tidak. dPanel hanya melupakannya; mesin dan semua isinya tetap berjalan.

@@ -1,5 +1,5 @@
 ---
-title: Server groups and clusters
+title: Groups and clusters
 description: What a server group is in dPanel, the difference between a generic group and a cluster, and what Kubernetes, k3s and RKE2 are, explained in plain words.
 sidebar_position: 1
 sidebar_icon: boxes
@@ -31,7 +31,7 @@ Guides: [Generic groups](./generic-groups.md), [Kubernetes with k3s](./kubernete
 
 ## What Kubernetes is
 
-**Kubernetes** (often written **K8s**) runs your applications in **containers** across several servers and keeps them running for you.
+**Kubernetes** (often written **K8s**) runs your applications in **containers** across several servers and keeps them running for you. A container is an application packed together with everything it needs to run, so it starts the same way on any server. More words like these are in the [Glossary](../getting-started/glossary.md).
 
 - You tell it what you want, for example "two copies of my web app".
 - It decides which server runs each copy.
@@ -68,8 +68,32 @@ You don't need a group for a single machine. `k3s` and `rke2` are also ordinary 
 
 ## Rules that keep your servers safe
 
-- **A server can be in one group only.** The picker marks servers that are **Already in a group**.
+- **A server can be in one group only.** The picker marks servers that are **Already in a group**. The Kubernetes wizard does not offer deleted servers.
 - **A cluster's servers change only through the cluster.** You can't remove a server from a cluster group by hand, and a server that is a cluster node can't be deleted. This stops a half-removed node from breaking the cluster.
-- **Kubernetes owns its servers.** dPanel refuses servers that already run Docker, k3s or RKE2, and servers with the dPanel firewall turned on, because they would fight over the same network rules.
-- **One region per cluster.** The servers must be in the same region. Cluster members talk to each other all the time, and a slow link between regions makes the cluster unstable.
+- **Kubernetes owns its servers.** dPanel refuses servers that already run Docker, k3s or RKE2, and servers with the dPanel [firewall](../servers/firewall.md) turned on, because they would fight over the same network rules.
+- **One region for the control plane.** Servers with the **Server** role must be in the same region. Cluster members talk to each other all the time, and a slow link between regions makes the cluster unstable. An **Agent** in another region is allowed, but dPanel warns you that its traffic crosses regions.
 - **Permissions.** Creating, uninstalling and deleting a cluster needs the **cluster editor** and **server editor** permissions in the workspace. Owners and admins have both.
+
+## From the terminal
+
+The `dnocs` CLI has the same commands: `dnocs server group` for groups and `dnocs cluster` for clusters (`kinds`, `create`, `detail`, `install`, `uninstall`, `delete`). `dnocs cluster kinds` lists the engines and versions you can pick. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install it.
+
+You can also ask **Ask dPanel** to create a group or a cluster for you; it shows the plan for your approval first. See [Prompt cookbook](../ai/prompt-cookbook.md).
+
+## Frequently asked questions
+
+### Do I need a cluster to run my application?
+
+No. Most applications run fine on one server as a dPanel [application](../applications/overview.md). Use a cluster when an app must keep running if a server fails, or when you already work with Kubernetes.
+
+### How many servers does a cluster need?
+
+One is enough to start. For a control plane that survives losing a server, give three servers the **Server** role. The number of **Server** nodes must be odd, up to seven.
+
+### Can I turn an existing generic group into a cluster?
+
+No. Pick the type when you press **New group**. Deleting a cluster does the opposite: the group stays as a generic group with the same servers.
+
+### Which engine should I choose?
+
+Start with **k3s**. It is lighter and runs on Raspberry Pi. Pick **RKE2** for hardened production servers with at least 4 GB of memory.

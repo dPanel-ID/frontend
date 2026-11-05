@@ -56,3 +56,7 @@ dPanel harus bisa menjangkau **Alamat server** dan **Port SSH** yang Anda isi. S
 ### Apa yang terjadi jika saya menghapus server dari dPanel?
 
 dPanel melupakannya, dan mesin Anda tetap berjalan beserta seluruh isinya. Lihat [Menghapus server](./delete-a-server.md).
+
+### Penyiapan gagal. Bagaimana mencobanya lagi?
+
+Perbaiki penyebab yang tampil di **Lihat penyebabnya** (sering kali kuncinya belum ada di `authorized_keys`, atau penggunanya tidak bisa memakai `sudo`), lalu tekan **Instal ulang** di tab **Pengaturan** server. Dari terminal, `dnocs server setup --id <ID server>` melakukan hal yang sama.

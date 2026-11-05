@@ -5,16 +5,33 @@ sidebar_position: 6
 sidebar_icon: package-plus
 ---
 
-dPanel memasang perangkat lunak di server lewat modul. Modul adalah resep yang sudah teruji untuk basis data, runtime bahasa pemrograman, atau perkakas: Anda menjawab beberapa pertanyaan, lalu dPanel memasang, mengatur, dan menjalankannya di server sebagai layanan systemd, lalu mencatat apa saja yang dipasangnya. Anda tidak perlu SSH atau `apt`.
+dPanel memasang perangkat lunak di server lewat modul: buka tab **Modul** server, tekan **Tambah modul**, pilih satu, dan dPanel memasangnya untuk Anda. Modul adalah resep yang sudah teruji untuk basis data, runtime bahasa pemrograman, atau perkakas: Anda menjawab beberapa pertanyaan, lalu dPanel memasang, mengatur, dan menjalankannya di server sebagai layanan systemd (program yang terus dijalankan Linux di latar belakang), lalu mencatat apa saja yang dipasangnya. Anda tidak perlu SSH atau `apt`. Belum kenal istilahnya? Lihat [Glosarium](../getting-started/glossary.md).
 
 ## Buka katalognya
 
 1. Buka server, lalu tab **Modul**.
 2. Tekan **Tambah modul**.
 
-**Katalog modul** mengelompokkan isinya: **Containers**, **Databases**, **Infrastructure**, **Programming Languages Runtime**, dan **Utilities**. Modul yang sudah ada di server ditandai terpasang, dengan tombol **Kelola** alih-alih **Pasang**.
+**Katalog modul** mengelompokkan isinya per kategori. Saring per kategori atau ketik di kolom pencarian. Modul yang sudah ada di server ditandai **Terpasang**, dengan tombol **Kelola** alih-alih **Pasang**.
 
-![Katalog modul, dikelompokkan per kategori](../../assets/servers/server-module-catalog.webp)
+| Kategori                          | Contoh                                                            |
+| --------------------------------- | ----------------------------------------------------------------- |
+| **Containers**                    | Docker, serta k3s atau RKE2 untuk Kubernetes satu server          |
+| **Databases**                     | MariaDB, PostgreSQL, MongoDB, Redis                               |
+| **Infrastructure**                | Caddy Server, Apache APISIX dan HAProxy, engine load balancer     |
+| **Programming Languages Runtime** | Node.js, Bun, Go, PHP, Python, Ruby, UV                           |
+| **Security**                      | Firewall, dikelola dari tampilan [Firewall](./firewall.md) server |
+| **Utilities**                     | FFmpeg, FrankenPHP                                                |
+
+![Katalog modul berisi 20 modul dalam enam kategori: Containers, Databases, Infrastructure, Programming Languages Runtime, Security dan Utilities](../../assets/servers/server-module-catalog.webp 'Tambah modul: katalog untuk server ini. Modul yang terpasang menampilkan Kelola.')
+
+## Memilih versi
+
+Kalau sebuah modul memasang versi tertentu, kolom versinya berisi daftar rilis terbaru, yang terbaru di atas. Pakai yang pertama kecuali aplikasi Anda butuh versi lama.
+
+Butuh rilis yang tidak ada di daftar? Kalau daftarnya diakhiri **Custom version…**, pilih itu lalu ketik rilisnya dengan format yang sama seperti versi di daftar (misalnya `1.26.4`). dPanel memeriksa formatnya sebelum memasang.
+
+![Formulir pemasangan Go dengan daftar Go Version terbuka: 1.27.3, 1.27.2, 1.27.1, 1.27.0, 1.26.10 dan Custom version…](../../assets/servers/server-module-version.webp 'Lima rilis terbaru, atau Custom version… untuk rilis lain.')
 
 ## Memasang basis data
 
@@ -38,6 +55,16 @@ Modul muncul di tab **Modul** dengan status **Memasang**. Basis data butuh beber
 
 Kalau statusnya **Gagal**, buka modulnya untuk melihat penyebabnya, perbaiki, lalu pasang lagi.
 
+## Tab Modul
+
+Tab **Modul** menampilkan satu baris per modul dengan versi dan statusnya (**Terpasang**, **Memasang**, **Gagal**, atau **Campuran** kalau versinya berbeda-beda). Hitungan **Modul**, **Terpasang** dan **Perlu perhatian** hanya mencakup modul tingkat atas: basis data yang Anda buat di MariaDB atau PostgreSQL tampil di tampilan **Kelola** modul itu, bukan sebagai baris sendiri.
+
+![Tab Modules dengan Caddy Server, Firewall, FrankenPHP, MariaDB dan PHP terpasang, Manage firewall di baris Firewall dan Open database di baris MariaDB](../../assets/servers/server-modules.webp 'Setiap baris menunjukkan modul, versinya, statusnya, dan pintasan seperti Buka database.')
+
+- **Segarkan inventaris** menanyakan ke agen apa yang ada di server sekarang. Modul yang tidak lagi dilaporkan agen, misalnya yang Anda hapus manual, hilang dari daftar.
+- Pilih chip versi untuk melihat apa yang dicatat dPanel tentang pemasangan itu. **Uninstall** di sana hanya menghapus catatannya dari dPanel; perangkat lunaknya tetap ada di server.
+- **Buka database** (MariaDB, PostgreSQL) dan **Kelola firewall** (Firewall) adalah pintasan. Lihat di bawah dan [Firewall](./firewall.md).
+
 :::tip[Runtime untuk aplikasi]
 Runtime bahasa tidak harus dipasang lebih dulu. Saat [membuat aplikasi](../applications/create-an-application.md), Anda memilih runtime-nya sebagai dependensi, dan dPanel memasangnya di server.
 :::
@@ -58,7 +85,7 @@ Pengelola basis data menjangkau basis data lewat koneksi SSH server, jadi basis 
 
 Aplikasi seperti WordPress atau Laravel butuh basis data sendiri dan pengguna yang hanya bisa menjangkaunya. Keduanya dibuat dari modul server basis datanya sendiri, tanpa kata sandi administrator:
 
-1. Di tab **Modul**, tekan **Add module**, lalu **Manage** pada **MariaDB** atau **PostgreSQL**. Modul itu harus sudah **Terpasang**.
+1. Di tab **Modul**, tekan **Tambah modul**, lalu **Kelola** pada **MariaDB** atau **PostgreSQL**. Modul itu harus sudah **Terpasang**.
 2. Di bagian **Databases**, tekan **Create database**. Bagian ini menampilkan basis data yang sudah Anda buat di server ini.
 
 ![Bagian Databases di tampilan Manage MariaDB, dengan satu basis data dan tombol Create database](../../assets/servers/server-module-databases.webp)
@@ -70,8 +97,45 @@ Aplikasi seperti WordPress atau Laravel butuh basis data sendiri dan pengguna ya
 
 dPanel membuat basis data dan penggunanya, memberi pengguna itu semua hak hanya pada basis data tersebut, dan mengizinkannya masuk dari server itu sendiri (`127.0.0.1`), yaitu cara aplikasi di server yang sama terhubung. Membuat nama basis data yang sama lagi dengan kata sandi baru akan mengganti kata sandi penggunanya.
 
-Arahkan aplikasi ke sana dengan variabel runtime: host `127.0.0.1`, port `3306` untuk MariaDB atau `5432` untuk PostgreSQL, nama basis data, pengguna, dan kata sandinya. Lihat [Variabel lingkungan](../applications/environment-variables.md). [Tanya dPanel](../getting-started/ask-dpanel.md) bisa melakukan semuanya untuk Anda dan membuatkan kata sandinya, yang ditampilkan sekali saja.
+Arahkan aplikasi ke sana dengan variabel runtime: host `127.0.0.1`, port `3306` untuk MariaDB atau `5432` untuk PostgreSQL, nama basis data, pengguna, dan kata sandinya. Lihat [Variabel lingkungan](../applications/environment-variables.md).
+
+Anda juga bisa meminta **Ask dPanel** memasang modul atau membuat basis data aplikasi untuk Anda; asisten membuatkan kata sandinya dan menampilkannya sekali saja. Lihat [Kumpulan prompt](../ai/prompt-cookbook.md).
+
+## Dari terminal
+
+CLI `dnocs` memasang modul yang sama. Pasang dengan panduan [AI di terminal](../ai/ai-in-the-terminal.md).
+
+```bash
+dnocs module list --server-id 140                      # katalog untuk server ini
+dnocs module install nodejs --server-id 140 --var nodejs.nodejs_version=22
+dnocs module install postgresql --server-id 140 --generate-secrets
+dnocs module installed --server-id 140                 # yang terpasang, beserta ID-nya
+```
+
+`--generate-secrets` membuat kata sandi yang wajib, misalnya kata sandi admin basis data, dan menyimpannya ke berkas yang hanya bisa Anda baca; yang dicetak hanya lokasi berkasnya, tidak pernah nilainya.
 
 ## Banyak server sekaligus
 
-Grup server memasang modul yang sama ke semua anggotanya dalam satu operasi, dan menampilkan hasilnya per server. Grup ada di **Server**, lalu **Server groups**.
+Grup server memasang modul yang sama ke semua anggotanya dalam satu operasi, dan menampilkan hasilnya per server. Grup ada di **Servers**, lalu **Server groups**. Lihat [Grup server umum](../clusters/generic-groups.md).
+
+## Pertanyaan yang sering diajukan
+
+### Apakah saya harus memasang runtime sebelum men-deploy aplikasi?
+
+Tidak. Saat [membuat aplikasi](../applications/create-an-application.md), Anda memilih runtime-nya sebagai dependensi dan dPanel memasangnya di server.
+
+### Kenapa basis data aplikasi saya tidak muncul di tab Modul?
+
+Basis data itu milik server basis datanya. Buka **Tambah modul**, lalu **Kelola** pada MariaDB atau PostgreSQL, dan lihat bagian **Databases**.
+
+### Saya menghapus perangkat lunak secara manual. Kenapa masih tercantum?
+
+dPanel menampilkan apa yang terakhir dilaporkan agen. Tekan **Segarkan inventaris**; modul yang tidak lagi ditemukan agen akan hilang dari daftar.
+
+### Apakah Uninstall menghapus perangkat lunak dari server?
+
+Tidak. **Uninstall** pada chip versi hanya menghapus catatan dPanel. Paket, datanya, dan layanannya tetap ada di server.
+
+### Bisakah saya memasang versi yang tidak ada di daftar?
+
+Bisa, pada modul yang mengizinkannya: pilih **Custom version…** lalu ketik rilisnya dengan format yang sama seperti versi di daftar.

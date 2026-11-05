@@ -1,6 +1,6 @@
 {
-  "label": "Server groups & clusters",
-  "position": 3,
+  "label": "Groups & clusters",
+  "position": 5,
   "description": "Group servers to act on all of them at once, or turn a group into a Kubernetes cluster with k3s or RKE2.",
   "app": {
     "label": "Open server groups",

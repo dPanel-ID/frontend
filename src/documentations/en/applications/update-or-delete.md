@@ -43,7 +43,7 @@ Press **Save** in the panel. The change applies from the next release, so releas
 
 ![The Update Application form, opened from Edit settings](../../assets/applications/app-edit.webp)
 
-dPanel updates the application definition and submits the playbook inputs for it.
+dPanel updates the application definition (the saved description of how to build and run it) and submits the playbook inputs for it.
 
 ## Delete an application
 
@@ -55,3 +55,21 @@ The **Danger zone** sits at the bottom of **Settings**.
 :::danger[This cannot be undone]
 Deleting removes the application, its builds and its release history from dPanel, and stops the service on every server it runs on. Your server and your Git repository are left untouched.
 :::
+
+## Frequently asked questions
+
+### Do my changes apply straight away?
+
+No. They apply from the next release. Press **Build and release** or **Redeploy** after saving.
+
+### When should I tick Run bootstrap playbooks?
+
+When you added or changed modules, such as a new runtime version. dPanel then installs them on the server again before the next build.
+
+### Does deleting an application delete my repository or server?
+
+No. Your Git repository and your server stay. dPanel stops the service and removes the application, its builds and its release history.
+
+### Can I delete an application from the terminal?
+
+`dnocs application delete` deletes an application that has no deployments. Delete its releases first, or use **Delete this application** in the web UI.

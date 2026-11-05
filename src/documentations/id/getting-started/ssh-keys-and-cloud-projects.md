@@ -8,19 +8,19 @@ sidebar_label: Kunci SSH dan akun cloud
 
 Sebelum dPanel bisa membuat atau menghubungkan server pertama Anda, dPanel membutuhkan kunci SSH, dan untuk membuat VPS baru juga membutuhkan akun cloud. Keduanya ada di bawah **Backend** di sidebar, dan dipakai ulang untuk semua server berikutnya.
 
-| Yang dibutuhkan | Letaknya                                | Gunanya                                          |
-| --------------- | --------------------------------------- | ------------------------------------------------ |
-| Kunci SSH       | **Manajemen Kunci**, lalu **Kunci SSH** | dPanel memakainya untuk masuk ke server Anda     |
-| Akun cloud      | **Proyek Cloud**                        | dPanel membuat mesin di akun penyedia milik Anda |
+| Yang dibutuhkan | Letaknya                                    | Gunanya                                          |
+| --------------- | ------------------------------------------- | ------------------------------------------------ |
+| Kunci SSH       | **Manajemen Kunci** (membuka **Kunci SSH**) | dPanel memakainya untuk masuk ke server Anda     |
+| Akun cloud      | **Proyek Cloud**                            | dPanel membuat mesin di akun penyedia milik Anda |
 
 Akun cloud hanya diperlukan untuk membuat mesin baru. Untuk menghubungkan server yang sudah berjalan, kunci SSH saja cukup.
 
 ## Membuat kunci SSH
 
-1. Di sidebar, buka **Manajemen Kunci**, lalu **Kunci SSH**.
+1. Di sidebar, di bawah **Backend**, buka **Manajemen Kunci** (di tampilan bahasa Inggris: **Secret Managers**). Menu ini langsung membuka halaman **Kunci SSH**.
 2. Tekan **Buat kunci SSH**.
 3. Beri nama yang mudah dikenali, misalnya `laptop-kantor`, lalu pilih jenis kuncinya.
-4. Simpan. dPanel membuat pasangan kunci dan menyimpan bagian privatnya dalam bentuk terenkripsi.
+4. Tekan **Buat kunci SSH** di bagian bawah formulir. dPanel membuat pasangan kunci dan menyimpan bagian privatnya dalam bentuk terenkripsi.
 
 ![Halaman Kunci SSH dengan satu kunci yang dibagikan ke tim](../../assets/getting-started/ssh-keys.webp 'Kunci SSH: setiap kartu menampilkan jenis kunci, pemiliknya, dan siapa saja yang bisa memakainya.')
 
@@ -61,3 +61,23 @@ dPanel tidak menjual ulang server. Mesin dibuat di dalam akun penyedia milik And
 ## Langkah berikutnya
 
 Buat atau hubungkan server pertama Anda. [Sebelum memulai](../servers/before-you-start.md) menjelaskan jenis kunci dan kredensial penyedia lebih rinci, dan [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md) memandu pengisian formulirnya.
+
+Anda juga bisa meminta **Ask dPanel** menampilkan kunci dan akun cloud Anda lalu meluncurkan server dengannya; lihat [Prompt cookbook](../ai/prompt-cookbook.md).
+
+## Pertanyaan yang sering diajukan
+
+### Apakah saya wajib punya akun cloud untuk memakai dPanel?
+
+Tidak. Akun cloud hanya diperlukan untuk meluncurkan server baru dari dPanel. Untuk memakai server yang sudah Anda sewa, kunci SSH saja cukup. Lihat [Menghubungkan server sendiri](../servers/connect-your-own-server.md).
+
+### Bisakah saya mengunduh kunci privatnya?
+
+Tidak. Bagian privat tetap terenkripsi di dPanel dan tidak pernah ditampilkan. Untuk masuk sendiri, tambahkan kunci publik milik Anda ke server. Lihat [Terhubung lewat SSH](../servers/connect-over-ssh.md).
+
+### Apakah Manajemen Kunci tempat menyimpan password dan API key?
+
+Untuk saat ini belum. **Manajemen Kunci** hanya berisi kunci SSH. Simpan password aplikasi di [variabel lingkungan](../applications/environment-variables.md) aplikasinya.
+
+### Jenis kunci mana yang sebaiknya saya pilih?
+
+Yang pertama, untuk server masa kini. Pilih yang lain hanya jika server lama menolak kuncinya.

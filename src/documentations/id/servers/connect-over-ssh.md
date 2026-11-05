@@ -33,3 +33,21 @@ echo "ssh-ed25519 AAAA... anda@example.com" >> ~/.ssh/authorized_keys
 ```
 
 Ganti contoh itu dengan kunci publik Anda. Di komputer Anda, biasanya ada di `~/.ssh/id_ed25519.pub`.
+
+## Pertanyaan yang sering diajukan
+
+### Apakah saya perlu memasang sesuatu untuk memakai terminal di browser?
+
+Tidak. **Buka terminal** bekerja di browser dengan kunci yang disimpan dPanel.
+
+### Bisakah saya menjalankan perintah sebagai root?
+
+Pengguna login bisa memakai `sudo`, jadi awali perintah dengan `sudo` kalau butuh hak administrator.
+
+### Kenapa `ssh` dari komputer saya menolak dengan permission denied?
+
+Kunci publik komputer Anda belum ada di server. Tambahkan ke `~/.ssh/authorized_keys` seperti di atas, sebagai pengguna login yang sama.
+
+### Adakah perintah terminal sebagai ganti browser?
+
+`dnocs server exec` menjalankan skrip shell di server lewat dPanel. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang `dnocs`.

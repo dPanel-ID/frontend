@@ -1,6 +1,6 @@
 ---
 title: Deploy WordPress dengan MariaDB
-description: Dari akun kosong sampai situs WordPress di domain Anda sendiri dengan HTTPS: luncurkan server, pasang MariaDB, PHP, dan FrankenPHP, buat basis data, rilis, lalu publikasikan.
+description: Dari akun dPanel kosong sampai situs WordPress di domain Anda dengan HTTPS: luncurkan server, pasang MariaDB, PHP, dan FrankenPHP, rilis, lalu publikasikan.
 sidebar_position: 2
 sidebar_icon: rocket
 sidebar_label: WordPress
@@ -11,7 +11,7 @@ Tutorial ini membawa Anda dari akun dPanel yang masih kosong sampai situs WordPr
 Waktunya sekitar 40 menit, sebagian besar untuk menunggu server dan pemasangan. Semua langkah dilakukan di aplikasi web dPanel; Anda tidak perlu SSH.
 
 :::tip[Baru mengenal server?]
-Baca [Cara situs web berjalan di server Anda](./how-a-website-runs.md) terlebih dulu. Halaman itu menjelaskan setiap istilah di sini, seperti modul, build, port, dan load balancer, dalam beberapa menit.
+Baca [Cara situs web berjalan di server Anda](./how-a-website-runs.md) terlebih dulu. Halaman itu menjelaskan setiap istilah di sini, seperti modul, build, port, dan load balancer, dalam beberapa menit. Istilah lainnya ada di [Glosarium](../getting-started/glossary.md).
 :::
 
 ## Yang perlu disiapkan
@@ -97,11 +97,11 @@ dPanel meng-clone repositori di server, menjalankan build, dan menjalankan WordP
 
 ## Langkah 5: Publikasikan di domain Anda dengan HTTPS
 
-1. Buka **Load Balancer**, lalu tekan **Buat load balancer**.
-2. **Gateway**: pilih server yang sama. Di **Engine web server**, pilih **Caddy Server**, lalu tekan **Instal** kalau belum terpasang.
-3. **Domain dan HTTPS**: pilih **Terkelola**, ketik **Subdomain** (misalnya `blog`), lalu **Pilih domain**. Biarkan **HTTP / HTTPS** dan **HTTPS** tetap menyala.
-4. **Routing**: biarkan **L7**. Di aturan pertama, atur **Tipe** ke **Aplikasi**, **Pola Jalur URL** ke `/*`, lalu pilih aplikasi **WordPress**.
-5. Saat panel tinjauan bertuliskan **Siap dibuat**, tekan **Buat load balancer**.
+1. Buka **Load Balancer**, lalu tekan **Buat load balancer**. Formulirnya punya empat langkah: **Gateway**, **Domain**, **Routing**, dan **Review**.
+2. **Gateway**: di **Server gateway**, pilih server yang sama. Di **Engine web server**, pilih **Caddy Server**, lalu tekan **Instal** kalau belum terpasang.
+3. **Domain**: di **Nama Domain**, pilih **Terkelola**, ketik **Subdomain** (misalnya `blog`), lalu **Pilih domain**.
+4. **Routing**: biarkan **L7** di **Mode routing**, serta **HTTP / HTTPS** dengan **HTTPS** menyala di **Protokol dan HTTPS**. Di aturan pertama, atur **Tipe** ke **Aplikasi**, **Pola Jalur URL** ke `/*`, lalu pilih aplikasi **WordPress**.
+5. **Review**: saat panel tinjauan bertuliskan **Siap dibuat**, tekan **Buat load balancer**.
 
 ![Langkah 3 formulir load balancer: satu aturan yang mengirim /* ke sebuah aplikasi](../../assets/networking/lb-create-routing.webp)
 
@@ -109,21 +109,36 @@ dPanel membuat record DNS, menyiapkan gateway, dan meminta sertifikat Let's Encr
 
 ## Kalau ada yang tidak berjalan
 
-| Yang Anda lihat | Yang perlu diperiksa |
-| --- | --- |
-| Modul tidak kunjung selesai dipasang, atau gagal | Buka **Log** server, atau tanyakan ke asisten kenapa job-nya gagal. Pasang ulang modulnya setelah penyebabnya diperbaiki. |
-| Build gagal | Buka aplikasinya dan baca log build dari rilis yang gagal. Lihat [Log aplikasi](../applications/application-logs.md). |
-| "Error establishing a database connection" | Keempat variabel `WORDPRESS_DB_*` harus cocok dengan basis data dari langkah 3. Perbaiki di pengaturan aplikasi, lalu rilis lagi: perubahan berlaku mulai rilis berikutnya. |
-| Domain tidak menjawab | Tunggu beberapa menit untuk DNS dan sertifikat. Periksa halaman detail load balancer dan log-nya. |
+| Yang Anda lihat                                  | Yang perlu diperiksa                                                                                                                                                                    |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Modul tidak kunjung selesai dipasang, atau gagal | Buka **Log** server, atau tanyakan ke asisten kenapa job-nya gagal. Pasang ulang modulnya setelah penyebabnya diperbaiki.                                                               |
+| Build gagal                                      | Buka aplikasinya dan baca log build dari rilis yang gagal. Lihat [Log aplikasi](../applications/application-logs.md).                                                                   |
+| "Error establishing a database connection"       | Keempat variabel `WORDPRESS_DB_*` harus cocok dengan basis data dari langkah 3. Perbaiki di pengaturan aplikasi, lalu rilis lagi: perubahan berlaku mulai rilis berikutnya.             |
+| Domain tidak menjawab                            | Tunggu beberapa menit untuk DNS dan sertifikat. Periksa halaman detail load balancer dan log-nya. Banner merah **Perubahan load balancer gagal** punya tombol **Lihat penyebab gagal**. |
+| Masalah lain                                     | Lihat [Masalah umum dan solusinya](../troubleshooting/faq.md).                                                                                                                          |
 
-## Biarkan asisten mengerjakannya
+## Lebih suka mengobrol? Lakukan hal yang sama dengan Ask dPanel
 
-[Tanya dPanel](../getting-started/ask-dpanel.md) bisa menyiapkan setiap langkah di atas untuk Anda setujui, misalnya:
+[Ask dPanel](../ai/overview.md), asisten di kanan bawah setiap halaman, bisa menyiapkan setiap langkah di atas untuk Anda setujui, misalnya:
 
 > Di server wordpress-1, buat basis data MariaDB bernama wordpress dengan pengguna bernama wp.
 
-Asisten membuatkan kata sandi basis data dan menampilkannya sekali, di kartu persetujuan. Saat membuat aplikasi, asisten meminta `WORDPRESS_DB_PASSWORD` sebagai kolom di kartu persetujuan, jadi kata sandinya tidak pernah masuk ke percakapan.
+Asisten membuatkan kata sandi basis data dan menampilkannya sekali, di kartu persetujuan. Saat membuat aplikasi, asisten meminta `WORDPRESS_DB_PASSWORD` sebagai kolom di kartu persetujuan, jadi kata sandinya tidak pernah masuk ke percakapan. Contoh permintaan lain ada di [Prompt cookbook](../ai/prompt-cookbook.md).
 
 ## Membersihkan
 
 Untuk menghapus demo, hapus dengan urutan ini: load balancer, aplikasi, lalu server. Lihat [Load balancer](../networking/load-balancers.md#menghapus-load-balancer), [Mengubah atau menghapus aplikasi](../applications/update-or-delete.md), dan [Menghapus server](../servers/delete-a-server.md). Menghapus server cloud juga menghentikan biayanya di penyedia.
+
+## Pertanyaan yang sering diajukan
+
+### Bisakah saya memakai repositori WordPress sendiri, bukan contoh ini?
+
+Bisa, asalkan repositorinya punya skrip build dan skrip start yang menjalankan WordPress di port yang diberikan dPanel. Folder `scripts/` di repositori contoh menunjukkan apa yang dibutuhkan dPanel.
+
+### Apakah saya perlu domain untuk mencobanya?
+
+Domain dibutuhkan di langkah 5, saat load balancer memublikasikan situs dengan HTTPS. Langkah 1 sampai 4 bisa dikerjakan tanpa domain.
+
+### Mengapa modul dipasang satu per satu?
+
+dPanel mengantrekan pemasangan di sebuah server dan menjalankannya bergantian. Dengan menunggu setiap modul berstatus **Terpasang**, Anda mudah melihat mana yang gagal, kalau ada.

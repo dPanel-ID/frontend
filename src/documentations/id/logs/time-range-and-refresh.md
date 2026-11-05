@@ -37,7 +37,7 @@ Log bisa dibaca hingga 10 hari ke belakang. dPanel menahan setiap rentang dalam 
 
 ## Menelusuri baris yang lebih lama
 
-Satu halaman berisi 200 baris, terbaru lebih dulu. Bagian bawah menunjukkan posisi Anda, misalnya **Baris 1–200 dari 1.250, terbaru dulu**.
+Satu halaman berisi 200 baris. Halaman 1 berisi 200 baris terbaru; halaman 2 berisi 200 baris sebelumnya, dan seterusnya. Di dalam satu halaman, baris tersusun sesuai urutan waktu, yang terbaru di paling bawah. Bagian bawah menunjukkan posisi Anda, misalnya **Baris 1–200 dari 1.250, terbaru dulu**.
 
 - Jika totalnya diketahui, pakai nomor halaman.
 - Jika tidak, pakai **Lebih baru** dan **Lebih lama**.
@@ -63,3 +63,21 @@ Tombol di sebelah **Segarkan** mengatur **Muat ulang otomatis**. Bawaannya **Mat
 Muat ulang otomatis berhenti sementara selama Anda berada di halaman yang lebih lama, supaya baris tidak bergeser saat dibaca. Fitur ini aktif lagi saat Anda kembali ke halaman pertama.
 
 Tab **Log** di halaman server dan **Log Artefak** juga punya kontrol **Segarkan** dan **Muat ulang otomatis** yang sama.
+
+## Pertanyaan yang sering diajukan
+
+### Mengapa baris yang lebih lama tidak ada?
+
+dPanel menyimpan log aplikasi dan load balancer selama 10 hari. Yang lebih lama sudah hilang. Unduh yang perlu Anda simpan. Lihat [Mengunduh log](./download-logs.md).
+
+### Mengapa baris terbaru ada di paling bawah?
+
+Di dalam satu halaman, baris dibaca seperti buku, sesuai urutan penulisannya. Tabel menggulir ke bawah untuk Anda, jadi baris terbaru langsung terlihat.
+
+### Waktunya memakai zona waktu apa?
+
+Zona waktu Anda, dari browser. Judul kolomnya menampilkan selisihnya, misalnya **Waktu (GMT+4)**.
+
+### Apakah muat ulang otomatis menimbulkan biaya?
+
+Tidak. Fitur ini hanya membaca log lagi sesuai interval yang Anda pilih.

@@ -1,12 +1,12 @@
 ---
 title: Kubernetes dengan RKE2
-description: Buat klaster Kubernetes RKE2 di server dPanel Anda langkah demi langkah, buka terminal di node-nya, jalankan aplikasi pertama, lalu sajikan di domain Anda dengan HTTPS.
+description: Buat klaster Kubernetes RKE2 di server dPanel Anda langkah demi langkah, jalankan aplikasi pertama, lalu sajikan di domain Anda dengan HTTPS.
 sidebar_position: 4
 sidebar_icon: shield-check
 sidebar_label: Kubernetes dengan RKE2
 ---
 
-Panduan ini membangun klaster RKE2 sungguhan, **kube-rke**, di dua server dan menyajikan aplikasi web darinya di `https://kube-rke.devetek.app`. Ikuti dengan server dan domain Anda sendiri; lamanya sekitar 30 menit, sebagian besar menunggu.
+Panduan ini membangun klaster Kubernetes RKE2 sungguhan dengan dPanel, **kube-rke**, di dua server dan menyajikan aplikasi web darinya di `https://kube-rke.devetek.app`. Ikuti dengan server dan domain Anda sendiri; lamanya sekitar 30 menit, sebagian besar menunggu.
 
 RKE2 adalah Kubernetes dari Rancher yang fokus pada keamanan: bawaan siap CIS, plugin jaringan Canal, dan control plane-nya (etcd, API server, scheduler) berjalan sebagai pod yang terlihat. RKE2 butuh server lebih besar daripada k3s dan hanya berjalan di amd64 dan arm64. Untuk mesin kecil atau Raspberry Pi, lihat [Kubernetes dengan k3s](./kubernetes-k3s.md). Masih asing dengan istilahnya? Baca dulu [Grup server dan klaster](./overview.md).
 
@@ -20,7 +20,7 @@ Anda butuh server yang sudah dikelola dPanel dan berstatus **Ready**. Panduan in
 | kube-rke-2 | **Agent**        | 2 CPU, 4 GB, Ubuntu 24.04 |
 
 - **Ukuran:** 2 CPU dan memori 4 GB atau lebih per server, amd64 atau arm64. RKE2 menjalankan lebih banyak pod sistem daripada k3s; server yang lebih kecil kewalahan.
-- **Sistem:** Ubuntu 22.04 atau 24.04.
+- **Sistem:** Ubuntu. Panduan ini diuji di Ubuntu 24.04.
 - **Region yang sama** untuk semua server, tidak masuk grup mana pun, tanpa Docker, k3s, atau RKE2, dan firewall dPanel mati.
 
 Server baru yang diluncurkan dari dPanel sudah memenuhi semuanya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
@@ -189,3 +189,32 @@ Hapus dulu load balancer yang Anda buat untuk klaster itu.
 | Status bertuliskan **Failed**                                    | Buka eksekusi terakhir dari tab **Cluster** untuk membaca galatnya, perbaiki, lalu tekan **Install again**.                                                                       |
 | `kubectl: command not found`                                     | Jalankan dulu baris `sudo -i` dan dua baris `export` dari langkah 6 di terminal itu.                                                                                              |
 | Domain tidak menjawab                                            | Periksa dulu `curl http://127.0.0.1:30080` di kube-rke-1, lalu status dan **Logs** load balancer.                                                                                 |
+
+## Dari terminal
+
+Klaster yang sama bisa dibuat dengan CLI `dnocs`, memakai ID server dari `dnocs server list`:
+
+```bash
+dnocs cluster create --name kube-rke --engine rke2 --server <ID node Server> --agent <ID node Agent>
+dnocs cluster detail --id <ID klaster>
+```
+
+`dnocs cluster install` memasang ulang setelah gagal, sedangkan `dnocs cluster uninstall` dan `dnocs cluster delete` menghapusnya. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang `dnocs`.
+
+## Pertanyaan yang sering diajukan
+
+### Berapa lama pemasangannya?
+
+Sekitar 12 menit untuk dua server. Wizard boleh ditutup; pemasangan tetap berjalan dan tab **Cluster** menampilkan progresnya.
+
+### Bisakah saya menambah node ke klaster nanti?
+
+Belum. Server dan perannya ditetapkan saat klaster dibuat. Untuk mengubahnya, uninstall dan hapus klasternya, lalu buat yang baru.
+
+### Bagaimana memakai kubectl dari komputer saya sendiri?
+
+Mengunduh kubeconfig belum tersedia. Pakai **Open terminal** di node **Server** dan jalankan `kubectl` di sana setelah baris `sudo -i` dan `export` dari langkah 6.
+
+### Pemasangannya gagal. Lalu bagaimana?
+
+Buka eksekusi terakhir dari tab **Cluster** untuk membaca error-nya, perbaiki penyebabnya, lalu tekan **Install again**. Server, peran, engine, dan versinya tetap sama.

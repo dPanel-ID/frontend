@@ -35,3 +35,17 @@ Check two places:
 
 1. The **Servers** list.
 2. Your provider's own console. dPanel reports what the provider told it, so a delete that half fails at the provider shows up there.
+
+## Frequently asked questions
+
+### Why is Delete server refused?
+
+Applications or load balancers still use the server, or it is a node of a Kubernetes cluster. Delete those first, or uninstall and delete the cluster. See [Server groups and clusters](../clusters/overview.md).
+
+### Can I get a deleted server back?
+
+No. A cloud server's disk is destroyed at the provider. Back up anything you need before you delete it.
+
+### Does deleting a server I connected myself wipe it?
+
+No. dPanel only forgets it; the machine and everything on it keep running.

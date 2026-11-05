@@ -44,3 +44,23 @@ Press the button and sign in to GitHub again. Nothing else changes. Your applica
 ## What happens next
 
 Create your first application. See [How applications work](../applications/overview.md) and [Create an application](../applications/create-an-application.md).
+
+You can also ask **Ask dPanel** which repositories and branches it can see, or to deploy one; see [Prompt cookbook](../ai/prompt-cookbook.md).
+
+## Frequently asked questions
+
+### Does dPanel change my code on GitHub?
+
+No. dPanel reads your repositories and branches to build them on your server. It does not push to them.
+
+### Do I connect GitHub once per workspace?
+
+No, once per dPanel account. Every workspace you belong to uses the same link.
+
+### My repository is private. Can dPanel deploy it?
+
+Yes, as long as the GitHub account you connected, or the dnocs-id GitHub App on the organisation, can read it.
+
+### What happens to my apps if I disconnect GitHub?
+
+They keep running. Only reading repositories and branches stops, so you cannot start a new build until you reconnect.

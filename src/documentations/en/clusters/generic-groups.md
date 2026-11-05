@@ -6,7 +6,7 @@ sidebar_icon: list-checks
 sidebar_label: Generic groups
 ---
 
-A generic group is a saved list of servers. Every action you run on the group runs on each of its servers, and you follow each server's result in one place. The servers stay independent: one failing doesn't stop the others.
+A generic group in dPanel is a saved list of servers. Every action you run on the group runs on each of its servers, and you follow each server's result in one place. The servers stay independent: one failing doesn't stop the others.
 
 ## Create a generic group
 
@@ -40,3 +40,25 @@ Each action records the servers in the group at that moment, then runs on each o
 - **Add servers** and **Remove** change who is in the group. **Replace servers** sets the whole list at once.
 - **Edit** changes the name and description.
 - **Delete group** removes the group only. The servers keep running as they are, and past operations and their logs stay.
+
+## From the terminal
+
+`dnocs server group` manages the same groups: `list`, `create`, `detail`, `add-server`, `remove-server`, `replace-members`, `update`, `delete`, and `operations` to list or run the actions above. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install `dnocs`.
+
+## Frequently asked questions
+
+### Does deleting a group delete its servers?
+
+No. The servers keep running exactly as they are; they are simply no longer grouped. Past operations and their logs stay.
+
+### Why can't I add a server to my group?
+
+A server can be in one group only, so it is probably in another group already. Remove it there first. **Already in group** in the picker means it is in this group.
+
+### What happens if an action fails on some servers?
+
+The other servers still succeed. Open the operation in **Operation history** to read each server's error, fix it, then press **Retry failed servers**.
+
+### Does an action include servers I add later?
+
+No. Each action records the servers in the group when you start it. Run it again to include new servers.

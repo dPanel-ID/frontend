@@ -9,7 +9,7 @@ Di dPanel, setiap push yang ingin Anda kirim menjadi sebuah build, dan setiap bu
 
 ## Apa yang sedang berjalan
 
-Buka aplikasinya. Tab **Ringkasan** diawali **Rilis yang aktif**: commit, branch, dan server yang sedang melayani, beserta status rilisnya.
+Buka aplikasinya. Tab **Ringkasan** diawali **Rilis yang aktif**: commit, branch, orang yang merilisnya, server dan alamat yang sedang melayani, beserta status rilisnya.
 
 ![Tab Ringkasan: rilis yang aktif, angka ringkasan, detail, dan build terbaru](../../assets/applications/app-overview.webp)
 
@@ -38,12 +38,16 @@ Build baru muncul di urutan teratas dengan status **Membangun**, lalu **Berhasil
 
 **Build dan rilis** punya dua tampilan.
 
-- **Build**: semua build, terbaru lebih dulu, dengan ID build, commit, branch, dan lama build-nya. Build yang sudah dirilis ke server diberi lencana **Digunakan**, dan build yang sedang dirilis diberi lencana **Dalam Proses**.
+- **Build**: semua build, terbaru lebih dulu, dengan ID build, commit, branch, lama build-nya, siapa yang menjalankannya, dan kapan. Build yang sudah dirilis ke server diberi lencana **Digunakan**, dan build yang sedang dirilis diberi lencana **Dalam Proses**.
 - **Di server**: setiap server tempat aplikasi dirilis, beserta status layanannya.
 
 Pindah tampilan dengan tombol **Build** dan **Di server** di samping **Bangun dan rilis**.
 
-![Tab Rilis yang menampilkan daftar build beserta status dan tombol aksinya](../../assets/applications/app-deployments.webp)
+![Tab Rilis aplikasi DB Manager: tiga build, masing-masing dengan ID build, commit, branch, orang yang menjalankannya, status rilis, serta tombol Log, Kembalikan, dan Hapus](../../assets/applications/app-deployments.webp 'Setiap build menyebut siapa yang menjalankannya. Nama orang lain disamarkan di gambar ini.')
+
+### Siapa yang menjalankan setiap build
+
+Setiap kartu build menyebut orang yang memulainya, beserta avatarnya, misalnya setelah **Bangun dan rilis**, **Rilis ulang**, atau deploy dari baris perintah maupun **Ask dPanel**. Rilis di **Di server** menyebut siapa yang merilisnya. Pilih sebuah nama untuk membuka [profil publik](../teams/public-profiles.md) orang itu. dPanel tidak pernah menampilkan alamat email atau ID pengguna mentah di sini.
 
 ### Membaca log build
 
@@ -67,13 +71,37 @@ Di **Di server**, setiap rilis punya tombol **Mulai**, **Restart**, dan **Hentik
 
 Tekan **Hapus** pada sebuah build untuk mengeluarkannya dari daftar. dPanel meminta konfirmasi lebih dulu.
 
+dPanel menolak menghapus build yang masih dipakai sebuah rilis, atau yang masih dibangun. Hapus dulu rilisnya di **Di server**.
+
+Dari terminal, tampilkan daftar build dengan `dnocs application detail artifact list --id <ID aplikasi>`, lalu hapus satu build dengan `dnocs application detail artifact delete --id <ID aplikasi> --artifact-id <ID build>`. Aturan yang sama berlaku. Server tidak bisa dihapus selama masih ada build yang dibuat di server itu. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang dnocs.
+
 ## Status
 
-| Build      | Rilis           | Artinya                                 |
-| ---------- | --------------- | --------------------------------------- |
-| Membangun  | Merilis         | Sedang dikerjakan.                      |
-| Berhasil   | Sudah di server | Sudah dibangun dan berjalan.            |
-| Gagal      | Gagal           | Ada yang menghentikannya. Baca log-nya. |
-| Dibatalkan | Dibatalkan      | Dihentikan sebelum selesai.             |
+| Build      | Rilis           | Artinya                                              |
+| ---------- | --------------- | ---------------------------------------------------- |
+| -          | Menunggu        | Mengantre untuk worker, atau akan segera dimulai.    |
+| Membangun  | Merilis         | Sedang dikerjakan.                                   |
+| Berhasil   | Sudah di server | Sudah dibangun dan berjalan.                         |
+| Berhasil   | Belum dirilis   | Sudah dibangun, tetapi saat ini tidak ada di server. |
+| Gagal      | Gagal           | Ada yang menghentikannya. Baca log-nya.              |
+| Dibatalkan | Dibatalkan      | Dihentikan sebelum selesai.                          |
 
-Jika build gagal, mulailah dari **Log**-nya. Baris-baris terakhir biasanya menyebut langkah dan galatnya. Lihat juga [Pemecahan masalah](../troubleshooting/faq.md).
+Jika build gagal, mulailah dari **Log**-nya. Baris-baris terakhir biasanya menyebut langkah dan galatnya. Build yang dihentikan setelah 20 menit berakhir dengan `context deadline exceeded`; lihat [Batas waktu build](./build-timeout.md). Lihat juga [Pemecahan masalah](../troubleshooting/faq.md).
+
+## Pertanyaan yang sering diajukan
+
+### Apa bedanya build dan rilis?
+
+Build adalah kode Anda yang dikemas sekali, dari satu commit. Rilis adalah build itu yang dipasang dan dijalankan di satu server. Satu build bisa dirilis ke beberapa server, dan dirilis lagi nanti saat rollback.
+
+### Apakah rollback membangun ulang kode saya?
+
+Tidak. dPanel merilis build yang sudah ada, jadi rollback hanya butuh detik sampai menit, bukan selama build.
+
+### Siapa yang memulai build ini?
+
+Kartu build menyebut orang yang menjalankannya. Pilih namanya untuk membuka profil publiknya.
+
+### Mengapa saya tidak bisa menghapus build?
+
+Build itu masih dipakai sebuah rilis, atau masih dibangun. Hapus dulu rilisnya di **Di server**, atau tunggu build-nya selesai.

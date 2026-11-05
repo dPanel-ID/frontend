@@ -7,6 +7,8 @@ sidebar_icon: globe
 
 dPanel manages DNS for domains you already own. Add a domain hosted at Cloudflare or DigitalOcean with an API token, and dPanel reads its records, lets you search them, and creates the `A` record that points a name at your server when a load balancer uses the domain.
 
+**DNS** is the internet's address book: it turns a name such as `app.example.com` into the IP address of a server. A **DNS record** is one entry in that book, and the **zone** is all the records of one domain. See the [Glossary](../getting-started/glossary.md).
+
 dPanel does not sell or transfer domains, and it never changes your registrar. You keep buying domains where you do today. What dPanel needs is access to whoever answers DNS for the domain.
 
 ## What you need first
@@ -18,7 +20,9 @@ dPanel does not sell or transfer domains, and it never changes your registrar. Y
 Use a scoped token. At Cloudflare, a token limited to "DNS edit" on that one zone is enough.
 :::
 
-![The Domains & DNS page in table view, listing two domains managed through Cloudflare](../../assets/networking/domains-list.webp 'Domains & DNS: each row shows the DNS provider, who owns the domain and who can use it.')
+![The Domains & DNS page in table view, listing devetek.app and terpusat.me, both at Cloudflare, owned by one person and shared with the dPanel team](../../assets/networking/domains-list.webp 'Domains & DNS: each row shows the DNS provider, who owns the domain and who can use it.')
+
+Each row shows the domain, its **DNS provider**, its **Ownership** (the person who added it, by name, and the team it is shared with) and when it was last modified. Select the person's name to open their [public profile](../teams/public-profiles.md). The search box above the table finds a domain by name; upper and lower case do not matter.
 
 ## Add a domain
 
@@ -44,7 +48,7 @@ Select a domain in the list, or press **Details** on its row, to open its own pa
 - **Refresh**, which reads the zone again, and **Open site**, which opens `https://` and the domain in a new tab.
 - **DNS records**: every record in the zone, which you can search, filter by type and delete. See [DNS records](./dns-records.md).
 
-![The terpusat.me domain page: the provider, record count, owner and date added, above the DNS records table](../../assets/networking/domain-detail.webp)
+![The terpusat.me domain page: Cloudflare as DNS provider, 47 records, the dPanel workspace as owner and the date added, above the DNS records table](../../assets/networking/domain-detail.webp)
 
 ## Use the domain on a load balancer
 
@@ -72,3 +76,7 @@ Not yet. dPanel creates records itself when a load balancer uses the domain. You
 ### Is my DNS API token safe?
 
 The token is sent once, when you add the domain, and never shown again. The review never displays it, and dPanel shows **Stored securely** in its place.
+
+### Can I list my domains from the terminal?
+
+Yes. `dnocs domain list` prints each domain with its ID and provider. A load balancer created from the terminal uses that ID. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install dnocs.

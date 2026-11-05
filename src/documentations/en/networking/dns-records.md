@@ -6,21 +6,21 @@ sidebar_icon: file-text
 sidebar_label: DNS records
 ---
 
-Every domain in dPanel has its own page listing all of its DNS records, read live from Cloudflare or DigitalOcean. You can search the records by name or content, narrow them to one record type, copy a name or value, and delete a record, without opening your DNS provider's console.
+Every domain in dPanel has its own page listing all of its DNS records (the entries that point a name at an address), read live from Cloudflare or DigitalOcean. You can search the records by name or content, narrow them to one record type, copy a name or value, and delete a record, without opening your DNS provider's console.
 
 ## Open a domain's records
 
 1. Open **Domain & DNS** in the sidebar.
 2. Select the domain, or press **Details** on its row.
-3. Scroll to **DNS records**. The count beside the search box, such as **46 records**, is the size of the zone.
+3. Scroll to **DNS records**. The count beside the search box, such as **47 records**, is the size of the zone.
 
 ![The DNS records table of terpusat.me with the search box, the record type chips and the Type, Name, Content and TTL columns](../../assets/networking/domain-detail.webp)
 
-Each row shows the record's **Type**, **Name**, **Content** and **TTL**. A name at the zone apex reads **root**, and a Cloudflare TTL of 1 second reads **Auto**. Records come 20 to a page; use the page buttons below the table for more.
+Each row shows the record's **Type**, **Name**, **Content** and **TTL** (time to live: how long other computers may remember the answer before asking again). A name at the zone apex reads **root**, and a Cloudflare TTL of 1 second reads **Auto**. Records come 20 to a page; use the page buttons below the table for more.
 
 ## Find a record
 
-1. Type part of a name or a value in **Search records, e.g. demo**. The list updates as you type, and the text that matched is highlighted.
+1. Type part of a name or a value in **Search records, e.g. demo**. The list updates as you type, upper and lower case do not matter, and the text that matched is highlighted.
 2. To narrow the list to one record type, press a chip: **A**, **AAAA**, **CNAME**, **MX**, **TXT**, **NS**, **SRV** or **CAA**. Press it again, or **All**, to see every type.
 3. The count changes to the number of matches, such as **2 matches**.
 
@@ -60,3 +60,7 @@ Yes. dPanel reads the zone from your DNS provider each time you open the page, s
 ### What should I clean up after deleting a load balancer?
 
 Check whether its `A` record is still in the zone. Search for the host name and delete the record if you no longer need the name.
+
+### Is the search case-sensitive?
+
+No. `Demo`, `DEMO` and `demo` find the same records.

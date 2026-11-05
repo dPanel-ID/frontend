@@ -6,7 +6,7 @@ sidebar_icon: list-checks
 sidebar_label: Grup umum
 ---
 
-Grup umum adalah daftar server yang disimpan. Setiap aksi yang Anda jalankan pada grup dijalankan di masing-masing servernya, dan hasil setiap server bisa dipantau di satu tempat. Server-servernya tetap mandiri: satu yang gagal tidak menghentikan yang lain.
+Grup umum di dPanel adalah daftar server yang disimpan. Setiap aksi yang Anda jalankan pada grup dijalankan di masing-masing servernya, dan hasil setiap server bisa dipantau di satu tempat. Server-servernya tetap mandiri: satu yang gagal tidak menghentikan yang lain.
 
 ## Membuat grup umum
 
@@ -40,3 +40,25 @@ Setiap aksi mencatat server yang ada di grup saat itu, lalu berjalan di masing-m
 - **Add servers** dan **Remove** mengubah anggota grup. **Replace servers** menetapkan seluruh daftar sekaligus.
 - **Edit** mengubah nama dan deskripsi.
 - **Delete group** hanya menghapus grupnya. Server tetap berjalan seperti biasa, dan operasi sebelumnya beserta lognya tetap tersimpan.
+
+## Dari terminal
+
+`dnocs server group` mengelola grup yang sama: `list`, `create`, `detail`, `add-server`, `remove-server`, `replace-members`, `update`, `delete`, serta `operations` untuk melihat atau menjalankan aksi di atas. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang `dnocs`.
+
+## Pertanyaan yang sering diajukan
+
+### Apakah menghapus grup juga menghapus servernya?
+
+Tidak. Server tetap berjalan seperti biasa; hanya tidak lagi dikelompokkan. Operasi lama dan log-nya tetap tersimpan.
+
+### Kenapa saya tidak bisa menambahkan server ke grup?
+
+Satu server hanya bisa masuk satu grup, jadi kemungkinan server itu sudah ada di grup lain. Keluarkan dulu dari sana. **Already in group** di pemilih berarti server itu sudah ada di grup ini.
+
+### Apa yang terjadi kalau aksi gagal di sebagian server?
+
+Server lain tetap berhasil. Buka operasinya di **Operation history** untuk membaca error tiap server, perbaiki, lalu tekan **Retry failed servers**.
+
+### Apakah aksi ikut berlaku untuk server yang ditambahkan belakangan?
+
+Tidak. Setiap aksi mencatat server yang ada di grup saat aksi dimulai. Jalankan lagi untuk menyertakan server baru.

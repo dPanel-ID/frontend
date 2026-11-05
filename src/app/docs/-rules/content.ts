@@ -43,6 +43,7 @@ export function isDocsAdmonition(value: string): value is DocsAdmonition {
  */
 export const DOCS_ICON_NAMES = [
   'app-window',
+  'bot',
   'boxes',
   'building-2',
   'circle-help',
@@ -60,6 +61,7 @@ export const DOCS_ICON_NAMES = [
   'life-buoy',
   'list-checks',
   'log-in',
+  'message-square',
   'network',
   'package-plus',
   'rocket',
@@ -67,6 +69,7 @@ export const DOCS_ICON_NAMES = [
   'server',
   'settings-2',
   'shield-check',
+  'sparkles',
   'square-plus',
   'square-terminal',
   'terminal',

@@ -1,6 +1,6 @@
 ---
 title: Masuk dan profil Anda
-description: Masuk ke panel kontrol dPanel dengan Google atau username dan password, buat akun, serta perbarui nama, avatar, dan password Anda.
+description: Masuk ke dPanel dengan Google atau username dan password, buat akun, lalu kelola profil, password, worker, dan halaman profil publik Anda.
 sidebar_position: 1
 sidebar_icon: log-in
 ---
@@ -34,13 +34,15 @@ Tekan **Lupa password?** di samping kolom password. dPanel belum bisa mengatur u
 
 ## Profil Anda
 
-Tekan kartu bernama Anda di bagian bawah sidebar, lalu **View Profile**. Menu yang sama juga berisi **Logout**. Halaman profil terdiri dari tiga bagian.
+Di bagian bawah sidebar, tekan ikon pengaturan pada kartu bernama Anda, lalu **View Profile**. Di sebelahnya ada tombol **Logout**. Halaman profil terdiri dari bagian-bagian berikut:
 
 - **Informasi personal**: nama, username, email, dan ruang kerja yang sedang Anda pakai.
 - **Keamanan akun**: password Anda, dan **Akun GitHub** yang dipakai dPanel untuk membaca repositori. Statusnya menjadi **Terhubung** setelah GitHub dihubungkan.
 - **Akses workspace**: semua ruang kerja yang Anda ikuti, beserta peran Anda di masing-masing.
+- **Worker**: tempat pekerjaan ruang kerja yang sedang Anda pakai dijalankan. Lihat [Worker di profil Anda](#worker-di-profil-anda).
+- **Sesi saat ini** dan **Kontrol akun**, di sebelah kanan: ruang kerja dan peran yang dipakai browser ini, serta apakah password dan akses GitHub bisa diubah.
 
-![Halaman profil berisi informasi personal, keamanan akun, dan akses workspace](../../assets/getting-started/profile.webp 'Profil: siapa Anda, cara Anda masuk, dan ruang kerja mana saja yang bisa Anda buka.')
+![Halaman profil berisi informasi personal, keamanan akun, akses workspace, dan kartu Worker](../../assets/getting-started/profile.webp 'Profil: siapa Anda, cara Anda masuk, ruang kerja mana saja yang bisa Anda buka, dan di mana pekerjaannya berjalan.')
 
 ### Mengubah nama, avatar, atau password
 
@@ -49,6 +51,41 @@ Tekan kartu bernama Anda di bagian bawah sidebar, lalu **View Profile**. Menu ya
 3. Untuk mengganti password, isi **Password baru** dan **Ulangi password**. Minimal 8 karakter. Kosongkan keduanya kalau tidak ingin mengganti password.
 4. Tekan **Simpan perubahan**.
 
+### Worker di profil Anda
+
+Worker adalah program yang menjalankan pekerjaan sebuah ruang kerja: deployment, setup server, dan instalasi modul. Kartu **Worker** menampilkan pilihan untuk ruang kerja yang sedang Anda pakai:
+
+- **Worker bersama (dPanel)**: dPanel yang menjalankan pekerjaan Anda. Tidak ada yang perlu disiapkan. Ini pilihan bawaannya.
+- **Worker privat**: hanya worker yang Anda jalankan sendiri, di VM atau sebagai workflow GitHub Actions, yang mengambil pekerjaan ruang kerja ini. Tambahkan dulu lewat **Tambah worker**.
+
+Di ruang kerja tim, hanya owner dan admin tim yang bisa mengubahnya. Lihat [Worker](../workers/overview.md).
+
+## Profil publik Anda
+
+Setiap akun punya halaman profil publik di `/u/` diikuti username, misalnya `https://dnocs.devetek.app/u/prakasa`. Halaman ini menampilkan nama, avatar, username, dan tanggal bergabung, tetapi tidak pernah menampilkan email. Hanya orang yang sudah masuk ke dPanel yang bisa membukanya.
+
+![Halaman profil publik berisi avatar, nama, username, dan tanggal bergabung](../../assets/getting-started/public-profile.webp 'Profil publik menunjukkan siapa seseorang di dPanel, tanpa detail kontak.')
+
+Di seluruh dPanel, nama seseorang tertaut ke halaman ini: pemilik server, kunci SSH, atau akun cloud, orang yang menjalankan build, dan orang yang memulai operasi di **Aktivitas terbaru**. Ubah isinya lewat **Ubah profil**.
+
 ## Langkah berikutnya
 
-Pilih ruang kerja yang akan dipakai. Lihat [Ruang kerja](./workspaces.md). Setelah itu, kenali [dasbor](./dashboard.md).
+Pilih ruang kerja yang akan dipakai. Lihat [Ruang kerja](./workspaces.md). Setelah itu, kenali [dasbor](./dashboard.md), atau ikuti [Langkah pertama Anda](./first-steps.md).
+
+## Pertanyaan yang sering diajukan
+
+### Bisakah saya masuk tanpa akun Google?
+
+Bisa. Buat akun lewat **Daftar**, lalu masuk dengan username dan password.
+
+### Bagaimana mengatur ulang password yang terlupa?
+
+Tekan **Lupa password?**. dPanel belum bisa mengatur ulang password lewat email; dialog yang muncul berisi kontak dukungan yang bisa Anda hubungi.
+
+### Bisakah saya mengganti username atau email?
+
+Tidak dari halaman profil. **Ubah profil** hanya mengganti nama lengkap, avatar, dan password.
+
+### Siapa yang bisa melihat profil publik saya?
+
+Orang yang sudah masuk ke dPanel dan membuka alamat `/u/` Anda atau menekan nama Anda di sebuah daftar. Isinya hanya nama, avatar, username, dan tanggal bergabung, tanpa email.

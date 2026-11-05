@@ -7,6 +7,8 @@ sidebar_icon: app-window
 
 Aplikasi di dPanel adalah kode Anda dari repositori GitHub, yang dibangun dan berjalan sebagai layanan systemd di salah satu server milik Anda sendiri. dPanel tidak menyimpan kodenya: dPanel membaca repositori dan branch yang Anda tunjuk, menjalankan perintah build Anda di server, menjalankan hasilnya sebagai layanan, dan menyimpan setiap build agar Anda bisa melakukan rollback.
 
+**Layanan** di sini berarti layanan systemd: program yang dijalankan Linux untuk Anda, tetap hidup di latar belakang, dan menyala lagi setelah server reboot. Anda tidak perlu menyiapkannya sendiri. Lihat [Glosarium](../getting-started/glossary.md) untuk istilah ini dan istilah lain.
+
 ## Tiga langkahnya
 
 1. **Tunjuk repositori.** Hubungkan GitHub, lalu pilih repositori dan branch yang akan dibangun.
@@ -36,7 +38,7 @@ Buka **Aplikasi** di sidebar. Halaman ini menampilkan semua aplikasi di workspac
 | Perlu perhatian | Build atau rilis terakhir gagal. Buka aplikasinya untuk melihat penyebabnya. |
 | Tidak berjalan  | Belum ada yang dirilis, atau layanannya sedang berhenti.                     |
 
-Daftarnya terbuka sebagai tabel, berisi status, repositori sumber, server, dan alamat publik setiap aplikasi. Gunakan **Cari berdasarkan nama aplikasi** untuk menemukan aplikasi dengan cepat. Pilih salah satu baris untuk membukanya.
+Daftarnya terbuka sebagai tabel, berisi status, repositori sumber, server, dan alamat publik setiap aplikasi. Gunakan **Cari berdasarkan nama aplikasi** untuk menemukan aplikasi dengan cepat; huruf besar dan kecil tidak dibedakan. Pilih salah satu baris untuk membukanya.
 
 Tombol GitHub di bagian atas menunjukkan akun yang dipakai dPanel untuk membaca repositori, misalnya **Terhubung ke GitHub sebagai** login Anda. Jika tertulis **Hubungkan ulang GitHub**, GitHub tidak lagi menerima sesi yang tersimpan. Masuk kembali sebelum membangun aplikasi.
 
@@ -51,9 +53,29 @@ Setiap aplikasi punya empat tab.
 | Log        | Membaca log layanan yang berjalan, juga log load balancer jika ada.                  |
 | Pengaturan | Meninjau dan mengubah cara aplikasi dibangun dan dijalankan, atau menghapusnya.      |
 
+Orang ditampilkan dengan namanya: siapa yang menjalankan setiap build, siapa pemilik aplikasinya. Pilih sebuah nama untuk membuka [profil publik](../teams/public-profiles.md) orang itu.
+
 ## Langkah berikutnya
 
 - [Membuat aplikasi](./create-an-application.md) dari repositori GitHub.
 - [Rilis dan rollback](./deployments-and-rollback.md): rilis commit baru, atau kembali ke build sebelumnya.
 - [Variabel environment](./environment-variables.md) untuk pengaturan dan rahasia.
 - Publikasikan di domain dengan HTTPS lewat [load balancer](../networking/load-balancers.md).
+
+## Pertanyaan yang sering diajukan
+
+### Apakah dPanel menyimpan kode saya?
+
+Tidak. Kode Anda tetap di repositori GitHub, dan berjalan di server milik Anda. dPanel menghubungkan keduanya: meng-clone repositori di server, membangunnya di sana, lalu menjalankannya.
+
+### Bisakah satu aplikasi berjalan di beberapa server?
+
+Bisa. Setiap server membangun dan menjalankan salinannya sendiri. Rilis build ke lebih dari satu server lewat **Bangun dan rilis**, dan lihat setiap salinannya di **Di server**.
+
+### Apa arti "Perlu perhatian"?
+
+Build atau rilis terakhir gagal. Buka aplikasinya, masuk ke **Rilis**, lalu tekan **Log** pada build yang gagal. Baris-baris terakhir biasanya menyebut langkah dan galatnya.
+
+### Bisakah saya mengelola aplikasi dari terminal?
+
+Bisa. Alat baris perintah dnocs punya `dnocs application list`, `detail`, `create`, `deploy`, dan `delete`. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasangnya.

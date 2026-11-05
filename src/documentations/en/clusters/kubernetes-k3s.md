@@ -1,6 +1,6 @@
 ---
 title: Kubernetes with k3s
-description: Create a k3s Kubernetes cluster on your dPanel servers step by step, open a terminal on its node, run your first app, and serve it on your own domain with HTTPS.
+description: Create a k3s Kubernetes cluster on your dPanel servers step by step, run your first app, and serve it on your own domain with HTTPS.
 sidebar_position: 3
 sidebar_icon: rocket
 sidebar_label: Kubernetes with k3s
@@ -20,7 +20,7 @@ You need servers that dPanel already manages and that read **Ready**. This guide
 | kube-k3s-2 | **Agent**           | 2 CPU, 4 GB, Ubuntu 24.04 |
 
 - **Size:** 2 GB of memory or more per server. amd64, arm64 or armhf (Raspberry Pi) all work.
-- **System:** Ubuntu 22.04 or 24.04.
+- **System:** Ubuntu. This guide was tested on Ubuntu 24.04.
 - **Same region** for every server, not in any group, without Docker, k3s or RKE2, and with the dPanel firewall off.
 
 A fresh server launched from dPanel meets all of this. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
@@ -183,3 +183,32 @@ Delete the load balancer first if you made one for the cluster.
 | The status reads **Failed**                                 | Open the last execution from the **Cluster** tab to read the error, fix it, then press **Install again**.                                                               |
 | `kubectl` says permission denied                            | Start the command with `sudo k3s kubectl`.                                                                                                                              |
 | The domain doesn't answer                                   | Check `curl http://127.0.0.1:30080` on kube-k3s-1 first, then the load balancer's status and **Logs**.                                                                  |
+
+## From the terminal
+
+The same cluster can be created with the `dnocs` CLI, using the server IDs from `dnocs server list`:
+
+```bash
+dnocs cluster create --name kube-k3s --engine k3s --server <ID of the Server node> --agent <ID of the Agent node>
+dnocs cluster detail --id <cluster ID>
+```
+
+`dnocs cluster install` installs again after a failure, and `dnocs cluster uninstall` and `dnocs cluster delete` remove it. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install `dnocs`.
+
+## Frequently asked questions
+
+### How long does the install take?
+
+About 10 minutes for two servers. You can close the wizard; the install keeps running and the **Cluster** tab shows its progress.
+
+### Can I add a node to the cluster later?
+
+Not yet. The servers and their roles are fixed when you create the cluster. To change them, uninstall and delete the cluster, then create a new one.
+
+### How do I use kubectl from my own computer?
+
+Downloading a kubeconfig is not available yet. Use **Open terminal** on the **Server** node and run `sudo k3s kubectl` there.
+
+### The install failed. What now?
+
+Open the last execution from the **Cluster** tab to read the error, fix the cause, then press **Install again**. It uses the same servers, roles, engine and version.

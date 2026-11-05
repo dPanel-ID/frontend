@@ -5,6 +5,7 @@ import {
   AppWindowIcon,
   ArrowRightIcon,
   BookOpenIcon,
+  BoxesIcon,
   CirclePlayIcon,
   CloudIcon,
   DatabaseIcon,
@@ -12,10 +13,13 @@ import {
   GlobeIcon,
   KeyRoundIcon,
   LifeBuoyIcon,
+  ListChecksIcon,
   NetworkIcon,
   RocketIcon,
   ScrollTextIcon,
   ServerIcon,
+  Settings2Icon,
+  SparklesIcon,
   UsersIcon,
 } from 'lucide-react';
 
@@ -95,7 +99,9 @@ const SECTION_HEADING =
  */
 const MODULE_ICONS: Record<string, ComponentType<{ className?: string }>> = {
   'getting-started': RocketIcon,
+  ai: SparklesIcon,
   applications: AppWindowIcon,
+  clusters: BoxesIcon,
   databases: DatabaseIcon,
   domains: GlobeIcon,
   logs: ScrollTextIcon,
@@ -106,6 +112,8 @@ const MODULE_ICONS: Record<string, ComponentType<{ className?: string }>> = {
   'ssh-keys': KeyRoundIcon,
   teams: UsersIcon,
   troubleshooting: LifeBuoyIcon,
+  tutorials: ListChecksIcon,
+  workers: Settings2Icon,
 };
 
 /** The introduction copy for an app locale; unknown locales read in English. */

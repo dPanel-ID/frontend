@@ -1,6 +1,6 @@
 {
   "label": "Tutorials",
-  "position": 2,
+  "position": 3,
   "description": "Follow one page from an empty account to a live website: a server, its software, a database, the application and a domain with HTTPS.",
   "app": {
     "label": "Open the dashboard",

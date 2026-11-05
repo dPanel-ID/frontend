@@ -84,3 +84,17 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick DigitalOcean in
 - To rotate the token, create a new one in the same team and replace it with **Update credentials** on the cloud account. See [Rotating a credential](./cloud-credentials-security.md#rotating-a-credential).
 - To cut dPanel off, delete the token under **API**, **Tokens**. Running servers keep running. See [what happens when you revoke](./cloud-credentials-security.md#if-you-revoke-a-credential).
 - More in [Cloud credentials and security](./cloud-credentials-security.md).
+
+## Frequently asked questions
+
+### Who pays for the server?
+
+DigitalOcean bills you directly, because the server runs in your own account. dPanel does not resell machines. Delete the server in dPanel when you are done, so the provider stops charging. See [Delete a server](../delete-a-server.md).
+
+### Can I also use the dPanel firewall on this server?
+
+Yes. The dPanel [firewall](../firewall.md) runs on the server itself, behind DigitalOcean's own network rules, so a port must be open in both to be reached.
+
+### What happens to my servers if I revoke the credential?
+
+They keep running, but dPanel can no longer launch or delete machines with it. See [Cloud credentials and security](./cloud-credentials-security.md#if-you-revoke-a-credential).
