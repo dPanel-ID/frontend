@@ -81,9 +81,7 @@ export default function AppRow(props: AppRowProps) {
   const language = data.configDefs.lifecycle?.setup.languages[0];
   const detailParams = { id: String(data.id) };
 
-  const autoDeploy = data.configDefs.cicd.autoDeploy;
   const branch =
-    (autoDeploy.enabled ? autoDeploy.fromBranch : undefined) ||
     data.additionalInfo.latestArtifactBranch ||
     data.additionalInfo.defaultBranch;
 

@@ -85,15 +85,7 @@ The build and the deploy run on the machine itself. Apps listen on the machine, 
 
 ![The goexample application page: Live, the current deployment from the private-autodeploy-test branch on home-server, one server serving, the last build passed, port 3000](../../assets/servers/private-app-detail.webp)
 
-## Step 6: Deploy automatically on every push
-
-On the **Applications** page, open the application's menu, choose **Edit**, tick **Enable auto deployment** and pick the branch. Save.
-
-![The Edit Application panel with Enable auto deployment ticked and Deploy from branch set to private-autodeploy-test](../../assets/servers/private-app-edit.webp)
-
-From now on, every push to that branch builds and deploys the pushed commit on the machine. In our test, a push was live on `home-server` about a minute and a half later.
-
-## Step 7: Open a terminal
+## Step 6: Open a terminal
 
 Choose **Open terminal** at the top of the server page. You get a root shell on the machine in your browser, relayed through the agent, with no SSH. From your computer, `dnocs server exec --id <id> --command '<command>'` runs a command the same way.
 
@@ -109,7 +101,7 @@ Choose **Open terminal** at the top of the server page. You get a root shell on 
 | Manage Linux users | |
 | Install modules such as MariaDB, PostgreSQL, Redis or Docker | |
 | Open MariaDB and PostgreSQL in the database manager, with import and export | |
-| Build and deploy applications, also automatically on every push | |
+| Build and deploy applications | |
 | Open a terminal in the browser or with `dnocs server exec` | |
 | Add load balancers and domains, when the machine is reachable from the internet | |
 
