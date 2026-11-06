@@ -36,7 +36,9 @@ export function agentHealth(server: AgentServer, now: number): AgentHealth {
     }
   }
 
-  if (agent.upgradeAvailable && agent.newVersion) {
+  // Only a running server's agent can take an upgrade; a deleted, failed or
+  // installing one would only add noise.
+  if (state.status === 'ready' && agent.upgradeAvailable && agent.newVersion) {
     health.upgrade = {
       current: agent.version,
       next: agent.newVersion,
