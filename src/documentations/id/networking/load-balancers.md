@@ -35,7 +35,7 @@ Setiap engine melayani load balancer yang sama: HTTPS dengan sertifikat gratis, 
 
 ## Membuat load balancer
 
-Buka **Load Balancer** di sidebar, lalu tekan **Buat load balancer**. Formulirnya punya empat langkah: **Gateway**, **Domain**, **Routing**, dan **Tinjau**. Panel tinjauan **Load balancer** di kanan bertuliskan **Mulai dengan server gateway** sampai Anda memilih server, lalu menghitung apa yang masih kurang.
+Anda juga bisa meminta asisten menyiapkannya, misalnya "Pasang aplikasi saya di app.example.com dengan HTTPS"; lihat [Kumpulan contoh perintah](../ai/prompt-cookbook.md). Untuk membuatnya sendiri, buka **Load Balancer** di sidebar, lalu tekan **Buat load balancer**. Formulirnya punya empat langkah: **Gateway**, **Domain**, **Routing**, dan **Tinjau**. Panel tinjauan **Load balancer** di kanan bertuliskan **Mulai dengan server gateway** sampai Anda memilih server, lalu menghitung apa yang masih kurang.
 
 ### Langkah 1: Gateway
 
@@ -141,6 +141,7 @@ Kotak **Sertifikat** menampilkan penerbit dan sisa hari, misalnya **Let's Encryp
 | **Kedaluwarsa**        | Sertifikat sudah habis; pengunjung melihat peringatan                    |
 | **Belum terbit**       | Belum ada sertifikat. Sertifikat terbit setelah nama mengarah ke gateway |
 | **Tidak dipakai**      | Load balancer ini melayani HTTP biasa                                    |
+| **Tidak tersedia**     | dPanel tidak bisa membaca sertifikat dari gateway. Coba lagi nanti       |
 
 | Tab             | Kegunaannya                                                                                          |
 | --------------- | ---------------------------------------------------------------------------------------------------- |
@@ -164,11 +165,24 @@ Tab **Log** menampilkan request yang sampai ke gateway, dengan judul **Permintaa
 ![Tab Log: rentang waktu, saringan, unduhan, dan tombol muat ulang di atas tabel request](../../assets/networking/lb-detail-logs.webp)
 
 - **Rentang waktu**: bawaannya 10 menit terakhir. Pilih preset sampai **10 hari terakhir**, atau **Rentang khusus** dalam 10 hari terakhir.
-- **Halaman**: 200 baris per halaman, terbaru lebih dulu. Bagian bawahnya bertuliskan, misalnya, **Baris 1–200 dari 201, terbaru dulu**, lengkap dengan tombol halaman.
+- **Halaman**: 200 baris per halaman. Halaman 1 berisi baris terbaru; di dalam satu halaman, baris terlama ada di atas dan terbaru di bawah. Bagian bawahnya bertuliskan, misalnya, **Baris 1–200 dari 201, terbaru dulu**, lengkap dengan tombol halaman.
 - **Unduh**: **Halaman ini**, atau **Semua di rentang waktu ini**, sebagai berkas `.log`.
 - **Segarkan** mengambil baris terbaru. **Muat ulang otomatis** mati secara bawaan; nyalakan untuk setiap 30 detik, setiap menit, atau setiap 5 menit.
 
 Kontrol bersama ini dijelaskan di [Rentang waktu dan pembaruan](../logs/time-range-and-refresh.md) dan [Mengunduh log](../logs/download-logs.md).
+
+Setiap baris berbunyi seperti permintaan yang dicatatnya: metode, domain dan path, status, serta waktu yang dibutuhkan, misalnya `GET app.example.com/api/info → 200 · 148 ms`. Baris dengan status 4xx ditampilkan sebagai peringatan dan 5xx sebagai error, sehingga permintaan yang gagal mudah terlihat. Pilih sebuah baris untuk melihat seluruh detail permintaannya, seperti alamat klien, ukuran respons, dan header.
+
+### Dari terminal
+
+Permintaan yang sama juga tersedia di [CLI dnocs](../ai/ai-in-the-terminal.md):
+
+```bash
+dnocs load-balancer log --id 31                 # 10 menit terakhir
+dnocs load-balancer log --id 31 --since 24h     # hingga 240h (10 hari)
+dnocs load-balancer log --id 31 --page 2 --limit 500
+dnocs load-balancer log --id 31 --json          # setiap baris beserta field-nya
+```
 
 ## Menghapus load balancer
 

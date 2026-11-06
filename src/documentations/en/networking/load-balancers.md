@@ -35,7 +35,7 @@ Every engine serves the same load balancer: HTTPS with free certificates, path r
 
 ## Create a load balancer
 
-Open **Load Balancers** in the sidebar and press **Create a load balancer**. The form has four steps: **Gateway**, **Domain**, **Routing** and **Review**. The **Load balancer** review panel on the right reads **Start with a gateway server** until you pick one, then counts what is still missing.
+You can also ask the assistant to set one up, for example "Put my app on app.example.com with HTTPS"; see [Put an app on a domain](../ai/prompt-cookbook.md#put-an-app-on-a-domain). To do it yourself, open **Load Balancers** in the sidebar and press **Create a load balancer**. The form has four steps: **Gateway**, **Domain**, **Routing** and **Review**. The **Load balancer** review panel on the right reads **Start with a gateway server** until you pick one, then counts what is still missing.
 
 ### Step 1: Gateway
 
@@ -134,13 +134,14 @@ Select a load balancer in the list to open its page. The header shows the domain
 
 The **Certificate** tile shows the issuer and the days left, such as **Let's Encrypt · 85 days left**, with its state:
 
-| State              | Meaning                                                                |
-| ------------------ | ---------------------------------------------------------------------- |
-| **Valid**          | The certificate is in date. dPanel renews it for you                   |
-| **Expiring soon**  | The certificate is close to its end date                               |
-| **Expired**        | The certificate has run out; visitors see a warning                    |
-| **Not issued yet** | No certificate yet. It is issued once the name resolves to the gateway |
-| **Not used**       | The load balancer serves plain HTTP                                    |
+| State              | Meaning                                                                 |
+| ------------------ | ----------------------------------------------------------------------- |
+| **Valid**          | The certificate is in date. dPanel renews it for you                    |
+| **Expiring soon**  | The certificate is close to its end date                                |
+| **Expired**        | The certificate has run out; visitors see a warning                     |
+| **Not issued yet** | No certificate yet. It is issued once the name resolves to the gateway  |
+| **Not used**       | The load balancer serves plain HTTP                                     |
+| **Unavailable**    | dPanel could not read the certificate from the gateway. Try again later |
 
 | Tab           | Use it to                                                                                             |
 | ------------- | ----------------------------------------------------------------------------------------------------- |
@@ -164,11 +165,24 @@ The **Logs** tab lists the requests reaching the gateway, titled **Load balancer
 ![The Logs tab: time range, filter, Download and Refresh above the request table](../../assets/networking/lb-detail-logs.webp)
 
 - **Time range**: the last 10 minutes by default. Pick a preset up to **Last 10 days**, or a **Custom range** within the last 10 days.
-- **Paging**: 200 lines per page, newest first. The footer reads, for example, **Lines 1–200 of 201, newest first**, with the page buttons.
+- **Paging**: 200 lines per page. Page 1 holds the newest lines; within a page the oldest is at the top and the newest at the bottom. The footer reads, for example, **Lines 1–200 of 201, newest first**, with the page buttons.
 - **Download**: **This page**, or **Everything in this time range**, as a `.log` file.
 - **Refresh** loads the newest lines. **Auto-refresh** is off by default; turn it on for every 30 seconds, minute or 5 minutes.
 
+Each row reads as the request it records: the method, the domain and path, the status and the time taken, such as `GET app.example.com/api/info → 200 · 148 ms`. A row with a 4xx status is shown as a warning and a 5xx status as an error, so failing requests stand out. Select a row to see everything about the request, such as the client address, the response size and the headers.
+
 The shared controls are explained in [Time range and refresh](../logs/time-range-and-refresh.md) and [Download logs](../logs/download-logs.md).
+
+### From the terminal
+
+The same requests are available in the [dnocs CLI](../ai/ai-in-the-terminal.md):
+
+```bash
+dnocs load-balancer log --id 31                 # the last 10 minutes
+dnocs load-balancer log --id 31 --since 24h     # up to 240h (10 days)
+dnocs load-balancer log --id 31 --page 2 --limit 500
+dnocs load-balancer log --id 31 --json          # each line with its parsed fields
+```
 
 ## Delete a load balancer
 
