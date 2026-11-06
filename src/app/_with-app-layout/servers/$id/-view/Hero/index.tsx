@@ -28,6 +28,7 @@ import {
   isPrivateServer,
   serverDisplayName,
 } from '@/entities/server/lib/describeServer';
+import { AgentHealthNotice } from '@/entities/server/ui/AgentHealthNotice';
 import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import { ServerErrorDialog } from '@/entities/server/ui/ServerErrorDialog';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
@@ -257,6 +258,8 @@ export default guard(function Hero() {
             </Link>
           </div>
         )}
+
+        <AgentHealthNotice server={server} canUpgrade />
 
         {status === 'failed' && (
           <ExecutionErrorBanner

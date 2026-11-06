@@ -4475,5 +4475,26 @@
     "dDns": "Domain & DNS",
     "cloudProject": "Cloud Projects",
     "secretMgr": "Secret Managers"
+  },
+  "entities": {
+    "server": {
+      "agentHealth": {
+        "copy": "Copy command",
+        "quiet": {
+          "title": "Agent stopped reporting {distance}",
+          "body": "dPanel last heard from this server's agent at {time}. Until it reports again, live usage, module lists, deployments and other jobs on this server cannot run. On the server, restart the agent:",
+          "check": "If it does not come back, check sudo systemctl status {unit} and sudo journalctl -u {unit} -n 50 on the server, and that it can reach dPanel over HTTPS."
+        },
+        "upgrade": {
+          "title": "Agent update available: {current} → {next}",
+          "body": "New dPanel features may need the newer agent. Upgrading keeps the old agent and rolls back automatically if the new one cannot reach dPanel within 3 minutes.",
+          "setupBody": "This agent is an old build that cannot upgrade itself. Run the server setup again to install {next}.",
+          "action": "Upgrade to {next}",
+          "queued": "Agent upgrade to {version} queued",
+          "queuedBody": "Upgrade to {version} queued. The agent restarts and reports the new version within a few minutes.",
+          "failedTitle": "Agent upgrade not queued"
+        }
+      }
+    }
   }
 }

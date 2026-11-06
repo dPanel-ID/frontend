@@ -7,6 +7,12 @@ export const agent = z.object({
   version: z.string().catch(''),
   domain: z.string().optional(),
   httpPort: z.number().catch(0),
+  /** When the agent last reported to dPanel (ISO time). */
+  lastSeenAt: z.string().optional(),
+  /** True when a newer agent release than the one running exists. */
+  upgradeAvailable: z.boolean().catch(false),
+  /** The release dPanel installs today. */
+  newVersion: z.string().optional(),
 });
 
 export type CloudProvider = z.output<typeof cloudProvider>;

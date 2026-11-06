@@ -24,6 +24,7 @@ import * as Origin$IdPortInUsed from './server.origin.$id.port-in-used';
 import * as Origin$IdUser from './server.origin.$id.user';
 import * as Origin$IdUserCreate from './server.origin.$id.user.create';
 import * as Origin$IdUserDelete from './server.origin.$id.user.delete';
+import * as AgentUpgrade$Id from './server.agent-upgrade.$id';
 import * as Setup$Id from './server.setup.$id';
 import * as Update$Id from './server.update.$id';
 
@@ -81,6 +82,9 @@ const Root = {
         Delete: Origin$IdUserDelete,
       },
     },
+  },
+  AgentUpgrade: {
+    $Id: AgentUpgrade$Id,
   },
   Setup: {
     $Id: Setup$Id,
