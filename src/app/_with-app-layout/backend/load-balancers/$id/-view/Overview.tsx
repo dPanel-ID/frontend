@@ -118,13 +118,18 @@ function CertificateTile(props: { loadBalancerId: string }) {
         label={t('page.loadBalancersDetail.tiles.certificate')}
         loading={response.$status === 'loading'}
         value={t('page.loadBalancersDetail.tiles.certificateUnavailable')}
-        hint={response.$status === 'failed' ? response.error.message : undefined}
+        hint={
+          response.$status === 'failed'
+            ? t('page.loadBalancersDetail.tiles.certificateUnavailableHint')
+            : undefined
+        }
       />
     );
   }
 
   const status = response.status;
-  let hint = response.message;
+  // The server's own message is English only; say it in the reader's language.
+  let hint: string | undefined;
   if (status === 'none') {
     hint = t('page.loadBalancersDetail.tiles.certificateNoneHint');
   } else if (response.issuer && response.days_left != null) {
@@ -132,6 +137,8 @@ function CertificateTile(props: { loadBalancerId: string }) {
       issuer: response.issuer,
       days: response.days_left,
     });
+  } else if (status === 'missing') {
+    hint = t('page.loadBalancersDetail.tiles.certificateMissingHint');
   }
 
   return (
@@ -140,7 +147,7 @@ function CertificateTile(props: { loadBalancerId: string }) {
       tone={CERTIFICATE_TONE[status]}
       label={t('page.loadBalancersDetail.tiles.certificate')}
       value={t(CERTIFICATE_LABEL[status])}
-      hint={hint || undefined}
+      hint={hint}
     />
   );
 }

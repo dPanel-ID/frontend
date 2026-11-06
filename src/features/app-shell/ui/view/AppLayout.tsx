@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 
-import { iife } from '@/shared/libs/browser/fn';
 import { useBreakpoint } from '@/shared/libs/react-hooks/useBreakpoint';
 import { cn } from '@/shared/libs/tailwind/cn';
 
@@ -20,15 +19,13 @@ const AppLayoutContent = (props: Props) => {
 
   const isDesktop = useBreakpoint('md', true);
 
+  // The margin follows CSS breakpoints, not isDesktop: the server renders the
+  // desktop layout, and an inline margin would then slide the page in from
+  // the right on phones (or stay shifted where the transition never runs).
   const cnContent = cn(
-    'min-w-[calc(100%_-_280px)] transition-all pt-16 md:pt-0 md:ml-[280px]',
+    'min-w-[calc(100%_-_280px)] transition-[margin] pt-16 md:pt-0 md:ml-[280px]',
+    isCollapsed && 'md:ml-24',
   );
-
-  const contentMarginLeft = iife(() => {
-    if (!isDesktop) return 0;
-
-    return isCollapsed ? 96 : 280;
-  });
 
   const sidebarWidth = isCollapsed ? 96 : 280;
 
@@ -36,7 +33,7 @@ const AppLayoutContent = (props: Props) => {
     <main className="relative">
       {isDesktop ? (
         <aside
-          className="h-svh fixed"
+          className="h-svh fixed hidden md:block"
           data-collapsed={isCollapsed}
           style={{ width: sidebarWidth }}
         >
@@ -47,7 +44,7 @@ const AppLayoutContent = (props: Props) => {
           <Mobile />
         </header>
       )}
-      <div className={cnContent} style={{ marginLeft: contentMarginLeft }}>
+      <div className={cnContent}>
         <article className="max-w-[1280px] m-auto">{children}</article>
       </div>
     </main>
