@@ -1361,7 +1361,7 @@
             "badge": "Tanpa IP publik",
             "title": "Daftarkan mesin privat",
             "description": "Tambahkan PC, server rumahan, atau VM di balik router. Mesin ini tidak perlu bisa dijangkau dari internet: Anda menjalankan satu perintah di mesin itu, lalu dPanel berkomunikasi lewat agen yang dipasangnya.",
-            "limits": "Anda bisa melihat file, layanan, log, dan pemakaiannya, membuka terminal, memasang modul seperti MariaDB atau Docker, serta deploy aplikasi yang Anda buka dari jaringan sendiri. Load balancer tidak tersedia.",
+            "limits": "Anda bisa melihat file, layanan, log, dan pemakaiannya, membuka terminal, memasang modul seperti MariaDB atau Docker, serta deploy aplikasi yang Anda buka dari jaringan sendiri.",
             "steps": {
               "cli": "Pasang alat baris perintah dnocs di mesin itu (Linux dengan systemd, Intel/AMD atau ARM).",
               "signIn": "Masuk dengan dnocs auth login lalu pilih ruang kerja tempat mesin ini berada.",
@@ -1593,7 +1593,8 @@
         "lanAddress": "Alamat lokal",
         "connection": "Koneksi",
         "connectionPrivate": "Lewat agen dPanel (tanpa IP publik atau SSH)",
-        "loadBalancersPrivate": "Tidak tersedia di server privat"
+        "publicAddress": "Alamat publik",
+        "publicAddressUnknown": "Tidak diketahui: agen terhubung dari jaringan privat"
       },
       "modules": {
         "title": "Modul terpasang",

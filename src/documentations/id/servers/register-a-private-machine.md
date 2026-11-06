@@ -51,7 +51,7 @@ Mesin itu kini muncul di halaman server dengan lencana **Private**. Alamatnya ad
 
 ## Langkah 2: Kenali halaman servernya
 
-Buka servernya. Server privat punya tab yang sama dengan server lain: pemakaian langsung, modul, layanan, pengguna, jaringan, berkas, log, dan pengaturan. Bagian detail menjelaskan cara dPanel menjangkaunya: **Local address** dan **Connection: Through the dPanel agent**, bukan login SSH. Load balancer ditandai tidak tersedia, karena mesin ini tidak bisa dijangkau dari internet.
+Buka servernya. Server privat punya tab yang sama dengan server lain: pemakaian langsung, modul, layanan, pengguna, jaringan, berkas, log, dan pengaturan. Bagian detail menjelaskan cara dPanel menjangkaunya: **Local address**, **Public address** (IP yang dipakai agen untuk terhubung ke dPanel, bila IP itu publik), dan **Connection: Through the dPanel agent**, bukan login SSH.
 
 ![Halaman home-server: pemakaian CPU, memori, dan disk secara langsung, load balancer tidak tersedia di server privat, serta detail Local address 172.17.0.2, koneksi lewat agen dPanel, dan Agent v0.1.15](../../assets/servers/private-overview.webp)
 
@@ -103,14 +103,22 @@ Pilih **Open terminal** di bagian atas halaman server. Anda mendapat shell root 
 
 | Bisa | Tidak tersedia |
 | --- | --- |
-| Melihat pemakaian CPU, memori, dan disk | Load balancer dan domain |
-| Menelusuri dan mengubah berkas | Cluster Kubernetes bersama server lain |
-| Menyalakan, mematikan, dan memulai ulang layanan, membaca log | Mengubah detail koneksi SSH (memang tidak ada) |
+| Melihat pemakaian CPU, memori, dan disk | Cluster Kubernetes bersama server lain |
+| Menelusuri dan mengubah berkas | Mengubah detail koneksi SSH (memang tidak ada) |
+| Menyalakan, mematikan, dan memulai ulang layanan, membaca log | |
 | Mengelola pengguna Linux | |
 | Memasang modul seperti MariaDB, PostgreSQL, Redis, atau Docker | |
 | Membuka MariaDB dan PostgreSQL di pengelola database, termasuk impor dan ekspor | |
 | Build dan deploy aplikasi, juga otomatis di setiap push | |
 | Membuka terminal di browser atau dengan `dnocs server exec` | |
+| Menambah load balancer dan domain, bila mesin bisa dijangkau dari internet | |
+
+## Memasang load balancer
+
+Mesin privat tetap bisa dijangkau dari internet: VPS yang Anda daftarkan dari dalam, server rumahan dengan port 80 dan 443 diteruskan di router, atau VM cloud di VPC dengan IP publik. dPanel tidak bisa membedakannya, jadi Anda bisa menambah load balancer ke server privat mana pun; pemasangannya lewat agen seperti hal lain.
+
+- Dengan domain yang dikelola di dPanel, record DNS mengarah ke **Public address** server. Bila dPanel tidak mengetahuinya (agen terhubung dari jaringan privat), gunakan domain Anda sendiri dan arahkan sendiri ke server.
+- Pastikan lalu lintas port 80 dan 443 sampai ke mesin, atau load balancer tidak bisa mendapatkan sertifikat HTTPS.
 
 Jika mesin mati atau offline saat Anda memulai pemasangan atau deploy, pekerjaannya menunggu lalu gagal; jalankan lagi setelah mesin kembali menyala.
 
