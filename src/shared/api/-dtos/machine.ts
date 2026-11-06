@@ -19,6 +19,8 @@ export interface MachineAgentV1 {
   version?: string;
   status?: string;
   last_heartbeat_at?: string;
+  /** When the agent last reported to dPanel; absent when it never has. */
+  last_seen_at?: string;
   created_at?: string;
   updated_at?: string;
 }

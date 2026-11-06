@@ -4476,5 +4476,26 @@
     "dDns": "Domain & DNS",
     "cloudProject": "Proyek Cloud",
     "secretMgr": "Manajemen Kunci"
+  },
+  "entities": {
+    "server": {
+      "agentHealth": {
+        "copy": "Salin perintah",
+        "quiet": {
+          "title": "Agen berhenti melapor {distance}",
+          "body": "dPanel terakhir menerima laporan dari agen server ini pada {time}. Sampai agen melapor lagi, pemakaian langsung, daftar modul, deployment dan pekerjaan lain di server ini tidak bisa berjalan. Di server, jalankan ulang agen:",
+          "check": "Jika belum kembali, periksa sudo systemctl status {unit} dan sudo journalctl -u {unit} -n 50 di server, serta pastikan server bisa menjangkau dPanel lewat HTTPS."
+        },
+        "upgrade": {
+          "title": "Pembaruan agen tersedia: {current} → {next}",
+          "body": "Fitur dPanel yang baru bisa membutuhkan agen yang lebih baru. Pembaruan menyimpan agen lama dan otomatis kembali ke versi lama jika agen baru tidak bisa menjangkau dPanel dalam 3 menit.",
+          "setupBody": "Agen ini build lama yang tidak bisa memperbarui dirinya sendiri. Jalankan ulang setup server untuk memasang {next}.",
+          "action": "Perbarui ke {next}",
+          "queued": "Pembaruan agen ke {version} diantrekan",
+          "queuedBody": "Pembaruan ke {version} diantrekan. Agen akan dijalankan ulang dan melaporkan versi baru dalam beberapa menit.",
+          "failedTitle": "Pembaruan agen tidak diantrekan"
+        }
+      }
+    }
   }
 }

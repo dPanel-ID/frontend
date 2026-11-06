@@ -21,6 +21,7 @@ import type { LucideIcon } from 'lucide-react';
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import { serverDisplayName } from '@/entities/server/lib/describeServer';
+import { AgentHealthNotice } from '@/entities/server/ui/AgentHealthNotice';
 import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import { ServerErrorDialog } from '@/entities/server/ui/ServerErrorDialog';
 import { ServerIdentity } from '@/entities/server/ui/ServerIdentity';
@@ -243,6 +244,8 @@ export default function ServerCard(props: ServerCardProps) {
               }
             />
           </div>
+
+          <AgentHealthNotice server={server} canUpgrade={!readOnly} />
 
           {status === 'failed' && (
             <ExecutionErrorBanner
