@@ -37,12 +37,15 @@ export default function ResourceTable() {
       s.refresh,
     ]);
 
-  const data =
+  const shown =
     resources.$status === 'success'
       ? resources
       : resources.$status === 'loading'
         ? resources.prevData
         : undefined;
+  // While another tab loads, the previous tab's rows would sit under this
+  // tab's headings; show the placeholder instead.
+  const data = shown?.type === type ? shown : undefined;
 
   if (resources.$status === 'failed') {
     return <ResourceListState.Error {...resources} onRetry={refresh} />;
