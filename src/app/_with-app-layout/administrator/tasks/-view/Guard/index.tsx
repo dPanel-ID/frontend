@@ -7,9 +7,9 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { FallbackState } from '@/widgets/fallback-state';
 
 import { TaskListState } from '../-presentation/TaskListState';
-import { isAccessDenied } from '../../-lib/access-error';
-import { useAdminAccess } from '../../-model/access';
 import { useAdminTasksDataModel } from '../../-model/tasks-data';
+import { isAccessDenied } from '../../../-lib/access-error';
+import { useAdminAccess } from '../../../-model/access';
 
 interface GuardProps {
   children: ReactNode;

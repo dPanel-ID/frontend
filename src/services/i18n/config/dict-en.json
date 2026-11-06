@@ -716,7 +716,10 @@
         "description": "Tools for operating dPanel itself. Only accounts with the dpanel-admin role see this.",
         "tasksTitle": "Executor tasks",
         "tasksDescription": "See unfinished tasks of every workspace, and reclaim or delete a task that is stuck on a worker.",
-        "tasksCta": "Open executor tasks"
+        "tasksCta": "Open executor tasks",
+        "resourcesTitle": "All resources",
+        "resourcesDescription": "Browse servers, applications, load balancers, domains and SSH keys of every user and team, with each one's owner and workspace.",
+        "resourcesCta": "Open all resources"
       }
     },
     "applications": {
@@ -3409,6 +3412,63 @@
         "copyContent": "Copy content",
         "copied": "Copied {value}",
         "delete": "Delete"
+      }
+    },
+    "adminResources": {
+      "breadcrumbProfile": "Profile",
+      "breadcrumbAdmin": "All resources",
+      "badge": "Administrator only",
+      "headerTitle": "All resources",
+      "headerDesc": "Servers, applications, load balancers, domains and SSH keys of every user and team, newest first, with who owns each one and which workspace it lives in.",
+      "tabsLabel": "Resource type",
+      "tabs": {
+        "servers": "Servers",
+        "applications": "Applications",
+        "load_balancers": "Load balancers",
+        "domains": "Domains",
+        "ssh_keys": "SSH keys"
+      },
+      "searchPlaceholder": "Search by name or detail",
+      "columns": {
+        "servers": {
+          "name": "Server",
+          "kind": "Provider and status"
+        },
+        "applications": {
+          "name": "Application",
+          "kind": "Type"
+        },
+        "load_balancers": {
+          "name": "Load balancer",
+          "kind": "Engine and status"
+        },
+        "domains": {
+          "name": "Domain",
+          "kind": "DNS provider"
+        },
+        "ssh_keys": {
+          "name": "SSH key",
+          "kind": "Type"
+        },
+        "owner": "Owner",
+        "workspace": "Workspace",
+        "created": "Created"
+      },
+      "workspace": {
+        "personal": "Personal",
+        "team": "Team",
+        "unnamedTeam": "Unnamed team"
+      },
+      "unknownOwner": "Unknown owner",
+      "unnamed": "(no name)",
+      "total": "{count, plural, one {# resource} other {# resources}}",
+      "empty": {
+        "servers": "No servers yet.",
+        "applications": "No applications yet.",
+        "load_balancers": "No load balancers yet.",
+        "domains": "No domains yet.",
+        "ssh_keys": "No SSH keys yet.",
+        "search": "Nothing matches \"{search}\"."
       }
     },
     "adminTasks": {

@@ -68,3 +68,41 @@ export type AdminTaskGatewayV2 = z.infer<typeof schemaAdminTaskGatewayV2>;
 export type AdminTaskV2 = z.infer<typeof schemaAdminTaskV2>;
 export type AdminTaskReclaimV2 = z.infer<typeof schemaAdminTaskReclaimV2>;
 export type AdminTaskDeleteV2 = z.infer<typeof schemaAdminTaskDeleteV2>;
+
+/** Where a resource lives: a team's workspace, or its owner's own. */
+export const schemaAdminResourceWorkspaceV2 = z.object({
+  /** "team" or "personal". */
+  type: z.string().optional(),
+  id: z.string().optional(),
+  /** The team's name; absent for a personal workspace. */
+  name: z.string().optional(),
+});
+
+/** A server, application, load balancer, domain or SSH key of anyone. */
+export const schemaAdminResourceV2 = z.object({
+  id: z.number().optional(),
+  name: z.string().optional(),
+  detail: z.string().optional(),
+  kind: z.string().optional(),
+  status: z.string().optional(),
+  created_at: z.string().optional(),
+  workspace: schemaAdminResourceWorkspaceV2.nullish(),
+  /** Who owns it; never an email. */
+  owner: schemaPublicUser.nullish(),
+});
+
+/** One page of one resource type, with how many of each type exist. */
+export const schemaAdminResourceListV2 = z.object({
+  type: z.string().optional(),
+  page: z.number().optional(),
+  limit: z.number().optional(),
+  total: z.number().optional(),
+  counts: z.record(z.string(), z.number()).optional(),
+  items: z.array(schemaAdminResourceV2).nullish(),
+});
+
+export type AdminResourceWorkspaceV2 = z.infer<
+  typeof schemaAdminResourceWorkspaceV2
+>;
+export type AdminResourceV2 = z.infer<typeof schemaAdminResourceV2>;
+export type AdminResourceListV2 = z.infer<typeof schemaAdminResourceListV2>;

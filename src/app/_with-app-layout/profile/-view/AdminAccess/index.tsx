@@ -1,5 +1,11 @@
 import { Link } from '@tanstack/react-router';
-import { ArrowRightIcon, ListChecksIcon, ShieldIcon } from 'lucide-react';
+import {
+  ArrowRightIcon,
+  BoxesIcon,
+  ListChecksIcon,
+  ShieldIcon,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 import { useAuthModel } from '@/services/auth/model';
 import { useDevetekTranslations } from '@/services/i18n';
@@ -38,38 +44,69 @@ export default function AdminAccess() {
         </p>
       </header>
 
-      <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex min-w-0 items-start gap-3">
-          <span
-            className={cn(
-              'flex size-10 shrink-0 items-center justify-center rounded-xl border',
-              FLOW_ACCENTS.sky.icon,
-            )}
-            aria-hidden
-          >
-            <ListChecksIcon className="size-5" />
-          </span>
-          <div className="min-w-0">
-            <p className="text-sm font-semibold">{t('tasksTitle')}</p>
-            <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-              {t('tasksDescription')}
-            </p>
-          </div>
-        </div>
-
-        <Button
-          asChild
-          size="sm"
-          buttonStyle="outline"
-          buttonColor="secondary"
-          className="shrink-0"
-        >
-          <Link to="/administrator/tasks">
-            {t('tasksCta')}
-            <ArrowRightIcon />
-          </Link>
-        </Button>
+      <div className="divide-y">
+        <AdminEntry
+          icon={BoxesIcon}
+          to="/administrator/resources"
+          title={t('resourcesTitle')}
+          description={t('resourcesDescription')}
+          cta={t('resourcesCta')}
+        />
+        <AdminEntry
+          icon={ListChecksIcon}
+          to="/administrator/tasks"
+          title={t('tasksTitle')}
+          description={t('tasksDescription')}
+          cta={t('tasksCta')}
+        />
       </div>
     </section>
+  );
+}
+
+interface AdminEntryProps {
+  icon: LucideIcon;
+  to: '/administrator/resources' | '/administrator/tasks';
+  title: string;
+  description: string;
+  cta: string;
+}
+
+function AdminEntry(props: AdminEntryProps) {
+  const { cta, description, icon: Icon, title, to } = props;
+
+  return (
+    <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-w-0 items-start gap-3">
+        <span
+          className={cn(
+            'flex size-10 shrink-0 items-center justify-center rounded-xl border',
+            FLOW_ACCENTS.sky.icon,
+          )}
+          aria-hidden
+        >
+          <Icon className="size-5" />
+        </span>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold">{title}</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+            {description}
+          </p>
+        </div>
+      </div>
+
+      <Button
+        asChild
+        size="sm"
+        buttonStyle="outline"
+        buttonColor="secondary"
+        className="shrink-0"
+      >
+        <Link to={to}>
+          {cta}
+          <ArrowRightIcon />
+        </Link>
+      </Button>
+    </div>
   );
 }
