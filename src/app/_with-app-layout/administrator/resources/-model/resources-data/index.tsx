@@ -35,6 +35,8 @@ export const [AdminResourcesDataModelProvider, useAdminResourcesDataModel] =
     const resources = useAdapter(response, (raw) => {
       const total = raw.total ?? 0;
       return {
+        /** The type these rows are, so a tab never shows another tab's rows. */
+        type: raw.type,
         items: raw.items ?? [],
         counts: raw.counts ?? {},
         total,
