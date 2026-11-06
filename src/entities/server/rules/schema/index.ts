@@ -22,8 +22,10 @@ export const schemaServerCard = z.object({
   host: z.object({
     name: z.string().optional(),
     address: z.string().catch(''),
-    /** No public IP: dPanel reaches the server only through its agent. */
+    /** Reached only through its agent, never over SSH. */
     private: z.boolean().catch(false),
+    /** A private server's public IP, as its agent connects from it. */
+    publicAddress: z.string().optional(),
   }),
   state,
   ssh,
@@ -42,8 +44,10 @@ export const schemaServerDetail = z.object({
   host: z.object({
     name: z.string().catch(''),
     address: z.string().catch(''),
-    /** No public IP: dPanel reaches the server only through its agent. */
+    /** Reached only through its agent, never over SSH. */
     private: z.boolean().catch(false),
+    /** A private server's public IP, as its agent connects from it. */
+    publicAddress: z.string().optional(),
   }),
   state,
   ssh,

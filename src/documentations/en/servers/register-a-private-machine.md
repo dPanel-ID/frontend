@@ -51,7 +51,7 @@ The machine now appears on your servers page with a **Private** badge. Its addre
 
 ## Step 2: Look around the server page
 
-Open the server. A private server has the same tabs as any other server: live usage, modules, services, users, network, files, logs and settings. The details say how dPanel reaches it: **Local address** and **Connection: Through the dPanel agent**, instead of an SSH login. Load balancers are marked as not available, because nothing on the internet can reach the machine.
+Open the server. A private server has the same tabs as any other server: live usage, modules, services, users, network, files, logs and settings. The details say how dPanel reaches it: **Local address**, **Public address** (the IP the agent connects to dPanel from, when it is public) and **Connection: Through the dPanel agent**, instead of an SSH login.
 
 ![The home-server page: live CPU, memory and disk usage, Load balancers not available on a private server, and details with Local address 172.17.0.2, Connection through the dPanel agent and Agent v0.1.15](../../assets/servers/private-overview.webp)
 
@@ -103,14 +103,22 @@ Choose **Open terminal** at the top of the server page. You get a root shell on 
 
 | You can | Not available |
 | --- | --- |
-| See CPU, memory and disk usage | Load balancers and domains |
-| Browse and edit files | Kubernetes clusters with other servers |
-| Start, stop and restart services, read logs | Changing SSH connection details (there are none) |
+| See CPU, memory and disk usage | Kubernetes clusters with other servers |
+| Browse and edit files | Changing SSH connection details (there are none) |
+| Start, stop and restart services, read logs | |
 | Manage Linux users | |
 | Install modules such as MariaDB, PostgreSQL, Redis or Docker | |
 | Open MariaDB and PostgreSQL in the database manager, with import and export | |
 | Build and deploy applications, also automatically on every push | |
 | Open a terminal in the browser or with `dnocs server exec` | |
+| Add load balancers and domains, when the machine is reachable from the internet | |
+
+## Put a load balancer on it
+
+A private machine can still be reachable from the internet: a VPS you registered from inside, a home server with ports 80 and 443 forwarded on the router, or a cloud VM in a VPC with a public IP. dPanel cannot tell which, so you can add a load balancer to any private server; it is set up through the agent like everything else.
+
+- With a domain managed in dPanel, the DNS record points at the server's **Public address**. If dPanel knows none (the agent connects from a private network), use your own domain and point it at the server yourself.
+- Make sure traffic on ports 80 and 443 reaches the machine, or the load balancer cannot get its HTTPS certificate.
 
 If the machine is off or offline when you start an install or a deploy, the job waits and then fails; start it again once the machine is back.
 

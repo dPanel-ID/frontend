@@ -150,7 +150,6 @@ export default function OverviewTab() {
           tone="sky"
           label={t('loadBalancers')}
           value={overview.loadBalancers}
-          hint={isPrivate ? t('loadBalancersPrivate') : undefined}
           onClick={() =>
             navigate({
               to: '/backend/load-balancers',
@@ -184,6 +183,14 @@ export default function OverviewTab() {
               value={server?.host.address}
               mono
             />
+            {isPrivate && (
+              <Row
+                icon={GlobeIcon}
+                label={t('publicAddress')}
+                value={server.host.publicAddress ?? t('publicAddressUnknown')}
+                mono={!!server.host.publicAddress}
+              />
+            )}
             {isPrivate ? (
               <Row
                 icon={KeyRoundIcon}
