@@ -716,7 +716,10 @@
         "description": "Alat untuk mengoperasikan dPanel itu sendiri. Hanya akun dengan role dpanel-admin yang melihat ini.",
         "tasksTitle": "Tugas executor",
         "tasksDescription": "Lihat tugas yang belum selesai di semua workspace, lalu ambil alih atau hapus tugas yang macet di sebuah worker.",
-        "tasksCta": "Buka tugas executor"
+        "tasksCta": "Buka tugas executor",
+        "resourcesTitle": "Semua resource",
+        "resourcesDescription": "Telusuri server, aplikasi, load balancer, domain dan SSH key milik semua pengguna dan tim, lengkap dengan pemilik dan workspace-nya.",
+        "resourcesCta": "Buka semua resource"
       }
     },
     "applications": {
@@ -3410,6 +3413,63 @@
         "copyContent": "Salin isi",
         "copied": "{value} disalin",
         "delete": "Hapus"
+      }
+    },
+    "adminResources": {
+      "breadcrumbProfile": "Profil",
+      "breadcrumbAdmin": "Semua resource",
+      "badge": "Khusus administrator",
+      "headerTitle": "Semua resource",
+      "headerDesc": "Server, aplikasi, load balancer, domain dan SSH key milik semua pengguna dan tim, terbaru lebih dulu, lengkap dengan pemilik dan workspace tempatnya berada.",
+      "tabsLabel": "Jenis resource",
+      "tabs": {
+        "servers": "Server",
+        "applications": "Aplikasi",
+        "load_balancers": "Load balancer",
+        "domains": "Domain",
+        "ssh_keys": "SSH key"
+      },
+      "searchPlaceholder": "Cari berdasarkan nama atau detail",
+      "columns": {
+        "servers": {
+          "name": "Server",
+          "kind": "Provider dan status"
+        },
+        "applications": {
+          "name": "Aplikasi",
+          "kind": "Jenis"
+        },
+        "load_balancers": {
+          "name": "Load balancer",
+          "kind": "Engine dan status"
+        },
+        "domains": {
+          "name": "Domain",
+          "kind": "Provider DNS"
+        },
+        "ssh_keys": {
+          "name": "SSH key",
+          "kind": "Jenis"
+        },
+        "owner": "Pemilik",
+        "workspace": "Workspace",
+        "created": "Dibuat"
+      },
+      "workspace": {
+        "personal": "Pribadi",
+        "team": "Tim",
+        "unnamedTeam": "Tim tanpa nama"
+      },
+      "unknownOwner": "Pemilik tidak diketahui",
+      "unnamed": "(tanpa nama)",
+      "total": "{count} resource",
+      "empty": {
+        "servers": "Belum ada server.",
+        "applications": "Belum ada aplikasi.",
+        "load_balancers": "Belum ada load balancer.",
+        "domains": "Belum ada domain.",
+        "ssh_keys": "Belum ada SSH key.",
+        "search": "Tidak ada yang cocok dengan \"{search}\"."
       }
     },
     "adminTasks": {

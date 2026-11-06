@@ -33,6 +33,7 @@ import { Route as WithAppLayoutBackendCloudProjectsIndexRouteImport } from './ap
 import { Route as WithAppLayoutApplicationsCreateIndexRouteImport } from './app/_with-app-layout/applications/create/index'
 import { Route as WithAppLayoutApplicationsIdIndexRouteImport } from './app/_with-app-layout/applications/$id/index'
 import { Route as WithAppLayoutAdministratorTasksIndexRouteImport } from './app/_with-app-layout/administrator/tasks/index'
+import { Route as WithAppLayoutAdministratorResourcesIndexRouteImport } from './app/_with-app-layout/administrator/resources/index'
 import { Route as WithAppLayoutServersGroupsIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$id/index'
 import { Route as WithAppLayoutServersCreateVmInstantIndexRouteImport } from './app/_with-app-layout/servers/create/vm-instant/index'
 import { Route as WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/index'
@@ -180,6 +181,12 @@ const WithAppLayoutAdministratorTasksIndexRoute =
     path: '/administrator/tasks/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
+const WithAppLayoutAdministratorResourcesIndexRoute =
+  WithAppLayoutAdministratorResourcesIndexRouteImport.update({
+    id: '/administrator/resources/',
+    path: '/administrator/resources/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
 const WithAppLayoutServersGroupsIdIndexRoute =
   WithAppLayoutServersGroupsIdIndexRouteImport.update({
     id: '/servers/groups/$id/',
@@ -271,6 +278,7 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackIndexRoute
   '/docs/$section': typeof DocsSectionIndexRoute
   '/docs/intro': typeof DocsIntroIndexRoute
+  '/administrator/resources': typeof WithAppLayoutAdministratorResourcesIndexRoute
   '/administrator/tasks': typeof WithAppLayoutAdministratorTasksIndexRoute
   '/applications/$id': typeof WithAppLayoutApplicationsIdIndexRoute
   '/applications/create': typeof WithAppLayoutApplicationsCreateIndexRoute
@@ -308,6 +316,7 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackIndexRoute
   '/docs/$section': typeof DocsSectionIndexRoute
   '/docs/intro': typeof DocsIntroIndexRoute
+  '/administrator/resources': typeof WithAppLayoutAdministratorResourcesIndexRoute
   '/administrator/tasks': typeof WithAppLayoutAdministratorTasksIndexRoute
   '/applications/$id': typeof WithAppLayoutApplicationsIdIndexRoute
   '/applications/create': typeof WithAppLayoutApplicationsCreateIndexRoute
@@ -347,6 +356,7 @@ export interface FileRoutesById {
   '/auth/callback/': typeof AuthCallbackIndexRoute
   '/docs/$section/': typeof DocsSectionIndexRoute
   '/docs/intro/': typeof DocsIntroIndexRoute
+  '/_with-app-layout/administrator/resources/': typeof WithAppLayoutAdministratorResourcesIndexRoute
   '/_with-app-layout/administrator/tasks/': typeof WithAppLayoutAdministratorTasksIndexRoute
   '/_with-app-layout/applications/$id/': typeof WithAppLayoutApplicationsIdIndexRoute
   '/_with-app-layout/applications/create/': typeof WithAppLayoutApplicationsCreateIndexRoute
@@ -386,6 +396,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/docs/$section'
     | '/docs/intro'
+    | '/administrator/resources'
     | '/administrator/tasks'
     | '/applications/$id'
     | '/applications/create'
@@ -423,6 +434,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/docs/$section'
     | '/docs/intro'
+    | '/administrator/resources'
     | '/administrator/tasks'
     | '/applications/$id'
     | '/applications/create'
@@ -461,6 +473,7 @@ export interface FileRouteTypes {
     | '/auth/callback/'
     | '/docs/$section/'
     | '/docs/intro/'
+    | '/_with-app-layout/administrator/resources/'
     | '/_with-app-layout/administrator/tasks/'
     | '/_with-app-layout/applications/$id/'
     | '/_with-app-layout/applications/create/'
@@ -668,6 +681,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WithAppLayoutAdministratorTasksIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
+    '/_with-app-layout/administrator/resources/': {
+      id: '/_with-app-layout/administrator/resources/'
+      path: '/administrator/resources'
+      fullPath: '/administrator/resources'
+      preLoaderRoute: typeof WithAppLayoutAdministratorResourcesIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
     '/_with-app-layout/servers/groups/$id/': {
       id: '/_with-app-layout/servers/groups/$id/'
       path: '/servers/groups/$id'
@@ -761,6 +781,7 @@ interface WithAppLayoutRouteRouteChildren {
   WithAppLayoutProfileIndexRoute: typeof WithAppLayoutProfileIndexRoute
   WithAppLayoutServersIndexRoute: typeof WithAppLayoutServersIndexRoute
   WithAppLayoutTeamsIndexRoute: typeof WithAppLayoutTeamsIndexRoute
+  WithAppLayoutAdministratorResourcesIndexRoute: typeof WithAppLayoutAdministratorResourcesIndexRoute
   WithAppLayoutAdministratorTasksIndexRoute: typeof WithAppLayoutAdministratorTasksIndexRoute
   WithAppLayoutApplicationsIdIndexRoute: typeof WithAppLayoutApplicationsIdIndexRoute
   WithAppLayoutApplicationsCreateIndexRoute: typeof WithAppLayoutApplicationsCreateIndexRoute
@@ -792,6 +813,8 @@ const WithAppLayoutRouteRouteChildren: WithAppLayoutRouteRouteChildren = {
   WithAppLayoutProfileIndexRoute: WithAppLayoutProfileIndexRoute,
   WithAppLayoutServersIndexRoute: WithAppLayoutServersIndexRoute,
   WithAppLayoutTeamsIndexRoute: WithAppLayoutTeamsIndexRoute,
+  WithAppLayoutAdministratorResourcesIndexRoute:
+    WithAppLayoutAdministratorResourcesIndexRoute,
   WithAppLayoutAdministratorTasksIndexRoute:
     WithAppLayoutAdministratorTasksIndexRoute,
   WithAppLayoutApplicationsIdIndexRoute: WithAppLayoutApplicationsIdIndexRoute,
