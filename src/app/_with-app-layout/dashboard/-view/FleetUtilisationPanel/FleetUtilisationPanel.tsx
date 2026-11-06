@@ -221,7 +221,10 @@ function FleetResourceCard(props: {
   );
 
   return (
-    <section className="rounded-lg border bg-background p-3">
+    // min-w-0: a grid item is as wide as its widest unbroken line by default,
+    // and the busiest server's name (truncated below) is long enough to push
+    // the page sideways on a phone.
+    <section className="min-w-0 rounded-lg border bg-background p-3">
       <div className="flex min-w-0 items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2">
           <span
