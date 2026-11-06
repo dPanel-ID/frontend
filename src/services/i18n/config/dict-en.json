@@ -3419,7 +3419,7 @@
       "breadcrumbAdmin": "All resources",
       "badge": "Administrator only",
       "headerTitle": "All resources",
-      "headerDesc": "Servers, applications, load balancers, domains and SSH keys of every user and team, newest first, with who owns each one and which workspace it lives in.",
+      "headerDesc": "Servers, applications, load balancers, domains and SSH keys of every user and team, newest first. Each card shows its owner, its workspace and the resources tied to it.",
       "tabsLabel": "Resource type",
       "tabs": {
         "servers": "Servers",
@@ -3429,31 +3429,6 @@
         "ssh_keys": "SSH keys"
       },
       "searchPlaceholder": "Search by name or detail",
-      "columns": {
-        "servers": {
-          "name": "Server",
-          "kind": "Provider and status"
-        },
-        "applications": {
-          "name": "Application",
-          "kind": "Type"
-        },
-        "load_balancers": {
-          "name": "Load balancer",
-          "kind": "Engine and status"
-        },
-        "domains": {
-          "name": "Domain",
-          "kind": "DNS provider"
-        },
-        "ssh_keys": {
-          "name": "SSH key",
-          "kind": "Type"
-        },
-        "owner": "Owner",
-        "workspace": "Workspace",
-        "created": "Created"
-      },
       "workspace": {
         "personal": "Personal",
         "team": "Team",
@@ -3469,6 +3444,25 @@
         "domains": "No domains yet.",
         "ssh_keys": "No SSH keys yet.",
         "search": "Nothing matches \"{search}\"."
+      },
+      "ownedBy": "Owner",
+      "createdOn": "Created {date}",
+      "updated": "Updated {distance}",
+      "facts": {
+        "type": "Type",
+        "framework": "Framework",
+        "source": "Source",
+        "domain": "Domain",
+        "engine": "Engine",
+        "upstream": "Upstream",
+        "provider": "DNS provider"
+      },
+      "related": {
+        "servers": "Servers",
+        "applications": "Applications",
+        "load_balancers": "Load balancers",
+        "none": "None linked",
+        "more": "+{count} more"
       }
     },
     "adminTasks": {

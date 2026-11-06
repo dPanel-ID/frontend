@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { AdapterServerFromDto } from '@/entities/server/adapter';
+
 import { ApiAdmin } from '@/shared/api';
 import type { AdminResourceType } from '@/shared/api/admin.resource.find';
 import { useAdapter } from '@/shared/libs/api-client';
@@ -44,8 +46,28 @@ export const [AdminResourcesDataModelProvider, useAdminResourcesDataModel] =
       };
     });
 
+    // The servers tab shows the servers page's own cards, which need the
+    // full server, not a summary row.
+    const [serversResponse, refreshServers] = ApiAdmin.Server.Find.useGet({
+      search,
+      page,
+      limit: RESOURCES_PAGE_SIZE,
+      options: { skip: type !== 'servers' },
+    });
+
+    const servers = useAdapter(serversResponse, (raw) => ({
+      servers: (raw.machines ?? []).map((machine) =>
+        AdapterServerFromDto.toServerCard(machine).unwrap(),
+      ),
+      stats: raw.stats ?? {},
+      total: raw.pagination.total_item,
+      totalPage: Math.max(1, raw.pagination.total_page),
+    }));
+
     return {
       type,
+      servers,
+      refreshServers,
       searchInput,
       search,
       page,

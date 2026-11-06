@@ -86,6 +86,21 @@ export const schemaAdminResourceV2 = z.object({
   kind: z.string().optional(),
   status: z.string().optional(),
   created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+  /** A second line under the name, such as an application's repository. */
+  subtitle: z.string().optional(),
+  /** The type's own details; key names the label. */
+  facts: z.array(z.object({ key: z.string(), value: z.string() })).nullish(),
+  /** Resources tied to this one: how many, and the first few names. */
+  related: z
+    .array(
+      z.object({
+        key: z.string(),
+        count: z.number().optional(),
+        names: z.array(z.string()).nullish(),
+      }),
+    )
+    .nullish(),
   workspace: schemaAdminResourceWorkspaceV2.nullish(),
   /** Who owns it; never an email. */
   owner: schemaPublicUser.nullish(),
