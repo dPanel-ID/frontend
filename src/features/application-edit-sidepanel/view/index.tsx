@@ -4,7 +4,6 @@ import Layout from '@/services/sidepanel/ui/presentation/Layout/General';
 import { DisclaimersLabel } from '@/widgets/disclaimers-label';
 
 import { ApplicationEditModelProvider as ModelProvider } from '../model';
-import { GitBranchModelProvider } from '../model/git-branch';
 import type { ApplicationEditSidepanelProps as Props } from '../rules/types';
 import useFormBhvGuardUsecase from '../usecase/form-bhv-guard';
 import useFormSubmissionUsecase from '../usecase/form-submission';
@@ -26,27 +25,25 @@ export default function ApplicationEditSidepanel(props: Props) {
 
   return (
     <ModelProvider {...props}>
-      <GitBranchModelProvider applicationId={applicationId}>
-        <Controller />
+      <Controller />
 
-        <Layout classNameFrame="w-[calc(100svw_-_16px)] max-w-[480px]">
-          <Layout.Title
-            title={t('sidepanel.editApplication.title')}
-            subtitle={applicationName || `Id: ${applicationId}`}
-            hasCloseButton
-          />
+      <Layout classNameFrame="w-[calc(100svw_-_16px)] max-w-[480px]">
+        <Layout.Title
+          title={t('sidepanel.editApplication.title')}
+          subtitle={applicationName || `Id: ${applicationId}`}
+          hasCloseButton
+        />
 
-          <Layout.Content>
-            <Forms />
-          </Layout.Content>
+        <Layout.Content>
+          <Forms />
+        </Layout.Content>
 
-          <Layout.Cta className="gap-y-2">
-            <DisclaimersLabel.ImmediatelyCommitOnSave />
+        <Layout.Cta className="gap-y-2">
+          <DisclaimersLabel.ImmediatelyCommitOnSave />
 
-            <Actions />
-          </Layout.Cta>
-        </Layout>
-      </GitBranchModelProvider>
+          <Actions />
+        </Layout.Cta>
+      </Layout>
     </ModelProvider>
   );
 }

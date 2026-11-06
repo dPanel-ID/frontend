@@ -4,7 +4,6 @@ import type { Rescope } from '@/shared/libs/events/models/registerEvents';
 type EventsRegistry = Rescope<
   '#application-edit-sidepanel',
   {
-    'git-branch-refresh': null;
     'sidepanel-close'?: null | {
       bypass: true;
     };

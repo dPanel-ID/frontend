@@ -61,7 +61,7 @@ Pindahkan dPanel ke ruang kerja tim lalu buka **Servers**. Kedua mesin ada di sa
 
 ![Halaman server Home Lab yang menampilkan homelab-pi dan homelab-nas, keduanya Private dan Ready, pemilik Home Lab, dibuat oleh orang yang mendaftarkannya](../../assets/tutorials/homelab-servers.webp)
 
-Setiap halaman server menampilkan ruang kerja sebagai **Ownership**-nya. Semua yang ada di [panduan mesin privat](../servers/register-a-private-machine.md) bekerja sama persis di sini: modul, aplikasi, deploy otomatis, terminal, dan pengelola database. Pekerjaan untuk server ini tetap berjalan di mesin itu sendiri, apa pun worker yang dipakai ruang kerja.
+Setiap halaman server menampilkan ruang kerja sebagai **Ownership**-nya. Semua yang ada di [panduan mesin privat](../servers/register-a-private-machine.md) bekerja sama persis di sini: modul, aplikasi, terminal, dan pengelola database. Pekerjaan untuk server ini tetap berjalan di mesin itu sendiri, apa pun worker yang dipakai ruang kerja.
 
 ![Halaman server homelab-pi di ruang kerja Home Lab: alamat lokal, koneksi lewat agen dPanel, Ownership Home Lab, dan Redis terpasang](../../assets/tutorials/homelab-server.webp)
 

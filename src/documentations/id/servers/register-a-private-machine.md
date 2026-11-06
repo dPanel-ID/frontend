@@ -85,15 +85,7 @@ Build dan deploy berjalan di mesin itu sendiri. Aplikasi mendengarkan di mesin i
 
 ![Halaman aplikasi goexample: Live, deployment yang sedang berjalan dari branch private-autodeploy-test di home-server, satu server melayani, build terakhir berhasil, port 3000](../../assets/servers/private-app-detail.webp)
 
-## Langkah 6: Deploy otomatis di setiap push
-
-Di halaman **Applications**, buka menu aplikasinya, pilih **Edit**, centang **Enable auto deployment**, lalu pilih branch-nya. Simpan.
-
-![Panel Edit Application dengan Enable auto deployment dicentang dan Deploy from branch berisi private-autodeploy-test](../../assets/servers/private-app-edit.webp)
-
-Mulai sekarang, setiap push ke branch itu akan mem-build dan men-deploy commit yang di-push ke mesin itu. Dalam uji coba kami, sebuah push sudah tayang di `home-server` sekitar satu setengah menit kemudian.
-
-## Langkah 7: Buka terminal
+## Langkah 6: Buka terminal
 
 Pilih **Open terminal** di bagian atas halaman server. Anda mendapat shell root di mesin itu langsung dari browser, diteruskan lewat agen, tanpa SSH. Dari komputer Anda, `dnocs server exec --id <id> --command '<perintah>'` menjalankan perintah dengan cara yang sama.
 
@@ -109,7 +101,7 @@ Pilih **Open terminal** di bagian atas halaman server. Anda mendapat shell root 
 | Mengelola pengguna Linux | |
 | Memasang modul seperti MariaDB, PostgreSQL, Redis, atau Docker | |
 | Membuka MariaDB dan PostgreSQL di pengelola database, termasuk impor dan ekspor | |
-| Build dan deploy aplikasi, juga otomatis di setiap push | |
+| Build dan deploy aplikasi | |
 | Membuka terminal di browser atau dengan `dnocs server exec` | |
 | Menambah load balancer dan domain, bila mesin bisa dijangkau dari internet | |
 

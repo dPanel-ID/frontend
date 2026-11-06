@@ -85,9 +85,7 @@ export default function AppCard(props: AppCardProps) {
   const runtime = data.configDefs.lifecycle?.run;
   const language = data.configDefs.lifecycle?.setup.languages[0];
 
-  const autoDeploy = data.configDefs.cicd.autoDeploy;
   const branch =
-    (autoDeploy.enabled ? autoDeploy.fromBranch : undefined) ||
     data.additionalInfo.latestArtifactBranch ||
     data.additionalInfo.defaultBranch;
 

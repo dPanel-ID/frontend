@@ -7,23 +7,18 @@ import {
   HammerIcon,
   LockIcon,
   PlugIcon,
-  RocketIcon,
   ServerCogIcon,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { useController, useWatch } from 'react-hook-form';
+import { useController } from 'react-hook-form';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { cn } from '@/shared/libs/tailwind/cn';
-import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
-import { Switch } from '@/shared/presentation/atoms/Switch';
 
 import { useApplicationEditModel } from '../../model';
 import { BUILD_TIMEOUT_PRESETS } from '../../rules/form-schema';
-
-import FormItemFromBranch from './GitBranch';
 
 /** What can change about an application, then what is fixed and why. */
 export default function Forms() {
@@ -59,73 +54,12 @@ export default function Forms() {
       className="grid gap-5 py-2 pb-6"
       onSubmit={(event) => event.preventDefault()}
     >
-      <SectionAutoDeploy />
       <SectionBuild />
 
       <SectionDescription />
 
       <SectionFixed />
     </form>
-  );
-}
-
-function SectionAutoDeploy() {
-  const { form, serverCount } = useApplicationEditModel();
-  const t = useDevetekTranslations('sidepanel.editApplication.autoDeployment');
-  const { field } = useController({
-    control: form.control,
-    name: 'autoDeploy.isEnabled',
-  });
-  const branch = useWatch({
-    control: form.control,
-    name: 'autoDeploy.fromBranch',
-  });
-  const branchError = form.formState.errors.autoDeploy?.fromBranch?.message;
-
-  return (
-    <Section
-      icon={RocketIcon}
-      title={t('title')}
-      description={t('description')}
-    >
-      <label
-        className={cn(
-          'flex items-center justify-between gap-3 rounded-xl border px-3 py-3 transition-colors',
-          field.value ? 'border-sky-400/40 bg-sky-500/5' : 'bg-background/60',
-        )}
-      >
-        <span className="grid gap-0.5">
-          <span className="text-sm font-semibold">{t('enable')}</span>
-          <span className="text-xs text-muted-foreground">
-            {field.value ? t('stateOn') : t('stateOff')}
-          </span>
-        </span>
-        <Switch
-          checked={field.value}
-          onCheckedChange={(checked) => {
-            field.onChange(checked);
-            if (!checked) {
-              form.setValue('autoDeploy.fromBranch', '', { shouldDirty: true });
-            }
-          }}
-          aria-label={t('enable')}
-        />
-      </label>
-
-      {field.value && (
-        <Field label={t('deployFromBranch')} hint={t('branchHint')}>
-          <FormItemFromBranch />
-          <ErrorInline message={branchError ? t(branchError) : undefined} />
-        </Field>
-      )}
-
-      {field.value && branch && (
-        <p className="flex items-start gap-2 rounded-lg border bg-background/60 p-2.5 text-xs text-muted-foreground">
-          <GitBranchIcon className="mt-0.5 size-3.5 shrink-0 text-sky-600 dark:text-sky-300" />
-          {t('summary', { branch, count: serverCount })}
-        </p>
-      )}
-    </Section>
   );
 }
 
