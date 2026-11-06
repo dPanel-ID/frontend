@@ -2375,7 +2375,9 @@
         "certificateExpiring": "Expiring soon",
         "certificateExpired": "Expired",
         "certificateMissing": "Not issued yet",
+        "certificateMissingHint": "The server has no certificate for this domain yet.",
         "certificateUnavailable": "Unavailable",
+        "certificateUnavailableHint": "The certificate on the server could not be checked.",
         "certificateExpires": "{issuer} · {days} days left"
       }
     },
