@@ -13,7 +13,7 @@ Panduan ini menunjukkan seluruh langkahnya dengan mesin sungguhan bernama `home-
 ## Yang perlu disiapkan
 
 - Mesin Linux dengan systemd, seperti Ubuntu atau Debian, di prosesor Intel/AMD (`amd64`) atau ARM (`arm64`).
-- Terminal di mesin itu yang bisa memakai `sudo`.
+- Terminal di mesin itu yang bisa memakai `sudo`: pendaftaran membutuhkan root.
 - Akses internet dari mesin itu. Mesin hanya terhubung keluar, jadi tidak perlu port forwarding.
 
 ## Langkah 1: Daftarkan mesinnya
@@ -40,6 +40,8 @@ Di mesin itu:
    ```
 
 dnocs meminta konfirmasi, membuat pengguna Linux untuk akun dPanel Anda, memasang agen, dan menunggu sampai server siap. Biasanya kurang dari satu menit.
+
+**Mengapa `sudo`?** Pendaftaran mengubah mesin itu sendiri: membuat pengguna Linux, memasang agen sebagai layanan sistem, dan memberinya kredensial sendiri, yang hanya boleh dilakukan root. Jalankan `dnocs auth login` dan `dnocs workspace set` sebagai pengguna biasa, tanpa `sudo`. `sudo dnocs machine register` lalu memakai login tersebut. Jika muncul `please login first using 'dnocs auth login'` padahal Anda sudah login, versi dnocs Anda lebih lama dari v0.1.15: perbarui, atau login dulu dengan `sudo dnocs auth login -u <username Anda>`.
 
 ![Terminal di home-server yang menjalankan sudo dnocs machine register: konfirmasi, pembuatan pengguna Linux, pemasangan agen, lalu pesan bahwa server 206 sudah siap](../../assets/servers/private-register-terminal.webp)
 
