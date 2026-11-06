@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest';
 
 import { BaseResponseError } from '@/shared/libs/api-client/lib/error';
 
-import { isAccessDenied } from './access-error';
+import { isAccessDenied } from '../../-lib/access-error';
+
 import {
   formatDuration,
   summarizeAdminTasks,
