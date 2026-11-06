@@ -85,7 +85,6 @@ export default guard(function SettingsTab() {
       applicationName: appName,
     });
   };
-  const autoDeploy = configDefs.cicd.autoDeploy;
   const buildTimeout = rawAppDefinition?.build?.timeout;
   const description = rawAppDefinition?.run?.description;
 
@@ -162,24 +161,6 @@ export default guard(function SettingsTab() {
         }
       >
         <dl className="divide-y">
-          <Row
-            icon={RocketIcon}
-            label={t('labels.autoDeploy')}
-            value={
-              autoDeploy.enabled ? (
-                <span className="inline-flex flex-wrap items-center gap-1.5">
-                  <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
-                    {t('autoDeployOn')}
-                  </Badge>
-                  <span className="font-mono text-xs">
-                    {autoDeploy.fromBranch}
-                  </span>
-                </span>
-              ) : (
-                <Badge variant="secondary">{t('autoDeployOff')}</Badge>
-              )
-            }
-          />
           <Row
             icon={TimerIcon}
             label={t('labels.buildTimeout')}

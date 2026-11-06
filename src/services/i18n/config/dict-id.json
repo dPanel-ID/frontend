@@ -951,7 +951,6 @@
           "command": "Perintah jalan",
           "buildSteps": "Langkah build",
           "envVars": "Variabel lingkungan",
-          "autoDeploy": "Deploy otomatis",
           "buildTimeout": "Batas waktu build",
           "description": "Deskripsi"
         },
@@ -962,8 +961,6 @@
           "configuration": "Tidak ada konfigurasi"
         },
         "editDeployment": "Ubah",
-        "autoDeployOn": "Aktif",
-        "autoDeployOff": "Nonaktif",
         "defaultTimeout": "Bawaan"
       },
       "tabs": {
@@ -3861,17 +3858,6 @@
     "editApplication": {
       "title": "Ubah aplikasi",
       "loadFailed": "Aplikasi tidak bisa dimuat. Tutup panel ini lalu coba lagi.",
-      "autoDeployment": {
-        "title": "Deploy otomatis",
-        "description": "Build dan deploy otomatis setiap kali Anda push ke sebuah branch di GitHub.",
-        "enable": "Deploy di setiap push",
-        "stateOn": "Aktif: setiap push mem-build dan men-deploy commit yang di-push.",
-        "stateOff": "Nonaktif: deploy secara manual dari halaman aplikasi.",
-        "deployFromBranch": "Branch",
-        "branchHint": "Hanya push ke branch ini yang memulai deployment.",
-        "branchRequired": "Pilih branch yang akan di-deploy.",
-        "summary": "Setiap push ke {branch} mem-build commit yang di-push dan men-deploy-nya ke {count, plural, =0 {server tempat aplikasi ini berjalan} other {# server tempat aplikasi ini berjalan}}."
-      },
       "build": {
         "title": "Build",
         "description": "Berapa lama satu deployment boleh berjalan: clone, memasang runtime, build, dan menjalankan layanan.",

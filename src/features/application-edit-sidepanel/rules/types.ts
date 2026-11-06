@@ -7,10 +7,6 @@ export interface ApplicationEditSidepanelProps {
   onSuccess?: () => void;
 }
 
-export interface GitBranchModelProps {
-  applicationId: SchemaCommon.UnitId;
-}
-
 /** What the panel shows but never changes. */
 export interface ApplicationFixedSettings {
   repository: string;

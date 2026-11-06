@@ -61,7 +61,7 @@ Switch dPanel to the team workspace and open **Servers**. Both machines are ther
 
 ![The Home Lab servers page listing homelab-pi and homelab-nas, both Private and Ready, owner Home Lab, created by the person who registered them](../../assets/tutorials/homelab-servers.webp)
 
-Each server page shows the workspace as its **Ownership**. Everything from the [private machine guide](../servers/register-a-private-machine.md) works the same here: modules, apps, auto deployment, the terminal and the database manager. Jobs for these servers still run on the machines themselves, whatever workers the workspace uses.
+Each server page shows the workspace as its **Ownership**. Everything from the [private machine guide](../servers/register-a-private-machine.md) works the same here: modules, apps, the terminal and the database manager. Jobs for these servers still run on the machines themselves, whatever workers the workspace uses.
 
 ![The homelab-pi server page in the Home Lab workspace: local address, connection through the dPanel agent, Ownership Home Lab, and Redis installed](../../assets/tutorials/homelab-server.webp)
 

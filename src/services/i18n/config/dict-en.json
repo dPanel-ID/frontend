@@ -951,7 +951,6 @@
           "command": "Start command",
           "buildSteps": "Build steps",
           "envVars": "Environment variables",
-          "autoDeploy": "Auto deployment",
           "buildTimeout": "Build time limit",
           "description": "Description"
         },
@@ -962,8 +961,6 @@
           "configuration": "No configuration available"
         },
         "editDeployment": "Edit",
-        "autoDeployOn": "On",
-        "autoDeployOff": "Off",
         "defaultTimeout": "Default"
       },
       "tabs": {
@@ -3860,17 +3857,6 @@
     "editApplication": {
       "title": "Edit application",
       "loadFailed": "The application could not be loaded. Close this panel and try again.",
-      "autoDeployment": {
-        "title": "Auto deployment",
-        "description": "Build and deploy automatically whenever you push to a branch on GitHub.",
-        "enable": "Deploy on every push",
-        "stateOn": "On: each push builds and deploys the pushed commit.",
-        "stateOff": "Off: deploy by hand from the application page.",
-        "deployFromBranch": "Branch",
-        "branchHint": "Only pushes to this branch start a deployment.",
-        "branchRequired": "Pick the branch to deploy from.",
-        "summary": "Every push to {branch} builds the pushed commit and deploys it to {count, plural, =0 {the servers this application runs on} one {the # server this application runs on} other {the # servers this application runs on}}."
-      },
       "build": {
         "title": "Build",
         "description": "How long one deployment may take: cloning, installing runtimes, building and starting the service.",
