@@ -3443,7 +3443,9 @@
         "waitingHint": "Dalam antrean, atau tidak dipegang siapa pun",
         "claimed": "Dipegang worker",
         "claimedHint": "Sebuah worker sedang memegangnya",
-        "limitNote": "Hanya menampilkan {limit} tugas terlama; tugas yang lebih baru tidak dihitung."
+        "limitNote": "Hanya menampilkan {limit} tugas terlama; tugas yang lebih baru tidak dihitung.",
+        "safeToDelete": "Aman dihapus",
+        "safeToDeleteHint": "Tidak ada yang akan menyelesaikannya"
       },
       "toolbar": {
         "autoRefresh": "Diperbarui setiap {seconds} detik selama tab ini terbuka."
@@ -3463,7 +3465,11 @@
         "unknownType": "Jenis tidak diketahui",
         "unnamedServer": "Server tanpa nama",
         "noServer": "tanpa server",
-        "noWorker": "tanpa worker"
+        "noWorker": "tanpa worker",
+        "createdBy": "Dibuat oleh",
+        "cleanup": "Pembersihan",
+        "deletedServer": "Server dihapus",
+        "unknownUser": "Tidak diketahui"
       },
       "status": {
         "pending": "Tertunda",
@@ -3511,6 +3517,32 @@
       "empty": {
         "title": "Tidak ada tugas yang belum selesai",
         "message": "Semua tugas di semua workspace sudah selesai. Tugas baru muncul di sini selama menunggu atau berjalan di worker."
+      },
+      "cleanup": {
+        "legendTitle": "Tugas mana yang aman dihapus",
+        "verdict": {
+          "safe_to_delete": "Aman dihapus",
+          "stale": "Macet",
+          "active": "Aktif",
+          "unknown": "Belum dinilai"
+        },
+        "verdictHint": {
+          "safe_to_delete": "Tidak ada yang akan menyelesaikannya: servernya sudah dihapus, worker-nya diam, tidak ada antrean yang memegangnya, atau sudah diam berjam-jam. Menghapusnya tidak menghilangkan pekerjaan apa pun.",
+          "stale": "Sudah 15 menit menunggu worker, atau berjalan tanpa kabar. Mungkin masih selesai (server privat baru menyiapkan worker-nya pada pekerjaan pertama); periksa server atau worker-nya, lalu ambil alih atau hapus.",
+          "active": "Worker atau tugas ini memberi kabar dalam 15 menit terakhir, atau baru masuk antrean. Biarkan saja.",
+          "unknown": "API tidak menilai tugas ini."
+        },
+        "reason": {
+          "server_deleted": "Servernya sudah dihapus",
+          "not_in_queue": "Tidak di antrean, diam 30 menit",
+          "worker_gone": "Worker diam 10 menit",
+          "abandoned": "Diam lebih dari 6 jam",
+          "waiting_long": "Belum diambil 15 menit",
+          "no_recent_progress": "Tanpa kemajuan 15 menit",
+          "recent_progress": "Baru memberi kabar",
+          "worker_heartbeat": "Heartbeat worker masih baru",
+          "recently_queued": "Baru masuk antrean"
+        }
       }
     }
   },
