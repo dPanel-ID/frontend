@@ -3442,7 +3442,9 @@
         "waitingHint": "Queued, or held by nothing",
         "claimed": "Claimed by a worker",
         "claimedHint": "A worker is holding it",
-        "limitNote": "Showing the oldest {limit} tasks only; newer ones are not counted."
+        "limitNote": "Showing the oldest {limit} tasks only; newer ones are not counted.",
+        "safeToDelete": "Safe to delete",
+        "safeToDeleteHint": "Nothing will run them to a useful end"
       },
       "toolbar": {
         "autoRefresh": "Refreshes every {seconds} seconds while this tab is open."
@@ -3462,7 +3464,11 @@
         "unknownType": "Unknown type",
         "unnamedServer": "Unnamed server",
         "noServer": "no server",
-        "noWorker": "no worker"
+        "noWorker": "no worker",
+        "createdBy": "Created by",
+        "cleanup": "Cleanup",
+        "deletedServer": "Deleted server",
+        "unknownUser": "Unknown"
       },
       "status": {
         "pending": "Pending",
@@ -3510,6 +3516,32 @@
       "empty": {
         "title": "No unfinished tasks",
         "message": "Every task in every workspace has finished. New ones appear here while they wait for or run on a worker."
+      },
+      "cleanup": {
+        "legendTitle": "Which tasks are safe to delete",
+        "verdict": {
+          "safe_to_delete": "Safe to delete",
+          "stale": "Stale",
+          "active": "Active",
+          "unknown": "Not assessed"
+        },
+        "verdictHint": {
+          "safe_to_delete": "Nothing will run it to a useful end: its server is deleted, its worker went silent, no queue holds it, or it has been silent for hours. Deleting it loses no work.",
+          "stale": "It has waited for a worker, or run without a word, for 15 minutes. It may still finish (a new private server sets up its worker on its first job); check the server or worker, then reclaim or delete it.",
+          "active": "A worker or the task reported in the last 15 minutes, or it was queued recently. Leave it.",
+          "unknown": "The API did not assess this task."
+        },
+        "reason": {
+          "server_deleted": "Its server was deleted",
+          "not_in_queue": "No queue holds it, silent 30 min",
+          "worker_gone": "Worker silent for 10 min",
+          "abandoned": "Silent for over 6 hours",
+          "waiting_long": "Unclaimed for 15 min",
+          "no_recent_progress": "No progress for 15 min",
+          "recent_progress": "Reported recently",
+          "worker_heartbeat": "Worker heartbeat is recent",
+          "recently_queued": "Queued recently"
+        }
       }
     }
   },
