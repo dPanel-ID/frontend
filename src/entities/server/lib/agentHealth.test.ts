@@ -72,5 +72,15 @@ describe('agentHealth', () => {
     expect(
       agentHealth(server('ready', { version: 'v0.1.17' }), NOW).upgrade,
     ).toBeUndefined();
+    expect(
+      agentHealth(
+        server('deleted', {
+          version: 'production',
+          upgradeAvailable: true,
+          newVersion: 'v0.1.17',
+        }),
+        NOW,
+      ).upgrade,
+    ).toBeUndefined();
   });
 });
