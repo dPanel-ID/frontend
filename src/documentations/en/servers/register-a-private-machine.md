@@ -13,7 +13,7 @@ This guide walks through the whole thing with a real machine called `home-server
 ## What you need first
 
 - A Linux machine with systemd, such as Ubuntu or Debian, on Intel/AMD (`amd64`) or ARM (`arm64`).
-- A terminal on that machine where you can use `sudo`.
+- A terminal on that machine where you can use `sudo`: registering needs root.
 - Internet access from the machine. It only connects out, so no port forwarding is needed.
 
 ## Step 1: Register the machine
@@ -40,6 +40,8 @@ On the machine:
    ```
 
 dnocs asks you to confirm, creates a Linux user for your dPanel account, installs the agent and waits until the server is ready. That usually takes under a minute.
+
+**Why `sudo`?** Registering changes the machine itself: it creates a Linux user, installs the agent as a system service and gives it its own credential, which only root may do. Run `dnocs auth login` and `dnocs workspace set` as your normal user, without `sudo`. `sudo dnocs machine register` then uses that sign-in. If it says `please login first using 'dnocs auth login'` although you signed in, your dnocs is older than v0.1.15: update it, or sign in with `sudo dnocs auth login -u <your username>` first.
 
 ![A terminal on home-server running sudo dnocs machine register: it confirms, creates the Linux user, installs the agent and prints that server 206 is ready](../../assets/servers/private-register-terminal.webp)
 
