@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { schemaPublicUser } from './execution';
+
 /**
  * The queue workflow that holds an execution. Absent on the task when no
  * workflow holds it, for example after a restart lost it.
@@ -33,6 +35,18 @@ export const schemaAdminTaskV2 = z.object({
   idle_seconds: z.number().optional(),
   gateway: schemaAdminTaskGatewayV2.nullish(),
   can_reclaim: z.boolean().optional(),
+  /** True when the task names a server that no longer exists. */
+  server_deleted: z.boolean().optional(),
+  /** Whether the task is safe to delete, and why. */
+  cleanup: z
+    .object({
+      /** "safe_to_delete", "stale" or "active". */
+      verdict: z.string().optional(),
+      reasons: z.array(z.string()).nullish(),
+    })
+    .nullish(),
+  /** Who started the task; never an email. */
+  created_by: schemaPublicUser.nullish(),
 });
 
 /** What the API did when an administrator reclaimed a task. */

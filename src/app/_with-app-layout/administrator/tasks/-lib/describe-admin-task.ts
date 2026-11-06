@@ -9,6 +9,36 @@ export type AdminTaskStatus = 'pending' | 'queued' | 'running' | 'unknown';
  */
 export type AdminTaskGatewayState = 'waiting' | 'claimed' | 'none';
 
+/** Whether a task can go: see the API's cleanup criteria. */
+export type AdminTaskCleanupVerdict =
+  | 'safe_to_delete'
+  | 'stale'
+  | 'active'
+  | 'unknown';
+
+/** The reasons the API gives; anything else is dropped. */
+export const ADMIN_TASK_CLEANUP_REASONS = [
+  'server_deleted',
+  'not_in_queue',
+  'worker_gone',
+  'abandoned',
+  'waiting_long',
+  'no_recent_progress',
+  'recent_progress',
+  'worker_heartbeat',
+  'recently_queued',
+] as const;
+
+export type AdminTaskCleanupReason =
+  (typeof ADMIN_TASK_CLEANUP_REASONS)[number];
+
+/** Who started a task, ready for UserLink. */
+export interface AdminTaskCreator {
+  name: string;
+  username?: string;
+  avatarUrl?: string;
+}
+
 /** One unfinished task as the table needs it, with nothing left to decode. */
 export interface AdminTaskRow {
   executionId: string;
@@ -35,6 +65,10 @@ export interface AdminTaskRow {
   canReclaim: boolean;
   /** Nothing is working on it: it waits in the queue, or nothing holds it. */
   waitingForWorker: boolean;
+  serverDeleted: boolean;
+  cleanup: AdminTaskCleanupVerdict;
+  cleanupReasons: AdminTaskCleanupReason[];
+  createdBy: AdminTaskCreator | null;
 }
 
 export interface AdminTasksSummary {
@@ -42,6 +76,7 @@ export interface AdminTasksSummary {
   running: number;
   waitingForWorker: number;
   claimed: number;
+  safeToDelete: number;
 }
 
 const KNOWN_STATUSES: readonly AdminTaskStatus[] = [
@@ -95,7 +130,41 @@ export function toAdminTaskRow(
       gatewayState === 'waiting' ||
       (gatewayState === 'none' &&
         (status === 'queued' || status === 'pending')),
+    serverDeleted: task.server_deleted === true,
+    cleanup: cleanupVerdictOf(task.cleanup?.verdict),
+    cleanupReasons: (task.cleanup?.reasons ?? []).flatMap((reason) => {
+      const known = ADMIN_TASK_CLEANUP_REASONS.find((code) => code === reason);
+      return known ? [known] : [];
+    }),
+    createdBy: creatorOf(task.created_by),
   };
+}
+
+function cleanupVerdictOf(
+  raw: string | null | undefined,
+): AdminTaskCleanupVerdict {
+  const verdict = raw?.trim().toLowerCase();
+  if (
+    verdict === 'safe_to_delete' ||
+    verdict === 'stale' ||
+    verdict === 'active'
+  ) {
+    return verdict;
+  }
+  return 'unknown';
+}
+
+function creatorOf(
+  user: DTOs.AdminTaskV2['created_by'],
+): AdminTaskCreator | null {
+  if (!user) return null;
+  const username = clean(user.username) ?? undefined;
+  const name =
+    clean(user.fullname) ??
+    username ??
+    (user.id != null ? clean(String(user.id)) : null);
+  if (!name) return null;
+  return { name, username, avatarUrl: clean(user.avatar_url) ?? undefined };
 }
 
 /** Maps a whole response, dropping records no action can address. */
@@ -119,8 +188,10 @@ export function summarizeAdminTasks(
       waitingForWorker:
         summary.waitingForWorker + (row.waitingForWorker ? 1 : 0),
       claimed: summary.claimed + (row.gatewayState === 'claimed' ? 1 : 0),
+      safeToDelete:
+        summary.safeToDelete + (row.cleanup === 'safe_to_delete' ? 1 : 0),
     }),
-    { total: 0, running: 0, waitingForWorker: 0, claimed: 0 },
+    { total: 0, running: 0, waitingForWorker: 0, claimed: 0, safeToDelete: 0 },
   );
 }
 

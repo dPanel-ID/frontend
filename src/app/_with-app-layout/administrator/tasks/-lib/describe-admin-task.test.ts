@@ -34,6 +34,13 @@ describe('toAdminTaskRow', () => {
           last_heartbeat_at: '2026-11-03T09:59:30Z',
         },
         can_reclaim: true,
+        cleanup: { verdict: 'active', reasons: ['worker_heartbeat'] },
+        created_by: {
+          id: '42',
+          username: 'ayu',
+          fullname: 'Ayu Lestari',
+          avatar_url: 'https://example.test/ayu.png',
+        },
       },
       NOW,
     );
@@ -57,7 +64,47 @@ describe('toAdminTaskRow', () => {
       lastEventMessage: 'Installing packages',
       canReclaim: true,
       waitingForWorker: false,
+      serverDeleted: false,
+      cleanup: 'active',
+      cleanupReasons: ['worker_heartbeat'],
+      createdBy: {
+        name: 'Ayu Lestari',
+        username: 'ayu',
+        avatarUrl: 'https://example.test/ayu.png',
+      },
     });
+  });
+
+  it('reads a deleted server as safe to delete and drops unknown reasons', () => {
+    const row = toAdminTaskRow(
+      {
+        execution_id: 'abc',
+        status: 'queued',
+        server_deleted: true,
+        cleanup: {
+          verdict: 'safe_to_delete',
+          reasons: ['server_deleted', 'something_new'],
+        },
+        created_by: { username: 'dpanel01' },
+      },
+      NOW,
+    );
+
+    expect(row).toMatchObject({
+      serverDeleted: true,
+      cleanup: 'safe_to_delete',
+      cleanupReasons: ['server_deleted'],
+      createdBy: { name: 'dpanel01', username: 'dpanel01' },
+    });
+  });
+
+  it('marks a task the API did not assess', () => {
+    const row = toAdminTaskRow(
+      { execution_id: 'abc', cleanup: { verdict: 'later' } },
+      NOW,
+    );
+
+    expect(row).toMatchObject({ cleanup: 'unknown', createdBy: null });
   });
 
   it('drops a record without an execution ID', () => {
@@ -178,6 +225,7 @@ describe('summarizeAdminTasks', () => {
       running: 2,
       waitingForWorker: 2,
       claimed: 1,
+      safeToDelete: 0,
     });
   });
 
@@ -187,6 +235,7 @@ describe('summarizeAdminTasks', () => {
       running: 0,
       waitingForWorker: 0,
       claimed: 0,
+      safeToDelete: 0,
     });
   });
 });

@@ -2,6 +2,7 @@ import {
   HourglassIcon,
   ListChecksIcon,
   LoaderIcon,
+  Trash2Icon,
   UserCheckIcon,
 } from 'lucide-react';
 
@@ -31,7 +32,7 @@ export default function Overview() {
 
   return (
     <div className="flex flex-col gap-1.5">
-      <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-5">
         <StatTile
           icon={ListChecksIcon}
           tone="sky"
@@ -61,6 +62,14 @@ export default function Overview() {
           label={t('claimed')}
           value={summary?.claimed ?? 0}
           hint={t('claimedHint')}
+          loading={loading}
+        />
+        <StatTile
+          icon={Trash2Icon}
+          tone={summary?.safeToDelete ? 'red' : 'neutral'}
+          label={t('safeToDelete')}
+          value={summary?.safeToDelete ?? 0}
+          hint={t('safeToDeleteHint')}
           loading={loading}
         />
       </div>
