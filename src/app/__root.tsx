@@ -25,6 +25,7 @@ import { ToasterController } from '@/services/toaster';
 
 import { AssistantLauncher } from '@/features/ai-assistant';
 
+import { googleAnalyticsScripts } from '@/shared/libs/analytics/google-analytics';
 import { EventsProvider } from '@/shared/libs/events';
 import { SITE, siteUrl } from '@/shared/libs/seo';
 
@@ -80,6 +81,7 @@ export const Route = createRootRoute({
       { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
       { rel: 'manifest', href: '/manifest.json' },
     ],
+    scripts: googleAnalyticsScripts(),
   }),
   shellComponent: ShellComponent,
   loader: async () => {
