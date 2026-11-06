@@ -101,14 +101,16 @@ export function ctorSpecs(
 }
 
 /**
- * Where the server is. A private server has no public address: its own LAN
- * address is shown instead, for reference only.
+ * Where the server is. A private server shows its own LAN address; its
+ * public address is the IP its agent connects to dPanel from, when that IP
+ * is public (a load balancer's DNS record points there).
  */
 export function ctorHost(raw: DTOs.MachineV1) {
   const isPrivate = raw.connectivity === 'private';
 
   return {
     address: isPrivate ? (raw.lan_address ?? '') : (raw.address ?? raw.domain),
+    publicAddress: isPrivate ? raw.address || undefined : undefined,
     name: raw.hostname,
     private: isPrivate,
   };

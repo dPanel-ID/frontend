@@ -64,11 +64,9 @@ export function useLoadBalancerCreateResources(
     });
 
   const servers = useAdapter(responseServers, (raw) => ({
-    // A private server has no public IP, so nothing could reach a load
-    // balancer on it, nor an upstream it serves.
-    list: (raw.machines ?? [])
-      .filter((machine) => machine.connectivity !== 'private')
-      .map((machine) => AdapterServerFromDto.toServerCard(machine).unwrap()),
+    list: (raw.machines ?? []).map((machine) =>
+      AdapterServerFromDto.toServerCard(machine).unwrap(),
+    ),
     pagination: raw.pagination,
   }));
 
