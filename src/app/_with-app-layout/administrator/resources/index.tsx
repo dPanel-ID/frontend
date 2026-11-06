@@ -7,7 +7,7 @@ import {
   AccessGuard,
   ApiAccessGuard,
   Header,
-  ResourceTable,
+  ResourceList,
   ResourceTabs,
 } from './-view';
 
@@ -27,7 +27,7 @@ function AdminResourcesPage() {
         <AdminResourcesDataModelProvider>
           <ApiAccessGuard>
             <ResourceTabs />
-            <ResourceTable />
+            <ResourceList />
           </ApiAccessGuard>
         </AdminResourcesDataModelProvider>
       </AccessGuard>

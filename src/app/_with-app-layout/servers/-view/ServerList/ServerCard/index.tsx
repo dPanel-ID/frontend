@@ -56,7 +56,13 @@ import type { ServerCardProps } from './types';
  * itself, so the page size stays small.
  */
 export default function ServerCard(props: ServerCardProps) {
-  const { applicationCount = 0, handlers, server } = props;
+  const {
+    applicationCount = 0,
+    badge,
+    handlers,
+    loadBalancerCount,
+    server,
+  } = props;
 
   const t = useDevetekTranslations();
   const locale = useDevetekLocale();
@@ -77,7 +83,7 @@ export default function ServerCard(props: ServerCardProps) {
     machineId: server.id,
     page: 1,
     limit: 1,
-    options: { skip: !shouldFetchOverview },
+    options: { skip: !shouldFetchOverview || loadBalancerCount != null },
   });
 
   const [cpuUsageResponse] = ApiServer.Origin.$Id.Cpu.Usage.useGet({
@@ -123,6 +129,7 @@ export default function ServerCard(props: ServerCardProps) {
         DATABASE_MODULE_IDS.has(module.module_name),
       ).length,
       loadBalancerCount:
+        loadBalancerCount ??
         loadBalancerData?.pagination.total_item ??
         loadBalancerData?.routers?.length ??
         0,
@@ -145,10 +152,13 @@ export default function ServerCard(props: ServerCardProps) {
   }, [
     cpuUsageData,
     diskUsageData,
+    loadBalancerCount,
     loadBalancerData,
     memoryUsageData,
     moduleInventoryData,
   ]);
+
+  const readOnly = !handlers;
 
   const goTo = (
     event: MouseEvent<HTMLButtonElement>,
@@ -181,12 +191,15 @@ export default function ServerCard(props: ServerCardProps) {
             server={server}
             size="lg"
             meta
-            onClickName={handlers.openDetails}
+            onClickName={handlers?.openDetails}
             trailing={
-              <ServerStatusPill
-                state={server.state}
-                onClick={handlers.showStatus}
-              />
+              <>
+                <ServerStatusPill
+                  state={server.state}
+                  onClick={handlers?.showStatus}
+                />
+                {badge}
+              </>
             }
           />
 
@@ -196,28 +209,38 @@ export default function ServerCard(props: ServerCardProps) {
               icon={AppWindowIcon}
               label={t('page.servers.card.applications')}
               value={applicationCount}
-              onClick={(event) => goTo(event, '/applications')}
+              onClick={
+                readOnly ? undefined : (event) => goTo(event, '/applications')
+              }
             />
             <StatTile
               size="sm"
               icon={NetworkIcon}
               label={t('page.servers.card.loadBalancers')}
               value={overview.loadBalancerCount}
-              onClick={(event) => goTo(event, '/backend/load-balancers')}
+              onClick={
+                readOnly
+                  ? undefined
+                  : (event) => goTo(event, '/backend/load-balancers')
+              }
             />
             <StatTile
               size="sm"
               icon={DatabaseIcon}
               label={t('page.servers.card.databases')}
               value={overview.databaseCount}
-              onClick={(event) => goTo(event, '/servers/$id')}
+              onClick={
+                readOnly ? undefined : (event) => goTo(event, '/servers/$id')
+              }
             />
             <StatTile
               size="sm"
               icon={Layers3Icon}
               label={t('page.servers.card.modules')}
               value={overview.installedCount}
-              onClick={(event) => goTo(event, '/servers/$id')}
+              onClick={
+                readOnly ? undefined : (event) => goTo(event, '/servers/$id')
+              }
             />
           </div>
 
@@ -297,7 +320,7 @@ export default function ServerCard(props: ServerCardProps) {
             </div>
           )}
 
-          <ServerActions handlers={handlers} layout="icons" />
+          {handlers && <ServerActions handlers={handlers} layout="icons" />}
         </div>
       </div>
 

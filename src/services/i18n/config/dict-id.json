@@ -3420,7 +3420,7 @@
       "breadcrumbAdmin": "Semua resource",
       "badge": "Khusus administrator",
       "headerTitle": "Semua resource",
-      "headerDesc": "Server, aplikasi, load balancer, domain dan SSH key milik semua pengguna dan tim, terbaru lebih dulu, lengkap dengan pemilik dan workspace tempatnya berada.",
+      "headerDesc": "Server, aplikasi, load balancer, domain dan SSH key milik semua pengguna dan tim, terbaru lebih dulu. Setiap kartu menampilkan pemilik, workspace dan resource yang terhubung dengannya.",
       "tabsLabel": "Jenis resource",
       "tabs": {
         "servers": "Server",
@@ -3430,31 +3430,6 @@
         "ssh_keys": "SSH key"
       },
       "searchPlaceholder": "Cari berdasarkan nama atau detail",
-      "columns": {
-        "servers": {
-          "name": "Server",
-          "kind": "Provider dan status"
-        },
-        "applications": {
-          "name": "Aplikasi",
-          "kind": "Jenis"
-        },
-        "load_balancers": {
-          "name": "Load balancer",
-          "kind": "Engine dan status"
-        },
-        "domains": {
-          "name": "Domain",
-          "kind": "Provider DNS"
-        },
-        "ssh_keys": {
-          "name": "SSH key",
-          "kind": "Jenis"
-        },
-        "owner": "Pemilik",
-        "workspace": "Workspace",
-        "created": "Dibuat"
-      },
       "workspace": {
         "personal": "Pribadi",
         "team": "Tim",
@@ -3470,6 +3445,25 @@
         "domains": "Belum ada domain.",
         "ssh_keys": "Belum ada SSH key.",
         "search": "Tidak ada yang cocok dengan \"{search}\"."
+      },
+      "ownedBy": "Pemilik",
+      "createdOn": "Dibuat {date}",
+      "updated": "Diperbarui {distance}",
+      "facts": {
+        "type": "Jenis",
+        "framework": "Framework",
+        "source": "Sumber",
+        "domain": "Domain",
+        "engine": "Engine",
+        "upstream": "Upstream",
+        "provider": "Provider DNS"
+      },
+      "related": {
+        "servers": "Server",
+        "applications": "Aplikasi",
+        "load_balancers": "Load balancer",
+        "none": "Tidak ada yang terhubung",
+        "more": "+{count} lainnya"
       }
     },
     "adminTasks": {

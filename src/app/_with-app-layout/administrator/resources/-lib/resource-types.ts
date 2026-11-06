@@ -11,7 +11,7 @@ export const RESOURCE_TYPES: AdminResourceType[] = [
 ];
 
 /** Rows per page. */
-export const RESOURCES_PAGE_SIZE = 50;
+export const RESOURCES_PAGE_SIZE = 10;
 
 export function isResourceType(value: string): value is AdminResourceType {
   return (RESOURCE_TYPES as string[]).includes(value);
