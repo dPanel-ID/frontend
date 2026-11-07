@@ -3505,6 +3505,11 @@
         "title": "{count, plural, other {# server terhapus aktif kembali}}",
         "description": "Server dari ruang kerja mana pun yang sudah dihapus dari dPanel tetapi agennya menghubungi lagi dalam 7 hari terakhir. dPanel menolaknya; agen yang lebih lama dari v0.1.19 dikirimi pembaruan sekali sehari agar diam. Banyak server dari satu ruang kerja biasanya berarti pemiliknya menghapus server saat terjadi gangguan.",
         "item": "(server {id}, {reason} pada {removedAt}, terakhir menghubungi {lastContact}, {calls} panggilan tercatat, pembaruan dikirim {upgrade})"
+      },
+      "copyId": {
+        "copy": "Salin ID",
+        "copied": "Tersalin",
+        "label": "Salin ID {id}"
       }
     },
     "adminTasks": {

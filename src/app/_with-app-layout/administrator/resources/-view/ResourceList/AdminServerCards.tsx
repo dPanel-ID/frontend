@@ -4,6 +4,7 @@ import type { AdminServerStats } from '@/shared/api/admin.server.find';
 
 // The servers page's own card, read-only: an administrator sees the same
 // card the owner sees, with live usage, but no actions.
+import { CopyableId } from '../-presentation/CopyableId';
 import { WorkspaceBadge } from '../-presentation/WorkspaceBadge';
 import ServerCard from '../../../../servers/-view/ServerList/ServerCard';
 
@@ -29,11 +30,14 @@ export default function AdminServerCards(props: AdminServerCardsProps) {
             applicationCount={stats[server.id]?.applications ?? 0}
             loadBalancerCount={stats[server.id]?.load_balancers ?? 0}
             badge={
-              <WorkspaceBadge
-                type={isTeam ? 'team' : 'personal'}
-                name={server.ownership.team}
-                id={server.ownership.teamId}
-              />
+              <>
+                <CopyableId id={server.id} />
+                <WorkspaceBadge
+                  type={isTeam ? 'team' : 'personal'}
+                  name={server.ownership.team}
+                  id={server.ownership.teamId}
+                />
+              </>
             }
           />
         );
