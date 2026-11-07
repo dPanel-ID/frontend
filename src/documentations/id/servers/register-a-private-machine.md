@@ -127,5 +127,5 @@ Menjalankan `sudo dnocs machine register` lagi di mesin yang sama akan mempertah
 Hapus server itu di dPanel (dari halamannya, atau dengan `dnocs server delete --id <id>`). dPanel langsung menghapusnya, dan kredensial agennya tidak berlaku lagi. Setelah itu hentikan agen di mesin itu:
 
 ```bash
-sudo systemctl disable --now dpanel-active-agent
+sudo systemctl disable --now dpanel-agent
 ```

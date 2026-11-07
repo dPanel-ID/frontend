@@ -127,5 +127,5 @@ Running `sudo dnocs machine register` again on the same machine keeps the same s
 Delete the server in dPanel (from its page, or with `dnocs server delete --id <id>`). dPanel removes it at once, and the agent's credential stops working. Then stop the agent on the machine:
 
 ```bash
-sudo systemctl disable --now dpanel-active-agent
+sudo systemctl disable --now dpanel-agent
 ```
