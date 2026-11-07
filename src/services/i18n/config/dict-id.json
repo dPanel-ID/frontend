@@ -1491,7 +1491,8 @@
           "machineUntouched": "Tidak ada yang diubah atau dihapus di mesin.",
           "comesBack": "Jika mesin aktif lagi, aplikasinya tetap berjalan di sana; daftarkan ulang untuk mengelolanya.",
           "understand": "Saya mengerti bahwa ini hanya menghapus data di dPanel.",
-          "confirm": "Hapus dari dPanel"
+          "confirm": "Hapus dari dPanel",
+          "unknownFuture": "dPanel tidak dapat mengetahui apakah mesin sudah hilang permanen atau hanya mati sementara (gangguan, akun ditangguhkan). Jika aktif lagi, agennya diberi tahu bahwa server sudah dihapus lalu diam, dan server tampil di daftar server terhapus yang aktif kembali."
         },
         "reinstall": {
           "title": "Instal ulang server",
@@ -1516,6 +1517,13 @@
       "creator": {
         "createdBy": "Dibuat oleh {name}",
         "label": "Dibuat oleh"
+      },
+      "removedNotice": {
+        "title": "{count, plural, other {# server yang dihapus aktif kembali}}",
+        "description": "Server ini sudah dihapus dari dPanel, tetapi agennya menghubungi dPanel lagi, jadi mesinnya mungkin hanya sempat mati. dPanel menolak agen itu dan memintanya diam; tidak ada yang diubah di mesin. Untuk mengelolanya lagi, jalankan <code>sudo dnocs machine register</code> di mesin itu. Untuk menghentikan agennya, jalankan <code>sudo systemctl disable --now dpanel-active-agent</code>.",
+        "item": "(server {id}, {reason} pada {removedAt}, terakhir menghubungi {lastContact})",
+        "forgotten": "dihapus saat tidak terjangkau",
+        "deleted": "dihapus"
       }
     },
     "serverDetail": {

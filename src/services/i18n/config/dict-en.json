@@ -1491,7 +1491,8 @@
           "machineUntouched": "Nothing is changed or deleted on the machine.",
           "comesBack": "If it comes back, its applications keep running there; register it again to manage it.",
           "understand": "I understand that this only removes the records from dPanel.",
-          "confirm": "Remove from dPanel"
+          "confirm": "Remove from dPanel",
+          "unknownFuture": "dPanel cannot know whether the machine is gone for good or only down (an outage, a suspended account). If it comes back, its agent is told it was removed and goes quiet, and the server is listed under removed servers that came back."
         },
         "reinstall": {
           "title": "Reinstall server",
@@ -1516,6 +1517,13 @@
       "creator": {
         "createdBy": "Created by {name}",
         "label": "Created by"
+      },
+      "removedNotice": {
+        "title": "{count, plural, one {# removed server came back} other {# removed servers came back}}",
+        "description": "These servers were removed from dPanel but their agent called again, so the machine may only have been down. dPanel refuses the agent and tells it to go quiet; nothing on the machine was changed. To manage one again, run <code>sudo dnocs machine register</code> on it. To stop its agent instead, run <code>sudo systemctl disable --now dpanel-active-agent</code>.",
+        "item": "(server {id}, {reason} on {removedAt}, last call {lastContact})",
+        "forgotten": "removed while unreachable",
+        "deleted": "deleted"
       }
     },
     "serverDetail": {
