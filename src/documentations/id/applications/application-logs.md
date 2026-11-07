@@ -18,7 +18,7 @@ dPanel menampilkan dua jenis log untuk sebuah aplikasi: apa yang dicetak layanan
 | Runtime       | Apa yang ditulis layanan ke keluarannya selama berjalan. Judul tabelnya **Log Aplikasi**.                     |
 | Load balancer | Setiap permintaan yang masuk ke load balancer di depan aplikasi. Judul tabelnya **Permintaan load balancer**. |
 
-![Sumber Load balancer di tab Log aplikasi DB Manager: delapan request ke dbmanager.devetek.app, masing-masing ditulis sebagai metode, alamat dan path, status, serta waktu, misalnya GET dbmanager.devetek.app/api/info → 401 · 7 ms](../../assets/applications/app-lb-logs.webp 'Setiap request tampil sebagai satu baris, diberi warna sesuai statusnya.')
+![Sumber Load balancer di tab Log sebuah aplikasi: delapan request, masing-masing ditulis sebagai metode, alamat dan path, status, serta waktu](../../assets/applications/app-lb-logs.webp 'Setiap request tampil sebagai satu baris, diberi warna sesuai statusnya.')
 
 Pilihan **Load balancer** hanya muncul jika aplikasi ini dilayani load balancer. Tanpa itu, tab langsung menampilkan log runtime.
 
@@ -27,7 +27,7 @@ Pilihan **Load balancer** hanya muncul jika aplikasi ini dilayani load balancer.
 Setiap baris load balancer adalah satu request, diberi tanda **HTTP**, dan ditulis seperti ini:
 
 ```text
-GET dbmanager.devetek.app/api/info → 401 · 7 ms
+GET shop.example.com/api/info → 401 · 7 ms
 ```
 
 Artinya: metode, alamat dan path yang diminta, kode status yang diterima pengunjung, dan lama prosesnya. Kolom **Sumber** menampilkan domainnya. Level mengikuti status: status `5xx` (server gagal) menjadi **error**, status `4xx` (request ditolak atau tidak ditemukan) menjadi **warn**, selebihnya **info**. Pilih barisnya untuk melihat semua detail di panel **Entri log**, seperti alamat IP pengunjung dan header request-nya.

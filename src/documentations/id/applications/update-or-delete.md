@@ -10,11 +10,12 @@ Anda bisa mengubah cara aplikasi dPanel dibangun dan dijalankan kapan saja, dari
 
 ## Meninjau pengaturannya
 
-Buka aplikasinya dan masuk ke **Pengaturan**. **Cara aplikasi ini disiapkan** menampilkan tiga bagian.
+Buka aplikasinya dan masuk ke **Pengaturan**. **Cara aplikasi ini disiapkan** menampilkan empat bagian.
 
 | Bagian     | Isinya                                                                     |
 | ---------- | -------------------------------------------------------------------------- |
 | Repositori | Repositori, bahasa, dan framework-nya.                                     |
+| Deployment | Batas waktu build dan deskripsi.                                           |
 | Build      | Runtime bahasa, langkah build, dan variabel environment saat build.        |
 | Jalan      | Nama layanan, port, perintah jalan, dan variabel environment saat runtime. |
 
@@ -26,15 +27,22 @@ Setiap item yang punya tombol **Ubah** membuka panel khusus untuk bagian itu saj
 
 | Ubah di samping                             | Panel yang terbuka         | Yang bisa diubah                       |
 | ------------------------------------------- | -------------------------- | -------------------------------------- |
+| Deployment                                  | Ubah aplikasi              | Batas waktu build dan deskripsi.       |
 | Bahasa                                      | Edit Setup Configuration   | Bahasa dan versinya.                   |
 | Langkah build, Variabel lingkungan (Build)  | Edit Build Configuration   | Langkah build dan variabel build-time. |
 | Perintah jalan, Variabel lingkungan (Jalan) | Edit Runtime Configuration | Perintah jalan dan variabel runtime.   |
 
 Tekan **Simpan** di panel. Perubahan berlaku mulai rilis berikutnya, jadi rilis lagi dengan **Bangun dan rilis** atau **Rilis ulang**.
 
+## Pengaturan yang tetap
+
+Empat pengaturan ditentukan saat aplikasi dibuat dan tidak bisa diubah: **Repositori**, **Direktori kerja** (folder tempat aplikasi berada di server), **Port**, dan **Nama layanan**. Server menyimpan aplikasi di folder itu dan menjalankannya sebagai layanan itu, dan load balancer mengirim lalu lintas ke port itu. Panel **Ubah aplikasi** menampilkannya di bawah **Pengaturan tetap**.
+
+Untuk memakai nilai lain, buat aplikasi baru, rilis, arahkan load balancer Anda ke aplikasi baru itu, lalu hapus yang lama.
+
 ## Mengubah semuanya sekaligus
 
-**Ubah pengaturan** di bagian atas aplikasi membuka **Update Aplikasi**. Isinya formulir lima langkah yang sama dengan saat membuat aplikasi, sudah terisi nilai saat ini: server dan modul, nama, perintah, port, dan environment.
+**Ubah pengaturan** di bagian atas aplikasi membuka **Update Aplikasi**. Isinya formulir lima langkah yang sama dengan saat membuat aplikasi, sudah terisi nilai saat ini: server dan modul, nama, perintah, port, dan environment. Port hanya bisa dibaca di sini; lihat [Pengaturan yang tetap](#pengaturan-yang-tetap).
 
 1. Tekan **Ubah pengaturan**.
 2. Telusuri langkah-langkahnya dan ubah yang perlu.
@@ -61,6 +69,10 @@ Menghapus aplikasi akan menghapus aplikasi, build, dan riwayat rilisnya dari dPa
 ### Apakah perubahan saya langsung berlaku?
 
 Tidak. Perubahan berlaku mulai rilis berikutnya. Tekan **Bangun dan rilis** atau **Rilis ulang** setelah menyimpan.
+
+### Bisakah saya mengubah port aplikasi?
+
+Tidak. Port, nama layanan, direktori kerja, dan repositori tetap setelah aplikasi dibuat. Buat aplikasi baru dengan port yang baru. Lihat [Pengaturan yang tetap](#pengaturan-yang-tetap).
 
 ### Kapan saya perlu mencentang Jalankan playbook bootstrap?
 

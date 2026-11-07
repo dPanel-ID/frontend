@@ -24,7 +24,7 @@ Each row shows the record's **Type**, **Name**, **Content** and **TTL** (time to
 2. To narrow the list to one record type, press a chip: **A**, **AAAA**, **CNAME**, **MX**, **TXT**, **NS**, **SRV** or **CAA**. Press it again, or **All**, to see every type.
 3. The count changes to the number of matches, such as **2 matches**.
 
-![Searching terpusat.me for demo, which finds the docs-demo and wordpress-demo records](../../assets/networking/domain-records-search.webp 'Search matches names and contents, and highlights the part that matched.')
+![Searching terpusat.me for demo, which finds two matching records](../../assets/networking/domain-records-search.webp 'Search matches names and contents, and highlights the part that matched.')
 
 When nothing matches, the table says so, for example **No A records match "demo".**, and **Clear search and filter** shows every record again.
 

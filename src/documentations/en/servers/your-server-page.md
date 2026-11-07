@@ -20,6 +20,27 @@ The header shows the name, the status, the address, the Ubuntu release and where
 
 Select the status badge to see what the status means. While dPanel is setting a server up, a blue banner says so, with **Follow the logs**. If setup fails, a red **Setup did not finish** banner offers **See what happened**.
 
+## Agent notices
+
+The agent is dPanel's small program on the server. It reports usage and runs the jobs you start. When the agent needs your help, a notice appears under the header of the server page and on the server's card on **Servers**. It only appears on a server that is **Ready**.
+
+| Notice                                                    | What it means                                                                                                                                                 | What to do                                                                                                      |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **Agent stopped reporting**                               | dPanel has not heard from the agent for more than 5 minutes. Live usage, module lists, deployments and other jobs on this server wait until it reports again. | Sign in to the server and restart the agent: `sudo systemctl restart dpanel-agent`. **Copy command** copies it. |
+| **Agent update available** (such as `v0.1.15 → v0.1.21`)  | A newer agent is released. New dPanel features may need it.                                                                                                   | Press **Upgrade to** the new version. The agent restarts and shows the new version within a few minutes.        |
+| **Agent update available**, asking you to run setup again | The agent is an old build that cannot upgrade itself.                                                                                                         | Run setup again with **Reinstall** on the **Settings** tab.                                                     |
+
+An upgrade is safe to try: the server keeps the previous agent, and if the new one cannot reach dPanel within 3 minutes, the previous one comes back by itself. The agent has to be running to upgrade, so restart a stopped agent first.
+
+If a restart does not bring the agent back, check it on the server:
+
+```bash
+sudo systemctl status dpanel-agent
+sudo journalctl -u dpanel-agent -n 50
+```
+
+Also make sure the server can reach the internet over HTTPS (port 443): the agent connects out to dPanel.
+
 ## Overview
 
 **Live usage** reads CPU, memory and disk from the agent every few seconds while the page is open. Below it are counts of applications, load balancers, databases and modules, then **Server details** (address, SSH login, operating system, agent, provider, ownership, **Created by** and when it was added) and **What runs here**.
@@ -85,11 +106,11 @@ This tab reads the newest lines of a file. The time range, paging and download a
 
 The changes you rarely need, each saying what it does.
 
-| Card        | Button              | What it does                                                                                                                          |
-| ----------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Connection  | **Edit connection** | Changes the address, SSH login and agent ports dPanel uses.                                                                           |
-| Setup       | **Reinstall**       | Runs server setup again: reconnects over SSH, reinstalls the agent and refreshes the inventory. Installed modules and your data stay. |
-| Danger zone | **Delete server**   | Removes the server. See [Delete a server](./delete-a-server.md).                                                                      |
+| Card        | Button              | What it does                                                                                                                                                                                                                 |
+| ----------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Connection  | **Edit connection** | Changes the address, SSH login and agent ports dPanel uses.                                                                                                                                                                  |
+| Setup       | **Reinstall**       | Runs server setup again: reconnects over SSH, reinstalls the agent and refreshes the inventory. Installed modules and your data stay. On a [private machine](./register-a-private-machine.md), it reinstalls only the agent. |
+| Danger zone | **Delete server**   | Removes the server. See [Delete a server](./delete-a-server.md).                                                                                                                                                             |
 
 **Setup** is hidden while a server is being set up or deleted, and on a deleted server, because there is nothing to reinstall then. A server stays in the workspace it was created in; it cannot be moved to another one.
 
@@ -110,6 +131,14 @@ Type in the search box on **Servers**. The search ignores letter case, so `WEB` 
 ### What does Reinstall change on my server?
 
 It reconnects over SSH, reinstalls the dPanel agent and refreshes the inventory. Installed modules, applications and data stay as they are.
+
+### What do I do when the agent stopped reporting?
+
+Sign in to the server and run `sudo systemctl restart dpanel-agent`. If the server is off or unreachable, start it at your provider first. See [Agent notices](#agent-notices).
+
+### Do I have to upgrade the agent?
+
+Your server keeps working on an older agent, but new dPanel features may need the newer one. Press **Upgrade to** on the notice; the previous agent comes back by itself if the new one fails.
 
 ### Where do I open a database that runs on this server?
 

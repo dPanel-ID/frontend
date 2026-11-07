@@ -53,7 +53,7 @@ Mesin itu kini muncul di halaman server dengan lencana **Private**. Alamatnya ad
 
 Buka servernya. Server privat punya tab yang sama dengan server lain: pemakaian langsung, modul, layanan, pengguna, jaringan, berkas, log, dan pengaturan. Bagian detail menjelaskan cara dPanel menjangkaunya: **Local address**, **Public address** (IP yang dipakai agen untuk terhubung ke dPanel, bila IP itu publik), dan **Connection: Through the dPanel agent**, bukan login SSH.
 
-![Halaman home-server: pemakaian CPU, memori, dan disk secara langsung, load balancer tidak tersedia di server privat, serta detail Local address 172.17.0.2, koneksi lewat agen dPanel, dan Agent v0.1.15](../../assets/servers/private-overview.webp)
+![Halaman home-server: pemakaian CPU, memori, dan disk secara langsung, jumlah aplikasi, database, dan modul, serta detail Local address 172.17.0.2, koneksi lewat agen dPanel, dan Agent v0.1.15](../../assets/servers/private-overview.webp)
 
 ## Langkah 3: Pasang database atau perangkat lunak lain
 
@@ -83,7 +83,7 @@ Buat aplikasi dari repositori GitHub Anda seperti biasa (lihat [Membuat aplikasi
 
 Build dan deploy berjalan di mesin itu sendiri. Aplikasi mendengarkan di mesin itu, jadi Anda membukanya dari jaringan sendiri di alamat mesin dan port aplikasinya, misalnya `http://192.168.1.20:3000`.
 
-![Halaman aplikasi goexample: Live, deployment yang sedang berjalan dari branch private-autodeploy-test di home-server, satu server melayani, build terakhir berhasil, port 3000](../../assets/servers/private-app-detail.webp)
+![Halaman aplikasi goexample: Live, deployment yang sedang berjalan di home-server, satu server melayani, build terakhir berhasil, port 3000](../../assets/servers/private-app-detail.webp)
 
 ## Langkah 6: Buka terminal
 
@@ -93,17 +93,17 @@ Pilih **Open terminal** di bagian atas halaman server. Anda mendapat shell root 
 
 ## Yang bisa dilakukan
 
-| Bisa | Tidak tersedia |
-| --- | --- |
-| Melihat pemakaian CPU, memori, dan disk | Cluster Kubernetes bersama server lain |
-| Menelusuri dan mengubah berkas | Mengubah detail koneksi SSH (memang tidak ada) |
-| Menyalakan, mematikan, dan memulai ulang layanan, membaca log | |
-| Mengelola pengguna Linux | |
-| Memasang modul seperti MariaDB, PostgreSQL, Redis, atau Docker | |
-| Membuka MariaDB dan PostgreSQL di pengelola database, termasuk impor dan ekspor | |
-| Build dan deploy aplikasi | |
-| Membuka terminal di browser atau dengan `dnocs server exec` | |
-| Menambah load balancer dan domain, bila mesin bisa dijangkau dari internet | |
+| Bisa                                                                            | Tidak tersedia                                 |
+| ------------------------------------------------------------------------------- | ---------------------------------------------- |
+| Melihat pemakaian CPU, memori, dan disk                                         | Cluster Kubernetes bersama server lain         |
+| Menelusuri dan mengubah berkas                                                  | Mengubah detail koneksi SSH (memang tidak ada) |
+| Menyalakan, mematikan, dan memulai ulang layanan, membaca log                   |                                                |
+| Mengelola pengguna Linux                                                        |                                                |
+| Memasang modul seperti MariaDB, PostgreSQL, Redis, atau Docker                  |                                                |
+| Membuka MariaDB dan PostgreSQL di pengelola database, termasuk impor dan ekspor |                                                |
+| Build dan deploy aplikasi                                                       |                                                |
+| Membuka terminal di browser atau dengan `dnocs server exec`                     |                                                |
+| Menambah load balancer dan domain, bila mesin bisa dijangkau dari internet      |                                                |
 
 ## Memasang load balancer
 
@@ -118,13 +118,19 @@ Jika mesin mati atau offline saat Anda memulai pemasangan atau deploy, pekerjaan
 
 Mesin yang didaftarkan dari ruang kerja personal hanya milik Anda. Agar tim bisa mengaksesnya, daftarkan ke ruang kerja tim atau pindahkan ke sana: lihat [Berbagi homelab dengan tim](../tutorials/team-homelab.md).
 
+## Menjaga agen tetap terbaru
+
+Saat agen yang lebih baru dirilis, halaman server menampilkan **Pembaruan agen tersedia** dengan tombol **Perbarui ke**, dan **Agen berhenti melapor** saat mesin tidak lagi memberi kabar. Lihat [Pemberitahuan agen](./your-server-page.md#pemberitahuan-agen).
+
+Anda juga bisa memasang ulang agen sendiri: buka tab **Pengaturan** server dan tekan **Instal ulang** di **Penyiapan**. Pada mesin privat, ini hanya memasang ulang agen dari rilis terbaru; tidak ada hal lain di mesin yang berubah. Jika agen sudah menjalankan rilis terbaru, tidak ada yang dilakukan, kecuali Anda mencentang **Instal ulang meskipun agen sudah terbaru**. Koneksi terputus beberapa detik, dan jika agen baru tidak bisa menjangkau dPanel, agen sebelumnya kembali dengan sendirinya dalam 3 menit.
+
 ## Mendaftarkannya lagi
 
 Menjalankan `sudo dnocs machine register` lagi di mesin yang sama akan mempertahankan server yang sama di dPanel dan memberi agennya kredensial baru. Satu mesin hanya bisa berada di satu ruang kerja pada satu waktu, dan satu ruang kerja bisa menampung hingga 10 mesin privat.
 
 ## Menghapusnya
 
-Hapus server itu di dPanel (dari halamannya, atau dengan `dnocs server delete --id <id>`). dPanel langsung menghapusnya, dan kredensial agennya tidak berlaku lagi. Setelah itu hentikan agen di mesin itu:
+Hapus server itu di dPanel (dari halamannya, atau dengan `dnocs server delete --id <id>`). dPanel langsung menghapusnya, dan kredensial agennya tidak berlaku lagi. Jika mesinnya sudah tidak ada, gunakan **Hapus dari dPanel**; lihat [Menghapus server](./delete-a-server.md#menghapus-server-yang-tidak-bisa-dijangkau-dpanel). Setelah itu hentikan agen di mesin itu:
 
 ```bash
 sudo systemctl disable --now dpanel-agent

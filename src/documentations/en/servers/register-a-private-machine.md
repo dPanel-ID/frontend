@@ -53,7 +53,7 @@ The machine now appears on your servers page with a **Private** badge. Its addre
 
 Open the server. A private server has the same tabs as any other server: live usage, modules, services, users, network, files, logs and settings. The details say how dPanel reaches it: **Local address**, **Public address** (the IP the agent connects to dPanel from, when it is public) and **Connection: Through the dPanel agent**, instead of an SSH login.
 
-![The home-server page: live CPU, memory and disk usage, Load balancers not available on a private server, and details with Local address 172.17.0.2, Connection through the dPanel agent and Agent v0.1.15](../../assets/servers/private-overview.webp)
+![The home-server page: live CPU, memory and disk usage, counts of applications, databases and modules, and details with Local address 172.17.0.2, Connection through the dPanel agent and Agent v0.1.15](../../assets/servers/private-overview.webp)
 
 ## Step 3: Install a database or other software
 
@@ -83,7 +83,7 @@ Create an application from your GitHub repository as usual (see [Create an appli
 
 The build and the deploy run on the machine itself. Apps listen on the machine, so you open them on your own network at the machine's address and the app's port, for example `http://192.168.1.20:3000`.
 
-![The goexample application page: Live, the current deployment from the private-autodeploy-test branch on home-server, one server serving, the last build passed, port 3000](../../assets/servers/private-app-detail.webp)
+![The goexample application page: Live, the current deployment on home-server, one server serving, the last build passed, port 3000](../../assets/servers/private-app-detail.webp)
 
 ## Step 6: Open a terminal
 
@@ -93,17 +93,17 @@ Choose **Open terminal** at the top of the server page. You get a root shell on 
 
 ## What you can do with it
 
-| You can | Not available |
-| --- | --- |
-| See CPU, memory and disk usage | Kubernetes clusters with other servers |
-| Browse and edit files | Changing SSH connection details (there are none) |
-| Start, stop and restart services, read logs | |
-| Manage Linux users | |
-| Install modules such as MariaDB, PostgreSQL, Redis or Docker | |
-| Open MariaDB and PostgreSQL in the database manager, with import and export | |
-| Build and deploy applications | |
-| Open a terminal in the browser or with `dnocs server exec` | |
-| Add load balancers and domains, when the machine is reachable from the internet | |
+| You can                                                                         | Not available                                    |
+| ------------------------------------------------------------------------------- | ------------------------------------------------ |
+| See CPU, memory and disk usage                                                  | Kubernetes clusters with other servers           |
+| Browse and edit files                                                           | Changing SSH connection details (there are none) |
+| Start, stop and restart services, read logs                                     |                                                  |
+| Manage Linux users                                                              |                                                  |
+| Install modules such as MariaDB, PostgreSQL, Redis or Docker                    |                                                  |
+| Open MariaDB and PostgreSQL in the database manager, with import and export     |                                                  |
+| Build and deploy applications                                                   |                                                  |
+| Open a terminal in the browser or with `dnocs server exec`                      |                                                  |
+| Add load balancers and domains, when the machine is reachable from the internet |                                                  |
 
 ## Put a load balancer on it
 
@@ -118,13 +118,19 @@ If the machine is off or offline when you start an install or a deploy, the job 
 
 A machine registered from your personal space is only yours. To give a team access, register it into a team workspace or move it there: see [Share a homelab with your team](../tutorials/team-homelab.md).
 
+## Keep the agent up to date
+
+When a newer agent is released, the server page shows **Agent update available** with an **Upgrade to** button, and **Agent stopped reporting** when the machine has gone quiet. See [Agent notices](./your-server-page.md#agent-notices).
+
+You can also reinstall the agent yourself: open the server's **Settings** tab and press **Reinstall** under **Setup**. On a private machine this reinstalls only the agent, from the latest release; nothing else on the machine changes. If the agent already runs the latest release, nothing is done, unless you tick **Reinstall even if the agent is already current**. The connection drops for a few seconds, and if the new agent cannot reach dPanel, the previous one comes back by itself within 3 minutes.
+
 ## Register it again
 
 Running `sudo dnocs machine register` again on the same machine keeps the same server in dPanel and gives its agent a new credential. A machine belongs to one workspace at a time, and a workspace can hold up to 10 private machines.
 
 ## Remove it
 
-Delete the server in dPanel (from its page, or with `dnocs server delete --id <id>`). dPanel removes it at once, and the agent's credential stops working. Then stop the agent on the machine:
+Delete the server in dPanel (from its page, or with `dnocs server delete --id <id>`). dPanel removes it at once, and the agent's credential stops working. If the machine is already gone, use **Remove from dPanel**; see [Delete a server](./delete-a-server.md#remove-a-server-dpanel-can-no-longer-reach). Then stop the agent on the machine:
 
 ```bash
 sudo systemctl disable --now dpanel-agent
