@@ -25,8 +25,8 @@ describe('canReinstallServer', () => {
     },
   );
 
-  it('hides reinstall on a private server, which dPanel does not set up', () => {
-    expect(canReinstallServer(withStatus('ready', true))).toBe(false);
+  it('offers reinstall on a private server, where it reinstalls the agent', () => {
+    expect(canReinstallServer(withStatus('ready', true))).toBe(true);
   });
 });
 

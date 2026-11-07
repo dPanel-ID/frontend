@@ -1485,6 +1485,16 @@
           "step2": "It reinstalls the agent and refreshes the inventory.",
           "step3": "Installed modules and your data stay on the server.",
           "confirm": "Reinstall"
+        },
+        "reinstallAgent": {
+          "title": "Reinstall the agent",
+          "description": "Reinstalls the dPanel Agent on <strong>{name}</strong>. Nothing else on the server changes.",
+          "happens": "What happens next",
+          "step1": "If the agent already runs the latest release, nothing is done.",
+          "step2": "Otherwise the server's own worker installs the latest agent and restarts it; the connection drops for a few seconds.",
+          "step3": "If the new agent cannot reach dPanel, the previous one comes back by itself within 3 minutes.",
+          "force": "Reinstall even if the agent is already current",
+          "confirm": "Reinstall agent"
         }
       },
       "creator": {
@@ -1650,7 +1660,8 @@
         "setup": {
           "title": "Setup",
           "description": "Run the setup workflow again: reconnect over SSH, reinstall the agent and refresh the inventory.",
-          "action": "Reinstall"
+          "action": "Reinstall",
+          "privateDescription": "Reinstall the dPanel Agent from the latest release. The previous agent comes back by itself if the new one cannot reach dPanel."
         },
         "ownership": {
           "title": "Ownership",
@@ -3844,6 +3855,10 @@
     "machineReinstall": {
       "success": "Successfully reinstalled machine with id <code>{machineID}</code>.",
       "error": "Failed to reinstall machine with id <code>{machineID}</code>!"
+    },
+    "agentSetup": {
+      "queued": "Agent setup to {version} queued. Follow it in the server's tasks.",
+      "skipped": "The agent already runs {version}, the latest release. Nothing to do."
     },
     "machineDelete": {
       "success": "Successfully deleted machine <code>{machineName}</code> (<code>{machineID}</code>).",

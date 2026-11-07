@@ -97,6 +97,7 @@ export default function EventController() {
       requestReinstall({
         serverId: server.id,
         serverName: serverDisplayName(server),
+        isPrivate: server.host.private,
       });
     }),
   );
