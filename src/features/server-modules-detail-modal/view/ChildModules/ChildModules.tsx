@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { DatabaseIcon, PlusIcon, XIcon } from 'lucide-react';
+import { DatabaseIcon, PlusIcon, PuzzleIcon, XIcon } from 'lucide-react';
 
 import type { ServerModule } from '@/entities/server-modules/model/types';
 
@@ -17,6 +17,28 @@ function instanceName(installationKey?: string) {
   return at >= 0 ? installationKey.slice(at + 1) : installationKey;
 }
 
+/**
+ * The words a child module's card uses: a database child (MariaDB,
+ * PostgreSQL) keeps its database wording, any other child, such as PHP
+ * Extensions, is named after the module itself.
+ */
+function childCopy(child: ServerModule) {
+  if (child.category.includes('database')) {
+    return {
+      Icon: DatabaseIcon,
+      title: 'Databases',
+      add: 'Create database',
+      empty: 'No database created here yet.',
+    };
+  }
+  return {
+    Icon: PuzzleIcon,
+    title: child.name,
+    add: `Add ${child.name}`,
+    empty: `No ${child.name} added here yet.`,
+  };
+}
+
 function isInstalled(module: ServerModule) {
   return (
     module.installation?.status === 'installed' ||
@@ -30,8 +52,9 @@ function isInstalled(module: ServerModule) {
 
 /**
  * Modules offered only from this one, such as the databases created on a
- * MariaDB or PostgreSQL server: what exists on the server, and a form to
- * create another, which is the child module's own install form.
+ * MariaDB or PostgreSQL server or the extensions added to PHP: what exists
+ * on the server, and a form to add another, which is the child module's own
+ * install form.
  */
 export default function ChildModules() {
   const context = useBaseContext();
@@ -56,14 +79,15 @@ function ChildModule(props: { child: ServerModule }) {
   const context = useBaseContext();
   const [isCreating, setIsCreating] = useState(false);
   const created = child.installations ?? [];
+  const copy = childCopy(child);
 
   return (
     <Card className="flex flex-col gap-3 p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col gap-1">
           <h3 className="flex items-center gap-2 text-sm font-bold">
-            <DatabaseIcon className="size-4" aria-hidden />
-            Databases
+            <copy.Icon className="size-4" aria-hidden />
+            {copy.title}
           </h3>
           <p className="text-xs text-muted-foreground">{child.description}</p>
         </div>
@@ -73,14 +97,12 @@ function ChildModule(props: { child: ServerModule }) {
           onClick={() => setIsCreating((current) => !current)}
         >
           {isCreating ? <XIcon aria-hidden /> : <PlusIcon aria-hidden />}
-          {isCreating ? 'Cancel' : 'Create database'}
+          {isCreating ? 'Cancel' : copy.add}
         </Button>
       </div>
 
       {created.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          No database created here yet.
-        </p>
+        <p className="text-sm text-muted-foreground">{copy.empty}</p>
       ) : (
         <ul className="flex flex-col divide-y rounded-lg border">
           {created.map((installation) => (
