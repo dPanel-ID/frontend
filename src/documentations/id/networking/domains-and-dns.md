@@ -20,7 +20,7 @@ dPanel tidak menjual atau memindahkan domain, dan tidak pernah mengubah registra
 Gunakan token dengan cakupan terbatas. Di Cloudflare, token khusus "DNS edit" untuk satu zona itu sudah cukup.
 :::
 
-![Halaman Domain & DNS dalam tampilan tabel, berisi devetek.app dan terpusat.me, keduanya di Cloudflare, dimiliki satu orang dan dibagikan ke tim dPanel](../../assets/networking/domains-list.webp 'Domain & DNS: setiap baris menampilkan penyedia DNS, pemilik domain, dan siapa yang bisa memakainya.')
+![Halaman Domain & DNS dalam tampilan tabel, berisi dua domain, keduanya di Cloudflare, dimiliki satu orang dan dibagikan ke tim dPanel](../../assets/networking/domains-list.webp 'Domain & DNS: setiap baris menampilkan penyedia DNS, pemilik domain, dan siapa yang bisa memakainya.')
 
 Setiap baris menampilkan domain, **Penyedia DNS**-nya, **Kepemilikan** (nama orang yang menambahkannya dan tim tempat domain itu dibagikan), serta kapan terakhir diubah. Pilih nama orangnya untuk membuka [profil publik](../teams/public-profiles.md)-nya. Kotak pencarian di atas tabel menemukan domain berdasarkan nama; huruf besar dan kecil tidak dibedakan.
 

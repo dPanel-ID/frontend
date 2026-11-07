@@ -40,9 +40,9 @@ Halaman 1 berisi baris terbaru. Di dalam satu halaman, baris dibaca dari atas ke
 
 Log load balancer menampilkan setiap request sebagai satu baris yang mudah dibaca, bertanda **HTTP**:
 
-![Request load balancer ke dbmanager.devetek.app, dengan chip level Warn 5 dan Info 3, serta baris seperti GET dbmanager.devetek.app/api/info → 401 · 7 ms](../../assets/logs/logs-http-requests.webp 'Status 4xx menjadi peringatan, status 5xx menjadi galat.')
+![Request load balancer ke sebuah aplikasi, dengan chip level Warn 5 dan Info 3, satu baris per request](../../assets/logs/logs-http-requests.webp 'Status 4xx menjadi peringatan, status 5xx menjadi galat.')
 
-`GET dbmanager.devetek.app/api/info → 401 · 7 ms` dibaca: metode, domain dan path yang diminta, kode status yang dikirim balik, dan lama prosesnya. Level mengikuti kode status: `5xx` menjadi **error**, `4xx` menjadi **warn**, selebihnya **info**. Buka entrinya untuk melihat semua field, seperti alamat IP pengunjung, protokol, dan header request.
+`GET shop.example.com/api/info → 401 · 7 ms` dibaca: metode, domain dan path yang diminta, kode status yang dikirim balik, dan lama prosesnya. Level mengikuti kode status: `5xx` menjadi **error**, `4xx` menjadi **warn**, selebihnya **info**. Buka entrinya untuk melihat semua field, seperti alamat IP pengunjung, protokol, dan header request.
 
 Load balancer TCP atau UDP (L4, yang meneruskan koneksi mentah seperti port database, bukan halaman web) mencatat koneksi, bukan request. Alat baris perintah mencetak setiap koneksi sebagai baris seperti `TCP 203.0.113.10 -> 10.0.0.12:5432 · in 78 B, out 199 B · 3ms`: klien, upstream yang dituju, jumlah byte di tiap arah, dan lama koneksinya.
 

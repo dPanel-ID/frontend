@@ -20,6 +20,27 @@ Bagian kepala menampilkan nama, status, alamat, versi Ubuntu, dan lokasi server,
 
 Pilih lencana status untuk melihat arti status tersebut. Selama dPanel menyiapkan server, banner biru memberi tahu hal itu, dengan tombol **Ikuti log**. Jika setup gagal, banner merah **Penyiapan tidak selesai** menawarkan **Lihat penyebabnya**.
 
+## Pemberitahuan agen
+
+Agen adalah program kecil dPanel di server. Agen melaporkan pemakaian dan menjalankan tugas yang Anda mulai. Saat agen butuh bantuan Anda, sebuah pemberitahuan muncul di bawah bagian kepala halaman server dan di kartu server pada **Server**. Pemberitahuan hanya muncul pada server yang berstatus **Siap**.
+
+| Pemberitahuan                                                          | Artinya                                                                                                                                                                        | Yang perlu dilakukan                                                                                            |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| **Agen berhenti melapor**                                              | dPanel tidak menerima kabar dari agen selama lebih dari 5 menit. Pemakaian langsung, daftar modul, deployment, dan tugas lain di server ini menunggu sampai agen melapor lagi. | Masuk ke server dan jalankan ulang agen: `sudo systemctl restart dpanel-agent`. **Salin perintah** menyalinnya. |
+| **Pembaruan agen tersedia** (misalnya `v0.1.15 → v0.1.21`)             | Agen yang lebih baru sudah dirilis. Fitur dPanel yang baru bisa membutuhkannya.                                                                                                | Tekan **Perbarui ke** versi baru. Agen memulai ulang dan menampilkan versi baru dalam beberapa menit.           |
+| **Pembaruan agen tersedia**, dengan permintaan menjalankan ulang setup | Agen ini build lama yang tidak bisa memperbarui dirinya sendiri.                                                                                                               | Jalankan ulang setup dengan **Instal ulang** di tab **Pengaturan**.                                             |
+
+Pembaruan aman dicoba: server menyimpan agen sebelumnya, dan jika agen baru tidak bisa menjangkau dPanel dalam 3 menit, agen sebelumnya kembali dengan sendirinya. Agen harus berjalan agar bisa diperbarui, jadi jalankan ulang agen yang berhenti lebih dulu.
+
+Jika agen belum kembali setelah dijalankan ulang, periksa di server:
+
+```bash
+sudo systemctl status dpanel-agent
+sudo journalctl -u dpanel-agent -n 50
+```
+
+Pastikan juga server bisa menjangkau internet lewat HTTPS (port 443): agen terhubung keluar ke dPanel.
+
 ## Ringkasan
 
 **Pemakaian langsung** membaca CPU, memori, dan disk dari agen setiap beberapa detik selama halaman terbuka. Di bawahnya ada jumlah aplikasi, load balancer, basis data, dan modul, lalu **Detail server** (alamat, login SSH, sistem operasi, agen, penyedia, kepemilikan, **Dibuat oleh**, dan kapan server ditambahkan) dan **Yang berjalan di sini**.
@@ -85,11 +106,11 @@ Tab ini membaca baris terbaru dari sebuah berkas. Rentang waktu, halaman, dan un
 
 Perubahan yang jarang dibutuhkan, masing-masing dengan penjelasan.
 
-| Kartu          | Tombol           | Fungsinya                                                                                                                                           |
-| -------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Koneksi        | **Edit koneksi** | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel.                                                                                      |
-| Penyiapan      | **Instal ulang** | Menjalankan penyiapan server lagi: masuk ulang lewat SSH, memasang ulang agen, dan menyegarkan inventaris. Modul terpasang dan data Anda tetap ada. |
-| Zona berbahaya | **Hapus server** | Menghapus server. Lihat [Menghapus server](./delete-a-server.md).                                                                                   |
+| Kartu          | Tombol           | Fungsinya                                                                                                                                                                                                                                 |
+| -------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Koneksi        | **Edit koneksi** | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel.                                                                                                                                                                            |
+| Penyiapan      | **Instal ulang** | Menjalankan penyiapan server lagi: masuk ulang lewat SSH, memasang ulang agen, dan menyegarkan inventaris. Modul terpasang dan data Anda tetap ada. Pada [mesin privat](./register-a-private-machine.md), hanya agen yang dipasang ulang. |
+| Zona berbahaya | **Hapus server** | Menghapus server. Lihat [Menghapus server](./delete-a-server.md).                                                                                                                                                                         |
 
 **Penyiapan** disembunyikan selama server sedang disiapkan atau dihapus, dan pada server yang sudah dihapus, karena saat itu tidak ada yang bisa dipasang ulang. Server tetap berada di workspace tempat ia dibuat; server tidak bisa dipindahkan ke workspace lain.
 
@@ -110,6 +131,14 @@ Ketik di kotak pencarian di **Servers**. Pencariannya tidak membedakan huruf bes
 ### Apa yang diubah Instal ulang di server saya?
 
 Fitur ini masuk ulang lewat SSH, memasang ulang agen dPanel, dan menyegarkan inventaris. Modul, aplikasi, dan data yang terpasang tetap seperti semula.
+
+### Apa yang harus saya lakukan saat agen berhenti melapor?
+
+Masuk ke server dan jalankan `sudo systemctl restart dpanel-agent`. Jika server mati atau tidak bisa dijangkau, nyalakan dulu di penyedia Anda. Lihat [Pemberitahuan agen](#pemberitahuan-agen).
+
+### Apakah saya wajib memperbarui agen?
+
+Server Anda tetap berjalan dengan agen lama, tetapi fitur dPanel yang baru bisa membutuhkan agen yang lebih baru. Tekan **Perbarui ke** di pemberitahuan; agen sebelumnya kembali dengan sendirinya jika agen baru gagal.
 
 ### Di mana saya membuka basis data yang berjalan di server ini?
 

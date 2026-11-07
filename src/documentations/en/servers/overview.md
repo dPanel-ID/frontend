@@ -68,4 +68,4 @@ Yes. The `dnocs` CLI lists servers, runs setup again, installs modules and manag
 
 ### What is the agent and is it safe to remove?
 
-The agent is dPanel's program on the server. It reports usage and runs the jobs you start. Without it, the server page goes blank and jobs fail; **Reinstall** on the **Settings** tab puts it back.
+The agent is dPanel's program on the server. It reports usage and runs the jobs you start. Without it, the server page goes blank and jobs fail; **Reinstall** on the **Settings** tab puts it back. When the agent stops reporting or an update is available, the server page tells you what to do. See [Agent notices](./your-server-page.md#agent-notices).

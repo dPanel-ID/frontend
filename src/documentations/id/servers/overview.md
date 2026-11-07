@@ -68,4 +68,4 @@ Bisa. CLI `dnocs` bisa menampilkan daftar server, menjalankan penyiapan lagi, me
 
 ### Apa itu agen, dan amankah kalau dihapus?
 
-Agen adalah program dPanel di server. Agen melaporkan pemakaian dan menjalankan tugas yang Anda mulai. Tanpa agen, halaman server kosong dan tugas gagal; **Instal ulang** di tab **Pengaturan** memasangnya kembali.
+Agen adalah program dPanel di server. Agen melaporkan pemakaian dan menjalankan tugas yang Anda mulai. Tanpa agen, halaman server kosong dan tugas gagal; **Instal ulang** di tab **Pengaturan** memasangnya kembali. Saat agen berhenti melapor atau ada pembaruan, halaman server memberi tahu apa yang perlu dilakukan. Lihat [Pemberitahuan agen](./your-server-page.md#pemberitahuan-agen).

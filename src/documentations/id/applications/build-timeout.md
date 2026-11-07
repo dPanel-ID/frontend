@@ -13,7 +13,14 @@ Sebagian besar aplikasi selesai jauh sebelum itu. Build yang banyak mengompilasi
 
 ## Memberi build waktu lebih
 
-Isi `build.timeout` di definisi aplikasi. Nilainya berupa durasi seperti `45m`, `90m`, atau `2h`, antara `1m` dan `3h`.
+Di aplikasi web:
+
+1. Buka aplikasinya dan masuk ke **Pengaturan**.
+2. Tekan **Ubah** di bagian **Deployment**. Panel **Ubah aplikasi** terbuka.
+3. Di bawah **Build**, isi **Batas waktu** dengan durasi seperti `45m`, `90m`, atau `2h`, antara `1m` dan `3h`. Biarkan **Bawaan** untuk tetap 20 menit.
+4. Tekan **Simpan**. Batas baru berlaku mulai build berikutnya.
+
+Dari terminal, isi `build.timeout` di definisi aplikasi. Durasinya sama.
 
 ```yaml
 build:
@@ -22,9 +29,7 @@ build:
 
 dPanel memeriksa nilai ini saat build dimulai. Nilai yang tidak bisa dibaca, misalnya `90 minutes`, atau di luar rentang 1 menit sampai 3 jam, menghentikan build dengan pesan galat yang menjelaskannya. Kosongkan untuk memakai batas bawaan.
 
-:::note[Belum ada di formulir web]
-Formulir **Buat aplikasi baru** dan **Update Aplikasi** belum punya kolom untuk batas waktu ini. Atur di file definisi aplikasi `.devetek/*.yml`, lalu kirim lewat opsi `--definition` pada alat baris perintah dnocs, di `dnocs application create` atau `dnocs application deploy`.
-:::
+Kirim definisinya, file `.devetek/*.yml`, lewat opsi `--definition` pada alat baris perintah dnocs, di `dnocs application create` atau `dnocs application deploy`.
 
 ## Sebelum menaikkannya
 
@@ -42,6 +47,6 @@ Formulir **Buat aplikasi baru** dan **Update Aplikasi** belum punya kolom untuk 
 
 Ya. Batasnya mencakup seluruh pekerjaan: clone, menyiapkan runtime, langkah build, dan menjalankan layanan.
 
-### Bisakah batas waktunya diatur di formulir web?
+### Bisakah batas waktunya diatur di aplikasi web?
 
-Belum. Tulis `build.timeout` di definisi `.devetek/*.yml` dan kirimkan dengan `dnocs application deploy --definition`.
+Bisa. Buka **Pengaturan** aplikasi, tekan **Ubah** di **Deployment**, lalu isi **Batas waktu** di bawah **Build**. Lihat [Memberi build waktu lebih](#memberi-build-waktu-lebih).

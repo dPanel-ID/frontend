@@ -40,9 +40,9 @@ Page 1 holds the newest lines. Inside a page, lines read from top to bottom in t
 
 Load balancer logs show each request as one readable line, marked **HTTP**:
 
-![Load balancer requests to dbmanager.devetek.app, with level chips Warn 5 and Info 3, and rows such as GET dbmanager.devetek.app/api/info → 401 · 7 ms](../../assets/logs/logs-http-requests.webp 'A 4xx status is a warning, a 5xx status an error.')
+![Load balancer requests to an application, with level chips Warn 5 and Info 3, one row per request](../../assets/logs/logs-http-requests.webp 'A 4xx status is a warning, a 5xx status an error.')
 
-`GET dbmanager.devetek.app/api/info → 401 · 7 ms` reads as: the method, the domain and path asked for, the status code sent back, and how long it took. The level follows the status code: `5xx` is **error**, `4xx` is **warn**, the rest is **info**. Open the entry to see every field, such as the visitor's IP address, the protocol and the request headers.
+`GET shop.example.com/api/info → 401 · 7 ms` reads as: the method, the domain and path asked for, the status code sent back, and how long it took. The level follows the status code: `5xx` is **error**, `4xx` is **warn**, the rest is **info**. Open the entry to see every field, such as the visitor's IP address, the protocol and the request headers.
 
 A TCP or UDP load balancer (L4, which forwards raw connections such as a database port instead of web pages) logs connections, not requests. The command-line tool prints each as a line such as `TCP 203.0.113.10 -> 10.0.0.12:5432 · in 78 B, out 199 B · 3ms`: the client, the upstream it reached, the bytes each way, and how long the connection lasted.
 
