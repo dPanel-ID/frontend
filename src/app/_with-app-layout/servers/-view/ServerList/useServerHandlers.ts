@@ -62,6 +62,7 @@ export function useServerHandlers() {
             emit('@resources::servers/machine-reinstall', {
               serverId: server.id,
               serverName: server.host.name || server.host.address,
+              isPrivate: isPrivateServer(server),
             }),
       edit:
         busy || isPrivateServer(server)
