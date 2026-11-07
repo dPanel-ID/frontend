@@ -262,7 +262,7 @@ describe('summarizeHttpAccessLog', () => {
         uri: '/api/info',
         remote_ip: '203.0.113.9',
       },
-      service_name: 'dpanel-active-agent',
+      service_name: 'dpanel-agent',
       size: 8161,
       status: 200,
       ts: 1793566603.83,

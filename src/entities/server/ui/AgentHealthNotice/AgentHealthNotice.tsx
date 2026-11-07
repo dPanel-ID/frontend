@@ -47,7 +47,9 @@ export function AgentHealthNotice(props: AgentHealthNoticeProps) {
   const health = agentHealth(server, now);
   if (!health.quietSince && !health.upgrade) return null;
 
-  const unit = server.host.private ? 'dpanel-active-agent' : 'dpanel-agent';
+  // Every agent runs as dpanel-agent.service (backend
+  // docs/architecture/agent-layout.md).
+  const unit = 'dpanel-agent';
 
   const handleUpgrade = async () => {
     setUpgrading(true);
