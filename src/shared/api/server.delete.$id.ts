@@ -8,11 +8,28 @@ import { apiDoPost } from '../libs/api-client';
 
 export interface RecipeParams {
   id: string;
+  /** Remove an unreachable server and its records from dPanel only. */
+  forget?: boolean;
+}
+
+/** What a forgotten server took with it. */
+export interface ForgottenDto {
+  stopped_jobs?: number;
+  load_balancers?: number;
+  application_deployments?: number;
+  application_artifacts?: number;
+  module_records?: number;
 }
 
 export interface Dto {
   agent_uninstalling?: boolean;
-  deletion_phase?: 'agent_uninstall' | 'origin_delete' | 'permanent' | string;
+  deletion_phase?:
+    | 'agent_uninstall'
+    | 'origin_delete'
+    | 'permanent'
+    | 'forget'
+    | string;
+  forgotten?: ForgottenDto;
   execution_id?: string;
   machine_id?: string;
   origin_deleting?: boolean;
@@ -22,11 +39,11 @@ export interface Dto {
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
-  const { id } = params;
+  const { id, forget } = params;
 
   return {
     method: 'DELETE',
-    url: `/v1/server/delete/${id}`,
+    url: `/v1/server/delete/${id}${forget ? '?forget=true' : ''}`,
   };
 }
 

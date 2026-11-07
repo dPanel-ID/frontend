@@ -123,6 +123,7 @@ export default function EventController() {
     <>
       <DeleteServerDialog
         target={deletion.target}
+        forgetOffer={deletion.forgetOffer}
         isDeleting={deletion.isDeleting}
         onConfirm={deletion.confirm}
         onClose={deletion.close}

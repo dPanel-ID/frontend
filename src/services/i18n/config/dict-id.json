@@ -1473,9 +1473,25 @@
           "uninstallAgent": "dPanel mencopot agennya dari server.",
           "cloudDeleted": "VM dihapus di {provider}. Disk dan seluruh isinya hilang.",
           "ownKept": "Mesin tetap berjalan; hanya dPanel yang melupakannya.",
-          "blocked": "Penghapusan ditolak selama masih ada aplikasi atau load balancer yang memakai server ini.",
+          "blocked": "Penghapusan ditolak selama aplikasi atau load balancer masih memakai server ini, kecuali server sudah tidak dapat dijangkau.",
           "confirmLabel": "Ketik <code>{name}</code> untuk konfirmasi",
           "confirm": "Hapus server"
+        },
+        "forget": {
+          "title": "Hapus dari dPanel",
+          "description": "<strong>{name}</strong> tidak dapat dijangkau: {status} Server ini masih punya resource di dPanel, dan resource itu tidak dapat dihapus dari mesinnya.",
+          "lastSeen": "agennya terakhir melapor pada {time}.",
+          "neverConnected": "agennya tidak pernah melapor.",
+          "hostUnreachable": "dPanel tidak dapat terhubung ke server ini.",
+          "removes": "Dihapus dari dPanel",
+          "resources": "{deployments} rilis, {artifacts} build dan {loadBalancers} load balancer di server ini, beserta server itu sendiri.",
+          "jobs": "Tugas yang belum selesai dihentikan.",
+          "dns": "Record DNS yang dibuat dPanel untuk load balancer-nya dihapus.",
+          "machineTitle": "Di mesin",
+          "machineUntouched": "Tidak ada yang diubah atau dihapus di mesin.",
+          "comesBack": "Jika mesin aktif lagi, aplikasinya tetap berjalan di sana; daftarkan ulang untuk mengelolanya.",
+          "understand": "Saya mengerti bahwa ini hanya menghapus data di dPanel.",
+          "confirm": "Hapus dari dPanel"
         },
         "reinstall": {
           "title": "Instal ulang server",
@@ -3866,7 +3882,8 @@
       "deleteQueued": "Penghapusan dimulai untuk mesin <code>{machineName}</code> (<code>{machineID}</code>). Server tetap tampil sebagai Menghapus saat dPanel menghapus agent.",
       "permanentSuccess": "Berhasil menghapus permanen mesin <code>{machineName}</code> (<code>{machineID}</code>).",
       "blockingResources": "Resource terhubung: {deployments} deployment, {artifacts} artefak, {loadBalancers} load balancer.",
-      "error": "Gagal menghapus mesin <code>{machineName}</code> (<code>{machineID}</code>)"
+      "error": "Gagal menghapus mesin <code>{machineName}</code> (<code>{machineID}</code>)",
+      "forgotten": "{machineName} dihapus dari dPanel beserta {deployments} rilis, {artifacts} build dan {loadBalancers} load balancer; {jobs} tugas dihentikan."
     },
     "osServicePushActivity": {
       "success": "Berhasil mengirim aktivitas \"{activity}\" ke layanan \"{serviceName}\"!",
