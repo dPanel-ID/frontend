@@ -62,7 +62,7 @@ Di ruang kerja tim, hanya owner dan admin tim yang bisa mengubahnya. Lihat [Work
 
 ## Profil publik Anda
 
-Setiap akun punya halaman profil publik di `/u/` diikuti username, misalnya `https://dnocs.devetek.app/u/prakasa`. Halaman ini menampilkan nama, avatar, username, dan tanggal bergabung, tetapi tidak pernah menampilkan email. Hanya orang yang sudah masuk ke dPanel yang bisa membukanya.
+Setiap akun punya halaman profil publik di `/u/` diikuti username, misalnya `https://dnocs.devetek.app/u/jane`. Halaman ini menampilkan nama, avatar, username, dan tanggal bergabung, tetapi tidak pernah menampilkan email. Hanya orang yang sudah masuk ke dPanel yang bisa membukanya.
 
 ![Halaman profil publik berisi avatar, nama, username, dan tanggal bergabung](../../assets/getting-started/public-profile.webp 'Profil publik menunjukkan siapa seseorang di dPanel, tanpa detail kontak.')
 

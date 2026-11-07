@@ -20,7 +20,7 @@ dPanel does not sell or transfer domains, and it never changes your registrar. Y
 Use a scoped token. At Cloudflare, a token limited to "DNS edit" on that one zone is enough.
 :::
 
-![The Domains & DNS page in table view, listing devetek.app and terpusat.me, both at Cloudflare, owned by one person and shared with the dPanel team](../../assets/networking/domains-list.webp 'Domains & DNS: each row shows the DNS provider, who owns the domain and who can use it.')
+![The Domains & DNS page in table view, listing two domains, both at Cloudflare, owned by one person and shared with the dPanel team](../../assets/networking/domains-list.webp 'Domains & DNS: each row shows the DNS provider, who owns the domain and who can use it.')
 
 Each row shows the domain, its **DNS provider**, its **Ownership** (the person who added it, by name, and the team it is shared with) and when it was last modified. Select the person's name to open their [public profile](../teams/public-profiles.md). The search box above the table finds a domain by name; upper and lower case do not matter.
 

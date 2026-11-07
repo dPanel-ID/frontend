@@ -36,11 +36,42 @@ Periksa dua tempat:
 1. Daftar **Server**.
 2. Konsol penyedia Anda. dPanel melaporkan apa yang dikatakan penyedia, jadi penghapusan yang gagal sebagian di penyedia akan terlihat di sana.
 
+## Menghapus server yang tidak bisa dijangkau dPanel
+
+Kadang server sudah hilang sebelum Anda menghapusnya di dPanel: Anda sendiri menghapus VM-nya di penyedia, mesinnya rusak, atau dimatikan untuk selamanya. dPanel lalu tidak bisa membersihkan aplikasi dan load balancer-nya di mesin itu, sehingga penghapusan biasa ditolak.
+
+Dalam kasus itu **Hapus server** menawarkan **Hapus dari dPanel**. Dialognya menunjukkan kapan agen terakhir melapor dan apa saja yang akan dihapus:
+
+- server itu, beserta rilis, build, dan load balancer-nya di dPanel;
+- tugas yang belum selesai, yang dihentikan;
+- record DNS yang dibuat dPanel untuk load balancer-nya.
+
+Tidak ada yang diubah atau dihapus di mesin, dan menghapus server di sini tidak pernah menghapus VM di penyedia Anda. Centang **Saya mengerti bahwa ini hanya menghapus data di dPanel** lalu tekan **Hapus dari dPanel**. Untuk server cloud yang penyedianya tidak bisa diperiksa dPanel, Anda juga diminta mencentang bahwa VM-nya sudah Anda hapus di penyedia. Periksa dulu konsol penyedia Anda, supaya Anda tidak terus membayar VM yang tidak lagi terlihat di dPanel.
+
+Dari terminal:
+
+```bash
+dnocs server delete --id <id server> --forget
+```
+
+Tambahkan `--vm-deleted` jika dPanel meminta Anda memastikan bahwa VM cloud-nya sudah dihapus di penyedia.
+
+### Jika server aktif kembali
+
+dPanel tidak bisa tahu apakah mesin hilang untuk selamanya atau hanya mati sementara. Jika server yang sudah dihapus menyala lagi, agennya ditolak dan berhenti menghubungi dPanel; tidak ada yang berubah di mesin, dan aplikasinya tetap berjalan. Pemberitahuan di **Server**, misalnya **1 server yang dihapus aktif kembali**, mencantumkannya beserta perintah di bawah ini. Lalu pilih salah satu:
+
+- jalankan `sudo dnocs machine register` di mesin itu untuk mengelolanya lagi di dPanel, atau
+- hentikan agennya dengan `sudo systemctl disable --now dpanel-agent`.
+
 ## Pertanyaan yang sering diajukan
 
 ### Kenapa Hapus server ditolak?
 
 Masih ada aplikasi atau load balancer yang memakai server itu, atau server itu adalah node klaster Kubernetes. Hapus semuanya dulu, atau uninstall lalu hapus klasternya. Lihat [Grup server dan klaster](../clusters/overview.md).
+
+### Hapus server bilang server tidak bisa dijangkau. Lalu bagaimana?
+
+Mesinnya mati atau sudah tidak ada. Jika hanya mati sementara, nyalakan lagi dan tunggu agennya melapor, lalu hapus seperti biasa. Jika sudah hilang untuk selamanya, gunakan **Hapus dari dPanel**. Lihat [Menghapus server yang tidak bisa dijangkau dPanel](#menghapus-server-yang-tidak-bisa-dijangkau-dpanel).
 
 ### Bisakah server yang sudah dihapus dikembalikan?
 

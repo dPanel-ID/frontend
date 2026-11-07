@@ -5,9 +5,9 @@ sidebar_position: 3
 sidebar_icon: users
 ---
 
-Setiap pengguna dPanel punya halaman profil publik di `/u/<username>`, misalnya `/u/prakasa`. Di mana pun dPanel menampilkan seseorang, seperti siapa yang menjalankan build atau siapa pemilik server, dPanel menampilkan nama dan avatarnya serta menautkannya ke halaman itu, bukan alamat email atau ID pengguna.
+Setiap pengguna dPanel punya halaman profil publik di `/u/<username>`, misalnya `/u/jane`. Di mana pun dPanel menampilkan seseorang, seperti siapa yang menjalankan build atau siapa pemilik server, dPanel menampilkan nama dan avatarnya serta menautkannya ke halaman itu, bukan alamat email atau ID pengguna.
 
-![Halaman profil publik @prakasa: avatar, nama tampilan, username, dan tanggal bergabung](../../assets/teams/public-profile.webp 'Profil menampilkan nama, username, avatar, dan tanggal bergabung. Tidak lebih.')
+![Sebuah halaman profil publik: avatar, nama tampilan, username, dan tanggal bergabung](../../assets/teams/public-profile.webp 'Profil menampilkan nama, username, avatar, dan tanggal bergabung. Tidak lebih.')
 
 ## Isi sebuah profil
 

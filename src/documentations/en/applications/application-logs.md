@@ -18,7 +18,7 @@ A **log** is the running record of what a program did, one line per event. A **l
 | Runtime       | What the service writes to its output while it runs. The table is titled **Application Logs**.                            |
 | Load balancer | Every request that reached the load balancer in front of the application. The table is titled **Load balancer requests**. |
 
-![The Load balancer source on DB Manager's Logs tab: eight requests to dbmanager.devetek.app, each read as method, address and path, status and time, such as GET dbmanager.devetek.app/api/info → 401 · 7 ms](../../assets/applications/app-lb-logs.webp 'Each request reads as one line, coloured by its status.')
+![The Load balancer source on an application's Logs tab: eight requests, each read as method, address and path, status and time](../../assets/applications/app-lb-logs.webp 'Each request reads as one line, coloured by its status.')
 
 **Load balancer** only appears when a load balancer serves this application. Without one, the tab opens straight onto the runtime logs.
 
@@ -27,7 +27,7 @@ A **log** is the running record of what a program did, one line per event. A **l
 Each load balancer row is one request, marked **HTTP**, written as:
 
 ```text
-GET dbmanager.devetek.app/api/info → 401 · 7 ms
+GET shop.example.com/api/info → 401 · 7 ms
 ```
 
 That is the method, the address and path that was asked for, the status code the visitor got back, and how long it took. The **Source** column shows the domain. The level follows the status: a `5xx` status (the server failed) is **error**, a `4xx` status (the request was refused or not found) is **warn**, anything else is **info**. Select the row to see every detail in the **Log entry** panel, such as the visitor's IP address and the request headers.

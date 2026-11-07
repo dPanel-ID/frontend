@@ -24,7 +24,7 @@ Setiap baris menampilkan **Jenis**, **Nama**, **Isi**, dan **TTL** record itu (t
 2. Untuk menyaring daftar ke satu jenis record, tekan sebuah chip: **A**, **AAAA**, **CNAME**, **MX**, **TXT**, **NS**, **SRV**, atau **CAA**. Tekan lagi, atau tekan **Semua**, untuk melihat semua jenis.
 3. Angkanya berubah menjadi jumlah yang cocok, misalnya **2 cocok**.
 
-![Mencari demo di terpusat.me, yang menemukan record docs-demo dan wordpress-demo](../../assets/networking/domain-records-search.webp 'Pencarian mencocokkan nama dan isi, lalu menyorot bagian yang cocok.')
+![Mencari demo di terpusat.me, yang menemukan dua record yang cocok](../../assets/networking/domain-records-search.webp 'Pencarian mencocokkan nama dan isi, lalu menyorot bagian yang cocok.')
 
 Jika tidak ada yang cocok, tabel memberi tahu, misalnya **Tidak ada record A yang cocok dengan “demo”.**, dan **Hapus pencarian dan filter** menampilkan semua record lagi.
 

@@ -5,9 +5,9 @@ sidebar_position: 3
 sidebar_icon: users
 ---
 
-Every dPanel user has a public profile page at `/u/<username>`, such as `/u/prakasa`. Wherever dPanel shows a person, such as who ran a build or who owns a server, it shows their name and avatar and links to that page, instead of an email address or a user ID.
+Every dPanel user has a public profile page at `/u/<username>`, such as `/u/jane`. Wherever dPanel shows a person, such as who ran a build or who owns a server, it shows their name and avatar and links to that page, instead of an email address or a user ID.
 
-![The public profile page of @prakasa: avatar, display name, username and the date they joined](../../assets/teams/public-profile.webp 'A profile shows a name, a username, an avatar and a join date. Nothing else.')
+![A public profile page: avatar, display name, username and the date they joined](../../assets/teams/public-profile.webp 'A profile shows a name, a username, an avatar and a join date. Nothing else.')
 
 ## What a profile shows
 

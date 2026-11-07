@@ -62,7 +62,7 @@ In a team workspace, only team owners and admins can change it. See [Workers](..
 
 ## Your public profile
 
-Every account has a public profile page at `/u/` followed by the username, such as `https://dnocs.devetek.app/u/prakasa`. It shows your name, avatar, username and the date you joined, and never your email address. Only people signed in to dPanel can open it.
+Every account has a public profile page at `/u/` followed by the username, such as `https://dnocs.devetek.app/u/jane`. It shows your name, avatar, username and the date you joined, and never your email address. Only people signed in to dPanel can open it.
 
 ![A public profile page with the avatar, name, username and join date](../../assets/getting-started/public-profile.webp 'A public profile shows who someone is on dPanel, without contact details.')
 
