@@ -7,14 +7,20 @@ import { Input } from '@/shared/presentation/atoms/Input';
 import { useApplicationRunEditModel } from '../../model';
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h5 className="font-bold text-sm pb-2 border-b mb-3">{children}</h5>
-  );
+  return <h5 className="font-bold text-sm pb-2 border-b mb-3">{children}</h5>;
 }
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
+  return <p className="font-bold text-xs text-primary/70 mb-1">{children}</p>;
+}
+
+/** One header for the key and value columns, instead of a label per row. */
+function EnvHeader() {
   return (
-    <p className="font-bold text-xs text-primary/70 mb-1">{children}</p>
+    <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)_2.25rem] gap-2">
+      <FieldLabel>Key</FieldLabel>
+      <FieldLabel>Value</FieldLabel>
+    </div>
   );
 }
 
@@ -52,45 +58,47 @@ function RunEnvsSection() {
       <SectionTitle>Environment Variables</SectionTitle>
 
       <div className="flex flex-col gap-2">
+        {fields.length === 0 ? (
+          <p className="text-xs text-muted-foreground italic">
+            No environment variables
+          </p>
+        ) : (
+          <EnvHeader />
+        )}
+
         {fields.map((field, index) => (
           <div
             key={field.id}
-            className="flex items-start gap-2 p-2 rounded-lg border bg-muted/30"
+            className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)_auto] items-start gap-2"
           >
-            <div className="flex-1 flex flex-col gap-1.5">
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <FieldLabel>Key</FieldLabel>
-                  <Input
-                    {...form.register(`envs.${index}.key`)}
-                    placeholder="ENV_KEY"
-                    className="h-8 text-sm font-mono"
-                  />
-                  {form.formState.errors.envs?.[index]?.key?.message && (
-                    <p className="text-xs text-destructive mt-0.5">
-                      {String(form.formState.errors.envs[index].key.message)}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <FieldLabel>Value</FieldLabel>
-                  <Input
-                    {...form.register(`envs.${index}.value`)}
-                    placeholder="value"
-                    className="h-8 text-sm font-mono"
-                  />
-                </div>
-              </div>
+            <div className="min-w-0">
+              <Input
+                {...form.register(`envs.${index}.key`)}
+                placeholder="ENV_KEY"
+                aria-label={`Key ${index + 1}`}
+                className="h-9 text-sm font-mono"
+              />
+              {form.formState.errors.envs?.[index]?.key?.message && (
+                <p className="text-xs text-destructive mt-0.5">
+                  {String(form.formState.errors.envs[index].key.message)}
+                </p>
+              )}
             </div>
-
+            <Input
+              {...form.register(`envs.${index}.value`)}
+              placeholder="value"
+              aria-label={`Value ${index + 1}`}
+              className="h-9 text-sm font-mono"
+            />
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="size-6 p-0 mt-5 text-muted-foreground hover:text-destructive shrink-0"
+              aria-label={`Remove variable ${index + 1}`}
+              className="size-9 p-0 shrink-0 text-muted-foreground hover:text-destructive"
               onClick={() => remove(index)}
             >
-              <Trash2Icon className="size-3" />
+              <Trash2Icon className="size-4" />
             </Button>
           </div>
         ))}

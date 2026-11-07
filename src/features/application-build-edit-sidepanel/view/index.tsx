@@ -20,7 +20,7 @@ export default function ApplicationBuildEditSidepanel(props: Props) {
     <ModelProvider {...props}>
       <Controller />
 
-      <Layout classNameFrame="max-w-[520px]">
+      <Layout classNameFrame="w-[calc(100svw_-_16px)] max-w-[880px]">
         <Layout.Title
           title="Edit Build Configuration"
           subtitle={applicationName || `Id: ${applicationId}`}
