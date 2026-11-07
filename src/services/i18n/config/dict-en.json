@@ -1473,9 +1473,25 @@
           "uninstallAgent": "dPanel uninstalls its agent from the server.",
           "cloudDeleted": "The VM is deleted at {provider}. Its disk and everything on it are gone.",
           "ownKept": "The machine keeps running; only dPanel forgets it.",
-          "blocked": "Deletion is refused while applications or load balancers still use this server.",
+          "blocked": "Deletion is refused while applications or load balancers still use this server, unless the server can no longer be reached.",
           "confirmLabel": "Type <code>{name}</code> to confirm",
           "confirm": "Delete server"
+        },
+        "forget": {
+          "title": "Remove from dPanel",
+          "description": "<strong>{name}</strong> cannot be reached: {status} It still has resources in dPanel, and they cannot be deleted from the machine.",
+          "lastSeen": "its agent last reported on {time}.",
+          "neverConnected": "its agent never reported.",
+          "hostUnreachable": "dPanel could not connect to it.",
+          "removes": "Removed from dPanel",
+          "resources": "{deployments} deployments, {artifacts} builds and {loadBalancers} load balancers on this server, and the server itself.",
+          "jobs": "Its unfinished jobs are stopped.",
+          "dns": "DNS records dPanel created for its load balancers are deleted.",
+          "machineTitle": "On the machine",
+          "machineUntouched": "Nothing is changed or deleted on the machine.",
+          "comesBack": "If it comes back, its applications keep running there; register it again to manage it.",
+          "understand": "I understand that this only removes the records from dPanel.",
+          "confirm": "Remove from dPanel"
         },
         "reinstall": {
           "title": "Reinstall server",
@@ -3865,7 +3881,8 @@
       "deleteQueued": "Delete started for machine <code>{machineName}</code> (<code>{machineID}</code>). The server will stay visible as Deleting while dPanel uninstalls the agent.",
       "permanentSuccess": "Permanently deleted machine <code>{machineName}</code> (<code>{machineID}</code>).",
       "blockingResources": "Linked resources: {deployments} deployments, {artifacts} artifacts, {loadBalancers} load balancers.",
-      "error": "Failed to delete machine <code>{machineName}</code> (<code>{machineID}</code>)!"
+      "error": "Failed to delete machine <code>{machineName}</code> (<code>{machineID}</code>)!",
+      "forgotten": "{machineName} was removed from dPanel with {deployments} deployments, {artifacts} builds and {loadBalancers} load balancers; {jobs} jobs stopped."
     },
     "osServicePushActivity": {
       "success": "Successfully pushed activity \"{activity}\" to service \"{serviceName}\"!",

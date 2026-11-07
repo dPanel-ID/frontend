@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { LoaderCircleIcon, Trash2Icon } from 'lucide-react';
+import { CloudOffIcon, LoaderCircleIcon, Trash2Icon } from 'lucide-react';
 
-import { useDevetekTranslations } from '@/services/i18n';
+import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
@@ -17,12 +17,14 @@ import {
 import { Input } from '@/shared/presentation/atoms/Input';
 import { getCloudProviderLabel } from '@/shared/presentation/molecules/CloudProviderLogo';
 
-import type { DeleteServerPayload } from '../rules/types';
+import type { DeleteServerPayload, ForgetServerOffer } from '../rules/types';
 
 import { ConsequenceList } from './ConsequenceList';
 
 interface DeleteServerDialogProps {
   target: DeleteServerPayload | null;
+  /** Set when the server is gone and can only be removed from dPanel. */
+  forgetOffer?: ForgetServerOffer | null;
   isDeleting: boolean;
   onConfirm: () => void;
   onClose: () => void;
@@ -33,7 +35,7 @@ interface DeleteServerDialogProps {
  * dialog spells out what goes away and asks for the name to be typed back.
  */
 export function DeleteServerDialog(props: DeleteServerDialogProps) {
-  const { isDeleting, onClose, onConfirm, target } = props;
+  const { forgetOffer, isDeleting, onClose, onConfirm, target } = props;
 
   return (
     <Dialog
@@ -42,7 +44,17 @@ export function DeleteServerDialog(props: DeleteServerDialogProps) {
         if (!open && !isDeleting) onClose();
       }}
     >
-      {target && (
+      {target && forgetOffer && (
+        <ForgetServerDialogBody
+          key={`forget-${target.serverId}`}
+          target={target}
+          offer={forgetOffer}
+          isDeleting={isDeleting}
+          onConfirm={onConfirm}
+          onClose={onClose}
+        />
+      )}
+      {target && !forgetOffer && (
         <DeleteServerDialogBody
           key={target.serverId}
           target={target}
@@ -151,6 +163,116 @@ function DeleteServerDialogBody(
             <Trash2Icon />
           )}
           {t('page.servers.dialogs.delete.confirm')}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  );
+}
+
+/**
+ * The server is gone (its agent silent for 15 minutes or more), so what it
+ * holds cannot be deleted from it. The owner may remove the server and those
+ * records from dPanel only; nothing reaches the machine.
+ */
+function ForgetServerDialogBody(props: {
+  target: DeleteServerPayload;
+  offer: ForgetServerOffer;
+  isDeleting: boolean;
+  onConfirm: () => void;
+  onClose: () => void;
+}) {
+  const { isDeleting, offer, onClose, onConfirm, target } = props;
+  const t = useDevetekTranslations();
+  const locale = useDevetekLocale();
+  const [understood, setUnderstood] = useState(false);
+
+  const name =
+    target.serverName || target.serverAddress || String(target.serverId);
+  const lastSeen = offer.lastSeenAt
+    ? new Date(offer.lastSeenAt).toLocaleString(locale)
+    : undefined;
+  const status = lastSeen
+    ? t('page.servers.dialogs.forget.lastSeen', { time: lastSeen })
+    : offer.reason === 'host_unreachable'
+      ? t('page.servers.dialogs.forget.hostUnreachable')
+      : t('page.servers.dialogs.forget.neverConnected');
+
+  return (
+    <DialogContent className="max-w-lg gap-0 p-0">
+      <DialogHeader className="border-b p-5">
+        <div className="flex items-start gap-3">
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-amber-400/30 bg-amber-500/10 text-amber-600 dark:text-amber-300">
+            <CloudOffIcon className="size-5" />
+          </span>
+          <div className="min-w-0 text-left">
+            <DialogTitle>{t('page.servers.dialogs.forget.title')}</DialogTitle>
+            <DialogDescription className="mt-1">
+              {t.rich('page.servers.dialogs.forget.description', {
+                name,
+                status,
+                strong: (chunks) => (
+                  <strong className="text-primary">{chunks}</strong>
+                ),
+              })}
+            </DialogDescription>
+          </div>
+        </div>
+      </DialogHeader>
+
+      <div className="grid gap-4 p-5">
+        <ConsequenceList
+          tone="danger"
+          title={t('page.servers.dialogs.forget.removes')}
+          items={[
+            t('page.servers.dialogs.forget.resources', {
+              deployments: offer.deployments,
+              artifacts: offer.artifacts,
+              loadBalancers: offer.loadBalancers,
+            }),
+            t('page.servers.dialogs.forget.jobs'),
+            t('page.servers.dialogs.forget.dns'),
+          ]}
+        />
+        <ConsequenceList
+          tone="info"
+          title={t('page.servers.dialogs.forget.machineTitle')}
+          items={[
+            t('page.servers.dialogs.forget.machineUntouched'),
+            t('page.servers.dialogs.forget.comesBack'),
+          ]}
+        />
+        <label className="flex items-start gap-2 text-sm">
+          <input
+            type="checkbox"
+            className="mt-0.5"
+            checked={understood}
+            disabled={isDeleting}
+            onChange={(event) => setUnderstood(event.target.checked)}
+          />
+          {t('page.servers.dialogs.forget.understand')}
+        </label>
+      </div>
+
+      <DialogFooter className="gap-2 border-t p-5 sm:justify-end">
+        <Button
+          buttonStyle="outline"
+          buttonColor="secondary"
+          disabled={isDeleting}
+          onClick={onClose}
+        >
+          {t('common.actions.cancel')}
+        </Button>
+        <Button
+          className="bg-red-600 text-white hover:bg-red-500 disabled:opacity-50"
+          disabled={!understood || isDeleting}
+          onClick={onConfirm}
+        >
+          {isDeleting ? (
+            <LoaderCircleIcon className="animate-spin" />
+          ) : (
+            <CloudOffIcon />
+          )}
+          {t('page.servers.dialogs.forget.confirm')}
         </Button>
       </DialogFooter>
     </DialogContent>
