@@ -29,6 +29,7 @@ import { getDistanceFromNow } from '@/shared/libs/browser/date';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 
+import { CopyableId } from '../-presentation/CopyableId';
 import { WorkspaceBadge } from '../-presentation/WorkspaceBadge';
 import { statusTone } from '../../-lib/resource-types';
 
@@ -115,6 +116,7 @@ export default function ResourceCard(props: ResourceCardProps) {
                     label={item.status}
                   />
                 )}
+                {item.id !== undefined && <CopyableId id={item.id} />}
                 <WorkspaceBadge
                   type={item.workspace?.type}
                   name={item.workspace?.name}
@@ -155,7 +157,6 @@ export default function ResourceCard(props: ResourceCardProps) {
                 <span>{t('unknownOwner')}</span>
               )}
             </span>
-            <span className="font-mono">#{item.id}</span>
             {item.created_at && (
               <Info icon={Clock3Icon}>
                 {t('createdOn', {
