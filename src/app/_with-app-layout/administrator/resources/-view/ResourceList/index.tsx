@@ -5,6 +5,7 @@ import { buildPaginationV2 } from '@/widgets/ui-atomic-builder/atom-pagination-v
 import { useAdminResourcesDataModel } from '../../-model/resources-data';
 import { ResourceListState } from '../ResourceListState';
 
+import AdminRemovedServers from './AdminRemovedServers';
 import AdminServerCards from './AdminServerCards';
 import ResourceCard from './ResourceCard';
 
@@ -69,6 +70,7 @@ export default function ResourceList() {
 
   return (
     <div className="grid gap-3">
+      {isServers && <AdminRemovedServers />}
       {isServers && shownServers ? (
         <AdminServerCards
           servers={shownServers.servers}

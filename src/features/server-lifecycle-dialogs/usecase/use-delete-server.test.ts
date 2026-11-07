@@ -54,3 +54,33 @@ describe('getForgetOffer', () => {
     expect(getForgetOffer(new Error('network'))).toBeNull();
   });
 });
+
+describe('getForgetOffer on a cloud server', () => {
+  const base = {
+    application_deployments: 0,
+    application_artifacts: 1,
+    load_balancers: 0,
+    total_blocking_resources: 1,
+    can_forget: true,
+    reachability: { unreachable: true, reason: 'agent_offline' },
+  };
+
+  it('asks for the VM confirmation when the provider cannot be checked', () => {
+    expect(
+      getForgetOffer(
+        conflict({
+          ...base,
+          cloud_vm: { provider: 'digitalocean', result: 'unverifiable' },
+        }),
+      )?.unverifiedCloudProvider,
+    ).toBe('digitalocean');
+  });
+
+  it('needs no VM confirmation when the provider says the VM is gone', () => {
+    expect(
+      getForgetOffer(
+        conflict({ ...base, cloud_vm: { provider: 'gcp', result: 'gone' } }),
+      )?.unverifiedCloudProvider,
+    ).toBeUndefined();
+  });
+});

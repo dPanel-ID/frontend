@@ -1492,7 +1492,8 @@
           "comesBack": "If it comes back, its applications keep running there; register it again to manage it.",
           "understand": "I understand that this only removes the records from dPanel.",
           "confirm": "Remove from dPanel",
-          "unknownFuture": "dPanel cannot know whether the machine is gone for good or only down (an outage, a suspended account). If it comes back, its agent is told it was removed and goes quiet, and the server is listed under removed servers that came back."
+          "unknownFuture": "dPanel cannot know whether the machine is gone for good or only down (an outage, a suspended account). If it comes back, its agent is told it was removed and goes quiet, and the server is listed under removed servers that came back.",
+          "vmDeleted": "I deleted this server's VM at {provider}. dPanel cannot check {provider}, and removing the server here never deletes a VM."
         },
         "reinstall": {
           "title": "Reinstall server",
@@ -3498,6 +3499,11 @@
         "load_balancers": "Load balancers",
         "none": "None linked",
         "more": "+{count} more"
+      },
+      "removed": {
+        "title": "{count, plural, one {# removed server came back} other {# removed servers came back}}",
+        "description": "Servers of any workspace removed from dPanel whose agent called again in the last 7 days. dPanel refuses them; agents older than v0.1.19 are sent an upgrade once a day so they go quiet. Many from one workspace usually mean an owner removed servers during an outage.",
+        "item": "(server {id}, {reason} on {removedAt}, last call {lastContact}, {calls} calls recorded, upgrade sent {upgrade})"
       }
     },
     "adminTasks": {

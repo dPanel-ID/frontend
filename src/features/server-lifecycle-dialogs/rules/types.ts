@@ -26,4 +26,9 @@ export interface ForgetServerOffer {
   /** When its agent last reported, if ever (ISO time). */
   lastSeenAt?: string;
   reason?: string;
+  /**
+   * Set for a cloud server whose provider dPanel cannot ask: the owner must
+   * confirm they deleted the VM there. Forget never deletes a VM.
+   */
+  unverifiedCloudProvider?: string;
 }
