@@ -5,5 +5,6 @@ export { default as useDeleteServer } from './usecase/use-delete-server';
 export { default as useReinstallServer } from './usecase/use-reinstall-server';
 export type {
   DeleteServerPayload,
+  ForgetServerOffer,
   ReinstallServerPayload,
 } from './rules/types';
