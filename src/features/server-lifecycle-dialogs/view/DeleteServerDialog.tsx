@@ -238,6 +238,7 @@ function ForgetServerDialogBody(props: {
           title={t('page.servers.dialogs.forget.machineTitle')}
           items={[
             t('page.servers.dialogs.forget.machineUntouched'),
+            t('page.servers.dialogs.forget.unknownFuture'),
             t('page.servers.dialogs.forget.comesBack'),
           ]}
         />
