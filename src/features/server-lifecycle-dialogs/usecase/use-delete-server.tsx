@@ -47,7 +47,7 @@ export default function useDeleteServer(params: Params) {
     setForgetOffer(null);
   });
 
-  const confirm = useHandler(async () => {
+  const confirm = useHandler(async (vmDeleted?: boolean) => {
     if (!target || isDeleting) return;
     const { serverId, serverName } = target;
     const forget = forgetOffer != null;
@@ -58,6 +58,8 @@ export default function useDeleteServer(params: Params) {
       const response = await ApiServer.Delete.$Id.doDelete({
         id: serverId,
         forget,
+        // Only an explicit true counts: never an event object.
+        vmDeleted: forget && vmDeleted === true,
       });
 
       if (response.$status === 'success') {
@@ -161,6 +163,10 @@ export function getForgetOffer(error: Error): ForgetServerOffer | null {
     record.reachability != null && typeof record.reachability === 'object'
       ? (record.reachability as Record<string, unknown>)
       : {};
+  const cloudVM =
+    record.cloud_vm != null && typeof record.cloud_vm === 'object'
+      ? (record.cloud_vm as Record<string, unknown>)
+      : {};
   return {
     ...counts,
     lastSeenAt:
@@ -169,6 +175,10 @@ export function getForgetOffer(error: Error): ForgetServerOffer | null {
         : undefined,
     reason:
       typeof reachability.reason === 'string' ? reachability.reason : undefined,
+    unverifiedCloudProvider:
+      cloudVM.result === 'unverifiable'
+        ? String(cloudVM.provider || 'cloud')
+        : undefined,
   };
 }
 

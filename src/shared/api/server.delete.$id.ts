@@ -10,6 +10,8 @@ export interface RecipeParams {
   id: string;
   /** Remove an unreachable server and its records from dPanel only. */
   forget?: boolean;
+  /** With forget, for a provider dPanel cannot ask: the owner deleted the VM. */
+  vmDeleted?: boolean;
 }
 
 /** What a forgotten server took with it. */
@@ -39,11 +41,14 @@ export interface Dto {
 }
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
-  const { id, forget } = params;
+  const { id, forget, vmDeleted } = params;
+  const query = forget
+    ? `?forget=true${vmDeleted ? '&vm_deleted=true' : ''}`
+    : '';
 
   return {
     method: 'DELETE',
-    url: `/v1/server/delete/${id}${forget ? '?forget=true' : ''}`,
+    url: `/v1/server/delete/${id}${query}`,
   };
 }
 

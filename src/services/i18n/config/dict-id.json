@@ -1492,7 +1492,8 @@
           "comesBack": "Jika mesin aktif lagi, aplikasinya tetap berjalan di sana; daftarkan ulang untuk mengelolanya.",
           "understand": "Saya mengerti bahwa ini hanya menghapus data di dPanel.",
           "confirm": "Hapus dari dPanel",
-          "unknownFuture": "dPanel tidak dapat mengetahui apakah mesin sudah hilang permanen atau hanya mati sementara (gangguan, akun ditangguhkan). Jika aktif lagi, agennya diberi tahu bahwa server sudah dihapus lalu diam, dan server tampil di daftar server terhapus yang aktif kembali."
+          "unknownFuture": "dPanel tidak dapat mengetahui apakah mesin sudah hilang permanen atau hanya mati sementara (gangguan, akun ditangguhkan). Jika aktif lagi, agennya diberi tahu bahwa server sudah dihapus lalu diam, dan server tampil di daftar server terhapus yang aktif kembali.",
+          "vmDeleted": "Saya sudah menghapus VM server ini di {provider}. dPanel tidak dapat memeriksa {provider}, dan menghapus server di sini tidak pernah menghapus VM."
         },
         "reinstall": {
           "title": "Instal ulang server",
@@ -3499,6 +3500,11 @@
         "load_balancers": "Load balancer",
         "none": "Tidak ada yang terhubung",
         "more": "+{count} lainnya"
+      },
+      "removed": {
+        "title": "{count, plural, other {# server terhapus aktif kembali}}",
+        "description": "Server dari ruang kerja mana pun yang sudah dihapus dari dPanel tetapi agennya menghubungi lagi dalam 7 hari terakhir. dPanel menolaknya; agen yang lebih lama dari v0.1.19 dikirimi pembaruan sekali sehari agar diam. Banyak server dari satu ruang kerja biasanya berarti pemiliknya menghapus server saat terjadi gangguan.",
+        "item": "(server {id}, {reason} pada {removedAt}, terakhir menghubungi {lastContact}, {calls} panggilan tercatat, pembaruan dikirim {upgrade})"
       }
     },
     "adminTasks": {

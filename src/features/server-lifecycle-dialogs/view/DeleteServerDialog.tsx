@@ -26,7 +26,8 @@ interface DeleteServerDialogProps {
   /** Set when the server is gone and can only be removed from dPanel. */
   forgetOffer?: ForgetServerOffer | null;
   isDeleting: boolean;
-  onConfirm: () => void;
+  /** vmDeleted is the owner's word that they deleted a cloud server's VM. */
+  onConfirm: (vmDeleted?: boolean) => void;
   onClose: () => void;
 }
 
@@ -155,7 +156,7 @@ function DeleteServerDialogBody(
         <Button
           className="bg-red-600 text-white hover:bg-red-500 disabled:opacity-50"
           disabled={!matches || isDeleting}
-          onClick={onConfirm}
+          onClick={() => onConfirm()}
         >
           {isDeleting ? (
             <LoaderCircleIcon className="animate-spin" />
@@ -178,13 +179,15 @@ function ForgetServerDialogBody(props: {
   target: DeleteServerPayload;
   offer: ForgetServerOffer;
   isDeleting: boolean;
-  onConfirm: () => void;
+  onConfirm: (vmDeleted?: boolean) => void;
   onClose: () => void;
 }) {
   const { isDeleting, offer, onClose, onConfirm, target } = props;
   const t = useDevetekTranslations();
   const locale = useDevetekLocale();
   const [understood, setUnderstood] = useState(false);
+  const needsVMConfirm = Boolean(offer.unverifiedCloudProvider);
+  const [vmDeleted, setVMDeleted] = useState(false);
 
   const name =
     target.serverName || target.serverAddress || String(target.serverId);
@@ -252,6 +255,20 @@ function ForgetServerDialogBody(props: {
           />
           {t('page.servers.dialogs.forget.understand')}
         </label>
+        {needsVMConfirm && (
+          <label className="flex items-start gap-2 text-sm">
+            <input
+              type="checkbox"
+              className="mt-0.5"
+              checked={vmDeleted}
+              disabled={isDeleting}
+              onChange={(event) => setVMDeleted(event.target.checked)}
+            />
+            {t('page.servers.dialogs.forget.vmDeleted', {
+              provider: offer.unverifiedCloudProvider ?? '',
+            })}
+          </label>
+        )}
       </div>
 
       <DialogFooter className="gap-2 border-t p-5 sm:justify-end">
@@ -265,8 +282,8 @@ function ForgetServerDialogBody(props: {
         </Button>
         <Button
           className="bg-red-600 text-white hover:bg-red-500 disabled:opacity-50"
-          disabled={!understood || isDeleting}
-          onClick={onConfirm}
+          disabled={!understood || (needsVMConfirm && !vmDeleted) || isDeleting}
+          onClick={() => onConfirm(needsVMConfirm && vmDeleted)}
         >
           {isDeleting ? (
             <LoaderCircleIcon className="animate-spin" />
