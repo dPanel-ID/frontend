@@ -1485,6 +1485,16 @@
           "step2": "Agen diinstal ulang dan inventaris disegarkan.",
           "step3": "Modul terpasang dan data Anda tetap di server.",
           "confirm": "Instal ulang"
+        },
+        "reinstallAgent": {
+          "title": "Instal ulang agen",
+          "description": "Menginstal ulang dPanel Agent di <strong>{name}</strong>. Tidak ada hal lain di server yang berubah.",
+          "happens": "Yang terjadi selanjutnya",
+          "step1": "Jika agen sudah menjalankan rilis terbaru, tidak ada yang dilakukan.",
+          "step2": "Jika belum, worker milik server menginstal agen terbaru lalu memulai ulangnya; koneksi terputus beberapa detik.",
+          "step3": "Jika agen baru tidak dapat menjangkau dPanel, agen sebelumnya kembali dengan sendirinya dalam 3 menit.",
+          "force": "Instal ulang meskipun agen sudah terbaru",
+          "confirm": "Instal ulang agen"
         }
       },
       "creator": {
@@ -1650,7 +1660,8 @@
         "setup": {
           "title": "Penyiapan",
           "description": "Jalankan kembali alur penyiapan: hubungkan lewat SSH, instal ulang agen dan segarkan inventaris.",
-          "action": "Instal ulang"
+          "action": "Instal ulang",
+          "privateDescription": "Instal ulang dPanel Agent dari rilis terbaru. Agen sebelumnya kembali dengan sendirinya jika agen baru tidak dapat menjangkau dPanel."
         },
         "ownership": {
           "title": "Kepemilikan",
@@ -3845,6 +3856,10 @@
     "machineReinstall": {
       "success": "Berhasil melakukan reinstall mesin dengan id <code>{machineID}</code>.",
       "error": "Gagal melakukan reinstall mesin dengan id <code>{machineID}</code>!"
+    },
+    "agentSetup": {
+      "queued": "Penyiapan agen ke {version} masuk antrean. Pantau di tugas server.",
+      "skipped": "Agen sudah menjalankan {version}, rilis terbaru. Tidak ada yang perlu dilakukan."
     },
     "machineDelete": {
       "success": "Berhasil menghapus mesin <code>{machineName}</code> (<code>{machineID}</code>).",

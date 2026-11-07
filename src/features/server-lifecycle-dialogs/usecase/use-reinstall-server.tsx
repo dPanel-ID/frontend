@@ -34,13 +34,30 @@ export default function useReinstallServer(params: Params) {
     if (!isSubmitting) setTarget(null);
   });
 
-  const confirm = useHandler(async () => {
+  const confirm = useHandler(async (force = false) => {
     if (!target || isSubmitting) return;
-    const { serverId } = target;
+    const { serverId, isPrivate } = target;
 
     setIsSubmitting(true);
     try {
-      const response = await ApiServer.Setup.$Id.doPost({ id: serverId });
+      const response = await ApiServer.Setup.$Id.doPost({
+        id: serverId,
+        force: isPrivate && force,
+      });
+
+      if (response.$status === 'success' && isPrivate && response.version) {
+        openToaster({
+          variant: 'success',
+          message: t(
+            response.skipped
+              ? 'toaster.agentSetup.skipped'
+              : 'toaster.agentSetup.queued',
+            { version: response.version },
+          ),
+        });
+        onSuccess();
+        return;
+      }
 
       if (response.$status === 'success') {
         openToaster({

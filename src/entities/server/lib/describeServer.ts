@@ -48,7 +48,6 @@ export function serverSystemLabel(server: ServerLike) {
  * deleted server: that host comes back only as a new server with a new ID.
  */
 export function canReinstallServer(server: Pick<ServerCard, 'state' | 'host'>) {
-  if (server.host.private) return false;
   return !['progress', 'cancelled', 'deleting', 'deleted'].includes(
     server.state.status,
   );

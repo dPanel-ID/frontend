@@ -63,7 +63,11 @@ export default function SettingsTab() {
           <SettingCard
             icon={RotateCcwIcon}
             title={t('setup.title')}
-            description={t('setup.description')}
+            description={t(
+              isPrivateServer(server)
+                ? 'setup.privateDescription'
+                : 'setup.description',
+            )}
             action={
               <Button
                 buttonStyle="outline"
