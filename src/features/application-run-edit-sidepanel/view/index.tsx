@@ -20,7 +20,7 @@ export default function ApplicationRunEditSidepanel(props: Props) {
     <ModelProvider {...props}>
       <Controller />
 
-      <Layout classNameFrame="max-w-[520px]">
+      <Layout classNameFrame="w-[calc(100svw_-_16px)] max-w-[880px]">
         <Layout.Title
           title="Edit Runtime Configuration"
           subtitle={applicationName || `Id: ${applicationId}`}
