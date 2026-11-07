@@ -1521,7 +1521,7 @@
       },
       "removedNotice": {
         "title": "{count, plural, other {# server yang dihapus aktif kembali}}",
-        "description": "Server ini sudah dihapus dari dPanel, tetapi agennya menghubungi dPanel lagi, jadi mesinnya mungkin hanya sempat mati. dPanel menolak agen itu dan memintanya diam; tidak ada yang diubah di mesin. Untuk mengelolanya lagi, jalankan <code>sudo dnocs machine register</code> di mesin itu. Untuk menghentikan agennya, jalankan <code>sudo systemctl disable --now dpanel-active-agent</code>.",
+        "description": "Server ini sudah dihapus dari dPanel, tetapi agennya menghubungi dPanel lagi, jadi mesinnya mungkin hanya sempat mati. dPanel menolak agen itu dan memintanya diam; tidak ada yang diubah di mesin. Untuk mengelolanya lagi, jalankan <code>sudo dnocs machine register</code> di mesin itu. Untuk menghentikan agennya, jalankan <code>sudo systemctl disable --now dpanel-agent</code>.",
         "item": "(server {id}, {reason} pada {removedAt}, terakhir menghubungi {lastContact})",
         "forgotten": "dihapus saat tidak terjangkau",
         "deleted": "dihapus"

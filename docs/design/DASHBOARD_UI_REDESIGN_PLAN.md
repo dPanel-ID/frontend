@@ -310,7 +310,7 @@ Band 3 needs a stored series. Checking production turned up something worth
 stating plainly, because it changes which option is cheap.
 
 **The agent already exports OpenTelemetry metrics, and Uptrace drops them.**
-`cmd/active-agent/main.go` collects a system snapshot every 30 seconds and
+`cmd/agent/main.go` collects a system snapshot every 30 seconds and
 calls `exportSystemMetrics`, which posts OTLP-JSON gauges for
 `system.cpu.utilization`, `system.memory.usage/total/free/utilization`,
 `system.filesystem.usage/total/free/utilization` and `system.uptime` to the

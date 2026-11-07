@@ -88,4 +88,4 @@ Lihat [Anggota dan peran](../teams/members-and-roles.md) untuk rincian setiap pe
 
 - Satu ruang kerja bisa menampung hingga 10 mesin privat, dan satu mesin hanya berada di satu ruang kerja pada satu waktu.
 - Mengeluarkan seseorang dari ruang kerja langsung mencabut aksesnya ke server-server itu; mesinnya tetap berjalan.
-- Menghapus server di dPanel langsung menghapusnya dan mencabut kredensial agennya. Setelah itu hentikan agen di mesin dengan `sudo systemctl disable --now dpanel-active-agent`.
+- Menghapus server di dPanel langsung menghapusnya dan mencabut kredensial agennya. Setelah itu hentikan agen di mesin dengan `sudo systemctl disable --now dpanel-agent`.

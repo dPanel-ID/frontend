@@ -1521,7 +1521,7 @@
       },
       "removedNotice": {
         "title": "{count, plural, one {# removed server came back} other {# removed servers came back}}",
-        "description": "These servers were removed from dPanel but their agent called again, so the machine may only have been down. dPanel refuses the agent and tells it to go quiet; nothing on the machine was changed. To manage one again, run <code>sudo dnocs machine register</code> on it. To stop its agent instead, run <code>sudo systemctl disable --now dpanel-active-agent</code>.",
+        "description": "These servers were removed from dPanel but their agent called again, so the machine may only have been down. dPanel refuses the agent and tells it to go quiet; nothing on the machine was changed. To manage one again, run <code>sudo dnocs machine register</code> on it. To stop its agent instead, run <code>sudo systemctl disable --now dpanel-agent</code>.",
         "item": "(server {id}, {reason} on {removedAt}, last call {lastContact})",
         "forgotten": "removed while unreachable",
         "deleted": "deleted"

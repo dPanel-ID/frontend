@@ -88,4 +88,4 @@ See [Members and roles](../teams/members-and-roles.md) for every role in detail.
 
 - A workspace holds up to 10 private machines, and a machine belongs to one workspace at a time.
 - Removing a person from the workspace takes their access to its servers away at once; the machines keep running.
-- Deleting a server in dPanel removes it at once and revokes its agent. Stop the agent on the machine afterwards with `sudo systemctl disable --now dpanel-active-agent`.
+- Deleting a server in dPanel removes it at once and revokes its agent. Stop the agent on the machine afterwards with `sudo systemctl disable --now dpanel-agent`.
