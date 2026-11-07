@@ -3504,6 +3504,11 @@
         "title": "{count, plural, one {# removed server came back} other {# removed servers came back}}",
         "description": "Servers of any workspace removed from dPanel whose agent called again in the last 7 days. dPanel refuses them; agents older than v0.1.19 are sent an upgrade once a day so they go quiet. Many from one workspace usually mean an owner removed servers during an outage.",
         "item": "(server {id}, {reason} on {removedAt}, last call {lastContact}, {calls} calls recorded, upgrade sent {upgrade})"
+      },
+      "copyId": {
+        "copy": "Copy ID",
+        "copied": "Copied",
+        "label": "Copy ID {id}"
       }
     },
     "adminTasks": {
