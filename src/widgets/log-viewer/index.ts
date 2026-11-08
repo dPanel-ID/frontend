@@ -10,6 +10,11 @@ export { default as LogLevelFilter } from './presentation/LogLevelFilter';
 export { default as LogTimeRangeMenu } from './presentation/LogTimeRangeMenu';
 export { default as LogDownloadMenu } from './presentation/LogDownloadMenu';
 export { default as LogPager } from './presentation/LogPager';
+export { default as InfiniteLogsPanel } from './presentation/InfiniteLogsPanel';
+export { default as InfiniteLogTable } from './presentation/InfiniteLogTable';
+export { useLogWindow } from './usecase/use-log-window';
+export type { LogWindowState } from './usecase/use-log-window';
+export * from './lib/log-window';
 
 export { useLogFilters } from './usecase/use-log-filters';
 export type { LogFilters } from './usecase/use-log-filters';
