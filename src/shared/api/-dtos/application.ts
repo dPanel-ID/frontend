@@ -248,3 +248,35 @@ interface AutoDeploy {
   enabled?: boolean;
   branch?: string;
 }
+
+export type BuildProgressStatusV1 =
+  | 'none'
+  | 'waiting'
+  | 'running'
+  | 'succeeded'
+  | 'failed'
+  | 'skipped';
+
+export interface BuildStepV1 {
+  name: string;
+  status: BuildProgressStatusV1;
+  started_at: string;
+  finished_at?: string;
+}
+
+export interface BuildStageV1 {
+  key: string;
+  kind: 'setup' | 'source' | 'prepare' | 'build_step' | 'package' | 'deploy';
+  /** The build step's own name, on build_step stages. */
+  name?: string;
+  status: BuildProgressStatusV1;
+  started_at: string;
+  finished_at?: string;
+  steps: BuildStepV1[];
+}
+
+export interface BuildProgressV1 {
+  execution_id?: string;
+  status: BuildProgressStatusV1;
+  stages: BuildStageV1[];
+}

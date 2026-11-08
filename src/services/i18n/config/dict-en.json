@@ -948,7 +948,31 @@
         "artifactLogsDescription": "Commit {commit}",
         "artifactLogOutput": "Artifact log output",
         "artifactLogEmpty": "No build logs yet.",
-        "artifactLogSource": "Build"
+        "artifactLogSource": "Build",
+        "buildProgress": {
+          "tabSteps": "Steps",
+          "tabOutput": "Log output",
+          "loading": "Loading build steps",
+          "waiting": "Waiting for a worker to start this build",
+          "none": "No steps were recorded for this build.",
+          "stages": {
+            "setup": "Install runtimes and modules",
+            "source": "Get the source code",
+            "prepare": "Prepare the build",
+            "package": "Package the build",
+            "deploy": "Deploy to the server"
+          },
+          "buildStep": "Build step {number}",
+          "summaryRunning": "Running: {stage}",
+          "summaryFailed": "Failed at: {stage}",
+          "summary": {
+            "done": "Finished",
+            "failed": "Failed"
+          },
+          "stepCount": "{count, plural, one {# step} other {# steps}}",
+          "skippedCount": "{count, plural, one {# step not needed} other {# steps not needed}}",
+          "outputAfterStep": "The output of this step appears under Log output when it ends."
+        }
       },
       "configuration": {
         "title": "How this application is set up",

@@ -1,5 +1,6 @@
 import * as Branch$Id from './application.branch.$id';
 import * as Branches$Id from './application.branches.$id';
+import * as BuildProgress$Id from './application.build-progress.$id';
 import * as Create from './application.create';
 import * as Delete$Id from './application.delete.$id';
 import * as Detail$Id from './application.detail.$id';
@@ -14,6 +15,9 @@ const Root = {
   },
   Branches: {
     $Id: Branches$Id,
+  },
+  BuildProgress: {
+    $Id: BuildProgress$Id,
   },
   Create,
   Delete: {
