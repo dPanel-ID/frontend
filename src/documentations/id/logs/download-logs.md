@@ -1,37 +1,35 @@
 ---
 title: Mengunduh log
-description: Unduh log aplikasi dan load balancer dari dPanel sebagai file .log: satu halaman, atau seluruh rentang waktu hingga 100.000 baris.
+description: Unduh log aplikasi dan load balancer dari dPanel sebagai file .log: baris yang dimuat di daftar, atau seluruh rentang waktu hingga 100.000 baris.
 sidebar_position: 3
 sidebar_icon: download
 ---
 
-dPanel mengunduh log aplikasi dan load balancer sebagai file `.log` biasa, baik halaman yang sedang dibuka maupun semua baris di rentang waktu, hingga 100.000 baris. Unduh log saat Anda perlu mencarinya dengan alat sendiri, atau melampirkannya ke permintaan bantuan.
+dPanel mengunduh log aplikasi dan load balancer sebagai file `.log` biasa, baik baris yang dimuat di daftar maupun semua baris di rentang waktu, hingga 100.000 baris. Unduh log saat Anda perlu mencarinya dengan alat sendiri, atau melampirkannya ke permintaan bantuan.
 
 ## Log aplikasi dan load balancer
 
 1. Atur rentang waktu yang Anda inginkan. Lihat [Rentang waktu dan pembaruan](./time-range-and-refresh.md).
 2. Tekan **Unduh**. Menunya bertuliskan **Unduh sebagai file .log**.
 3. Pilih yang ingin disimpan:
-   - **Halaman ini**: baris di halaman yang sedang dibuka.
-   - **Semua di rentang waktu ini**: semua halaman, diambil satu per satu.
+   - **Baris yang dimuat**: baris yang sedang dimuat di daftar.
+   - **Semua di rentang waktu ini**: semua baris, diambil bertahap.
 
-Nama file menjelaskan isinya: nama log dan jendela waktunya, misalnya `db-manager_2026-11-05T01-00Z_to_2026-11-05T01-10Z.log`, ditambah `_page-2` untuk satu halaman. Baris disimpan dari yang terlama, sebagai teks biasa yang bisa dibuka di editor apa pun. Setiap baris berisi waktu dalam UTC, level, dan baris aslinya persis seperti ditulis.
+Nama file menjelaskan isinya: nama log dan jendela waktunya, misalnya `my-app_2026-11-05T01-00Z_to_2026-11-05T01-10Z.log`. Baris disimpan dari yang terlama, sebagai teks biasa yang bisa dibuka di editor apa pun. Setiap baris berisi waktu dalam UTC, level, dan baris aslinya persis seperti ditulis.
 
 :::note[Detail request tidak ada di file]
 Load balancer menulis setiap request sebagai pesan pendek `handled request`, sedangkan metode, path, dan status disimpan sebagai field terpisah. Unduhan menyimpan pesan itu, bukan baris `GET … → 200` yang mudah dibaca. Untuk menyimpan detail request, gunakan `dnocs load-balancer log --id <ID load balancer> --json`.
 :::
 
-![Menu unduh: halaman ini dengan 200 baris di halaman 1, atau semua baris di rentang waktu ini, 201 baris](../../assets/logs/logs-download.webp)
-
 Unduhan yang panjang menampilkan progresnya, misalnya **Mengunduh 12.000 / 40.000 baris**. Tekan **Batalkan unduhan** untuk menghentikannya.
 
 :::warning[Maksimal 100.000 baris sekali unduh]
-**Semua di rentang waktu ini** dibatasi 100.000 baris. Untuk rentang yang lebih besar, opsinya bertuliskan **Lebih dari 100.000 baris** dan tidak bisa dipilih. Persempit rentang waktunya, atau unduh per halaman.
+**Semua di rentang waktu ini** dibatasi 100.000 baris. Untuk rentang yang lebih besar, opsinya bertuliskan **Lebih dari 100.000 baris** dan tidak bisa dipilih. Persempit rentang waktunya, atau simpan baris yang dimuat. Log runtime aplikasi di semua server dibatasi 5.000 baris; pilih satu server di menu **Server** untuk lebih banyak.
 :::
 
 ## Log build
 
-Di **Log Artefak**, tekan **Unduh**. Nama file-nya mengikuti commit, misalnya `build-04ccf00a1b2c.log`, dan berisi baris yang tampil, hingga 500 baris terbaru.
+Di **Log Artefak**, buka tab **Keluaran log** lalu tekan **Unduh**. Pilih **Baris yang dimuat** atau **Semua di rentang waktu ini** untuk seluruh build. Nama file-nya diawali commit, misalnya `build-04ccf00a1b2c`.
 
 ## Sebelum membagikan log
 
@@ -41,7 +39,7 @@ Log bisa berisi apa saja yang dicetak kode Anda, termasuk token atau data pribad
 
 ### Berapa banyak baris yang bisa diunduh?
 
-Hingga 100.000 baris sekaligus dengan **Semua di rentang waktu ini**. Untuk lebih banyak, persempit rentang waktu atau unduh per halaman.
+Hingga 100.000 baris sekaligus dengan **Semua di rentang waktu ini**, atau 5.000 untuk log runtime di semua server. Untuk lebih banyak, persempit rentang waktu atau pilih satu server.
 
 ### Bisakah saya mengunduh log server?
 

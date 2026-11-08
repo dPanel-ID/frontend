@@ -51,9 +51,7 @@ Every build card names the person who started it, with their avatar, for example
 
 ### Read a build's logs
 
-Press **Logs** on a build. **Artifact Logs** opens with that build's output: the clone, each build step, and the service start. See [Reading logs](../logs/reading-logs.md#build-logs).
-
-![The Artifact Logs window, showing the output of one build](../../assets/applications/app-build-logs.webp)
+Press **Logs** on a build and pick a server. **Artifact Logs** opens on **Steps**, which shows where the build is, stage by stage, with the time each took. **Log output** holds what the build printed: the clone, each build step, and the service start. See [Reading logs](../logs/reading-logs.md#build-logs).
 
 ### Roll back
 

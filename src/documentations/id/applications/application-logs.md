@@ -32,14 +32,16 @@ GET shop.example.com/api/info → 401 · 7 ms
 
 Artinya: metode, alamat dan path yang diminta, kode status yang diterima pengunjung, dan lama prosesnya. Kolom **Sumber** menampilkan domainnya. Level mengikuti status: status `5xx` (server gagal) menjadi **error**, status `4xx` (request ditolak atau tidak ditemukan) menjadi **warn**, selebihnya **info**. Pilih barisnya untuk melihat semua detail di panel **Entri log**, seperti alamat IP pengunjung dan header request-nya.
 
-Log runtime mengikuti rilis yang aktif. Jika aplikasi belum punya perintah run atau server, tab ini memberi tahu bahwa belum ada log runtime.
+Log runtime mengikuti rilis yang aktif. Saat aplikasi berjalan di beberapa server, daftar menggabungkan semuanya, dan menu **Server** mempersempitnya ke satu server. Lihat [Log aplikasi di beberapa server](../logs/reading-logs.md#log-aplikasi-di-beberapa-server). Jika aplikasi belum punya perintah run atau server, tab ini memberi tahu bahwa belum ada log runtime.
 
 ## Menemukan yang Anda cari
 
 1. Pilih **Rentang waktu**. Tab terbuka pada **10 menit terakhir**; Anda bisa mundur hingga 10 hari.
-2. Ketik di **Saring halaman ini** untuk menyisakan baris yang memuat teks Anda. Huruf besar dan kecil tidak dibedakan.
+2. Ketik di **Saring baris yang dimuat** untuk menyisakan baris yang memuat teks Anda. Huruf besar dan kecil tidak dibedakan.
 3. Pilih chip level, misalnya **error**, untuk menyisakan level itu saja.
 4. Pilih satu baris untuk membukanya lengkap di panel **Entri log**.
+
+Daftar terbuka pada baris terbaru, di bagian bawah. Gulir ke atas untuk memuat baris yang lebih lama.
 
 Kontrolnya sama di semua tampilan log. Lihat [Rentang waktu dan pembaruan](../logs/time-range-and-refresh.md) dan [Mengunduh log](../logs/download-logs.md).
 

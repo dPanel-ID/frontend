@@ -141,7 +141,7 @@ Log hanya menampilkan rentang waktu yang Anda pilih. Perlebar rentangnya; yang p
 
 ### "Lebih dari 100.000 baris" dan log tidak bisa diunduh
 
-**Semua di rentang waktu ini** berhenti di 100.000 baris. Persempit rentang waktunya, atau unduh per halaman. Lihat [Mengunduh log](../logs/download-logs.md).
+**Semua di rentang waktu ini** berhenti di 100.000 baris. Persempit rentang waktunya, atau simpan baris yang dimuat. Lihat [Mengunduh log](../logs/download-logs.md).
 
 ### Pencarian tidak menemukan sesuatu yang jelas ada
 

@@ -32,20 +32,22 @@ GET shop.example.com/api/info → 401 · 7 ms
 
 That is the method, the address and path that was asked for, the status code the visitor got back, and how long it took. The **Source** column shows the domain. The level follows the status: a `5xx` status (the server failed) is **error**, a `4xx` status (the request was refused or not found) is **warn**, anything else is **info**. Select the row to see every detail in the **Log entry** panel, such as the visitor's IP address and the request headers.
 
-Runtime logs follow the active deployment. If the application has no run command or no server yet, the tab says there are no runtime logs.
+Runtime logs follow the active deployment. When the application runs on several servers, the list merges all of them, and the **Server** menu narrows it to one. See [Logs of an application on several servers](../logs/reading-logs.md#logs-of-an-application-on-several-servers). If the application has no run command or no server yet, the tab says there are no runtime logs.
 
 ## Find what you need
 
 1. Pick a **Time range**. The tab opens on **Last 10 minutes**; go back as far as 10 days.
-2. Type in **Filter this page** to keep only lines that contain your text. Upper and lower case do not matter.
+2. Type in **Filter loaded lines** to keep only lines that contain your text. Upper and lower case do not matter.
 3. Select a level chip, such as **error**, to keep only that level.
 4. Select a line to open it in full in the **Log entry** panel.
+
+The list opens on the newest line, at the bottom. Scroll up to load older lines.
 
 The controls are the same in every log view. See [Time range and refresh](../logs/time-range-and-refresh.md) and [Download logs](../logs/download-logs.md).
 
 ## Build logs are somewhere else
 
-The output of a build, such as a failing compile, is not in this tab. Open **Deployments**, find the build, and press **Logs**. See [Deployments and rollback](./deployments-and-rollback.md#read-a-builds-logs).
+The output of a build, such as a failing compile, is not in this tab. Open **Deployments**, find the build, and press **Logs** to follow its steps and read its output. See [Deployments and rollback](./deployments-and-rollback.md#read-a-builds-logs).
 
 For the server's own log files, such as `auth.log` or the web server, see [Reading logs](../logs/reading-logs.md#server-logs).
 

@@ -51,9 +51,7 @@ Setiap kartu build menyebut orang yang memulainya, beserta avatarnya, misalnya s
 
 ### Membaca log build
 
-Tekan **Log** pada sebuah build. **Log Artefak** terbuka dengan keluaran build itu: clone, setiap langkah build, dan saat layanan dijalankan. Lihat [Membaca log](../logs/reading-logs.md#log-build).
-
-![Jendela Log Artefak yang menampilkan keluaran satu build](../../assets/applications/app-build-logs.webp)
+Tekan **Log** pada sebuah build lalu pilih server. **Log Artefak** terbuka pada **Langkah**, yang menunjukkan posisi build, tahap demi tahap, beserta lama setiap tahap. **Keluaran log** berisi yang dicetak build: clone, setiap langkah build, dan saat layanan dijalankan. Lihat [Membaca log](../logs/reading-logs.md#log-build).
 
 ### Rollback
 
