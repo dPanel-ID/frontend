@@ -12,28 +12,28 @@ Use it when you prefer the keyboard, or when you want a script or your own AI co
 
 ## Install dnocs
 
-dnocs is a single file for macOS and Linux, on Intel/AMD (`amd64`) and Apple Silicon or ARM (`arm64`) machines. It is published at [github.com/dPanel-ID/artifacts](https://github.com/dPanel-ID/artifacts/tree/main/cli), one folder per version, and the file `cli/LATEST` names the newest version.
+dnocs is a single file for macOS and Linux, on Intel/AMD (`amd64`) and Apple Silicon or ARM (`arm64`) machines. One command installs the newest version.
 
 1. Open a terminal.
-2. Download the newest version for your machine:
+2. Run the installer:
 
    ```bash
-   VERSION=$(curl -fsSL https://raw.githubusercontent.com/dPanel-ID/artifacts/main/cli/LATEST)
-   OS=$(uname -s | tr '[:upper:]' '[:lower:]')
-   ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
-   curl -fsSLo dnocs "https://raw.githubusercontent.com/dPanel-ID/artifacts/main/cli/$VERSION/dpanelprod-cli-$OS-$ARCH"
+   curl --proto '=https' --tlsv1.2 -sSf https://dnocs.devetek.app/installer.sh | sh
    ```
 
-3. Make it runnable and put it on your path:
+3. Check that it works: `dnocs --help` lists the commands.
 
-   ```bash
-   chmod +x dnocs
-   sudo mv dnocs /usr/local/bin/dnocs
-   ```
+The installer picks the right file for your machine, checks it against the published checksum and puts it in `/usr/local/bin`. It asks for your password only if it needs administrator access to write there. Without that access, it installs to `~/.local/bin` and tells you how to add that folder to your path.
 
-4. Check that it works: `dnocs --help` lists the commands.
+Run the same command again at any time to update to the newest version.
 
-Each version folder also holds a `SHA256SUMS` file, if you want to check the download's checksum.
+To install a specific version, or into another folder, set these before `sh`:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://dnocs.devetek.app/installer.sh | DNOCS_VERSION=v0.1.20 DNOCS_INSTALL_DIR="$HOME/bin" sh
+```
+
+You can [read the installer](https://dnocs.devetek.app/installer.sh) before you run it. Every version is published at [github.com/dPanel-ID/artifacts](https://github.com/dPanel-ID/artifacts/tree/main/cli).
 
 ## Sign in and pick a workspace
 
