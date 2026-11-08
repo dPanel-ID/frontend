@@ -28,6 +28,9 @@ export interface LogPageResult {
   hasMore: boolean;
   /** Lines in the whole window, when the API reports it. */
   total?: number;
+  /** The query the API ran, shown under the toolbar. */
+  query?: string;
+  queryErrors?: string[];
 }
 
 export interface LogDownloadProgress {

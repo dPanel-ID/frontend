@@ -227,7 +227,9 @@
         "cancel": "Cancel download",
         "tooLargeTitle": "Too many lines to download at once",
         "tooLarge": "This range holds over {lines, number} lines. Narrow the time range, or download it page by page.",
-        "failedTitle": "Download failed"
+        "failedTitle": "Download failed",
+        "loaded": "Loaded lines",
+        "loadedHint": "{lines, plural, one {# line} other {# lines}} loaded in the list"
       },
       "pager": {
         "range": "Lines {first, number}–{last, number} of {total, number}, newest first",
@@ -252,6 +254,20 @@
           "1m": "1m",
           "5m": "5m"
         }
+      },
+      "infinite": {
+        "filterPlaceholder": "Filter loaded lines",
+        "showing": "Showing {shown} of {total} loaded lines",
+        "range": "Lines {first, number}–{last, number} of {total, number} loaded, newest at the bottom",
+        "rangeUnknown": "Lines {first, number}–{last, number} loaded, newest at the bottom",
+        "rangeStart": "Start of the time range",
+        "loadingOlder": "Loading older lines",
+        "loadingNewer": "Loading newer lines",
+        "olderFailed": "Older lines could not be loaded.",
+        "newerFailed": "Newer lines could not be loaded.",
+        "retry": "Retry",
+        "jumpToLatest": "Jump to latest",
+        "clearFilters": "Clear filters"
       }
     },
     "moduleVersion": {

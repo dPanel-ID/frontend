@@ -17,6 +17,8 @@ import { LOG_DOWNLOAD_MAX_LINES } from '../../lib/log-download';
 import type { LogDownloadProgress } from '../../lib/log-download';
 
 export interface LogDownloadMenuProps {
+  /** "page": the page on screen; "loaded": every line an infinite list holds. */
+  scope?: 'page' | 'loaded';
   page: number;
   pageLines: number;
   /** Lines in the whole window, when the API reports it. */
@@ -42,6 +44,7 @@ export default function LogDownloadMenu(props: LogDownloadMenuProps) {
     page,
     pageLines,
     progress,
+    scope = 'page',
     totalLines,
   } = props;
 
@@ -96,9 +99,13 @@ export default function LogDownloadMenu(props: LogDownloadMenuProps) {
         <DropdownMenuItem onSelect={onDownloadPage} className="items-start">
           <FileTextIcon className="mt-0.5" />
           <span className="grid gap-0.5">
-            <span className="font-medium">{t('page')}</span>
+            <span className="font-medium">
+              {scope === 'loaded' ? t('loaded') : t('page')}
+            </span>
             <span className="text-xs text-muted-foreground">
-              {t('pageHint', { page, lines: pageLines })}
+              {scope === 'loaded'
+                ? t('loadedHint', { lines: pageLines })
+                : t('pageHint', { page, lines: pageLines })}
             </span>
           </span>
         </DropdownMenuItem>

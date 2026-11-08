@@ -1,23 +1,21 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { GlobeIcon, NetworkIcon } from 'lucide-react';
 
-import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+import { useDevetekTranslations } from '@/services/i18n';
 
 import { ApiLoadBalancer } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
 import {
   DEFAULT_LOG_TIME_RANGE,
+  InfiniteLogsPanel,
   LOG_DOWNLOAD_PAGE_SIZE,
-  LogsPanel,
   canDownloadAllLogs,
   formatUtcOffset,
   logEntryFields,
-  logTimeRangeKey,
   resolveLogTimeRange,
-  toLogsPanelStatus,
-  toParsedLogLines,
   useLogDownload,
+  useLogWindow,
 } from '@/widgets/log-viewer';
 import type {
   LogEntryInput,
@@ -38,48 +36,34 @@ export function LoadBalancerLogs(props: LoadBalancerLogsProps) {
   const { domain, loadBalancerId } = props;
 
   const tLogs = useDevetekTranslations('page.applicationDetail.logs');
-  const locale = useDevetekLocale();
 
   const [timeRange, setTimeRange] = useState<LogTimeRange>(
     DEFAULT_LOG_TIME_RANGE,
   );
-  // Pages are offsets into the window; the anchor stays put while paging.
+  // Pages are offsets into the window; the anchor stays put while the reader
+  // scrolls, and moves to "now" on a refresh or a new range.
   const [anchor, setAnchor] = useState(() => Date.now());
-  const [page, setPage] = useState(1);
   const [timeZoneLabel] = useState(() => formatUtcOffset(Date.now()));
 
   const { limit, timeGte, timeLt } = resolveLogTimeRange(timeRange, anchor);
+  const windowKey = `${loadBalancerId}:${timeGte}:${timeLt}`;
 
-  const [response, refresh] = ApiLoadBalancer.Logs.$Id.useGet({
-    loadBalancerId,
-    limit,
-    page,
-    timeGte,
-    timeLt,
+  const fetchWindowPage = useCallback(
+    (pageNumber: number, signal: AbortSignal) =>
+      fetchLoadBalancerLogPage(
+        { loadBalancerId, limit, page: pageNumber, timeGte, timeLt },
+        signal,
+      ),
+    [limit, loadBalancerId, timeGte, timeLt],
+  );
+  const logWindow = useLogWindow({
+    fetchPage: fetchWindowPage,
+    windowKey,
   });
 
-  const data =
-    response.$status === 'success'
-      ? response
-      : response.$status === 'loading' && response.prevData
-        ? response.prevData
-        : undefined;
-
-  const entryInputs = useMemo(() => toLogEntryInputs(data), [data]);
-  const entries = useMemo(
-    () =>
-      toParsedLogLines(entryInputs, {
-        fallbackSource: tLogs('loadBalancer'),
-        locale,
-        nowMs: anchor,
-        lineOffset: (page - 1) * limit,
-      }),
-    [anchor, entryInputs, limit, locale, page, tLogs],
-  );
-
-  const fetchPage = useCallback(
-    async (pageNumber: number, signal: AbortSignal): Promise<LogPageResult> => {
-      const pageResponse = await ApiLoadBalancer.Logs.$Id.get(
+  const fetchDownloadPage = useCallback(
+    (pageNumber: number, signal: AbortSignal) =>
+      fetchLoadBalancerLogPage(
         {
           loadBalancerId,
           limit: LOG_DOWNLOAD_PAGE_SIZE,
@@ -87,34 +71,19 @@ export function LoadBalancerLogs(props: LoadBalancerLogsProps) {
           timeGte,
           timeLt,
         },
-        { signal },
-      );
-      if (pageResponse.$status === 'failed') throw pageResponse.error;
-
-      return {
-        entries: toLogEntryInputs(pageResponse),
-        hasMore: pageResponse.has_more === true,
-        total: pageResponse.total,
-      };
-    },
+        signal,
+      ),
     [loadBalancerId, timeGte, timeLt],
   );
-
   const download = useLogDownload({
     name: domain ?? 'load-balancer',
     timeGte,
     timeLt,
-    fetchPage,
+    fetchPage: fetchDownloadPage,
   });
 
-  const handleRefresh = () => {
-    setAnchor(Date.now());
-    setPage(1);
-    refresh();
-  };
-
   return (
-    <LogsPanel
+    <InfiniteLogsPanel
       icon={NetworkIcon}
       title={tLogs('loadBalancerTitle')}
       description={tLogs('loadBalancerSubtitle')}
@@ -129,38 +98,52 @@ export function LoadBalancerLogs(props: LoadBalancerLogsProps) {
           </span>
         )
       }
-      status={toLogsPanelStatus(response)}
-      entries={entries}
-      pagination={{
-        page,
-        pageSize: limit,
-        hasMore: data?.has_more === true,
-        totalLines: data?.total,
-        onPageChange: setPage,
-      }}
+      window={logWindow}
+      windowKey={windowKey}
+      pageSize={limit}
+      fallbackSource={tLogs('loadBalancer')}
+      nowMs={anchor}
       download={{
         progress: download.progress,
-        canDownloadAll: canDownloadAllLogs(data?.total),
-        onDownloadPage: () => download.downloadPage(entryInputs, page),
+        canDownloadAll: canDownloadAllLogs(logWindow.total),
+        onDownloadLoaded: (entries) => download.downloadPage(entries, 1),
         onDownloadAll: download.downloadAll,
         onCancel: download.cancel,
       }}
       timeRange={timeRange}
       timeZoneLabel={timeZoneLabel}
-      query={data?.query}
-      queryErrors={data?.query_errors ?? undefined}
-      isRefreshing={response.$status === 'loading'}
       emptyTitle={tLogs('loadBalancerEmpty')}
       emptyDescription={tLogs('loadBalancerEmptyHint')}
-      scrollResetKey={`${logTimeRangeKey(timeRange)}:${page}`}
-      onRefresh={handleRefresh}
+      onRefresh={() => setAnchor(Date.now())}
       onTimeRangeChange={(next) => {
         setTimeRange(next);
         setAnchor(Date.now());
-        setPage(1);
       }}
     />
   );
+}
+
+/** One page of a load balancer's request log, oldest line first. */
+async function fetchLoadBalancerLogPage(
+  params: {
+    loadBalancerId: string;
+    limit: number;
+    page: number;
+    timeGte?: string;
+    timeLt?: string;
+  },
+  signal: AbortSignal,
+): Promise<LogPageResult> {
+  const response = await ApiLoadBalancer.Logs.$Id.get(params, { signal });
+  if (response.$status === 'failed') throw response.error;
+
+  return {
+    entries: toLogEntryInputs(response),
+    hasMore: response.has_more === true,
+    total: response.total,
+    query: response.query,
+    queryErrors: response.query_errors ?? undefined,
+  };
 }
 
 function toLogEntryInputs(

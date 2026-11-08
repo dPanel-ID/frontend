@@ -1,17 +1,14 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 
-import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
-
 import {
   LogEntryDetails,
   useServerLogEntrySidepanel,
 } from '@/features/server-log-entry-sidepanel';
-import { LogLevelBadge } from '@/features/server-log-viewer-sidepanel/view';
 import type { ParsedLogLine } from '@/features/server-log-viewer-sidepanel/view';
 
 import { cn } from '@/shared/libs/tailwind/cn';
 
-import { readableLogTimestamp } from '../../lib/log-entries';
+import { LogTableHeader, LogTableRow } from './LogRow';
 
 export interface LogTableProps {
   ariaLabel: string;
@@ -33,7 +30,6 @@ export interface LogTableProps {
 }
 
 const SCROLL_EDGE_THRESHOLD_PX = 8;
-const ROW_GRID = 'grid-cols-[48px_160px_72px_120px_minmax(0,1fr)]';
 
 /**
  * The one log table every log view uses, as on the server Logs tab: number,
@@ -52,10 +48,8 @@ export default function LogTable(props: LogTableProps) {
     timeZoneLabel,
   } = props;
 
-  const t = useDevetekTranslations('common.logViewer.table');
   const [openLogEntrySidepanel] = useServerLogEntrySidepanel();
   const [expandedId, setExpandedId] = useState<string>();
-  const locale = useDevetekLocale();
   const [nowMs] = useState(() => Date.now());
 
   const handleOpen = (entry: ParsedLogLine) => {
@@ -100,66 +94,18 @@ export default function LogTable(props: LogTableProps) {
       tabIndex={0}
     >
       <div className="min-w-[720px]">
-        <div
-          className={cn(
-            'sticky top-0 z-10 grid gap-3 border-b bg-background/60 px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground backdrop-blur',
-            ROW_GRID,
-          )}
-        >
-          <span>{t('n')}</span>
-          <span className="truncate">
-            {t('time')}
-            {timeZoneLabel && (
-              <span className="font-normal normal-case">
-                {' '}
-                ({timeZoneLabel})
-              </span>
-            )}
-          </span>
-          <span>{t('level')}</span>
-          <span>{t('source')}</span>
-          <span>{t('message')}</span>
-        </div>
+        <LogTableHeader timeZoneLabel={timeZoneLabel} />
 
         {entries.map((entry) => (
           <Fragment key={entry.id}>
-            <button
-              type="button"
-              title={t('openEntry')}
-              aria-expanded={
+            <LogTableRow
+              entry={entry}
+              nowMs={nowMs}
+              expanded={
                 entryDetails === 'inline' ? expandedId === entry.id : undefined
               }
-              onClick={() => handleOpen(entry)}
-              className={cn(
-                'grid w-full items-center gap-3 border-b px-4 py-2 text-left transition-colors last:border-b-0 hover:bg-sky-500/5 focus-visible:bg-sky-500/10 focus-visible:outline-none',
-                ROW_GRID,
-              )}
-            >
-              <span className="font-mono text-[11px] text-muted-foreground">
-                {entry.lineNumber}
-              </span>
-              <span
-                className="truncate font-mono text-[11px] text-muted-foreground"
-                title={entry.timestamp}
-              >
-                {readableLogTimestamp(entry.timestamp, nowMs, locale) ?? '-'}
-              </span>
-              <LogLevelBadge level={entry.level} />
-              <span
-                className="truncate text-xs text-muted-foreground"
-                title={entry.sourceLabel}
-              >
-                {entry.sourceLabel}
-              </span>
-              <span className="flex min-w-0 items-center gap-1.5 font-mono text-xs text-primary">
-                {(entry.jsonLabel || entry.jsonPayload !== undefined) && (
-                  <span className="shrink-0 rounded border bg-background px-1.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
-                    {entry.jsonLabel || t('json')}
-                  </span>
-                )}
-                <span className="truncate">{entry.message || entry.raw}</span>
-              </span>
-            </button>
+              onOpen={handleOpen}
+            />
             {expandedId === entry.id && (
               <div className="border-b bg-background/60 px-4 py-3">
                 <LogEntryDetails entry={entry} />
