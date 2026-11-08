@@ -13,6 +13,7 @@ export { default as LogPager } from './presentation/LogPager';
 export { default as InfiniteLogsPanel } from './presentation/InfiniteLogsPanel';
 export { default as InfiniteLogTable } from './presentation/InfiniteLogTable';
 export { useLogWindow } from './usecase/use-log-window';
+export { useWindowRows } from './usecase/use-window-rows';
 export type { LogWindowState } from './usecase/use-log-window';
 export * from './lib/log-window';
 

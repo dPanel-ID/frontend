@@ -947,7 +947,6 @@
         "artifactLogsTitle": "Log Artefak",
         "artifactLogsDescription": "Commit {commit}",
         "artifactLogOutput": "Output log artefak",
-        "artifactLogLineWindow": "{count}/{limit} baris",
         "artifactLogEmpty": "Belum ada log build.",
         "artifactLogSource": "Build"
       },

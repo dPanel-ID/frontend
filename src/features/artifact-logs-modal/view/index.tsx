@@ -1,13 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import { DownloadIcon } from 'lucide-react';
-
-import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+import { useDevetekTranslations } from '@/services/i18n';
 import { ModalLayoutGeneral } from '@/services/modal/ui/presentation';
 
 import { ApiApplication } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import {
   DataPanelMeta,
   DataPanelSearch,
@@ -15,112 +12,168 @@ import {
 } from '@/shared/presentation/organisms/DataPanel';
 import { FailedState } from '@/widgets/failed-state';
 import {
+  InfiniteLogTable,
+  LOG_DOWNLOAD_PAGE_SIZE,
+  LOG_PAGE_SIZE,
+  LOG_TIME_RANGE_MAX_LOOKBACK_MS,
+  LogDownloadMenu,
+  LogLevelFilter,
   LogRefreshControl,
-  LogResults,
-  formatLogFile,
+  canDownloadAllLogs,
   formatUtcOffset,
-  saveLogFile,
-  toParsedLogLines,
   useAutoRefresh,
-  useLogFilters,
+  useLogDownload,
+  useLogWindow,
+  useWindowRows,
 } from '@/widgets/log-viewer';
-import type { LogEntryInput } from '@/widgets/log-viewer';
+import type { LogEntryInput, LogPageResult } from '@/widgets/log-viewer';
 
 import type { ArtifactLogsModalProps } from '../rules/types';
 
-/** Enough for a whole typical build; older output is a scroll away. */
-const BUILD_LOG_LINE_LIMIT = 500;
-
+/**
+ * A build reads like a terminal: its last lines at the bottom, earlier output
+ * loaded while scrolling up, never more than a few pages rendered at once.
+ */
 const Content = (props: ArtifactLogsModalProps) => {
   const { applicationId, artifactId, commitHead, serverId } = props;
   const t = useDevetekTranslations('page.applicationDetail.releases');
   const tLog = useDevetekTranslations('common.logViewer');
-  const locale = useDevetekLocale();
   const [timeZoneLabel] = useState(() => formatUtcOffset(Date.now()));
 
-  const [responseLog, refreshLog] = ApiApplication.Logs.$Id.useGet({
-    applicationId,
-    artifactId,
-    line: BUILD_LOG_LINE_LIMIT,
-    machineId: serverId,
-  });
-  const autoRefresh = useAutoRefresh(refreshLog);
+  // The window ends when the log was opened or refreshed; builds are kept as
+  // long as any other log, so it reaches back as far as logs are kept.
+  const [anchor, setAnchor] = useState(() => Date.now());
+  const timeGte = new Date(
+    anchor - LOG_TIME_RANGE_MAX_LOOKBACK_MS,
+  ).toISOString();
+  const timeLt = new Date(anchor).toISOString();
+  const windowKey = [applicationId, artifactId, serverId, anchor].join('|');
 
-  const data =
-    responseLog.$status === 'success'
-      ? responseLog
-      : responseLog.$status === 'loading' && responseLog.prevData
-        ? responseLog.prevData
-        : undefined;
+  const fetchPageOf = useCallback(
+    async (
+      size: number,
+      page: number,
+      signal: AbortSignal,
+    ): Promise<LogPageResult> => {
+      const response = await ApiApplication.Logs.$Id.get(
+        {
+          applicationId,
+          artifactId,
+          machineId: serverId,
+          line: size,
+          page,
+          timeGte,
+          timeLt,
+        },
+        { signal },
+      );
+      if (response.$status === 'failed') throw response.error;
 
-  const entryInputs = useMemo(() => toLogEntryInputs(data), [data]);
-  // Times read relative to when the modal opened ("Today 14:02:11").
-  const [nowMs] = useState(() => Date.now());
-  const entries = useMemo(
-    () =>
-      toParsedLogLines(entryInputs, {
-        fallbackSource: t('artifactLogSource'),
-        locale,
-        nowMs,
-      }),
-    [entryInputs, locale, nowMs, t],
+      return {
+        entries: toLogEntryInputs(response),
+        hasMore: !Array.isArray(response) && response.has_more === true,
+        total: Array.isArray(response)
+          ? undefined
+          : (response.total ?? undefined),
+      };
+    },
+    [applicationId, artifactId, serverId, timeGte, timeLt],
   );
-  const filters = useLogFilters(entries);
+  const fetchWindowPage = useCallback(
+    (page: number, signal: AbortSignal) =>
+      fetchPageOf(LOG_PAGE_SIZE, page, signal),
+    [fetchPageOf],
+  );
+  const fetchDownloadPage = useCallback(
+    (page: number, signal: AbortSignal) =>
+      fetchPageOf(LOG_DOWNLOAD_PAGE_SIZE, page, signal),
+    [fetchPageOf],
+  );
 
-  if (responseLog.$status === 'failed') {
-    return <FailedState.BannerRetryable onClickRetry={refreshLog} />;
+  const logWindow = useLogWindow({ fetchPage: fetchWindowPage, windowKey });
+  const { autoFill, filters, loadedEntries, loadedRows, visiblePages } =
+    useWindowRows({
+      pages: logWindow.pages,
+      pageSize: LOG_PAGE_SIZE,
+      fallbackSource: t('artifactLogSource'),
+      nowMs: anchor,
+    });
+
+  const refresh = () => setAnchor(Date.now());
+  const [following, setFollowing] = useState(true);
+  const autoRefresh = useAutoRefresh(refresh, { paused: !following });
+
+  const download = useLogDownload({
+    name: `build-${commitHead.slice(0, 12) || artifactId}`,
+    timeGte,
+    timeLt,
+    fetchPage: fetchDownloadPage,
+  });
+
+  if (logWindow.status === 'failed') {
+    return <FailedState.BannerRetryable onClickRetry={refresh} />;
   }
-
-  const handleDownload = () => {
-    const shortCommit = commitHead.slice(0, 12) || 'build';
-    saveLogFile(`build-${shortCommit}.log`, formatLogFile(entryInputs));
-  };
 
   return (
     <section className="overflow-hidden rounded-2xl border bg-card">
       <div className="flex flex-col gap-2 border-b p-3 sm:flex-row sm:items-center sm:justify-between">
         <DataPanelSearch
           value={filters.search}
-          placeholder={tLog('filterPlaceholder')}
+          placeholder={tLog('infinite.filterPlaceholder')}
           onChange={filters.setSearch}
         />
         <div className="flex items-center justify-between gap-3 sm:justify-end">
           <DataPanelMeta>
-            {t('artifactLogLineWindow', {
-              count: entries.length,
-              limit: BUILD_LOG_LINE_LIMIT,
+            {tLog('infinite.showing', {
+              shown: filters.filteredEntries.length,
+              total: loadedRows.length,
             })}
           </DataPanelMeta>
-          <Button
-            size="sm"
-            buttonColor="secondary"
-            buttonStyle="outline"
-            disabled={entries.length === 0}
-            onClick={handleDownload}
-          >
-            <DownloadIcon />
-            {tLog('download.label')}
-          </Button>
+          <LogDownloadMenu
+            scope="loaded"
+            page={1}
+            pageLines={loadedEntries.length}
+            totalLines={logWindow.total}
+            canDownloadAll={canDownloadAllLogs(logWindow.total)}
+            progress={download.progress}
+            onDownloadPage={() => download.downloadPage(loadedEntries, 1)}
+            onDownloadAll={download.downloadAll}
+            onCancel={download.cancel}
+          />
           <LogRefreshControl
             state={autoRefresh}
-            isRefreshing={responseLog.$status === 'loading'}
-            onRefresh={refreshLog}
+            isRefreshing={logWindow.isResetting}
+            onRefresh={refresh}
           />
         </div>
       </div>
 
-      {!data ? (
+      {logWindow.status === 'loading' ? (
         <DataPanelState state="loading" title={tLog('loading')} />
-      ) : entries.length === 0 ? (
+      ) : loadedRows.length === 0 ? (
         <DataPanelState state="empty" title={t('artifactLogEmpty')} />
       ) : (
-        <LogResults
-          ariaLabel={t('artifactLogOutput')}
-          filters={filters}
-          timeZoneLabel={timeZoneLabel}
-          entryDetails="inline"
-          className="max-h-[65vh]"
-        />
+        <>
+          <LogLevelFilter filters={filters} />
+          <InfiniteLogTable
+            ariaLabel={t('artifactLogOutput')}
+            pages={visiblePages}
+            timeZoneLabel={timeZoneLabel}
+            nowMs={anchor}
+            hasOlder={logWindow.hasOlder}
+            hasNewer={logWindow.hasNewer}
+            loading={logWindow.loading}
+            edgeError={logWindow.edgeError}
+            windowKey={windowKey}
+            autoFill={autoFill}
+            entryDetails="inline"
+            className="h-[65vh]"
+            onLoadOlder={logWindow.loadOlder}
+            onLoadNewer={logWindow.loadNewer}
+            onFollowChange={setFollowing}
+            onJumpToLatest={refresh}
+          />
+        </>
       )}
     </section>
   );
