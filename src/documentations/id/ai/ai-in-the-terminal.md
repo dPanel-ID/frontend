@@ -12,28 +12,28 @@ Pakai cara ini kalau Anda lebih suka keyboard, atau kalau Anda ingin skrip atau 
 
 ## Memasang dnocs
 
-dnocs berupa satu berkas untuk macOS dan Linux, di mesin Intel/AMD (`amd64`) maupun Apple Silicon atau ARM (`arm64`). Berkasnya diterbitkan di [github.com/dPanel-ID/artifacts](https://github.com/dPanel-ID/artifacts/tree/main/cli), satu folder per versi, dan berkas `cli/LATEST` menyebutkan versi terbaru.
+dnocs berupa satu berkas untuk macOS dan Linux, di mesin Intel/AMD (`amd64`) maupun Apple Silicon atau ARM (`arm64`). Satu perintah memasang versi terbaru.
 
 1. Buka terminal.
-2. Unduh versi terbaru untuk mesin Anda:
+2. Jalankan pemasang:
 
    ```bash
-   VERSION=$(curl -fsSL https://raw.githubusercontent.com/dPanel-ID/artifacts/main/cli/LATEST)
-   OS=$(uname -s | tr '[:upper:]' '[:lower:]')
-   ARCH=$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')
-   curl -fsSLo dnocs "https://raw.githubusercontent.com/dPanel-ID/artifacts/main/cli/$VERSION/dpanelprod-cli-$OS-$ARCH"
+   curl --proto '=https' --tlsv1.2 -sSf https://dnocs.devetek.app/installer.sh | sh
    ```
 
-3. Jadikan berkas itu bisa dijalankan dan taruh di path Anda:
+3. Pastikan berhasil: `dnocs --help` menampilkan daftar perintah.
 
-   ```bash
-   chmod +x dnocs
-   sudo mv dnocs /usr/local/bin/dnocs
-   ```
+Pemasang memilih berkas yang sesuai dengan mesin Anda, memeriksanya dengan checksum yang diterbitkan, lalu menaruhnya di `/usr/local/bin`. Kata sandi hanya diminta kalau perlu akses administrator untuk menulis ke sana. Tanpa akses itu, dnocs dipasang di `~/.local/bin` dan Anda diberi tahu cara menambahkan folder itu ke path.
 
-4. Pastikan berhasil: `dnocs --help` menampilkan daftar perintah.
+Jalankan perintah yang sama kapan saja untuk memperbarui ke versi terbaru.
 
-Setiap folder versi juga berisi berkas `SHA256SUMS`, kalau Anda ingin memeriksa checksum unduhannya.
+Untuk memasang versi tertentu, atau ke folder lain, atur nilainya sebelum `sh`:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://dnocs.devetek.app/installer.sh | DNOCS_VERSION=v0.1.20 DNOCS_INSTALL_DIR="$HOME/bin" sh
+```
+
+Anda bisa [membaca pemasangnya](https://dnocs.devetek.app/installer.sh) sebelum menjalankannya. Setiap versi diterbitkan di [github.com/dPanel-ID/artifacts](https://github.com/dPanel-ID/artifacts/tree/main/cli).
 
 ## Masuk dan memilih ruang kerja
 
