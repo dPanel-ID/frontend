@@ -948,7 +948,31 @@
         "artifactLogsDescription": "Commit {commit}",
         "artifactLogOutput": "Output log artefak",
         "artifactLogEmpty": "Belum ada log build.",
-        "artifactLogSource": "Build"
+        "artifactLogSource": "Build",
+        "buildProgress": {
+          "tabSteps": "Langkah",
+          "tabOutput": "Keluaran log",
+          "loading": "Memuat langkah build",
+          "waiting": "Menunggu worker memulai build ini",
+          "none": "Tidak ada langkah yang tercatat untuk build ini.",
+          "stages": {
+            "setup": "Pasang runtime dan modul",
+            "source": "Ambil kode sumber",
+            "prepare": "Siapkan build",
+            "package": "Kemas hasil build",
+            "deploy": "Deploy ke server"
+          },
+          "buildStep": "Langkah build {number}",
+          "summaryRunning": "Berjalan: {stage}",
+          "summaryFailed": "Gagal di: {stage}",
+          "summary": {
+            "done": "Selesai",
+            "failed": "Gagal"
+          },
+          "stepCount": "{count, plural, other {# langkah}}",
+          "skippedCount": "{count, plural, other {# langkah tidak diperlukan}}",
+          "outputAfterStep": "Keluaran langkah ini muncul di Keluaran log setelah langkahnya selesai."
+        }
       },
       "configuration": {
         "title": "Cara aplikasi ini disiapkan",
