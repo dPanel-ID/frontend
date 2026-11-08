@@ -967,7 +967,8 @@
           "summaryFailed": "Gagal di: {stage}",
           "summary": {
             "done": "Selesai",
-            "failed": "Gagal"
+            "failed": "Gagal",
+            "running": "Sedang berjalan"
           },
           "stepCount": "{count, plural, other {# langkah}}",
           "skippedCount": "{count, plural, other {# langkah tidak diperlukan}}",

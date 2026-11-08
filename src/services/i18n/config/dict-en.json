@@ -967,7 +967,8 @@
           "summaryFailed": "Failed at: {stage}",
           "summary": {
             "done": "Finished",
-            "failed": "Failed"
+            "failed": "Failed",
+            "running": "In progress"
           },
           "stepCount": "{count, plural, one {# step} other {# steps}}",
           "skippedCount": "{count, plural, one {# step not needed} other {# steps not needed}}",
