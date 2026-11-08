@@ -27,6 +27,8 @@ interface AppLogsModelProps {
 interface LogSelection {
   filename: string;
   serverId: SchemaCommon.UnitId;
+  /** Read every server the application runs on, not only `serverId`. */
+  allServers?: boolean;
 }
 
 export interface AppLogEntryView {
@@ -70,7 +72,9 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
   // while paging so new lines cannot shift them.
   const [page, setPage] = useState(1);
   const [lastDeployment] = useArtifactHistoryModel((s) => [s.lastDeployment]);
-  const deploymentId = lastDeployment?.id;
+  const allServers = Boolean(logSelection?.allServers);
+  // The last deployment names one server, so it only scopes a one-server view.
+  const deploymentId = allServers ? undefined : lastDeployment?.id;
   const logMetadata = logSelection
     ? {
         deploymentId,
@@ -99,7 +103,8 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     setPage(1);
   }, []);
 
-  const machineId = deploymentId ? undefined : logMetadata?.serverId;
+  const machineId =
+    allServers || deploymentId ? undefined : logMetadata?.serverId;
 
   const [responseLog] = ApiApplication.Logs.$Id.useGet({
     applicationId,
@@ -107,6 +112,7 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     page,
     deploymentId,
     machineId,
+    allMachines: allServers,
     timeGte,
     timeLt,
     options: {
@@ -132,6 +138,7 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
           page: pageNumber,
           deploymentId,
           machineId,
+          allMachines: allServers,
           timeGte,
           timeLt,
         },
@@ -146,7 +153,7 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
         total: view.total,
       };
     },
-    [applicationId, deploymentId, machineId, timeGte, timeLt],
+    [allServers, applicationId, deploymentId, machineId, timeGte, timeLt],
   );
 
   return {
