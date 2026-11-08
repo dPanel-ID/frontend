@@ -5,6 +5,7 @@ import { TerminalIcon } from 'lucide-react';
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import {
+  LOG_MERGED_MAX_LINES,
   LogsPanel,
   canDownloadAllLogs,
   formatUtcOffset,
@@ -65,12 +66,25 @@ export default function AppLogs() {
   const serverId = selectedServerId || appDetail?.deploymentTargets[0]?.id;
   const machineId = serverId ? Number(serverId) : NaN;
   const canLoadLogs = Boolean(runName && Number.isFinite(machineId));
+  // An application on several servers shows all of their lines, merged.
+  const allServers = (appDetail?.deploymentTargets.length ?? 0) > 1;
 
   // Open the tab onto the latest lines rather than an empty "load" prompt.
   useEffect(() => {
     if (!canLoadLogs || logFilename || !runName) return;
-    setLogSelection({ filename: runName, serverId: String(machineId) });
-  }, [canLoadLogs, logFilename, machineId, runName, setLogSelection]);
+    setLogSelection({
+      filename: runName,
+      serverId: String(machineId),
+      allServers,
+    });
+  }, [
+    allServers,
+    canLoadLogs,
+    logFilename,
+    machineId,
+    runName,
+    setLogSelection,
+  ]);
 
   const entryInputs = useMemo(
     () => logEntries.map(toLogEntryInput),
@@ -122,7 +136,10 @@ export default function AppLogs() {
       }}
       download={{
         progress: download.progress,
-        canDownloadAll: canDownloadAllLogs(logPagination.total),
+        canDownloadAll: canDownloadAllLogs(
+          logPagination.total,
+          allServers ? LOG_MERGED_MAX_LINES : undefined,
+        ),
         onDownloadPage: () =>
           download.downloadPage(entryInputs, logPagination.page),
         onDownloadAll: download.downloadAll,
