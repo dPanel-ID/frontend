@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ServerIcon, TerminalIcon } from 'lucide-react';
 
-import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+import { useDevetekTranslations } from '@/services/i18n';
 
 import {
   Select,
@@ -12,61 +12,52 @@ import {
   SelectValue,
 } from '@/shared/presentation/atoms/Select';
 import {
+  InfiniteLogsPanel,
   LOG_MERGED_MAX_LINES,
-  LogsPanel,
   canDownloadAllLogs,
   formatUtcOffset,
-  logTimeRangeKey,
-  toLogsPanelStatus,
-  toParsedLogLines,
   useLogDownload,
+  useLogWindow,
 } from '@/widgets/log-viewer';
 
 import { useAppDataModel } from '../../-model/app-data';
-import { toLogEntryInput, useAppLogsModel } from '../../-model/app-logs';
+import { useAppLogsModel } from '../../-model/app-logs';
 
 export default function AppLogs() {
   const [
     fetchedAt,
     fetchLogPage,
+    fetchWindowPage,
+    isLogSelected,
     lineLimit,
-    log,
-    logEntries,
     logFilename,
-    logPagination,
-    logQuery,
-    logQueryErrors,
     logServerFilter,
     refreshLog,
     selectTimeRange,
     setLogSelection,
-    setPage,
     timeGte,
     timeLt,
     timeRange,
+    windowKey,
   ] = useAppLogsModel((s) => [
     s.fetchedAt,
     s.fetchLogPage,
+    s.fetchWindowPage,
+    s.isLogSelected,
     s.lineLimit,
-    s.log,
-    s.logEntries,
     s.logFilename,
-    s.logPagination,
-    s.logQuery,
-    s.logQueryErrors,
     s.logServerFilter,
     s.refreshLog,
     s.selectTimeRange,
     s.setLogSelection,
-    s.setPage,
     s.timeGte,
     s.timeLt,
     s.timeRange,
+    s.windowKey,
   ]);
   const [appDetailResponse] = useAppDataModel((s) => [s.appDetail]);
   const [selectedServerId] = useAppDataModel((s) => [s.selectedServerId]);
   const t = useDevetekTranslations('page.applicationDetail.appLogs');
-  const locale = useDevetekLocale();
   const [timeZoneLabel] = useState(() => formatUtcOffset(Date.now()));
 
   const appDetail =
@@ -106,20 +97,11 @@ export default function AppLogs() {
     setLogSelection,
   ]);
 
-  const entryInputs = useMemo(
-    () => logEntries.map(toLogEntryInput),
-    [logEntries],
-  );
-  const entries = useMemo(
-    () =>
-      toParsedLogLines(entryInputs, {
-        fallbackSource: runName ?? t('runtime'),
-        locale,
-        nowMs: fetchedAt,
-        lineOffset: (logPagination.page - 1) * lineLimit,
-      }),
-    [entryInputs, fetchedAt, lineLimit, locale, logPagination.page, runName, t],
-  );
+  const logWindow = useLogWindow({
+    fetchPage: fetchWindowPage,
+    windowKey,
+    disabled: !canLoadLogs || !isLogSelected,
+  });
 
   const download = useLogDownload({
     name: runName ?? 'runtime',
@@ -131,7 +113,7 @@ export default function AppLogs() {
   if (!appDetail) return null;
 
   return (
-    <LogsPanel
+    <InfiniteLogsPanel
       title={t('title')}
       description={t('subtitle')}
       source={
@@ -168,35 +150,26 @@ export default function AppLogs() {
           </div>
         )
       }
-      status={canLoadLogs ? toLogsPanelStatus(log) : 'unavailable'}
-      entries={entries}
-      pagination={{
-        page: logPagination.page,
-        pageSize: lineLimit,
-        hasMore: logPagination.hasMore,
-        totalLines: logPagination.total,
-        onPageChange: setPage,
-      }}
+      window={logWindow}
+      windowKey={windowKey}
+      pageSize={lineLimit}
+      fallbackSource={runName ?? t('runtime')}
+      nowMs={fetchedAt}
       download={{
         progress: download.progress,
         canDownloadAll: canDownloadAllLogs(
-          logPagination.total,
+          logWindow.total,
           allServers ? LOG_MERGED_MAX_LINES : undefined,
         ),
-        onDownloadPage: () =>
-          download.downloadPage(entryInputs, logPagination.page),
+        onDownloadLoaded: (entries) => download.downloadPage(entries, 1),
         onDownloadAll: download.downloadAll,
         onCancel: download.cancel,
       }}
       timeRange={timeRange}
       timeZoneLabel={timeZoneLabel}
-      query={log.$status === 'success' ? logQuery : undefined}
-      queryErrors={log.$status === 'success' ? logQueryErrors : undefined}
-      isRefreshing={log.$status === 'loading'}
       emptyTitle={t('emptyLog')}
       emptyDescription={t('emptyHint')}
       unavailableTitle={t('unavailable')}
-      scrollResetKey={`${logTimeRangeKey(timeRange)}:${logPagination.page}`}
       onRefresh={refreshLog}
       onTimeRangeChange={selectTimeRange}
     />

@@ -947,7 +947,6 @@
         "artifactLogsTitle": "Artifact Logs",
         "artifactLogsDescription": "Commit {commit}",
         "artifactLogOutput": "Artifact log output",
-        "artifactLogLineWindow": "{count}/{limit} lines",
         "artifactLogEmpty": "No build logs yet.",
         "artifactLogSource": "Build"
       },
