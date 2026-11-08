@@ -109,6 +109,21 @@ export const backendAddress = relaxedUrl('http').transform((val) => {
   };
 });
 
+export type ApplicationAddressMode = z.output<typeof applicationAddressMode>;
+export const applicationAddressMode = z.enum([
+  'registered',
+  'private',
+  'custom',
+]);
+
+export type ApplicationUpstream = z.output<typeof applicationUpstream>;
+export const applicationUpstream = z.object({
+  address: z.string(),
+  port: z.string(),
+  scheme: z.string().optional(),
+  machineId: z.string().optional(),
+});
+
 export type L7RuleUpstream = z.output<typeof l7RuleUpstream>;
 export const l7RuleUpstream = z.discriminatedUnion('type', [
   z.object({
@@ -127,6 +142,12 @@ export const l7RuleUpstream = z.discriminatedUnion('type', [
     target: z.object({
       applicationId: SchemaCommon.unitId,
       port: z.number(),
+      /** How the gateway reaches the application; see the API address modes. */
+      addressMode: applicationAddressMode.optional(),
+      /** Upstreams stored with a custom address mode. */
+      upstreams: z.array(applicationUpstream).optional(),
+      /** Where the route went at the last apply, one per deployment. */
+      resolvedUpstreams: z.array(applicationUpstream).optional(),
     }),
   }),
   z.object({

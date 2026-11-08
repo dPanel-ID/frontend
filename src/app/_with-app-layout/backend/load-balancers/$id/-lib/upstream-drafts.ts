@@ -41,6 +41,9 @@ export function getUpstreamDrafts(
       const applicationId = upstream.target.applicationId;
 
       rows.push({
+        addressMode: upstream.target.addressMode,
+        applicationUpstreams: upstream.target.upstreams,
+        resolvedUpstreams: upstream.target.resolvedUpstreams,
         applicationId,
         destination: formatApplicationBackendDestination(
           `Application ${applicationId}`,
@@ -213,11 +216,27 @@ export function toLoadBalancerUpdateRule(
   );
 
   if (row.kind === 'application') {
+    // Send the stored address mode (and a custom route's upstreams) back
+    // as they are, so saving never changes how an untouched route is reached.
+    const customUpstreams =
+      row.addressMode === 'custom' ? row.applicationUpstreams : undefined;
+
     return {
       applicationId: getApplicationIdFromDraftRow(row),
       pathMatch: route.pathMatch,
       type: 'proxy_pass',
       wildcard: route.wildcard,
+      ...(row.addressMode ? { addressMode: row.addressMode } : {}),
+      ...(customUpstreams?.length
+        ? {
+            upstreams: customUpstreams.map((upstream) => ({
+              address: upstream.scheme
+                ? `${upstream.scheme}://${upstream.address}`
+                : upstream.address,
+              port: upstream.port,
+            })),
+          }
+        : {}),
     };
   }
 
@@ -240,6 +259,63 @@ export function toLoadBalancerUpdateRule(
     ],
     wildcard: route.wildcard,
   };
+}
+
+export interface ApplicationRouteTarget {
+  /** address:port, with the scheme when the upstream was given as a URL. */
+  address: string;
+  machineId?: string;
+  /** Server name from the application's deployments, when known. */
+  serverName?: string;
+}
+
+/**
+ * Where an application route sends traffic: a custom route's own upstreams,
+ * otherwise the addresses recorded at the last apply, each named by its
+ * deployment's server. Empty until the load balancer is applied once.
+ */
+export function getApplicationRouteTargets(
+  row: UpstreamDraft,
+  servers: ReadonlyMap<string, string> = new Map(),
+): ApplicationRouteTarget[] {
+  const upstreams =
+    row.addressMode === 'custom' && row.applicationUpstreams?.length
+      ? row.applicationUpstreams
+      : (row.resolvedUpstreams ?? []);
+
+  return upstreams.map((upstream) => {
+    const host = upstream.address.includes(':')
+      ? `[${upstream.address.replace(/^\[|\]$/g, '')}]`
+      : upstream.address;
+    const hostPort = upstream.port ? `${host}:${upstream.port}` : host;
+
+    return {
+      address: upstream.scheme ? `${upstream.scheme}://${hostPort}` : hostPort,
+      ...(upstream.machineId
+        ? {
+            machineId: upstream.machineId,
+            serverName: servers.get(upstream.machineId),
+          }
+        : {}),
+    };
+  });
+}
+
+/** Server names of an application's deployments, by machine ID. */
+export function getApplicationDeploymentServers(
+  application: DTOs.ApplicationV1 | undefined,
+) {
+  const servers = new Map<string, string>();
+
+  for (const deploy of application?.deploys ?? []) {
+    const machineId = deploy.machine_id ?? deploy.machine?.id;
+    if (machineId === undefined) continue;
+
+    const name = deploy.machine?.hostname;
+    if (name) servers.set(String(machineId), name);
+  }
+
+  return servers;
 }
 
 export function getApplicationIdFromDraftRow(row: UpstreamDraft) {

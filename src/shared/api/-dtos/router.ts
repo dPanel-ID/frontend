@@ -21,11 +21,18 @@ export interface InputRouterV1 {
 export interface RouterRuleUpstreamV1 {
   address?: string;
   port?: string;
+  scheme?: string;
+  /** Server of the application deployment, on resolved upstreams only. */
+  machine_id?: string;
 }
 
 export interface RouterRuleTargetV1 {
   application_id?: string;
+  /** How an application target is reached; empty means private (legacy). */
+  address_mode?: 'registered' | 'private' | 'custom' | '';
   upstreams?: RouterRuleUpstreamV1[];
+  /** Where an application target went at the last apply (read-only). */
+  resolved_upstreams?: RouterRuleUpstreamV1[];
 }
 
 export interface RouterRuleV1 {
