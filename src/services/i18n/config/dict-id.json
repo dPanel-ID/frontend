@@ -227,7 +227,9 @@
         "cancel": "Batalkan unduhan",
         "tooLargeTitle": "Terlalu banyak baris untuk diunduh sekaligus",
         "tooLarge": "Rentang ini berisi lebih dari {lines, number} baris. Persempit rentang waktu, atau unduh per halaman.",
-        "failedTitle": "Unduhan gagal"
+        "failedTitle": "Unduhan gagal",
+        "loaded": "Baris yang dimuat",
+        "loadedHint": "{lines, plural, other {# baris}} dimuat di daftar"
       },
       "pager": {
         "range": "Baris {first, number}–{last, number} dari {total, number}, terbaru dulu",
@@ -252,6 +254,20 @@
           "1m": "1m",
           "5m": "5m"
         }
+      },
+      "infinite": {
+        "filterPlaceholder": "Saring baris yang dimuat",
+        "showing": "Menampilkan {shown} dari {total} baris yang dimuat",
+        "range": "Baris {first, number}–{last, number} dari {total, number} dimuat, terbaru di bawah",
+        "rangeUnknown": "Baris {first, number}–{last, number} dimuat, terbaru di bawah",
+        "rangeStart": "Awal rentang waktu",
+        "loadingOlder": "Memuat baris lebih lama",
+        "loadingNewer": "Memuat baris lebih baru",
+        "olderFailed": "Baris lebih lama gagal dimuat.",
+        "newerFailed": "Baris lebih baru gagal dimuat.",
+        "retry": "Coba lagi",
+        "jumpToLatest": "Ke baris terbaru",
+        "clearFilters": "Hapus filter"
       }
     },
     "moduleVersion": {
