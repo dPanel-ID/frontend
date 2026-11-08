@@ -141,7 +141,7 @@ Logs only show the time range you picked. Widen the range; the longest is 10 day
 
 ### "More than 100,000 lines" and I cannot download
 
-**Everything in this time range** stops at 100,000 lines. Narrow the time range, or download page by page. See [Download logs](../logs/download-logs.md).
+**Everything in this time range** stops at 100,000 lines. Narrow the time range, or save the loaded lines. See [Download logs](../logs/download-logs.md).
 
 ### Search does not find something I can see
 

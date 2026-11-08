@@ -1,17 +1,17 @@
 ---
 title: Rentang waktu dan pembaruan
-description: Pilih rentang waktu log hingga 10 hari ke belakang di dPanel, telusuri baris lama 200 per halaman, dan nyalakan muat ulang otomatis untuk log aplikasi.
+description: Pilih rentang waktu log hingga 10 hari ke belakang di dPanel, gulir ke atas untuk memuat baris lama, dan nyalakan muat ulang otomatis untuk log aplikasi.
 sidebar_position: 2
 sidebar_icon: clock
 ---
 
-Di dPanel Anda bisa membaca log aplikasi dan load balancer mulai dari 10 menit terakhir hingga 10 hari ke belakang, 200 baris per halaman, dan memperbaruinya secara manual atau otomatis. Kontrol ini ada di log runtime aplikasi dan log load balancer; lihat [Membaca log](./reading-logs.md) untuk letak setiap log.
+Di dPanel Anda bisa membaca log aplikasi dan load balancer mulai dari 10 menit terakhir hingga 10 hari ke belakang, menggulir ke atas untuk baris yang lebih lama, dan memperbaruinya secara manual atau otomatis. Kontrol ini ada di log runtime aplikasi dan log load balancer; lihat [Membaca log](./reading-logs.md) untuk letak setiap log.
 
 ## Memilih rentang waktu
 
 Tampilan dibuka pada **10 menit terakhir**.
 
-1. Buka menu rentang waktu, di sebelah kiri **Saring halaman ini**.
+1. Buka menu rentang waktu, di sebelah kiri **Saring baris yang dimuat**.
 2. Pilih salah satu: **10 menit terakhir**, **1 jam terakhir**, **6 jam terakhir**, **24 jam terakhir**, **3 hari terakhir**, **7 hari terakhir**, atau **10 hari terakhir**.
 
 ![Menu rentang waktu, dengan pilihan cepat dan opsi rentang khusus](../../assets/logs/logs-time-range.webp)
@@ -35,16 +35,21 @@ Formulir memberi tahu apa yang salah sebelum pencarian dijalankan:
 Log bisa dibaca hingga 10 hari ke belakang. dPanel menahan setiap rentang dalam batas itu, jadi waktu mulai yang lebih lama akan dimajukan ke tepi jendela.
 :::
 
-## Menelusuri baris yang lebih lama
+## Menggulir ke atas untuk baris yang lebih lama
 
-Satu halaman berisi 200 baris. Halaman 1 berisi 200 baris terbaru; halaman 2 berisi 200 baris sebelumnya, dan seterusnya. Di dalam satu halaman, baris tersusun sesuai urutan waktu, yang terbaru di paling bawah. Bagian bawah menunjukkan posisi Anda, misalnya **Baris 1–200 dari 1.250, terbaru dulu**.
+Log runtime dan log load balancer dibaca seperti terminal. Daftar terbuka pada baris terbaru, di bagian bawah rentang waktu yang dipilih.
 
-- Jika totalnya diketahui, pakai nomor halaman.
-- Jika tidak, pakai **Lebih baru** dan **Lebih lama**.
+- **Gulir ke atas** untuk memuat baris yang lebih lama. Baris datang 200 sekaligus, sebelum Anda sampai di atas, dan baris yang sedang dibaca tetap di tempatnya.
+- Daftar berakhir di **Awal rentang waktu**. Untuk membaca lebih jauh, pilih rentang yang lebih lebar.
+- Setelah menggulir ke atas, **Ke baris terbaru** membawa Anda kembali ke baris terbaru.
 
-![Bagian bawah log load balancer: Lines 1–200 of 201, newest first, dengan tombol halaman 1 dan 2](../../assets/logs/logs-pagination.webp)
+Bagian bawah menyebutkan yang sudah dimuat, misalnya **Baris 1–200 dari 1.250 dimuat, terbaru di bawah**. Baris 1 adalah baris terbaru.
 
-**Saring halaman ini** dan chip level bekerja di halaman yang sedang dibuka. Untuk mencari lebih jauh ke belakang, buka halaman yang lebih lama atau persempit rentang waktunya.
+**Saring baris yang dimuat** dan chip level bekerja pada baris yang sedang dimuat. Untuk mencari lebih jauh, gulir ke atas atau persempit rentang waktunya.
+
+:::info[Semua server dalam satu daftar]
+Log runtime aplikasi yang berjalan di beberapa server menggabungkan semua server dalam satu daftar. Daftar itu bisa digulir mundur hingga 5.000 baris. Untuk baris yang lebih lama, persempit rentang waktu atau pilih satu server di menu **Server**.
+:::
 
 ## Segarkan
 
@@ -60,9 +65,9 @@ Tombol di sebelah **Segarkan** mengatur **Muat ulang otomatis**. Bawaannya **Mat
 
 ![Tombol Segarkan dan menu Muat ulang otomatis dengan pilihan intervalnya](../../assets/logs/logs-auto-refresh.webp)
 
-Muat ulang otomatis berhenti sementara selama Anda berada di halaman yang lebih lama, supaya baris tidak bergeser saat dibaca. Fitur ini aktif lagi saat Anda kembali ke halaman pertama.
+Muat ulang otomatis hanya berjalan selama Anda berada di bagian bawah daftar, mengikuti baris terbaru. Setelah Anda menggulir ke atas, fitur ini berhenti sementara, supaya baris tidak bergeser saat dibaca. Fitur ini aktif lagi saat Anda kembali ke bawah atau menekan **Ke baris terbaru**.
 
-Tab **Log** di halaman server dan **Log Artefak** juga punya kontrol **Segarkan** dan **Muat ulang otomatis** yang sama.
+Tab **Log** di halaman server dan tab **Keluaran log** di **Log Artefak** juga punya kontrol **Segarkan** dan **Muat ulang otomatis** yang sama.
 
 ## Pertanyaan yang sering diajukan
 
@@ -72,7 +77,11 @@ dPanel menyimpan log aplikasi dan load balancer selama 10 hari. Yang lebih lama 
 
 ### Mengapa baris terbaru ada di paling bawah?
 
-Di dalam satu halaman, baris dibaca seperti buku, sesuai urutan penulisannya. Tabel menggulir ke bawah untuk Anda, jadi baris terbaru langsung terlihat.
+Log dibaca seperti terminal, sesuai urutan penulisannya. Daftar terbuka di bagian bawah, jadi baris terbaru langsung terlihat, dan baris yang lebih lama ada di atasnya.
+
+### Apakah sesi yang lama membuat browser saya melambat?
+
+Tidak. Daftar menyimpan paling banyak 1.000 baris di layar, selama apa pun Anda memantau atau menggulir. Baris yang jauh dilepas dan dimuat lagi saat Anda menggulir ke sana.
 
 ### Waktunya memakai zona waktu apa?
 

@@ -161,6 +161,7 @@ export default function AppLogs() {
           logWindow.total,
           allServers ? LOG_MERGED_MAX_LINES : undefined,
         ),
+        allLimit: allServers ? LOG_MERGED_MAX_LINES : undefined,
         onDownloadLoaded: (entries) => download.downloadPage(entries, 1),
         onDownloadAll: download.downloadAll,
         onCancel: download.cancel,
