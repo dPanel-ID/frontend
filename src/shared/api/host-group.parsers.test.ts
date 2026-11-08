@@ -42,4 +42,24 @@ describe('host group parsers', () => {
     });
     expect(detail.kind).toBe('generic');
   });
+
+  it('accepts private server members and ignores fields it does not know', () => {
+    const detail = parseHostGroupDetailPayload({
+      ...base,
+      kind: 'generic',
+      members: [
+        {
+          id: '206',
+          hostname: 'home-server',
+          connectivity: 'private',
+          lan_address: '192.168.1.20',
+          some_future_field: true,
+        },
+      ],
+    });
+    const [member] = detail.members;
+    expect(member?.connectivity).toBe('private');
+    expect(member?.lan_address).toBe('192.168.1.20');
+    expect(member).not.toHaveProperty('some_future_field');
+  });
 });

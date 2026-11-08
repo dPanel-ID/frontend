@@ -176,51 +176,58 @@ export const schemaHostGroupActionTargetDto = z
   })
   .strict();
 
-export const schemaHostGroupMemberDto = z
-  .object({
-    id: z.string().min(1),
-    hostname: z.string(),
-    address: z.string().optional(),
-    http_port: z.string().optional(),
-    ssh_port: z.string().optional(),
-    secret_id: z.string().optional(),
-    organization: schemaOrganizationPublic.optional(),
-    user: schemaUserPublic.optional(),
-    owner_subject: z.string().optional(),
-    workspace_id: z.string().optional(),
-    workspace_type: z.string().optional(),
-    host_group_id: z.string().optional(),
-    workspace: schemaMachineWorkspace.optional(),
-    cloud_id: z.string().optional(),
-    source: z.string().optional(),
-    provider: z.string().optional(),
-    region_id: z.string().optional(),
-    region: z.string().optional(),
-    default_user: z.string().optional(),
-    token: z.string().optional(),
-    token_version: z.string().optional(),
-    agent_version: z.string().optional(),
-    agent: schemaMachineAgent.optional(),
-    router_version: z.string().optional(),
-    distributor: z.string().optional(),
-    version: z.string().optional(),
-    os_family: z.string().optional(),
-    os_codename: z.string().optional(),
-    os_arch: z.string().optional(),
-    kernel_name: z.string().optional(),
-    kernel_version: z.string().optional(),
-    inventory_refreshed_at: z.string().optional(),
-    os_info: z.array(schemaMachineOperatingSystemInfo).optional(),
-    disks: z.array(schemaMachineDisk).optional(),
-    ports: z.array(schemaMachinePort).optional(),
-    network_interfaces: z.array(schemaMachineNetworkInterface).optional(),
-    status: z.string().optional(),
-    error: z.string().optional(),
-    error_detail: schemaExecutionErrorDetail.nullable().optional(),
-    created_at: z.string().optional(),
-    updated_at: z.string().optional(),
-  })
-  .strict();
+/**
+ * A server in a group, as the server API returns it. It is not strict: the
+ * server record gains fields as features ship, and an unknown one must never
+ * take the group page down. Unknown keys are dropped.
+ */
+export const schemaHostGroupMemberDto = z.object({
+  id: z.string().min(1),
+  hostname: z.string(),
+  address: z.string().optional(),
+  http_port: z.string().optional(),
+  ssh_port: z.string().optional(),
+  secret_id: z.string().optional(),
+  organization: schemaOrganizationPublic.optional(),
+  user: schemaUserPublic.optional(),
+  owner_subject: z.string().optional(),
+  workspace_id: z.string().optional(),
+  workspace_type: z.string().optional(),
+  host_group_id: z.string().optional(),
+  workspace: schemaMachineWorkspace.optional(),
+  cloud_id: z.string().optional(),
+  source: z.string().optional(),
+  provider: z.string().optional(),
+  region_id: z.string().optional(),
+  region: z.string().optional(),
+  default_user: z.string().optional(),
+  token: z.string().optional(),
+  token_version: z.string().optional(),
+  agent_version: z.string().optional(),
+  agent: schemaMachineAgent.optional(),
+  /** "public", or "private" for a machine reached only through its agent. */
+  connectivity: z.string().optional(),
+  /** A private machine's address on its own network. */
+  lan_address: z.string().optional(),
+  router_version: z.string().optional(),
+  distributor: z.string().optional(),
+  version: z.string().optional(),
+  os_family: z.string().optional(),
+  os_codename: z.string().optional(),
+  os_arch: z.string().optional(),
+  kernel_name: z.string().optional(),
+  kernel_version: z.string().optional(),
+  inventory_refreshed_at: z.string().optional(),
+  os_info: z.array(schemaMachineOperatingSystemInfo).optional(),
+  disks: z.array(schemaMachineDisk).optional(),
+  ports: z.array(schemaMachinePort).optional(),
+  network_interfaces: z.array(schemaMachineNetworkInterface).optional(),
+  status: z.string().optional(),
+  error: z.string().optional(),
+  error_detail: schemaExecutionErrorDetail.nullable().optional(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+});
 
 export const schemaHostGroupSummaryDto = z
   .object({
