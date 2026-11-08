@@ -246,6 +246,8 @@ function headers() {
   for (const host of MIRROR_HOSTS) {
     lines.push('', `${host}/*`, '  X-Robots-Tag: noindex');
   }
+  // Readable in a browser before anyone pipes it into a shell.
+  lines.push('', '/installer.sh', '  Content-Type: text/plain; charset=utf-8');
   return `${lines.join('\n')}\n`;
 }
 
