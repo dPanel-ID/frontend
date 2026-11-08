@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 
 import { ScrollTextIcon } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+import { useDevetekTranslations } from '@/services/i18n';
 
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import {
@@ -16,14 +16,11 @@ import {
 } from '@/shared/presentation/organisms/DataPanel';
 
 import type { LogEntryInput } from '../../lib/log-entries';
-import { toParsedLogLines } from '../../lib/log-entries';
 import type { LogTimeRange } from '../../lib/log-time-range';
-import { windowLineNumber } from '../../lib/log-window';
 import { useAutoRefresh } from '../../usecase/use-auto-refresh';
-import { useLogFilters } from '../../usecase/use-log-filters';
 import type { LogWindowState } from '../../usecase/use-log-window';
+import { useWindowRows } from '../../usecase/use-window-rows';
 import InfiniteLogTable from '../InfiniteLogTable';
-import type { InfiniteLogPage } from '../InfiniteLogTable';
 import LogDownloadMenu from '../LogDownloadMenu';
 import type { LogDownloadMenuProps } from '../LogDownloadMenu';
 import LogLevelFilter from '../LogLevelFilter';
@@ -85,47 +82,15 @@ export default function InfiniteLogsPanel(props: InfiniteLogsPanelProps) {
   } = props;
 
   const t = useDevetekTranslations('common.logViewer');
-  const locale = useDevetekLocale();
   const [following, setFollowing] = useState(true);
 
-  const parsedPages = useMemo(
-    () =>
-      logWindow.pages.map((page) => ({
-        page: page.page,
-        rows: toParsedLogLines(page.entries, {
-          fallbackSource,
-          locale,
-          nowMs,
-        }).map((row, index) => ({
-          ...row,
-          id: `${page.page}:${row.id}`,
-          lineNumber: windowLineNumber(
-            page.page,
-            pageSize,
-            index,
-            page.entries.length,
-          ),
-        })),
-      })),
-    [fallbackSource, locale, logWindow.pages, nowMs, pageSize],
-  );
-  const loadedRows = useMemo(
-    () => parsedPages.flatMap((page) => page.rows),
-    [parsedPages],
-  );
-  const loadedEntries = useMemo(
-    () => logWindow.pages.flatMap((page) => page.entries),
-    [logWindow.pages],
-  );
-
-  const filters = useLogFilters(loadedRows);
-  const visiblePages = useMemo<InfiniteLogPage[]>(() => {
-    const visible = new Set(filters.filteredEntries.map((row) => row.id));
-    return parsedPages.map((page) => ({
-      page: page.page,
-      rows: page.rows.filter((row) => visible.has(row.id)),
-    }));
-  }, [filters.filteredEntries, parsedPages]);
+  const { autoFill, filters, loadedEntries, loadedRows, visiblePages } =
+    useWindowRows({
+      pages: logWindow.pages,
+      pageSize,
+      fallbackSource,
+      nowMs,
+    });
 
   const status = logWindow.status;
   const autoRefresh = useAutoRefresh(onRefresh, {
@@ -264,7 +229,7 @@ export default function InfiniteLogsPanel(props: InfiniteLogsPanelProps) {
             windowKey={windowKey}
             onLoadOlder={logWindow.loadOlder}
             onLoadNewer={logWindow.loadNewer}
-            autoFill={filters.activeLevel === 'all' && !filters.search.trim()}
+            autoFill={autoFill}
             onFollowChange={setFollowing}
             onJumpToLatest={onRefresh}
           />

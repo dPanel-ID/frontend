@@ -4,7 +4,6 @@ import type { SchemaCommon } from '@/entities/shared/rules/schema';
 
 import type { DTOs } from '@/shared/api';
 import { ApiApplication } from '@/shared/api';
-import { useAdapter } from '@/shared/libs/api-client';
 import buildSelector from '@/shared/libs/react-factories/buildSelector';
 import {
   DEFAULT_LOG_TIME_RANGE,
@@ -40,13 +39,10 @@ export interface AppLogEntryView {
   attributes?: Record<string, unknown> | null;
 }
 
-interface AppLogView extends AppLogPagination {
+interface AppLogView {
   entries: AppLogEntryView[];
   query: string;
   queryErrors: string[];
-}
-
-export interface AppLogPagination {
   page: number;
   hasMore: boolean;
   /** Lines in the whole window, when the API reports it. */
@@ -69,75 +65,45 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
   const [timeRange, setTimeRange] = useState<LogTimeRange>(
     DEFAULT_LOG_TIME_RANGE,
   );
-  const [requestAnchor, setRequestAnchor] = useState(() => Date.now());
   // Pages are offsets into the window [timeGte, timeLt); the anchor stays put
-  // while paging so new lines cannot shift them.
-  const [page, setPage] = useState(1);
+  // while the reader scrolls, so new lines cannot shift them.
+  const [requestAnchor, setRequestAnchor] = useState(() => Date.now());
   const [lastDeployment] = useArtifactHistoryModel((s) => [s.lastDeployment]);
   const allServers = Boolean(logSelection?.allServers);
   // The last deployment names one server, so it only scopes a one-server view.
   const deploymentId =
     allServers || logSelection?.pinnedServer ? undefined : lastDeployment?.id;
-  const logMetadata = logSelection
-    ? {
-        deploymentId,
-        serverId: logSelection.serverId,
-      }
-    : undefined;
   const { limit, timeGte, timeLt } = resolveLogTimeRange(
     timeRange,
     requestAnchor,
   );
+  const machineId =
+    allServers || deploymentId ? undefined : logSelection?.serverId;
 
   const selectLog = useCallback((nextSelection: LogSelection) => {
     setLogSelection(nextSelection);
     setRequestAnchor(Date.now());
-    setPage(1);
   }, []);
 
   const selectTimeRange = useCallback((nextTimeRange: LogTimeRange) => {
     setTimeRange(nextTimeRange);
     setRequestAnchor(Date.now());
-    setPage(1);
   }, []);
 
   const refreshLog = useCallback(() => {
     setRequestAnchor(Date.now());
-    setPage(1);
   }, []);
 
-  const machineId =
-    allServers || deploymentId ? undefined : logMetadata?.serverId;
-
-  const [responseLog] = ApiApplication.Logs.$Id.useGet({
-    applicationId,
-    line: limit,
-    page,
-    deploymentId,
-    machineId,
-    allMachines: allServers,
-    timeGte,
-    timeLt,
-    options: {
-      skip: !logSelection?.serverId || !logSelection.filename,
-    },
-  });
-  const responseLogView = useAdapter(responseLog, normalizeLogView);
-
-  const logView =
-    responseLogView.$status === 'success'
-      ? responseLogView
-      : responseLogView.$status === 'loading' && responseLogView.prevData
-        ? responseLogView.prevData
-        : EMPTY_LOG_VIEW;
-
-  /** Fetches one download page of the current window, outside the view. */
-  const fetchLogPage = useCallback(
-    async (pageNumber: number, signal: AbortSignal): Promise<LogPageResult> => {
+  const fetchPageOf = useCallback(
+    async (
+      size: number,
+      pageNumber: number,
+      signal: AbortSignal,
+    ): Promise<LogPageResult> => {
       const response = await ApiApplication.Logs.$Id.get(
         {
           applicationId,
-          line: LOG_DOWNLOAD_PAGE_SIZE,
+          line: size,
           page: pageNumber,
           deploymentId,
           machineId,
@@ -154,23 +120,41 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
         entries: view.entries.map(toLogEntryInput),
         hasMore: view.hasMore,
         total: view.total,
+        query: view.query || undefined,
+        queryErrors: view.queryErrors,
       };
     },
     [allServers, applicationId, deploymentId, machineId, timeGte, timeLt],
   );
 
+  /** One page of the window the list shows; page 1 is the newest. */
+  const fetchWindowPage = useCallback(
+    (pageNumber: number, signal: AbortSignal) =>
+      fetchPageOf(limit, pageNumber, signal),
+    [fetchPageOf, limit],
+  );
+
+  /** One download page of the current window, outside the view. */
+  const fetchLogPage = useCallback(
+    (pageNumber: number, signal: AbortSignal) =>
+      fetchPageOf(LOG_DOWNLOAD_PAGE_SIZE, pageNumber, signal),
+    [fetchPageOf],
+  );
+
   return {
-    log: responseLog,
-    logEntries: logView.entries,
-    logQuery: logView.query,
-    logQueryErrors: logView.queryErrors,
-    logPagination: {
-      page: logView.page,
-      hasMore: logView.hasMore,
-      total: logView.total,
-    } satisfies AppLogPagination,
-    page,
-    setPage,
+    /** Whether a log is picked; the list waits until it is. */
+    isLogSelected: Boolean(logSelection?.serverId && logSelection.filename),
+    /** Changes whenever the lines shown would; the list then starts over. */
+    windowKey: [
+      applicationId,
+      logSelection?.filename,
+      deploymentId,
+      machineId,
+      allServers,
+      timeGte,
+      timeLt,
+    ].join('|'),
+    fetchWindowPage,
     fetchLogPage,
     refreshLog,
     timeRange,
@@ -180,7 +164,6 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     timeGte,
     timeLt,
     lineLimit: limit,
-    logMetadata,
     logFilename: logSelection?.filename,
     /** "all", or the ID of the one server picked out of several. */
     logServerFilter: logSelection?.pinnedServer
