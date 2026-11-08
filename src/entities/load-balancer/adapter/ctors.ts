@@ -60,6 +60,11 @@ export function ctorConfiguration(raw: LoadBalancerDto) {
             target: {
               applicationId: rule.target.application_id,
               port: -1,
+              addressMode: rule.target.address_mode || undefined,
+              upstreams: toApplicationUpstreams(rule.target.upstreams),
+              resolvedUpstreams: toApplicationUpstreams(
+                rule.target.resolved_upstreams,
+              ),
             },
           },
         };
@@ -155,4 +160,19 @@ export function ctorGateway(raw: LoadBalancerDto) {
         (machineId != null ? String(machineId) : ''),
     },
   } as KeysOnlyDeep<z.input<typeof gateway>>;
+}
+
+function toApplicationUpstreams(
+  upstreams:
+    | Array<DTOs.LoadBalancerRuleUpstreamV2 | DTOs.RouterRuleUpstreamV1>
+    | undefined,
+) {
+  if (!upstreams?.length) return undefined;
+
+  return upstreams.map((upstream) => ({
+    address: upstream.address ?? '',
+    port: upstream.port ?? '',
+    ...(upstream.scheme ? { scheme: upstream.scheme } : {}),
+    ...(upstream.machine_id ? { machineId: upstream.machine_id } : {}),
+  }));
 }

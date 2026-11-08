@@ -10,6 +10,7 @@ import {
   RefreshCwIcon,
   SaveIcon,
   SearchIcon,
+  ServerIcon,
   TrashIcon,
 } from 'lucide-react';
 
@@ -21,6 +22,7 @@ import type { ApplicationCard } from '@/entities/application/rules/schema';
 import type { LoadBalancerDetails } from '@/entities/load-balancer/rules/schema';
 
 import { ApiApplication, ApiLoadBalancer } from '@/shared/api';
+import type { DTOs } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Badge } from '@/shared/presentation/atoms/Badge';
@@ -34,7 +36,9 @@ import {
   createDraftBackendId,
   formatApplicationBackendDestination,
   getApplicationCardRuntimePort,
+  getApplicationDeploymentServers,
   getApplicationIdFromDraftRow,
+  getApplicationRouteTargets,
   getUpstreamDraftDisplay,
   getUpstreamDrafts,
   normalizeDraftRowOrder,
@@ -530,6 +534,18 @@ export function UpstreamEditorCard(props: {
                 {t('common.terms.order')} #{String(index + 1).padStart(2, '0')}
               </Badge>
               <Badge variant="secondary">{kindLabel}</Badge>
+              {row.kind === 'application' && row.applicationId ? (
+                <Badge
+                  variant="outline"
+                  title={t(
+                    'page.loadBalancersDetail.upstreams.addressMode.label',
+                  )}
+                >
+                  {t(
+                    `page.loadBalancersDetail.upstreams.addressMode.${row.addressMode ?? 'legacy'}`,
+                  )}
+                </Badge>
+              ) : null}
             </div>
             <p className="mt-2 truncate text-sm font-semibold">
               {display.destination}
@@ -596,6 +612,63 @@ export function UpstreamEditorCard(props: {
           mono
         />
       </div>
+
+      {row.kind === 'application' && row.applicationId ? (
+        <ApplicationRouteTargets
+          row={row}
+          application={
+            responseApplication.$status === 'success'
+              ? responseApplication
+              : undefined
+          }
+        />
+      ) : null}
+    </div>
+  );
+}
+
+/** Where an application route really sends traffic, per server. */
+export function ApplicationRouteTargets(props: {
+  application?: DTOs.ApplicationV1;
+  row: UpstreamDraft;
+}) {
+  const { application, row } = props;
+  const t = useDevetekTranslations();
+  const targets = getApplicationRouteTargets(
+    row,
+    getApplicationDeploymentServers(application),
+  );
+
+  return (
+    <div className="mt-3 grid gap-1.5 text-sm font-semibold">
+      <span>{t('page.loadBalancersDetail.upstreams.targets')}</span>
+      {targets.length > 0 ? (
+        <ul className="grid gap-1.5">
+          {targets.map((target) => (
+            <li
+              key={`${target.address}-${target.machineId ?? ''}`}
+              className="flex min-h-10 flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border bg-card px-3 py-2"
+            >
+              <span className="font-mono text-primary">{target.address}</span>
+              {target.machineId ? (
+                <a
+                  href={`/servers/${target.machineId}`}
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground underline underline-offset-2 hover:opacity-70"
+                >
+                  <ServerIcon className="size-3.5" />
+                  {target.serverName
+                    ? `${target.serverName} (#${target.machineId})`
+                    : `${t('page.loadBalancersDetail.upstreams.server')} #${target.machineId}`}
+                </a>
+              ) : null}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <span className="rounded-lg border border-dashed bg-card px-3 py-2 text-xs font-normal text-muted-foreground">
+          {t('page.loadBalancersDetail.upstreams.targetsPending')}
+        </span>
+      )}
     </div>
   );
 }
