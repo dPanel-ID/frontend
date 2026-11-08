@@ -2364,7 +2364,7 @@
           "custom": "Alamat kustom",
           "legacy": "Alamat privat (lama)"
         },
-        "targets": "Tujuan",
+        "targets": "Alamat target",
         "server": "Server",
         "targetsPending": "Alamat tujuan dicatat saat load balancer ini diterapkan berikutnya."
       },
