@@ -11,12 +11,12 @@ dPanel menampilkan empat jenis log langsung di browser, jadi Anda tidak perlu SS
 
 ## Letak setiap log
 
-| Log                  | Tempatnya                                                                                    | Isinya                                                                          |
-| -------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| Log server           | Halaman server, tab **Log**                                                                  | File log di mesin: sistem, keamanan, provisioning, agen dPanel, dan web server. |
-| Log runtime aplikasi | Halaman aplikasi, tab **Log**, **Runtime**                                                   | Apa yang dicetak layanan Anda selama berjalan.                                  |
-| Log load balancer    | Halaman aplikasi, tab **Log**, **Load balancer**; atau tab **Logs** di halaman load balancer | Permintaan yang masuk ke load balancer.                                         |
-| Log build            | Halaman aplikasi, **Rilis**, tombol **Log** pada sebuah build                                | Keluaran satu build: clone, langkah build, dan saat layanan dijalankan.         |
+| Log                  | Tempatnya                                                                                    | Isinya                                                                                              |
+| -------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Log server           | Halaman server, tab **Log**                                                                  | File log di mesin: sistem, keamanan, provisioning, agen dPanel, dan web server.                     |
+| Log runtime aplikasi | Halaman aplikasi, tab **Log**, **Runtime**                                                   | Apa yang dicetak layanan Anda selama berjalan.                                                      |
+| Log load balancer    | Halaman aplikasi, tab **Log**, **Load balancer**; atau tab **Logs** di halaman load balancer | Permintaan yang masuk ke load balancer.                                                             |
+| Log build            | Halaman aplikasi, **Rilis**, tombol **Log** pada sebuah build                                | Posisi build, langkah demi langkah, dan keluarannya: clone, langkah build, saat layanan dijalankan. |
 
 ## Tabel log
 
@@ -26,15 +26,21 @@ Setiap baris tabel adalah satu baris log, dengan kolom berikut:
 
 | Kolom  | Isinya                                                                                                                          |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| #      | Nomor baris di rentang waktu ini.                                                                                               |
+| #      | Nomor baris, dihitung dari baris terbaru. Log server dihitung dari atas tampilan file.                                          |
 | Waktu  | Kapan baris ditulis, dalam zona waktu Anda.                                                                                     |
 | Level  | debug, info, notice, warn, error, atau fatal, jika barisnya menyebutkan.                                                        |
 | Sumber | File, layanan, atau domain asal baris.                                                                                          |
 | Pesan  | Teksnya. Lencana **JSON** berarti baris itu membawa data terstruktur; lencana **HTTP** berarti request ke sebuah load balancer. |
 
-Halaman 1 berisi baris terbaru. Di dalam satu halaman, baris dibaca dari atas ke bawah sesuai urutan penulisannya, dengan yang terbaru di paling bawah, dan tabel otomatis menggulir ke baris terbaru. Bagian bawah tabel menyebutkannya, misalnya **Baris 1–200 dari 1.250, terbaru dulu**.
+Log runtime dan log load balancer terbuka pada baris terbaru, di bagian bawah. Gulir ke atas untuk memuat baris yang lebih lama, sampai awal rentang waktu. Bagian bawah menyebutkan yang sudah dimuat, misalnya **Baris 1–200 dari 1.250 dimuat, terbaru di bawah**. Lihat [Rentang waktu dan pembaruan](./time-range-and-refresh.md#menggulir-ke-atas-untuk-baris-yang-lebih-lama).
 
-**Query** di atas tabel bisa dibuka untuk melihat pencarian persis yang dijalankan dPanel untuk halaman ini. Anda hanya membutuhkannya saat melaporkan masalah.
+**Query** di atas tabel bisa dibuka untuk melihat pencarian persis yang dijalankan dPanel. Anda hanya membutuhkannya saat melaporkan masalah.
+
+## Log aplikasi di beberapa server
+
+Saat aplikasi berjalan di lebih dari satu server, log runtime-nya menggabungkan semua server dalam satu daftar, dengan yang terbaru di bawah. Kolom **Sumber** menunjukkan server yang menulis setiap baris, dan server baru muncul begitu aplikasi di-deploy ke sana.
+
+Untuk melihat satu server, misalnya saat hanya server itu yang bermasalah, buka menu **Server** di sebelah nama run lalu pilih servernya. **Semua server** mengembalikan daftar gabungan.
 
 ## Request load balancer
 
@@ -48,7 +54,7 @@ Load balancer TCP atau UDP (L4, yang meneruskan koneksi mentah seperti port data
 
 ## Mempersempit tampilan
 
-- **Saring halaman ini** menyisakan baris yang memuat teks Anda. Huruf besar dan kecil tidak dibedakan, jadi `error` juga menemukan `ERROR`. Pencariannya hanya di baris yang sudah dimuat, bukan seluruh rentang waktu. Untuk request, pencarian juga mencocokkan baris yang mudah dibaca, jadi `→ 500` menemukan galat server.
+- **Saring baris yang dimuat** menyisakan baris yang memuat teks Anda. Huruf besar dan kecil tidak dibedakan, jadi `error` juga menemukan `ERROR`. Pencariannya hanya di baris yang sudah dimuat, bukan seluruh rentang waktu. Untuk request, pencarian juga mencocokkan baris yang mudah dibaca, jadi `→ 500` menemukan galat server.
 - **Chip level** ada di atas tabel, satu untuk setiap level yang muncul, lengkap dengan jumlahnya. Pilih **error** untuk melihat galat saja; pilih **Semua** untuk kembali. Chip disembunyikan jika semua baris punya level yang sama.
 - Jika tidak ada yang cocok, **Hapus pencarian** menghapus kedua saringan.
 
@@ -74,30 +80,57 @@ Tab **Log** di halaman server membaca baris-baris terbaru dari satu file log.
 ![Tab Log sebuah server, dengan pilihan sumber log dan jumlah baris](../../assets/servers/server-logs.webp)
 
 :::note[Log server tidak punya rentang waktu]
-Log server membaca baris terbaru dari sebuah file, bukan jendela waktu. Rentang waktu, halaman, dan unduhan di [Rentang waktu dan pembaruan](./time-range-and-refresh.md) berlaku untuk log aplikasi dan log load balancer.
+Log server membaca baris terbaru dari sebuah file, bukan jendela waktu. Rentang waktu, pengguliran, dan unduhan di [Rentang waktu dan pembaruan](./time-range-and-refresh.md) berlaku untuk log aplikasi dan log load balancer.
 :::
 
 ## Log build
 
-**Log Artefak** terbuka di atas halaman dengan 500 baris terbaru dari build itu. Di sana ada **Saring halaman ini**, chip level, **Unduh**, serta **Segarkan** dengan **Muat ulang otomatis**, yang berguna selama build masih berjalan. Pilih sebuah baris untuk membukanya di tempat.
+**Log Artefak** terbuka di atas halaman dengan dua tab.
+
+**Langkah** menunjukkan posisi build, dan terbuka lebih dulu. Tab ini memperbarui dirinya setiap beberapa detik selama build berjalan:
+
+| Tahap                        | Yang terjadi                                                 |
+| ---------------------------- | ------------------------------------------------------------ |
+| Pasang runtime dan modul     | Bahasa dan alat yang dibutuhkan aplikasi.                    |
+| Ambil kode sumber            | Commit di-clone dari repositori Anda.                        |
+| Siapkan build                | Definisi aplikasi dibaca dan build disiapkan.                |
+| Satu baris per langkah build | Perintah build Anda, ditampilkan dengan nama yang Anda beri. |
+| Kemas hasil build            | Hasilnya diarsipkan, pada build yang membuat arsip.          |
+| Deploy ke server             | Layanan dibuat dan dijalankan.                               |
+
+Setiap baris menunjukkan status, jumlah langkah, dan lamanya. Tahap yang sedang berjalan, atau yang gagal, terbuka dengan sendirinya; pilih tahap mana pun untuk melihat langkah-langkahnya.
+
+**Keluaran log** berisi baris yang dicetak build, untuk seluruh build: gulir ke atas untuk keluaran yang lebih awal. Di sana ada **Saring baris yang dimuat**, chip level, **Unduh**, serta **Segarkan** dengan **Muat ulang otomatis**. Pilih sebuah baris untuk membukanya di tempat.
+
+:::note[Keluaran datang saat langkah selesai]
+Keluaran sebuah langkah build masuk ke **Keluaran log** saat langkah itu selesai, jadi langkah yang lama bisa tidak menampilkan apa pun di sana selama berjalan. **Langkah** memberi tahu bahwa build masih bekerja dan sudah berapa lama.
+:::
 
 ## Pertanyaan yang sering diajukan
 
 ### Seberapa jauh ke belakang log bisa dibaca di dPanel?
 
-Log aplikasi dan load balancer bisa dibaca hingga 10 hari ke belakang. Log server menampilkan 20 sampai 500 baris terbaru dari sebuah file, dan log build 500 baris terbaru dari sebuah build.
+Log aplikasi dan load balancer bisa dibaca hingga 10 hari ke belakang. Log server menampilkan 20 sampai 500 baris terbaru dari sebuah file. Log build berisi seluruh build.
 
-### Apakah Saring halaman ini mencari di seluruh rentang waktu?
+### Mengapa build yang berjalan tidak menampilkan baris log?
 
-Tidak. Saringan itu hanya mencari di baris yang sudah dimuat di halaman yang sedang dibuka. Untuk melihat lebih jauh ke belakang, buka halaman yang lebih lama atau persempit rentang waktunya. Lihat [Rentang waktu dan pembaruan](./time-range-and-refresh.md).
+Keluaran langkah build datang saat langkah itu selesai. Buka tab **Langkah** di **Log Artefak** untuk melihat langkah yang sedang berjalan dan lamanya.
+
+### Bisakah saya melihat log satu server saja?
+
+Bisa. Pada aplikasi yang berjalan di beberapa server, pilih servernya di menu **Server** pada tab **Log**. Lihat [Log aplikasi di beberapa server](#log-aplikasi-di-beberapa-server).
+
+### Apakah Saring baris yang dimuat mencari di seluruh rentang waktu?
+
+Tidak. Saringan itu hanya mencari di baris yang sudah dimuat. Untuk melihat lebih jauh ke belakang, gulir ke atas atau persempit rentang waktunya. Lihat [Rentang waktu dan pembaruan](./time-range-and-refresh.md).
 
 ### Bisakah saya mengikuti log secara langsung?
 
-Bisa. Nyalakan **Muat ulang otomatis** di sebelah **Segarkan**, setiap 30 detik, setiap menit, atau setiap 5 menit. Fitur ini berhenti sementara selama Anda membaca halaman yang lebih lama.
+Bisa. Nyalakan **Muat ulang otomatis** di sebelah **Segarkan**, setiap 30 detik, setiap menit, atau setiap 5 menit. Fitur ini berhenti sementara setelah Anda menggulir ke atas, sampai Anda kembali ke bawah atau menekan **Ke baris terbaru**.
 
 ### Bisakah saya menyimpan log ke file?
 
-Bisa. Log aplikasi dan load balancer punya tombol **Unduh**, untuk satu halaman atau seluruh rentang waktu. Lihat [Mengunduh log](./download-logs.md).
+Bisa. Log aplikasi dan load balancer punya tombol **Unduh**, untuk baris yang dimuat atau seluruh rentang waktu. Lihat [Mengunduh log](./download-logs.md).
 
 ### Bisakah saya membaca log load balancer dari terminal?
 
@@ -105,4 +138,4 @@ Bisa. `dnocs load-balancer log --id <ID load balancer>` mencetak setiap request 
 
 ### Apakah saringannya membedakan huruf besar dan kecil?
 
-Tidak. **Saring halaman ini** dan semua kotak pencarian di dPanel tidak membedakan huruf besar dan kecil.
+Tidak. **Saring baris yang dimuat** dan semua kotak pencarian di dPanel tidak membedakan huruf besar dan kecil.

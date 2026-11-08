@@ -165,8 +165,8 @@ Tab **Log** menampilkan request yang sampai ke gateway, dengan judul **Permintaa
 ![Tab Log: rentang waktu, saringan, unduhan, dan tombol muat ulang di atas tabel request](../../assets/networking/lb-detail-logs.webp)
 
 - **Rentang waktu**: bawaannya 10 menit terakhir. Pilih preset sampai **10 hari terakhir**, atau **Rentang khusus** dalam 10 hari terakhir.
-- **Halaman**: 200 baris per halaman. Halaman 1 berisi baris terbaru; di dalam satu halaman, baris terlama ada di atas dan terbaru di bawah. Bagian bawahnya bertuliskan, misalnya, **Baris 1–200 dari 201, terbaru dulu**, lengkap dengan tombol halaman.
-- **Unduh**: **Halaman ini**, atau **Semua di rentang waktu ini**, sebagai berkas `.log`.
+- **Pengguliran**: daftar terbuka pada request terbaru, di bagian bawah. Gulir ke atas untuk memuat request yang lebih lama, sampai awal rentang waktu. Setelah menggulir ke atas, **Ke baris terbaru** membawa Anda kembali.
+- **Unduh**: **Baris yang dimuat**, atau **Semua di rentang waktu ini**, sebagai berkas `.log`.
 - **Segarkan** mengambil baris terbaru. **Muat ulang otomatis** mati secara bawaan; nyalakan untuk setiap 30 detik, setiap menit, atau setiap 5 menit.
 
 Kontrol bersama ini dijelaskan di [Rentang waktu dan pembaruan](../logs/time-range-and-refresh.md) dan [Mengunduh log](../logs/download-logs.md).

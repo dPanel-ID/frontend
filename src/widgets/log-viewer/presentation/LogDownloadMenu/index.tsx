@@ -24,6 +24,8 @@ export interface LogDownloadMenuProps {
   /** Lines in the whole window, when the API reports it. */
   totalLines?: number;
   canDownloadAll: boolean;
+  /** The limit named when the whole range is too large; 100,000 by default. */
+  allLimit?: number;
   /** Set while every page is being fetched. */
   progress: LogDownloadProgress | null;
   onDownloadPage: () => void;
@@ -37,6 +39,7 @@ export interface LogDownloadMenuProps {
  */
 export default function LogDownloadMenu(props: LogDownloadMenuProps) {
   const {
+    allLimit = LOG_DOWNLOAD_MAX_LINES,
     canDownloadAll,
     onCancel,
     onDownloadAll,
@@ -120,7 +123,7 @@ export default function LogDownloadMenu(props: LogDownloadMenuProps) {
             <span className="font-medium">{t('all')}</span>
             <span className="text-xs text-muted-foreground">
               {!canDownloadAll
-                ? t('allTooLarge', { max: LOG_DOWNLOAD_MAX_LINES })
+                ? t('allTooLarge', { max: allLimit })
                 : totalLines === undefined
                   ? t('allHintUnknown')
                   : t('allHint', { lines: totalLines })}

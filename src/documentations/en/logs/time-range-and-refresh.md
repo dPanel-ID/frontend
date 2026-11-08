@@ -1,17 +1,17 @@
 ---
 title: Time range and refresh
-description: Pick a log time range up to 10 days back, page through older lines 200 at a time, and turn on auto-refresh to follow application logs live.
+description: Pick a log time range up to 10 days back, scroll up to load older lines, and turn on auto-refresh to follow application logs live.
 sidebar_position: 2
 sidebar_icon: clock
 ---
 
-In dPanel you can read application and load balancer logs from the last 10 minutes up to 10 days back, 200 lines per page, and refresh them by hand or automatically. These controls are on application runtime logs and load balancer logs; see [Reading logs](./reading-logs.md) for where each log lives.
+In dPanel you can read application and load balancer logs from the last 10 minutes up to 10 days back, scroll up for older lines, and refresh them by hand or automatically. These controls are on application runtime logs and load balancer logs; see [Reading logs](./reading-logs.md) for where each log lives.
 
 ## Choose a time range
 
 The view opens on **Last 10 minutes**.
 
-1. Open the time range menu, left of **Filter this page**.
+1. Open the time range menu, left of **Filter loaded lines**.
 2. Pick a preset: **Last 10 minutes**, **Last 1 hour**, **Last 6 hours**, **Last 24 hours**, **Last 3 days**, **Last 7 days** or **Last 10 days**.
 
 ![The time range menu, with its presets and the custom range option](../../assets/logs/logs-time-range.webp)
@@ -35,16 +35,21 @@ The form tells you what is wrong before it runs the search:
 Logs can be read up to 10 days back. dPanel holds every range to that limit, so an older start is moved up to the edge of the window.
 :::
 
-## Page through older lines
+## Scroll up for older lines
 
-A page holds 200 lines. Page 1 is the newest 200; page 2 the 200 before them, and so on. Inside a page the lines run in time order, newest at the bottom. The footer says where you are, such as **Lines 1–200 of 1,250, newest first**.
+Runtime and load balancer logs read like a terminal. The list opens on the newest line, at the bottom of the selected time range.
 
-- With a known total, use the page numbers.
-- Otherwise, use **Newer** and **Older**.
+- **Scroll up** to load older lines. They arrive 200 at a time, before you reach the top, and the line you are reading stays where it is.
+- The list ends at **Start of the time range**. To read further back, pick a wider range.
+- After you scroll up, **Jump to latest** takes you back to the newest lines.
 
-![The footer of a load balancer log: Lines 1–200 of 201, newest first, with page buttons 1 and 2](../../assets/logs/logs-pagination.webp)
+The footer says what is loaded, such as **Lines 1–200 of 1,250 loaded, newest at the bottom**. Line 1 is the newest line.
 
-**Filter this page** and the level chips work on the page you are on. To search further back, move to an older page or narrow the time range.
+**Filter loaded lines** and the level chips work on the lines currently loaded. To search further back, scroll up or narrow the time range.
+
+:::info[All servers on one list]
+Runtime logs of an application on several servers merge every server into one list. That list scrolls back up to 5,000 lines. For older lines, narrow the time range or pick one server in the **Server** menu.
+:::
 
 ## Refresh
 
@@ -60,9 +65,9 @@ The button beside **Refresh** sets **Auto-refresh**. It is **Off** by default.
 
 ![The Refresh button and the Auto-refresh menu with its intervals](../../assets/logs/logs-auto-refresh.webp)
 
-Auto-refresh pauses while you are on an older page, so the lines do not move under you. It picks up again when you go back to the first page.
+Auto-refresh only runs while you are at the bottom of the list, following the newest lines. After you scroll up it pauses, so the lines do not move under you. It picks up again when you go back to the bottom or press **Jump to latest**.
 
-The server **Logs** tab and **Artifact Logs** have the same **Refresh** and **Auto-refresh** controls.
+The server **Logs** tab and the **Log output** tab of **Artifact Logs** have the same **Refresh** and **Auto-refresh** controls.
 
 ## Frequently asked questions
 
@@ -72,7 +77,11 @@ dPanel keeps application and load balancer logs for 10 days. Anything older is g
 
 ### Why does the newest line sit at the bottom?
 
-Inside a page, lines read like a book, in the order they were written. The table scrolls to the bottom for you, so the newest line is in view.
+Logs read like a terminal, in the order they were written. The list opens at the bottom, so the newest line is in view, and older lines are above it.
+
+### Does a long session slow my browser down?
+
+No. The list keeps at most 1,000 lines on screen, however long you watch or scroll. Lines far away are unloaded and come back when you scroll to them.
 
 ### Which time zone are the times in?
 

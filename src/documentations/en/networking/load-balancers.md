@@ -165,8 +165,8 @@ The **Logs** tab lists the requests reaching the gateway, titled **Load balancer
 ![The Logs tab: time range, filter, Download and Refresh above the request table](../../assets/networking/lb-detail-logs.webp)
 
 - **Time range**: the last 10 minutes by default. Pick a preset up to **Last 10 days**, or a **Custom range** within the last 10 days.
-- **Paging**: 200 lines per page. Page 1 holds the newest lines; within a page the oldest is at the top and the newest at the bottom. The footer reads, for example, **Lines 1–200 of 201, newest first**, with the page buttons.
-- **Download**: **This page**, or **Everything in this time range**, as a `.log` file.
+- **Scrolling**: the list opens on the newest request, at the bottom. Scroll up to load older requests, until the start of the time range. After scrolling up, **Jump to latest** brings you back.
+- **Download**: **Loaded lines**, or **Everything in this time range**, as a `.log` file.
 - **Refresh** loads the newest lines. **Auto-refresh** is off by default; turn it on for every 30 seconds, minute or 5 minutes.
 
 Each row reads as the request it records: the method, the domain and path, the status and the time taken, such as `GET app.example.com/api/info → 200 · 148 ms`. A row with a 4xx status is shown as a warning and a 5xx status as an error, so failing requests stand out. Select a row to see everything about the request, such as the client address, the response size and the headers.
