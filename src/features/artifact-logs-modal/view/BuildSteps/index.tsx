@@ -86,27 +86,32 @@ export default function BuildSteps(props: ArtifactLogsModalProps) {
 
   const focus = focusStage(progress);
   const duration = formatBuildDuration(runElapsedMs(progress.stages, nowMs));
+  // Between two steps a running build has no stage in progress.
+  const summary =
+    progress.status === 'running'
+      ? focus
+        ? t('summaryRunning', { stage: stageTitle(focus) })
+        : t('summary.running')
+      : progress.status === 'failed'
+        ? focus
+          ? t('summaryFailed', { stage: stageTitle(focus) })
+          : t('summary.failed')
+        : t('summary.done');
+  // A stage where every task was skipped did nothing worth a row.
+  const stages = progress.stages.filter((stage) => stage.status !== 'skipped');
 
   return (
     <section className="overflow-hidden rounded-2xl border bg-card">
       <div className="flex items-center gap-2 border-b p-3 text-sm">
         <StatusIcon status={progress.status} />
-        <span className="font-semibold">
-          {progress.status === 'running' && focus
-            ? t('summaryRunning', { stage: stageTitle(focus) })
-            : progress.status === 'failed' && focus
-              ? t('summaryFailed', { stage: stageTitle(focus) })
-              : t(
-                  `summary.${progress.status === 'failed' ? 'failed' : 'done'}`,
-                )}
-        </span>
+        <span className="font-semibold">{summary}</span>
         <span className="ml-auto font-mono text-xs tabular-nums text-muted-foreground">
           {duration}
         </span>
       </div>
 
       <ol className="max-h-[65vh] overflow-auto overscroll-contain">
-        {progress.stages.map((stage) => {
+        {stages.map((stage) => {
           const ran = ranSteps(stage);
           const skipped = stage.steps.length - ran.length;
           const expanded =
