@@ -29,6 +29,8 @@ interface LogSelection {
   serverId: SchemaCommon.UnitId;
   /** Read every server the application runs on, not only `serverId`. */
   allServers?: boolean;
+  /** The person picked `serverId` out of several: read exactly that server. */
+  pinnedServer?: boolean;
 }
 
 export interface AppLogEntryView {
@@ -74,7 +76,8 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
   const [lastDeployment] = useArtifactHistoryModel((s) => [s.lastDeployment]);
   const allServers = Boolean(logSelection?.allServers);
   // The last deployment names one server, so it only scopes a one-server view.
-  const deploymentId = allServers ? undefined : lastDeployment?.id;
+  const deploymentId =
+    allServers || logSelection?.pinnedServer ? undefined : lastDeployment?.id;
   const logMetadata = logSelection
     ? {
         deploymentId,
@@ -179,6 +182,10 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     lineLimit: limit,
     logMetadata,
     logFilename: logSelection?.filename,
+    /** "all", or the ID of the one server picked out of several. */
+    logServerFilter: logSelection?.pinnedServer
+      ? String(logSelection.serverId)
+      : 'all',
     setLogSelection: selectLog,
   };
 });

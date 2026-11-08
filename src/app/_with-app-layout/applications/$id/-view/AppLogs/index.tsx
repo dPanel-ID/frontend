@@ -1,9 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { TerminalIcon } from 'lucide-react';
+import { ServerIcon, TerminalIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/presentation/atoms/Select';
 import {
   LOG_MERGED_MAX_LINES,
   LogsPanel,
@@ -29,6 +36,7 @@ export default function AppLogs() {
     logPagination,
     logQuery,
     logQueryErrors,
+    logServerFilter,
     refreshLog,
     selectTimeRange,
     setLogSelection,
@@ -46,6 +54,7 @@ export default function AppLogs() {
     s.logPagination,
     s.logQuery,
     s.logQueryErrors,
+    s.logServerFilter,
     s.refreshLog,
     s.selectTimeRange,
     s.setLogSelection,
@@ -66,8 +75,19 @@ export default function AppLogs() {
   const serverId = selectedServerId || appDetail?.deploymentTargets[0]?.id;
   const machineId = serverId ? Number(serverId) : NaN;
   const canLoadLogs = Boolean(runName && Number.isFinite(machineId));
-  // An application on several servers shows all of their lines, merged.
-  const allServers = (appDetail?.deploymentTargets.length ?? 0) > 1;
+  const servers = appDetail?.deploymentTargets ?? [];
+  // An application on several servers shows all of their lines, merged,
+  // until the person picks one of them.
+  const allServers = servers.length > 1 && logServerFilter === 'all';
+
+  const selectServer = (value: string) => {
+    if (!runName) return;
+    setLogSelection(
+      value === 'all'
+        ? { filename: runName, serverId: String(machineId), allServers: true }
+        : { filename: runName, serverId: value, pinnedServer: true },
+    );
+  };
 
   // Open the tab onto the latest lines rather than an empty "load" prompt.
   useEffect(() => {
@@ -116,13 +136,36 @@ export default function AppLogs() {
       description={t('subtitle')}
       source={
         runName && (
-          <span
-            className="inline-flex h-9 max-w-56 items-center gap-2 rounded-md border bg-background px-3 text-sm"
-            title={runName}
-          >
-            <TerminalIcon className="size-4 shrink-0 text-muted-foreground" />
-            <span className="truncate">{runName}</span>
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className="inline-flex h-9 max-w-56 items-center gap-2 rounded-md border bg-background px-3 text-sm"
+              title={runName}
+            >
+              <TerminalIcon className="size-4 shrink-0 text-muted-foreground" />
+              <span className="truncate">{runName}</span>
+            </span>
+            {servers.length > 1 && (
+              <Select value={logServerFilter} onValueChange={selectServer}>
+                <SelectTrigger
+                  aria-label={t('serverFilter')}
+                  className="h-9 w-auto min-w-44 max-w-64 gap-2 bg-background text-sm"
+                >
+                  <ServerIcon className="size-4 shrink-0 text-muted-foreground" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">
+                    {t('allServers', { count: servers.length })}
+                  </SelectItem>
+                  {servers.map((server) => (
+                    <SelectItem key={server.id} value={server.id}>
+                      {server.hostname || `#${server.id}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
         )
       }
       status={canLoadLogs ? toLogsPanelStatus(log) : 'unavailable'}
