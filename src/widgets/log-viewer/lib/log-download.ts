@@ -35,9 +35,18 @@ export interface LogDownloadProgress {
   totalLines?: number;
 }
 
+/**
+ * Runtime logs merged from several servers page at most this deep; older
+ * lines need a narrower time range.
+ */
+export const LOG_MERGED_MAX_LINES = 5_000;
+
 /** Whether "download all" can fetch the window in one go. */
-export function canDownloadAllLogs(totalLines: number | undefined) {
-  return totalLines === undefined || totalLines <= LOG_DOWNLOAD_MAX_LINES;
+export function canDownloadAllLogs(
+  totalLines: number | undefined,
+  maxLines: number = LOG_DOWNLOAD_MAX_LINES,
+) {
+  return totalLines === undefined || totalLines <= maxLines;
 }
 
 /** One line of a downloaded file: ISO time, level, then the line as logged. */
