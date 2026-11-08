@@ -2356,7 +2356,17 @@
           "application": "Aplikasi",
           "address": "Alamat",
           "static": "Statis"
-        }
+        },
+        "addressMode": {
+          "label": "Mode alamat",
+          "registered": "Alamat terdaftar",
+          "private": "Alamat privat",
+          "custom": "Alamat kustom",
+          "legacy": "Alamat privat (lama)"
+        },
+        "targets": "Tujuan",
+        "server": "Server",
+        "targetsPending": "Alamat tujuan dicatat saat load balancer ini diterapkan berikutnya."
       },
       "config": {
         "backendRequired": "Penyimpanan akan memperbarui konfigurasi load balancer dan menjalankan playbook gateway.",

@@ -21,7 +21,12 @@ export type LoadBalancerIdV2 = string | number;
 export interface LoadBalancerRuleUpstreamV2 {
   address?: string;
   port?: string;
+  scheme?: string;
+  /** Server of the application deployment, on resolved upstreams only. */
+  machine_id?: string;
 }
+
+export type LoadBalancerAddressModeV2 = 'registered' | 'private' | 'custom';
 
 export interface LoadBalancerRuleV2 {
   path_match?: string;
@@ -29,7 +34,11 @@ export interface LoadBalancerRuleV2 {
   wildcard?: boolean;
   target?: {
     application_id?: string;
+    /** How an application target is reached; empty means private (legacy). */
+    address_mode?: LoadBalancerAddressModeV2 | '';
     upstreams?: LoadBalancerRuleUpstreamV2[];
+    /** Where an application target went at the last apply (read-only). */
+    resolved_upstreams?: LoadBalancerRuleUpstreamV2[];
   };
 }
 

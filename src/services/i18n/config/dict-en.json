@@ -2355,7 +2355,17 @@
           "application": "Application",
           "address": "Address",
           "static": "Static"
-        }
+        },
+        "addressMode": {
+          "label": "Address mode",
+          "registered": "Registered address",
+          "private": "Private address",
+          "custom": "Custom address",
+          "legacy": "Private address (legacy)"
+        },
+        "targets": "Targets",
+        "server": "Server",
+        "targetsPending": "Target addresses are recorded the next time this load balancer is applied."
       },
       "config": {
         "backendRequired": "Saving updates the load balancer configuration and submits the gateway playbook run.",
