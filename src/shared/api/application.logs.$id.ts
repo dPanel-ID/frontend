@@ -22,6 +22,8 @@ export interface RecipeParams {
   artifactId?: string;
   deploymentId?: string;
   machineId?: string;
+  /** Every server the application is deployed to, merged newest first. */
+  allMachines?: boolean;
   line?: number;
   limit?: number;
   /** 1-based, newest first; keep timeGte/timeLt fixed while paging. */
@@ -36,6 +38,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     artifactId,
     deploymentId,
     machineId,
+    allMachines,
     line,
     limit,
     page,
@@ -46,6 +49,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     artifact_id: artifactId,
     deployment_id: deploymentId,
     machine_id: machineId,
+    all_machines: allMachines ? 'true' : undefined,
     line,
     limit,
     page: page && page > 1 ? page : undefined,
