@@ -821,7 +821,9 @@
         "emptyLog": "No runtime logs in this window.",
         "emptyHint": "Try a wider time range. Runtime logs follow the active deployment.",
         "unavailable": "This application has no run command or server yet, so there are no runtime logs.",
-        "runtime": "Runtime"
+        "runtime": "Runtime",
+        "serverFilter": "Server",
+        "allServers": "All servers ({count})"
       },
       "dangerZone": {
         "title": "Danger zone",

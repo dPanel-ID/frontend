@@ -821,7 +821,9 @@
         "emptyLog": "Tidak ada log runtime pada rentang ini.",
         "emptyHint": "Coba rentang waktu yang lebih lebar. Log runtime mengikuti deployment aktif.",
         "unavailable": "Aplikasi ini belum punya perintah run atau server, jadi belum ada log runtime.",
-        "runtime": "Runtime"
+        "runtime": "Runtime",
+        "serverFilter": "Server",
+        "allServers": "Semua server ({count})"
       },
       "dangerZone": {
         "title": "Zona berbahaya",
