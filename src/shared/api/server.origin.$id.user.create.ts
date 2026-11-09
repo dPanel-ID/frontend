@@ -5,11 +5,13 @@ import { apiDoPost } from '../libs/api-client';
 export interface RecipeParams {
   serverId: string;
   payload: {
-    id: string;
-    username: string;
-    password: string;
+    id?: string;
+    username?: string;
+    password?: string;
     group: string;
-    home_dir: string;
+    home_dir?: string;
+    /** Adds a service account of the server's workspace instead of a person. */
+    service_account_id?: string;
   };
 }
 
