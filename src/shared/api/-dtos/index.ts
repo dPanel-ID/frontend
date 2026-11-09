@@ -31,3 +31,4 @@ export interface Pagination {
   total_item: number;
   total_page: number;
 }
+export * from './service-account';

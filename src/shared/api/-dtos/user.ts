@@ -23,6 +23,8 @@ export interface UserPublicV1 {
 }
 
 export interface UserPublicContactV1 extends UserPublicV1 {
+  /** Set for a service account, so people can tell it apart. */
+  is_service_account?: boolean;
   email?: string;
   register_from?: string;
   register_from_user_id?: string;
