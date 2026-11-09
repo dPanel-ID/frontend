@@ -110,7 +110,7 @@ A build step's output reaches **Log output** when that step finishes, so a long 
 
 ### How far back can I read logs in dPanel?
 
-Application and load balancer logs go back 10 days. Server logs show the newest 20 to 500 lines of a file. Build logs hold the whole build.
+Application and load balancer logs go back 3 days. Server logs show the newest 20 to 500 lines of a file. Build logs hold the whole build.
 
 ### Why does a running build show no log lines?
 
@@ -134,7 +134,7 @@ Yes. Application and load balancer logs have **Download**, for the loaded lines 
 
 ### Can I read load balancer logs from the terminal?
 
-Yes. `dnocs load-balancer log --id <load balancer ID>` prints each request as `GET host/path → 200 · 148ms`, newest first. Use `--since` to look back up to `240h`, `--page` and `--limit` (up to 500) to page, and `--json` for every field. Find the ID with `dnocs load-balancer list`. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install dnocs.
+Yes. `dnocs load-balancer log --id <load balancer ID>` prints each request as `GET host/path → 200 · 148ms`, newest first. Use `--since` to look back up to `72h`, `--page` and `--limit` (up to 500) to page, and `--json` for every field. Find the ID with `dnocs load-balancer list`. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install dnocs.
 
 ### Is the filter case-sensitive?
 

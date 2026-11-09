@@ -164,7 +164,7 @@ The **Logs** tab lists the requests reaching the gateway, titled **Load balancer
 
 ![The Logs tab: time range, filter, Download and Refresh above the request table](../../assets/networking/lb-detail-logs.webp)
 
-- **Time range**: the last 10 minutes by default. Pick a preset up to **Last 10 days**, or a **Custom range** within the last 10 days.
+- **Time range**: the last 10 minutes by default. Pick a preset up to **Last 3 days**, or a **Custom range** within the last 3 days.
 - **Scrolling**: the list opens on the newest request, at the bottom. Scroll up to load older requests, until the start of the time range. After scrolling up, **Jump to latest** brings you back.
 - **Download**: **Loaded lines**, or **Everything in this time range**, as a `.log` file.
 - **Refresh** loads the newest lines. **Auto-refresh** is off by default; turn it on for every 30 seconds, minute or 5 minutes.
@@ -179,7 +179,7 @@ The same requests are available in the [dnocs CLI](../ai/ai-in-the-terminal.md):
 
 ```bash
 dnocs load-balancer log --id 31                 # the last 10 minutes
-dnocs load-balancer log --id 31 --since 24h     # up to 240h (10 days)
+dnocs load-balancer log --id 31 --since 24h     # up to 72h (3 days)
 dnocs load-balancer log --id 31 --page 2 --limit 500
 dnocs load-balancer log --id 31 --json          # each line with its parsed fields
 ```

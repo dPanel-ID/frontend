@@ -36,7 +36,7 @@ Runtime logs follow the active deployment. When the application runs on several 
 
 ## Find what you need
 
-1. Pick a **Time range**. The tab opens on **Last 10 minutes**; go back as far as 10 days.
+1. Pick a **Time range**. The tab opens on **Last 10 minutes**; go back as far as 3 days.
 2. Type in **Filter loaded lines** to keep only lines that contain your text. Upper and lower case do not matter.
 3. Select a level chip, such as **error**, to keep only that level.
 4. Select a line to open it in full in the **Log entry** panel.
@@ -63,8 +63,8 @@ The status codes were `4xx`: pages that do not exist (`404`) or requests that ne
 
 ### Can I read load balancer requests from the terminal?
 
-Yes. `dnocs load-balancer log --id <load balancer ID>` prints the same request lines, newest first. Add `--since 24h` to look further back (up to `240h`, 10 days), `--page 2` for older lines, or `--json` for every field. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install dnocs.
+Yes. `dnocs load-balancer log --id <load balancer ID>` prints the same request lines, newest first. Add `--since 24h` to look further back (up to `72h`, 3 days), `--page 2` for older lines, or `--json` for every field. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install dnocs.
 
 ### How far back can I read?
 
-10 days, for both sources. See [Time range and refresh](../logs/time-range-and-refresh.md).
+3 days, for both sources. See [Time range and refresh](../logs/time-range-and-refresh.md).
