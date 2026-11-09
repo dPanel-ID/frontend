@@ -23,6 +23,12 @@ describe('dbManagerUrl', () => {
     ).toBe('https://dbmanager.devetek.app/?server=7&service=pg');
   });
 
+  it('links installed MongoDB', () => {
+    expect(dbManagerUrl(host, '9', install('mongodb', 'installed', 'mongo'))).toBe(
+      'https://dbmanager.devetek.app/?server=9&service=mongo',
+    );
+  });
+
   it('hides the link for other modules and unfinished installs', () => {
     expect(dbManagerUrl(host, '138', install('redis'))).toBeNull();
     expect(
