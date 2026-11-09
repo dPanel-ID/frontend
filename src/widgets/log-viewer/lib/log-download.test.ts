@@ -158,3 +158,16 @@ describe('maxLogPage', () => {
     expect(maxLogPage(500)).toBe(2001);
   });
 });
+
+describe('logFileName for a raw log', () => {
+  it('marks the file as raw', () => {
+    expect(
+      logFileName({
+        name: 'api',
+        timeGte: '2026-11-06T01:00:00.000Z',
+        timeLt: '2026-11-09T01:00:00.000Z',
+        raw: true,
+      }),
+    ).toBe('api_2026-11-06T01-00Z_to_2026-11-09T01-00Z.raw.log');
+  });
+});

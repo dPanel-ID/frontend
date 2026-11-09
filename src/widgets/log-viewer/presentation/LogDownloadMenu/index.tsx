@@ -1,6 +1,14 @@
-import { DownloadIcon, FileTextIcon, FilesIcon, XIcon } from 'lucide-react';
+import {
+  DownloadIcon,
+  FileCodeIcon,
+  FileTextIcon,
+  FilesIcon,
+  XIcon,
+} from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
+
+import { formatFileSize } from '@/entities/file-manager/lib/file-formatter';
 
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import {
@@ -31,6 +39,12 @@ export interface LogDownloadMenuProps {
   onDownloadPage: () => void;
   onDownloadAll: () => void;
   onCancel: () => void;
+  /** Offers the log exactly as written, read from the server. */
+  raw?: {
+    /** Why it cannot be used right now; it is enabled without one. */
+    unavailableHint?: string;
+    onDownload: () => void;
+  };
 }
 
 /**
@@ -47,6 +61,7 @@ export default function LogDownloadMenu(props: LogDownloadMenuProps) {
     page,
     pageLines,
     progress,
+    raw,
     scope = 'page',
     totalLines,
   } = props;
@@ -61,12 +76,14 @@ export default function LogDownloadMenu(props: LogDownloadMenuProps) {
       >
         <Spinner className="size-3.5" />
         <span className="tabular-nums">
-          {progress.totalLines === undefined
-            ? t('progressUnknown', { fetched: progress.fetchedLines })
-            : t('progress', {
-                fetched: progress.fetchedLines,
-                total: progress.totalLines,
-              })}
+          {progress.fetchedBytes !== undefined
+            ? t('progressRaw', { size: formatFileSize(progress.fetchedBytes) })
+            : progress.totalLines === undefined
+              ? t('progressUnknown', { fetched: progress.fetchedLines })
+              : t('progress', {
+                  fetched: progress.fetchedLines,
+                  total: progress.totalLines,
+                })}
         </span>
         <Button
           size="icon-xs"
@@ -89,7 +106,7 @@ export default function LogDownloadMenu(props: LogDownloadMenuProps) {
           size="sm"
           buttonColor="secondary"
           buttonStyle="outline"
-          disabled={pageLines === 0}
+          disabled={pageLines === 0 && !raw}
         >
           <DownloadIcon />
           {t('label')}
@@ -99,7 +116,11 @@ export default function LogDownloadMenu(props: LogDownloadMenuProps) {
         <DropdownMenuLabel className="text-xs text-muted-foreground">
           {t('menuTitle')}
         </DropdownMenuLabel>
-        <DropdownMenuItem onSelect={onDownloadPage} className="items-start">
+        <DropdownMenuItem
+          onSelect={onDownloadPage}
+          disabled={pageLines === 0}
+          className="items-start"
+        >
           <FileTextIcon className="mt-0.5" />
           <span className="grid gap-0.5">
             <span className="font-medium">
@@ -115,7 +136,7 @@ export default function LogDownloadMenu(props: LogDownloadMenuProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onSelect={onDownloadAll}
-          disabled={!canDownloadAll}
+          disabled={!canDownloadAll || pageLines === 0}
           className="items-start"
         >
           <FilesIcon className="mt-0.5" />
@@ -130,6 +151,24 @@ export default function LogDownloadMenu(props: LogDownloadMenuProps) {
             </span>
           </span>
         </DropdownMenuItem>
+        {raw && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onSelect={raw.onDownload}
+              disabled={Boolean(raw.unavailableHint)}
+              className="items-start"
+            >
+              <FileCodeIcon className="mt-0.5" />
+              <span className="grid gap-0.5">
+                <span className="font-medium">{t('raw')}</span>
+                <span className="text-xs text-muted-foreground">
+                  {raw.unavailableHint ?? t('rawHint')}
+                </span>
+              </span>
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
