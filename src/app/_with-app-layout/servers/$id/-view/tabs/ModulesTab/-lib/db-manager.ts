@@ -1,7 +1,7 @@
 import type { DTOs } from '@/shared/api';
 
 /** Database modules db-manager can open. */
-const DB_MANAGER_MODULES = new Set(['mariadb', 'postgresql']);
+const DB_MANAGER_MODULES = new Set(['mariadb', 'postgresql', 'mongodb']);
 
 /**
  * Builds the db-manager link for an installed database module, or returns
