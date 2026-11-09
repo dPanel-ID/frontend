@@ -736,6 +736,12 @@
         "resourcesTitle": "Semua resource",
         "resourcesDescription": "Telusuri server, aplikasi, load balancer, domain dan SSH key milik semua pengguna dan tim, lengkap dengan pemilik dan workspace-nya.",
         "resourcesCta": "Buka semua resource"
+      },
+      "tabs": {
+        "profile": "Profil",
+        "workers": "Worker",
+        "serviceAccounts": "Akun layanan",
+        "ariaLabel": "Bagian profil"
       }
     },
     "applications": {
@@ -3045,7 +3051,14 @@
       "membersDescription": "Siapa saja di tim ini dan apa yang bisa mereka lakukan.",
       "showing": "Menampilkan {shown} dari {total} anggota",
       "actionsColumn": "Aksi",
-      "joinedAgo": "Bergabung {when}"
+      "joinedAgo": "Bergabung {when}",
+      "tabs": {
+        "members": "Anggota",
+        "workers": "Worker",
+        "serviceAccounts": "Akun layanan",
+        "ariaLabel": "Bagian tim",
+        "serviceAccountBadge": "Akun layanan"
+      }
     },
     "notFound": {
       "title": "Halaman Tidak Ditemukan",
@@ -3876,6 +3889,110 @@
         "workflowInvalid": "Gunakan nama file yang berakhiran .yml atau .yaml.",
         "refRequired": "Masukkan branch atau tag.",
         "refInvalid": "Gunakan hanya huruf, angka, titik, tanda hubung, garis bawah, dan garis miring."
+      }
+    },
+    "serviceAccounts": {
+      "title": "Akun layanan",
+      "refresh": "Muat ulang akun layanan",
+      "descriptionPersonal": "Token untuk skrip dan CI Anda. Token bertindak sebagai Anda, hanya di workspace pribadi Anda.",
+      "descriptionWorkspace": "Token untuk otomatisasi tim ini. Setiap akun punya identitas dan peran sendiri di tim ini.",
+      "empty": {
+        "title": "Belum ada akun layanan",
+        "descriptionPersonal": "Buat satu untuk memanggil API dPanel dari skrip tanpa memakai sesi Anda.",
+        "descriptionWorkspace": "Buat satu agar CI atau skrip bisa bekerja di tim ini tanpa memakai sesi seseorang."
+      },
+      "readOnly": "Hanya pemilik dan admin tim yang bisa melihat dan mengelola akun layanan tim ini.",
+      "account": {
+        "created": "Dibuat {date}",
+        "addToken": "Token baru",
+        "delete": "Hapus {name}",
+        "noTokens": "Akun ini belum punya token."
+      },
+      "tokens": {
+        "status": {
+          "active": "Aktif",
+          "expired": "Kedaluwarsa",
+          "revoked": "Dicabut"
+        },
+        "expires": "Berakhir {date}",
+        "noExpiry": "Tanpa masa berlaku",
+        "lastUsed": "Terakhir dipakai {date}",
+        "neverUsed": "Belum pernah dipakai",
+        "revoke": "Cabut"
+      },
+      "roles": {
+        "developer": "Developer",
+        "devops": "DevOps",
+        "viewer": "Viewer",
+        "admin": "Admin",
+        "billing": "Billing"
+      },
+      "roleHints": {
+        "developer": "Bisa men-deploy dan mengelola aplikasi.",
+        "devops": "Bisa mengelola server dan infrastruktur.",
+        "viewer": "Hanya bisa membaca.",
+        "admin": "Bisa mengelola seluruh tim. Hanya pemilik tim yang bisa memberikan peran ini."
+      },
+      "create": {
+        "open": "Akun layanan baru",
+        "title": "Akun layanan baru",
+        "descriptionPersonal": "Akun ini bertindak sebagai Anda, hanya di workspace pribadi Anda.",
+        "descriptionWorkspace": "Akun ini punya identitas sendiri dan peran di tim ini.",
+        "submit": "Buat",
+        "createdTitle": "{name} siap dipakai"
+      },
+      "token": {
+        "title": "Token baru untuk {name}",
+        "description": "Tambahkan token kedua untuk mengganti token lama tanpa downtime.",
+        "submit": "Buat token",
+        "createdTitle": "Token baru untuk {name}"
+      },
+      "form": {
+        "name": "Nama",
+        "nameHint": "Misalnya github-actions. 2 sampai 64 karakter.",
+        "nameInvalid": "Masukkan nama 2 sampai 64 karakter.",
+        "description": "Deskripsi",
+        "descriptionHint": "Opsional. Apa yang memakai akun ini?",
+        "role": "Peran",
+        "tokenName": "Nama token",
+        "tokenNameHint": "Tempat token ini dipakai.",
+        "tokenNameInvalid": "Masukkan nama token.",
+        "expiry": "Berakhir",
+        "expiryHint": "Token berhenti bekerja setelah ini.",
+        "expiryNoneWarning": "Token ini bekerja sampai dicabut. Sebaiknya pilih masa berlaku.",
+        "expiryOptions": {
+          "d30": "30 hari lagi",
+          "d90": "90 hari lagi",
+          "d365": "1 tahun lagi",
+          "d0": "Tidak pernah"
+        }
+      },
+      "reveal": {
+        "warning": "Salin token ini sekarang. Token tidak akan ditampilkan lagi.",
+        "label": "Token",
+        "copy": "Salin",
+        "copied": "Tersalin",
+        "copyFailed": "Tidak bisa menyalin. Pilih teks dan salin secara manual.",
+        "usage": "Kirim bersama setiap permintaan API:",
+        "done": "Sudah saya simpan"
+      },
+      "deleteDialog": {
+        "title": "Hapus {name}?",
+        "message": "Semua tokennya langsung berhenti bekerja. Aplikasi yang di-deploy-nya tetap berjalan, tetapi pindahkan dulu ke pemilik lain. Tindakan ini tidak bisa dibatalkan.",
+        "confirm": "Hapus akun"
+      },
+      "revokeDialog": {
+        "title": "Cabut {name}?",
+        "message": "Semua yang memakai token ini langsung berhenti bekerja. Tindakan ini tidak bisa dibatalkan.",
+        "confirm": "Cabut token"
+      },
+      "toaster": {
+        "createError": "Tidak bisa membuat {name}",
+        "tokenError": "Tidak bisa membuat token {name}",
+        "deleteError": "Tidak bisa menghapus {name}",
+        "deleteSuccess": "{name} dihapus",
+        "revokeError": "Tidak bisa mencabut {name}",
+        "revokeSuccess": "{name} dicabut"
       }
     }
   },

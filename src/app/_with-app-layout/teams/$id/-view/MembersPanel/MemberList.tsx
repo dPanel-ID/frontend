@@ -81,7 +81,9 @@ export default buildResponseView({
           email: user?.email || undefined,
           avatarUrl: user?.avatar_url || undefined,
           access: teamAccessOf([...roleIds, ...roleLabels]),
-          roleLabels,
+          roleLabels: user?.is_service_account
+            ? [t('page.teamDetail.tabs.serviceAccountBadge'), ...roleLabels]
+            : roleLabels,
           roleIds,
           joinedAt: created_at || undefined,
         },

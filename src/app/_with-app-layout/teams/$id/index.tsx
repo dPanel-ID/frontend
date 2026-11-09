@@ -5,7 +5,7 @@ import EventController from './-EventController';
 import { FilterModelProvider } from './-model/filters';
 import { MembersDataModelProvider } from './-model/members-data';
 import { schemaQueryString } from './-rules/qs';
-import { Header, MembersPanel, Overview, Workers } from './-view';
+import { Header, Overview, TeamTabs } from './-view';
 
 export const Route = createFileRoute('/_with-app-layout/teams/$id/')({
   head: () => ({
@@ -26,8 +26,7 @@ function TeamDetailPage() {
         <div className="flex flex-col gap-4">
           <Header />
           <Overview />
-          <MembersPanel />
-          <Workers />
+          <TeamTabs />
         </div>
       </MembersDataModelProvider>
     </FilterModelProvider>
