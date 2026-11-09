@@ -79,23 +79,6 @@ export function releaseTone(status: ReleaseStatus): StatusTone {
   }
 }
 
-/** Colour family for a build state. */
-export function buildTone(status: CicdArtifact['state']['status']): StatusTone {
-  switch (status) {
-    case 'ready':
-      return 'success';
-    case 'progress':
-      return 'info';
-    case 'failed':
-      return 'danger';
-    case 'cancelled':
-    case 'deleting':
-      return 'warning';
-    default:
-      return 'neutral';
-  }
-}
-
 /** Colour family for a deployment state. */
 export function deploymentTone(
   status: CicdDeployment['state']['status'],

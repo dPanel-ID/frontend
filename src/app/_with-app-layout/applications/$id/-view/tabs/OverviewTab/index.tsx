@@ -27,11 +27,13 @@ import type { StatTileTone } from '@/shared/presentation/molecules/StatTile';
 import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 
 import {
-  buildTone,
   isMovingStatus,
   liveServerCount,
+  releaseStatusOfArtifact,
+  releaseTone,
   serversOf,
 } from '../../../-lib/describe-detail';
+import type { ReleaseStatus } from '../../../-lib/describe-detail';
 import { useHistoryLists } from '../../../-lib/use-history-lists';
 import { useAppDataModel } from '../../../-model/app-data';
 import { useArtifactHistoryModel } from '../../../-model/artifact-history';
@@ -54,11 +56,13 @@ const [guard, useAppDetail] = guardedSelects({
   fallbackError: FallbackLoading,
 })(couple(useAppDataModel, (s: any) => s.appDetail));
 
-const BUILD_TONES: Record<string, StatTileTone> = {
-  ready: 'emerald',
+const RELEASE_TONES: Record<ReleaseStatus, StatTileTone> = {
+  deployed: 'emerald',
+  pending: 'sky',
   progress: 'sky',
   failed: 'red',
   cancelled: 'amber',
+  inactive: 'neutral',
 };
 
 /**
@@ -67,7 +71,9 @@ const BUILD_TONES: Record<string, StatTileTone> = {
  */
 export default guard(function OverviewTab() {
   const t = useDevetekTranslations('page.applicationDetail.overview');
-  const tBuild = useDevetekTranslations('page.applicationDetail.buildStatus');
+  const tRelease = useDevetekTranslations(
+    'page.applicationDetail.releaseStatus',
+  );
   const locale = useDevetekLocale();
   const { id } = useParams({ from: '/_with-app-layout/applications/$id/' });
 
@@ -93,6 +99,9 @@ export default guard(function OverviewTab() {
   const run = configDefs.lifecycle?.run;
   const live = liveServerCount(deployments);
   const lastBuild = artifacts[0];
+  const lastBuildStatus =
+    lastBuild &&
+    releaseStatusOfArtifact({ artifact: lastBuild, lastDeployment });
   const servers = serversOf(deployments, deploymentTargets);
   const server = servers[0];
 
@@ -139,13 +148,9 @@ export default guard(function OverviewTab() {
         />
         <StatTile
           icon={HammerIcon}
-          tone={
-            lastBuild
-              ? (BUILD_TONES[lastBuild.state.status] ?? 'neutral')
-              : 'neutral'
-          }
+          tone={lastBuildStatus ? RELEASE_TONES[lastBuildStatus] : 'neutral'}
           label={t('lastBuild')}
-          value={lastBuild ? tBuild(lastBuild.state.status) : t('never')}
+          value={lastBuildStatus ? tRelease(lastBuildStatus) : t('never')}
           hint={
             lastBuild
               ? getDistanceFromNow(lastBuild.timestamp.updated, locale)
@@ -275,33 +280,40 @@ export default guard(function OverviewTab() {
             </p>
           ) : (
             <ul className="flex flex-col divide-y">
-              {artifacts.slice(0, 5).map((artifact) => (
-                <li
-                  key={artifact.id}
-                  className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0"
-                >
-                  <StatusPill
-                    size="sm"
-                    tone={buildTone(artifact.state.status)}
-                    label={tBuild(artifact.state.status)}
-                    pulse={isMovingStatus(artifact.state.status)}
-                  />
+              {artifacts.slice(0, 5).map((artifact) => {
+                const status = releaseStatusOfArtifact({
+                  artifact,
+                  lastDeployment,
+                });
 
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">
-                      {artifact.commitMetadata.title}
-                    </p>
-                    <p className="truncate font-mono text-xs text-muted-foreground">
-                      {artifact.commitMetadata.fromBranch} ·{' '}
-                      {artifact.commitMetadata.head.slice(0, 7)}
-                    </p>
-                  </div>
+                return (
+                  <li
+                    key={artifact.id}
+                    className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0"
+                  >
+                    <StatusPill
+                      size="sm"
+                      tone={releaseTone(status)}
+                      label={tRelease(status)}
+                      pulse={isMovingStatus(status)}
+                    />
 
-                  <span className="shrink-0 text-xs text-muted-foreground">
-                    {getDistanceFromNow(artifact.timestamp.updated, locale)}
-                  </span>
-                </li>
-              ))}
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold">
+                        {artifact.commitMetadata.title}
+                      </p>
+                      <p className="truncate font-mono text-xs text-muted-foreground">
+                        {artifact.commitMetadata.fromBranch} ·{' '}
+                        {artifact.commitMetadata.head.slice(0, 7)}
+                      </p>
+                    </div>
+
+                    <span className="shrink-0 text-xs text-muted-foreground">
+                      {getDistanceFromNow(artifact.timestamp.updated, locale)}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </Section>
