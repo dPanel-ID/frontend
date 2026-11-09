@@ -27,6 +27,18 @@ Unduhan yang panjang menampilkan progresnya, misalnya **Mengunduh 12.000 / 40.00
 **Semua di rentang waktu ini** dibatasi 100.000 baris. Untuk rentang yang lebih besar, opsinya bertuliskan **Lebih dari 100.000 baris** dan tidak bisa dipilih. Persempit rentang waktunya, atau simpan baris yang dimuat. Log runtime aplikasi di semua server dibatasi 5.000 baris; pilih satu server di menu **Server** untuk lebih banyak.
 :::
 
+## Log mentah dari server
+
+Dua opsi di atas membaca penyimpanan log dPanel, yang hanya menyimpan beberapa jam terakhir dan memendekkan baris terstruktur menjadi pesannya saja. Untuk mendapatkan log yang sebenarnya, tekan **Unduh** di tab Log aplikasi lalu pilih **Log mentah dari server**.
+
+File berisi setiap baris pada rentang waktu persis seperti ditulis aplikasi Anda, dari yang terlama, dibaca dari journal di server. Baris terstruktur (JSON) tetap utuh. dPanel tidak menambahkan waktu atau level, jadi sebuah baris hanya punya waktu jika aplikasi Anda menuliskannya. Nama file berakhiran `.raw.log`.
+
+Aplikasi di beberapa server perlu memilih satu server dulu. Log mentah menjangkau sejauh server masih menyimpan journal-nya, hingga 10 hari, dan satu unduhan bisa sampai 1 GB. Agen di server harus versi terbaru. Dari terminal, gunakan `dnocs application logs --id N --since 72h --raw --output app.log`.
+
+:::warning[Tidak ada yang disamarkan]
+Tampilan log lain menyembunyikan teks yang mirip kata sandi atau token. Log mentah tidak, dan bisa berisi isi request serta header response. Siapa pun yang bisa membuka aplikasi dapat mengunduhnya, dan setiap unduhan dicatat di log audit.
+:::
+
 ## Log build
 
 Di **Log Artefak**, buka tab **Keluaran log** lalu tekan **Unduh**. Pilih **Baris yang dimuat** atau **Semua di rentang waktu ini** untuk seluruh build. Nama file-nya diawali commit, misalnya `build-04ccf00a1b2c`.

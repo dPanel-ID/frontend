@@ -27,6 +27,7 @@ export default function AppLogs() {
   const [
     fetchedAt,
     fetchLogPage,
+    fetchRawLog,
     fetchWindowPage,
     isLogSelected,
     lineLimit,
@@ -42,6 +43,7 @@ export default function AppLogs() {
   ] = useAppLogsModel((s) => [
     s.fetchedAt,
     s.fetchLogPage,
+    s.fetchRawLog,
     s.fetchWindowPage,
     s.isLogSelected,
     s.lineLimit,
@@ -58,6 +60,7 @@ export default function AppLogs() {
   const [appDetailResponse] = useAppDataModel((s) => [s.appDetail]);
   const [selectedServerId] = useAppDataModel((s) => [s.selectedServerId]);
   const t = useDevetekTranslations('page.applicationDetail.appLogs');
+  const tDownload = useDevetekTranslations('common.logViewer.download');
   const [timeZoneLabel] = useState(() => formatUtcOffset(Date.now()));
 
   const appDetail =
@@ -108,6 +111,7 @@ export default function AppLogs() {
     timeGte,
     timeLt,
     fetchPage: fetchLogPage,
+    fetchRaw: fetchRawLog,
   });
 
   if (!appDetail) return null;
@@ -165,6 +169,10 @@ export default function AppLogs() {
         onDownloadLoaded: (entries) => download.downloadPage(entries, 1),
         onDownloadAll: download.downloadAll,
         onCancel: download.cancel,
+        raw: {
+          unavailableHint: allServers ? tDownload('rawPickServer') : undefined,
+          onDownload: download.downloadRaw,
+        },
       }}
       timeRange={timeRange}
       timeZoneLabel={timeZoneLabel}

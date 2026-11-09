@@ -141,6 +141,21 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     [fetchPageOf],
   );
 
+  /** The log of the one server picked, exactly as the application wrote it. */
+  const rawLogServerId = allServers ? undefined : logSelection?.serverId;
+  const fetchRawLog = useCallback(
+    (signal: AbortSignal, onProgress: (fetchedBytes: number) => void) => {
+      if (!rawLogServerId) {
+        return Promise.reject(new Error('Pick a server first'));
+      }
+      return ApiApplication.Logs.Raw.download(
+        { applicationId, machineId: rawLogServerId, timeGte, timeLt },
+        { signal, onProgress },
+      );
+    },
+    [applicationId, rawLogServerId, timeGte, timeLt],
+  );
+
   return {
     /** Whether a log is picked; the list waits until it is. */
     isLogSelected: Boolean(logSelection?.serverId && logSelection.filename),
@@ -156,6 +171,7 @@ export const [AppLogsModelProvider, useAppLogsModel] = buildSelector(
     ].join('|'),
     fetchWindowPage,
     fetchLogPage,
+    fetchRawLog,
     refreshLog,
     timeRange,
     selectTimeRange,

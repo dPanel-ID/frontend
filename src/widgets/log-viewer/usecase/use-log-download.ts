@@ -19,6 +19,11 @@ interface UseLogDownloadParams {
   timeGte: string;
   timeLt: string;
   fetchPage: (page: number, signal: AbortSignal) => Promise<LogPageResult>;
+  /** Reads the log exactly as written, when this log has such a source. */
+  fetchRaw?: (
+    signal: AbortSignal,
+    onProgress: (fetchedBytes: number) => void,
+  ) => Promise<Blob>;
 }
 
 /**
@@ -26,7 +31,7 @@ interface UseLogDownloadParams {
  * fetched one request at a time, with progress and a way to stop.
  */
 export function useLogDownload(params: UseLogDownloadParams) {
-  const { fetchPage, name, timeGte, timeLt } = params;
+  const { fetchPage, fetchRaw, name, timeGte, timeLt } = params;
 
   const t = useDevetekTranslations('common.logViewer.download');
   const [openToaster] = useToaster();
@@ -82,9 +87,35 @@ export function useLogDownload(params: UseLogDownloadParams) {
     }
   };
 
+  const downloadRaw = async () => {
+    if (abortRef.current || !fetchRaw) return;
+
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setProgress({ fetchedLines: 0, fetchedBytes: 0 });
+
+    try {
+      const content = await fetchRaw(controller.signal, (fetchedBytes) =>
+        setProgress({ fetchedLines: 0, fetchedBytes }),
+      );
+      saveLogFile(logFileName({ name, timeGte, timeLt, raw: true }), content);
+    } catch (error) {
+      if (controller.signal.aborted) return;
+
+      openToaster({
+        variant: 'error',
+        title: t('failedTitle'),
+        message: error instanceof Error ? error.message : String(error),
+      });
+    } finally {
+      abortRef.current = null;
+      setProgress(null);
+    }
+  };
+
   const cancel = () => {
     abortRef.current?.abort();
   };
 
-  return { progress, downloadPage, downloadAll, cancel };
+  return { progress, downloadPage, downloadAll, downloadRaw, cancel };
 }

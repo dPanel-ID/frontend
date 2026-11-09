@@ -229,7 +229,11 @@
         "tooLarge": "This range holds over {lines, number} lines. Narrow the time range, or save the loaded lines.",
         "failedTitle": "Download failed",
         "loaded": "Loaded lines",
-        "loadedHint": "{lines, plural, one {# line} other {# lines}} loaded in the list"
+        "loadedHint": "{lines, plural, one {# line} other {# lines}} loaded in the list",
+        "raw": "Raw log from the server",
+        "rawHint": "Every line exactly as the app wrote it. Nothing is masked.",
+        "rawPickServer": "Pick one server first",
+        "progressRaw": "Downloading {size}"
       },
       "pager": {
         "range": "Lines {first, number}–{last, number} of {total, number}, newest first",

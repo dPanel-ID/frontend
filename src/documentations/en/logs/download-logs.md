@@ -27,6 +27,18 @@ A long download shows its progress, such as **Downloading 12,000 / 40,000 lines*
 **Everything in this time range** stops at 100,000 lines. For a bigger range, the option says **More than 100,000 lines** and is unavailable. Narrow the time range, or save the loaded lines. An application's runtime logs across all servers stop at 5,000 lines; pick one server in the **Server** menu for more.
 :::
 
+## Raw log from the server
+
+The two options above read dPanel's log store, which keeps only the recent hours and shortens structured lines to their message. To get the real log, press **Download** on an application's Logs tab and choose **Raw log from the server**.
+
+The file holds every line of the time range exactly as your application wrote it, oldest first, read from the journal on the server. Structured (JSON) lines stay whole. dPanel adds no time or level to the lines, so a line has a time only if your application wrote one. The file name ends in `.raw.log`.
+
+An application on several servers needs one server picked first. A raw log reaches back as far as the server still keeps its journal, up to 10 days, and one download can be up to 1 GB. The server's agent must be up to date. From a terminal, use `dnocs application logs --id N --since 72h --raw --output app.log`.
+
+:::warning[Nothing is masked]
+Other log views hide text that looks like a password or token. A raw log does not, and it can hold request bodies and response headers. Anyone who can open the application can download it, and each download is recorded in the audit log.
+:::
+
 ## Build logs
 
 In **Artifact Logs**, open the **Log output** tab and press **Download**. Choose **Loaded lines** or **Everything in this time range** for the whole build. The file name starts with the commit, such as `build-04ccf00a1b2c`.

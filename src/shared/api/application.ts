@@ -7,6 +7,7 @@ import * as Detail$Id from './application.detail.$id';
 import * as Find from './application.find';
 import * as IAC$Id from './application.iac.$id';
 import * as Logs$Id from './application.logs.$id';
+import * as LogsRaw$Id from './application.logs.raw.$id';
 import * as Update$Id from './application.update.$id';
 
 const Root = {
@@ -32,6 +33,7 @@ const Root = {
   },
   Logs: {
     $Id: Logs$Id,
+    Raw: LogsRaw$Id,
   },
   Update: {
     $Id: {

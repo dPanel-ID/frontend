@@ -36,6 +36,8 @@ export interface LogPageResult {
 export interface LogDownloadProgress {
   fetchedLines: number;
   totalLines?: number;
+  /** Set for a raw log, which is counted in bytes rather than lines. */
+  fetchedBytes?: number;
 }
 
 /**
@@ -118,18 +120,24 @@ export function logFileName(params: {
   timeGte: string;
   timeLt: string;
   page?: number;
+  raw?: boolean;
 }) {
-  const { name, page, timeGte, timeLt } = params;
+  const { name, page, raw, timeGte, timeLt } = params;
   const stamp = (iso: string) => iso.slice(0, 16).replace(/:/g, '-') + 'Z';
   const safeName = name.replace(/[^\w.-]+/g, '-') || 'logs';
   const suffix = page ? `_page-${page}` : '';
 
-  return `${safeName}_${stamp(timeGte)}_to_${stamp(timeLt)}${suffix}.log`;
+  const extension = raw ? 'raw.log' : 'log';
+
+  return `${safeName}_${stamp(timeGte)}_to_${stamp(timeLt)}${suffix}.${extension}`;
 }
 
 /** Hands the browser a text file to save. */
-export function saveLogFile(fileName: string, content: string) {
-  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+export function saveLogFile(fileName: string, content: string | Blob) {
+  const blob =
+    content instanceof Blob
+      ? content
+      : new Blob([content], { type: 'text/plain;charset=utf-8' });
   const objectUrl = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
   anchor.href = objectUrl;
