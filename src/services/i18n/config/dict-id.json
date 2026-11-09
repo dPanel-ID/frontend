@@ -229,7 +229,11 @@
         "tooLarge": "Rentang ini berisi lebih dari {lines, number} baris. Persempit rentang waktu, atau simpan baris yang dimuat.",
         "failedTitle": "Unduhan gagal",
         "loaded": "Baris yang dimuat",
-        "loadedHint": "{lines, plural, other {# baris}} dimuat di daftar"
+        "loadedHint": "{lines, plural, other {# baris}} dimuat di daftar",
+        "raw": "Log mentah dari server",
+        "rawHint": "Setiap baris persis seperti ditulis aplikasi. Tidak ada yang disamarkan.",
+        "rawPickServer": "Pilih satu server dulu",
+        "progressRaw": "Mengunduh {size}"
       },
       "pager": {
         "range": "Baris {first, number}–{last, number} dari {total, number}, terbaru dulu",
