@@ -3,7 +3,7 @@ const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 
 /** How far back runtime logs can be queried. The API enforces the same cap. */
-export const LOG_TIME_RANGE_MAX_LOOKBACK_DAYS = 10;
+export const LOG_TIME_RANGE_MAX_LOOKBACK_DAYS = 3;
 export const LOG_TIME_RANGE_MAX_LOOKBACK_MS =
   LOG_TIME_RANGE_MAX_LOOKBACK_DAYS * DAY_MS;
 
@@ -16,8 +16,6 @@ export const LOG_TIME_RANGE_PRESETS = {
   '6h': { durationMs: 6 * HOUR_MS },
   '24h': { durationMs: DAY_MS },
   '3d': { durationMs: 3 * DAY_MS },
-  '7d': { durationMs: 7 * DAY_MS },
-  '10d': { durationMs: 10 * DAY_MS },
 } satisfies Record<string, { durationMs: number }>;
 
 export type LogTimeRangePreset = keyof typeof LOG_TIME_RANGE_PRESETS;

@@ -110,7 +110,7 @@ Keluaran sebuah langkah build masuk ke **Keluaran log** saat langkah itu selesai
 
 ### Seberapa jauh ke belakang log bisa dibaca di dPanel?
 
-Log aplikasi dan load balancer bisa dibaca hingga 10 hari ke belakang. Log server menampilkan 20 sampai 500 baris terbaru dari sebuah file. Log build berisi seluruh build.
+Log aplikasi dan load balancer bisa dibaca hingga 3 hari ke belakang. Log server menampilkan 20 sampai 500 baris terbaru dari sebuah file. Log build berisi seluruh build.
 
 ### Mengapa build yang berjalan tidak menampilkan baris log?
 
@@ -134,7 +134,7 @@ Bisa. Log aplikasi dan load balancer punya tombol **Unduh**, untuk baris yang di
 
 ### Bisakah saya membaca log load balancer dari terminal?
 
-Bisa. `dnocs load-balancer log --id <ID load balancer>` mencetak setiap request sebagai `GET host/path → 200 · 148ms`, terbaru lebih dulu. Pakai `--since` untuk mundur hingga `240h`, `--page` dan `--limit` (hingga 500) untuk berpindah halaman, dan `--json` untuk semua field. Cari ID-nya dengan `dnocs load-balancer list`. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang dnocs.
+Bisa. `dnocs load-balancer log --id <ID load balancer>` mencetak setiap request sebagai `GET host/path → 200 · 148ms`, terbaru lebih dulu. Pakai `--since` untuk mundur hingga `72h`, `--page` dan `--limit` (hingga 500) untuk berpindah halaman, dan `--json` untuk semua field. Cari ID-nya dengan `dnocs load-balancer list`. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang dnocs.
 
 ### Apakah saringannya membedakan huruf besar dan kecil?
 

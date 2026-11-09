@@ -33,7 +33,7 @@ Dua opsi di atas membaca penyimpanan log dPanel, yang hanya menyimpan beberapa j
 
 File berisi setiap baris pada rentang waktu persis seperti ditulis aplikasi Anda, dari yang terlama, dibaca dari journal di server. Baris terstruktur (JSON) tetap utuh. dPanel tidak menambahkan waktu atau level, jadi sebuah baris hanya punya waktu jika aplikasi Anda menuliskannya. Nama file berakhiran `.raw.log`.
 
-Aplikasi di beberapa server perlu memilih satu server dulu. Log mentah menjangkau sejauh server masih menyimpan journal-nya, hingga 10 hari, dan satu unduhan bisa sampai 1 GB. Agen di server harus versi terbaru. Dari terminal, gunakan `dnocs application logs --id N --since 72h --raw --output app.log`.
+Aplikasi di beberapa server perlu memilih satu server dulu. Di aplikasi web, log mentah mengikuti rentang waktu yang dipilih, paling lama 3 hari. Dari terminal bisa mundur hingga 10 hari selama server masih menyimpan journal-nya. Satu unduhan bisa sampai 1 GB. Agen di server harus versi terbaru. Dari terminal, gunakan `dnocs application logs --id N --since 72h --raw --output app.log`.
 
 :::warning[Tidak ada yang disamarkan]
 Tampilan log lain menyembunyikan teks yang mirip kata sandi atau token. Log mentah tidak, dan bisa berisi isi request serta header response. Siapa pun yang bisa membuka aplikasi dapat mengunduhnya, dan setiap unduhan dicatat di log audit.

@@ -164,7 +164,7 @@ Tab **Log** menampilkan request yang sampai ke gateway, dengan judul **Permintaa
 
 ![Tab Log: rentang waktu, saringan, unduhan, dan tombol muat ulang di atas tabel request](../../assets/networking/lb-detail-logs.webp)
 
-- **Rentang waktu**: bawaannya 10 menit terakhir. Pilih preset sampai **10 hari terakhir**, atau **Rentang khusus** dalam 10 hari terakhir.
+- **Rentang waktu**: bawaannya 10 menit terakhir. Pilih preset sampai **3 hari terakhir**, atau **Rentang khusus** dalam 3 hari terakhir.
 - **Pengguliran**: daftar terbuka pada request terbaru, di bagian bawah. Gulir ke atas untuk memuat request yang lebih lama, sampai awal rentang waktu. Setelah menggulir ke atas, **Ke baris terbaru** membawa Anda kembali.
 - **Unduh**: **Baris yang dimuat**, atau **Semua di rentang waktu ini**, sebagai berkas `.log`.
 - **Segarkan** mengambil baris terbaru. **Muat ulang otomatis** mati secara bawaan; nyalakan untuk setiap 30 detik, setiap menit, atau setiap 5 menit.
@@ -179,7 +179,7 @@ Permintaan yang sama juga tersedia di [CLI dnocs](../ai/ai-in-the-terminal.md):
 
 ```bash
 dnocs load-balancer log --id 31                 # 10 menit terakhir
-dnocs load-balancer log --id 31 --since 24h     # hingga 240h (10 hari)
+dnocs load-balancer log --id 31 --since 24h     # hingga 72h (3 hari)
 dnocs load-balancer log --id 31 --page 2 --limit 500
 dnocs load-balancer log --id 31 --json          # setiap baris beserta field-nya
 ```

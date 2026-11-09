@@ -1,18 +1,18 @@
 ---
 title: Rentang waktu dan pembaruan
-description: Pilih rentang waktu log hingga 10 hari ke belakang di dPanel, gulir ke atas untuk memuat baris lama, dan nyalakan muat ulang otomatis untuk log aplikasi.
+description: Pilih rentang waktu log hingga 3 hari ke belakang di dPanel, gulir ke atas untuk memuat baris lama, dan nyalakan muat ulang otomatis untuk log aplikasi.
 sidebar_position: 2
 sidebar_icon: clock
 ---
 
-Di dPanel Anda bisa membaca log aplikasi dan load balancer mulai dari 10 menit terakhir hingga 10 hari ke belakang, menggulir ke atas untuk baris yang lebih lama, dan memperbaruinya secara manual atau otomatis. Kontrol ini ada di log runtime aplikasi dan log load balancer; lihat [Membaca log](./reading-logs.md) untuk letak setiap log.
+Di dPanel Anda bisa membaca log aplikasi dan load balancer mulai dari 10 menit terakhir hingga 3 hari ke belakang, menggulir ke atas untuk baris yang lebih lama, dan memperbaruinya secara manual atau otomatis. Kontrol ini ada di log runtime aplikasi dan log load balancer; lihat [Membaca log](./reading-logs.md) untuk letak setiap log.
 
 ## Memilih rentang waktu
 
 Tampilan dibuka pada **10 menit terakhir**.
 
 1. Buka menu rentang waktu, di sebelah kiri **Saring baris yang dimuat**.
-2. Pilih salah satu: **10 menit terakhir**, **1 jam terakhir**, **6 jam terakhir**, **24 jam terakhir**, **3 hari terakhir**, **7 hari terakhir**, atau **10 hari terakhir**.
+2. Pilih salah satu: **10 menit terakhir**, **1 jam terakhir**, **6 jam terakhir**, **24 jam terakhir**, atau **3 hari terakhir**.
 
 ![Menu rentang waktu, dengan pilihan cepat dan opsi rentang khusus](../../assets/logs/logs-time-range.webp)
 
@@ -28,11 +28,11 @@ Formulir memberi tahu apa yang salah sebelum pencarian dijalankan:
 | ------------------------------------------ | ----------------------------------------------- |
 | Isi waktu mulai dan selesai.               | Isi kedua kolom.                                |
 | Waktu mulai harus sebelum waktu selesai.   | Tukar keduanya.                                 |
-| Log hanya disimpan untuk 10 hari terakhir. | Majukan waktu mulainya.                         |
+| Log hanya disimpan untuk 3 hari terakhir.  | Majukan waktu mulainya.                         |
 | Waktu selesai tidak boleh di masa depan.   | Atur waktu selesai ke sekarang atau lebih awal. |
 
-:::info[Hingga 10 hari ke belakang]
-Log bisa dibaca hingga 10 hari ke belakang. dPanel menahan setiap rentang dalam batas itu, jadi waktu mulai yang lebih lama akan dimajukan ke tepi jendela.
+:::info[Hingga 3 hari ke belakang]
+Log bisa dibaca hingga 3 hari ke belakang. dPanel menahan setiap rentang dalam batas itu, jadi waktu mulai yang lebih lama akan dimajukan ke tepi jendela.
 :::
 
 ## Menggulir ke atas untuk baris yang lebih lama
@@ -73,7 +73,7 @@ Tab **Log** di halaman server dan tab **Keluaran log** di **Log Artefak** juga p
 
 ### Mengapa baris yang lebih lama tidak ada?
 
-dPanel menyimpan log aplikasi dan load balancer selama 10 hari. Yang lebih lama sudah hilang. Unduh yang perlu Anda simpan. Lihat [Mengunduh log](./download-logs.md).
+dPanel menyimpan log aplikasi dan load balancer selama 3 hari. Yang lebih lama sudah hilang. Unduh yang perlu Anda simpan. Lihat [Mengunduh log](./download-logs.md).
 
 ### Mengapa baris terbaru ada di paling bawah?
 

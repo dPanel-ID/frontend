@@ -137,7 +137,7 @@ Runtime logs come from the running service. An application without a start comma
 
 ### The logs are empty
 
-Logs only show the time range you picked. Widen the range; the longest is 10 days. If the application was just released, wait a minute and press **Refresh**. See [Reading logs](../logs/reading-logs.md).
+Logs only show the time range you picked. Widen the range; the longest is 3 days. If the application was just released, wait a minute and press **Refresh**. See [Reading logs](../logs/reading-logs.md).
 
 ### "More than 100,000 lines" and I cannot download
 

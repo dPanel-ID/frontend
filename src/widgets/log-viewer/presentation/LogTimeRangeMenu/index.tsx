@@ -46,8 +46,6 @@ const PRESET_LABEL_KEYS: Record<LogTimeRangePreset, string> = {
   '6h': 'timeRangePresets.last6h',
   '24h': 'timeRangePresets.last24h',
   '3d': 'timeRangePresets.last3d',
-  '7d': 'timeRangePresets.last7d',
-  '10d': 'timeRangePresets.last10d',
 };
 
 const CUSTOM_ERROR_KEYS: Record<CustomLogTimeRangeError, string> = {

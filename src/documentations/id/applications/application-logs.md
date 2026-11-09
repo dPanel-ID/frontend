@@ -36,7 +36,7 @@ Log runtime mengikuti rilis yang aktif. Saat aplikasi berjalan di beberapa serve
 
 ## Menemukan yang Anda cari
 
-1. Pilih **Rentang waktu**. Tab terbuka pada **10 menit terakhir**; Anda bisa mundur hingga 10 hari.
+1. Pilih **Rentang waktu**. Tab terbuka pada **10 menit terakhir**; Anda bisa mundur hingga 3 hari.
 2. Ketik di **Saring baris yang dimuat** untuk menyisakan baris yang memuat teks Anda. Huruf besar dan kecil tidak dibedakan.
 3. Pilih chip level, misalnya **error**, untuk menyisakan level itu saja.
 4. Pilih satu baris untuk membukanya lengkap di panel **Entri log**.
@@ -63,8 +63,8 @@ Kode statusnya `4xx`: halaman yang tidak ada (`404`) atau request yang perlu log
 
 ### Bisakah saya membaca request load balancer dari terminal?
 
-Bisa. `dnocs load-balancer log --id <ID load balancer>` mencetak baris request yang sama, terbaru lebih dulu. Tambahkan `--since 24h` untuk mundur lebih jauh (hingga `240h`, 10 hari), `--page 2` untuk baris yang lebih lama, atau `--json` untuk semua field. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang dnocs.
+Bisa. `dnocs load-balancer log --id <ID load balancer>` mencetak baris request yang sama, terbaru lebih dulu. Tambahkan `--since 24h` untuk mundur lebih jauh (hingga `72h`, 3 hari), `--page 2` untuk baris yang lebih lama, atau `--json` untuk semua field. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang dnocs.
 
 ### Seberapa jauh ke belakang log bisa dibaca?
 
-10 hari, untuk kedua sumber. Lihat [Rentang waktu dan pembaruan](../logs/time-range-and-refresh.md).
+3 hari, untuk kedua sumber. Lihat [Rentang waktu dan pembaruan](../logs/time-range-and-refresh.md).

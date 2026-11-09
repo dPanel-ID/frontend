@@ -24,7 +24,7 @@ describe('resolveLogTimeRange', () => {
   });
 
   it('reaches back the full lookback window for the widest preset', () => {
-    const range = resolveLogTimeRange({ kind: 'relative', preset: '10d' }, NOW);
+    const range = resolveLogTimeRange({ kind: 'relative', preset: '3d' }, NOW);
 
     expect(Date.parse(range.timeGte)).toBe(
       NOW - LOG_TIME_RANGE_MAX_LOOKBACK_MS,
@@ -81,7 +81,7 @@ describe('datetime-local values', () => {
 
 describe('logTimeRangeKey', () => {
   it('distinguishes presets and custom ranges', () => {
-    expect(logTimeRangeKey({ kind: 'relative', preset: '7d' })).toBe('7d');
+    expect(logTimeRangeKey({ kind: 'relative', preset: '3d' })).toBe('3d');
     expect(logTimeRangeKey({ kind: 'absolute', fromMs: 1, toMs: 2 })).toBe(
       '1-2',
     );
