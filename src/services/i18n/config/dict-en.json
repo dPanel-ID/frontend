@@ -736,6 +736,12 @@
         "resourcesTitle": "All resources",
         "resourcesDescription": "Browse servers, applications, load balancers, domains and SSH keys of every user and team, with each one's owner and workspace.",
         "resourcesCta": "Open all resources"
+      },
+      "tabs": {
+        "profile": "Profile",
+        "workers": "Workers",
+        "serviceAccounts": "Service accounts",
+        "ariaLabel": "Profile sections"
       }
     },
     "applications": {
@@ -3044,7 +3050,14 @@
       "membersDescription": "Who is in this team and what each of them can do.",
       "showing": "Showing {shown} of {total, plural, one {# member} other {# members}}",
       "actionsColumn": "Actions",
-      "joinedAgo": "Joined {when}"
+      "joinedAgo": "Joined {when}",
+      "tabs": {
+        "members": "Members",
+        "workers": "Workers",
+        "serviceAccounts": "Service accounts",
+        "ariaLabel": "Team sections",
+        "serviceAccountBadge": "Service account"
+      }
     },
     "notFound": {
       "title": "Page Not Found",
@@ -3875,6 +3888,110 @@
         "workflowInvalid": "Use a file name ending in .yml or .yaml.",
         "refRequired": "Enter a branch or tag.",
         "refInvalid": "Use letters, digits, dots, dashes, underscores and slashes only."
+      }
+    },
+    "serviceAccounts": {
+      "title": "Service accounts",
+      "refresh": "Refresh service accounts",
+      "descriptionPersonal": "Tokens for your scripts and CI. They act as you, in your personal workspace only.",
+      "descriptionWorkspace": "Tokens for this team's automation. Each account has its own identity and role in this team.",
+      "empty": {
+        "title": "No service accounts yet",
+        "descriptionPersonal": "Create one to call the dPanel API from a script without using your own session.",
+        "descriptionWorkspace": "Create one to let CI or a script work in this team without using a person's session."
+      },
+      "readOnly": "Only team owners and admins can see and manage this team's service accounts.",
+      "account": {
+        "created": "Created {date}",
+        "addToken": "New token",
+        "delete": "Delete {name}",
+        "noTokens": "This account has no tokens."
+      },
+      "tokens": {
+        "status": {
+          "active": "Active",
+          "expired": "Expired",
+          "revoked": "Revoked"
+        },
+        "expires": "Expires {date}",
+        "noExpiry": "No expiry",
+        "lastUsed": "Last used {date}",
+        "neverUsed": "Never used",
+        "revoke": "Revoke"
+      },
+      "roles": {
+        "developer": "Developer",
+        "devops": "DevOps",
+        "viewer": "Viewer",
+        "admin": "Admin",
+        "billing": "Billing"
+      },
+      "roleHints": {
+        "developer": "Can deploy and manage applications.",
+        "devops": "Can manage servers and infrastructure.",
+        "viewer": "Can only read.",
+        "admin": "Can manage the whole team. Only team owners can grant this."
+      },
+      "create": {
+        "open": "New service account",
+        "title": "New service account",
+        "descriptionPersonal": "It acts as you, in your personal workspace only.",
+        "descriptionWorkspace": "It gets its own identity and a role in this team.",
+        "submit": "Create",
+        "createdTitle": "{name} is ready"
+      },
+      "token": {
+        "title": "New token for {name}",
+        "description": "Add a second token to replace an old one without downtime.",
+        "submit": "Create token",
+        "createdTitle": "New token for {name}"
+      },
+      "form": {
+        "name": "Name",
+        "nameHint": "For example github-actions. 2 to 64 characters.",
+        "nameInvalid": "Enter a name of 2 to 64 characters.",
+        "description": "Description",
+        "descriptionHint": "Optional. What uses this account?",
+        "role": "Role",
+        "tokenName": "Token name",
+        "tokenNameHint": "Where this token will be used.",
+        "tokenNameInvalid": "Enter a token name.",
+        "expiry": "Expires",
+        "expiryHint": "The token stops working after this.",
+        "expiryNoneWarning": "This token works until someone revokes it. Prefer an expiry.",
+        "expiryOptions": {
+          "d30": "In 30 days",
+          "d90": "In 90 days",
+          "d365": "In 1 year",
+          "d0": "Never"
+        }
+      },
+      "reveal": {
+        "warning": "Copy this token now. It won't be shown again.",
+        "label": "Token",
+        "copy": "Copy",
+        "copied": "Copied",
+        "copyFailed": "Couldn't copy. Select the text and copy it by hand.",
+        "usage": "Send it with each API request:",
+        "done": "I've saved it"
+      },
+      "deleteDialog": {
+        "title": "Delete {name}?",
+        "message": "All its tokens stop working immediately. Applications it deployed keep running, but move them to another owner first. This can't be undone.",
+        "confirm": "Delete account"
+      },
+      "revokeDialog": {
+        "title": "Revoke {name}?",
+        "message": "Anything using this token stops working immediately. This can't be undone.",
+        "confirm": "Revoke token"
+      },
+      "toaster": {
+        "createError": "Couldn't create {name}",
+        "tokenError": "Couldn't create token {name}",
+        "deleteError": "Couldn't delete {name}",
+        "deleteSuccess": "{name} was deleted",
+        "revokeError": "Couldn't revoke {name}",
+        "revokeSuccess": "{name} was revoked"
       }
     }
   },
