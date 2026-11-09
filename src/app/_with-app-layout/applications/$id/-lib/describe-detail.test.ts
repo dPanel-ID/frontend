@@ -45,6 +45,17 @@ describe('releaseStatusOfArtifact', () => {
     ).toBe('deployed');
   });
 
+  // A build row is ready once it exists; a deploy that then fails must not
+  // leave the Overview saying it passed while Releases says it failed.
+  it('reports a failed release even though the build row is ready', () => {
+    expect(
+      releaseStatusOfArtifact({
+        artifact: artifact('ready'),
+        lastDeployment: deployment('failed'),
+      }),
+    ).toBe('failed');
+  });
+
   it('lets a running build outrank the release it is about to replace', () => {
     expect(
       releaseStatusOfArtifact({
