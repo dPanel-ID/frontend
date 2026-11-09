@@ -178,9 +178,7 @@
         "last1h": "1 jam terakhir",
         "last6h": "6 jam terakhir",
         "last24h": "24 jam terakhir",
-        "last3d": "3 hari terakhir",
-        "last7d": "7 hari terakhir",
-        "last10d": "10 hari terakhir"
+        "last3d": "3 hari terakhir"
       },
       "customRange": "Rentang khusus",
       "customRangeHint": "Pilih hingga {days} hari ke belakang",

@@ -1,18 +1,18 @@
 ---
 title: Time range and refresh
-description: Pick a log time range up to 10 days back, scroll up to load older lines, and turn on auto-refresh to follow application logs live.
+description: Pick a log time range up to 3 days back, scroll up to load older lines, and turn on auto-refresh to follow application logs live.
 sidebar_position: 2
 sidebar_icon: clock
 ---
 
-In dPanel you can read application and load balancer logs from the last 10 minutes up to 10 days back, scroll up for older lines, and refresh them by hand or automatically. These controls are on application runtime logs and load balancer logs; see [Reading logs](./reading-logs.md) for where each log lives.
+In dPanel you can read application and load balancer logs from the last 10 minutes up to 3 days back, scroll up for older lines, and refresh them by hand or automatically. These controls are on application runtime logs and load balancer logs; see [Reading logs](./reading-logs.md) for where each log lives.
 
 ## Choose a time range
 
 The view opens on **Last 10 minutes**.
 
 1. Open the time range menu, left of **Filter loaded lines**.
-2. Pick a preset: **Last 10 minutes**, **Last 1 hour**, **Last 6 hours**, **Last 24 hours**, **Last 3 days**, **Last 7 days** or **Last 10 days**.
+2. Pick a preset: **Last 10 minutes**, **Last 1 hour**, **Last 6 hours**, **Last 24 hours** or **Last 3 days**.
 
 ![The time range menu, with its presets and the custom range option](../../assets/logs/logs-time-range.webp)
 
@@ -28,11 +28,11 @@ The form tells you what is wrong before it runs the search:
 | ---------------------------------------- | ------------------------------ |
 | Enter both a start and an end.           | Fill in both fields.           |
 | The start must be before the end.        | Swap them.                     |
-| Logs are only kept for the last 10 days. | Move the start forward.        |
+| Logs are only kept for the last 3 days.  | Move the start forward.        |
 | The end can't be in the future.          | Set the end to now or earlier. |
 
-:::info[10 days back]
-Logs can be read up to 10 days back. dPanel holds every range to that limit, so an older start is moved up to the edge of the window.
+:::info[3 days back]
+Logs can be read up to 3 days back. dPanel holds every range to that limit, so an older start is moved up to the edge of the window.
 :::
 
 ## Scroll up for older lines
@@ -73,7 +73,7 @@ The server **Logs** tab and the **Log output** tab of **Artifact Logs** have the
 
 ### Why are older lines missing?
 
-dPanel keeps application and load balancer logs for 10 days. Anything older is gone. Download what you need to keep. See [Download logs](./download-logs.md).
+dPanel keeps application and load balancer logs for 3 days. Anything older is gone. Download what you need to keep. See [Download logs](./download-logs.md).
 
 ### Why does the newest line sit at the bottom?
 

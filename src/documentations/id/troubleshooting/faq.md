@@ -137,7 +137,7 @@ Log runtime berasal dari layanan yang sedang berjalan. Aplikasi tanpa perintah s
 
 ### Lognya kosong
 
-Log hanya menampilkan rentang waktu yang Anda pilih. Perlebar rentangnya; yang paling panjang 10 hari. Kalau aplikasi baru saja dirilis, tunggu sebentar lalu tekan **Segarkan**. Lihat [Membaca log](../logs/reading-logs.md).
+Log hanya menampilkan rentang waktu yang Anda pilih. Perlebar rentangnya; yang paling panjang 3 hari. Kalau aplikasi baru saja dirilis, tunggu sebentar lalu tekan **Segarkan**. Lihat [Membaca log](../logs/reading-logs.md).
 
 ### "Lebih dari 100.000 baris" dan log tidak bisa diunduh
 
