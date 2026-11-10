@@ -1579,6 +1579,7 @@
     },
     "serverDetail": {
       "sectionModules": {
+        "adoptedSource": "Dipasang di luar dPanel (diadopsi)",
         "detailDescription": "Tinjau metadata instalasi yang tercatat. Data duplikat atau usang dapat dihapus dari inventori dPanel.",
         "uninstallPanel": {
           "title": "Uninstall dari inventori",
@@ -1688,6 +1689,14 @@
         "refresh": "Segarkan inventaris",
         "refreshed": "Inventaris modul disegarkan.",
         "refreshFailed": "Tidak dapat menyegarkan inventaris",
+        "adopt": {
+          "button": "Adopsi MariaDB yang sudah ada",
+          "checkFailed": "MariaDB tidak dapat diadopsi",
+          "dialogTitle": "Adopsi {module}?",
+          "dialogMessage": "dPanel menemukan {module} berjalan di port {port}. dPanel hanya akan mencatatnya di sini agar Anda dapat mengelolanya dari dPanel. Tidak ada perubahan di server: tanpa paket, konfigurasi, atau restart. dPanel tidak akan memasang, memperbarui, atau menghapusnya.",
+          "failed": "Tidak dapat mengadopsi {module}",
+          "success": "{module} kini dilacak oleh dPanel."
+        },
         "empty": {
           "title": "Belum ada modul",
           "message": "Tambahkan runtime, database atau web server dari katalog; dPanel memasangnya di server ini untuk Anda."
