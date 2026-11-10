@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import {
+  DatabaseZapIcon,
   Layers3Icon,
   PlusIcon,
   PuzzleIcon,
@@ -35,7 +36,9 @@ import { flowCtaClassName } from '@/shared/presentation/organisms/FlowHero';
 
 import { useEmit } from '../../../-model/events';
 import { useServerDataModel } from '../../../-model/server-data';
+import useModuleAdopt from '../../../-usecase/module-adopt';
 
+import { ADOPTABLE_MODULE, canOfferModuleAdoption } from './-lib/adopt';
 import { ModulesTabStates as UIStates } from './_States';
 import ModulesList from './ModulesList';
 
@@ -55,6 +58,7 @@ export default guard(function ModulesTab() {
   const [openToaster] = useToaster();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const { adoptModule, isChecking } = useModuleAdopt();
   const [modules] = useServerModules((s) => [s.modules]);
   const [serverId, refreshModuleInventory, refreshModules] = useServerDataModel(
     (s) => [String(s.serverId), s.refreshModuleInventory, s.refreshModules],
@@ -98,6 +102,29 @@ export default guard(function ModulesTab() {
     emit('@servers::detail/favorite-navigation', { to: 'modules-discover' });
   };
 
+  const offerAdoption = canOfferModuleAdoption(modules);
+
+  const handleClickAdopt = () => {
+    adoptModule({
+      moduleName: ADOPTABLE_MODULE,
+      onSuccess: refreshModules,
+      serverId,
+    });
+  };
+
+  const adoptButton = offerAdoption ? (
+    <Button
+      buttonStyle="outline"
+      buttonColor="secondary"
+      size="sm"
+      disabled={isChecking}
+      onClick={handleClickAdopt}
+    >
+      <DatabaseZapIcon className={cn(isChecking && 'animate-pulse')} />
+      {t('adopt.button')}
+    </Button>
+  ) : null;
+
   const handleClickRefresh = async () => {
     setIsRefreshing(true);
     const response = await refreshModuleInventory();
@@ -118,6 +145,7 @@ export default guard(function ModulesTab() {
   if (modules.length < 1) {
     return (
       <UIStates.Empty
+        adoptButton={adoptButton}
         isRefreshing={isRefreshing}
         onClickAdd={handleClickAdd}
         onClickRefresh={handleClickRefresh}
@@ -132,6 +160,7 @@ export default guard(function ModulesTab() {
       description={t('description')}
       actions={
         <>
+          {adoptButton}
           <Button
             buttonStyle="outline"
             buttonColor="secondary"

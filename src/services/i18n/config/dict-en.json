@@ -1579,6 +1579,7 @@
     },
     "serverDetail": {
       "sectionModules": {
+        "adoptedSource": "Installed outside dPanel (adopted)",
         "detailDescription": "Review the recorded installation metadata. Duplicate or stale records can be removed from dPanel inventory.",
         "uninstallPanel": {
           "title": "Uninstall from inventory",
@@ -1688,6 +1689,14 @@
         "refresh": "Refresh inventory",
         "refreshed": "Module inventory refreshed.",
         "refreshFailed": "Could not refresh the inventory",
+        "adopt": {
+          "button": "Adopt existing MariaDB",
+          "checkFailed": "MariaDB could not be adopted",
+          "dialogTitle": "Adopt {module}?",
+          "dialogMessage": "dPanel found {module} running on port {port}. It will only record it here, so you can manage it from dPanel. Nothing on the server changes: no package, configuration or restart. dPanel will not install, upgrade or remove it.",
+          "failed": "Could not adopt {module}",
+          "success": "{module} is now tracked by dPanel."
+        },
         "empty": {
           "title": "No modules yet",
           "message": "Add a runtime, database or web server from the catalog; dPanel installs it on this server for you."
