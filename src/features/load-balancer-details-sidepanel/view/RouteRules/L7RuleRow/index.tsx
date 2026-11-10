@@ -70,12 +70,51 @@ export default function L7RuleRow(props: L7RuleRowProps) {
                     Target ({address.protocol.toLocaleUpperCase()})
                   </h6>
                   <code className="font-semibold text-primary text-sm tracking-tighter break-all">
-                    {address.hostname}:<span className="opacity-70">{port}</span>
+                    {address.hostname}:
+                    <span className="opacity-70">{port}</span>
                   </code>
                 </>
               ) : (
                 <span className="text-primary/40 text-xs italic">—</span>
               )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (upstreamRule.type === 'redirect') {
+    const { matchingPath, target } = upstreamRule;
+
+    return (
+      <div className="bg-card/30 border shadow-xs rounded-sm overflow-hidden">
+        <Subheading
+          upstreamType="redirect"
+          priority={1}
+          trafficPercentage="100%"
+        />
+
+        <div className="bg-card shadow-xs border-t rounded-sm overflow-hidden">
+          <div className="px-3.5 py-2.5 w-full grid grid-cols-[1.75fr_auto_2fr] gap-x-2">
+            <div className="flex flex-col">
+              <h6 className="font-semibold text-primary/70 text-[0.7rem]">
+                {t('sidepanel.loadBalancerDetails.pathPattern')}
+              </h6>
+              <code className="font-semibold text-primary text-sm break-all">
+                {matchingPath}
+              </code>
+            </div>
+            <div className="flex items-center justify-center">
+              <ArrowRightIcon className="text-primary/80" />
+            </div>
+            <div className="flex flex-col">
+              <h6 className="font-semibold text-primary/70 text-[0.7rem]">
+                {target.code}
+              </h6>
+              <code className="font-semibold text-primary text-sm tracking-tighter break-all">
+                {target.url}
+              </code>
             </div>
           </div>
         </div>

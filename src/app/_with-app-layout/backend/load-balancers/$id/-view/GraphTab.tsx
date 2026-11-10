@@ -307,7 +307,9 @@ function RouteTable(props: { upstreams: UpstreamDraft[] }) {
       ? t('page.loadBalancersDetail.upstreams.kind.application')
       : kind === 'static'
         ? t('page.loadBalancersDetail.upstreams.kind.static')
-        : t('page.loadBalancersDetail.upstreams.kind.address');
+        : kind === 'redirect'
+          ? t('page.loadBalancersDetail.upstreams.kind.redirect')
+          : t('page.loadBalancersDetail.upstreams.kind.address');
 
   return (
     <Table>

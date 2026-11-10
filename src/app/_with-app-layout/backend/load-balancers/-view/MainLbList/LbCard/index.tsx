@@ -502,6 +502,10 @@ function formatRuleTarget(
     });
   }
 
+  if (rule.type === 'redirect') {
+    return `${rule.target.code} → ${rule.target.url}`;
+  }
+
   if (rule.type === 'static-file') {
     return rule.filePath.join(', ') || t('page.loadBalancers.staticFiles');
   }

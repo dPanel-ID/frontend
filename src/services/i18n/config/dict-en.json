@@ -2184,6 +2184,14 @@
         "notReady": "Only ready servers can run a load balancer."
       },
       "routing": {
+        "redirect": {
+          "type": "Redirect",
+          "url": "Redirect to",
+          "code": "Redirect type",
+          "code302": "302 Temporary",
+          "code301": "301 Permanent",
+          "keepPath": "Keep the requested path and query"
+        },
         "title": "Traffic routing",
         "description": "Choose the traffic layer and map incoming requests to applications or direct upstream addresses.",
         "kindHint": "L7 is best for HTTP path routing. L4 is best for raw TCP, UDP, or database ports.",
@@ -2384,6 +2392,7 @@
         "routeMapDesc": "Every configured route and backend target in the current load balancer definition."
       },
       "upstreams": {
+        "redirectCode": "Redirect code",
         "title": "Upstreams and backend order",
         "description": "Review backend targets as read-only routing records. Replace a rule by deleting it and adding a new backend.",
         "backendRequired": "Saving updates the load balancer routing definition and submits the gateway playbook run.",
@@ -2409,6 +2418,7 @@
         "moveUp": "Move upstream up",
         "moveDown": "Move upstream down",
         "kind": {
+          "redirect": "Redirect",
           "application": "Application",
           "address": "Address",
           "static": "Static"
@@ -4636,6 +4646,7 @@
       "invalidTld": "Parse domain failed: unrecognized TLD.",
       "invalidDomain": "Parse domain failed: invalid domain."
     },
+    "redirectUrl": "Enter an http or https URL with no query.",
     "mixedTargetForms": "Use only origin URLs or only IP addresses in one route.",
     "portPositive": "Use a port between 1 and 65535.",
     "l4PortRange": "Use a port between 1024 and 65535.",

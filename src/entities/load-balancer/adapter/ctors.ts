@@ -49,6 +49,23 @@ export function ctorConfiguration(raw: LoadBalancerDto) {
   // L7 — map raw.rules if available, fall back to legacy raw.upstream
   const rulesFromApi = (raw.rules ?? []).map(
     (rule): KeysOnlyDeep<z.input<typeof l7Rule>> => {
+      if (rule.type === 'redirect') {
+        return {
+          upstream: {
+            type: 'redirect',
+            matchingPath: formatLoadBalancerPathMatchForDisplay(
+              rule.path_match ?? '/',
+              rule.wildcard,
+            ),
+            target: {
+              url: rule.target?.redirect?.url ?? '',
+              code: rule.target?.redirect?.code ?? 302,
+              dropPath: rule.target?.redirect?.drop_path ?? false,
+            },
+          },
+        };
+      }
+
       if (rule.target?.application_id) {
         return {
           upstream: {

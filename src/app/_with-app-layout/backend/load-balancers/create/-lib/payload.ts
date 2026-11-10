@@ -33,11 +33,13 @@ export function getRoutePreviewItems(
       )?.identity.name ??
       `Application #${rule.applicationIdIfProxyPassApp ?? '-'}`;
     const destination =
-      rule.type !== 'proxy-pass-app'
-        ? targets(rule.upstreamsIfProxyPass)
-        : rule.addressModeIfProxyPassApp === 'custom'
-          ? `${applicationName} · ${targets(rule.customTargetsIfProxyPassApp)}`
-          : applicationName;
+      rule.type === 'redirect'
+        ? `${rule.redirectCodeIfRedirect ?? 302} → ${rule.redirectUrlIfRedirect ?? '-'}`
+        : rule.type !== 'proxy-pass-app'
+          ? targets(rule.upstreamsIfProxyPass)
+          : rule.addressModeIfProxyPassApp === 'custom'
+            ? `${applicationName} · ${targets(rule.customTargetsIfProxyPassApp)}`
+            : applicationName;
 
     return {
       key: `l7-${index}`,
@@ -58,6 +60,18 @@ export function toCreateLoadBalancerPayload(
       return values.l7rules.map((rule) => {
         const isApplicationTarget = rule.type === 'proxy-pass-app';
         const route = normalizeLoadBalancerPathMatchForPayload(rule.pathMatch);
+        if (rule.type === 'redirect') {
+          return {
+            wildcard: route.wildcard,
+            pathMatch: route.pathMatch,
+            type: 'redirect',
+            redirect: {
+              url: (rule.redirectUrlIfRedirect ?? '').trim(),
+              code: rule.redirectCodeIfRedirect ?? 302,
+              dropPath: rule.redirectDropPathIfRedirect ?? false,
+            },
+          };
+        }
         const addressMode = isApplicationTarget
           ? (rule.addressModeIfProxyPassApp ?? 'registered')
           : undefined;

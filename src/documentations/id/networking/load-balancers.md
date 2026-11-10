@@ -79,6 +79,16 @@ Anda juga bisa meminta asisten menyiapkannya, misalnya "Pasang aplikasi saya di 
 
 Dengan **L4**, Anda mengatur **Layanan** (misalnya PostgreSQL atau Redis), **Port listen**, **Sumber yang diizinkan**, dan **Penyeimbangan**, lalu alamat upstream-nya. **Sumber yang diizinkan** wajib untuk basis data. HTTPS tidak dipakai: koneksi diteruskan apa adanya, jadi basis data tetap memakai TLS-nya sendiri dari ujung ke ujung.
 
+### Mengalihkan domain
+
+Sebuah rute bisa mengirim pengunjung ke URL lain, bukan ke aplikasi atau alamat, di Caddy, HAProxy, dan Apache APISIX. Di **Routing**, ubah **Tipe** aturan menjadi **Pengalihan**, isi **Alihkan ke**, lalu pilih **302 Sementara** atau **301 Permanen**. Peramban mengingat 301, jadi gunakan 302 sampai tujuannya pasti. Jalur dan query yang diminta tetap dibawa, kecuali Anda mematikan **Pertahankan jalur dan query yang diminta**.
+
+Dari terminal:
+
+```bash
+dnocs load-balancer create --name old --domain old.example.com --https --server-id 12 --redirect-to https://new.example.com --redirect-code 301
+```
+
 ### Langkah 4: Tinjau
 
 Langkah **Tinjau** dan panel tinjauan menampilkan semua jawaban: server gateway, mesin, domain, HTTPS, mode routing, dan rute. Tekan **Ubah** di sebuah langkah untuk mengubahnya. Saat panel bertuliskan **Siap dibuat**, tekan **Buat load balancer**.

@@ -60,6 +60,20 @@ export function getUpstreamDrafts(
       return;
     }
 
+    if (upstream.type === 'redirect') {
+      rows.push({
+        destination: upstream.target.url,
+        id: `redirect-${ruleIndex}-${upstream.target.url}`,
+        kind: 'redirect',
+        match: upstream.matchingPath,
+        order: baseOrder,
+        port: String(upstream.target.code),
+        protocol: 'http',
+        redirectDropPath: upstream.target.dropPath,
+      });
+      return;
+    }
+
     if (upstream.type === 'static-file') {
       rows.push({
         destination: upstream.filePath.join(', '),
@@ -158,6 +172,7 @@ export function serializeUpstreamDraftRows(rows: UpstreamDraft[]) {
       match: row.match.trim(),
       port: row.port.trim(),
       protocol: row.protocol,
+      redirectDropPath: row.redirectDropPath ?? false,
     })),
   );
 }
@@ -178,7 +193,7 @@ export function areUpstreamDraftRowsValid(
       return getApplicationIdFromDraftRow(row).length > 0;
     }
 
-    if (row.kind === 'static') {
+    if (row.kind === 'static' || row.kind === 'redirect') {
       return row.destination.trim().length > 0;
     }
 
@@ -237,6 +252,19 @@ export function toLoadBalancerUpdateRule(
             })),
           }
         : {}),
+    };
+  }
+
+  if (row.kind === 'redirect') {
+    return {
+      pathMatch: route.pathMatch,
+      type: 'redirect',
+      wildcard: route.wildcard,
+      redirect: {
+        url: row.destination.trim(),
+        code: Number(row.port),
+        dropPath: row.redirectDropPath,
+      },
     };
   }
 

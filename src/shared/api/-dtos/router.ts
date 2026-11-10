@@ -27,6 +27,8 @@ export interface RouterRuleUpstreamV1 {
 }
 
 export interface RouterRuleTargetV1 {
+  /** Destination of a rule of type redirect. */
+  redirect?: { url?: string; code?: number; drop_path?: boolean };
   application_id?: string;
   /** How an application target is reached; empty means private (legacy). */
   address_mode?: 'registered' | 'private' | 'custom' | '';

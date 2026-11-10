@@ -522,7 +522,9 @@ export function UpstreamEditorCard(props: {
       ? t('page.loadBalancersDetail.upstreams.kind.application')
       : row.kind === 'static'
         ? t('page.loadBalancersDetail.upstreams.kind.static')
-        : t('page.loadBalancersDetail.upstreams.kind.address');
+        : row.kind === 'redirect'
+          ? t('page.loadBalancersDetail.upstreams.kind.redirect')
+          : t('page.loadBalancersDetail.upstreams.kind.address');
 
   return (
     <div className="rounded-lg border bg-background p-3">
@@ -602,7 +604,11 @@ export function UpstreamEditorCard(props: {
           mono={row.kind !== 'application'}
         />
         <ReadOnlyRouteValue
-          label={t('common.terms.port')}
+          label={
+            row.kind === 'redirect'
+              ? t('page.loadBalancersDetail.upstreams.redirectCode')
+              : t('common.terms.port')
+          }
           value={
             display.port ||
             (responseApplication.$status === 'loading'
