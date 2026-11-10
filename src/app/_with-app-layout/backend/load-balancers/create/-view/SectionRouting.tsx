@@ -319,6 +319,10 @@ export function L7RuleCard(props: {
                   value: 'proxy-pass-app',
                   label: t('common.terms.application'),
                 },
+                {
+                  value: 'redirect',
+                  label: t('page.loadBalancersCreate.routing.redirect.type'),
+                },
               ]}
               value={type.field.value}
               onChange={type.field.onChange}
@@ -340,12 +344,75 @@ export function L7RuleCard(props: {
           </FormField>
         </div>
 
-        {ruleType === 'proxy-pass-app' ? (
+        {ruleType === 'redirect' ? (
+          <RedirectDestination form={form} ruleIndex={index} />
+        ) : ruleType === 'proxy-pass-app' ? (
           <ApplicationDestination form={form} ruleIndex={index} />
         ) : (
           <ProxyDestinations form={form} ruleIndex={index} />
         )}
       </div>
+    </div>
+  );
+}
+
+export function RedirectDestination(props: { form: Form; ruleIndex: number }) {
+  const { form, ruleIndex } = props;
+  const t = useDevetekTranslations();
+  const code = useController({
+    control: form.control,
+    name: `l7rules.${ruleIndex}.redirectCodeIfRedirect`,
+  });
+  const dropPath = useController({
+    control: form.control,
+    name: `l7rules.${ruleIndex}.redirectDropPathIfRedirect`,
+  });
+
+  return (
+    <div className="grid gap-3">
+      <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_240px]">
+        <FormField
+          label={t('page.loadBalancersCreate.routing.redirect.url')}
+          required
+        >
+          <Input
+            className="font-mono"
+            placeholder="https://example.com"
+            {...form.register(`l7rules.${ruleIndex}.redirectUrlIfRedirect`)}
+          />
+          <ErrorInline
+            t={t}
+            message={
+              form.formState.errors.l7rules?.[ruleIndex]?.redirectUrlIfRedirect
+                ?.message
+            }
+          />
+        </FormField>
+        <FormField label={t('page.loadBalancersCreate.routing.redirect.code')}>
+          <Combobox
+            classNameButton="w-full"
+            items={[
+              {
+                value: '302',
+                label: t('page.loadBalancersCreate.routing.redirect.code302'),
+              },
+              {
+                value: '301',
+                label: t('page.loadBalancersCreate.routing.redirect.code301'),
+              },
+            ]}
+            value={String(code.field.value ?? 302)}
+            onChange={(value) => code.field.onChange(Number(value))}
+          />
+        </FormField>
+      </div>
+      <label className="flex items-center gap-2 text-sm">
+        <Switch
+          checked={!dropPath.field.value}
+          onCheckedChange={(keep) => dropPath.field.onChange(!keep)}
+        />
+        {t('page.loadBalancersCreate.routing.redirect.keepPath')}
+      </label>
     </div>
   );
 }

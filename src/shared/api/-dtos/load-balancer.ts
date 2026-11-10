@@ -39,7 +39,15 @@ export interface LoadBalancerRuleV2 {
     upstreams?: LoadBalancerRuleUpstreamV2[];
     /** Where an application target went at the last apply (read-only). */
     resolved_upstreams?: LoadBalancerRuleUpstreamV2[];
+    /** Destination of a rule of type redirect. */
+    redirect?: LoadBalancerRedirectV2;
   };
+}
+
+export interface LoadBalancerRedirectV2 {
+  url?: string;
+  code?: number;
+  drop_path?: boolean;
 }
 
 export interface LoadBalancerConfigV2 {

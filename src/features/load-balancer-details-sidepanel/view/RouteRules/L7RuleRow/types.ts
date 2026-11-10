@@ -5,7 +5,7 @@ export interface L7RuleRowProps {
 }
 
 export interface SubheadingProps {
-  upstreamType: 'proxy-pass' | 'proxy-pass-app' | 'static-file';
+  upstreamType: 'proxy-pass' | 'proxy-pass-app' | 'static-file' | 'redirect';
   trafficPercentage: string;
   priority: number;
 }

@@ -40,6 +40,8 @@ export interface RecipeRule {
   applicationId?: string;
   /** How an application target is reached; see the backend's address modes. */
   addressMode?: 'registered' | 'private' | 'custom';
+  /** Destination when type is redirect. */
+  redirect?: { url: string; code: number; dropPath?: boolean };
 }
 
 export interface RecipeRuntimeItem {
@@ -150,6 +152,13 @@ export function toRulePayload(rule: RecipeRule) {
       application_id: rule.applicationId,
       address_mode: rule.addressMode,
       upstreams: rule.upstreams,
+      redirect: rule.redirect
+        ? {
+            url: rule.redirect.url,
+            code: rule.redirect.code,
+            drop_path: rule.redirect.dropPath,
+          }
+        : undefined,
     },
   };
 }
