@@ -80,7 +80,7 @@ build:
   timeout: 90m
 ```
 
-Formulir web belum punya kolom ini. Atur di file definisi yang Anda deploy lewat alat command-line dPanel. Cara lainnya, pakai server yang lebih besar agar build lebih cepat. Lihat [Batas waktu build](../applications/build-timeout.md).
+Buka **Pengaturan** aplikasi, tekan **Ubah** di **Deployment**, lalu isi **Batas waktu**. Server yang lebih besar juga mempersingkat build. Lihat [Batas waktu build](../applications/build-timeout.md).
 
 ### "Sesi GitHub kedaluwarsa" atau "Hubungkan ulang GitHub"
 
@@ -92,6 +92,10 @@ Buka **Tim GitHub** di **Buat Aplikasi** lalu pilih **Tambah akun GitHub**. Pasa
 
 ## Load balancer, HTTPS, dan DNS
 
+### Situs saya menampilkan error 502
+
+Error 502 berarti load balancer tidak mendapat jawaban dari aplikasi Anda. Pastikan aplikasinya berstatus **Berjalan**, baca log runtime-nya, pastikan program Anda mendengarkan di **Port aplikasi**, lalu periksa **Cara gateway menjangkau aplikasi ini** di load balancer.
+
 ### Load balancer menampilkan "Perubahan load balancer gagal"
 
 Banner merah di daftar dan di halaman load balancer berarti perubahan terakhir tidak selesai. Tekan **Lihat penyebab gagal** untuk membaca alasannya; di tabel, tekan status yang gagal. Alasannya berbentuk seperti `Load balancer create failed. Ansible task failed on <server>: <langkah>. Detail: …`, dengan langkah yang menyebut apa yang sedang dikerjakan dPanel di gateway (Ansible adalah alat yang dipakai dPanel untuk menjalankan langkah setup di server). Periksa secara berurutan:
@@ -101,7 +105,7 @@ Banner merah di daftar dan di halaman load balancer berarti perubahan terakhir t
 3. Dengan domain **Terkelola**, domain itu masih terhubung di **Domain & DNS**, dan namanya belum ada di zona.
 4. Aplikasinya berjalan, dan pilihan cara gateway menjangkau aplikasi sesuai dengan tempat aplikasi berjalan.
 
-Perbaiki penyebabnya, lalu hapus load balancer yang gagal dan buat lagi. **Ask dPanel** juga bisa memperbarui load balancer yang sudah ada untuk Anda setujui. Lihat [Load balancer](../networking/load-balancers.md).
+Perbaiki penyebabnya, lalu hapus load balancer yang gagal dan buat lagi. Kalau dPanel lalu menolak namanya, record lama masih ada di zona: hapus dulu di **Record DNS** domain itu. **Ask dPanel** juga bisa memperbarui load balancer yang sudah ada untuk Anda setujui. Lihat [Load balancer](../networking/load-balancers.md).
 
 ### Load balancer TCP atau UDP tidak menjawab di port-nya
 
@@ -155,7 +159,7 @@ Kemungkinan besar Anda sedang berada di ruang kerja lain. Periksa nama ruang ker
 
 ### Saya tidak menemukan Pindah Pemilik
 
-dPanel tidak memindahkan resource antar ruang kerja, jadi tindakan ini disembunyikan. Server, aplikasi, load balancer, domain, akun cloud, atau kunci SSH tetap berada di ruang kerja tempat ia dibuat. Buat resource baru di ruang kerja yang benar.
+Aplikasi web tidak memindahkan resource antar ruang kerja, jadi tindakan ini disembunyikan di sana. Resource di ruang kerja pribadi Anda bisa dipindahkan ke tim satu kali, dengan `dnocs transfer`. Lihat [Tim](../teams/teams.md). Selain itu tetap berada di tempat ia dibuat.
 
 ### "Anda tidak bisa melihat kesehatan ruang kerja ini"
 

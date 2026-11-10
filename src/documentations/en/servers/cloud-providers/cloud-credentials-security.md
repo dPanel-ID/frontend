@@ -26,8 +26,8 @@ dPanel decrypts the credential in two places:
 1. **On dPanel's server**, to fill the launch form: listing regions, sizes, images and networks, and checking whether a server name is taken.
 2. **On dPanel's worker**, to create or delete a VM. The credential travels with the job and is used by the provider's Ansible modules, which run with logging of secrets turned off.
 
-:::warning[Verify]
-The encryption is AES in CFB mode, with a symmetric key held next to the application rather than in a cloud KMS or HSM. It protects a stolen database backup. It does not protect against someone with access to dPanel's running server and its key file. We could not confirm from the code how long the worker keeps the job's credential file after a run.
+:::warning[What this protects against]
+The encryption is AES in CFB mode, with a symmetric key held next to the application rather than in a cloud KMS or HSM. It protects a stolen database backup. It does not protect against someone with access to dPanel's running server and its key file.
 :::
 
 ## What each credential can do
@@ -36,7 +36,7 @@ The encryption is AES in CFB mode, with a symmetric key held next to the applica
 | ------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | AWS           | Create and terminate EC2 instances it tagged, and their network and security groups, in the regions you allow | Everything your IAM user or root user can do      |
 | Google Cloud  | Create and delete VMs, disks and firewall rules in one project                                                | Everything in every project the account can reach |
-| IDCloudHost   | Everything your IDCloudHost user can do; we could not confirm scoped keys (verify)                            | The same                                          |
+| IDCloudHost   | Everything your IDCloudHost user can do; assume a key cannot be limited                                       | The same                                          |
 | DigitalOcean  | Create, read and delete Droplets and SSH keys; read regions, sizes, images and VPCs                           | Everything in the team                            |
 | Alibaba Cloud | Create and delete ECS instances, VPCs, vSwitches, security groups and key pairs in the account                | Everything in the Alibaba Cloud account           |
 | Tencent Cloud | Create, pay for and delete CVM instances, VPCs, subnets, security groups and key pairs in the account         | Everything in the Tencent Cloud account           |

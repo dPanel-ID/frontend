@@ -45,8 +45,8 @@ Jika modul sudah terpasang di server, modul itu muncul di **Terinstal di server 
 1. **Nama aplikasi**: nama yang tampil di dPanel. Gunakan huruf, angka, dan spasi saja.
 2. **Binary yang dibutuhkan**: runtime bahasa dari modul yang Anda pilih. Sudah terpilih otomatis.
 3. **Langkah build**: satu atau beberapa perintah yang dijalankan di dalam repositori hasil clone. **Pilih file** memilih skrip dari repositori; **Tambah langkah** menambah perintah lain.
-4. **Perintah runtime**: perintah yang dipakai systemd untuk menjalankan aplikasi.
-5. **Port aplikasi**: dPanel menyarankan port kosong antara 7000 dan 10000. **Port yang sudah digunakan** menampilkan port yang tidak bisa dipakai.
+4. **Perintah runtime**: perintah yang dipakai systemd (bagian dari Linux yang menjaga program tetap berjalan) untuk menjalankan aplikasi. Perintah ini harus terus berjalan dan tidak kembali ke prompt, jadi jangan akhiri dengan `&` atau memulai pengelola latar belakang seperti `pm2 start`.
+5. **Port aplikasi**: pintu bernomor tempat program Anda mendengarkan. dPanel memberikannya ke program Anda sebagai variabel lingkungan `PORT`; program Anda harus memakai nomor itu, kalau tidak pengunjung mendapat error walaupun build-nya berhasil. dPanel menyarankan port kosong antara 7000 dan 10000. **Port yang sudah digunakan** menampilkan port yang tidak bisa dipakai.
 6. Tekan **Lanjut**.
 
 ![Langkah 3 formulir: nama aplikasi, runtime Go, langkah build, perintah runtime, dan port aplikasi](../../assets/applications/apps-create-app-setup.webp)
@@ -82,7 +82,7 @@ Aplikasi berstatus **Sedang dibangun** sampai rilis selesai, lalu **Berjalan**. 
 Anda juga bisa meminta **Ask dPanel** mengerjakannya untuk Anda; lihat [Kumpulan prompt](../ai/prompt-cookbook.md).
 
 :::note[Beri alamat publik]
-Aplikasi baru mendengarkan di port-nya di server. Untuk menyajikannya di domain dengan HTTPS, pasang load balancer di depannya. Lihat [Load balancer](../networking/load-balancers.md).
+Aplikasi baru mendengarkan di port-nya di server. Sampai Anda menambahkan load balancer, aplikasi belum punya alamat publik, jadi **Berjalan** di tab Ringkasan adalah tanda bahwa aplikasi sudah jalan. Untuk menyajikannya di domain dengan HTTPS, pasang load balancer di depannya. Lihat [Load balancer](../networking/load-balancers.md).
 :::
 
 ## Pertanyaan yang sering diajukan

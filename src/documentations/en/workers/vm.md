@@ -10,7 +10,7 @@ A VM worker is a server or VM (virtual machine: a computer rented or run in soft
 ## Before you start
 
 - A Linux server or VM (Ubuntu 22.04 or 24.04) that can reach your servers over SSH and `https://pawon.devetek.app` over HTTPS. You do not add SSH keys: dPanel gives the worker your servers' SSH access with each job.
-- Python 3 and `pip`.
+- Python 3 (Ubuntu includes it).
 
 ## 1. Add the worker in dPanel
 
@@ -29,7 +29,10 @@ dPanel shows a **token** and the settings for the machine. **Save the token now*
 ## 2. Install the executor on the machine
 
 ```bash
-python3 -m pip install --user "ansible-core>=2.16,<2.17" jmespath
+sudo apt-get update && sudo apt-get install -y python3-venv
+sudo python3 -m venv /opt/dpanel-ansible
+sudo /opt/dpanel-ansible/bin/pip install "ansible-core>=2.16,<2.17" jmespath
+sudo ln -sf /opt/dpanel-ansible/bin/ansible* /usr/local/bin/
 base=https://raw.githubusercontent.com/dPanel-ID/artifacts/main/executor
 version=$(curl -fsSL "$base/LATEST")
 curl -fsSL -o dpanelprod-executor "$base/$version/dpanelprod-executor-linux-amd64"
@@ -37,7 +40,7 @@ curl -fsSL "$base/$version/SHA256SUMS" | sed 's/dpanelprod-executor-linux-amd64/
 chmod +x dpanelprod-executor && sudo mv dpanelprod-executor /usr/local/bin/
 ```
 
-Use `dpanelprod-executor-linux-arm64` on an ARM machine.
+On an ARM machine, change `linux-amd64` to `linux-arm64` on both the `curl -o` line and the `sed` line.
 
 ## 3. Run it as a service
 
@@ -74,8 +77,6 @@ sudo useradd --system --create-home --home-dir /var/lib/dpanel-worker dpanel-wor
 sudo chmod 600 /etc/dpanel-worker.env
 sudo systemctl daemon-reload && sudo systemctl enable --now dpanel-worker
 ```
-
-Run Ansible as that user too: install it with `sudo -u dpanel-worker python3 -m pip install --user ...` if you created a new user.
 
 ## 4. Switch to private workers
 

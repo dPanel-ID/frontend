@@ -45,6 +45,8 @@ Klaster Kubernetes punya dua peran:
 | **Server** | control plane, master | Otaknya: menyimpan kondisi klaster dan memutuskan di mana aplikasi berjalan. Bisa ikut menjalankan aplikasi |
 | **Agent**  | worker node           | Ototnya: menjalankan aplikasi Anda. Tambah agent untuk menambah kapasitas                                   |
 
+**Node** adalah satu server di dalam klaster. Peran **Server** dan **Agent** di atas adalah peran Kubernetes. Keduanya tidak sama dengan server dPanel, agen dPanel, atau worker dPanel.
+
 Satu server cukup untuk mulai. Agar klaster tetap jalan saat kehilangan satu server, gunakan **tiga server** (jumlah ganjil, supaya mereka selalu bisa sepakat siapa yang memimpin).
 
 ## k3s atau RKE2

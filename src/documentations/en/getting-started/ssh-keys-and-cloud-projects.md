@@ -24,7 +24,7 @@ You need a cloud account only to launch a new machine. To connect a server you a
 
 ![The SSH keys page with the first-time guide and four keys shared with the team](../../assets/getting-started/ssh-keys.webp 'SSH keys: each card shows the key type, who owns it and who can use it.')
 
-The private half is never shown, copied or sent anywhere. Open a key to see its public half and fingerprint. **Create a server with this key** takes you straight to the create-server page.
+The private half is never shown to you or your team. dPanel keeps it encrypted and gives SSH access only to the worker that runs each job, including a private worker if your workspace uses one. Open a key to see its public half and fingerprint. **Create a server with this key** takes you straight to the create-server page.
 
 ## Connect a cloud account
 
@@ -57,7 +57,7 @@ dPanel does not resell servers. Machines are created inside your own provider ac
 - The **Owner** column names the person who created it; their name links to their public profile.
 - A key or account stays in the workspace it was created in. It cannot be moved to another workspace.
 - **Update credentials**, in the **More** (⋯) menu on a cloud account's row, replaces the key inside the account, for example after you rotate it at the provider. Servers launched with it keep working. See [Rotating a credential](../servers/cloud-providers/cloud-credentials-security.md#rotating-a-credential).
-- **Delete**, in the same menu, disconnects the cloud account: dPanel forgets the API key after you confirm **Disconnect cloud account**. Servers already running at the provider keep running.
+- **Delete**, in the same menu, disconnects the cloud account: dPanel forgets the API key after you confirm **Disconnect cloud account**. dPanel refuses while any server still uses the account, so delete those servers first.
 
 ## What happens next
 

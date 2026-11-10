@@ -35,8 +35,8 @@ DigitalOcean lets you choose exactly what a token may do. Don't give dPanel a **
 
 DigitalOcean guides: [Create a personal access token](https://docs.digitalocean.com/reference/api/create-personal-access-token/), [Token scopes](https://docs.digitalocean.com/reference/api/scopes/).
 
-:::warning[Verify]
-The list above comes from the API calls in dPanel's code (`/v2/regions`, `/v2/sizes`, `/v2/images`, `/v2/vpcs`, `/v2/droplets`) and the Ansible `digitalocean.cloud` modules it runs (`droplet`, `droplets_info`, `ssh_key`). DigitalOcean sometimes requires extra read scopes for a create action, such as `actions:read` while waiting for a Droplet. The token page tells you which scopes a create scope depends on; accept them. If a launch fails with `403`, the error names the missing scope.
+:::note[Extra scopes]
+The list above covers the API calls dPanel makes (`/v2/regions`, `/v2/sizes`, `/v2/images`, `/v2/vpcs`, `/v2/droplets`) and the Ansible `digitalocean.cloud` modules it runs (`droplet`, `droplets_info`, `ssh_key`). DigitalOcean sometimes requires extra read scopes for a create action, such as `actions:read` while waiting for a Droplet. The token page tells you which scopes a create scope depends on; accept them. If a launch fails with `403`, the error names the missing scope.
 :::
 
 ## 2. Connect it to dPanel

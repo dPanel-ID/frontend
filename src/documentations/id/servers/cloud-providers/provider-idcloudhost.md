@@ -22,8 +22,8 @@ dPanel meluncurkan VM cloud Ubuntu di Indonesia, di akun IDCloudHost Anda sendir
 
 Referensi API IDCloudHost: [api.idcloudhost.com](https://api.idcloudhost.com/).
 
-:::warning[Perlu dicek: cakupan kunci]
-Kode dPanel memakai satu API key yang dikirim di header `apikey`. Dari kode, kami tidak bisa memastikan apakah IDCloudHost mengizinkan kunci dibatasi ke tindakan atau resource tertentu. Anggap saja kunci ini bisa melakukan apa pun yang bisa dilakukan user Anda di konsol, termasuk memakai saldo. Kalau akun Anda punya fitur tim atau sub-user, buat kuncinya di bawah user yang hanya boleh mengelola VM cloud.
+:::warning[Satu kunci, akses penuh]
+dPanel memakai satu API key yang dikirim di header `apikey`. Anggap saja kunci ini bisa melakukan apa pun yang bisa dilakukan user Anda di konsol, termasuk memakai saldo. Kalau akun Anda punya fitur tim atau sub-user, buat kuncinya di bawah user yang hanya boleh mengelola VM cloud.
 :::
 
 ### Yang dipanggil dPanel

@@ -102,7 +102,7 @@ Setiap kartu punya ID tindakan. Di terminal, jalankan `dnocs ai approve <action-
 
 ### Bagaimana kalau saya tidak sengaja menyetujui sesuatu?
 
-Minta asisten membatalkannya, misalnya "Hapus basis data docs_demo yang baru saya buat di server 140". Pembatalan itu adalah perubahan baru, jadi ia juga muncul sebagai kartu. Penghapusan tidak bisa dibatalkan, jadi baca kartu penghapusan dengan lebih teliti.
+Minta asisten membatalkannya, misalnya "Hapus basis data shop_db yang baru saya buat di server 140". Pembatalan itu adalah perubahan baru, jadi ia juga muncul sebagai kartu. Sebagian besar penghapusan tidak bisa dibatalkan, jadi baca kartu penghapusan dengan lebih teliti.
 
 ### Bisakah saya menyetujui perubahan dengan mengetik "ya" di chat?
 

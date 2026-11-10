@@ -45,6 +45,8 @@ A Kubernetes cluster has two roles:
 | **Server** | control plane, master | The brain: stores the cluster's state and decides where apps run. It can run apps too |
 | **Agent**  | worker node           | The muscle: runs your apps. Add more agents to get more capacity                      |
 
+A **node** is one server in a cluster. The **Server** and **Agent** roles above are Kubernetes roles. They are not the same as a dPanel server, the dPanel agent or a dPanel worker.
+
 One server is enough to start. For a cluster that survives losing a server, use **three servers** (an odd number, so they can always agree on who is in charge).
 
 ## k3s or RKE2

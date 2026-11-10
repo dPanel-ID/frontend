@@ -8,6 +8,8 @@ sidebar_label: Load balancer
 
 Load balancer di dPanel memublikasikan aplikasi Anda di sebuah domain dengan HTTPS. Load balancer menerima lalu lintas yang datang ke domain itu, mendapatkan dan memperpanjang sertifikat SSL Let's Encrypt gratis, lalu meneruskan setiap request ke aplikasi atau ke port di sebuah server. Dengan domain yang dikelola di dPanel, record DNS-nya juga dibuatkan untuk Anda.
 
+**HTTPS** adalah bentuk terenkripsi dari alamat web, yang ditandai ikon gembok di browser. HTTPS butuh **sertifikat**, yaitu berkas yang membuktikan situs itu milik Anda. **Record A** adalah entri DNS yang mengarahkan sebuah nama ke alamat IP server.
+
 dPanel membangun load balancer di salah satu server Anda sendiri, yaitu **gateway**, dan menjalankan mesin web server di sana: Caddy, Apache APISIX, atau HAProxy. Tidak ada yang berjalan di luar server Anda.
 
 ## Yang perlu disiapkan
@@ -17,7 +19,7 @@ dPanel membangun load balancer di salah satu server Anda sendiri, yaitu **gatewa
 - **Tujuan lalu lintas**: [aplikasi](../applications/overview.md) dPanel, atau layanan yang mendengarkan sebuah port.
 
 :::warning[Pakai nama yang belum dipakai]
-Dengan domain terkelola, dPanel membuat record DNS baru. dPanel menolak subdomain yang sudah punya record, jadi record yang ada tidak pernah tertimpa. Pakai nama baru, misalnya `app`.
+Dengan domain terkelola, dPanel membuat record DNS baru. dPanel menolak nama yang sudah punya record yang tidak bisa berbagi nama, jadi record yang ada tidak pernah tertimpa; record `MX` dan `TXT` tidak menghalangi. Pakai nama baru, misalnya `app`.
 :::
 
 ## Engine
@@ -49,11 +51,12 @@ Anda juga bisa meminta asisten menyiapkannya, misalnya "Pasang aplikasi saya di 
 1. Di **Nama Domain**, pilih modenya:
    - **Terkelola**: ketik **Subdomain**, lalu **Pilih domain** dari domain Anda di **Domain & DNS**. dPanel membuat record DNS-nya untuk Anda.
    - **Eksternal**: ketik hostname yang Anda kelola sendiri.
+   - Untuk melayani domain itu sendiri, seperti `example.com` tanpa awalan apa pun, buat load balancer dari terminal dengan `--domain-id` dan `--subdomain @`.
 2. Periksa record DNS di bawah domain. Isinya record `A` dari host Anda ke alamat gateway:
    - Dengan **Terkelola**, kotaknya bertuliskan **Record yang dibuat dNocs di** penyedia DNS Anda, misalnya Cloudflare.
    - Dengan **Eksternal**, kotaknya bertuliskan **Record yang perlu ditambahkan di penyedia DNS Anda**. Tambahkan record itu sebelum trafik masuk. Sertifikat diterbitkan setelah nama mengarah ke gateway.
 3. Untuk domain di Cloudflare, atur **Proxy lewat Cloudflare**. Bawaannya mati.
-   - **Mati** (**Hanya DNS**): pengunjung langsung menuju gateway. Sertifikat diterbitkan lewat HTTP-01.
+   - **Mati** (**Hanya DNS**): pengunjung langsung menuju gateway. Sertifikat diterbitkan lewat HTTP-01, salah satu cara Let's Encrypt memeriksa bahwa nama itu memang Anda kendalikan.
    - **Menyala** (**Proxied**): trafik melewati Cloudflare, yang menyembunyikan alamat gateway. Sertifikat diterbitkan lewat DNS-01. Berfungsi di semua mode SSL/TLS Cloudflare; **Full (strict)** juga mengenkripsi jalur dari Cloudflare ke gateway.
 
 ![Langkah 2: subdomain terkelola di terpusat.me, HTTP / HTTPS, dengan HTTPS menyala](../../assets/networking/lb-create-domain.webp)
@@ -66,7 +69,7 @@ Anda juga bisa meminta asisten menyiapkannya, misalnya "Pasang aplikasi saya di 
    - **Tipe**: **Aplikasi** mengirim lalu lintas ke aplikasi dPanel. **Proxy Pass** mengirimnya ke alamat dan port.
    - **Pola Jalur URL**: `/*` menangkap semua request. Path yang berakhiran `/*` diberi lencana **Wildcard**.
    - **Aplikasi**: pilih aplikasinya. dPanel memakai server dan port aplikasi itu.
-4. Di **Cara gateway menjangkau aplikasi ini**, pilih cara gateway terhubung ke aplikasi. Ini penting kalau aplikasi berjalan di server lain, atau di penyedia lain:
+4. Di **Cara gateway menjangkau aplikasi ini**, pilih cara gateway terhubung ke aplikasi. Port aplikasi harus bisa dijangkau dari gateway, jadi izinkan port itu di firewall dPanel kalau firewall itu menyala, dan di firewall penyedia Anda. Ini penting kalau aplikasi berjalan di server lain, atau di penyedia lain:
    - **Alamat terdaftar** (bawaan): alamat server yang terdaftar di dPanel. Berlaku lintas penyedia.
    - **Jaringan privat**: IP privat server. Pakai hanya kalau gateway dan server itu satu jaringan.
    - **Target kustom**: ketik alamat IP, atau URL origin seperti `https://origin.example.com` untuk aplikasi yang sudah dilayani domain lain. Dengan URL, gateway terhubung lewat HTTPS dan meminta domain tersebut. Kosongkan port untuk memakai 443 (`https`), 80 (`http`), atau port aplikasi untuk IP.
@@ -77,7 +80,7 @@ Anda juga bisa meminta asisten menyiapkannya, misalnya "Pasang aplikasi saya di 
 
 ![Langkah 3: routing L7 dengan satu aturan yang mengirim /* ke sebuah aplikasi](../../assets/networking/lb-create-routing.webp)
 
-Dengan **L4**, Anda mengatur **Layanan** (misalnya PostgreSQL atau Redis), **Port listen**, **Sumber yang diizinkan**, dan **Penyeimbangan**, lalu alamat upstream-nya. **Sumber yang diizinkan** wajib untuk basis data. HTTPS tidak dipakai: koneksi diteruskan apa adanya, jadi basis data tetap memakai TLS-nya sendiri dari ujung ke ujung.
+Dengan **L4**, Anda mengatur **Layanan** (misalnya PostgreSQL atau Redis), **Port listen**, **Sumber yang diizinkan**, dan **Penyeimbangan**, lalu alamat upstream-nya (tujuan koneksi diteruskan). **Sumber yang diizinkan** wajib untuk basis data. HTTPS tidak dipakai: koneksi diteruskan apa adanya, jadi basis data tetap memakai TLS-nya sendiri dari ujung ke ujung.
 
 ### Mengalihkan domain
 

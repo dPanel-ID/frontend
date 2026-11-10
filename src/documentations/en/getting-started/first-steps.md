@@ -14,10 +14,10 @@ Never run a server before? Read [How a website runs on your server](../tutorials
 
 1. **Sign in.** Open [dnocs.devetek.app](https://dnocs.devetek.app) and sign in with Google or a username and password. See [Sign in and your profile](./sign-in.md).
 2. **Pick a workspace.** A workspace is the box your servers, applications and domains live in. Use your personal workspace to try things out, or a team workspace to share with others. See [Workspaces](./workspaces.md).
-3. **Get a server.** A server is the computer in a data centre your website runs on. Either way, dPanel first needs an [SSH key](./ssh-keys-and-cloud-projects.md), the password-free key it uses to sign in to the server.
+3. **Get a server.** A server is the computer in a data centre your website runs on. Either way, dPanel first needs an [SSH key](./ssh-keys-and-cloud-projects.md). SSH is the secure way to sign in to a server, and the key lets dPanel do it without a password.
    - **No server yet?** Connect your cloud account, such as AWS, Google Cloud or DigitalOcean, and launch one from dPanel. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
-   - **Already rent a VPS?** Connect it over SSH instead. See [Connect your own server](../servers/connect-your-own-server.md).
-4. **Deploy your first app.** [Connect GitHub](./connect-github.md), then follow a tutorial from start to finish:
+   - **Already rent a VPS (a virtual server from a hosting company)?** Connect it over SSH instead. See [Connect your own server](../servers/connect-your-own-server.md).
+4. **Deploy your first app.** [Connect GitHub](./connect-github.md), then follow a tutorial from start to finish. Each tutorial starts by launching a server; if you did step 3, skip that step and use your server, as long as it has at least 2 vCPU and 4 GB RAM:
    - [Deploy WordPress with MariaDB](../tutorials/deploy-wordpress.md), the simplest place to start.
    - [Deploy Laravel with PostgreSQL](../tutorials/deploy-laravel.md), for a PHP web application.
 5. **Put it on a domain.** Add your domain under **Domain & DNS**, then create a load balancer: the front door that answers on your domain and gets a free HTTPS certificate. See [Domains and DNS](../networking/domains-and-dns.md) and [Load balancers](../networking/load-balancers.md).
@@ -46,7 +46,7 @@ You can also let the assistant do the clicking: describe what you want and appro
 
 ### Do I need to know Linux or use a terminal?
 
-No. Every step happens in the browser. dPanel signs in to your server over SSH for you, installs software from a list, and shows logs on the page.
+Almost. If dPanel launches your server, every step happens in the browser. Connecting a server you already run needs one command on that server, and a private machine needs a few. dPanel signs in to your server over SSH for you, installs software from a list, and shows logs on the page.
 
 ### Can I try dPanel without a domain?
 

@@ -13,7 +13,7 @@ dPanel does not sell or transfer domains, and it never changes your registrar. Y
 
 ## What you need first
 
-- A domain whose DNS is hosted at **Cloudflare** or **DigitalOcean**.
+- A domain whose DNS is hosted at **Cloudflare** or **DigitalOcean**. If it is hosted elsewhere you can skip this page: choose **External** on the load balancer and add the record at your DNS provider yourself.
 - An API token from that provider that can read and edit DNS records for the zone.
 
 :::tip

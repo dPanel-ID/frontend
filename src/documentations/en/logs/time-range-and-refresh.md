@@ -24,15 +24,15 @@ The view opens on **Last 10 minutes**.
 
 The form tells you what is wrong before it runs the search:
 
-| Message                                  | Fix                            |
-| ---------------------------------------- | ------------------------------ |
-| Enter both a start and an end.           | Fill in both fields.           |
-| The start must be before the end.        | Swap them.                     |
-| Logs are only kept for the last 3 days.  | Move the start forward.        |
-| The end can't be in the future.          | Set the end to now or earlier. |
+| Message                                 | Fix                            |
+| --------------------------------------- | ------------------------------ |
+| Enter both a start and an end.          | Fill in both fields.           |
+| The start must be before the end.       | Swap them.                     |
+| Logs are only kept for the last 3 days. | Move the start forward.        |
+| The end can't be in the future.         | Set the end to now or earlier. |
 
 :::info[3 days back]
-Logs can be read up to 3 days back. dPanel holds every range to that limit, so an older start is moved up to the edge of the window.
+Logs can be read up to 3 days back, because that is how long they are kept. For older lines, download the raw log from the server. See [Download logs](./download-logs.md#raw-log-from-the-server).
 :::
 
 ## Scroll up for older lines
@@ -40,12 +40,12 @@ Logs can be read up to 3 days back. dPanel holds every range to that limit, so a
 Runtime and load balancer logs read like a terminal. The list opens on the newest line, at the bottom of the selected time range.
 
 - **Scroll up** to load older lines. They arrive 200 at a time, before you reach the top, and the line you are reading stays where it is.
-- The list ends at **Start of the time range**. To read further back, pick a wider range.
+- The list ends at **Start of the time range**. To read further back, pick a longer time range.
 - After you scroll up, **Jump to latest** takes you back to the newest lines.
 
 The footer says what is loaded, such as **Lines 1–200 of 1,250 loaded, newest at the bottom**. Line 1 is the newest line.
 
-**Filter loaded lines** and the level chips work on the lines currently loaded. To search further back, scroll up or narrow the time range.
+**Filter loaded lines** and the level chips work on the lines currently loaded. To search further back, scroll up to load more lines, or set a **Custom range** around the time you need.
 
 :::info[All servers on one list]
 Runtime logs of an application on several servers merge every server into one list. That list scrolls back up to 5,000 lines. For older lines, narrow the time range or pick one server in the **Server** menu.

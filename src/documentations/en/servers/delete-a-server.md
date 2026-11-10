@@ -24,7 +24,7 @@ Deletion is refused while applications or load balancers still use the server. D
 ![The Delete server dialog, listing what happens and asking for the server name](../../assets/servers/server-delete.webp)
 
 :::danger[This cannot be undone]
-For a server dPanel launched, deleting uninstalls the agent and destroys the machine at your cloud provider, with its disk and everything on it. For a server you connected yourself, dPanel only forgets it and your machine keeps running.
+For a server dPanel launched, deleting uninstalls the agent and destroys the machine at your cloud provider, with its disk and everything on it. For a server you connected yourself, dPanel removes its agent and forgets the server. Your machine and your data stay.
 :::
 
 ## What happens next
@@ -79,4 +79,4 @@ No. A cloud server's disk is destroyed at the provider. Back up anything you nee
 
 ### Does deleting a server I connected myself wipe it?
 
-No. dPanel only forgets it; the machine and everything on it keep running.
+No. dPanel removes its agent and forgets it; the machine, your applications and their data stay.

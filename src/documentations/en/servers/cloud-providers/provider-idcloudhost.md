@@ -22,8 +22,8 @@ dPanel launches Ubuntu cloud VMs in Indonesia in your own IDCloudHost account. I
 
 IDCloudHost's API reference: [api.idcloudhost.com](https://api.idcloudhost.com/).
 
-:::warning[Verify: scopes]
-dPanel's code uses a single API key, sent in the `apikey` header. We could not confirm from the code whether IDCloudHost lets you limit a key to some actions or resources. Assume the key can do anything your user can do in the console, including spending credit. If your account has team or sub-user features, create the key under a user that can only manage cloud VMs.
+:::warning[One key, full access]
+dPanel uses a single API key, sent in the `apikey` header. Assume the key can do anything your user can do in the console, including spending credit. If your account has team or sub-user features, create the key under a user that can only manage cloud VMs.
 :::
 
 ### What dPanel calls

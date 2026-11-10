@@ -51,7 +51,7 @@ Also make sure the server can reach the internet over HTTPS (port 443): the agen
 
 Everything dPanel installed, one row per module, with its versions and status: **Installed**, **Installing**, **Failed**, or **Mixed**. **Add module** opens the catalogue. **Refresh inventory** asks the agent again and drops modules it no longer reports. The counts include top-level modules only; databases you create on MariaDB or PostgreSQL live inside that module's **Manage** view.
 
-Some rows have a shortcut: **Open database** on MariaDB and PostgreSQL opens DB Manager, a database tool in your browser, already pointed at this server; **Manage firewall** on the Firewall module opens the [Firewall](./firewall.md) view. See [Install software](./install-software.md).
+Some rows have a shortcut: **Open database** on MariaDB, PostgreSQL and MongoDB opens DB Manager, a database tool in your browser, already pointed at this server; **Manage firewall** on the Firewall module opens the [Firewall](./firewall.md) view. See [Install software](./install-software.md).
 
 ![The Modules tab listing installed modules, with Manage firewall on the Firewall row and Open database on the MariaDB row](../../assets/servers/server-modules.webp)
 
@@ -65,7 +65,22 @@ Most servers have well over a hundred units, and many sit in **Dead** or **Exite
 
 ## Users
 
-The Linux accounts on the machine, with their UID, home directory and login shell. **Add user** creates a managed account. Most entries on a fresh server belong to the system, so leave them alone.
+The Linux accounts on the machine, with their UID (the number Linux knows the account by), home directory and login shell. Most entries on a fresh server belong to the system, so leave them alone.
+
+**Add user** creates a managed account. Set **Add for** to choose who it is for:
+
+- **dPanel user**: a person. On a team's server, they must be a member of that team.
+- **Service account**: a team's [service account](../teams/service-accounts.md), for scripts and automation. It has no password, so nobody can log in with one.
+
+From the terminal:
+
+```bash
+dnocs server user list --id 140
+dnocs server user add --id 140 --service-account deploy-bot
+dnocs server user remove --id 140 --username deploy-bot --dry-run
+```
+
+`remove` works on users dPanel manages. Their home folder stays, so nothing is lost by accident. Add `--remove-home` to delete `/home/USERNAME` as well; copy anything you want to keep first, because this cannot be undone. The removal fails safely while that user still has programs running.
 
 ![The Users tab listing Linux accounts](../../assets/servers/server-users.webp)
 
@@ -142,7 +157,7 @@ Your server keeps working on an older agent, but new dPanel features may need th
 
 ### Where do I open a database that runs on this server?
 
-On the **Modules** tab, press **Open database** on the MariaDB or PostgreSQL row. See [Install software](./install-software.md#manage-the-database).
+On the **Modules** tab, press **Open database** on the MariaDB, PostgreSQL or MongoDB row. See [Install software](./install-software.md#manage-the-database).
 
 ### Why does a port I opened not work from outside?
 

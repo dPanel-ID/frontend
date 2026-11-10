@@ -26,6 +26,17 @@ both languages.
 A page's URL is `/docs/<section folder>/<page slug>`, for example
 `/docs/servers/overview`.
 
+## Who we write for
+
+Every page must work for two readers at once:
+
+- **Someone new**: a new developer, a beginner, or a person who is not technical at all. Say what a thing is and why they would want it before how. Explain a term the first time it appears, in a few plain words. Write steps in order and say what they should see afterwards.
+- **An expert**: a devops engineer, sysadmin, WordPress developer, VPS maintainer or cloud engineer. Keep the exact facts easy to find: ports, paths, service names, what changes on the machine, permissions, limits, failure behaviour and the `dnocs` command.
+
+A plain opening with precise detail below serves both. The docs are public: never mention internal development, tests, staff, internal hosts or customer data, in text or in screenshots.
+
+When a feature ships, update its page in both languages in the same change.
+
 ## Edit a page
 
 Open the `.md` file and change it. Change the same page in the other language

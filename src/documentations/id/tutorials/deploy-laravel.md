@@ -40,7 +40,7 @@ Tunggu sampai status server **Ready**, biasanya 10 sampai 20 menit. Lihat [Membu
 ## Langkah 2: Pasang PostgreSQL, PHP, FrankenPHP, dan Node.js
 
 1. Buka server, lalu tab **Modul**. Tekan **Add module**.
-2. Tekan **Install** pada **PostgreSQL**. Catat pengguna administratornya dan isi kata sandinya, atau pakai yang disarankan, lalu simpan di tempat aman. Tekan **Install role** dan konfirmasi.
+2. Tekan **Install** pada **PostgreSQL**. Catat pengguna administratornya dan isi kata sandinya, lalu simpan di tempat aman. Tekan **Install role** dan konfirmasi.
 3. Setelah PostgreSQL berstatus **Terpasang**, pasang **PHP** dengan **PHP Version** `8.5`.
 4. Lalu pasang **FrankenPHP**, yang menyajikan aplikasi lewat Laravel Octane.
 5. Lalu pasang **Node.js**. Catat versi yang dipasang, misalnya `26.13.0`.
@@ -111,7 +111,7 @@ Kalau log build berhenti di `npm: command not found`, Node.js belum dideklarasik
 
 1. Buka **Load Balancer**, lalu tekan **Buat load balancer**. Formulirnya punya empat langkah: **Gateway**, **Domain**, **Routing**, dan **Review**.
 2. **Gateway**: di **Server gateway**, pilih server yang sama. Di **Engine web server**, pilih **Caddy Server**, lalu tekan **Instal** kalau belum terpasang.
-3. **Domain**: di **Nama Domain**, pilih **Terkelola**, ketik **Subdomain** (misalnya `app`), lalu **Pilih domain**.
+3. **Domain**: di **Nama Domain**, pilih **Terkelola**, ketik **Subdomain** (misalnya `app`), lalu **Pilih domain**. Kalau DNS domain Anda tidak berada di Cloudflare atau DigitalOcean, pilih **Eksternal**, ketik hostname Anda, dan tambahkan record yang ditampilkan formulir di penyedia DNS Anda.
 4. **Routing**: biarkan **L7** di **Mode routing**, serta **HTTP / HTTPS** dengan **HTTPS** menyala di **Protokol dan HTTPS**. Di aturan pertama, atur **Tipe** ke **Aplikasi**, **Pola Jalur URL** ke `/*`, lalu pilih aplikasi **Laravel**.
 5. **Review**: saat panel tinjauan bertuliskan **Siap dibuat**, tekan **Buat load balancer**.
 

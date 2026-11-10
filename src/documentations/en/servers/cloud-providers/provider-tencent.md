@@ -37,8 +37,8 @@ Tencent Cloud guides: [Create a sub-user](https://www.tencentcloud.com/document/
 | Instance                   | Launches it, pay-as-you-go, with a public IP               | `RunInstances`                                                                                                                  |
 | Delete                     | Deletes the instance, its security group and its key pair  | `TerminateInstances`, `DeleteSecurityGroup`, `DeleteKeyPairs`                                                                   |
 
-:::warning[Verify]
-The discovery calls come straight from dPanel's code. The launch and delete calls are made through the Ansible `susunola.tencentcloud` collection, which may make a few more read calls. The two preset policies above cover all of them. If you write a narrower custom policy and a launch fails, the error names the missing action.
+:::note[If a launch is refused]
+The discovery calls are the ones dPanel makes itself. The launch and delete calls are made through the Ansible `susunola.tencentcloud` collection, which may make a few more read calls. The two preset policies above cover all of them. If you write a narrower custom policy and a launch fails, the error names the missing action.
 :::
 
 ## 2. Connect it to dPanel

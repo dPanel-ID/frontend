@@ -32,7 +32,7 @@ Formulirnya satu halaman dengan tiga langkah bernomor. Panel **Review** di kanan
 
 - **Region** adalah wilayah tempat mesin berjalan. Pilih yang dekat dengan pengguna Anda.
 - **Zone** adalah satu pusat data di dalam region itu. Mana saja boleh. Google Cloud, Alibaba Cloud, dan Tencent Cloud menanyakannya.
-- **Network** terisi otomatis. Di sebagian besar penyedia, dPanel membuat `dpanel-network` saat pertama kali meluncurkan mesin di sebuah region, lalu memakainya lagi. Hanya SSH, HTTP, dan HTTPS yang dibuka.
+- **Network** terisi otomatis. Di sebagian besar penyedia, dPanel membuat `dpanel-network` saat pertama kali meluncurkan mesin di sebuah region, lalu memakainya lagi. Di AWS, Google Cloud, Alibaba Cloud, dan Tencent Cloud, dPanel hanya membuka port TCP 22 (SSH), 80 (HTTP), dan 443 (HTTPS) di penyedia. Di DigitalOcean dan IDCloudHost, dPanel tidak membuat firewall penyedia, jadi nyalakan [firewall](../firewall.md) dPanel atau tambahkan firewall di penyedia.
 
 ## Langkah 3: Size and image
 
@@ -79,7 +79,7 @@ Banner biru memberi tahu bahwa dPanel sedang menyiapkan server. Biasanya 10 samp
 Begitu banner hilang dan lencananya bertuliskan **Ready**, server siap dipakai. Selanjutnya, [pasang perangkat lunak](../install-software.md) di server itu atau [buat aplikasi](../../applications/create-an-application.md).
 
 :::warning[Kalau setup gagal]
-Banner merah muncul dengan tombol **Lihat penyebabnya**, berisi alasan dari penyedia atau dari proses setup. Penyebab yang paling sering: kuota akun cloud tidak cukup, atau kredensialnya sudah kedaluwarsa. Untuk mencoba lagi, pakai **Instal ulang** di tab **Pengaturan** server. Lihat [Masalah yang sering muncul](../../troubleshooting/faq.md#server).
+Banner merah muncul dengan tombol **Lihat penyebabnya**, berisi alasan dari penyedia atau dari proses setup. Penyebab yang paling sering: kuota akun cloud tidak cukup, atau kredensialnya sudah kedaluwarsa. Kalau penyedia tidak pernah membuat mesinnya, **Instal ulang** tidak bisa membantu: perbaiki penyebab yang ditampilkan, hapus server di dPanel, lalu luncurkan lagi. Kalau mesinnya ada dan hanya setup yang gagal, pakai **Instal ulang** di tab **Pengaturan** server. Lihat [Masalah yang sering muncul](../../troubleshooting/faq.md#server).
 :::
 
 :::tip[Tagihan berjalan sejak sekarang]

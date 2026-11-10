@@ -8,6 +8,8 @@ sidebar_label: Load balancers
 
 A load balancer in dPanel publishes your application on a domain with HTTPS. It takes the traffic arriving at the domain, gets and renews a free Let's Encrypt SSL certificate, and forwards each request to an application or to a port on a server. With a domain managed in dPanel, it also creates the DNS record for you.
 
+**HTTPS** is the encrypted form of a web address, the padlock in a browser. It needs a **certificate**, a file that proves the site is yours. An **A record** is the DNS entry that points a name at a server's IP address.
+
 dPanel builds the load balancer on one of your own servers, the **gateway**, and runs a web server engine there: Caddy, Apache APISIX or HAProxy. Nothing runs outside your servers.
 
 ## What you need first
@@ -17,7 +19,7 @@ dPanel builds the load balancer on one of your own servers, the **gateway**, and
 - **Something to send traffic to**: a dPanel [application](../applications/overview.md), or a service listening on a port.
 
 :::warning[Pick a name nobody uses]
-With a managed domain, dPanel creates a new DNS record. It refuses a subdomain that already has one, so existing records are never overwritten. Use a fresh name, such as `app`.
+With a managed domain, dPanel creates a new DNS record. It refuses a name that already has a record that cannot share it, so existing records are never overwritten; `MX` and `TXT` records do not get in the way. Use a fresh name, such as `app`.
 :::
 
 ## Engines
@@ -49,11 +51,12 @@ You can also ask the assistant to set one up, for example "Put my app on app.exa
 1. Under **Domain Name**, pick the mode:
    - **Managed**: type a **Subdomain**, then **Select domain** from your domains in **Domain & DNS**. dPanel creates the DNS record for you.
    - **External**: type a hostname you manage yourself.
+   - To serve the domain itself, such as `example.com` with nothing in front, create the load balancer from the terminal with `--domain-id` and `--subdomain @`.
 2. Check the DNS record below the domain. It is an `A` record from your host to the gateway's address:
    - With **Managed**, the box reads **Record dNocs creates at** your DNS provider, such as Cloudflare.
    - With **External**, it reads **Record to add at your DNS provider**. Add that record before traffic arrives. The certificate is issued once the name resolves to the gateway.
 3. For a domain at Cloudflare, choose **Proxy through Cloudflare**. It is off by default.
-   - **Off** (**DNS only**): visitors reach the gateway directly. The certificate is issued over HTTP-01.
+   - **Off** (**DNS only**): visitors reach the gateway directly. The certificate is issued over HTTP-01, one of the ways Let's Encrypt checks that you control the name.
    - **On** (**Proxied**): traffic goes through Cloudflare, which hides the gateway's address. The certificate is issued over DNS-01. It works with any Cloudflare SSL/TLS mode; **Full (strict)** also encrypts the hop from Cloudflare to the gateway.
 
 ![Step 2: a managed subdomain on terpusat.me, HTTP / HTTPS, with HTTPS on](../../assets/networking/lb-create-domain.webp)
@@ -66,7 +69,7 @@ You can also ask the assistant to set one up, for example "Put my app on app.exa
    - **Type**: **Application** sends traffic to a dPanel application. **Proxy Pass** sends it to an address and port.
    - **Matching Path**: `/*` takes every request. A path ending in `/*` shows a **Wildcard** badge.
    - **Application**: pick the application. dPanel uses the application's server and port.
-4. Under **How the gateway reaches this application**, choose how the gateway connects to the application. This matters when the application runs on another server, or at another provider:
+4. Under **How the gateway reaches this application**, choose how the gateway connects to the application. The application's port must be reachable from the gateway, so allow it in the dPanel firewall if that is on, and in your provider's firewall. This matters when the application runs on another server, or at another provider:
    - **Registered address** (the default): the server address registered in dPanel. It works across providers.
    - **Private network**: the server's private IP. Use it only when the gateway and the server share one network.
    - **Custom targets**: type IP addresses, or an origin URL such as `https://origin.example.com` for an app another domain already serves. With a URL, the gateway connects over HTTPS and asks for that domain. Leave the port empty to use 443 for `https`, 80 for `http`, or the app's port for an IP.
@@ -77,7 +80,7 @@ You can also ask the assistant to set one up, for example "Put my app on app.exa
 
 ![Step 3: L7 routing with one rule sending /* to an application](../../assets/networking/lb-create-routing.webp)
 
-With **L4**, you set a **Service** (such as PostgreSQL or Redis), the **Listen port**, the **Allowed sources** and the **Balancing**, then the upstream addresses. **Allowed sources** is required for databases. HTTPS is not used: connections pass through, so a database keeps its own TLS end to end.
+With **L4**, you set a **Service** (such as PostgreSQL or Redis), the **Listen port**, the **Allowed sources** and the **Balancing**, then the upstream addresses (where connections are forwarded to). **Allowed sources** is required for databases. HTTPS is not used: connections pass through, so a database keeps its own TLS end to end.
 
 ### Redirect a domain
 
