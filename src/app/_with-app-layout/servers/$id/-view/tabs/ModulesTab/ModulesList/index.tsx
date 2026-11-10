@@ -37,6 +37,7 @@ import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 import type { StatusTone } from '@/shared/presentation/molecules/StatusPill';
 import { dataTable } from '@/shared/presentation/organisms/DataPanel';
 
+import { isAdoptedModule } from '../-lib/adopt';
 import { dbManagerUrl, firstDbManagerUrl } from '../-lib/db-manager';
 import { firewallViewSearch, firstFirewallViewSearch } from '../-lib/firewall';
 import type { ServerDetailSearch } from '../../../../-rules/tabs';
@@ -417,13 +418,17 @@ function InstalledModuleDialog(props: {
                 />
                 <ReadOnlyField
                   label="Source"
-                  value={[
-                    selected.installation.module_source_owner,
-                    selected.installation.module_source_repo,
-                    selected.installation.module_source_ref,
-                  ]
-                    .filter(Boolean)
-                    .join('/')}
+                  value={
+                    isAdoptedModule(selected.installation)
+                      ? t('adoptedSource')
+                      : [
+                          selected.installation.module_source_owner,
+                          selected.installation.module_source_repo,
+                          selected.installation.module_source_ref,
+                        ]
+                          .filter(Boolean)
+                          .join('/')
+                  }
                 />
                 <ReadOnlyField
                   label="Installed at"

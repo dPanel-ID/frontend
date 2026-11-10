@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import { PlusIcon, PuzzleIcon, RefreshCwIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
@@ -14,11 +16,12 @@ import { FailedState } from '@/widgets/failed-state';
 import { useEmit } from '../../../-model/events';
 
 function Empty(props: {
+  adoptButton?: ReactNode;
   isRefreshing: boolean;
   onClickAdd: () => void;
   onClickRefresh: () => void;
 }) {
-  const { isRefreshing, onClickAdd, onClickRefresh } = props;
+  const { adoptButton, isRefreshing, onClickAdd, onClickRefresh } = props;
   const t = useDevetekTranslations('page.serverDetail.modules');
 
   return (
@@ -53,6 +56,7 @@ function Empty(props: {
             <PlusIcon className="size-4" />
             {t('add')}
           </button>
+          {adoptButton}
           <Button
             buttonStyle="outline"
             buttonColor="secondary"
