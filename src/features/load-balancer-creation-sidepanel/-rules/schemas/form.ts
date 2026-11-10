@@ -71,10 +71,21 @@ export function isOriginUrl(address: string) {
   return /^https?:\/\//i.test(address.trim());
 }
 
+/** The destinations the API accepts: http or https, no query. */
+const REDIRECT_URL_PATTERN =
+  /^https?:\/\/[a-z0-9]([a-z0-9.-]*[a-z0-9])?(:[0-9]{1,5})?(\/[a-z0-9._~:@%/+=-]*)?$/i;
+
 const l7Rule = z
   .object({
     pathMatch: z.string().min(1, 'formErrors.required'),
-    type: z.enum(['proxy_pass', 'proxy-pass', 'proxy-pass-app']),
+    type: z.enum(['proxy_pass', 'proxy-pass', 'proxy-pass-app', 'redirect']),
+    /** Where a redirect rule sends visitors. */
+    redirectUrlIfRedirect: z.string().optional(),
+    redirectCodeIfRedirect: z
+      .union([z.literal(301), z.literal(302)])
+      .optional(),
+    /** Goes to the URL exactly; by default the path and query are kept. */
+    redirectDropPathIfRedirect: z.boolean().optional(),
     upstreamsIfProxyPass: z.array(upstream).optional(),
     applicationIdIfProxyPassApp: SchemaCommon.unitId.optional(),
     /**
@@ -89,6 +100,17 @@ const l7Rule = z
       .optional(),
   })
   .superRefine((data, ctx) => {
+    if (
+      data.type === 'redirect' &&
+      !REDIRECT_URL_PATTERN.test(data.redirectUrlIfRedirect?.trim() ?? '')
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['redirectUrlIfRedirect'],
+        message: 'formErrors.redirectUrl',
+      });
+    }
+
     if (
       (data.type === 'proxy-pass' || data.type === 'proxy_pass') &&
       (!data.upstreamsIfProxyPass || data.upstreamsIfProxyPass.length === 0)

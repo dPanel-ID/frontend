@@ -151,6 +151,15 @@ export const l7RuleUpstream = z.discriminatedUnion('type', [
     }),
   }),
   z.object({
+    type: z.literal('redirect'),
+    matchingPath: z.string(),
+    target: z.object({
+      url: z.string(),
+      code: z.number(),
+      dropPath: z.boolean(),
+    }),
+  }),
+  z.object({
     type: z.literal('static-file'),
     matchingPath: z.string(),
     filePath: z.array(z.string()),

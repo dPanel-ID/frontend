@@ -79,6 +79,16 @@ You can also ask the assistant to set one up, for example "Put my app on app.exa
 
 With **L4**, you set a **Service** (such as PostgreSQL or Redis), the **Listen port**, the **Allowed sources** and the **Balancing**, then the upstream addresses. **Allowed sources** is required for databases. HTTPS is not used: connections pass through, so a database keeps its own TLS end to end.
 
+### Redirect a domain
+
+A route can send visitors to another URL instead of an application or address, on Caddy, HAProxy and Apache APISIX. In **Routing**, set the rule's **Type** to **Redirect**, then fill in **Redirect to** and choose **302 Temporary** or **301 Permanent**. Browsers remember a 301, so use 302 until the destination is final. The requested path and query are kept unless you turn off **Keep the requested path and query**.
+
+From the terminal:
+
+```bash
+dnocs load-balancer create --name old --domain old.example.com --https --server-id 12 --redirect-to https://new.example.com --redirect-code 301
+```
+
 ### Step 4: Review
 
 The **Review** step and the review panel list every answer: gateway server, engine, domain, HTTPS, routing mode and routes. Press **Edit** on a step to change it. When the panel reads **Ready to create**, press **Create load balancer**.

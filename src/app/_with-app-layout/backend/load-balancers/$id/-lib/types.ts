@@ -25,7 +25,9 @@ export interface UpstreamDraft {
   destination: string;
   href?: string;
   id: string;
-  kind: 'application' | 'address' | 'static';
+  kind: 'application' | 'address' | 'static' | 'redirect';
+  /** Sends a redirect that goes to the destination exactly, without the path. */
+  redirectDropPath?: boolean;
   match: string;
   order: number;
   port: string;

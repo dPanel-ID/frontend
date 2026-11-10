@@ -2185,6 +2185,14 @@
         "notReady": "Hanya server yang siap yang bisa menjalankan load balancer."
       },
       "routing": {
+        "redirect": {
+          "type": "Pengalihan",
+          "url": "Alihkan ke",
+          "code": "Jenis pengalihan",
+          "code302": "302 Sementara",
+          "code301": "301 Permanen",
+          "keepPath": "Pertahankan jalur dan query yang diminta"
+        },
         "title": "Routing trafik",
         "description": "Pilih layer trafik dan arahkan request masuk ke aplikasi atau alamat upstream langsung.",
         "kindHint": "L7 cocok untuk routing path HTTP. L4 cocok untuk TCP, UDP, atau port database.",
@@ -2385,6 +2393,7 @@
         "routeMapDesc": "Semua route dan target backend yang ada di definisi load balancer saat ini."
       },
       "upstreams": {
+        "redirectCode": "Kode pengalihan",
         "title": "Upstream dan urutan backend",
         "description": "Tinjau target backend sebagai record routing read-only. Ganti aturan dengan menghapusnya lalu menambahkan backend baru.",
         "backendRequired": "Penyimpanan akan memperbarui definisi routing load balancer dan menjalankan playbook gateway.",
@@ -2410,6 +2419,7 @@
         "moveUp": "Pindahkan upstream ke atas",
         "moveDown": "Pindahkan upstream ke bawah",
         "kind": {
+          "redirect": "Pengalihan",
           "application": "Aplikasi",
           "address": "Alamat",
           "static": "Statis"
@@ -4637,6 +4647,7 @@
       "invalidTld": "Gagal memvalidasi domain: TLD tidak dikenal.",
       "invalidDomain": "Gagal memvalidasi domain: Domain tidak sah."
     },
+    "redirectUrl": "Masukkan URL http atau https tanpa query.",
     "mixedTargetForms": "Satu rute hanya boleh berisi URL origin saja atau alamat IP saja.",
     "portPositive": "Gunakan port antara 1 dan 65535.",
     "l4PortRange": "Gunakan port antara 1024 dan 65535.",

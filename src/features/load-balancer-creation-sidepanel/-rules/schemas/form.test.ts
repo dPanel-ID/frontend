@@ -74,3 +74,28 @@ describe('schemaCreationForm custom application targets', () => {
     ).toEqual([]);
   });
 });
+
+describe('redirect rule', () => {
+  const redirectValues = (url: string) =>
+    formWithAppRule({
+      type: 'redirect',
+      applicationIdIfProxyPassApp: undefined,
+      redirectUrlIfRedirect: url,
+    });
+
+  it.each(['https://new.example.com', 'http://new.example.com:8080/path'])(
+    'accepts %s',
+    (url) => {
+      expect(issuePaths(redirectValues(url))).toEqual([]);
+    },
+  );
+
+  it.each(['new.example.com', 'ftp://example.com', 'https://a.co/?x=1', ''])(
+    'refuses %s',
+    (url) => {
+      expect(issuePaths(redirectValues(url))).toContain(
+        'l7rules.0.redirectUrlIfRedirect',
+      );
+    },
+  );
+});
