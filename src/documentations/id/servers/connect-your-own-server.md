@@ -11,14 +11,14 @@ Anda bisa menambahkan server yang sudah berjalan, di penyedia hosting mana pun a
 ## Yang perlu disiapkan
 
 - Server Ubuntu atau Debian yang bisa dijangkau dPanel lewat SSH dari internet.
-- User Linux di server itu yang boleh memakai `sudo`, atau `root`.
+- User Linux yang berupa `root`, atau yang bisa menjalankan `sudo` (menjalankan perintah sebagai administrator) tanpa mengetik kata sandi. dPanel masuk dengan kunci dan tidak punya kata sandi untuk diberikan ke `sudo`.
 - SSH key di dPanel. Anda juga bisa membuatnya langsung dari formulir.
 
 ## Hubungkan
 
 1. Buka **Server**, lalu **Buat Server**, lalu **Hubungkan server**.
 2. Di **Pilih SSH key**, pilih sebuah kunci, atau tekan **Buat kunci SSH**.
-3. Salin perintah di **Izinkan key di server Anda**, lalu jalankan sekali di server. Perintah itu menambahkan separuh publik kunci ke `~/.ssh/authorized_keys`.
+3. Salin perintah di **Izinkan key di server Anda**, lalu jalankan sekali di server. Masuklah seperti biasa, umumnya lewat konsol web penyedia Anda atau `ssh user@address` di terminal. Perintah itu menambahkan separuh publik kunci ke `~/.ssh/authorized_keys`, yaitu daftar kunci yang boleh masuk, dan tidak menampilkan apa pun kalau berhasil.
 4. Centang **Saya sudah menambahkan key ini ke server**.
 5. Di **Di mana servernya?**, isi alamat server (IPv4, hostname, atau domain), port SSH, dan user Linux.
 6. Setelah panel tinjauan menunjukkan 3/3, tekan **Hubungkan server**.
@@ -36,7 +36,7 @@ dPanel menyimpan server, lalu memasang agen lewat SSH. Pantau progresnya di hala
 Begitu lencananya bertuliskan **Ready**, server ini bisa dipakai seperti server lain. Lihat [Halaman server Anda](./your-server-page.md).
 
 :::info[Menghapus server yang Anda hubungkan sendiri]
-Untuk server yang Anda hubungkan sendiri, dPanel hanya melupakannya. Mesinnya tetap berjalan. Lihat [Menghapus server](./delete-a-server.md).
+Untuk server yang Anda hubungkan sendiri, dPanel mencopot agennya dan melupakan server itu. Mesin, aplikasi, dan datanya tetap ada. Lihat [Menghapus server](./delete-a-server.md).
 :::
 
 ## Pertanyaan yang sering diajukan
@@ -51,11 +51,11 @@ Tidak. dPanel masuk dengan SSH key, tidak pernah dengan kata sandi. User Linux y
 
 ### Apakah server saya butuh alamat IP publik?
 
-dPanel harus bisa menjangkau **Alamat server** dan **Port SSH** yang Anda isi. Server di balik router rumah perlu port SSH yang diteruskan (port forwarding) ke server itu, atau alamat publik.
+dPanel harus bisa menjangkau **Alamat server** dan **Port SSH** yang Anda isi. Server di balik router rumah biasanya sama sekali tidak butuh SSH: [daftarkan sebagai mesin privat](./register-a-private-machine.md), yang hanya terhubung ke luar. Kalau tetap ingin memakai halaman ini, teruskan port SSH (port forwarding) ke server itu atau beri alamat publik.
 
 ### Apa yang terjadi jika saya menghapus server dari dPanel?
 
-dPanel melupakannya, dan mesin Anda tetap berjalan beserta seluruh isinya. Lihat [Menghapus server](./delete-a-server.md).
+dPanel mencopot agennya dan melupakannya. Mesin Anda tetap berjalan, beserta semua isi lainnya. Lihat [Menghapus server](./delete-a-server.md).
 
 ### Penyiapan gagal. Bagaimana mencobanya lagi?
 

@@ -16,10 +16,14 @@ If you already work with an AI coding agent, such as Claude Code, Cursor, Codex 
 4. The dPanel assistant proposes each change with an action ID (`aipa_…`).
 5. The change runs only when `dnocs ai approve <action-id>` is run.
 
-The agent never calls the dPanel API or your cloud provider directly, and never changes a server by hand. Everything goes through the dPanel assistant, so every change is proposed, approved and recorded the same way as in the web app.
+The agent never calls the dPanel API or your cloud provider directly, and never changes a server by hand. Everything goes through the dPanel assistant, so every change is proposed, approved and recorded the same way as in the web app. That rule is a request to your agent, not something dPanel enforces: a signed-in session can also run other dnocs commands, with no approval step. For a hard limit, give the agent a [service account](../teams/service-accounts.md) with a small role.
 
 :::warning[Decide who approves]
 The agent runs commands as you, with your dPanel session. If it may run `dnocs ai approve` itself, it can approve changes on your behalf. Tell it to show you each proposal and wait for your "yes" before approving, or run the approve commands yourself. Approve deletes and paid resources, such as new cloud servers, only after you have read them.
+
+:::tip[Limit what the agent can do]
+For an agent that runs without you watching, create a [service account](../teams/service-accounts.md) with the smallest role that works, and give the agent its token through `DNOCS_TOKEN`. You can revoke it at any moment, and it never gets your own access.
+:::
 :::
 
 ## Give your agent the instructions
@@ -46,8 +50,6 @@ Operate it only through the dnocs CLI and its assistant:
   assistant the language and version, build commands and start command.
 - How-to questions: read https://dnocs.devetek.app/llms.txt and the pages it links to.
 ```
-
-The dPanel team uses a fuller version of these instructions, the **dpanel-cli-ai** skill, to test dPanel end to end with AI agents (a server, MariaDB, a WordPress deploy, an HTTPS load balancer and the clean-up, all through `dnocs ai`). The rules above are its core.
 
 ## Good requests to give your agent
 

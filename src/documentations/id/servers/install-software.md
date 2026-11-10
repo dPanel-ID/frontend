@@ -36,7 +36,7 @@ Butuh rilis yang tidak ada di daftar? Kalau daftarnya diakhiri **Custom versionâ
 ## Memasang basis data
 
 1. Tekan **Pasang** pada modul yang diinginkan, misalnya **MariaDB**.
-2. Formulirnya menampilkan role yang akan dijalankan dan hanya menanyakan hal yang tidak bisa diputuskan sendiri. Untuk MariaDB: **MariaDB Version**, **Root Password**, dan **Bind Address**.
+2. Formulirnya menampilkan role yang akan dijalankan dan hanya menanyakan hal yang tidak bisa diputuskan sendiri. Untuk MariaDB: **MariaDB Version**, **Root Password**, dan **Bind Address**. Atur **Bind Address** ke `127.0.0.1` kecuali ada mesin lain yang harus terhubung langsung: nilai bawaannya, `0.0.0.0`, membuat MariaDB mendengarkan di semua alamat jaringan, dan di DigitalOcean dan IDCloudHost tidak ada yang memblokir port 3306 sampai Anda menambahkan firewall.
 3. Tekan **Install role**, lalu konfirmasi.
 
 ![Formulir pemasangan MariaDB, dengan versi, kata sandi root, dan bind address](../../assets/servers/server-module-install-form.webp)
@@ -62,19 +62,35 @@ Tab **Modul** menampilkan satu baris per modul dengan versi dan statusnya (**Ter
 ![Tab Modules dengan Caddy Server, Firewall, FrankenPHP, MariaDB dan PHP terpasang, Manage firewall di baris Firewall dan Open database di baris MariaDB](../../assets/servers/server-modules.webp 'Setiap baris menunjukkan modul, versinya, statusnya, dan pintasan seperti Buka database.')
 
 - **Segarkan inventaris** menanyakan ke agen apa yang ada di server sekarang. Modul yang tidak lagi dilaporkan agen, misalnya yang Anda hapus manual, hilang dari daftar.
-- Pilih chip versi untuk melihat apa yang dicatat dPanel tentang pemasangan itu. **Uninstall** di sana hanya menghapus catatannya dari dPanel; perangkat lunaknya tetap ada di server.
-- **Buka database** (MariaDB, PostgreSQL) dan **Kelola firewall** (Firewall) adalah pintasan. Lihat di bawah dan [Firewall](./firewall.md).
+- Pilih chip versi untuk melihat apa yang dicatat dPanel tentang pemasangan itu. **Uninstall** di sana hanya menghapus catatannya dari dPanel. Programnya, datanya, dan port yang terbuka tetap ada di server.
+- **Buka database** (MariaDB, PostgreSQL, MongoDB) dan **Kelola firewall** (Firewall) adalah pintasan. Lihat di bawah dan [Firewall](./firewall.md).
 
 :::tip[Runtime untuk aplikasi]
 Runtime bahasa tidak harus dipasang lebih dulu. Saat [membuat aplikasi](../applications/create-an-application.md), Anda memilih runtime-nya sebagai dependensi, dan dPanel memasangnya di server.
 :::
 
+## Sudah punya MariaDB di server?
+
+Jika MariaDB dipasang sebelum server bergabung ke dPanel, Anda tidak perlu memasangnya ulang, dan sebaiknya jangan: pemasangan bisa memperbarui database produksi. **Adopsi** memberi tahu dPanel tentang MariaDB yang sudah ada.
+
+1. Di tab **Modul**, tekan **Adopsi MariaDB yang sudah ada**.
+2. Baca konfirmasinya, yang menyebutkan port yang ditemukan dPanel, lalu setujui.
+
+Modul ini lalu tampil sebagai terpasang di luar dPanel (diadopsi). Tidak ada perubahan di server: tanpa paket, konfigurasi, atau restart. Anda bisa membuat database di dalamnya dan memakai **Buka database**. Sejak itu dPanel menolak memasang, memperbarui, atau menghapusnya, jadi hal itu tetap di tangan Anda.
+
+Hanya MariaDB yang bisa diadopsi. Dari terminal, `--dry-run` menunjukkan apa yang akan dicatat:
+
+```bash
+dnocs module adopt mariadb --server-id 140 --dry-run
+dnocs module adopt mariadb --server-id 140
+```
+
 ## Mengelola basis data
 
-Setelah MariaDB atau PostgreSQL berstatus **Terpasang**, barisnya di tab **Modul** menampilkan **Buka database**. Tombol itu membuka pengelola basis data di `dbmanager.devetek.app` pada tab baru, sudah masuk dengan akun dPanel Anda dan langsung mengarah ke server itu.
+Setelah MariaDB, PostgreSQL, atau MongoDB berstatus **Terpasang**, barisnya di tab **Modul** menampilkan **Buka database**. Tombol itu membuka pengelola basis data di `dbmanager.devetek.app` pada tab baru, sudah masuk dengan akun dPanel Anda dan langsung mengarah ke server itu.
 
 1. Tekan **Buka database**. Anda juga bisa membuka modulnya lalu menekan **Buka database** di sana.
-2. Periksa mesin basis datanya, lalu isi pengguna basis data (MariaDB memakai `root`, PostgreSQL memakai pengguna admin yang Anda pilih) dan kata sandi yang Anda tentukan saat memasangnya.
+2. Periksa mesin basis datanya, lalu isi pengguna basis data (MariaDB memakai `root`, PostgreSQL memakai pengguna admin yang Anda pilih, dan MongoDB secara bawaan memakai `RootAdmin`) dan kata sandi yang Anda tentukan saat memasangnya.
 3. Tekan **Connect**.
 
 Dari sana Anda bisa melihat tabel, menjalankan kueri, serta membuat basis data dan pengguna dengan akses baca saja atau baca-tulis.

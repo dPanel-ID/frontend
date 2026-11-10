@@ -49,7 +49,7 @@ Siapkan sekali saja; semua tutorial memakainya.
 ## Kebiasaan baik sejak awal
 
 - **Kerjakan satu hal setiap kali dan tunggu sampai selesai.** Memasang perangkat lunak dan merilis butuh beberapa menit. dPanel menampilkan progresnya di tab **Modul** server, halaman aplikasi, dan daftar job.
-- **Simpan kata sandi di pengelola kata sandi.** dPanel menampilkan kata sandi buatan sekali saja. Salin sebelum menutup formulirnya.
+- **Simpan kata sandi di pengelola kata sandi.** Saat asisten membuat kata sandi, kata sandi itu ditampilkan sekali saja. Salin sebelum menutup chat.
 - **Jangan pernah menaruh kata sandi di kode atau di chat**, termasuk ke [asisten](../ai/overview.md). Taruh di variabel environment.
 - **Hapus yang tidak dipakai.** Server cloud memakan biaya setiap jam selama masih ada, meski menganggur.
 

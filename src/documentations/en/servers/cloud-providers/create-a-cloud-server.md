@@ -32,7 +32,7 @@ The form is one page with three numbered steps. The **Review** panel on the righ
 
 - **Region** is the part of the world the machine runs in. Pick one close to your users.
 - **Zone** is one data centre inside that region. Any of them is fine. Google Cloud, Alibaba Cloud and Tencent Cloud ask for one.
-- **Network** is filled in for you. On most providers dPanel creates `dpanel-network` the first time it launches in a region, then reuses it. Only SSH, HTTP and HTTPS are open.
+- **Network** is filled in for you. On most providers dPanel creates `dpanel-network` the first time it launches in a region, then reuses it. On AWS, Google Cloud, Alibaba Cloud and Tencent Cloud, dPanel opens only TCP ports 22 (SSH), 80 (HTTP) and 443 (HTTPS) at the provider. On DigitalOcean and IDCloudHost it creates no provider firewall, so turn on the dPanel [firewall](../firewall.md) or add one at the provider.
 
 ## Step 3: Size and image
 
@@ -79,7 +79,7 @@ A blue banner says dPanel is setting the server up. Expect 10 to 20 minutes:
 When the banner goes and the badge reads **Ready**, the server is yours to use. Next, [install software](../install-software.md) on it or [create an application](../../applications/create-an-application.md).
 
 :::warning[If setup fails]
-A red banner says so and offers **See what happened**, with the reason the provider or the setup gave. The usual causes are a cloud account without enough quota, and credentials that have expired. To try again, use **Reinstall** on the server's **Settings** tab. See [Common problems](../../troubleshooting/faq.md#servers).
+A red banner says so and offers **See what happened**, with the reason the provider or the setup gave. The usual causes are a cloud account without enough quota, and credentials that have expired. If the provider never created the machine, **Reinstall** cannot help: fix the cause shown, delete the server in dPanel and launch it again. If the machine exists and only setup failed, use **Reinstall** on the server's **Settings** tab. See [Common problems](../../troubleshooting/faq.md#servers).
 :::
 
 :::tip[Your provider bills from now]

@@ -40,7 +40,7 @@ The server appears in the list. Wait until its status is **Ready**, usually 10 t
 WordPress needs a database (MariaDB), the PHP language, and a web server that runs PHP (FrankenPHP).
 
 1. Open the server and go to **Modules**. Press **Add module**.
-2. Press **Install** on **MariaDB**. Set a **Root Password** you will remember, or keep the one suggested, and copy it somewhere safe. Press **Install role** and confirm.
+2. Press **Install** on **MariaDB**. Set a **Root Password** of at least 8 characters and copy it somewhere safe, because dPanel does not show it again. Set **Bind Address** to `127.0.0.1` so the database is reachable only from this server. Press **Install role** and confirm.
 3. Wait until MariaDB shows **Installed**. Then install **PHP** with **PHP Version** `8.5`.
 4. When PHP is installed, install **FrankenPHP**.
 
@@ -99,13 +99,22 @@ dPanel clones the repository on the server, runs the build and starts WordPress 
 
 1. Open **Load Balancers** and press **Create a load balancer**. The form has four steps: **Gateway**, **Domain**, **Routing** and **Review**.
 2. **Gateway**: under **Gateway server**, select the same server. Under **Web server engine**, pick **Caddy Server** and press **Install** if it is not installed yet.
-3. **Domain**: under **Domain Name**, choose **Managed**, type the **Subdomain** (for example `blog`), and **Select domain**.
+3. **Domain**: under **Domain Name**, choose **Managed**, type the **Subdomain** (for example `blog`), and **Select domain**. If your domain's DNS is not at Cloudflare or DigitalOcean, choose **External**, type your hostname and add the record the form shows at your DNS provider.
 4. **Routing**: keep **L7** under **Routing mode**, and **HTTP / HTTPS** with **HTTPS** on under **Protocol and HTTPS**. In the first rule, set **Type** to **Application**, **Matching Path** to `/*`, and pick the **WordPress** application.
 5. **Review**: when the review panel reads **Ready to create**, press **Create load balancer**.
 
 ![Step 3 of the load balancer form: one rule sending /* to an application](../../assets/networking/lb-create-routing.webp)
 
 dPanel creates the DNS record, configures the gateway and requests a free Let's Encrypt certificate. After a minute or two, open `https://blog.example.com/wp-admin/install.php`: the WordPress installer appears. Choose the language, the site title and your admin account, and your site is live. See [Load balancers](../networking/load-balancers.md).
+
+## Your uploads, plugins and themes
+
+WordPress keeps two kinds of files, and a new release treats them differently:
+
+- **Files that are in your repository** go back to the repository's version on every release and rollback. An edit made in the wp-admin theme editor is lost if that file is in the repository, so make the change in your repository instead.
+- **Files that are not in your repository**, such as `wp-content/uploads`, or plugins and themes you installed from wp-admin, stay where they are. A release or rollback does not touch them.
+
+Your posts and settings live in the database, which a release does not touch either. Deleting the application deletes its folder and everything in it, so back up `wp-content` and the database first.
 
 ## When something does not work
 

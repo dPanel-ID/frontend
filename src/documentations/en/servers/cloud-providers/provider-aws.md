@@ -148,8 +148,8 @@ Every resource dPanel creates is tagged `managed-by = dpanel`. The policy uses t
 }
 ```
 
-:::warning[Verify]
-The calls in the first table come straight from dPanel's code. A few actions in the JSON, such as `DescribeInstanceStatus`, `DescribeTags` and `DescribeSecurityGroupRules`, are made inside the Ansible `amazon.aws` modules dPanel uses, not by dPanel itself. If a launch fails with `UnauthorizedOperation`, the error names the missing action. Add it and try again. Servers created before dPanel started tagging them may lack the `managed-by` tag; deleting one of those needs `TerminateInstances` without the tag condition.
+:::note[If a launch is refused]
+The calls in the first table are the ones dPanel makes itself. A few actions in the JSON, such as `DescribeInstanceStatus`, `DescribeTags` and `DescribeSecurityGroupRules`, are made inside the Ansible `amazon.aws` modules dPanel uses, not by dPanel itself. If a launch fails with `UnauthorizedOperation`, the error names the missing action. Add it and try again. Servers created before dPanel started tagging them may lack the `managed-by` tag; deleting one of those needs `TerminateInstances` without the tag condition.
 :::
 
 ## 2. Connect it to dPanel

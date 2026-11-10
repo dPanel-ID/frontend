@@ -35,8 +35,8 @@ DigitalOcean membolehkan Anda menentukan persis apa yang boleh dilakukan sebuah 
 
 Panduan DigitalOcean: [Membuat personal access token](https://docs.digitalocean.com/reference/api/create-personal-access-token/), [Cakupan token](https://docs.digitalocean.com/reference/api/scopes/).
 
-:::warning[Perlu dicek]
-Daftar di atas berasal dari panggilan API di kode dPanel (`/v2/regions`, `/v2/sizes`, `/v2/images`, `/v2/vpcs`, `/v2/droplets`) dan modul Ansible `digitalocean.cloud` yang dijalankannya (`droplet`, `droplets_info`, `ssh_key`). DigitalOcean kadang mewajibkan scope baca tambahan untuk sebuah aksi pembuatan, misalnya `actions:read` saat menunggu Droplet. Halaman token memberi tahu scope apa saja yang dibutuhkan sebuah scope pembuatan; terima saja. Kalau peluncuran gagal dengan `403`, pesan errornya menyebut scope yang kurang.
+:::note[Scope tambahan]
+Daftar di atas mencakup panggilan API yang dilakukan dPanel (`/v2/regions`, `/v2/sizes`, `/v2/images`, `/v2/vpcs`, `/v2/droplets`) dan modul Ansible `digitalocean.cloud` yang dijalankannya (`droplet`, `droplets_info`, `ssh_key`). DigitalOcean kadang mewajibkan scope baca tambahan untuk sebuah aksi pembuatan, misalnya `actions:read` saat menunggu Droplet. Halaman token memberi tahu scope apa saja yang dibutuhkan sebuah scope pembuatan; terima saja. Kalau peluncuran gagal dengan `403`, pesan errornya menyebut scope yang kurang.
 :::
 
 ## 2. Hubungkan ke dPanel

@@ -37,8 +37,8 @@ Panduan Tencent Cloud: [Membuat sub-user](https://www.tencentcloud.com/document/
 | Instance                        | Meluncurkannya, pay-as-you-go, dengan IP publik            | `RunInstances`                                                                                                                  |
 | Penghapusan                     | Menghapus instance, security group, dan key pair-nya       | `TerminateInstances`, `DeleteSecurityGroup`, `DeleteKeyPairs`                                                                   |
 
-:::warning[Perlu dicek]
-Panggilan pencarian pilihan diambil langsung dari kode dPanel. Peluncuran dan penghapusan dijalankan lewat koleksi Ansible `susunola.tencentcloud`, yang mungkin melakukan beberapa panggilan baca tambahan. Dua preset policy di atas sudah mencakup semuanya. Kalau Anda menulis custom policy yang lebih sempit lalu peluncuran gagal, pesan error-nya menyebut action yang kurang.
+:::note[Kalau peluncuran ditolak]
+Panggilan pencarian pilihan adalah panggilan yang dilakukan dPanel sendiri. Peluncuran dan penghapusan dijalankan lewat koleksi Ansible `susunola.tencentcloud`, yang mungkin melakukan beberapa panggilan baca tambahan. Dua preset policy di atas sudah mencakup semuanya. Kalau Anda menulis custom policy yang lebih sempit lalu peluncuran gagal, pesan error-nya menyebut action yang kurang.
 :::
 
 ## 2. Hubungkan ke dPanel

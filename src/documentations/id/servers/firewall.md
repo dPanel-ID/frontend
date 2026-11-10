@@ -5,7 +5,7 @@ sidebar_position: 8
 sidebar_icon: shield-check
 ---
 
-dPanel mengelola firewall setiap server untuk Anda: Anda menyimpan daftar aturan di dPanel, meninjau apa yang akan berubah, lalu dPanel menerapkan seluruh daftar itu ke server sekaligus tanpa mengunci dirinya sendiri di luar. Firewall menentukan lalu lintas jaringan mana yang boleh masuk ke server; saat firewall nyala, hanya port yang Anda izinkan yang bisa dijangkau dari internet, sisanya diblokir.
+dPanel mengelola firewall setiap server untuk Anda: Anda menyimpan daftar aturan di dPanel, meninjau apa yang akan berubah, lalu dPanel menerapkan seluruh daftar itu ke server sekaligus tanpa mengunci dirinya sendiri di luar. Firewall menentukan lalu lintas jaringan mana yang boleh masuk ke server; saat firewall nyala, hanya port yang Anda izinkan yang bisa dijangkau dari internet, sisanya diblokir. Server baru dimulai dengan firewall ini mati: sampai Anda menyalakannya, hanya firewall penyedia Anda, kalau ada, yang membatasi siapa yang bisa terhubung.
 
 Di baliknya dPanel memakai ufw, firewall bawaan Ubuntu. **Port** adalah "pintu" bernomor di server yang didengarkan satu program, misalnya 443 untuk situs web atau 22 untuk SSH. Belum kenal istilah-istilah ini? Lihat [Glosarium](../getting-started/glossary.md).
 
@@ -106,8 +106,8 @@ Kalau bagian ini menyebut firewall di server tidak bisa dibaca, berarti modul fi
 
 ## Keamanan: SSH dan pemulihan otomatis
 
-- SSH selalu tetap terbuka, jadi dPanel tetap bisa menjangkau server. Kalau sebuah perubahan akan menutup SSH, tinjauan menyebutkannya dan dPanel menolak menerapkannya.
-- Kalau SSH atau agen dPanel berhenti bekerja setelah perubahan, server memulihkan firewall sebelumnya dengan sendirinya dalam beberapa menit, dan tugasnya ditandai gagal.
+- SSH selalu tetap terbuka, di port SSH server itu walaupun bukan 22, jadi dPanel tetap bisa menjangkau server. Kalau sebuah perubahan akan menutup SSH, tinjauan menyebutkannya dan dPanel menolak menerapkannya.
+- Kalau SSH atau agen dPanel berhenti bekerja setelah perubahan, server memulihkan firewall sebelumnya dengan sendirinya dalam beberapa menit, dan tugasnya ditandai gagal. Sebelum mengubah apa pun, dPanel mencadangkan `/etc/ufw` dan `/etc/default/ufw` ke `/var/lib/dpanel-firewall/backup` dan menjalankan timer systemd `dpanel-firewall-rollback`.
 
 ## Mematikan firewall
 

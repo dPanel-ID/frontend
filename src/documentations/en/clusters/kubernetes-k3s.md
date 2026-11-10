@@ -6,7 +6,7 @@ sidebar_icon: rocket
 sidebar_label: Kubernetes with k3s
 ---
 
-This guide builds a real k3s cluster, **kube-k3s**, on two servers and serves a web app from it at `https://kube-k3s.devetek.app`. Follow along with your own servers and domain; it takes about 30 minutes, most of it waiting.
+This guide builds a real k3s cluster, **kube-k3s**, on two servers and serves a web app from it at `https://kube-k3s.example.com`. Follow along with your own servers and domain; it takes about 30 minutes, most of it waiting.
 
 k3s is the lightweight engine: one small program, happy on 2 GB of memory and on a Raspberry Pi. For hardened production, see [Kubernetes with RKE2](./kubernetes-rke2.md). New to the words? Read [Server groups and clusters](./overview.md) first.
 
@@ -19,11 +19,11 @@ You need servers that dPanel already manages and that read **Ready**. This guide
 | kube-k3s-1 | **Server**          | 2 CPU, 4 GB, Ubuntu 24.04 |
 | kube-k3s-2 | **Agent**           | 2 CPU, 4 GB, Ubuntu 24.04 |
 
-- **Size:** 2 GB of memory or more per server. amd64, arm64 or armhf (Raspberry Pi) all work.
-- **System:** Ubuntu. This guide was tested on Ubuntu 24.04.
+- **Size:** 2 GB of memory or more per server is comfortable; 1 GB is the minimum. amd64, arm64 or armhf (Raspberry Pi) all work.
+- **System:** Ubuntu. This guide uses Ubuntu 24.04.
 - **Same region** for every server, not in any group, without Docker, k3s or RKE2, and with the dPanel firewall off.
 
-A fresh server launched from dPanel meets all of this. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
+A fresh server launched from dPanel meets all of this. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). With the dPanel firewall off, nothing on the server blocks ports. On DigitalOcean and IDCloudHost dPanel creates no provider firewall either, so port 30080 and the Kubernetes API on port 6443 can be reached from the internet. Add a provider firewall if you do not want that.
 
 ## 1. Start a Kubernetes group
 
@@ -34,7 +34,7 @@ A fresh server launched from dPanel meets all of this. See [Create a cloud serve
 
 ## 2. Pick the servers and their roles
 
-1. **Name**: `kube-k3s`. **Description**: anything that helps, for example "k3s cluster serving kube-k3s.devetek.app".
+1. **Name**: `kube-k3s`. **Description**: anything that helps, for example "k3s cluster serving kube-k3s.example.com".
 2. Under **Servers**, tick **kube-k3s-1** first, then **kube-k3s-2**. Type in **Search servers** to find them quickly.
 3. Each picked server appears at the top with a role switch. The first one gets **Server** (the control plane), the others **Agent** (apps only). Press the other button to change a role.
 
@@ -66,7 +66,7 @@ dPanel creates the group and starts one install job over both servers: the serve
 With one **Server**, the cluster stops accepting changes if that server goes down; apps already running keep running. That is fine for learning and small projects. Use three servers with the **Server** role when the cluster must survive losing one.
 :::
 
-You can close the wizard; the install keeps going. It took about 11 minutes here.
+You can close the wizard; the install keeps going. It takes about 10 minutes.
 
 ## 5. Check the cluster
 
@@ -152,7 +152,7 @@ A dPanel [load balancer](../networking/load-balancers.md) on the **Server** node
 4. **Routing mode**: **L7**. **Routes**: **Type** **Proxy Pass**, **Matching Path** `/*`, address `127.0.0.1` and port `30080`.
 5. Press **Create load balancer**.
 
-On a fresh server the first load balancer also installs Caddy, which took about 11 minutes here; later ones take about a minute. When it reads **Ready**, open `https://kube-k3s.your-domain`. The page reads `Hello from kube-k3s, a k3s cluster on dPanel`, with a valid HTTPS certificate.
+On a fresh server the first load balancer also installs Caddy, which can take about 10 minutes; later ones take about a minute. When it reads **Ready**, open `https://kube-k3s.your-domain`. The page reads `Hello from kube-k3s, a k3s cluster on dPanel`, with a valid HTTPS certificate.
 
 :::tip[Why 127.0.0.1 works]
 A NodePort is open on **every** node, and Kubernetes forwards it to a running copy, even one on another node. So the gateway sends traffic to itself on port 30080 and still reaches both copies.

@@ -73,8 +73,8 @@ dPanel attaches no service account to the VMs it creates, so you don't need `rol
 
 If you'd rather use predefined roles, the closest set is `roles/compute.instanceAdmin.v1` plus `roles/compute.securityAdmin` (firewall rules) plus `roles/compute.networkAdmin` (the network, first launch only). Those roles grant far more than dPanel uses.
 
-:::warning[Verify]
-The discovery permissions come from dPanel's own API calls. The rest come from the Ansible `google.cloud` modules dPanel runs, and the exact set those modules check can vary by version. If a launch fails with `Required '…' permission`, add the named permission to the custom role with `gcloud iam roles update`.
+:::note[If a launch is refused]
+The discovery permissions are for the calls dPanel makes itself. The rest come from the Ansible `google.cloud` modules dPanel runs, and the exact set those modules check can vary by version. If a launch fails with `Required '…' permission`, add the named permission to the custom role with `gcloud iam roles update`.
 :::
 
 ## 2. Connect it to dPanel

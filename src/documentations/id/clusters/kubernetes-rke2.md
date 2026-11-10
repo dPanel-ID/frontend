@@ -6,9 +6,9 @@ sidebar_icon: shield-check
 sidebar_label: Kubernetes dengan RKE2
 ---
 
-Panduan ini membangun klaster Kubernetes RKE2 sungguhan dengan dPanel, **kube-rke**, di dua server dan menyajikan aplikasi web darinya di `https://kube-rke.devetek.app`. Ikuti dengan server dan domain Anda sendiri; lamanya sekitar 30 menit, sebagian besar menunggu.
+Panduan ini membangun klaster Kubernetes RKE2 sungguhan dengan dPanel, **kube-rke**, di dua server dan menyajikan aplikasi web darinya di `https://kube-rke.example.com`. Ikuti dengan server dan domain Anda sendiri; lamanya sekitar 30 menit, sebagian besar menunggu.
 
-RKE2 adalah Kubernetes dari Rancher yang fokus pada keamanan: bawaan siap CIS, plugin jaringan Canal, dan control plane-nya (etcd, API server, scheduler) berjalan sebagai pod yang terlihat. RKE2 butuh server lebih besar daripada k3s dan hanya berjalan di amd64 dan arm64. Untuk mesin kecil atau Raspberry Pi, lihat [Kubernetes dengan k3s](./kubernetes-k3s.md). Masih asing dengan istilahnya? Baca dulu [Grup server dan klaster](./overview.md).
+RKE2 adalah Kubernetes dari Rancher yang fokus pada keamanan: bawaan siap CIS, plugin jaringan Canal, dan control plane-nya (etcd, API server, scheduler) berjalan sebagai pod yang terlihat. RKE2 butuh server lebih besar daripada k3s dan hanya berjalan di amd64 dan arm64. Untuk mesin kecil atau Raspberry Pi, lihat [Kubernetes dengan k3s](./kubernetes-k3s.md). Masih asing dengan istilahnya? Baca dulu [Grup server dan klaster](./overview.md). Sederhananya, RKE2 adalah Kubernetes dengan pengaturan keamanan yang lebih ketat. etcd adalah database yang menyimpan status klaster.
 
 ## Sebelum mulai
 
@@ -20,10 +20,10 @@ Anda butuh server yang sudah dikelola dPanel dan berstatus **Ready**. Panduan in
 | kube-rke-2 | **Agent**        | 2 CPU, 4 GB, Ubuntu 24.04 |
 
 - **Ukuran:** 2 CPU dan memori 4 GB atau lebih per server, amd64 atau arm64. RKE2 menjalankan lebih banyak pod sistem daripada k3s; server yang lebih kecil kewalahan.
-- **Sistem:** Ubuntu. Panduan ini diuji di Ubuntu 24.04.
+- **Sistem:** Ubuntu. Panduan ini memakai Ubuntu 24.04.
 - **Region yang sama** untuk semua server, tidak masuk grup mana pun, tanpa Docker, k3s, atau RKE2, dan firewall dPanel mati.
 
-Server baru yang diluncurkan dari dPanel sudah memenuhi semuanya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
+Server baru yang diluncurkan dari dPanel sudah memenuhi semuanya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Saat firewall dPanel mati, tidak ada yang memblokir port di server. Di DigitalOcean dan IDCloudHost dPanel juga tidak membuat firewall penyedia, jadi port 30080 dan API Kubernetes di port 6443 bisa dijangkau dari internet. Tambahkan firewall penyedia kalau Anda tidak menginginkannya.
 
 ## 1. Mulai grup Kubernetes
 
@@ -34,7 +34,7 @@ Server baru yang diluncurkan dari dPanel sudah memenuhi semuanya. Lihat [Membuat
 
 ## 2. Pilih server dan perannya
 
-1. **Name**: `kube-rke`. **Description**: apa saja yang membantu, misalnya "RKE2 cluster serving kube-rke.devetek.app".
+1. **Name**: `kube-rke`. **Description**: apa saja yang membantu, misalnya "RKE2 cluster serving kube-rke.example.com".
 2. Di **Servers**, ketik `kube-rke` di **Search servers**, lalu centang **kube-rke-1** dulu dan **kube-rke-2** kedua.
 3. Setiap server terpilih muncul di atas dengan tombol peran. Yang pertama mendapat **Server** (control plane), yang lain **Agent** (hanya aplikasi). Tekan tombol yang lain untuk mengubah peran.
 
@@ -92,7 +92,7 @@ export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 kubectl get nodes
 ```
 
-Kedua node bertuliskan `Ready`. RKE2 menamai node sesuai ID server di dPanel, misalnya `dpanel-186`. Sisa panduan ini memakai shell root tersebut.
+Kedua node bertuliskan `Ready`. RKE2 menamai node sesuai ID server di dPanel, misalnya `dpanel-101`. Sisa panduan ini memakai shell root tersebut.
 
 ## 7. Jalankan aplikasi pertama
 
@@ -143,7 +143,7 @@ curl http://127.0.0.1:30080
 
 Kubernetes menaruh satu salinan di setiap node, dan `curl` menjawab dengan halamannya:
 
-![Terminal browser di kube-rke-1: kubectl get nodes menampilkan dpanel-186 dan dpanel-187 Ready, kubectl get pods menampilkan satu pod hello di setiap node, dan curl menjawab Hello from kube-rke, a RKE2 cluster on dPanel](../../assets/clusters/rke2-terminal.webp 'Kedua node Ready, satu salinan aplikasi di masing-masing, dan aplikasi menjawab di port 30080.')
+![Terminal browser di kube-rke-1: kubectl get nodes menampilkan kedua node Ready, kubectl get pods menampilkan satu pod hello di setiap node, dan curl menjawab Hello from kube-rke, a RKE2 cluster on dPanel](../../assets/clusters/rke2-terminal.webp 'Kedua node Ready, satu salinan aplikasi di masing-masing, dan aplikasi menjawab di port 30080.')
 
 ## 8. Sajikan di domain Anda dengan HTTPS
 
@@ -168,8 +168,6 @@ Di tab **Cluster** grupnya:
 - **Uninstall** menghapus RKE2 dari kedua node (menjalankan skrip uninstall bawaan RKE2). Aplikasi di klaster berhenti dan datanya di node dihapus. Server dan grup tetap ada; klaster bertuliskan **Uninstalled**.
 - **Install again** muncul kalau pemasangan gagal atau setelah dicopot. Tombol ini memasang di server yang sama dengan peran dan versi yang sama.
 - **Delete cluster** bisa untuk klaster yang sudah dicopot, gagal, atau belum pernah dipasang. Grupnya tetap ada sebagai grup umum; hapus grup itu agar servernya bisa dipakai klaster lain.
-
-Klaster di panduan ini melewati ketiganya: awalnya dibuat dari baris perintah, lalu dicopot, dihapus bersama grupnya, dan dibuat lagi di dua server yang sama lewat wizard di atas.
 
 Hapus dulu load balancer yang Anda buat untuk klaster itu.
 

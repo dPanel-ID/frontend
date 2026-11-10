@@ -36,7 +36,7 @@ Need a release that is not listed? If the list ends with **Custom version…**, 
 ## Install a database
 
 1. Press **Install** on the module you want, for example **MariaDB**.
-2. The form lists the **Roles to run** and asks only for what it can't decide for you. For MariaDB that is **MariaDB Version**, **Root Password** and **Bind Address**.
+2. The form lists the **Roles to run** and asks only for what it can't decide for you. For MariaDB that is **MariaDB Version**, **Root Password** and **Bind Address**. Set **Bind Address** to `127.0.0.1` unless another machine must connect directly: the default, `0.0.0.0`, makes MariaDB listen on every network address, and on DigitalOcean and IDCloudHost nothing blocks port 3306 until you add a firewall.
 3. Press **Install role** and confirm.
 
 ![The MariaDB install form, with version, root password and bind address](../../assets/servers/server-module-install-form.webp)
@@ -62,19 +62,35 @@ The **Modules** tab lists one row per module with its versions and status (**Ins
 ![The Modules tab with Caddy Server, Firewall, FrankenPHP, MariaDB and PHP installed, Manage firewall on the Firewall row and Open database on the MariaDB row](../../assets/servers/server-modules.webp 'Each row shows the module, its versions, its status and shortcuts such as Open database.')
 
 - **Refresh inventory** asks the agent what is on the server now. A module the agent no longer reports, for example one you removed by hand, drops off the list.
-- Select a version chip to see what dPanel recorded about that install. **Uninstall** there removes the record from dPanel only; the software stays on the server.
-- **Open database** (MariaDB, PostgreSQL) and **Manage firewall** (Firewall) are shortcuts. See below and [Firewall](./firewall.md).
+- Select a version chip to see what dPanel recorded about that install. **Uninstall** there removes the record from dPanel only. The program, its data and its open port all stay on the server.
+- **Open database** (MariaDB, PostgreSQL, MongoDB) and **Manage firewall** (Firewall) are shortcuts. See below and [Firewall](./firewall.md).
 
 :::tip[Runtimes for applications]
 You don't have to install a language runtime first. When you [create an application](../applications/create-an-application.md), you pick its runtime as a dependency, and dPanel installs it on the server.
 :::
 
+## Already have MariaDB on the server?
+
+If MariaDB was installed before the server joined dPanel, you do not have to reinstall it, and you should not: installing could upgrade a production database. **Adopt** tells dPanel about the one that is already there.
+
+1. On the **Modules** tab, press **Adopt existing MariaDB**.
+2. Read the confirmation, which names the port dPanel found, and confirm.
+
+The module now appears as **Installed outside dPanel (adopted)**. Nothing on the server changes: no package, no configuration, no restart. You can create databases on it and use **Open database**. From then on dPanel refuses to install, upgrade or remove it, so that stays in your hands.
+
+Only MariaDB can be adopted. From the terminal, `--dry-run` shows what would be recorded:
+
+```bash
+dnocs module adopt mariadb --server-id 140 --dry-run
+dnocs module adopt mariadb --server-id 140
+```
+
 ## Manage the database
 
-Once MariaDB or PostgreSQL reads **Installed**, its row on the **Modules** tab has **Open database**. It opens the database manager at `dbmanager.devetek.app` in a new tab, already signed in with your dPanel account and pointed at that server.
+Once MariaDB, PostgreSQL or MongoDB reads **Installed**, its row on the **Modules** tab has **Open database**. It opens the database manager at `dbmanager.devetek.app` in a new tab, already signed in with your dPanel account and pointed at that server.
 
 1. Press **Open database**. You can also open the module and press **Open database** there.
-2. Check the engine, enter the database user (MariaDB uses `root`, PostgreSQL uses the admin user you chose) and the password you set when you installed it.
+2. Check the engine, enter the database user (MariaDB uses `root`, PostgreSQL uses the admin user you chose, and MongoDB defaults to `RootAdmin`) and the password you set when you installed it.
 3. Press **Connect**.
 
 From there you can browse tables, run queries, and create databases and users with read-only or read-write access.

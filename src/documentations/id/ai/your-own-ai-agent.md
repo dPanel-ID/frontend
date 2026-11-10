@@ -16,10 +16,14 @@ Kalau Anda sudah bekerja dengan agen AI coding, seperti Claude Code, Cursor, Cod
 4. Asisten dPanel mengusulkan setiap perubahan dengan ID tindakan (`aipa_…`).
 5. Perubahan baru dijalankan saat `dnocs ai approve <action-id>` dijalankan.
 
-Agen tidak pernah memanggil API dPanel atau penyedia cloud Anda secara langsung, dan tidak pernah mengubah server secara manual. Semuanya melewati asisten dPanel, sehingga setiap perubahan diusulkan, disetujui, dan dicatat dengan cara yang sama seperti di aplikasi web.
+Agen tidak pernah memanggil API dPanel atau penyedia cloud Anda secara langsung, dan tidak pernah mengubah server secara manual. Semuanya melewati asisten dPanel, sehingga setiap perubahan diusulkan, disetujui, dan dicatat dengan cara yang sama seperti di aplikasi web. Aturan itu adalah permintaan kepada agen Anda, bukan sesuatu yang ditegakkan dPanel: sesi yang sudah masuk juga bisa menjalankan perintah dnocs lain, tanpa langkah persetujuan. Untuk batas yang benar-benar mengikat, berikan agen [akun layanan](../teams/service-accounts.md) dengan peran kecil.
 
 :::warning[Tentukan siapa yang menyetujui]
 Agen menjalankan perintah sebagai Anda, dengan sesi dPanel Anda. Kalau agen boleh menjalankan `dnocs ai approve` sendiri, ia bisa menyetujui perubahan atas nama Anda. Minta agen menunjukkan setiap usulan dan menunggu "ya" dari Anda sebelum menyetujui, atau jalankan sendiri perintah approve-nya. Setujui penghapusan dan resource berbayar, seperti server cloud baru, hanya setelah Anda membacanya.
+
+:::tip[Batasi yang bisa dilakukan agen]
+Untuk agen yang berjalan tanpa Anda awasi, buat [akun layanan](../teams/service-accounts.md) dengan peran terkecil yang cukup, lalu berikan tokennya kepada agen lewat `DNOCS_TOKEN`. Anda bisa mencabutnya kapan saja, dan agen tidak pernah mendapat akses Anda sendiri.
+:::
 :::
 
 ## Berikan instruksi ke agen Anda
@@ -46,8 +50,6 @@ Kelola hanya lewat CLI dnocs dan asistennya:
   asisten bahasa dan versinya, perintah build, dan perintah start.
 - Pertanyaan cara pakai: baca https://dnocs.devetek.app/llms.txt dan halaman yang ditautkannya.
 ```
-
-Tim dPanel memakai versi instruksi yang lebih lengkap, yaitu skill **dpanel-cli-ai**, untuk menguji dPanel dari ujung ke ujung dengan agen AI (server, MariaDB, rilis WordPress, load balancer HTTPS, dan pembersihannya, semuanya lewat `dnocs ai`). Aturan di atas adalah intinya.
 
 ## Contoh permintaan yang baik untuk agen Anda
 

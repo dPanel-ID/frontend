@@ -11,14 +11,14 @@ You can add a server you already run, at any hosting company or at home, to dPan
 ## What you need first
 
 - A server running Ubuntu or Debian that dPanel can reach over SSH from the internet.
-- A Linux user on it that can use `sudo`, or `root`.
+- A Linux user that is `root`, or that can run `sudo` (run a command as administrator) without typing a password. dPanel signs in with a key and has no password to give `sudo`.
 - An SSH key in dPanel. You can also create one inside the form.
 
 ## Connect it
 
 1. Open **Servers**, then **Create Server**, then **Connect a server**.
 2. Under **Choose an SSH key**, pick a key, or press **Create SSH key**.
-3. Copy the command under **Authorize the key on your server** and run it once on the server. It adds the key's public half to `~/.ssh/authorized_keys`.
+3. Copy the command under **Authorize the key on your server** and run it once on the server. Sign in the way you do today, usually your provider's web console or `ssh user@address` in a terminal. The command adds the key's public half to `~/.ssh/authorized_keys`, the list of keys allowed to sign in, and prints nothing when it works.
 4. Tick **I added this key to the server**.
 5. Under **Where is the server?**, fill in **Server address** (an IPv4 address, hostname or domain), **SSH port** and **Linux user**.
 6. When the **Review** panel reads 3/3, press **Connect server**.
@@ -36,7 +36,7 @@ dPanel saves the server, then installs its agent over SSH. Follow the progress o
 When the badge reads **Ready**, the server works like any other. See [Your server page](./your-server-page.md).
 
 :::info[Deleting a server you connected]
-dPanel only forgets a server you connected yourself. Your machine keeps running. See [Delete a server](./delete-a-server.md).
+For a server you connected yourself, dPanel removes its agent and forgets the server. Your machine, your applications and their data stay. See [Delete a server](./delete-a-server.md).
 :::
 
 ## Frequently asked questions
@@ -51,11 +51,11 @@ No. dPanel signs in with an SSH key, never a password. The Linux user you enter 
 
 ### Does my server need a public IP address?
 
-dPanel must be able to reach the **Server address** and **SSH port** you enter. A server behind a home router needs the SSH port forwarded to it, or a public address.
+dPanel must be able to reach the **Server address** and **SSH port** you enter. A server behind a home router usually needs no SSH at all: [register it as a private machine](./register-a-private-machine.md), which only connects out. To use this page instead, forward the SSH port to it or give it a public address.
 
 ### What happens if I remove the server from dPanel?
 
-dPanel forgets it and your machine keeps running, with everything on it. See [Delete a server](./delete-a-server.md).
+dPanel removes its agent and forgets it. Your machine keeps running, with everything else on it. See [Delete a server](./delete-a-server.md).
 
 ### Setup failed. How do I try again?
 

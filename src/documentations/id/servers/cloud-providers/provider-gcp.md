@@ -73,8 +73,8 @@ dPanel tidak memasang service account ke VM yang dibuatnya, jadi `roles/iam.serv
 
 Kalau lebih suka predefined role, kombinasi terdekatnya adalah `roles/compute.instanceAdmin.v1`, ditambah `roles/compute.securityAdmin` (aturan firewall), ditambah `roles/compute.networkAdmin` (jaringan, hanya saat peluncuran pertama). Ketiganya memberi jauh lebih banyak dari yang dipakai dPanel.
 
-:::warning[Perlu dicek]
-Izin penelusuran berasal dari panggilan API dPanel sendiri. Sisanya berasal dari modul Ansible `google.cloud` yang dijalankan dPanel, dan izin yang diperiksa modul itu bisa berbeda antarversi. Kalau peluncuran gagal dengan `Required '…' permission`, tambahkan izin yang disebut ke custom role dengan `gcloud iam roles update`.
+:::note[Kalau peluncuran ditolak]
+Izin penelusuran dipakai untuk panggilan yang dilakukan dPanel sendiri. Sisanya berasal dari modul Ansible `google.cloud` yang dijalankan dPanel, dan izin yang diperiksa modul itu bisa berbeda antarversi. Kalau peluncuran gagal dengan `Required '…' permission`, tambahkan izin yang disebut ke custom role dengan `gcloud iam roles update`.
 :::
 
 ## 2. Hubungkan ke dPanel

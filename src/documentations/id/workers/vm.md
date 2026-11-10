@@ -10,7 +10,7 @@ Worker VM adalah server atau VM (virtual machine: komputer yang disewa atau dija
 ## Sebelum mulai
 
 - Server atau VM Linux (Ubuntu 22.04 atau 24.04) yang bisa menjangkau server Anda lewat SSH dan `https://pawon.devetek.app` lewat HTTPS. Anda tidak perlu menambahkan kunci SSH: dPanel memberi worker akses SSH ke server Anda pada setiap job.
-- Python 3 dan `pip`.
+- Python 3 (sudah ada di Ubuntu).
 
 ## 1. Tambahkan worker di dPanel
 
@@ -29,7 +29,10 @@ dPanel menampilkan **token** dan pengaturan untuk mesin. **Simpan token sekarang
 ## 2. Pasang executor di mesin
 
 ```bash
-python3 -m pip install --user "ansible-core>=2.16,<2.17" jmespath
+sudo apt-get update && sudo apt-get install -y python3-venv
+sudo python3 -m venv /opt/dpanel-ansible
+sudo /opt/dpanel-ansible/bin/pip install "ansible-core>=2.16,<2.17" jmespath
+sudo ln -sf /opt/dpanel-ansible/bin/ansible* /usr/local/bin/
 base=https://raw.githubusercontent.com/dPanel-ID/artifacts/main/executor
 version=$(curl -fsSL "$base/LATEST")
 curl -fsSL -o dpanelprod-executor "$base/$version/dpanelprod-executor-linux-amd64"
@@ -37,7 +40,7 @@ curl -fsSL "$base/$version/SHA256SUMS" | sed 's/dpanelprod-executor-linux-amd64/
 chmod +x dpanelprod-executor && sudo mv dpanelprod-executor /usr/local/bin/
 ```
 
-Gunakan `dpanelprod-executor-linux-arm64` di mesin ARM.
+Di mesin ARM, ganti `linux-amd64` menjadi `linux-arm64` di baris `curl -o` dan baris `sed`.
 
 ## 3. Jalankan sebagai service
 
@@ -74,8 +77,6 @@ sudo useradd --system --create-home --home-dir /var/lib/dpanel-worker dpanel-wor
 sudo chmod 600 /etc/dpanel-worker.env
 sudo systemctl daemon-reload && sudo systemctl enable --now dpanel-worker
 ```
-
-Jalankan Ansible sebagai user tersebut juga: pasang dengan `sudo -u dpanel-worker python3 -m pip install --user ...` jika Anda membuat user baru.
 
 ## 4. Beralih ke worker pribadi
 

@@ -40,7 +40,7 @@ Server muncul di daftar. Tunggu sampai statusnya **Ready**, biasanya 10 sampai 2
 WordPress butuh basis data (MariaDB), bahasa PHP, dan web server yang menjalankan PHP (FrankenPHP).
 
 1. Buka server, lalu tab **Modul**. Tekan **Add module**.
-2. Tekan **Install** pada **MariaDB**. Isi **Root Password** yang Anda ingat, atau pakai yang disarankan, lalu simpan di tempat aman. Tekan **Install role** dan konfirmasi.
+2. Tekan **Install** pada **MariaDB**. Isi **Root Password** minimal 8 karakter lalu simpan di tempat aman, karena dPanel tidak menampilkannya lagi. Atur **Bind Address** ke `127.0.0.1` agar basis data hanya bisa dijangkau dari server ini. Tekan **Install role** dan konfirmasi.
 3. Tunggu sampai MariaDB berstatus **Terpasang**. Lalu pasang **PHP** dengan **PHP Version** `8.5`.
 4. Setelah PHP terpasang, pasang **FrankenPHP**.
 
@@ -99,13 +99,22 @@ dPanel meng-clone repositori di server, menjalankan build, dan menjalankan WordP
 
 1. Buka **Load Balancer**, lalu tekan **Buat load balancer**. Formulirnya punya empat langkah: **Gateway**, **Domain**, **Routing**, dan **Review**.
 2. **Gateway**: di **Server gateway**, pilih server yang sama. Di **Engine web server**, pilih **Caddy Server**, lalu tekan **Instal** kalau belum terpasang.
-3. **Domain**: di **Nama Domain**, pilih **Terkelola**, ketik **Subdomain** (misalnya `blog`), lalu **Pilih domain**.
+3. **Domain**: di **Nama Domain**, pilih **Terkelola**, ketik **Subdomain** (misalnya `blog`), lalu **Pilih domain**. Kalau DNS domain Anda tidak berada di Cloudflare atau DigitalOcean, pilih **Eksternal**, ketik hostname Anda, dan tambahkan record yang ditampilkan formulir di penyedia DNS Anda.
 4. **Routing**: biarkan **L7** di **Mode routing**, serta **HTTP / HTTPS** dengan **HTTPS** menyala di **Protokol dan HTTPS**. Di aturan pertama, atur **Tipe** ke **Aplikasi**, **Pola Jalur URL** ke `/*`, lalu pilih aplikasi **WordPress**.
 5. **Review**: saat panel tinjauan bertuliskan **Siap dibuat**, tekan **Buat load balancer**.
 
 ![Langkah 3 formulir load balancer: satu aturan yang mengirim /* ke sebuah aplikasi](../../assets/networking/lb-create-routing.webp)
 
 dPanel membuat record DNS, menyiapkan gateway, dan meminta sertifikat Let's Encrypt gratis. Setelah satu atau dua menit, buka `https://blog.example.com/wp-admin/install.php`: penginstal WordPress muncul. Pilih bahasa, judul situs, dan akun admin Anda, dan situs Anda aktif. Lihat [Load balancer](../networking/load-balancers.md).
+
+## Unggahan, plugin, dan tema Anda
+
+WordPress menyimpan dua jenis berkas, dan rilis baru memperlakukannya secara berbeda:
+
+- **Berkas yang ada di repositori Anda** kembali ke versi repositori pada setiap rilis dan rollback. Suntingan di editor tema wp-admin akan hilang kalau berkas itu ada di repositori, jadi lakukan perubahannya di repositori Anda.
+- **Berkas yang tidak ada di repositori Anda**, seperti `wp-content/uploads`, atau plugin dan tema yang Anda pasang dari wp-admin, tetap di tempatnya. Rilis atau rollback tidak menyentuhnya.
+
+Pos dan pengaturan Anda ada di basis data, yang juga tidak disentuh oleh rilis. Menghapus aplikasi akan menghapus foldernya beserta seluruh isinya, jadi cadangkan dulu `wp-content` dan basis datanya.
 
 ## Kalau ada yang tidak berjalan
 

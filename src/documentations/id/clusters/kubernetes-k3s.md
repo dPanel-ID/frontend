@@ -6,7 +6,7 @@ sidebar_icon: rocket
 sidebar_label: Kubernetes dengan k3s
 ---
 
-Panduan ini membangun klaster k3s sungguhan, **kube-k3s**, di dua server dan menyajikan aplikasi web darinya di `https://kube-k3s.devetek.app`. Ikuti dengan server dan domain Anda sendiri; lamanya sekitar 30 menit, sebagian besar menunggu.
+Panduan ini membangun klaster k3s sungguhan, **kube-k3s**, di dua server dan menyajikan aplikasi web darinya di `https://kube-k3s.example.com`. Ikuti dengan server dan domain Anda sendiri; lamanya sekitar 30 menit, sebagian besar menunggu.
 
 k3s adalah engine yang ringan: satu program kecil, cukup dengan memori 2 GB dan bisa di Raspberry Pi. Untuk produksi yang di-hardening, lihat [Kubernetes dengan RKE2](./kubernetes-rke2.md). Masih asing dengan istilahnya? Baca dulu [Grup server dan klaster](./overview.md).
 
@@ -19,11 +19,11 @@ Anda butuh server yang sudah dikelola dPanel dan berstatus **Ready**. Panduan in
 | kube-k3s-1 | **Server**       | 2 CPU, 4 GB, Ubuntu 24.04 |
 | kube-k3s-2 | **Agent**        | 2 CPU, 4 GB, Ubuntu 24.04 |
 
-- **Ukuran:** memori 2 GB atau lebih per server. amd64, arm64, atau armhf (Raspberry Pi) bisa semua.
-- **Sistem:** Ubuntu. Panduan ini diuji di Ubuntu 24.04.
+- **Ukuran:** memori 2 GB atau lebih per server sudah nyaman; 1 GB adalah batas minimum. amd64, arm64, atau armhf (Raspberry Pi) bisa semua.
+- **Sistem:** Ubuntu. Panduan ini memakai Ubuntu 24.04.
 - **Region yang sama** untuk semua server, tidak masuk grup mana pun, tanpa Docker, k3s, atau RKE2, dan firewall dPanel mati.
 
-Server baru yang diluncurkan dari dPanel sudah memenuhi semuanya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
+Server baru yang diluncurkan dari dPanel sudah memenuhi semuanya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Saat firewall dPanel mati, tidak ada yang memblokir port di server. Di DigitalOcean dan IDCloudHost dPanel juga tidak membuat firewall penyedia, jadi port 30080 dan API Kubernetes di port 6443 bisa dijangkau dari internet. Tambahkan firewall penyedia kalau Anda tidak menginginkannya.
 
 ## 1. Mulai grup Kubernetes
 
@@ -34,7 +34,7 @@ Server baru yang diluncurkan dari dPanel sudah memenuhi semuanya. Lihat [Membuat
 
 ## 2. Pilih server dan perannya
 
-1. **Name**: `kube-k3s`. **Description**: apa saja yang membantu, misalnya "k3s cluster serving kube-k3s.devetek.app".
+1. **Name**: `kube-k3s`. **Description**: apa saja yang membantu, misalnya "k3s cluster serving kube-k3s.example.com".
 2. Di **Servers**, centang **kube-k3s-1** dulu, lalu **kube-k3s-2**. Ketik di **Search servers** untuk menemukannya dengan cepat.
 3. Setiap server terpilih muncul di atas dengan tombol peran. Yang pertama mendapat **Server** (control plane), yang lain **Agent** (hanya aplikasi). Tekan tombol yang lain untuk mengubah peran.
 
@@ -66,7 +66,7 @@ dPanel membuat grupnya dan memulai satu job pemasangan untuk kedua server: serve
 Dengan satu **Server**, klaster berhenti menerima perubahan kalau server itu mati; aplikasi yang sudah berjalan tetap berjalan. Itu wajar untuk belajar dan proyek kecil. Pakai tiga server berperan **Server** kalau klaster harus tetap hidup saat kehilangan satu server.
 :::
 
-Wizard boleh ditutup; pemasangan tetap berjalan. Di sini lamanya sekitar 11 menit.
+Wizard boleh ditutup; pemasangan tetap berjalan. Lamanya sekitar 10 menit.
 
 ## 5. Periksa klasternya
 
@@ -152,7 +152,7 @@ Kubernetes menaruh satu salinan di setiap node, dan `curl` menjawab dengan halam
 4. **Routing mode**: **L7**. **Routes**: **Type** **Proxy Pass**, **Matching Path** `/*`, alamat `127.0.0.1` dan port `30080`.
 5. Tekan **Create load balancer**.
 
-Di server baru, load balancer pertama juga memasang Caddy, yang di sini memakan waktu sekitar 11 menit; berikutnya sekitar satu menit. Saat statusnya **Ready**, buka `https://kube-k3s.domain-anda`. Halamannya bertuliskan `Hello from kube-k3s, a k3s cluster on dPanel`, dengan sertifikat HTTPS yang sah.
+Di server baru, load balancer pertama juga memasang Caddy, yang bisa memakan waktu sekitar 10 menit; berikutnya sekitar satu menit. Saat statusnya **Ready**, buka `https://kube-k3s.domain-anda`. Halamannya bertuliskan `Hello from kube-k3s, a k3s cluster on dPanel`, dengan sertifikat HTTPS yang sah.
 
 :::tip[Kenapa 127.0.0.1 bisa]
 NodePort terbuka di **setiap** node, dan Kubernetes meneruskannya ke salinan yang berjalan, bahkan yang ada di node lain. Jadi gateway cukup mengirim trafik ke dirinya sendiri di port 30080 dan tetap menjangkau kedua salinan.

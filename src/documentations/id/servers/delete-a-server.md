@@ -24,7 +24,7 @@ Penghapusan ditolak selama masih ada aplikasi atau load balancer yang memakai se
 ![Dialog Hapus server, berisi apa yang akan terjadi dan kolom untuk mengetik nama server](../../assets/servers/server-delete.webp)
 
 :::danger[Tidak bisa dibatalkan]
-Untuk server yang diluncurkan dPanel, penghapusan mencopot agen dan menghancurkan mesinnya di penyedia cloud, beserta disk dan seluruh isinya. Untuk server yang Anda hubungkan sendiri, dPanel hanya melupakannya dan mesinnya tetap berjalan.
+Untuk server yang diluncurkan dPanel, penghapusan mencopot agen dan menghancurkan mesinnya di penyedia cloud, beserta disk dan seluruh isinya. Untuk server yang Anda hubungkan sendiri, dPanel mencopot agennya dan melupakan server itu. Mesin dan data Anda tetap ada.
 :::
 
 ## Setelah itu
@@ -79,4 +79,4 @@ Tidak. Disk server cloud dihancurkan di penyedia. Cadangkan apa pun yang Anda pe
 
 ### Apakah menghapus server yang saya hubungkan sendiri akan mengosongkannya?
 
-Tidak. dPanel hanya melupakannya; mesin dan semua isinya tetap berjalan.
+Tidak. dPanel mencopot agennya dan melupakannya; mesin, aplikasi, dan datanya tetap ada.
