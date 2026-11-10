@@ -29,7 +29,7 @@ A long download shows its progress, such as **Downloading 12,000 / 40,000 lines*
 
 ## Raw log from the server
 
-The two options above read dPanel's log store, which keeps only the recent hours and shortens structured lines to their message. To get the real log, press **Download** on an application's Logs tab and choose **Raw log from the server**.
+The two options above read dPanel's log store, which keeps the last 3 days and shortens structured lines to their message. To get the real log, press **Download** on an application's Logs tab and choose **Raw log from the server**.
 
 The file holds every line of the time range exactly as your application wrote it, oldest first, read from the journal on the server. Structured (JSON) lines stay whole. dPanel adds no time or level to the lines, so a line has a time only if your application wrote one. The file name ends in `.raw.log`.
 

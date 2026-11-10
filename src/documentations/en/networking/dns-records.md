@@ -1,6 +1,6 @@
 ---
 title: Search and delete DNS records
-description: Find any DNS record of a domain in dPanel by name or content, filter A, CNAME, MX or TXT records by type, copy a value, or delete a record you no longer need.
+description: Find any DNS record of a domain in dPanel by name or content, filter by type, copy a value, delete a record, or add and change records from the terminal.
 sidebar_position: 3
 sidebar_icon: file-text
 sidebar_label: DNS records
@@ -41,7 +41,23 @@ On a record's row, press **Copy name** or **Copy content**. dPanel confirms with
 Deleting a record removes it at your DNS provider straight away. Anything that still uses that name stops resolving.
 :::
 
-There is no form to add a record by hand. dPanel creates the `A` record itself when a [load balancer](./load-balancers.md) uses a **Managed** domain.
+There is no form to add or edit a record in the web app. dPanel creates the `A` record itself when a [load balancer](./load-balancers.md) uses a **Managed** domain, and the terminal can do the rest.
+
+## Add or change records from the terminal
+
+With the [dnocs command-line tool](../ai/ai-in-the-terminal.md) you can manage every record of a domain. Changes go straight to your DNS provider. `dnocs domain list` gives you the domain's ID.
+
+```bash
+dnocs domain record list --domain-id 2 --type A --search api
+dnocs domain record create --domain-id 2 --name api --type A --content 203.0.113.10 --ttl 300
+dnocs domain record create --domain-id 2 --name @ --type A --content 203.0.113.10
+dnocs domain record update --domain-id 2 --record-id <record id> --content 203.0.113.20 --dry-run
+dnocs domain record delete --domain-id 2 --record-id <record id> --dry-run
+```
+
+`@` means the domain itself, such as `example.com` with nothing in front. `--dry-run` shows the change without making it, so use it first. On Cloudflare, `--proxied` turns the proxy on, and `--proxied=false` turns it off.
+
+A new `A` or `AAAA` record is refused only by records that cannot share its name, such as a `CNAME`. `MX`, `TXT`, `SPF`, `CAA` and `SRV` records can sit beside it, so email records do not block your website.
 
 ## Frequently asked questions
 

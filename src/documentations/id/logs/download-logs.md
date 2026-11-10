@@ -29,7 +29,7 @@ Unduhan yang panjang menampilkan progresnya, misalnya **Mengunduh 12.000 / 40.00
 
 ## Log mentah dari server
 
-Dua opsi di atas membaca penyimpanan log dPanel, yang hanya menyimpan beberapa jam terakhir dan memendekkan baris terstruktur menjadi pesannya saja. Untuk mendapatkan log yang sebenarnya, tekan **Unduh** di tab Log aplikasi lalu pilih **Log mentah dari server**.
+Dua opsi di atas membaca penyimpanan log dPanel, yang menyimpan 3 hari terakhir dan memendekkan baris terstruktur menjadi pesannya saja. Untuk mendapatkan log yang sebenarnya, tekan **Unduh** di tab Log aplikasi lalu pilih **Log mentah dari server**.
 
 File berisi setiap baris pada rentang waktu persis seperti ditulis aplikasi Anda, dari yang terlama, dibaca dari journal di server. Baris terstruktur (JSON) tetap utuh. dPanel tidak menambahkan waktu atau level, jadi sebuah baris hanya punya waktu jika aplikasi Anda menuliskannya. Nama file berakhiran `.raw.log`.
 

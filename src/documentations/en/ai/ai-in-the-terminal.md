@@ -122,6 +122,10 @@ dnocs does much more than chat. `dnocs --help` lists every command, and `dnocs <
 | `dnocs load-balancer log` | The requests a load balancer served                  |
 | `dnocs cluster kinds`     | The Kubernetes engines and versions you can use      |
 | `dnocs worker list`       | Whether the workspace uses shared or private workers |
+| `dnocs domain record`     | Lists, adds, changes and deletes DNS records         |
+| `dnocs server user`       | Lists, adds and removes a server's Linux users       |
+| `dnocs service-account`   | Manages logins for scripts and AI agents             |
+| `dnocs module adopt`      | Records a MariaDB that is already on a server        |
 
 ## Frequently asked questions
 

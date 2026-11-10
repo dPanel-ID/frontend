@@ -62,6 +62,18 @@ The program that stores an application's data in tables, such as MariaDB, Postgr
 
 dPanel's web tool for opening a MariaDB or PostgreSQL database in the browser, to browse, query, import or export data.
 
+### Terminal
+
+A window where you type commands to a computer instead of clicking.
+
+### root and sudo
+
+`root` is the administrator account on Linux. `sudo` runs one command with administrator rights.
+
+### systemd
+
+The part of Linux that starts services and keeps them running. `systemctl` is the command that controls it.
+
 ### Port
 
 A numbered door on a server that one program listens on, such as 443 for websites over HTTPS or 5432 for PostgreSQL.
@@ -130,6 +142,10 @@ A name under your domain, such as `shop.example.com`.
 
 The internet's address book, which turns a domain name into the address of the server that answers it.
 
+### A record
+
+The DNS record that points a name at an IPv4 address, such as `blog.example.com` at `203.0.113.10`.
+
 ### DNS record
 
 One entry in that address book, such as "shop.example.com points to 203.0.113.10". See [DNS records](../networking/dns-records.md).
@@ -163,6 +179,10 @@ L7 load balancers route web traffic by address and path; L4 load balancers pass 
 An option that sends visitors through Cloudflare's network before your server, hiding the server's address.
 
 ## Organising your work
+
+### Service account
+
+A dPanel login for a program, such as a script, a CI job or an AI agent, instead of a person. It signs in with a token you can revoke at any time. See [Service accounts](../teams/service-accounts.md).
 
 ### Workspace
 

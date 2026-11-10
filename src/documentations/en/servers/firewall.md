@@ -5,7 +5,7 @@ sidebar_position: 8
 sidebar_icon: shield-check
 ---
 
-dPanel manages each server's firewall for you: you keep a list of rules in dPanel, review what will change, and dPanel applies the whole list to the server at once, without locking itself out. A firewall decides which network traffic may reach your server; with it on, only the ports you allow can be reached from the internet and everything else is blocked.
+dPanel manages each server's firewall for you: you keep a list of rules in dPanel, review what will change, and dPanel applies the whole list to the server at once, without locking itself out. A firewall decides which network traffic may reach your server; with it on, only the ports you allow can be reached from the internet and everything else is blocked. A new server starts with this firewall off: until you turn it on, only your provider's firewall, if it has one, limits who can connect.
 
 Under the hood dPanel uses ufw, the firewall built into Ubuntu. A **port** is a numbered door on the server that one program listens on, such as 443 for a website or 22 for SSH. New to these words? See the [Glossary](../getting-started/glossary.md).
 
@@ -106,8 +106,8 @@ If this section says the live firewall cannot be read, the firewall module is no
 
 ## Safety: SSH and automatic rollback
 
-- SSH always stays open, so dPanel can still reach the server. If a change would close SSH, the review says so and dPanel refuses to apply it.
-- If SSH or the dPanel agent stop working after a change, the server restores its previous firewall by itself within a few minutes, and the job is marked failed.
+- SSH always stays open, on the server's SSH port even if that is not 22, so dPanel can still reach the server. If a change would close SSH, the review says so and dPanel refuses to apply it.
+- If SSH or the dPanel agent stop working after a change, the server restores its previous firewall by itself within a few minutes, and the job is marked failed. Before changing anything, dPanel backs up `/etc/ufw` and `/etc/default/ufw` to `/var/lib/dpanel-firewall/backup` and starts the systemd timer `dpanel-firewall-rollback`.
 
 ## Turn the firewall off
 

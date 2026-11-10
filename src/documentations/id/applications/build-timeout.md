@@ -17,7 +17,7 @@ Di aplikasi web:
 
 1. Buka aplikasinya dan masuk ke **Pengaturan**.
 2. Tekan **Ubah** di bagian **Deployment**. Panel **Ubah aplikasi** terbuka.
-3. Di bawah **Build**, isi **Batas waktu** dengan durasi seperti `45m`, `90m`, atau `2h`, antara `1m` dan `3h`. Biarkan **Bawaan** untuk tetap 20 menit.
+3. Di bawah **Build**, isi **Batas waktu** dengan durasi seperti `45m`, `90m`, atau `2h`, antara `1m` dan `3h`. Biarkan **Bawaan** untuk tetap 20 menit. Kalau ruang kerja Anda memakai worker GitHub Actions, naikkan juga `timeout-minutes` di `dpanel-worker.yml` di atas batas waktu Anda; nilai bawaannya 60 menit.
 4. Tekan **Simpan**. Batas baru berlaku mulai build berikutnya.
 
 Dari terminal, isi `build.timeout` di definisi aplikasi. Durasinya sama.

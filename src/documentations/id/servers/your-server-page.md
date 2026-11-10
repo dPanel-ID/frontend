@@ -51,7 +51,7 @@ Pastikan juga server bisa menjangkau internet lewat HTTPS (port 443): agen terhu
 
 Semua yang dipasang dPanel, satu baris per modul, dengan versi dan statusnya: **Terpasang**, **Memasang**, **Gagal**, atau **Campuran**. **Tambah modul** membuka katalog. **Segarkan inventaris** meminta data terbaru dari agen dan membuang modul yang tidak lagi dilaporkannya. Hitungannya hanya mencakup modul tingkat atas; basis data yang Anda buat di MariaDB atau PostgreSQL ada di tampilan **Kelola** modul tersebut.
 
-Beberapa baris punya pintasan: **Buka database** pada MariaDB dan PostgreSQL membuka DB Manager, alat basis data di browser, langsung mengarah ke server ini; **Kelola firewall** pada modul Firewall membuka tampilan [Firewall](./firewall.md). Lihat [Memasang perangkat lunak](./install-software.md).
+Beberapa baris punya pintasan: **Buka database** pada MariaDB, PostgreSQL, dan MongoDB membuka DB Manager, alat basis data di browser, langsung mengarah ke server ini; **Kelola firewall** pada modul Firewall membuka tampilan [Firewall](./firewall.md). Lihat [Memasang perangkat lunak](./install-software.md).
 
 ![Tab Modules berisi modul terpasang, dengan Manage firewall di baris Firewall dan Open database di baris MariaDB](../../assets/servers/server-modules.webp)
 
@@ -65,7 +65,22 @@ Kebanyakan server punya lebih dari seratus unit, dan banyak yang memang berstatu
 
 ## Pengguna
 
-Akun Linux di mesin itu, dengan UID, direktori home, dan shell-nya. **Tambah pengguna** membuat akun terkelola. Sebagian besar entri di server baru milik sistem, jadi biarkan saja.
+Akun Linux di mesin itu, dengan UID (nomor yang dipakai Linux untuk mengenali akun), direktori home, dan shell-nya. Sebagian besar entri di server baru milik sistem, jadi biarkan saja.
+
+**Tambah pengguna** membuat akun terkelola. Atur **Add for** untuk memilih pemiliknya:
+
+- **dPanel user**: seseorang. Di server milik tim, orang itu harus anggota tim tersebut.
+- **Service account**: [akun layanan](../teams/service-accounts.md) tim, untuk skrip dan otomatisasi. Akun ini tidak punya kata sandi, jadi tidak ada yang bisa masuk dengan kata sandi.
+
+Dari terminal:
+
+```bash
+dnocs server user list --id 140
+dnocs server user add --id 140 --service-account deploy-bot
+dnocs server user remove --id 140 --username deploy-bot --dry-run
+```
+
+`remove` berlaku untuk pengguna yang dikelola dPanel. Folder home-nya tetap ada, jadi tidak ada yang hilang tanpa sengaja. Tambahkan `--remove-home` untuk ikut menghapus `/home/USERNAME`; salin dulu yang ingin disimpan, karena ini tidak bisa dibatalkan. Penghapusan gagal dengan aman selama pengguna itu masih menjalankan program.
 
 ![Tab Pengguna berisi akun Linux](../../assets/servers/server-users.webp)
 
@@ -142,7 +157,7 @@ Server Anda tetap berjalan dengan agen lama, tetapi fitur dPanel yang baru bisa 
 
 ### Di mana saya membuka basis data yang berjalan di server ini?
 
-Di tab **Modul**, tekan **Buka database** pada baris MariaDB atau PostgreSQL. Lihat [Memasang perangkat lunak](./install-software.md#mengelola-basis-data).
+Di tab **Modul**, tekan **Buka database** pada baris MariaDB, PostgreSQL, atau MongoDB. Lihat [Memasang perangkat lunak](./install-software.md#mengelola-basis-data).
 
 ### Kenapa port yang saya buka tidak bisa dijangkau dari luar?
 

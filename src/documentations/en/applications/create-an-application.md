@@ -45,8 +45,8 @@ If a module is already on the server, it appears under **Installed on selected s
 1. **Application name**: how the application appears in dPanel. Use letters, numbers and spaces only.
 2. **Required binaries**: the language runtime from the modules you picked. It is selected for you.
 3. **Build steps**: one or more commands run inside the cloned repository. **Choose file** picks a script from the repository; **Add step** adds another command.
-4. **Runtime command**: the command systemd uses to start the application.
-5. **Application port**: dPanel suggests a free port between 7000 and 10000. **Ports already in use** lists the ports you cannot take.
+4. **Runtime command**: the command systemd (the part of Linux that keeps programs running) uses to start the application. It must keep running and not return to the prompt, so do not end it with `&` or start a background manager such as `pm2 start`.
+5. **Application port**: the numbered door your program listens on. dPanel gives it to your program as the `PORT` environment variable; your program must use that number, or visitors get an error even though the build passed. dPanel suggests a free port between 7000 and 10000. **Ports already in use** lists the ports you cannot take.
 6. Press **Continue**.
 
 ![Step 3 of the form: the application name, the Go runtime, the build step, the runtime command and the application port](../../assets/applications/apps-create-app-setup.webp)
@@ -82,7 +82,7 @@ The application shows **Building** until the release finishes, then **Running**.
 You can also ask **Ask dPanel** to do this for you; see [Prompt cookbook](../ai/prompt-cookbook.md).
 
 :::note[Give it a public address]
-A new application listens on its port on the server. To serve it on a domain with HTTPS, put a load balancer in front of it. See [Load balancers](../networking/load-balancers.md).
+A new application listens on its port on the server. Until you add a load balancer, it has no public address, so **Running** on the Overview tab is how you know it started. To serve it on a domain with HTTPS, put a load balancer in front of it. See [Load balancers](../networking/load-balancers.md).
 :::
 
 ## Frequently asked questions

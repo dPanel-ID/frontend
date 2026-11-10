@@ -102,7 +102,7 @@ Every card has an action ID. In a terminal, run `dnocs ai approve <action-id>` t
 
 ### What if I approve something by mistake?
 
-Ask the assistant to undo it, for example "Delete the database docs_demo I just created on server 140". The undo is a new change, so it comes back as a card too. Deletes cannot be undone, so read delete cards with extra care.
+Ask the assistant to undo it, for example "Delete the database shop_db I just created on server 140". The undo is a new change, so it comes back as a card too. Most deletes cannot be undone, so read delete cards with extra care.
 
 ### Can I approve a change by typing "yes" in the chat?
 

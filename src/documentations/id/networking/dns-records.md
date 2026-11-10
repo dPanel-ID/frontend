@@ -1,6 +1,6 @@
 ---
 title: Mencari dan menghapus record DNS
-description: Temukan record DNS domain di dPanel berdasarkan nama atau isi, saring record A, CNAME, MX, atau TXT, salin nilainya, atau hapus record yang tidak dipakai.
+description: Temukan record DNS domain di dPanel berdasarkan nama atau isi, saring berdasarkan jenis, salin nilainya, hapus record, atau tambah dan ubah record dari terminal.
 sidebar_position: 3
 sidebar_icon: file-text
 sidebar_label: Record DNS
@@ -41,7 +41,23 @@ Di baris record, tekan **Salin nama** atau **Salin isi**. dPanel mengonfirmasiny
 Menghapus record langsung menghapusnya di penyedia DNS Anda. Apa pun yang masih memakai nama itu tidak akan bisa diakses lagi.
 :::
 
-Tidak ada formulir untuk menambah record secara manual. dPanel membuat record `A` sendiri ketika sebuah [load balancer](./load-balancers.md) memakai domain **Terkelola**.
+Aplikasi web tidak punya formulir untuk menambah atau mengubah record. dPanel membuat record `A` sendiri saat [load balancer](./load-balancers.md) memakai domain **Managed**, dan terminal bisa mengerjakan sisanya.
+
+## Menambah atau mengubah record dari terminal
+
+Dengan [alat baris perintah dnocs](../ai/ai-in-the-terminal.md) Anda bisa mengelola setiap record sebuah domain. Perubahan langsung sampai ke penyedia DNS Anda. `dnocs domain list` memberi ID domainnya.
+
+```bash
+dnocs domain record list --domain-id 2 --type A --search api
+dnocs domain record create --domain-id 2 --name api --type A --content 203.0.113.10 --ttl 300
+dnocs domain record create --domain-id 2 --name @ --type A --content 203.0.113.10
+dnocs domain record update --domain-id 2 --record-id <id record> --content 203.0.113.20 --dry-run
+dnocs domain record delete --domain-id 2 --record-id <id record> --dry-run
+```
+
+`@` berarti domain itu sendiri, seperti `example.com` tanpa awalan apa pun. `--dry-run` menunjukkan perubahan tanpa menjalankannya, jadi gunakan lebih dulu. Di Cloudflare, `--proxied` menyalakan proxy dan `--proxied=false` mematikannya.
+
+Record `A` atau `AAAA` baru hanya ditolak oleh record yang tidak bisa berbagi nama, seperti `CNAME`. Record `MX`, `TXT`, `SPF`, `CAA`, dan `SRV` bisa berdampingan, jadi record email tidak menghalangi situs web Anda.
 
 ## Pertanyaan yang sering diajukan
 

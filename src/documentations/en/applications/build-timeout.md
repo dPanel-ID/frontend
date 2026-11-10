@@ -17,7 +17,7 @@ In the web app:
 
 1. Open the application and go to **Settings**.
 2. Press **Edit** on the **Deployment** block. The **Edit application** panel opens.
-3. Under **Build**, set **Time limit** to a duration such as `45m`, `90m` or `2h`, between `1m` and `3h`. Leave it on **Default** to keep 20 minutes.
+3. Under **Build**, set **Time limit** to a duration such as `45m`, `90m` or `2h`, between `1m` and `3h`. Leave it on **Default** to keep 20 minutes. If your workspace uses a GitHub Actions worker, also raise `timeout-minutes` in `dpanel-worker.yml` above your time limit; it is 60 minutes by default.
 4. Press **Save**. The new limit applies from the next build.
 
 From the terminal, set `build.timeout` in the application definition. It takes the same durations.

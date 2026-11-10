@@ -5,7 +5,7 @@ sidebar_position: 4
 sidebar_icon: history
 ---
 
-Di dPanel, setiap push yang ingin Anda kirim menjadi sebuah build, dan setiap build disimpan, jadi Anda bisa merilis commit terbaru atau rollback ke build sebelumnya dalam satu langkah. Ada dua istilah penting. **Build** adalah kode Anda yang dikemas sekali, dari satu commit. **Rilis** adalah build itu yang dipasang di satu server.
+Di dPanel, Anda yang menentukan kapan kode Anda tayang, dan setiap build disimpan, jadi Anda bisa merilis commit terbaru atau rollback ke build sebelumnya dalam satu langkah. Push ke GitHub tidak merilis apa pun dengan sendirinya: tekan **Bangun dan rilis** saat Anda siap. Ada dua istilah penting. **Build** (layar dPanel kadang menyebutnya **artefak**) adalah kode Anda yang disiapkan dari satu commit. **Rilis** adalah build itu yang dipasang di satu server.
 
 ## Apa yang sedang berjalan
 
@@ -43,7 +43,7 @@ Build baru muncul di urutan teratas dengan status **Membangun**, lalu **Berhasil
 
 Pindah tampilan dengan tombol **Build** dan **Di server** di samping **Bangun dan rilis**.
 
-![Tab Rilis aplikasi DB Manager: tiga build, masing-masing dengan ID build, commit, branch, orang yang menjalankannya, status rilis, serta tombol Log, Kembalikan, dan Hapus](../../assets/applications/app-deployments.webp 'Setiap build menyebut siapa yang menjalankannya. Nama orang lain disamarkan di gambar ini.')
+![Tab Rilis sebuah aplikasi: tiga build, masing-masing dengan ID build, commit, branch, orang yang menjalankannya, status rilis, serta tombol Log, Kembalikan, dan Hapus](../../assets/applications/app-deployments.webp 'Setiap build menyebut siapa yang menjalankannya. Nama orang lain disamarkan di gambar ini.')
 
 ### Siapa yang menjalankan setiap build
 
@@ -59,7 +59,7 @@ Tekan **Log** pada sebuah build lalu pilih server. **Log Artefak** terbuka pada 
 2. Di jendela **Rollback Deployment**, centang server yang ingin dikembalikan.
 3. Tekan **Rollback**.
 
-dPanel merilis ulang build itu di server-server tersebut. Tidak ada yang dibangun ulang.
+dPanel merilis ulang build itu di server-server tersebut. Rollback hanya memulihkan kode Anda: perubahan di basis data tidak dibatalkan, dan berkas yang tidak ada di repositori tetap seperti adanya.
 
 ### Mengelola rilis di server
 
@@ -90,7 +90,7 @@ Jika build gagal, mulailah dari **Log**-nya. Baris-baris terakhir biasanya menye
 
 ### Apa bedanya build dan rilis?
 
-Build adalah kode Anda yang dikemas sekali, dari satu commit. Rilis adalah build itu yang dipasang dan dijalankan di satu server. Satu build bisa dirilis ke beberapa server, dan dirilis lagi nanti saat rollback.
+Build adalah kode Anda yang dikemas sekali, dari satu commit. Rilis adalah build itu yang dipasang dan dijalankan di satu server. Dengan beberapa server, setiap server menyiapkan salinannya sendiri dari commit yang sama. Sebuah build bisa dirilis lagi nanti saat rollback.
 
 ### Apakah rollback membangun ulang kode saya?
 

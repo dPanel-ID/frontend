@@ -24,15 +24,15 @@ Tampilan dibuka pada **10 menit terakhir**.
 
 Formulir memberi tahu apa yang salah sebelum pencarian dijalankan:
 
-| Pesan                                      | Cara memperbaiki                                |
-| ------------------------------------------ | ----------------------------------------------- |
-| Isi waktu mulai dan selesai.               | Isi kedua kolom.                                |
-| Waktu mulai harus sebelum waktu selesai.   | Tukar keduanya.                                 |
-| Log hanya disimpan untuk 3 hari terakhir.  | Majukan waktu mulainya.                         |
-| Waktu selesai tidak boleh di masa depan.   | Atur waktu selesai ke sekarang atau lebih awal. |
+| Pesan                                     | Cara memperbaiki                                |
+| ----------------------------------------- | ----------------------------------------------- |
+| Isi waktu mulai dan selesai.              | Isi kedua kolom.                                |
+| Waktu mulai harus sebelum waktu selesai.  | Tukar keduanya.                                 |
+| Log hanya disimpan untuk 3 hari terakhir. | Majukan waktu mulainya.                         |
+| Waktu selesai tidak boleh di masa depan.  | Atur waktu selesai ke sekarang atau lebih awal. |
 
 :::info[Hingga 3 hari ke belakang]
-Log bisa dibaca hingga 3 hari ke belakang. dPanel menahan setiap rentang dalam batas itu, jadi waktu mulai yang lebih lama akan dimajukan ke tepi jendela.
+Log bisa dibaca hingga 3 hari ke belakang, karena selama itulah log disimpan. Untuk baris yang lebih lama, unduh log mentah dari server. Lihat [Mengunduh log](./download-logs.md#log-mentah-dari-server).
 :::
 
 ## Menggulir ke atas untuk baris yang lebih lama
@@ -40,12 +40,12 @@ Log bisa dibaca hingga 3 hari ke belakang. dPanel menahan setiap rentang dalam b
 Log runtime dan log load balancer dibaca seperti terminal. Daftar terbuka pada baris terbaru, di bagian bawah rentang waktu yang dipilih.
 
 - **Gulir ke atas** untuk memuat baris yang lebih lama. Baris datang 200 sekaligus, sebelum Anda sampai di atas, dan baris yang sedang dibaca tetap di tempatnya.
-- Daftar berakhir di **Awal rentang waktu**. Untuk membaca lebih jauh, pilih rentang yang lebih lebar.
+- Daftar berakhir di **Awal rentang waktu**. Untuk membaca lebih jauh, pilih rentang waktu yang lebih panjang.
 - Setelah menggulir ke atas, **Ke baris terbaru** membawa Anda kembali ke baris terbaru.
 
 Bagian bawah menyebutkan yang sudah dimuat, misalnya **Baris 1–200 dari 1.250 dimuat, terbaru di bawah**. Baris 1 adalah baris terbaru.
 
-**Saring baris yang dimuat** dan chip level bekerja pada baris yang sedang dimuat. Untuk mencari lebih jauh, gulir ke atas atau persempit rentang waktunya.
+**Saring baris yang dimuat** dan chip level bekerja pada baris yang sedang dimuat. Untuk mencari lebih jauh, gulir ke atas untuk memuat lebih banyak baris, atau atur **Rentang khusus** di sekitar waktu yang Anda perlukan.
 
 :::info[Semua server dalam satu daftar]
 Log runtime aplikasi yang berjalan di beberapa server menggabungkan semua server dalam satu daftar. Daftar itu bisa digulir mundur hingga 5.000 baris. Untuk baris yang lebih lama, persempit rentang waktu atau pilih satu server di menu **Server**.

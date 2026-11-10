@@ -80,7 +80,7 @@ build:
   timeout: 90m
 ```
 
-The web form does not have this field yet. Set it in the definition file you deploy with the dPanel command-line tool. Otherwise, a larger server shortens the build. See [Build timeout](../applications/build-timeout.md).
+Open the application's **Settings**, press **Edit** on **Deployment** and set **Time limit**. A larger server also shortens the build. See [Build timeout](../applications/build-timeout.md).
 
 ### "GitHub session expired" or "Reconnect GitHub"
 
@@ -92,6 +92,10 @@ Open **GitHub team** in **Create Application** and choose **Add GitHub account**
 
 ## Load balancers, HTTPS and DNS
 
+### My site shows a 502 error
+
+A 502 means the load balancer could not get an answer from your application. Check that the application reads **Running**, read its runtime logs, confirm your program listens on its **Application port**, then check **How the gateway reaches this application** on the load balancer.
+
 ### The load balancer shows "Load balancer change failed"
 
 The red banner on the list and on the load balancer's page means the last change did not finish. Press **See why it failed** to read the reason; in the table, press the failed status instead. The reason reads like `Load balancer create failed. Ansible task failed on <server>: <step>. Detail: …`, where the step names what dPanel was doing on the gateway (Ansible is the tool dPanel uses to run setup steps on a server). Check, in this order:
@@ -101,7 +105,7 @@ The red banner on the list and on the load balancer's page means the last change
 3. With a **Managed** domain, the domain still connects under **Domain & DNS**, and the name is not already in the zone.
 4. The application is running, and the **How the gateway reaches this application** choice fits where it runs.
 
-Fix the cause, then delete the failed load balancer and create it again. **Ask dPanel** can also update an existing load balancer for you to approve. See [Load balancers](../networking/load-balancers.md).
+Fix the cause, then delete the failed load balancer and create it again. If dPanel then refuses the name, the old record is still in the zone: delete it under the domain's **DNS records** first. **Ask dPanel** can also update an existing load balancer for you to approve. See [Load balancers](../networking/load-balancers.md).
 
 ### A TCP or UDP load balancer does not answer on its port
 
@@ -155,7 +159,7 @@ You are probably in a different workspace. Check the workspace name at the top o
 
 ### I cannot find Migrate Ownership
 
-dPanel does not move resources between workspaces, so the action is hidden. A server, application, load balancer, domain, cloud account or SSH key stays in the workspace it was created in. Create new resources in the right workspace.
+The web app does not move resources between workspaces, so the action is hidden there. A resource in your personal workspace can move into a team once, with `dnocs transfer`. See [Teams](../teams/teams.md). Everything else stays where it was created.
 
 ### "You cannot see this workspace's health"
 

@@ -13,7 +13,7 @@ dPanel tidak menjual atau memindahkan domain, dan tidak pernah mengubah registra
 
 ## Yang perlu disiapkan
 
-- Domain yang DNS-nya di-host di **Cloudflare** atau **DigitalOcean**.
+- Domain yang DNS-nya di-host di **Cloudflare** atau **DigitalOcean**. Kalau di-host di tempat lain, Anda bisa melewati halaman ini: pilih **Eksternal** di load balancer dan tambahkan sendiri record-nya di penyedia DNS Anda.
 - Token API dari penyedia tersebut yang boleh membaca dan mengubah record DNS zona itu.
 
 :::tip

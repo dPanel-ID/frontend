@@ -122,6 +122,10 @@ dnocs bisa melakukan jauh lebih banyak daripada chat. `dnocs --help` menampilkan
 | `dnocs load-balancer log` | Permintaan yang dilayani sebuah load balancer         |
 | `dnocs cluster kinds`     | Engine dan versi Kubernetes yang bisa Anda pakai      |
 | `dnocs worker list`       | Apakah ruang kerja memakai worker bersama atau privat |
+| `dnocs domain record`     | Melihat, menambah, mengubah, dan menghapus record DNS |
+| `dnocs server user`       | Melihat, menambah, dan menghapus pengguna Linux       |
+| `dnocs service-account`   | Mengelola login untuk skrip dan agen AI               |
+| `dnocs module adopt`      | Mencatat MariaDB yang sudah ada di server             |
 
 ## Pertanyaan yang sering diajukan
 

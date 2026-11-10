@@ -87,9 +87,9 @@ Tombol **Tanya dPanel** di kanan bawah setiap halaman membuka asisten AI. Tanyak
 
 ## Pertanyaan yang sering diajukan
 
-### Mengapa kotak proyek cloud dan kunci SSH hilang?
+### Di mana proyek cloud dan kunci SSH?
 
-Dasbor kini menampilkan satu baris berisi empat kotak: server, aplikasi, load balancer, dan domain. Buka akun cloud dari **Proyek Cloud** dan kunci SSH dari **Manajemen Kunci** di sidebar.
+Dasbor punya satu baris berisi empat kotak: server, aplikasi, load balancer, dan domain. Buka akun cloud dari **Proyek Cloud** dan kunci SSH dari **Manajemen Kunci** di sidebar.
 
 ### Mengapa grafik penggunaan kosong?
 

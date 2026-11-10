@@ -26,8 +26,8 @@ dPanel mendekripsi kredensial di dua tempat:
 1. **Di server dPanel**, untuk mengisi formulir peluncuran: membaca daftar region, ukuran, image, dan jaringan, serta memeriksa apakah nama server sudah dipakai.
 2. **Di worker dPanel**, untuk membuat atau menghapus VM. Kredensial ikut terkirim bersama job dan dipakai oleh modul Ansible penyedia, yang berjalan dengan pencatatan rahasia dimatikan.
 
-:::warning[Perlu dicek]
-Enkripsinya AES mode CFB, dengan kunci simetris yang disimpan di samping aplikasi, bukan di KMS atau HSM cloud. Ini melindungi cadangan basis data yang dicuri. Ini tidak melindungi dari orang yang punya akses ke server dPanel yang sedang berjalan beserta berkas kuncinya. Dari kode, kami tidak bisa memastikan berapa lama worker menyimpan berkas kredensial sebuah job setelah dijalankan.
+:::warning[Apa yang dilindungi enkripsi ini]
+Enkripsinya AES mode CFB, dengan kunci simetris yang disimpan di samping aplikasi, bukan di KMS atau HSM cloud. Ini melindungi cadangan basis data yang dicuri. Ini tidak melindungi dari orang yang punya akses ke server dPanel yang sedang berjalan beserta berkas kuncinya.
 :::
 
 ## Apa yang bisa dilakukan tiap kredensial
@@ -36,7 +36,7 @@ Enkripsinya AES mode CFB, dengan kunci simetris yang disimpan di samping aplikas
 | ------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | AWS           | Membuat dan menghapus instance EC2 yang diberinya tag, beserta jaringan dan security group-nya, di region yang Anda izinkan | Semua yang bisa dilakukan IAM user atau root user Anda   |
 | Google Cloud  | Membuat dan menghapus VM, disk, dan aturan firewall di satu project                                                         | Semua hal di setiap project yang bisa dijangkau akun itu |
-| IDCloudHost   | Semua yang bisa dilakukan user IDCloudHost Anda; kunci bercakupan belum bisa kami pastikan (perlu dicek)                    | Sama                                                     |
+| IDCloudHost   | Semua yang bisa dilakukan user IDCloudHost Anda; anggap kunci tidak bisa dibatasi                                           | Sama                                                     |
 | DigitalOcean  | Membuat, membaca, dan menghapus Droplet dan SSH key; membaca region, ukuran, image, dan VPC                                 | Semua hal di team itu                                    |
 | Alibaba Cloud | Membuat dan menghapus instance ECS, VPC, vSwitch, security group, dan key pair di akun itu                                  | Semua hal di akun Alibaba Cloud itu                      |
 | Tencent Cloud | Membuat, membayar, dan menghapus instance CVM, VPC, subnet, security group, dan key pair di akun itu                        | Semua hal di akun Tencent Cloud itu                      |

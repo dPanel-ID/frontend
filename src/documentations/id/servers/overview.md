@@ -25,9 +25,9 @@ Setelah server masuk ke dPanel, semua urusannya bisa dikerjakan dari browser. An
 
 Daftar ini terbuka sebagai tabel. Beralihlah ke **Tampilan Grid Kartu** untuk melihat pemakaian CPU, memori, dan disk secara langsung di kartu setiap server. Kotak pencarian tidak membedakan huruf besar dan kecil, dan kolom pemilik menyebut nama orang yang membuat setiap server.
 
-## Dua cara menambah server
+## Tiga cara menambah server
 
-Buka **Server**, lalu **Buat Server**. Halaman itu menawarkan dua jalur.
+Buka **Server**, lalu **Buat Server**. Meluncurkan dan menghubungkan dibandingkan di bawah. Cara ketiga, untuk mesin yang tidak bisa dijangkau dari internet, seperti PC di rumah, adalah [mendaftarkan mesin privat](./register-a-private-machine.md).
 
 ![Halaman Buat Server dengan pilihan meluncurkan server cloud atau menghubungkan server sendiri](../../assets/servers/create-choose-path.webp)
 
@@ -51,6 +51,19 @@ Apa pun jalurnya, dPanel memasang agennya dan mulai memantau mesin itu. Server y
 - Banyak server sekaligus, atau klaster Kubernetes: [Grup server dan klaster](../clusters/overview.md).
 
 Anda juga bisa meminta **Ask dPanel** memeriksa server atau memasang sesuatu di dalamnya; lihat [Kumpulan prompt](../ai/prompt-cookbook.md).
+
+## Yang dipasang dPanel di mesin
+
+Kalau Anda merawat server, inilah yang diubah oleh penyiapan:
+
+| Apa            | Di mana                                                                         |
+| -------------- | ------------------------------------------------------------------------------- |
+| Program agen   | `/opt/dpanel/bin/dpanel-agent`, berjalan sebagai layanan systemd `dpanel-agent` |
+| Pengaturannya  | `/opt/dpanel/etc/environment`                                                   |
+| Datanya        | `/opt/dpanel/var/lib/agent`                                                     |
+| Pengguna Linux | `dpanel`, dengan `sudo` tanpa kata sandi, di server yang disiapkan lewat SSH    |
+
+Aplikasi berada di satu folder per aplikasi, yang tampil sebagai **Direktori kerja** di tab **Pengaturan** aplikasi, dan berjalan sebagai layanan systemd.
 
 ## Pertanyaan yang sering diajukan
 

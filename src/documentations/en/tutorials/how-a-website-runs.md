@@ -49,7 +49,7 @@ Set these up once; every tutorial uses them.
 ## Good habits from the start
 
 - **Do one thing at a time and wait for it to finish.** Installing software and deploying take a few minutes each. dPanel shows progress on the server's **Modules** tab, the application's page and the job list.
-- **Keep passwords in a password manager.** dPanel shows a generated password once. Copy it before you close the form.
+- **Keep passwords in a password manager.** When the assistant generates a password, it shows it once. Copy it before you close the chat.
 - **Never put a password in your code or in a chat**, including the [assistant](../ai/overview.md). Put it in an environment variable.
 - **Delete what you don't use.** A cloud server costs money every hour it exists, even when idle.
 

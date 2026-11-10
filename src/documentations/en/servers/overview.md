@@ -25,9 +25,9 @@ Once a server is in dPanel, you manage it from your browser. You don't need a te
 
 The list opens as a table. Switch to **Card Grid View** to see live CPU, memory and disk on each server's card. The search box ignores letter case, and the owner column names the person who created each server.
 
-## The two ways to add a server
+## The three ways to add a server
 
-Open **Servers**, then **Create Server**. The page offers both paths.
+Open **Servers**, then **Create Server**. Launching and connecting are compared below. The third way, for a machine nothing on the internet can reach, such as a PC at home, is to [register a private machine](./register-a-private-machine.md).
 
 ![The Create Server page, offering Launch a cloud server or Connect your own server](../../assets/servers/create-choose-path.webp)
 
@@ -39,7 +39,7 @@ Open **Servers**, then **Create Server**. The page offers both paths.
 | You need         | A cloud account and an SSH key in dPanel                                               | An SSH key, and the server's address |
 | Time             | About 10 to 20 minutes                                                                 | About 5 minutes                      |
 
-Either way, dPanel installs its agent and starts monitoring the machine. Servers dPanel launches run Ubuntu 24.04 LTS or 26.04 LTS.
+Every way, dPanel installs its agent and starts monitoring the machine. Servers dPanel launches run Ubuntu 24.04 LTS or 26.04 LTS.
 
 ## Where to go next
 
@@ -51,6 +51,19 @@ Either way, dPanel installs its agent and starts monitoring the machine. Servers
 - Many servers at once, or a Kubernetes cluster: [Server groups and clusters](../clusters/overview.md).
 
 You can also ask **Ask dPanel** to check a server or install something on it; see [Prompt cookbook](../ai/prompt-cookbook.md).
+
+## What dPanel puts on the machine
+
+If you maintain servers, this is what setup changes:
+
+| What              | Where                                                                     |
+| ----------------- | ------------------------------------------------------------------------- |
+| The agent program | `/opt/dpanel/bin/dpanel-agent`, run as the systemd service `dpanel-agent` |
+| Its settings      | `/opt/dpanel/etc/environment`                                             |
+| Its data          | `/opt/dpanel/var/lib/agent`                                               |
+| A Linux user      | `dpanel`, with passwordless `sudo`, on servers set up over SSH            |
+
+Applications live in a folder per application, shown as **Work directory** on the application's **Settings** tab, and run as systemd services.
 
 ## Frequently asked questions
 

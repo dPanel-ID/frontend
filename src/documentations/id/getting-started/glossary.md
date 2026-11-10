@@ -62,6 +62,18 @@ Program yang menyimpan data aplikasi dalam tabel, seperti MariaDB, PostgreSQL, M
 
 Alat web dPanel untuk membuka basis data MariaDB atau PostgreSQL di browser, untuk menelusuri, menjalankan kueri, mengimpor, atau mengekspor data.
 
+### Terminal
+
+Jendela tempat Anda mengetik perintah ke komputer, bukan mengeklik.
+
+### root dan sudo
+
+`root` adalah akun administrator di Linux. `sudo` menjalankan satu perintah dengan hak administrator.
+
+### systemd
+
+Bagian dari Linux yang menjalankan layanan dan menjaganya tetap hidup. `systemctl` adalah perintah untuk mengendalikannya.
+
 ### Port
 
 Pintu bernomor di server tempat satu program mendengarkan, seperti 443 untuk situs web lewat HTTPS atau 5432 untuk PostgreSQL.
@@ -130,6 +142,10 @@ Nama di bawah domain Anda, seperti `shop.example.com`.
 
 Buku alamat internet, yang mengubah nama domain menjadi alamat server yang melayaninya.
 
+### Record A
+
+Record DNS yang mengarahkan sebuah nama ke alamat IPv4, misalnya `blog.example.com` ke `203.0.113.10`.
+
 ### Record DNS
 
 Satu entri di buku alamat itu, misalnya "shop.example.com mengarah ke 203.0.113.10". Lihat [Record DNS](../networking/dns-records.md).
@@ -163,6 +179,10 @@ Load balancer L7 mengarahkan lalu lintas web berdasarkan alamat dan path; load b
 Opsi yang membuat pengunjung melewati jaringan Cloudflare sebelum sampai ke server Anda, sehingga alamat server tersembunyi.
 
 ## Mengatur pekerjaan Anda
+
+### Akun layanan
+
+Login dPanel untuk program, seperti skrip, pekerjaan CI, atau agen AI, bukan untuk orang. Akun ini masuk memakai token yang bisa dicabut kapan saja. Lihat [Akun layanan](../teams/service-accounts.md).
 
 ### Ruang kerja
 

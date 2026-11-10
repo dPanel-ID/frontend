@@ -87,9 +87,9 @@ The **Ask dPanel** button at the bottom right of every page opens the AI assista
 
 ## Frequently asked questions
 
-### Why did the cloud projects and SSH keys tiles disappear?
+### Where are cloud projects and SSH keys?
 
-The dashboard now shows one row of four tiles: servers, applications, load balancers and domains. Open cloud accounts from **Cloud Projects** and SSH keys from **Secret Managers** in the sidebar.
+The dashboard has one row of four tiles: servers, applications, load balancers and domains. Open cloud accounts from **Cloud Projects** and SSH keys from **Secret Managers** in the sidebar.
 
 ### Why is the usage chart empty?
 

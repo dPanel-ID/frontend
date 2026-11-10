@@ -24,7 +24,7 @@ Akun cloud hanya diperlukan untuk membuat mesin baru. Untuk menghubungkan server
 
 ![Halaman Kunci SSH dengan satu kunci yang dibagikan ke tim](../../assets/getting-started/ssh-keys.webp 'Kunci SSH: setiap kartu menampilkan jenis kunci, pemiliknya, dan siapa saja yang bisa memakainya.')
 
-Bagian privat tidak pernah ditampilkan, disalin, atau dikirim ke mana pun. Buka sebuah kunci untuk melihat bagian publik dan fingerprint-nya. **Buat server dengan kunci ini** langsung membawa Anda ke halaman pembuatan server.
+Bagian privat tidak pernah ditampilkan kepada Anda atau tim Anda. dPanel menyimpannya dalam bentuk terenkripsi dan memberikan akses SSH hanya kepada worker yang menjalankan setiap job, termasuk worker pribadi kalau ruang kerja Anda memakainya. Buka sebuah kunci untuk melihat bagian publik dan fingerprint-nya. **Buat server dengan kunci ini** langsung membawa Anda ke halaman pembuatan server.
 
 ## Menghubungkan akun cloud
 
@@ -56,7 +56,7 @@ dPanel tidak menjual ulang server. Mesin dibuat di dalam akun penyedia milik And
 - Kunci atau akun yang dibuat di ruang kerja tim otomatis dibagikan ke tim itu. Yang dibuat di ruang kerja personal hanya milik Anda.
 - Kunci atau akun tetap berada di ruang kerja tempat ia dibuat. Keduanya tidak bisa dipindahkan ke ruang kerja lain.
 - **Perbarui kredensial**, di menu **Lebih** (⋯) pada baris akun cloud, mengganti kunci di dalam akun itu, misalnya setelah Anda merotasinya di penyedia. Server yang diluncurkan dengannya tetap berfungsi. Lihat [Merotasi kredensial](../servers/cloud-providers/cloud-credentials-security.md#merotasi-kredensial).
-- **Hapus**, di menu yang sama, memutuskan akun cloud: dPanel melupakan API key-nya setelah Anda mengonfirmasi **Putuskan akun cloud**. Server yang sudah berjalan di penyedia tetap berjalan.
+- **Hapus**, di menu yang sama, memutuskan akun cloud: dPanel melupakan API key-nya setelah Anda mengonfirmasi **Putuskan akun cloud**. dPanel menolak selama masih ada server yang memakai akun itu, jadi hapus dulu server-server tersebut.
 
 ## Langkah berikutnya
 

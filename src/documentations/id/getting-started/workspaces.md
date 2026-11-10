@@ -39,7 +39,7 @@ Berpindah ruang kerja mengubah isi semua halaman. Kalau server atau aplikasi tam
 
 ## Resource tetap di ruang kerjanya
 
-Server, aplikasi, load balancer, domain, akun cloud, atau kunci SSH tetap berada di ruang kerja tempat ia dibuat. dPanel tidak memindahkan resource antar ruang kerja, jadi pindahlah ke ruang kerja yang benar sebelum membuat sesuatu. Untuk berbagi pekerjaan dengan orang lain, buat resource-nya di [ruang kerja tim](../teams/teams.md).
+Server, aplikasi, load balancer, domain, akun cloud, atau kunci SSH tetap berada di ruang kerja tempat ia dibuat. Aplikasi web tidak memindahkan resource antar ruang kerja, jadi pindahlah ke ruang kerja yang benar sebelum membuat sesuatu. Untuk berbagi pekerjaan dengan orang lain, buat resource-nya di [ruang kerja tim](../teams/teams.md).
 
 ## Pertanyaan yang sering diajukan
 
@@ -49,7 +49,7 @@ Di baris paling atas **Pilih ruang kerja**, atau di tab **Personal**. Setiap aku
 
 ### Bisakah server atau aplikasi dipindah ke ruang kerja lain?
 
-Tidak. Resource tetap berada di ruang kerja tempat ia dibuat. Buat ulang resource itu di ruang kerja yang benar, lalu hapus yang lama.
+Umumnya tidak. Server bisa dipindahkan satu kali, dari ruang kerja pribadi ke tim, dengan `dnocs transfer server --id <ID server> --to "<nama tim>"`. Tambahkan `--include-dependencies` untuk ikut memindahkan kunci SSH dan proyek cloud-nya. Selain itu tetap berada di tempat ia dibuat, jadi buat ulang di ruang kerja yang benar, lalu hapus yang lama.
 
 ### Mengapa kartu Worker di profil berubah saat saya berpindah ruang kerja?
 

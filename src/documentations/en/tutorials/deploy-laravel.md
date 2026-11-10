@@ -40,7 +40,7 @@ Wait until the server's status is **Ready**, usually 10 to 20 minutes. See [Crea
 ## Step 2: Install PostgreSQL, PHP, FrankenPHP and Node.js
 
 1. Open the server and go to **Modules**. Press **Add module**.
-2. Press **Install** on **PostgreSQL**. Note the administrator user and set its password, or keep the one suggested, and copy it somewhere safe. Press **Install role** and confirm.
+2. Press **Install** on **PostgreSQL**. Note the administrator user and set its password, and copy it somewhere safe. Press **Install role** and confirm.
 3. When PostgreSQL shows **Installed**, install **PHP** with **PHP Version** `8.5`.
 4. Then install **FrankenPHP**, which serves the application through Laravel Octane.
 5. Then install **Node.js**. Note the version it installs, for example `26.13.0`: the application declares the same version in step 4.
@@ -111,7 +111,7 @@ If the build log stops at `npm: command not found`, Node.js is not declared on t
 
 1. Open **Load Balancers** and press **Create a load balancer**. The form has four steps: **Gateway**, **Domain**, **Routing** and **Review**.
 2. **Gateway**: under **Gateway server**, select the same server. Under **Web server engine**, pick **Caddy Server** and press **Install** if it is not installed yet.
-3. **Domain**: under **Domain Name**, choose **Managed**, type the **Subdomain** (for example `app`), and **Select domain**.
+3. **Domain**: under **Domain Name**, choose **Managed**, type the **Subdomain** (for example `app`), and **Select domain**. If your domain's DNS is not at Cloudflare or DigitalOcean, choose **External**, type your hostname and add the record the form shows at your DNS provider.
 4. **Routing**: keep **L7** under **Routing mode**, and **HTTP / HTTPS** with **HTTPS** on under **Protocol and HTTPS**. In the first rule, set **Type** to **Application**, **Matching Path** to `/*`, and pick the **Laravel** application.
 5. **Review**: when the review panel reads **Ready to create**, press **Create load balancer**.
 

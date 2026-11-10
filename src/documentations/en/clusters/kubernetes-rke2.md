@@ -6,9 +6,9 @@ sidebar_icon: shield-check
 sidebar_label: Kubernetes with RKE2
 ---
 
-This guide builds a real RKE2 Kubernetes cluster with dPanel, **kube-rke**, on two servers and serves a web app from it at `https://kube-rke.devetek.app`. Follow along with your own servers and domain; it takes about 30 minutes, most of it waiting.
+This guide builds a real RKE2 Kubernetes cluster with dPanel, **kube-rke**, on two servers and serves a web app from it at `https://kube-rke.example.com`. Follow along with your own servers and domain; it takes about 30 minutes, most of it waiting.
 
-RKE2 is Rancher's security-focused Kubernetes: CIS-ready defaults, the Canal network plugin, and its control plane (etcd, API server, scheduler) running as visible pods. It needs bigger servers than k3s and runs on amd64 and arm64 only. For small machines or a Raspberry Pi, see [Kubernetes with k3s](./kubernetes-k3s.md). New to the words? Read [Server groups and clusters](./overview.md) first.
+RKE2 is Rancher's security-focused Kubernetes: CIS-ready defaults, the Canal network plugin, and its control plane (etcd, API server, scheduler) running as visible pods. It needs bigger servers than k3s and runs on amd64 and arm64 only. For small machines or a Raspberry Pi, see [Kubernetes with k3s](./kubernetes-k3s.md). New to the words? Read [Server groups and clusters](./overview.md) first. In plain words, RKE2 is Kubernetes with stricter security settings. etcd is the database that holds the cluster's state.
 
 ## Before you start
 
@@ -20,10 +20,10 @@ You need servers that dPanel already manages and that read **Ready**. This guide
 | kube-rke-2 | **Agent**           | 2 CPU, 4 GB, Ubuntu 24.04 |
 
 - **Size:** 2 CPU and 4 GB of memory or more per server, amd64 or arm64. RKE2 runs more system pods than k3s; smaller servers struggle.
-- **System:** Ubuntu. This guide was tested on Ubuntu 24.04.
+- **System:** Ubuntu. This guide uses Ubuntu 24.04.
 - **Same region** for every server, not in any group, without Docker, k3s or RKE2, and with the dPanel firewall off.
 
-A fresh server launched from dPanel meets all of this. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
+A fresh server launched from dPanel meets all of this. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). With the dPanel firewall off, nothing on the server blocks ports. On DigitalOcean and IDCloudHost dPanel creates no provider firewall either, so port 30080 and the Kubernetes API on port 6443 can be reached from the internet. Add a provider firewall if you do not want that.
 
 ## 1. Start a Kubernetes group
 
@@ -34,7 +34,7 @@ A fresh server launched from dPanel meets all of this. See [Create a cloud serve
 
 ## 2. Pick the servers and their roles
 
-1. **Name**: `kube-rke`. **Description**: anything that helps, for example "RKE2 cluster serving kube-rke.devetek.app".
+1. **Name**: `kube-rke`. **Description**: anything that helps, for example "RKE2 cluster serving kube-rke.example.com".
 2. Under **Servers**, type `kube-rke` in **Search servers**, then tick **kube-rke-1** first and **kube-rke-2** second.
 3. Each picked server appears at the top with a role switch. The first one gets **Server** (the control plane), the others **Agent** (apps only). Press the other button to change a role.
 
@@ -92,7 +92,7 @@ export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 kubectl get nodes
 ```
 
-Both nodes read `Ready`. RKE2 names them after dPanel's server IDs, such as `dpanel-186`. The rest of this guide assumes that root shell.
+Both nodes read `Ready`. RKE2 names them after dPanel's server IDs, such as `dpanel-101`. The rest of this guide assumes that root shell.
 
 ## 7. Run your first app
 
@@ -143,7 +143,7 @@ curl http://127.0.0.1:30080
 
 Kubernetes puts one copy on each node, and `curl` answers with the page:
 
-![The browser terminal on kube-rke-1: kubectl get nodes shows dpanel-186 and dpanel-187 Ready, kubectl get pods shows one hello pod on each node, and curl answers Hello from kube-rke, a RKE2 cluster on dPanel](../../assets/clusters/rke2-terminal.webp 'Both nodes Ready, one copy of the app on each, and the app answering on port 30080.')
+![The browser terminal on kube-rke-1: kubectl get nodes shows both nodes Ready, kubectl get pods shows one hello pod on each node, and curl answers Hello from kube-rke, a RKE2 cluster on dPanel](../../assets/clusters/rke2-terminal.webp 'Both nodes Ready, one copy of the app on each, and the app answering on port 30080.')
 
 ## 8. Serve it on your domain with HTTPS
 
@@ -168,8 +168,6 @@ On the group's **Cluster** tab:
 - **Uninstall** removes RKE2 from both nodes (it runs RKE2's own uninstall script). Apps in the cluster stop and their data on the nodes is removed. The servers and the group stay; the cluster reads **Uninstalled**.
 - **Install again** shows when an install failed or after an uninstall. It installs on the same servers with the same roles and version.
 - **Delete cluster** works on an uninstalled, failed or never-installed cluster. The group stays as a generic group; delete it to free the servers for another cluster.
-
-This guide's cluster went through all three: it was first created from the command line, uninstalled, deleted with its group, and created again on the same two servers through the wizard above.
 
 Delete the load balancer first if you made one for the cluster.
 

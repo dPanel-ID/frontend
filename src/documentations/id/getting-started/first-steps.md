@@ -14,10 +14,10 @@ Belum pernah mengelola server? Baca dulu [Cara situs web berjalan di server Anda
 
 1. **Masuk.** Buka [dnocs.devetek.app](https://dnocs.devetek.app) lalu masuk dengan Google atau nama pengguna dan kata sandi. Lihat [Masuk dan profil Anda](./sign-in.md).
 2. **Pilih ruang kerja.** Ruang kerja (workspace) adalah wadah tempat server, aplikasi, dan domain Anda berada. Pakai ruang kerja pribadi untuk mencoba-coba, atau ruang kerja tim untuk berbagi dengan orang lain. Lihat [Ruang kerja](./workspaces.md).
-3. **Siapkan server.** Server adalah komputer di pusat data tempat situs Anda berjalan. Apa pun pilihannya, dPanel lebih dulu membutuhkan [kunci SSH](./ssh-keys-and-cloud-projects.md), yaitu kunci tanpa kata sandi yang dipakai dPanel untuk masuk ke server.
+3. **Siapkan server.** Server adalah komputer di pusat data tempat situs Anda berjalan. Apa pun pilihannya, dPanel lebih dulu membutuhkan [kunci SSH](./ssh-keys-and-cloud-projects.md). SSH adalah cara aman untuk masuk ke server, dan kunci itu membuat dPanel bisa masuk tanpa kata sandi.
    - **Belum punya server?** Hubungkan akun cloud Anda, misalnya AWS, Google Cloud, atau DigitalOcean, lalu luncurkan server dari dPanel. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
-   - **Sudah menyewa VPS?** Hubungkan saja lewat SSH. Lihat [Menghubungkan server sendiri](../servers/connect-your-own-server.md).
-4. **Deploy aplikasi pertama.** [Hubungkan GitHub](./connect-github.md), lalu ikuti salah satu tutorial sampai selesai:
+   - **Sudah menyewa VPS (server virtual dari perusahaan hosting)?** Hubungkan saja lewat SSH. Lihat [Menghubungkan server sendiri](../servers/connect-your-own-server.md).
+4. **Deploy aplikasi pertama.** [Hubungkan GitHub](./connect-github.md), lalu ikuti salah satu tutorial sampai selesai. Setiap tutorial dimulai dengan meluncurkan server; kalau Anda sudah mengerjakan langkah 3, lewati langkah itu dan pakai server Anda, asalkan punya minimal 2 vCPU dan RAM 4 GB:
    - [Deploy WordPress dengan MariaDB](../tutorials/deploy-wordpress.md), titik awal paling mudah.
    - [Deploy Laravel dengan PostgreSQL](../tutorials/deploy-laravel.md), untuk aplikasi web PHP.
 5. **Pasang di domain.** Tambahkan domain Anda di **Domain & DNS**, lalu buat load balancer: pintu depan yang menjawab di domain Anda dan mendapat sertifikat HTTPS gratis. Lihat [Domain dan DNS](../networking/domains-and-dns.md) dan [Load balancer](../networking/load-balancers.md).
@@ -46,7 +46,7 @@ Anda juga bisa menyerahkan klik-kliknya kepada asisten: jelaskan apa yang Anda m
 
 ### Apakah saya harus paham Linux atau memakai terminal?
 
-Tidak. Semua langkah dilakukan di browser. dPanel masuk ke server lewat SSH untuk Anda, memasang perangkat lunak dari daftar, dan menampilkan log di halaman.
+Hampir tidak perlu. Kalau dPanel yang meluncurkan server Anda, semua langkah dilakukan di browser. Menghubungkan server yang sudah Anda jalankan butuh satu perintah di server itu, dan mesin privat butuh beberapa perintah. dPanel masuk ke server lewat SSH untuk Anda, memasang perangkat lunak dari daftar, dan menampilkan log di halaman.
 
 ### Bisakah saya mencoba dPanel tanpa domain?
 

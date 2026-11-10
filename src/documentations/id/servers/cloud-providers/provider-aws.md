@@ -148,8 +148,8 @@ Setiap resource yang dibuat dPanel diberi tag `managed-by = dpanel`. Policy ini 
 }
 ```
 
-:::warning[Perlu dicek]
-Panggilan di tabel pertama diambil langsung dari kode dPanel. Beberapa action di JSON, misalnya `DescribeInstanceStatus`, `DescribeTags`, dan `DescribeSecurityGroupRules`, dipanggil di dalam modul Ansible `amazon.aws` yang dipakai dPanel, bukan oleh dPanel sendiri. Kalau peluncuran gagal dengan `UnauthorizedOperation`, pesan errornya menyebut action yang kurang. Tambahkan, lalu coba lagi. Server yang dibuat sebelum dPanel memberi tag mungkin tidak punya tag `managed-by`; menghapusnya butuh `TerminateInstances` tanpa syarat tag.
+:::note[Kalau peluncuran ditolak]
+Panggilan di tabel pertama adalah panggilan yang dilakukan dPanel sendiri. Beberapa action di JSON, misalnya `DescribeInstanceStatus`, `DescribeTags`, dan `DescribeSecurityGroupRules`, dipanggil di dalam modul Ansible `amazon.aws` yang dipakai dPanel, bukan oleh dPanel sendiri. Kalau peluncuran gagal dengan `UnauthorizedOperation`, pesan errornya menyebut action yang kurang. Tambahkan, lalu coba lagi. Server yang dibuat sebelum dPanel memberi tag mungkin tidak punya tag `managed-by`; menghapusnya butuh `TerminateInstances` tanpa syarat tag.
 :::
 
 ## 2. Hubungkan ke dPanel

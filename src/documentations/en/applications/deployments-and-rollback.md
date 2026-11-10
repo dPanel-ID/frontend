@@ -5,7 +5,7 @@ sidebar_position: 4
 sidebar_icon: history
 ---
 
-In dPanel, every push you want to ship becomes a build, and every build is kept, so you can release the latest commit or roll back to an earlier build in one step. Two words matter here. A **build** is your code packaged once, from one commit. A **release** is that build placed on one server.
+In dPanel, you decide when your code goes live, and every build is kept, so you can release the latest commit or roll back to an earlier build in one step. Pushing to GitHub does not release anything by itself: press **Build and release** when you are ready. Two words matter here. A **build** (dPanel's screens sometimes say **artifact**) is your code prepared from one commit. A **release** is that build placed on one server.
 
 ## What is running now
 
@@ -43,7 +43,7 @@ The build appears at the top of the list as **Building**, then **Passed** or **F
 
 Switch views with the **Builds** and **On servers** toggle beside **Build and release**.
 
-![The Deployments tab of DB Manager: three builds, each with its build ID, commit, branch, the person who ran it, its release status and the Logs, Roll back and Delete buttons](../../assets/applications/app-deployments.webp 'Each build names who ran it. Names of other people are blurred here.')
+![The Deployments tab of an application: three builds, each with its build ID, commit, branch, the person who ran it, its release status and the Logs, Roll back and Delete buttons](../../assets/applications/app-deployments.webp 'Each build names who ran it. Names of other people are blurred here.')
 
 ### Who ran each build
 
@@ -59,7 +59,7 @@ Press **Logs** on a build and pick a server. **Artifact Logs** opens on **Steps*
 2. In **Rollback Deployment**, tick the servers to roll back.
 3. Press **Rollback**.
 
-dPanel releases that build again on those servers. Nothing is rebuilt.
+dPanel releases that build again on those servers. A rollback restores your code only: it does not undo changes to your database, and files that are not in your repository stay as they are.
 
 ### Manage releases on a server
 
@@ -90,7 +90,7 @@ When a build fails, start with its **Logs**. The last lines usually name the ste
 
 ### What is the difference between a build and a release?
 
-A build is your code packaged once, from one commit. A release is that build placed on one server and started there. One build can be released to several servers, and released again later in a rollback.
+A build is your code prepared from one commit. A release is that build placed on one server and started there. With several servers, each one prepares its own copy of the same commit. A build can be released again later in a rollback.
 
 ### Does a rollback rebuild my code?
 

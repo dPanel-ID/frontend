@@ -39,7 +39,7 @@ Switching workspace changes what every page shows. If a server or application se
 
 ## A resource stays in its workspace
 
-A server, application, load balancer, domain, cloud account or SSH key stays in the workspace it was created in. dPanel does not move resources between workspaces, so switch to the right workspace before you create something. To share your work with other people, create it in a [team workspace](../teams/teams.md).
+A server, application, load balancer, domain, cloud account or SSH key stays in the workspace it was created in. The web app does not move resources between workspaces, so switch to the right workspace before you create something. To share your work with other people, create it in a [team workspace](../teams/teams.md).
 
 ## Frequently asked questions
 
@@ -49,7 +49,7 @@ At the top of **Select workspace**, named **Personal workspace**, or under the *
 
 ### Can I move a server or application to another workspace?
 
-No. Resources stay in the workspace they were created in. Create the resource again in the right workspace and delete the old one.
+Mostly no. A server can move once, from your personal workspace to a team, with `dnocs transfer server --id <server ID> --to "<team name>"`. Add `--include-dependencies` to move its SSH key and cloud project too. Everything else stays where it was created, so create it again in the right workspace and delete the old one.
 
 ### Why does switching workspace change the Workers card on my profile?
 
