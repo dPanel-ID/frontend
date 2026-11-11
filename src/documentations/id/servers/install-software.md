@@ -47,7 +47,7 @@ Kata sandi root wajib diisi, minimal 8 karakter. Tidak ada nilai bawaan, karena 
 
 ## Setelah itu
 
-Modul muncul di tab **Modul** dengan status **Memasang**. Basis data butuh beberapa menit. Setelah selesai:
+Modul muncul di tab **Modul** dengan status **Memasang**. Basis data butuh beberapa menit. Di server yang terhubung dengan [agen dPanel](./register-a-private-machine.md), pemasangan pertama kali butuh beberapa menit lebih lama, karena agen menyiapkan installer dPanel di mesin itu satu kali; pemasangannya lalu berjalan di server itu sendiri. Setelah selesai:
 
 - Tab **Modul** menampilkannya sebagai **Terpasang**, lengkap dengan versinya.
 - Tab **Ringkasan** mencantumkannya di **Yang berjalan di sini**.
@@ -95,7 +95,7 @@ Setelah MariaDB, PostgreSQL, atau MongoDB berstatus **Terpasang**, barisnya di t
 
 Dari sana Anda bisa melihat tabel, menjalankan kueri, serta membuat basis data dan pengguna dengan akses baca saja atau baca-tulis.
 
-Pengelola basis data menjangkau basis data lewat koneksi SSH server, jadi basis data tidak perlu dibuka ke internet. Anda bisa membukanya di server yang boleh Anda ubah: server milik Anda sendiri, dan server di workspace tempat Anda punya akses editor atau lebih tinggi.
+Pengelola basis data menjangkau basis data lewat agen dPanel, atau lewat koneksi SSH server di server yang terhubung lewat SSH, jadi basis data tidak perlu dibuka ke internet. Anda bisa membukanya di server yang boleh Anda ubah: server milik Anda sendiri, dan server di workspace tempat Anda punya akses editor atau lebih tinggi.
 
 ## Membuat basis data untuk aplikasi
 

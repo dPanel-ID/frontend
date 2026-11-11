@@ -73,6 +73,7 @@ You don't need a group for a single machine. `k3s` and `rke2` are also ordinary 
 - **A server can be in one group only.** The picker marks servers that are **Already in a group**. The Kubernetes wizard does not offer deleted servers.
 - **A cluster's servers change only through the cluster.** You can't remove a server from a cluster group by hand, and a server that is a cluster node can't be deleted. This stops a half-removed node from breaking the cluster.
 - **Kubernetes owns its servers.** dPanel refuses servers that already run Docker, k3s or RKE2, and servers with the dPanel [firewall](../servers/firewall.md) turned on, because they would fight over the same network rules.
+- **Kubernetes clusters need servers connected over SSH.** A server that joined through the [dPanel agent](../servers/register-a-private-machine.md), including a cloud server launched with the agent, can't be a cluster node yet. To build a cluster, launch its servers with **SSH** under **How dPanel connects**, or install `k3s` as a module for a one-server Kubernetes.
 - **One region for the control plane.** Servers with the **Server** role must be in the same region. Cluster members talk to each other all the time, and a slow link between regions makes the cluster unstable. An **Agent** in another region is allowed, but dPanel warns you that its traffic crosses regions.
 - **Permissions.** Creating, uninstalling and deleting a cluster needs the **cluster editor** and **server editor** permissions in the workspace. Owners and admins have both.
 

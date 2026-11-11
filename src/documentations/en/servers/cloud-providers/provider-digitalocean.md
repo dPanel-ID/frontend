@@ -11,7 +11,7 @@ dPanel launches Ubuntu Droplets in your own DigitalOcean team. It signs in with 
 ## What you need first
 
 - A DigitalOcean team with billing set up. A separate team just for dPanel keeps its access contained.
-- An SSH key in dPanel. See [Before you start](../before-you-start.md).
+- An SSH key in dPanel, only if the server should join over SSH. With the dPanel agent, the default, you need none. See [Before you start](../before-you-start.md).
 
 ## 1. Create a custom-scoped token
 
@@ -36,7 +36,7 @@ DigitalOcean lets you choose exactly what a token may do. Don't give dPanel a **
 DigitalOcean guides: [Create a personal access token](https://docs.digitalocean.com/reference/api/create-personal-access-token/), [Token scopes](https://docs.digitalocean.com/reference/api/scopes/).
 
 :::note[Extra scopes]
-The list above covers the API calls dPanel makes (`/v2/regions`, `/v2/sizes`, `/v2/images`, `/v2/vpcs`, `/v2/droplets`) and the Ansible `digitalocean.cloud` modules it runs (`droplet`, `droplets_info`, `ssh_key`). DigitalOcean sometimes requires extra read scopes for a create action, such as `actions:read` while waiting for a Droplet. The token page tells you which scopes a create scope depends on; accept them. If a launch fails with `403`, the error names the missing scope.
+The list above covers the API calls dPanel makes (`/v2/regions`, `/v2/sizes`, `/v2/images`, `/v2/vpcs`, `/v2/droplets`) and the DigitalOcean library calls it makes to create Droplets, list them and import SSH keys. DigitalOcean sometimes requires extra read scopes for a create action, such as `actions:read` while waiting for a Droplet. The token page tells you which scopes a create scope depends on; accept them. If a launch fails with `403`, the error names the missing scope.
 :::
 
 ## 2. Connect it to dPanel
@@ -63,7 +63,9 @@ dPanel saves the account as **Ready** without testing it. The launch form is the
 | **Ubuntu release** | 24.04 LTS or 26.04 LTS.                                                                                                                                                                |
 | **Network**        | The region's default VPC, unless you pick another.                                                                                                                                     |
 
-DigitalOcean adds a fourth step, **Access**, with **Default User**: the Linux user dPanel creates and signs in as. `dpanel` by default.
+DigitalOcean adds a step, **Access**, with **Default User**: the Linux user dPanel creates, and signs in as when the server joins over SSH. `dpanel` by default.
+
+A Droplet always gets a public IP, so the form has no public IP switch for DigitalOcean.
 
 ## 4. Launch
 
@@ -71,8 +73,8 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick DigitalOcean in
 
 ## DigitalOcean gotchas
 
-- **An SSH key appears in your team.** Each launch imports your dPanel public key as `dpanel-<server name>` under **Settings**, **Security**. Deleting the server does not remove it.
-- **No firewall from dPanel.** dPanel creates no Cloud Firewall. A new Droplet accepts traffic on every port until you add one. Allow TCP 22, 80 and 443 if you add a firewall, or dPanel and your apps stop working.
+- **An SSH key appears in your team, with SSH only.** Each launch that joins over SSH imports your dPanel public key as `dpanel-<server name>` under **Settings**, **Security**. Deleting the server does not remove it. With the dPanel agent, no key is imported.
+- **No firewall from dPanel.** dPanel creates no Cloud Firewall. A new Droplet accepts traffic on every port until you add one. If you add a firewall, allow TCP 80 and 443 for your apps, and TCP 22 if the server joins over SSH or you log in over SSH yourself.
 - **Droplet limit.** New teams can only run a few Droplets. A launch that fails with a limit error needs a higher limit from DigitalOcean.
 - **No backups.** dPanel turns on neither DigitalOcean backups nor monitoring. Enable them in the control panel if you want them; backups cost extra.
 - **Billing runs from launch.** You pay for the Droplet while it exists, even when it is powered off.

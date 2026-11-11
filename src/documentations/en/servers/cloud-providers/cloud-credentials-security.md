@@ -24,7 +24,7 @@ Once saved, the credential is never sent back to a browser. The page shows the a
 dPanel decrypts the credential in two places:
 
 1. **On dPanel's server**, to fill the launch form: listing regions, sizes, images and networks, and checking whether a server name is taken.
-2. **On dPanel's worker**, to create or delete a VM. The credential travels with the job and is used by the provider's Ansible modules, which run with logging of secrets turned off.
+2. **On dPanel's worker**, to create or delete a VM. The credential travels with the job and is used by the provider's own library, with logging of secrets turned off.
 
 :::warning[What this protects against]
 The encryption is AES in CFB mode, with a symmetric key held next to the application rather than in a cloud KMS or HSM. It protects a stolen database backup. It does not protect against someone with access to dPanel's running server and its key file.
@@ -88,7 +88,7 @@ If the old key has leaked, don't wait: update the credentials with a new key now
 
 Revoking means deleting or deactivating the key at the provider. Here is what happens to servers launched with it:
 
-- **They keep running.** dPanel reaches a server over SSH and through its agent, not through the cloud credential. Applications, logs, the terminal and modules all keep working.
+- **They keep running.** dPanel reaches a server through its agent (and over SSH, if it joined that way), not through the cloud credential. Applications, logs, the terminal and modules all keep working.
 - **New launches fail.** The launch form can't list regions or sizes, and creation fails at the provider.
 - **Deleting a server only half works.** dPanel can't destroy the VM at the provider. The server stays in **Deleting** or **Deleted**, dPanel won't remove its record until the provider confirms, and **the VM keeps running and billing** at the provider. Delete it yourself in the provider's console.
 - **The cloud account can't be disconnected** while servers still reference it.

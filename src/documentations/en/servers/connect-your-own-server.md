@@ -9,12 +9,12 @@ sidebar_label: Manual SSH
 You can add a server you already run, at any hosting company or at home, to dPanel over SSH. dPanel signs in with one of your dPanel SSH keys, installs its agent, and the machine then works like any server dPanel launched. It takes about 5 minutes and needs no cloud account.
 
 :::tip[The recommended way needs no SSH key]
-[Connect the server with the dPanel agent](./register-a-private-machine.md) instead: you run one command on it, and the agent connects out to dPanel. You don't add a dPanel key, open a port or need a public IP. Use this page when you would rather let dPanel log in over SSH.
+[Connect the server with the dPanel agent](./register-a-private-machine.md) instead: you run one command on it, and the agent connects out to dPanel. You don't add a dPanel key, open a port or need a public IP. Use this page when you would rather let dPanel log in over SSH. [dPanel agent or SSH: which one?](./register-a-private-machine.md#dpanel-agent-or-ssh-which-one) compares the two.
 :::
 
 ## What you need first
 
-- A server running Ubuntu or Debian that dPanel can reach over SSH from the internet.
+- A server running Ubuntu or Debian with a public IP, that dPanel can reach over SSH from the internet.
 - A Linux user that is `root`, or that can run `sudo` (run a command as administrator) without typing a password. dPanel signs in with a key and has no password to give `sudo`.
 - An SSH key in dPanel. You can also create one inside the form.
 

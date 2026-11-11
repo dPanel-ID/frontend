@@ -18,20 +18,20 @@ Baca [Cara situs web berjalan di server Anda](./how-a-website-runs.md) terlebih 
 
 - Akun dPanel yang sudah masuk, di workspace yang ingin Anda pakai. Lihat [Masuk](../getting-started/sign-in.md).
 - GitHub sudah terhubung dan punya akses ke repositori yang akan dirilis. Agar sama persis dengan tutorial ini, fork **dPanel-ID/wordpress-example** ke akun Anda. Lihat [Hubungkan GitHub](../getting-started/connect-github.md).
-- SSH key dan akun cloud di dPanel, atau server milik Anda sendiri. Lihat [Sebelum memulai](../servers/before-you-start.md).
+- Sebuah server: akun cloud di dPanel untuk meluncurkannya, atau server milik Anda sendiri (VPS dengan IP publik, agar pengunjung bisa menjangkaunya) yang dihubungkan dengan [agen dPanel](../servers/register-a-private-machine.md). Lihat [Sebelum memulai](../servers/before-you-start.md).
 - Domain di **Domain & DNS**, supaya dPanel bisa membuat record DNS-nya. Lihat [Domain dan DNS](../networking/domains-and-dns.md).
 
 ## Langkah 1: Luncurkan server
 
 1. Buka **Server**, tekan **Buat Server**, lalu **Luncurkan server**.
-2. Pilih **Provider**, **Cloud project**, dan **SSH key**.
-3. Pilih **Region** yang dekat dengan pengunjung Anda.
+2. Pilih **Provider** dan **Cloud project**.
+3. Pilih **Region** yang dekat dengan pengunjung Anda. Di **Cara dPanel terhubung**, biarkan **Agen dPanel** terpilih dan **Beri VM IP publik** menyala: situsnya butuh IP publik.
 4. Isi **Server name**, misalnya `wordpress-1`, biarkan **Ubuntu release** 24.04 LTS, lalu geser slider ke minimal **2 vCPU** dan RAM **4 GB**. Storage 30 GB sudah cukup.
 5. Saat panel Review bertuliskan **Ready to launch**, tekan **Launch server**.
 
-![Formulir peluncuran dengan provider, cloud project, dan SSH key terpilih](../../assets/servers/create-step1-provider.webp)
+![Formulir peluncuran dengan provider, cloud project, dan SSH key terpilih](../../assets/servers/create-step1-provider.webp 'Tangkapan layar lama: dengan agen dPanel, pilihan bawaan, formulir tidak meminta SSH key.')
 
-Server muncul di daftar. Tunggu sampai statusnya **Ready**, biasanya 10 sampai 20 menit. Formulir lengkapnya dijelaskan di [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Sudah punya mesin sendiri? [Hubungkan server Anda sendiri](../servers/connect-your-own-server.md).
+Server muncul di daftar. Tunggu sampai statusnya **Ready**, biasanya 10 sampai 20 menit. Formulir lengkapnya dijelaskan di [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Sudah punya mesin sendiri? [Hubungkan dengan agen dPanel](../servers/register-a-private-machine.md) saja, lalu lewati langkah ini.
 
 **Yang seharusnya Anda lihat:** server muncul di **Server** dengan status **Ready**.
 

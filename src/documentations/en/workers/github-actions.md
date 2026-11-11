@@ -10,7 +10,7 @@ A GitHub Actions worker runs your dPanel workspace's jobs in your own GitHub rep
 ## Before you start
 
 - A GitHub repository you can push to. A new, private repository is fine.
-- Servers you already connected to dPanel. Nothing else to prepare on them.
+- Servers you already connected to dPanel over SSH. Nothing else to prepare on them. Servers connected with the [dPanel agent](../servers/register-a-private-machine.md) run their installs and deploys on themselves, so this worker does not connect to them.
 
 :::info[No SSH keys to add]
 You do **not** add any SSH key to GitHub, to the repository's secrets or to your servers. With each job, dPanel gives the run the same SSH access it already uses for your server, and the run forgets it when it ends.

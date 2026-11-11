@@ -23,7 +23,7 @@ dPanel menyiapkan setiap bagian rantai itu untuk Anda, lewat formulir di aplikas
 
 | Istilah                  | Artinya di sini                                                                                                                                                                                                                                       |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Server**               | Komputer di pusat data yang menyala terus, disewa dari penyedia cloud seperti Google Cloud atau AWS. dPanel meluncurkannya di akun cloud Anda sendiri dan memasang Ubuntu Linux di sana. Anda membayar penyedia selama server itu ada.                |
+| **Server**               | Komputer yang menyala terus: disewa dari penyedia cloud seperti Google Cloud atau AWS, yang bisa diluncurkan dPanel di akun cloud Anda sendiri dengan Ubuntu Linux, atau komputer yang sudah Anda punya, seperti VPS atau mesin di rumah. |
 | **Modul**                | Perangkat lunak yang dipasangkan dPanel di server Anda: basis data seperti MariaDB, bahasa seperti PHP atau Node.js, atau web server seperti FrankenPHP. Anda memilihnya dari daftar, bukan mengetik perintah instalasi.                              |
 | **Basis data**           | Tempat aplikasi menyimpan datanya. Satu program basis data (MariaDB atau PostgreSQL) bisa menampung banyak basis data; setiap aplikasi mendapat miliknya sendiri, dengan pengguna dan kata sandinya sendiri, sehingga tidak bisa menyentuh yang lain. |
 | **Repositori**           | Folder kode aplikasi Anda di GitHub. dPanel menyalinnya (clone) ke server.                                                                                                                                                                            |
@@ -43,7 +43,7 @@ Siapkan sekali saja; semua tutorial memakainya.
 
 1. **Akun dPanel** yang sudah masuk. Lihat [Masuk](../getting-started/sign-in.md).
 2. **GitHub terhubung**, agar dPanel bisa membaca kode Anda. Lihat [Hubungkan GitHub](../getting-started/connect-github.md).
-3. **SSH key dan akun cloud** di dPanel. SSH key membuat dPanel bisa menjangkau server Anda dengan aman; akun cloud adalah tempat server dibuat dan ditagih. Lihat [Sebelum memulai](../servers/before-you-start.md). Kalau Anda sudah punya mesin Ubuntu, Anda bisa [menghubungkannya](../servers/connect-your-own-server.md).
+3. **Sebuah server.** Kalau Anda sudah punya, seperti VPS atau mesin di rumah, [hubungkan dengan agen dPanel](../servers/register-a-private-machine.md): satu perintah di mesin itu, tanpa SSH key. Kalau belum, hubungkan **akun cloud** di dPanel, tempat server dibuat dan ditagih; lihat [Sebelum memulai](../servers/before-you-start.md).
 4. **Domain** yang sudah ditambahkan di **Domain & DNS**. Lihat [Domain dan DNS](../networking/domains-and-dns.md).
 
 ## Kebiasaan baik sejak awal
@@ -68,8 +68,8 @@ Lebih suka mengobrol? Setiap tutorial juga bisa dikerjakan bersama [Ask dPanel](
 
 ### Apakah saya perlu server sendiri?
 
-Anda butuh satu server: diluncurkan dPanel di akun cloud Anda, atau server yang sudah Anda sewa lalu dihubungkan lewat SSH. Tutorialnya sama untuk keduanya.
+Anda butuh satu server: diluncurkan dPanel di akun cloud Anda, atau server yang sudah Anda punya lalu [dihubungkan dengan agen dPanel](../servers/register-a-private-machine.md). Tutorialnya sama untuk keduanya. Untuk menerbitkan situs ke internet, pengunjung harus bisa menjangkau server di port 80 dan 443: VPS dengan IP publik sudah bisa dengan sendirinya, sedangkan server rumahan perlu port itu diteruskan (forward) di router Anda.
 
 ### Berapa biaya satu tutorial?
 
-Server ditagih penyedia cloud Anda untuk setiap jam server itu ada, dan domain mengikuti harga registrar Anda. Hapus server setelah selesai agar biayanya berhenti.
+Server cloud ditagih penyedia cloud Anda untuk setiap jam server itu ada, dan domain mengikuti harga registrar Anda. Server yang sudah Anda punya tidak menambah biaya. Hapus server setelah selesai agar biayanya berhenti.

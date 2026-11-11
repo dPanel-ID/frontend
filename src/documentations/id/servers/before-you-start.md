@@ -11,7 +11,7 @@ Dua hal lain disiapkan sekali lalu dipakai lagi untuk setiap server berikutnya: 
 
 ## SSH key
 
-Ini hanya dibutuhkan saat dPanel terhubung ke server lewat SSH. Server yang bergabung lewat agen dPanel tidak butuh kunci.
+Ini hanya dibutuhkan saat dPanel terhubung ke server lewat SSH: server yang Anda hubungkan lewat SSH, server cloud yang Anda pilih **SSH** di langkah **Cara dPanel terhubung**, atau server cloud di Biznet Gio atau Alibaba Cloud, yang untuk saat ini bergabung lewat SSH. Server yang bergabung lewat agen dPanel tidak butuh kunci, dan itulah pilihan bawaannya.
 
 SSH key adalah sepasang berkas pengganti kata sandi saat komputer masuk ke server. Separuhnya publik dan ditulis ke server. Separuh lainnya privat dan tidak pernah keluar dari dPanel.
 
@@ -45,7 +45,7 @@ Cara membuat kredensial dengan hak akses seminimal mungkin, langkah demi langkah
 Mesin dibuat di dalam akun cloud Anda sendiri, jadi tagihannya langsung dari penyedia. dPanel tidak menjual ulang mesin.
 :::
 
-![Formulir peluncuran dengan proyek cloud dan SSH key yang siap dipilih](../../assets/servers/create-step1-provider.webp 'Kalau keduanya sudah ada, formulir peluncuran langsung menawarkannya.')
+![Formulir peluncuran dengan proyek cloud dan SSH key yang siap dipilih](../../assets/servers/create-step1-provider.webp 'Kalau akun cloud sudah ada, formulir peluncuran langsung menawarkannya.')
 
 ## Langkah berikutnya
 

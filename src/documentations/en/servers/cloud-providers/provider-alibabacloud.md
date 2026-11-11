@@ -12,7 +12,7 @@ dPanel launches Ubuntu ECS instances in your own Alibaba Cloud account. It signs
 
 - An Alibaba Cloud account that can buy pay-as-you-go servers: real-name verification done and a payment method added. See [the account must be allowed to buy](#the-account-must-be-allowed-to-buy).
 - Permission in that account to create RAM users.
-- An SSH key in dPanel. See [Before you start](../before-you-start.md).
+- An SSH key in dPanel. Alibaba Cloud servers join over SSH for now, so they need one, and a public IP. See [Before you start](../before-you-start.md).
 
 ## 1. Create a RAM user for dPanel
 
@@ -37,7 +37,7 @@ Alibaba Cloud guides: [Create a RAM user](https://www.alibabacloud.com/help/en/r
 | Delete                     | Deletes the instance, its security group and its key pair    | `DeleteInstance`, `DeleteSecurityGroup`, `DeleteKeyPairs`                                                                                            |
 
 :::note[If a launch is refused]
-The discovery calls are the ones dPanel makes itself. The launch and delete calls are made through the Ansible `alibaba.alicloud` collection, which may make a few more read calls. The two system policies above cover all of them. If you write a narrower custom policy and a launch fails, the error names the missing action.
+The discovery calls are the ones dPanel makes itself. The launch and delete calls are made through the Alibaba Cloud library dPanel uses, which may make a few more read calls. The two system policies above cover all of them. If you write a narrower custom policy and a launch fails, the error names the missing action.
 :::
 
 ## 2. Connect it to dPanel
@@ -66,7 +66,7 @@ dPanel saves the account as **Ready** straight away. It does not test the key on
 | **Ubuntu release** | 24.04 LTS or 26.04 LTS. dPanel picks the current Alibaba Cloud image for that release.                                                                                                                                     |
 | **Storage**        | System disk, 40 to 500 GB, ESSD.                                                                                                                                                                                           |
 
-There is no **Access** step for Alibaba Cloud. dPanel signs in as `root` with your SSH key.
+There is no **Access** step for Alibaba Cloud. dPanel signs in as `root` with your SSH key. The **How dPanel connects** step says that this provider joins over SSH for now, and the public IP stays on.
 
 ## 4. Launch
 

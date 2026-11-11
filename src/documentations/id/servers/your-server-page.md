@@ -9,13 +9,13 @@ Setiap server di dPanel punya satu halaman, dan semua tindakan terhadap server i
 
 ## Bagian kepala
 
-Bagian kepala menampilkan nama, status, alamat, versi Ubuntu, dan lokasi server, lalu sebaris keterangan: login SSH yang dipakai dPanel (misalnya `ubuntu@203.0.113.10:22`), versi agen, workspace, siapa yang membuat server, dan kapan.
+Bagian kepala menampilkan nama, status, alamat, versi Ubuntu, dan lokasi server, lalu sebaris keterangan: cara dPanel menjangkaunya (login SSH, misalnya `ubuntu@203.0.113.10:22`, atau, untuk server yang terhubung dengan agen dPanel, **Lewat agen dPanel**), versi agen, workspace, siapa yang membuat server, dan kapan.
 
 | Kontrol               | Fungsinya                                                                                            |
 | --------------------- | ---------------------------------------------------------------------------------------------------- |
 | Segarkan (↻)          | Membaca ulang status, pemakaian, layanan, dan modul server.                                          |
-| **Ubah server** (✎)   | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel.                                       |
-| **Buka terminal**     | Membuka shell di browser. Lihat [Terhubung lewat SSH](./connect-over-ssh.md).                        |
+| **Ubah server** (✎)   | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel, di server yang terhubung lewat SSH.   |
+| **Buka terminal**     | Membuka shell di browser, lewat agen atau lewat SSH. Lihat [Terhubung lewat SSH](./connect-over-ssh.md). |
 | **Tindakan lain** (⋯) | **Pasang ulang server** menjalankan setup lagi; **Hapus server** menghapusnya. Lihat tabel di bawah. |
 
 Pilih lencana status untuk melihat arti status tersebut. Selama dPanel menyiapkan server, banner biru memberi tahu hal itu, dengan tombol **Ikuti log**. Jika setup gagal, banner merah **Penyiapan tidak selesai** menawarkan **Lihat penyebabnya**.
@@ -123,8 +123,8 @@ Perubahan yang jarang dibutuhkan, masing-masing dengan penjelasan.
 
 | Kartu          | Tombol           | Fungsinya                                                                                                                                                                                                                                 |
 | -------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Koneksi        | **Edit koneksi** | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel.                                                                                                                                                                            |
-| Penyiapan      | **Instal ulang** | Menjalankan penyiapan server lagi: masuk ulang lewat SSH, memasang ulang agen, dan menyegarkan inventaris. Modul terpasang dan data Anda tetap ada. Pada [mesin privat](./register-a-private-machine.md), hanya agen yang dipasang ulang. |
+| Koneksi        | **Edit koneksi** | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel, di server yang terhubung lewat SSH. Server yang terhubung dengan agen tidak punya detail SSH untuk diubah.                                                                   |
+| Penyiapan      | **Instal ulang** | Menjalankan penyiapan server lagi. Di server yang terhubung lewat SSH: masuk ulang lewat SSH, memasang ulang agen, dan menyegarkan inventaris. Di server yang terhubung dengan [agen dPanel](./register-a-private-machine.md), termasuk server cloud yang bergabung lewat agen, hanya agen yang dipasang ulang. Modul terpasang dan data Anda tetap ada. |
 | Zona berbahaya | **Hapus server** | Menghapus server. Lihat [Menghapus server](./delete-a-server.md).                                                                                                                                                                         |
 
 **Penyiapan** disembunyikan selama server sedang disiapkan atau dihapus, dan pada server yang sudah dihapus, karena saat itu tidak ada yang bisa dipasang ulang. Server tetap berada di workspace tempat ia dibuat; server tidak bisa dipindahkan ke workspace lain.
@@ -145,7 +145,7 @@ Ketik di kotak pencarian di **Servers**. Pencariannya tidak membedakan huruf bes
 
 ### Apa yang diubah Instal ulang di server saya?
 
-Fitur ini masuk ulang lewat SSH, memasang ulang agen dPanel, dan menyegarkan inventaris. Modul, aplikasi, dan data yang terpasang tetap seperti semula.
+Di server yang terhubung lewat SSH, fitur ini masuk ulang lewat SSH, memasang ulang agen dPanel, dan menyegarkan inventaris. Di server yang terhubung dengan agen dPanel, fitur ini hanya memasang ulang agen. Modul, aplikasi, dan data yang terpasang tetap seperti semula.
 
 ### Apa yang harus saya lakukan saat agen berhenti melapor?
 

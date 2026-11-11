@@ -13,7 +13,7 @@ dPanel launches Ubuntu Compute Engine VMs in one of your Google Cloud projects. 
 - A Google Cloud project with billing linked. A new project just for dPanel is best.
 - The **Compute Engine API** enabled in that project.
 - Permission to create service accounts, custom roles and keys in that project.
-- An SSH key in dPanel. See [Before you start](../before-you-start.md).
+- An SSH key in dPanel, only if the server should join over SSH. With the dPanel agent, the default, you need none. See [Before you start](../before-you-start.md).
 
 ## 1. Create a dedicated project and service account
 
@@ -65,16 +65,18 @@ Read from dPanel's code:
 | dPanel API (discovery)     | Lists regions, zones, machine types, subnets and VMs     | `compute.regions.list`, `compute.zones.list`, `compute.machineTypes.list`, `compute.subnetworks.list`, `compute.instances.list`, `compute.instances.get`                                                                                                                  |
 | Network, first launch only | Creates `dpanel-network` (auto-mode VPC)                 | `compute.networks.get`, `compute.networks.create`                                                                                                                                                                                                                         |
 | Firewall, every launch     | One ingress rule per server, TCP 22, 80, 443             | `compute.firewalls.get`, `compute.firewalls.create`, `compute.firewalls.update`, `compute.networks.updatePolicy`                                                                                                                                                          |
-| Instance                   | Creates the VM with your SSH key, network tag and labels | `compute.instances.create`, `compute.instances.setMetadata`, `compute.instances.setTags`, `compute.instances.setLabels`, `compute.disks.create`, `compute.images.useReadOnly`, `compute.subnetworks.use`, `compute.subnetworks.useExternalIp`, `compute.machineTypes.get` |
+| Instance                   | Creates the VM with its first-boot script (the dPanel agent, or your SSH key), network tag and labels | `compute.instances.create`, `compute.instances.setMetadata`, `compute.instances.setTags`, `compute.instances.setLabels`, `compute.disks.create`, `compute.images.useReadOnly`, `compute.subnetworks.use`, `compute.subnetworks.useExternalIp`, `compute.machineTypes.get` |
 | Delete                     | Removes the VM and its firewall rule                     | `compute.instances.delete`, `compute.firewalls.delete`                                                                                                                                                                                                                    |
 | Waiting on operations      | Polls create and delete until they finish                | `compute.zoneOperations.get`, `compute.globalOperations.get`                                                                                                                                                                                                              |
 
 dPanel attaches no service account to the VMs it creates, so you don't need `roles/iam.serviceAccountUser`.
 
+To launch VMs without a public IP, dPanel also adds Cloud NAT to `dpanel-network` (a Cloud Router with a NAT, once per region). Add `compute.routers.get`, `compute.routers.create`, `compute.routers.update` and `compute.regionOperations.get` to the custom role for that. Servers with a public IP don't need them.
+
 If you'd rather use predefined roles, the closest set is `roles/compute.instanceAdmin.v1` plus `roles/compute.securityAdmin` (firewall rules) plus `roles/compute.networkAdmin` (the network, first launch only). Those roles grant far more than dPanel uses.
 
 :::note[If a launch is refused]
-The discovery permissions are for the calls dPanel makes itself. The rest come from the Ansible `google.cloud` modules dPanel runs, and the exact set those modules check can vary by version. If a launch fails with `Required '…' permission`, add the named permission to the custom role with `gcloud iam roles update`.
+The discovery permissions are for the calls dPanel makes itself. The rest come from the Google Cloud library dPanel uses, and the exact set it checks can vary by version. If a launch fails with `Required '…' permission`, add the named permission to the custom role with `gcloud iam roles update`.
 :::
 
 ## 2. Connect it to dPanel
@@ -103,7 +105,7 @@ dPanel saves the account as **Ready** without testing it. The launch form is the
 | **Storage**        | Boot disk size, 20 to 500 GB. 20 by default.                                                                                                                                          |
 | **Network**        | `dpanel-network`. You don't choose it.                                                                                                                                                |
 
-There is no **Access** step for Google Cloud. dPanel signs in as `ubuntu`.
+There is no **Access** step for Google Cloud. With SSH, dPanel signs in as `ubuntu`.
 
 ![Step 3 for Google Cloud, with the CPU, RAM and Storage sliders and the E2 machine type dPanel will launch](../../../assets/servers/create-step2-location-size.webp)
 
@@ -117,7 +119,8 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick Google Cloud in
 - **The network appears on first launch.** The first launch creates an auto-mode VPC named `dpanel-network`, which has a subnet in every region. Later launches reuse it. Deleting a server never removes it.
 - **One firewall rule per server**, named `dpanel-c-<cloud account ID>-m-<server ID>-ingress`, open to the internet on TCP 22, 80 and 443 for that server's network tag only. dPanel deletes it with the server.
 - **Quotas.** New projects have low CPU and external IP quotas per region. A launch that fails with `QUOTA_EXCEEDED` needs a quota increase in the console.
-- **Ephemeral IP.** The VM gets an ephemeral external IP. It can change if the VM is stopped and started outside dPanel.
+- **Ephemeral IP.** The VM gets an ephemeral external IP, unless you turn **Give the VM a public IP** off. It can change if the VM is stopped and started outside dPanel.
+- **Cloud NAT without a public IP.** A VM without a public IP on `dpanel-network` reaches the internet through Cloud NAT, which dPanel adds on first use in each region. Google bills Cloud NAT for each VM that uses it, plus its traffic.
 - **Billing runs from launch.** You pay for the VM, its disk and its external IP while they exist.
 
 ## Security

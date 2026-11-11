@@ -1,7 +1,7 @@
 {
   "label": "Memulai",
   "position": 1,
-  "description": "Masuk, pilih ruang kerja, kenali dasbor, lalu hubungkan GitHub, kunci SSH, dan akun cloud.",
+  "description": "Masuk, pilih ruang kerja, kenali dasbor, lalu hubungkan GitHub, server pertama Anda, dan akun cloud.",
   "app": {
     "label": "Buka dasbor",
     "href": "/dashboard"

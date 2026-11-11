@@ -5,7 +5,9 @@ sidebar_position: 1
 sidebar_icon: settings-2
 ---
 
-A **worker** in dPanel is the program that runs your workspace's jobs: setting up a server, installing a module, deploying an application, applying a load balancer. It connects to your servers over SSH (the secure way to log in to a server remotely) and reports back to dPanel. See the [Glossary](../getting-started/glossary.md).
+A **worker** in dPanel is the program that runs your workspace's jobs: setting up a server, installing a module, deploying an application, applying a load balancer. For servers connected over SSH (the secure way to log in to a server remotely), it connects to them and reports back to dPanel. See the [Glossary](../getting-started/glossary.md).
+
+Servers connected with the [dPanel agent](../servers/register-a-private-machine.md) work differently: their module installs and deploys run on the server itself, prepared by its agent, whatever workers the workspace uses. Workers still create and delete cloud VMs at your provider.
 
 You do not need to set anything up. **dPanel's shared workers** run every job unless you choose your own.
 

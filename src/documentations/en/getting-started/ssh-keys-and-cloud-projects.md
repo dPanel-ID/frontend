@@ -1,21 +1,25 @@
 ---
 title: SSH keys & cloud accounts
-description: Create the SSH key dPanel signs in to your servers with, and connect an AWS, Google Cloud, DigitalOcean or other cloud account to launch VPS servers.
+description: Connect an AWS, Google Cloud, DigitalOcean or other cloud account to launch servers, and create an SSH key only if dPanel should sign in to a server over SSH.
 sidebar_position: 5
 sidebar_icon: key-round
 sidebar_label: SSH keys and cloud accounts
 ---
 
-Before dPanel can launch or connect your first server, it needs an SSH key (a password-free key it signs in to the server with), and to launch a new VPS (a virtual server you rent) it also needs a cloud account. Both live under **Backend** in the sidebar, and both are reused for every server after that.
+To launch a new VPS (a virtual server you rent) from dPanel, you need a cloud account. An SSH key (a password-free key dPanel signs in to a server with) is needed only when dPanel should connect to a server over SSH. Both live under **Backend** in the sidebar, and both are reused for every server after that.
 
-| You need        | Where                                    | Why                                              |
-| --------------- | ---------------------------------------- | ------------------------------------------------ |
-| An SSH key      | **Secret Managers** (opens **SSH keys**) | dPanel signs in to your servers with it          |
-| A cloud account | **Cloud Projects**                       | dPanel creates machines in your provider account |
+Connecting a server you already have with the [dPanel agent](../servers/register-a-private-machine.md), the recommended way, needs neither: you run one command on the server, and the agent connects out to dPanel. New cloud servers also join through the agent by default, so they need no SSH key.
 
-You need a cloud account only to launch a new machine. To connect a server you already run, the SSH key is enough.
+| You need        | Where                                    | When                                                                                    |
+| --------------- | ---------------------------------------- | --------------------------------------------------------------------------------------- |
+| A cloud account | **Cloud Projects**                       | To launch a new server: dPanel creates it in your provider account                      |
+| An SSH key      | **Secret Managers** (opens **SSH keys**) | Only for servers that join over SSH, including every server on Biznet Gio and Alibaba Cloud |
+
+You need a cloud account only to launch a new machine. To connect a server you already run, you need nothing here: use the [dPanel agent](../servers/register-a-private-machine.md), or an SSH key if you [connect over SSH](../servers/connect-your-own-server.md).
 
 ## Create an SSH key
+
+Skip this if your servers join through the dPanel agent.
 
 1. In the sidebar, under **Backend**, open **Secret Managers**. It opens the **SSH keys** page.
 2. Press **Create SSH key**.
@@ -61,7 +65,7 @@ dPanel does not resell servers. Machines are created inside your own provider ac
 
 ## What happens next
 
-Launch or connect your first server. [Before you start](../servers/before-you-start.md) explains key types and provider credentials in more detail, and [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md) walks through the form.
+Launch or connect your first server. To connect one you already have, follow [Connect a server with the dPanel agent](../servers/register-a-private-machine.md). [Before you start](../servers/before-you-start.md) explains key types and provider credentials in more detail, and [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md) walks through the form.
 
 You can also ask **Ask dPanel** to list your keys and cloud accounts and launch a server with them; see [Prompt cookbook](../ai/prompt-cookbook.md).
 
@@ -69,7 +73,11 @@ You can also ask **Ask dPanel** to list your keys and cloud accounts and launch 
 
 ### Do I need a cloud account to use dPanel?
 
-No. A cloud account is only for launching a new server from dPanel. To use a server you already rent, the SSH key is enough. See [Connect your own server](../servers/connect-your-own-server.md).
+No. A cloud account is only for launching a new server from dPanel. To use a server you already have, [connect it with the dPanel agent](../servers/register-a-private-machine.md); you need no cloud account and no SSH key.
+
+### Do I need an SSH key?
+
+Only if dPanel should connect to a server over SSH: when you [connect a server over SSH](../servers/connect-your-own-server.md), pick **SSH** for a new cloud server, or launch on Biznet Gio or Alibaba Cloud, which join over SSH for now. See [dPanel agent or SSH: which one?](../servers/register-a-private-machine.md#dpanel-agent-or-ssh-which-one)
 
 ### Can I download the private key?
 

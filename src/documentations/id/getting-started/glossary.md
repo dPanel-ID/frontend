@@ -12,7 +12,7 @@ Glosarium ini menjelaskan istilah yang Anda temui di dPanel dan di dokumentasi i
 
 ### Server
 
-Komputer yang selalu menyala dan terhubung ke internet, yang menjalankan situs web atau aplikasi Anda untuk pengunjung; di dPanel Anda bisa menghubungkan server yang sudah Anda punya atau meluncurkan server baru. Lihat [Server](../servers/overview.md).
+Komputer yang selalu menyala, yang menjalankan situs web atau aplikasi Anda; di dPanel Anda bisa menghubungkan server yang sudah Anda punya, seperti VPS atau mesin di rumah, atau meluncurkan server baru. Lihat [Server](../servers/overview.md).
 
 ### VM (mesin virtual) atau VPS
 
@@ -36,15 +36,19 @@ Cara aman untuk masuk ke server lewat internet dan menjalankan perintah di sana.
 
 ### Kunci SSH
 
-Sepasang berkas yang saling cocok, yang membuat sebuah komputer bisa masuk ke server lewat SSH tanpa kata sandi; bagian publiknya disimpan di server, sedangkan bagian privatnya tetap dirahasiakan.
+Sepasang berkas yang saling cocok, yang membuat sebuah komputer bisa masuk ke server lewat SSH tanpa kata sandi; bagian publiknya disimpan di server, sedangkan bagian privatnya tetap dirahasiakan, dan dPanel hanya membutuhkannya untuk server yang bergabung lewat SSH.
 
 ### Agent
 
-Program kecil dPanel di setiap server, yang melaporkan kesehatan server dan menjalankan job yang dikirim dPanel.
+Program kecil dPanel di setiap server, yang menyambung keluar ke dPanel, melaporkan kesehatan server, dan menjalankan job yang dikirim dPanel; menghubungkan server dengan agen tidak butuh kunci SSH, IP publik, atau port yang dibuka. Lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md).
+
+### Server privat
+
+Server yang dijangkau dPanel lewat agennya, bukan lewat SSH, dan ditandai lencana **Privat**; server ini tetap bisa punya IP publik.
 
 ### Penyiapan server
 
-Job pertama yang dijalankan dPanel di server baru: memasang agent dan menyiapkan mesin; Anda bisa menjalankannya lagi kalau gagal.
+Job pertama yang dijalankan dPanel di server yang terhubung lewat SSH: memasang agent dan menyiapkan mesin; Anda bisa menjalankannya lagi kalau gagal, dan di server yang terhubung dengan agen, menjalankannya lagi hanya memasang ulang agen.
 
 ### Modul
 
@@ -152,7 +156,7 @@ Satu entri di buku alamat itu, misalnya "shop.example.com mengarah ke 203.0.113.
 
 ### Alamat IP
 
-Angka yang mengenali sebuah server di internet, seperti `203.0.113.10`.
+Angka yang mengenali sebuah server di sebuah jaringan, seperti `203.0.113.10`; IP publik bisa dijangkau dari seluruh internet, sedangkan mesin di rumah biasanya hanya punya alamat lokal, seperti `192.168.1.20`, di balik IP publik router Anda.
 
 ### TLS, SSL, dan HTTPS
 

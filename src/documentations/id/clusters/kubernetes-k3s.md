@@ -22,8 +22,9 @@ Anda butuh server yang sudah dikelola dPanel dan berstatus **Ready**. Panduan in
 - **Ukuran:** memori 2 GB atau lebih per server sudah nyaman; 1 GB adalah batas minimum. amd64, arm64, atau armhf (Raspberry Pi) bisa semua.
 - **Sistem:** Ubuntu. Panduan ini memakai Ubuntu 24.04.
 - **Region yang sama** untuk semua server, tidak masuk grup mana pun, tanpa Docker, k3s, atau RKE2, dan firewall dPanel mati.
+- **Terhubung lewat SSH.** Server yang bergabung lewat agen dPanel untuk saat ini belum bisa menjadi node klaster. Lihat [Aturan yang menjaga server Anda](./overview.md#aturan-yang-menjaga-server-anda).
 
-Server baru yang diluncurkan dari dPanel sudah memenuhi semuanya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Saat firewall dPanel mati, tidak ada yang memblokir port di server. Di DigitalOcean dan IDCloudHost dPanel juga tidak membuat firewall penyedia, jadi port 30080 dan API Kubernetes di port 6443 bisa dijangkau dari internet. Tambahkan firewall penyedia kalau Anda tidak menginginkannya.
+Server baru yang diluncurkan dari dPanel dengan **SSH** di **Cara dPanel terhubung** sudah memenuhi semuanya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Saat firewall dPanel mati, tidak ada yang memblokir port di server. Di DigitalOcean dan IDCloudHost dPanel juga tidak membuat firewall penyedia, jadi port 30080 dan API Kubernetes di port 6443 bisa dijangkau dari internet. Tambahkan firewall penyedia kalau Anda tidak menginginkannya.
 
 ## 1. Mulai grup Kubernetes
 

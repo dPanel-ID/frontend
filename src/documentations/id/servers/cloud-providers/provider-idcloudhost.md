@@ -11,7 +11,7 @@ dPanel meluncurkan VM cloud Ubuntu di Indonesia, di akun IDCloudHost Anda sendir
 ## Yang perlu disiapkan
 
 - Akun IDCloudHost dengan billing account yang punya saldo atau metode pembayaran.
-- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
+- SSH key di dPanel, hanya jika server perlu bergabung lewat SSH. Dengan agen dPanel, pilihan bawaannya, Anda tidak butuh kunci. Lihat [Sebelum mulai](../before-you-start.md).
 
 ## 1. Buat API key
 
@@ -63,10 +63,10 @@ dPanel menyimpan akun itu sebagai **Siap** tanpa mengujinya. Ujian pertamanya ad
 | **Storage**         | 20 sampai 500 GB.                                                                                         |
 | **Ubuntu release**  | 24.04 LTS atau 26.04 LTS.                                                                                 |
 
-IDCloudHost menambahkan langkah keempat, **Access**:
+IDCloudHost menambahkan langkah **Access**:
 
-- **Default User**: user Linux pertama. Bawaannya `dpanel`, dan dPanel masuk sebagai user ini.
-- **Bootstrap Password**: kata sandi awal user itu. IDCloudHost mewajibkannya. dPanel tetap masuk dengan SSH key Anda.
+- **Default User**: user Linux pertama. Bawaannya `dpanel`. Bila server bergabung lewat SSH, dPanel masuk sebagai user ini.
+- **Bootstrap Password**: kata sandi awal user itu. IDCloudHost mewajibkannya. dPanel tidak pernah masuk dengan kata sandi ini: dengan SSH dPanel memakai SSH key Anda, dan dengan agen dPanel tidak masuk sama sekali.
 
 ## 4. Luncurkan
 
@@ -74,6 +74,7 @@ Ikuti [Membuat server cloud](./create-a-cloud-server.md). Pilih IDCloudHost di l
 
 ## Jebakan di IDCloudHost
 
+- **IP publik tetap menyala.** VM tanpa IP publik tidak bisa mengakses internet di IDCloudHost, sehingga agennya tidak bisa terhubung. dPanel selalu memberi VM IDCloudHost IP publik.
 - **Saldo.** IDCloudHost menagih billing account. Tanpa saldo atau metode pembayaran, pembuatan VM gagal di sisi penyedia.
 - **Pembuatan berjalan asinkron.** dPanel menunggu sampai 10 menit sampai VM muncul sebelum menyerah. Lokasi yang sedang sibuk bisa lambat.
 - **dPanel tidak membuat firewall.** dPanel tidak membuat aturan firewall di IDCloudHost. Apa pun yang dibuka penyedia secara bawaan tetap terbuka, jadi periksa pengaturan jaringan VM di konsol kalau Anda perlu membatasi port.

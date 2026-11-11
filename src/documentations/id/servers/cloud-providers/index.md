@@ -20,14 +20,18 @@ Penyedia mana pun yang dipilih, server yang jadi sama saja: agen yang sama, tab 
 | User login       | `ubuntu`                                                | `ubuntu`                                      | **Default User**, bawaannya `dpanel`     | **Default User**, bawaannya `dpanel`       | `root`                                        | `ubuntu`                                      |
 | Disk             | 20 sampai 500 GB                                        | 20 sampai 500 GB                              | 20 sampai 500 GB                         | Sudah termasuk dalam ukuran Droplet        | 40 sampai 500 GB                              | Bawaan penyedia                               |
 | Langkah tambahan | Tidak ada                                               | Tidak ada                                     | **Access**: user dan bootstrap password  | **Access**: user                           | Tidak ada                                     | Tidak ada                                     |
+| Cara bergabung   | Agen dPanel (bawaan) atau SSH                           | Agen dPanel (bawaan) atau SSH                 | Agen dPanel (bawaan) atau SSH            | Agen dPanel (bawaan) atau SSH              | Untuk saat ini hanya SSH                      | Agen dPanel (bawaan) atau SSH                 |
+| VM tanpa IP publik | Bisa, dengan NAT gateway                              | Bisa, dengan Cloud NAT                        | Tidak                                    | Tidak                                      | Tidak                                         | Bisa, dengan NAT gateway                      |
 
-Formulir peluncuran juga menampilkan **Biznet Gio**. Langkahnya sama, dengan pilihan **Product** dan **Billing Cycle** sendiri sebagai pengganti slider ukuran, dan tidak dibahas rinci di sini.
+Formulir peluncuran juga menampilkan **Biznet Gio**. Langkahnya sama, dengan pilihan **Product** dan **Billing Cycle** sendiri sebagai pengganti slider ukuran, untuk saat ini bergabung lewat SSH, dan tidak dibahas rinci di sini.
+
+Dengan agen dPanel, VM memasang agen saat pertama kali menyala dan terhubung keluar ke dPanel; tidak ada SSH key dPanel yang dipasang di sana. Lihat [Langkah 3: Cara dPanel terhubung](./create-a-cloud-server.md#langkah-3-cara-dpanel-terhubung).
 
 Penyedia mana pun yang Anda pakai, server yang jadi menjalankan Ubuntu 24.04 LTS atau 26.04 LTS.
 
 ## Sebelum memilih penyedia
 
-- SSH key di dPanel, hanya jika server perlu bergabung lewat SSH, bukan lewat agen dPanel. Lihat [Sebelum mulai](../before-you-start.md).
+- SSH key di dPanel, hanya jika server perlu bergabung lewat SSH, bukan lewat agen dPanel, atau di Biznet Gio dan Alibaba Cloud. Lihat [Sebelum mulai](../before-you-start.md).
 - Kredensial yang hanya bisa melakukan apa yang dibutuhkan dPanel. Batas minimumnya ada di halaman tiap penyedia.
 - Baca [Kredensial cloud dan keamanan](./cloud-credentials-security.md) sekali. Di sana dijelaskan apa yang disimpan dPanel dan apa yang terjadi kalau kunci dicabut, serta cara menggantinya.
 
@@ -46,3 +50,7 @@ Bisa. Buat mesinnya sendiri di penyedia Anda, lalu [hubungkan dengan agen dPanel
 ### Apakah saya membayar mesinnya ke dPanel?
 
 Tidak. Penyedia menagih mesinnya langsung kepada Anda; dPanel tidak menjual ulang mesin.
+
+### dPanel membuat VM yang tidak ada di halaman server saya. Bagaimana membersihkannya?
+
+Ini bisa terjadi setelah peluncuran gagal. `dnocs cloud-project orphans --id <ID akun cloud>` menampilkan VM yang dibuat dPanel di akun itu tetapi tidak lagi terkait dengan server, dan `--delete` menghapusnya di penyedia. Ini berlaku di AWS, Google Cloud, DigitalOcean, IDCloudHost, dan Tencent Cloud.

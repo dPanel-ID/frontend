@@ -12,7 +12,7 @@ dPanel launches Ubuntu CVM instances in your own Tencent Cloud account. It signs
 
 - A Tencent Cloud account that can buy pay-as-you-go servers, with identity verification done and a balance or payment method.
 - Permission in that account to create CAM sub-users and grant them payment rights.
-- An SSH key in dPanel. See [Before you start](../before-you-start.md).
+- An SSH key in dPanel, only if the server should join over SSH. With the dPanel agent, the default, you need none. See [Before you start](../before-you-start.md).
 
 ## 1. Create a CAM sub-user for dPanel
 
@@ -33,12 +33,12 @@ Tencent Cloud guides: [Create a sub-user](https://www.tencentcloud.com/document/
 | -------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | dPanel API (discovery)     | Lists regions, zones, instance types, images, subnets, VMs | `DescribeRegions`, `DescribeZones`, `DescribeZoneInstanceConfigInfos`, `DescribeImages`, `DescribeSubnets`, `DescribeInstances` |
 | Network, first launch only | Creates `dpanel-network` and a subnet in the zone          | `CreateVpc`, `CreateSubnet`                                                                                                     |
-| Every launch               | Imports your SSH key and opens TCP 22, 80 and 443          | `ImportKeyPair`, `CreateSecurityGroup`, `CreateSecurityGroupPolicies`                                                           |
-| Instance                   | Launches it, pay-as-you-go, with a public IP               | `RunInstances`                                                                                                                  |
+| Every launch               | Opens TCP 22, 80 and 443, and with SSH imports your key    | `ImportKeyPair`, `CreateSecurityGroup`, `CreateSecurityGroupPolicies`                                                           |
+| Instance                   | Launches it, pay-as-you-go, with or without a public IP    | `RunInstances`                                                                                                                  |
 | Delete                     | Deletes the instance, its security group and its key pair  | `TerminateInstances`, `DeleteSecurityGroup`, `DeleteKeyPairs`                                                                   |
 
 :::note[If a launch is refused]
-The discovery calls are the ones dPanel makes itself. The launch and delete calls are made through the Ansible `susunola.tencentcloud` collection, which may make a few more read calls. The two preset policies above cover all of them. If you write a narrower custom policy and a launch fails, the error names the missing action.
+The discovery calls are the ones dPanel makes itself. The launch and delete calls are made through the Tencent Cloud library dPanel uses, which may make a few more read calls. For a VM without a public IP, dPanel also creates and later deletes a NAT gateway (`CreateNatGateway`, `DeleteNatGateway`) and its route, which `QcloudVPCFullAccess` covers. The two preset policies above cover all of them. If you write a narrower custom policy and a launch fails, the error names the missing action.
 :::
 
 ## 2. Connect it to dPanel
@@ -66,7 +66,7 @@ dPanel saves the account as **Ready** straight away. It does not test the key on
 | **Size**           | Move **CPU** and **RAM**. dPanel launches the cheapest `SA2`, `SA5` or `S5` type on sale in that zone. **Choose the instance type yourself** lists them all, such as `SA5.MEDIUM2`. |
 | **Ubuntu release** | 24.04 LTS or 26.04 LTS. dPanel picks the current Tencent Cloud image for that release.                                                                                              |
 
-There is no **Access** step for Tencent Cloud. dPanel signs in as `ubuntu` with your SSH key; Tencent Cloud's Ubuntu images don't allow `root` to log in.
+There is no **Access** step for Tencent Cloud. With SSH, dPanel signs in as `ubuntu` with your SSH key; Tencent Cloud's Ubuntu images don't allow `root` to log in. With the dPanel agent, the VM installs the agent on first boot and no key goes on it.
 
 ## 4. Launch
 
@@ -82,10 +82,11 @@ If the launch fails with `UnauthorizedOperation` and a message about **payment r
 
 - **The network appears on first launch.** In each region, the first launch creates a VPC named `dpanel-network` (`10.88.0.0/16`). Each zone gets its own subnet, `dpanel-network-<zone>`, the first time a server lands there. Deleting a server never removes them.
 - **One security group per server**, named `dpanel-<server name>`, open to the internet on TCP 22, 80 and 443, with outbound traffic allowed. dPanel deletes it with the server.
-- **One key pair per server**, named `dpanel_<environment>_<server ID>`, because Tencent Cloud allows only letters, numbers and underscores there. dPanel deletes it with the server, even when the launch failed.
+- **One key pair per server that joins over SSH**, named `dpanel_<environment>_<server ID>`, because Tencent Cloud allows only letters, numbers and underscores there. dPanel deletes it with the server, even when the launch failed.
 - **Names are host names.** Use 2 to 63 letters, numbers or dashes, starting with a letter. dPanel refuses a name that another instance in the region already has.
 - **Disk.** The system disk is the size and type Tencent Cloud picks for the image. The launch form has no storage slider for Tencent Cloud.
-- **Public IP and bandwidth.** The instance gets a public IPv4 address, billed by traffic, capped at 100 Mbps.
+- **Public IP and bandwidth.** The instance gets a public IPv4 address, billed by traffic, capped at 100 Mbps, unless you turn **Give the VM a public IP** off.
+- **A NAT gateway without a public IP.** A VM without a public IP on `dpanel-network` reaches the internet through a NAT gateway that dPanel adds. Tencent Cloud bills a NAT gateway for every hour it exists. dPanel deletes it with the last VM that uses it.
 - **Billing runs from launch.** You pay Tencent Cloud for the instance, its disk and its traffic while they exist, even while setup runs or fails. Delete a server you no longer need.
 
 ## Security

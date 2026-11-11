@@ -12,7 +12,7 @@ dPanel launches Ubuntu EC2 instances in your own AWS account. It signs in with t
 
 - An AWS account with billing set up.
 - Permission in that account to create IAM users and policies.
-- An SSH key in dPanel. See [Before you start](../before-you-start.md).
+- An SSH key in dPanel, only if the server should join over SSH. With the dPanel agent, the default, you need none. See [Before you start](../before-you-start.md).
 
 ## 1. Create a dedicated IAM user
 
@@ -45,7 +45,7 @@ These are the EC2 calls dPanel makes, read from its code:
 | Instance                     | Launches, starts and terminates it                    | `RunInstances`, `StartInstances`, `TerminateInstances`, `CreateTags`                                                                                                                                   |
 | Delete                       | Removes the server's security group                   | `DeleteSecurityGroup`                                                                                                                                                                                  |
 
-dPanel needs no IAM, S3 or `iam:PassRole` permission. It attaches no instance profile, and it puts your SSH key on the server through cloud-init, so it doesn't need `ec2:ImportKeyPair` either.
+dPanel needs no IAM, S3 or `iam:PassRole` permission. It attaches no instance profile and doesn't need `ec2:ImportKeyPair` either: on first boot, cloud-init installs the dPanel agent, or, if the server joins over SSH, puts your SSH key on it.
 
 Every resource dPanel creates is tagged `managed-by = dpanel`. The policy uses that tag so dPanel can only terminate instances and delete security groups that it created.
 
@@ -149,8 +149,30 @@ Every resource dPanel creates is tagged `managed-by = dpanel`. The policy uses t
 ```
 
 :::note[If a launch is refused]
-The calls in the first table are the ones dPanel makes itself. A few actions in the JSON, such as `DescribeInstanceStatus`, `DescribeTags` and `DescribeSecurityGroupRules`, are made inside the Ansible `amazon.aws` modules dPanel uses, not by dPanel itself. If a launch fails with `UnauthorizedOperation`, the error names the missing action. Add it and try again. Servers created before dPanel started tagging them may lack the `managed-by` tag; deleting one of those needs `TerminateInstances` without the tag condition.
+The calls in the first table are the ones dPanel makes itself. A few actions in the JSON, such as `DescribeInstanceStatus`, `DescribeTags` and `DescribeSecurityGroupRules`, are made inside the AWS library dPanel uses, not by dPanel itself. If a launch fails with `UnauthorizedOperation`, the error names the missing action. Add it and try again. Servers created before dPanel started tagging them may lack the `managed-by` tag; deleting one of those needs `TerminateInstances` without the tag condition.
 :::
+
+### Extra permissions for a VM without a public IP
+
+If you turn **Give the VM a public IP** off, dPanel adds a private subnet and a NAT gateway to `dpanel-network`, and deletes the NAT gateway again with the last VM that uses it. Add this statement to the policy for that:
+
+```json
+{
+  "Sid": "DpanelNatGateway",
+  "Effect": "Allow",
+  "Action": [
+    "ec2:DescribeNatGateways",
+    "ec2:DescribeAddresses",
+    "ec2:AllocateAddress",
+    "ec2:ReleaseAddress",
+    "ec2:CreateNatGateway",
+    "ec2:DeleteNatGateway"
+  ],
+  "Resource": "*"
+}
+```
+
+Servers with a public IP don't need it.
 
 ## 2. Connect it to dPanel
 
@@ -176,7 +198,7 @@ dPanel saves the account as **Ready** straight away. It does not test the key on
 | **Ubuntu release** | 24.04 LTS or 26.04 LTS. dPanel looks up the matching image in that region.                                                                                                                                                                                      |
 | **Network**        | `dpanel-network`. You don't choose it.                                                                                                                                                                                                                          |
 
-There is no **Access** step for AWS. dPanel signs in as `ubuntu`.
+There is no **Access** step for AWS. With SSH, dPanel signs in as `ubuntu`.
 
 ## 4. Launch
 
@@ -187,7 +209,8 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick AWS in step 1.
 - **The network appears on first launch.** In each region, the first launch creates a VPC named `dpanel-network` (`10.88.0.0/16`), an internet gateway, a public subnet and a route table. Later launches reuse them. Deleting a server never removes them.
 - **VPC quota.** AWS allows 5 VPCs per region by default. If the region is full, the first launch fails until you free one or raise the quota.
 - **One security group per server**, named `dpanel-<server name>`, open to the internet on TCP 22, 80 and 443. dPanel deletes it with the server.
-- **Public IP.** The instance gets an auto-assigned public IPv4 address. AWS bills public IPv4 addresses by the hour, and the address can change if you stop and start the instance outside dPanel.
+- **Public IP.** The instance gets an auto-assigned public IPv4 address, unless you turn **Give the VM a public IP** off. AWS bills public IPv4 addresses by the hour, and the address can change if you stop and start the instance outside dPanel. With the dPanel agent, the address can appear on the server page a few minutes after it turns **Ready**.
+- **A NAT gateway without a public IP.** A VM without a public IP on `dpanel-network` reaches the internet through a NAT gateway that dPanel adds. AWS bills a NAT gateway for every hour it exists, plus its traffic. dPanel deletes it when you delete the last VM without a public IP in that network.
 - **Names must be unique.** dPanel refuses a server name that a running or stopped instance in the region already has.
 - **Billing runs from launch.** You pay AWS for the instance, its EBS volume and its public IP while they exist, even while setup runs or fails.
 
