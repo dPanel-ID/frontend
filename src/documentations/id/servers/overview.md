@@ -1,12 +1,12 @@
 ---
 title: Server di dPanel
-description: Server di dPanel adalah VPS Linux yang dikelola untuk Anda: diluncurkan di AWS, Google Cloud, DigitalOcean, dan lainnya, atau server Ubuntu via SSH.
+description: Server di dPanel adalah VPS Linux yang dikelola untuk Anda: dihubungkan dengan agen dPanel, diluncurkan di AWS, Google Cloud, DigitalOcean, dan lainnya, atau dihubungkan lewat SSH.
 sidebar_position: 1
 sidebar_icon: server
 sidebar_label: Apa itu server di dPanel
 ---
 
-Server di dPanel adalah satu mesin Linux yang dirawat control panel ini untuk Anda: VPS yang diluncurkan dPanel di akun cloud Anda sendiri (AWS EC2, Google Compute Engine, Droplet DigitalOcean, IDCloudHost, Alibaba Cloud ECS, atau Tencent Cloud CVM), atau server Ubuntu maupun Debian yang sudah Anda jalankan lalu Anda hubungkan lewat SSH.
+Server di dPanel adalah satu mesin Linux yang dirawat control panel ini untuk Anda: server yang sudah Anda jalankan lalu Anda hubungkan dengan satu perintah, atau VPS yang diluncurkan dPanel di akun cloud Anda sendiri (AWS EC2, Google Compute Engine, Droplet DigitalOcean, IDCloudHost, Alibaba Cloud ECS, atau Tencent Cloud CVM).
 
 VPS (virtual private server) adalah komputer Linux sewaan di pusat data. dPanel memasang program kecil di dalamnya, yaitu **agen**, yang melaporkan kesehatan server dan menjalankan tugas yang Anda mulai. Belum kenal istilahnya? Lihat [Glosarium](../getting-started/glossary.md).
 
@@ -27,25 +27,26 @@ Daftar ini terbuka sebagai tabel. Beralihlah ke **Tampilan Grid Kartu** untuk me
 
 ## Tiga cara menambah server
 
-Buka **Server**, lalu **Buat Server**. Meluncurkan dan menghubungkan dibandingkan di bawah. Cara ketiga, untuk mesin yang tidak bisa dijangkau dari internet, seperti PC di rumah, adalah [mendaftarkan mesin privat](./register-a-private-machine.md).
+Buka **Server**, lalu **Buat Server**. Cara yang direkomendasikan adalah menghubungkan server dengan agen dPanel: Anda menjalankan satu perintah di server, lalu agen terhubung keluar ke dPanel. dPanel tidak perlu masuk ke server Anda, jadi Anda tidak perlu memercayakan SSH key, membuka port, atau bahkan punya IP publik.
 
 ![Halaman Buat Server dengan pilihan meluncurkan server cloud atau menghubungkan server sendiri](../../assets/servers/create-choose-path.webp)
 
-|                        | Luncurkan server cloud                                                                 | Hubungkan server Anda                     |
-| ---------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------- |
-| Cocok untuk            | Anda butuh mesin baru dan punya akun cloud                                             | Anda sudah punya mesin yang berjalan      |
-| Penyedia               | AWS, Google Cloud, DigitalOcean, IDCloudHost, Biznet Gio, Alibaba Cloud, Tencent Cloud | Server Ubuntu atau Debian apa pun via SSH |
-| Yang dikerjakan dPanel | Membuat mesin, lalu menyiapkannya                                                      | Masuk lewat SSH, lalu menyiapkannya       |
-| Yang Anda butuhkan     | Akun cloud dan SSH key di dPanel                                                       | SSH key dan alamat server                 |
-| Waktu                  | Sekitar 10 sampai 20 menit                                                             | Sekitar 5 menit                           |
+|                    | Hubungkan dengan agen dPanel (direkomendasikan)       | Luncurkan server cloud                                                                 | Hubungkan lewat SSH                       |
+| ------------------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------- |
+| Cocok untuk        | Anda sudah punya server: VPS, PC di rumah, VM         | Anda butuh mesin baru dan punya akun cloud                                             | Anda lebih suka dPanel masuk sendiri      |
+| Penyedia           | Server Linux apa pun dengan systemd                   | AWS, Google Cloud, DigitalOcean, IDCloudHost, Biznet Gio, Alibaba Cloud, Tencent Cloud | Server Ubuntu atau Debian apa pun via SSH |
+| Yang terjadi       | Anda menjalankan satu perintah; agen terhubung keluar | dPanel membuat mesin; mesin bergabung lewat agen dengan sendirinya                     | dPanel masuk dengan SSH key miliknya      |
+| Yang Anda butuhkan | Terminal di server dengan `sudo`                      | Akun cloud di dPanel                                                                   | SSH key dan alamat server                 |
+| Waktu              | Sekitar satu menit                                    | Sekitar 10 sampai 20 menit                                                             | Sekitar 5 menit                           |
 
-Apa pun jalurnya, dPanel memasang agennya dan mulai memantau mesin itu. Server yang diluncurkan dPanel menjalankan Ubuntu 24.04 LTS atau 26.04 LTS.
+Apa pun jalurnya, server menjalankan agen dPanel dan dPanel mulai memantaunya. Server yang diluncurkan dPanel menjalankan Ubuntu 24.04 LTS atau 26.04 LTS. Server cloud baru bergabung lewat agen secara bawaan; Anda bisa memilih SSH di formulirnya.
 
 ## Langkah berikutnya
 
 - Baru memakai dPanel? Mulai dari [Sebelum mulai](./before-you-start.md).
+- Membawa mesin sendiri, cara yang direkomendasikan: [Hubungkan server dengan agen dPanel](./register-a-private-machine.md).
 - Meluncurkan mesin baru: [Membuat server cloud](./cloud-providers/create-a-cloud-server.md).
-- Membawa mesin sendiri: [Menghubungkan server Anda](./connect-your-own-server.md).
+- Membiarkan dPanel masuk lewat SSH: [Menghubungkan server Anda lewat SSH](./connect-your-own-server.md).
 - Sudah punya server: [Halaman server Anda](./your-server-page.md) menjelaskan setiap tab.
 - Mengatur port mana yang bisa dijangkau: [Firewall](./firewall.md).
 - Banyak server sekaligus, atau klaster Kubernetes: [Grup server dan klaster](../clusters/overview.md).

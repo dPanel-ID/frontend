@@ -62,11 +62,12 @@ export function summarizeServers(raw: {
     if (machine.status === 'progress') overview.progress += 1;
     if (machine.status === 'failed') overview.failed += 1;
     // Same rule as isCloudServer: manual servers report provider "other"
-    // and private servers "private"; both are the user's own machines.
+    // and registered machines "private"; both are the user's own machines.
+    // A cloud VM that joined through its agent is private but still cloud.
     if (
       machine.provider &&
       machine.provider !== 'other' &&
-      machine.connectivity !== 'private'
+      (machine.connectivity !== 'private' || machine.source === 'cloud-partner')
     )
       overview.cloud += 1;
     else overview.own += 1;

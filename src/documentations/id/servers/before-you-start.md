@@ -1,13 +1,17 @@
 ---
 title: Sebelum mulai
-description: Sebelum menambah server ke dPanel, buat SSH key, dan hubungkan akun cloud jika dPanel perlu meluncurkan VPS. Keduanya disiapkan sekali saja.
+description: Sebelum menambah server ke dPanel, hubungkan akun cloud jika dPanel perlu meluncurkan VPS, dan buat SSH key hanya jika dPanel perlu masuk lewat SSH.
 sidebar_position: 2
 sidebar_icon: list-checks
 ---
 
-dPanel butuh dua hal sebelum server pertama Anda, lalu memakai keduanya lagi untuk setiap server berikutnya: SSH key untuk masuk ke mesin, dan akun cloud yang terhubung, tetapi hanya jika dPanel perlu meluncurkan VPS baru untuk Anda.
+Untuk menghubungkan server yang sudah Anda punya dengan agen dPanel, Anda tidak perlu menyiapkan apa pun di dPanel: lihat [Hubungkan server dengan agen dPanel](./register-a-private-machine.md).
+
+Dua hal lain disiapkan sekali lalu dipakai lagi untuk setiap server berikutnya: akun cloud yang terhubung, hanya jika dPanel perlu meluncurkan VPS baru untuk Anda, dan SSH key, hanya jika dPanel perlu masuk ke mesin lewat SSH, bukan lewat agen.
 
 ## SSH key
+
+Ini hanya dibutuhkan saat dPanel terhubung ke server lewat SSH. Server yang bergabung lewat agen dPanel tidak butuh kunci.
 
 SSH key adalah sepasang berkas pengganti kata sandi saat komputer masuk ke server. Separuhnya publik dan ditulis ke server. Separuh lainnya privat dan tidak pernah keluar dari dPanel.
 
@@ -27,7 +31,7 @@ Separuh privatnya tidak akan ditampilkan lagi. dPanel menyimpannya terenkripsi d
 
 ## Akun cloud
 
-Akun cloud hanya dibutuhkan untuk meluncurkan mesin baru. Untuk [menghubungkan server sendiri](./connect-your-own-server.md), SSH key saja sudah cukup.
+Akun cloud hanya dibutuhkan untuk meluncurkan mesin baru. Untuk menghubungkan server yang sudah Anda punya, pakai [agen dPanel](./register-a-private-machine.md) atau [SSH](./connect-your-own-server.md).
 
 Akun cloud adalah penghubung dPanel ke akun Anda di penyedia cloud. Di dalamnya ada kredensial yang mengizinkan dPanel membuat mesin atas nama Anda.
 
@@ -55,7 +59,7 @@ dPanel membuatkan pasangan kuncinya supaya bagian privatnya tidak pernah keluar 
 
 ### Apakah saya butuh akun cloud untuk mencoba dPanel?
 
-Tidak. [Menghubungkan server Anda](./connect-your-own-server.md) hanya butuh SSH key dan mesin yang bisa dijangkau lewat SSH.
+Tidak. [Hubungkan server dengan agen dPanel](./register-a-private-machine.md) hanya butuh mesin Linux tempat Anda bisa menjalankan satu perintah dengan `sudo`.
 
 ### Bisakah tim saya memakai kunci dan akun cloud yang sama?
 

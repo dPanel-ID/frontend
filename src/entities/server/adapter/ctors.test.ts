@@ -58,4 +58,23 @@ describe('ctorCloud', () => {
       region: 'ap-jakarta',
     });
   });
+
+  it('keeps the provider of a cloud VM that joined through its agent', () => {
+    const raw = {
+      id: 111,
+      provider: 'gcp',
+      region: 'asia-southeast2',
+      connectivity: 'private',
+      source: 'cloud-partner',
+    };
+    expect(ctorCloud(raw as unknown as DTOs.MachineV1)).toEqual({
+      provider: 'googlecloud',
+      region: 'asia-southeast2',
+    });
+  });
+
+  it('has no cloud for a machine registered from its own terminal', () => {
+    const raw = { id: 112, provider: 'private', connectivity: 'private' };
+    expect(ctorCloud(raw as unknown as DTOs.MachineV1)).toBeUndefined();
+  });
 });

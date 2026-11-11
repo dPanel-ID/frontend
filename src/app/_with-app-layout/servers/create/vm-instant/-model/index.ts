@@ -24,6 +24,8 @@ export const [FormProvider, useForm] = buildContext('Form', () => {
         username: 'dpanel',
         password: '',
       },
+      joinMethod: 'agent',
+      contract: { agentJoin: false, publicIPChoice: false },
       regionSlug: '',
       spec: {
         billingCycle: '',
@@ -71,6 +73,8 @@ export const [FormProvider, useForm] = buildContext('Form', () => {
         username: 'dpanel',
         password: '',
       },
+      joinMethod: 'agent',
+      contract: { agentJoin: false, publicIPChoice: false },
       regionSlug: '',
       spec: {
         billingCycle: '',

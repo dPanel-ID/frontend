@@ -9,10 +9,21 @@ export function serverDisplayName(server: ServerLike) {
   return server.host.name || server.host.address || `Server ${server.id}`;
 }
 
-/** True when dPanel created the VM at a cloud provider it knows. */
+/**
+ * True when dPanel created the VM at a cloud provider it knows, whether it
+ * joined over SSH or through its agent. Registered machines have no cloud.
+ */
 export function isCloudServer(server: ServerLike) {
   const provider = server.cloud?.provider;
-  return !!provider && provider !== 'other' && !server.host.private;
+  return !!provider && provider !== 'other';
+}
+
+/**
+ * True for a cloud VM that dPanel reaches through its agent: it may well
+ * have a public IP, so it must not be described as having none.
+ */
+export function isAgentCloudServer(server: ServerLike) {
+  return isPrivateServer(server) && isCloudServer(server);
 }
 
 /**

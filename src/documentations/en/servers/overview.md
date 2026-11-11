@@ -1,12 +1,12 @@
 ---
 title: Servers in dPanel
-description: A server in dPanel is a Linux VPS it manages for you: launched at AWS, Google Cloud, DigitalOcean and others, or an Ubuntu server you connect over SSH.
+description: A server in dPanel is a Linux VPS it manages for you: one you connect with the dPanel agent, one launched at AWS, Google Cloud, DigitalOcean and others, or one you connect over SSH.
 sidebar_position: 1
 sidebar_icon: server
 sidebar_label: What a server is here
 ---
 
-A server in dPanel is one Linux machine that the control panel looks after for you: a VPS dPanel launched in your own cloud account (AWS EC2, Google Compute Engine, a DigitalOcean Droplet, IDCloudHost, Alibaba Cloud ECS or Tencent Cloud CVM), or an Ubuntu or Debian server you already run and connect over SSH.
+A server in dPanel is one Linux machine that the control panel looks after for you: a server you already run and connect with one command, or a VPS dPanel launched in your own cloud account (AWS EC2, Google Compute Engine, a DigitalOcean Droplet, IDCloudHost, Alibaba Cloud ECS or Tencent Cloud CVM).
 
 A VPS (virtual private server) is a rented Linux computer in a data centre. dPanel installs a small program on it, the **agent**, which reports the server's health and carries out the jobs you start. New to these words? See the [Glossary](../getting-started/glossary.md).
 
@@ -27,25 +27,26 @@ The list opens as a table. Switch to **Card Grid View** to see live CPU, memory 
 
 ## The three ways to add a server
 
-Open **Servers**, then **Create Server**. Launching and connecting are compared below. The third way, for a machine nothing on the internet can reach, such as a PC at home, is to [register a private machine](./register-a-private-machine.md).
+Open **Servers**, then **Create Server**. The recommended way is to connect a server with the dPanel agent: you run one command on the server, and the agent connects out to dPanel. dPanel never needs to log in to your server, so you don't have to trust it with an SSH key, open a port or even have a public IP.
 
 ![The Create Server page, offering Launch a cloud server or Connect your own server](../../assets/servers/create-choose-path.webp)
 
-|                  | Launch a cloud server                                                                  | Connect your own server              |
-| ---------------- | -------------------------------------------------------------------------------------- | ------------------------------------ |
-| Who it suits     | You want a new machine and have a cloud account                                        | You already have a machine running   |
-| Providers        | AWS, Google Cloud, DigitalOcean, IDCloudHost, Biznet Gio, Alibaba Cloud, Tencent Cloud | Any Ubuntu or Debian server over SSH |
-| What dPanel does | Creates the machine, then sets it up                                                   | Connects over SSH, then sets it up   |
-| You need         | A cloud account and an SSH key in dPanel                                               | An SSH key, and the server's address |
-| Time             | About 10 to 20 minutes                                                                 | About 5 minutes                      |
+|              | Connect with the dPanel agent (recommended)           | Launch a cloud server                                                                  | Connect over SSH                     |
+| ------------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------ |
+| Who it suits | You already have a server: a VPS, a PC at home, a VM  | You want a new machine and have a cloud account                                        | You prefer dPanel to log in itself   |
+| Providers    | Any Linux server with systemd                         | AWS, Google Cloud, DigitalOcean, IDCloudHost, Biznet Gio, Alibaba Cloud, Tencent Cloud | Any Ubuntu or Debian server over SSH |
+| What happens | You run one command; the agent connects out to dPanel | dPanel creates the machine; it joins through the agent by itself                       | dPanel logs in with its SSH key      |
+| You need     | A terminal on the server with `sudo`                  | A cloud account in dPanel                                                              | An SSH key, and the server's address |
+| Time         | About a minute                                        | About 10 to 20 minutes                                                                 | About 5 minutes                      |
 
-Every way, dPanel installs its agent and starts monitoring the machine. Servers dPanel launches run Ubuntu 24.04 LTS or 26.04 LTS.
+Every way, the server runs the dPanel agent and dPanel starts monitoring it. Servers dPanel launches run Ubuntu 24.04 LTS or 26.04 LTS. A new cloud server joins through the agent by default; you can choose SSH in the form instead.
 
 ## Where to go next
 
 - New to dPanel? Start with [Before you start](./before-you-start.md).
+- Bringing your own, the recommended way: [Connect a server with the dPanel agent](./register-a-private-machine.md).
 - Launching a machine: [Create a cloud server](./cloud-providers/create-a-cloud-server.md).
-- Bringing your own: [Connect your own server](./connect-your-own-server.md).
+- Letting dPanel log in over SSH instead: [Connect your own server over SSH](./connect-your-own-server.md).
 - Already have one: [Your server page](./your-server-page.md) explains every tab.
 - Control which ports can be reached: [Firewall](./firewall.md).
 - Many servers at once, or a Kubernetes cluster: [Server groups and clusters](../clusters/overview.md).

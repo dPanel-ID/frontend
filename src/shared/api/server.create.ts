@@ -16,6 +16,8 @@ export type MachineCreatePayloadV1 = Omit<
   cpu_core?: number;
   default_password?: string;
   disk?: number;
+  /** How a new cloud VM joins dPanel; the API defaults to agent. */
+  join_method?: 'agent' | 'ssh';
   os_template?: string;
   secret_id?: string;
   private_subnet?: string;

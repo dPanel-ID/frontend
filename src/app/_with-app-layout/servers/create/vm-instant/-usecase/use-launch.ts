@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 
 import { useDialog } from '@/services/dialog';
+import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import { ApiServer } from '@/shared/api';
@@ -8,6 +9,7 @@ import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 
 import { useForm } from '../-model';
 import type { FormSchema } from '../-model/form';
+import { resolveJoinMethod, resolveReservePublicIP } from '../-model/join';
 import {
   isAlibabaCloudProvider,
   isAwsProvider,
@@ -22,11 +24,19 @@ export function buildLaunchPayload(values: FormSchema) {
   const vmName = values.spec.vmName.trim();
   const username = values.login.username.trim();
   const password = values.login.password?.trim() ?? '';
+  const joinMethod = resolveJoinMethod(values);
+  // An agent VM gets no dPanel SSH key, so no secret_id is sent for it. A
+  // provider without a join_method field joins over SSH, its only method.
   const base = {
     provider: values.provider,
     cloud_project_id: String(values.cloud.projectID),
-    secret_id: String(values.cloud.sshKeyID),
+    ...(values.contract.agentJoin ? { join_method: joinMethod } : {}),
+    ...(joinMethod === 'ssh'
+      ? { secret_id: String(values.cloud.sshKeyID ?? '') }
+      : {}),
   };
+  // Undefined where the provider has no public IP choice (DigitalOcean).
+  const reservePublicIP = resolveReservePublicIP(values);
 
   if (isBiznetGioProvider(values.provider)) {
     return {
@@ -43,7 +53,7 @@ export function buildLaunchPayload(values: FormSchema) {
         console_password: password,
         promocode: values.spec.promocode?.trim() || 'AFNLDPANEL',
         pay_invoice_with_cc: values.spec.payInvoiceWithCC ?? 'no',
-        reserve_public_ip: values.spec.reservePublicIP !== false,
+        reserve_public_ip: reservePublicIP,
       },
     };
   }
@@ -60,7 +70,7 @@ export function buildLaunchPayload(values: FormSchema) {
         disk_size_gb: values.spec.diskSizeGB,
         // No network and no username: the VM joins dpanel-network, created
         // on first use, and the API logs in as ubuntu.
-        reserve_public_ip: values.spec.reservePublicIP !== false,
+        reserve_public_ip: reservePublicIP,
       },
     };
   }
@@ -75,7 +85,7 @@ export function buildLaunchPayload(values: FormSchema) {
         image: values.spec.osTemplate,
         username,
         vpc_uuid: values.vpcBulk.id || undefined,
-        reserve_public_ip: values.spec.reservePublicIP !== false,
+        reserve_public_ip: reservePublicIP,
       },
     };
   }
@@ -90,7 +100,7 @@ export function buildLaunchPayload(values: FormSchema) {
         image_id: values.spec.osTemplate,
         disk_size_gb: values.spec.diskSizeGB,
         // No subnet: the VM joins dpanel-network, created on first use.
-        reserve_public_ip: values.spec.reservePublicIP,
+        reserve_public_ip: reservePublicIP,
       },
     };
   }
@@ -106,7 +116,7 @@ export function buildLaunchPayload(values: FormSchema) {
         image_id: values.spec.osTemplate,
         system_disk_size: values.spec.diskSizeGB,
         // No vSwitch: the VM joins dpanel-network, created on first use.
-        reserve_public_ip: values.spec.reservePublicIP,
+        reserve_public_ip: reservePublicIP,
       },
     };
   }
@@ -121,7 +131,7 @@ export function buildLaunchPayload(values: FormSchema) {
         instance_type: values.spec.machineType,
         image_id: values.spec.osTemplate,
         // No subnet: the VM joins dpanel-network, created on first use.
-        reserve_public_ip: values.spec.reservePublicIP,
+        reserve_public_ip: reservePublicIP,
       },
     };
   }
@@ -141,7 +151,7 @@ export function buildLaunchPayload(values: FormSchema) {
       password,
       billing_account_id: values.cloud.billingAccountID,
       network_uuid: values.vpcBulk.id,
-      reserve_public_ip: values.spec.reservePublicIP !== false,
+      reserve_public_ip: reservePublicIP,
     },
   };
 }
@@ -151,6 +161,7 @@ export function buildLaunchPayload(values: FormSchema) {
  * or start another; on failure it shows the API's reason.
  */
 export default function useLaunch() {
+  const t = useDevetekTranslations('page.servers.create.vmInstant.launched');
   const [openToaster] = useToaster();
   const [openDialog] = useDialog();
   const navigate = useNavigate();
@@ -164,15 +175,17 @@ export default function useLaunch() {
       if (created.$status !== 'success') throw created.error;
       if (!created.id) throw Error('New server ID is empty!');
 
+      // An agent VM turns ready when its agent connects, not after setup.
+      const viaAgent = resolveJoinMethod(values) === 'agent';
+
       openDialog({
-        title: 'Your server is being created',
-        content:
-          'dPanel asked the provider for the VM. Setup starts on its own once the VM is up, which takes about 10 to 20 minutes. You can follow progress on the server page.',
+        title: viaAgent ? t('agentTitle') : t('sshTitle'),
+        content: viaAgent ? t('agentContent') : t('sshContent'),
         variant: 'info',
         actions: [
-          { label: 'Launch another', onClick: handleFormReset },
+          { label: t('another'), onClick: handleFormReset },
           {
-            label: 'Open server',
+            label: t('open'),
             isPrimary: true,
             onClick: () =>
               navigate({
@@ -185,7 +198,7 @@ export default function useLaunch() {
     } catch (error) {
       openToaster({
         variant: 'error',
-        title: 'Could not launch the server',
+        title: t('failed'),
         message: getApiErrorDetail(error),
       });
     }

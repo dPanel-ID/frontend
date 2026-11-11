@@ -1,12 +1,14 @@
 ---
-title: Mendaftarkan mesin privat
-description: Tambahkan PC, server rumahan, atau VM di balik router ke dPanel dengan satu perintah, lalu pasang database, deploy aplikasi, dan buka terminal di mesin itu. Tidak perlu IP publik atau port yang terbuka.
+title: Hubungkan server dengan agen dPanel
+description: Tambahkan server Linux apa pun yang sudah Anda punya, VPS, PC, server rumahan, atau VM di balik router, ke dPanel dengan satu perintah. Tidak perlu IP publik, port yang terbuka, atau SSH key dPanel.
 sidebar_position: 4
 sidebar_icon: log-in
-sidebar_label: Mesin privat
+sidebar_label: Agen dPanel
 ---
 
-Mesin privat adalah komputer yang tidak bisa dijangkau dari internet: PC, server rumahan, atau VM di balik router. dPanel tidak pernah menghubunginya. Sebagai gantinya, Anda menjalankan satu perintah di mesin itu untuk memasang agen dPanel, dan agen tersebut menjaga koneksi keluar ke dPanel. Semua hal lain (memasang perangkat lunak, deploy aplikasi, terminal, membuka database) berjalan lewat koneksi itu.
+Ini cara yang direkomendasikan untuk menambahkan server yang sudah Anda punya: VPS di penyedia hosting mana pun, server dedicated, PC, server rumahan, atau VM di balik router. dPanel tidak pernah menghubunginya. Sebagai gantinya, Anda menjalankan satu perintah di mesin itu untuk memasang agen dPanel, dan agen tersebut menjaga koneksi keluar ke dPanel. Semua hal lain (memasang perangkat lunak, deploy aplikasi, terminal, membuka database) berjalan lewat koneksi itu.
+
+Karena dPanel tidak pernah masuk, Anda tidak perlu memasang SSH key dPanel di server, membuka port, atau punya IP publik. Di dPanel, server seperti ini disebut server privat: dijangkau lewat agennya.
 
 Panduan ini menunjukkan seluruh langkahnya dengan mesin sungguhan bernama `home-server`.
 
@@ -18,7 +20,7 @@ Panduan ini menunjukkan seluruh langkahnya dengan mesin sungguhan bernama `home-
 
 ## Langkah 1: Daftarkan mesinnya
 
-Di dPanel, buka **Servers**, lalu **Create Server**. Kartu **Register a private machine** menampilkan satu perintah yang perlu dijalankan dan tautan ke panduan ini.
+Di dPanel, buka **Server**, lalu **Buat Server**. Kartu **Hubungkan server dengan agen dPanel** menampilkan satu perintah yang perlu dijalankan dan tautan ke panduan ini.
 
 ![Halaman Create Server dengan kartu Register a private machine: lencana No public IP, tiga langkah, dan perintah sudo dnocs machine register](../../assets/servers/private-create-chooser.webp)
 

@@ -1,12 +1,14 @@
 ---
-title: Register a private machine
-description: Add a PC, a home server or a VM behind a router to dPanel with one command, then install databases, deploy apps and open a terminal on it. It needs no public IP and no open port.
+title: Connect a server with the dPanel agent
+description: Add any Linux server you already have, a VPS, a PC, a home server or a VM behind a router, to dPanel with one command. It needs no public IP, no open port and no dPanel SSH key.
 sidebar_position: 4
 sidebar_icon: log-in
-sidebar_label: Private machine
+sidebar_label: dPanel agent
 ---
 
-A private machine is a computer that nothing on the internet can reach: a PC, a home server, or a VM behind a router. dPanel never connects to it. Instead, you run one command on the machine, which installs the dPanel agent, and the agent keeps an outgoing connection to dPanel. Everything else (installing software, deploying apps, the terminal, opening databases) travels over that connection.
+This is the recommended way to add a server you already have: a VPS at any hosting company, a dedicated server, a PC, a home server, or a VM behind a router. dPanel never connects to it. Instead, you run one command on the machine, which installs the dPanel agent, and the agent keeps an outgoing connection to dPanel. Everything else (installing software, deploying apps, the terminal, opening databases) travels over that connection.
+
+Because dPanel never logs in, you don't put a dPanel SSH key on the server, open a port, or need a public IP. In dPanel such a server is called a private server: it is reached through its agent.
 
 This guide walks through the whole thing with a real machine called `home-server`.
 
@@ -18,7 +20,7 @@ This guide walks through the whole thing with a real machine called `home-server
 
 ## Step 1: Register the machine
 
-In dPanel, open **Servers**, then **Create Server**. The **Register a private machine** card shows the one command to run and links back to this guide.
+In dPanel, open **Servers**, then **Create Server**. The **Connect a server with the dPanel agent** card shows the one command to run and links back to this guide.
 
 ![The Create Server page with the Register a private machine card: a No public IP badge, three steps and the command sudo dnocs machine register](../../assets/servers/private-create-chooser.webp)
 

@@ -27,8 +27,11 @@ export function ctorCloud(
 ): KeysOnly<z.input<typeof cloud>> | undefined {
   const { provider, region } = raw;
 
-  // A private server is the user's own machine, never a cloud VM.
-  if (raw.connectivity === 'private') return undefined;
+  // A server registered from its own terminal is the user's own machine. A
+  // cloud VM that joined through its agent is "private" too (reached through
+  // its agent) but stays a cloud VM.
+  if (raw.connectivity === 'private' && raw.source !== 'cloud-partner')
+    return undefined;
 
   // Own servers have no provider; the schema treats a missing cloud as optional.
   if (!provider) return undefined;

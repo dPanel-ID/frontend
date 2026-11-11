@@ -5,26 +5,25 @@ sidebar_position: 1
 sidebar_icon: cloud-upload
 ---
 
-dPanel meluncurkan server Ubuntu baru (VM) di akun cloud Anda sendiri dari satu formulir: pilih penyedia, region, ukuran, dan rilis Ubuntu, lalu dPanel membuat mesinnya, memasang agennya, dan membuka SSH, HTTP, serta HTTPS. Server siap dalam sekitar 10 sampai 20 menit.
+dPanel meluncurkan server Ubuntu baru (VM) di akun cloud Anda sendiri dari satu formulir: pilih penyedia, region, ukuran, dan rilis Ubuntu, lalu dPanel membuat mesinnya dan membuka SSH, HTTP, serta HTTPS. Mesin memasang agen dPanel saat pertama kali menyala dan bergabung ke dPanel dengan sendirinya, jadi dPanel tidak perlu memasang SSH key di mesin itu. Server siap dalam sekitar 10 sampai 20 menit.
 
 Panduan ini memakai Google Cloud. Penyedia lain menanyakan hal yang sama dengan urutan yang sama. Perbedaannya dibahas di [Penyedia cloud](./index.md), yang punya halaman tersendiri untuk tiap penyedia.
 
 ## Yang perlu disiapkan
 
-- SSH key dan akun cloud di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
+- Akun cloud di dPanel, dan SSH key hanya jika server perlu bergabung lewat SSH. Lihat [Sebelum mulai](../before-you-start.md).
 - Kuota yang cukup di penyedia untuk satu mesin lagi.
 
 ## Buka formulirnya
 
 Buka **Server**, lalu **Buat Server**, lalu **Luncurkan server**.
 
-Formulirnya satu halaman dengan tiga langkah bernomor. Panel **Review** di kanan terisi sambil Anda menjawab. Penghitungnya, misalnya **3/9**, menunjukkan berapa jawaban yang sudah masuk.
+Formulirnya satu halaman dengan empat langkah bernomor. Panel **Review** di kanan terisi sambil Anda menjawab. Penghitungnya, misalnya **3/9**, menunjukkan berapa jawaban yang sudah masuk.
 
 ## Langkah 1: Provider and project
 
 1. **Provider**: tempat mesin berjalan.
 2. **Cloud project**: akun cloud mana yang membayarnya. **Add project** menghubungkan akun lain.
-3. **SSH key**: kunci yang dipakai dPanel untuk masuk ke mesin. **Create SSH key** membuat kunci baru di sini.
 
 ![Langkah 1 formulir peluncuran, dengan Google Cloud, proyek cloud, dan SSH key terpilih](../../../assets/servers/create-step1-provider.webp)
 
@@ -34,7 +33,15 @@ Formulirnya satu halaman dengan tiga langkah bernomor. Panel **Review** di kanan
 - **Zone** adalah satu pusat data di dalam region itu. Mana saja boleh. Google Cloud, Alibaba Cloud, dan Tencent Cloud menanyakannya.
 - **Network** terisi otomatis. Di sebagian besar penyedia, dPanel membuat `dpanel-network` saat pertama kali meluncurkan mesin di sebuah region, lalu memakainya lagi. Di AWS, Google Cloud, Alibaba Cloud, dan Tencent Cloud, dPanel hanya membuka port TCP 22 (SSH), 80 (HTTP), dan 443 (HTTPS) di penyedia. Di DigitalOcean dan IDCloudHost, dPanel tidak membuat firewall penyedia, jadi nyalakan [firewall](../firewall.md) dPanel atau tambahkan firewall di penyedia.
 
-## Langkah 3: Size and image
+## Langkah 3: Cara dPanel terhubung
+
+- **Agen dPanel** terpilih dan direkomendasikan. Mesin memasang agen dPanel saat pertama kali menyala lalu terhubung keluar ke dPanel. Tidak ada SSH key dPanel yang dipasang di mesin.
+- **SSH** adalah alternatifnya: dPanel memasang **SSH key** yang Anda pilih di mesin lalu masuk untuk menyiapkannya. **Create SSH key** membuat kunci baru di sini. SSH membutuhkan IP publik.
+- **IP publik** menyala secara bawaan, sehingga mesin bisa melayani situs web. Matikan untuk mesin yang hanya dipakai di dalam jaringan Anda. Tanpa IP publik, mesin hanya bergabung lewat agen, dan tetap perlu akses ke internet: di `dpanel-network`, dPanel menambahkan NAT (di AWS berupa NAT gateway, yang ditagih AWS selama masih ada, dan dihapus dPanel bersama mesin terakhir yang memakainya). Di jaringan yang Anda pilih sendiri, pastikan jaringan itu sudah memberi mesin akses internet, atau agen tidak bisa terhubung.
+
+DigitalOcean selalu memberi Droplet IP publik, dan IDCloudHost tetap memakainya karena VM tanpa IP publik tidak bisa mengakses internet. Biznet Gio dan Alibaba Cloud untuk saat ini bergabung lewat SSH, jadi selalu meminta SSH key dan IP publiknya tetap menyala.
+
+## Langkah 4: Size and image
 
 1. **Server name** adalah nama mesin di dPanel dan di penyedia.
 2. **Ubuntu release**: 24.04 LTS terpilih secara bawaan; 26.04 LTS ditandai **Newest**. LTS berarti pembaruan keamanan selama bertahun-tahun.
@@ -64,7 +71,7 @@ Di penyedia dengan tipe tetap, **Choose the instance type yourself** membuka daf
 Saat panel Review bertuliskan **Ready to launch**, semua jawaban sudah lengkap.
 
 1. Tekan **Launch server**.
-2. Di dialog **Setup server dimulai**, tekan **Buka server** untuk memantau prosesnya, atau **Buat lagi**.
+2. Di dialog yang terbuka (**Server Anda sedang menyala** untuk agen, **Server Anda sedang dibuat** untuk SSH), tekan **Buka server** untuk memantau prosesnya, atau **Luncurkan lagi**.
 
 **Clear form** mengosongkan formulir.
 
@@ -73,7 +80,7 @@ Saat panel Review bertuliskan **Ready to launch**, semua jawaban sudah lengkap.
 Banner biru memberi tahu bahwa dPanel sedang menyiapkan server. Biasanya 10 sampai 20 menit:
 
 1. Penyedia membuat mesinnya.
-2. dPanel memasang agen dan membaca isi mesin.
+2. Dengan agen dPanel, mesin memasang agen saat pertama kali menyala, dan server menjadi **Ready** begitu agen terhubung, biasanya 1 sampai 5 menit setelah mesin aktif. Dengan SSH, dPanel masuk, memasang agennya, dan membaca isi mesin.
 3. dPanel membuka port yang dibutuhkan.
 
 Begitu banner hilang dan lencananya bertuliskan **Ready**, server siap dipakai. Selanjutnya, [pasang perangkat lunak](../install-software.md) di server itu atau [buat aplikasi](../../applications/create-an-application.md).
@@ -90,7 +97,7 @@ Penyedia menagih mesin selama mesin itu ada, termasuk selama setup. [Hapus serve
 
 ### Berapa lama waktu yang dibutuhkan untuk meluncurkan server?
 
-Sekitar 10 sampai 20 menit dari **Launch server** sampai **Ready**. Sebagian besar waktunya dipakai penyedia untuk membuat VM dan dPanel untuk memasang agennya.
+Sekitar 10 sampai 20 menit dari **Launch server** sampai **Ready**. Sebagian besar waktunya dipakai penyedia untuk membuat VM dan untuk memasang agen dPanel.
 
 ### Versi Ubuntu apa saja yang bisa diluncurkan?
 
