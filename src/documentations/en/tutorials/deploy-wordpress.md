@@ -29,7 +29,7 @@ Read [How a website runs on your server](./how-a-website-runs.md) first. It expl
 4. Set **Server name**, for example `wordpress-1`, keep **Ubuntu release** 24.04 LTS, and move the sliders to at least **2 vCPU** and **4 GB** RAM. 30 GB of storage is enough.
 5. When the Review panel says **Ready to launch**, press **Launch server**.
 
-![The launch form with a provider, cloud project and SSH key selected](../../assets/servers/create-step1-provider.webp 'An older capture: with the dPanel agent, the default, the form asks for no SSH key.')
+![Step 1 of the launch form with a provider and a cloud project selected](../../assets/servers/create-step1-provider.webp 'With the dPanel agent, the default, the form asks for no SSH key.')
 
 The server appears in the list. Wait until its status is **Ready**, usually 10 to 20 minutes. The full form is described in [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). Already have a machine? [Connect it with the dPanel agent](../servers/register-a-private-machine.md) instead, and skip this step.
 

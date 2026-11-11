@@ -28,7 +28,7 @@ The form is one page with four numbered steps. The **Review** panel on the right
 1. **Provider**: pick where the machine runs.
 2. **Cloud project**: pick which of your cloud accounts pays for it. **Add project** connects another.
 
-![Step 1 of the launch form, with Google Cloud, a cloud project and an SSH key selected](../../../assets/servers/create-step1-provider.webp 'An older capture: the SSH key is now asked for in the How dPanel connects step, and only for SSH.')
+![Step 1 of the launch form, with Google Cloud and a cloud project selected](../../../assets/servers/create-step1-provider.webp)
 
 ## Step 2: Location
 
@@ -51,6 +51,8 @@ This step decides how the new server joins dPanel, and whether it gets a public 
 | Biznet Gio, Alibaba Cloud           | SSH only, for now        | Always (SSH needs one)                     |
 
 On a provider that joins over SSH only, the form says so and asks for an SSH key.
+
+![Step 3, How dPanel connects: dPanel agent selected, SSH as the alternative, and the Give the VM a public IP switch](../../../assets/servers/create-step-connect.webp 'The dPanel agent is the default: no dPanel key on the VM, and the public IP is optional on Google Cloud, AWS and Tencent Cloud.')
 
 ### Public IP
 
