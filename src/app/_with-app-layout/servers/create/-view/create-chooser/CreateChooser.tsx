@@ -29,18 +29,21 @@ import {
 } from '@/shared/presentation/organisms/FlowHero';
 import type { FlowAccent } from '@/shared/presentation/organisms/FlowHero';
 
-import PrivateMachineCard from './PrivateMachineCard';
+import AgentConnectCard from './AgentConnectCard';
 
 /**
- * Landing of /servers/create: a clear choice between launching a cloud VM,
- * with live shortcuts per provider, connecting an existing server over SSH,
- * and registering a machine with no public IP from its own terminal.
+ * Landing of /servers/create, agent first: connecting a server the user
+ * already has with the dPanel agent is the recommended path, launching a
+ * cloud VM (which joins through the agent by itself) comes next, and
+ * connecting over SSH with a dPanel key is the alternative.
  */
 export default function CreateChooser() {
   const t = useDevetekTranslations();
 
   return (
     <div className="flex flex-col gap-6">
+      <AgentConnectCard />
+
       <div className="grid gap-4 lg:grid-cols-5">
         <CloudPathCard />
 
@@ -80,8 +83,6 @@ export default function CreateChooser() {
           </ol>
         </PathCard>
       </div>
-
-      <PrivateMachineCard />
 
       <WhatHappensNext />
     </div>

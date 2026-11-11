@@ -24,6 +24,7 @@ import type { LucideIcon } from 'lucide-react';
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import {
+  isAgentCloudServer,
   isCloudServer,
   isPrivateServer,
   serverProviderLabel,
@@ -195,7 +196,11 @@ export default function OverviewTab() {
               <Row
                 icon={KeyRoundIcon}
                 label={t('connection')}
-                value={t('connectionPrivate')}
+                value={
+                  isAgentCloudServer(server)
+                    ? t('connectionAgent')
+                    : t('connectionPrivate')
+                }
               />
             ) : (
               <Row

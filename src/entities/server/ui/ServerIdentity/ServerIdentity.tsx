@@ -115,9 +115,15 @@ export function ServerIdentity(props: ServerIdentityProps) {
           {server.host.private && (
             <span
               className="shrink-0 rounded-full border border-violet-400/30 bg-violet-500/10 px-2 py-0.5 text-[11px] font-semibold text-violet-700 dark:text-violet-300"
-              title={t('common.terms.privateServerHint')}
+              title={
+                cloud
+                  ? t('common.terms.agentServerHint')
+                  : t('common.terms.privateServerHint')
+              }
             >
-              {t('common.terms.privateBadge')}
+              {cloud
+                ? t('common.terms.agentBadge')
+                : t('common.terms.privateBadge')}
             </span>
           )}
           {trailing}

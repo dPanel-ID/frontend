@@ -5,26 +5,25 @@ sidebar_position: 1
 sidebar_icon: cloud-upload
 ---
 
-dPanel launches a new Ubuntu server (a VM) in your own cloud account from one form: pick the provider, the region, the size and the Ubuntu release, and dPanel creates the machine, installs its agent and opens SSH, HTTP and HTTPS. It is ready in about 10 to 20 minutes.
+dPanel launches a new Ubuntu server (a VM) in your own cloud account from one form: pick the provider, the region, the size and the Ubuntu release, and dPanel creates the machine and opens SSH, HTTP and HTTPS. The machine installs the dPanel agent when it first starts and joins dPanel by itself, so dPanel does not need to put an SSH key on it. It is ready in about 10 to 20 minutes.
 
 This walkthrough uses Google Cloud. The other providers ask the same questions in the same order. The differences are on [Cloud providers](./index.md), with a page for each provider.
 
 ## What you need first
 
-- An SSH key and a cloud account in dPanel. See [Before you start](../before-you-start.md).
+- A cloud account in dPanel, and an SSH key only if the server should join over SSH. See [Before you start](../before-you-start.md).
 - Enough quota at your provider for one more machine.
 
 ## Open the form
 
 Open **Servers**, then **Create Server**, then **Launch a server**.
 
-The form is one page with three numbered steps. The **Review** panel on the right fills in as you answer. Its counter, such as **3/9**, is how many answers dPanel has so far.
+The form is one page with four numbered steps. The **Review** panel on the right fills in as you answer. Its counter, such as **3/9**, is how many answers dPanel has so far.
 
 ## Step 1: Provider and project
 
 1. **Provider**: pick where the machine runs.
 2. **Cloud project**: pick which of your cloud accounts pays for it. **Add project** connects another.
-3. **SSH key**: pick the key dPanel uses to reach the machine. **Create SSH key** makes one here.
 
 ![Step 1 of the launch form, with Google Cloud, a cloud project and an SSH key selected](../../../assets/servers/create-step1-provider.webp)
 
@@ -34,7 +33,15 @@ The form is one page with three numbered steps. The **Review** panel on the righ
 - **Zone** is one data centre inside that region. Any of them is fine. Google Cloud, Alibaba Cloud and Tencent Cloud ask for one.
 - **Network** is filled in for you. On most providers dPanel creates `dpanel-network` the first time it launches in a region, then reuses it. On AWS, Google Cloud, Alibaba Cloud and Tencent Cloud, dPanel opens only TCP ports 22 (SSH), 80 (HTTP) and 443 (HTTPS) at the provider. On DigitalOcean and IDCloudHost it creates no provider firewall, so turn on the dPanel [firewall](../firewall.md) or add one at the provider.
 
-## Step 3: Size and image
+## Step 3: How dPanel connects
+
+- **dPanel agent** is selected and recommended. The machine installs the dPanel agent when it first starts and connects out to dPanel. No dPanel SSH key goes on the machine.
+- **SSH** is the alternative: dPanel puts the **SSH key** you pick on the machine and logs in to set it up. **Create SSH key** makes one here. SSH needs a public IP.
+- **Public IP** is on by default, so the machine can serve websites. Turn it off for a machine that only works inside your network. Without a public IP the machine joins through the agent only, and it still needs to reach the internet: on `dpanel-network` dPanel adds a NAT (on AWS a NAT gateway, which AWS bills while it exists, and which dPanel removes with the last machine that uses it). On a network you pick yourself, make sure it already gives machines internet access, or the agent cannot connect.
+
+DigitalOcean always gives a Droplet a public IP. Biznet Gio, Alibaba Cloud and Tencent Cloud join over SSH for now, so they always ask for an SSH key and keep the public IP on.
+
+## Step 4: Size and image
 
 1. **Server name** is how the machine appears in dPanel and at your provider.
 2. **Ubuntu release**: 24.04 LTS is selected by default; 26.04 LTS is marked **Newest**. LTS means years of security updates.
@@ -64,7 +71,7 @@ On a provider with fixed types, **Choose the instance type yourself** opens the 
 When the Review panel says **Ready to launch**, every answer is in.
 
 1. Press **Launch server**.
-2. In **Server setup started**, press **Open server** to watch it come up, or **Create another**.
+2. In the window that opens (**Your server is booting** for the agent, **Your server is being created** for SSH), press **Open server** to watch it come up, or **Launch another**.
 
 **Clear form** starts over.
 
@@ -73,7 +80,7 @@ When the Review panel says **Ready to launch**, every answer is in.
 A blue banner says dPanel is setting the server up. Expect 10 to 20 minutes:
 
 1. The provider creates the machine.
-2. dPanel installs its agent and reads what is on the machine.
+2. With the dPanel agent, the machine installs the agent when it first starts, and the server turns **Ready** once the agent connects, usually 1 to 5 minutes after the machine is up. With SSH, dPanel logs in, installs its agent and reads what is on the machine.
 3. dPanel opens the ports it needs.
 
 When the banner goes and the badge reads **Ready**, the server is yours to use. Next, [install software](../install-software.md) on it or [create an application](../../applications/create-an-application.md).
@@ -90,7 +97,7 @@ The machine is billed by your provider while it exists, even while setup runs. [
 
 ### How long does it take to launch a server?
 
-About 10 to 20 minutes from **Launch server** to **Ready**. Most of it is the provider creating the VM and dPanel installing its agent.
+About 10 to 20 minutes from **Launch server** to **Ready**. Most of it is the provider creating the VM and the dPanel agent being installed.
 
 ### Which Ubuntu versions can I launch?
 

@@ -1,12 +1,16 @@
 ---
-title: Menghubungkan server Anda
-description: Hubungkan VPS, server bare metal, atau mesin home lab Ubuntu atau Debian ke dPanel lewat SSH. dPanel memasang agennya dalam sekitar 5 menit.
+title: Menghubungkan server Anda lewat SSH
+description: Hubungkan VPS, server bare metal, atau mesin home lab Ubuntu atau Debian ke dPanel lewat SSH dengan SSH key dPanel. dPanel memasang agennya dalam sekitar 5 menit.
 sidebar_position: 3
 sidebar_icon: terminal
 sidebar_label: SSH manual
 ---
 
-Anda bisa menambahkan server yang sudah berjalan, di penyedia hosting mana pun atau di rumah, ke dPanel. dPanel masuk lewat SSH dengan salah satu SSH key Anda di dPanel, memasang agennya, lalu mesin itu bisa dipakai seperti server yang diluncurkan dPanel. Prosesnya sekitar 5 menit dan tidak butuh akun cloud.
+Anda bisa menambahkan server yang sudah berjalan, di penyedia hosting mana pun atau di rumah, ke dPanel lewat SSH. dPanel masuk dengan salah satu SSH key Anda di dPanel, memasang agennya, lalu mesin itu bisa dipakai seperti server yang diluncurkan dPanel. Prosesnya sekitar 5 menit dan tidak butuh akun cloud.
+
+:::tip[Cara yang direkomendasikan tidak butuh SSH key]
+[Hubungkan server dengan agen dPanel](./register-a-private-machine.md): Anda menjalankan satu perintah di server, lalu agen terhubung keluar ke dPanel. Anda tidak perlu menambahkan kunci dPanel, membuka port, atau punya IP publik. Pakai halaman ini kalau Anda lebih suka dPanel masuk lewat SSH.
+:::
 
 ## Yang perlu disiapkan
 
@@ -16,7 +20,7 @@ Anda bisa menambahkan server yang sudah berjalan, di penyedia hosting mana pun a
 
 ## Hubungkan
 
-1. Buka **Server**, lalu **Buat Server**, lalu **Hubungkan server**.
+1. Buka **Server**, lalu **Buat Server**, lalu **Hubungkan lewat SSH**.
 2. Di **Pilih SSH key**, pilih sebuah kunci, atau tekan **Buat kunci SSH**.
 3. Salin perintah di **Izinkan key di server Anda**, lalu jalankan sekali di server. Masuklah seperti biasa, umumnya lewat konsol web penyedia Anda atau `ssh user@address` di terminal. Perintah itu menambahkan separuh publik kunci ke `~/.ssh/authorized_keys`, yaitu daftar kunci yang boleh masuk, dan tidak menampilkan apa pun kalau berhasil.
 4. Centang **Saya sudah menambahkan key ini ke server**.
@@ -51,7 +55,7 @@ Tidak. dPanel masuk dengan SSH key, tidak pernah dengan kata sandi. User Linux y
 
 ### Apakah server saya butuh alamat IP publik?
 
-dPanel harus bisa menjangkau **Alamat server** dan **Port SSH** yang Anda isi. Server di balik router rumah biasanya sama sekali tidak butuh SSH: [daftarkan sebagai mesin privat](./register-a-private-machine.md), yang hanya terhubung ke luar. Kalau tetap ingin memakai halaman ini, teruskan port SSH (port forwarding) ke server itu atau beri alamat publik.
+Untuk halaman ini, ya: dPanel harus bisa menjangkau **Alamat server** dan **Port SSH** yang Anda isi. Server yang [dihubungkan dengan agen dPanel](./register-a-private-machine.md) tidak butuh IP publik, karena hanya terhubung ke luar.
 
 ### Apa yang terjadi jika saya menghapus server dari dPanel?
 

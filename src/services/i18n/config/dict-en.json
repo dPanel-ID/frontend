@@ -106,7 +106,9 @@
       "type": "Type",
       "privateServer": "Private server, no public IP",
       "privateServerHint": "This server has no public IP. dPanel reaches it through its agent, so it cannot have load balancers.",
-      "privateBadge": "Private"
+      "privateBadge": "Private",
+      "agentBadge": "Via agent",
+      "agentServerHint": "dPanel reaches this server through its agent, not over SSH."
     },
     "actions": {
       "refresh": "Refresh",
@@ -1319,7 +1321,7 @@
       "create": {
         "documentTitle": "Create server | dPanel",
         "headerTitle": "Create Server",
-        "headerDesc": "Launch a cloud VM in a few clicks, or connect a server you already run. dPanel sets it up either way.",
+        "headerDesc": "Connect a server you already run with the dPanel agent, or launch a cloud VM in a few clicks. dPanel sets it up either way.",
         "ssh": {
           "keysTitle": "SSH keys",
           "searchLabel": "Search SSH keys",
@@ -1364,69 +1366,74 @@
           "linuxUserInvalid": "Use a valid Linux username, for example root or dpanel."
         },
         "chooser": {
-          "cloud": {
+          "agent": {
             "badge": "Recommended",
+            "title": "Connect a server with the dPanel agent",
+            "description": "Add any Linux server you already have: a VPS, a dedicated server, a PC at home or a VM behind a router. You run one command on it, and the dPanel agent connects out to dPanel.",
+            "highlights": {
+              "publicIP": "No public IP needed",
+              "port": "No port to open",
+              "key": "No dPanel SSH key on your server"
+            },
+            "limits": "Files, services, logs, the terminal, modules such as MariaDB or Docker, and app deploys all work through the agent.",
+            "steps": {
+              "cli": "Install the dnocs command line tool on the machine (Linux with systemd, Intel/AMD or ARM).",
+              "signIn": "Sign in with dnocs auth login and pick the workspace the machine belongs to.",
+              "register": "Run the command below as root. The server shows up here as ready within a minute."
+            },
+            "runOnMachine": "Run on the server",
+            "copy": "Copy",
+            "copied": "Copied",
+            "copyFailed": "The command could not be copied. Select it and copy it by hand.",
+            "guide": "Read the step-by-step guide"
+          },
+          "cloud": {
+            "badge": "New VM",
             "title": "Launch a cloud server",
-            "description": "Pick a provider and size; dPanel creates the VM in your cloud account, then installs everything it needs.",
+            "description": "Pick a provider and size; dPanel creates the VM in your cloud account. The VM installs the dPanel agent on first boot and joins by itself.",
             "providersTitle": "Launch on",
             "launchOn": "Launch a server on {provider}",
             "features": {
               "ubuntu": "Ubuntu 24.04 or 26.04.1 LTS",
               "network": "Network and firewall created for you",
-              "setup": "Setup runs automatically"
+              "setup": "Joins through the dPanel agent by itself"
             },
             "duration": "Ready in about 10–20 minutes",
             "cta": "Launch a server"
           },
           "manual": {
-            "badge": "Any Linux server",
-            "title": "Connect your own server",
-            "description": "Bring a VPS, bare-metal box or home lab machine. dPanel connects over SSH and takes it from there.",
+            "badge": "Alternative",
+            "title": "Connect over SSH",
+            "description": "dPanel connects with its SSH key. Use this if you would rather let dPanel log in to your server than run the agent command yourself.",
             "requirementsTitle": "You need",
             "requirements": {
               "ssh": "A server reachable over SSH (Ubuntu or Debian)",
               "key": "One dPanel SSH key added to its login user",
-              "agent": "A minute for dPanel to install its agent"
+              "agent": "A minute for dPanel to install its agent over SSH"
             },
             "duration": "Takes about 5 minutes",
-            "cta": "Connect a server"
+            "cta": "Connect over SSH"
           },
           "next": {
             "title": "What happens next",
             "step": "Step {number}",
             "create": {
               "title": "Create or connect",
-              "description": "dPanel launches the VM or reaches your server with the SSH key you choose."
+              "description": "Run the agent command on your server, launch a cloud VM, or let dPanel connect over SSH."
             },
             "setup": {
               "title": "dPanel sets it up",
-              "description": "It creates the dpanel user, installs the agent and starts monitoring."
+              "description": "The dPanel agent connects to dPanel, then dPanel finishes the setup and starts monitoring."
             },
             "manage": {
               "title": "Start shipping",
               "description": "Install modules, deploy applications and add load balancers from one place."
             }
-          },
-          "private": {
-            "badge": "No public IP",
-            "title": "Register a private machine",
-            "description": "Add a PC, a home server or a VM behind a router. Nothing needs to reach it from the internet: you run one command on the machine, and dPanel talks to it through the agent it installs.",
-            "limits": "You can browse its files, services, logs and usage, open a terminal, install modules such as MariaDB or Docker, and deploy apps that you open on your own network.",
-            "steps": {
-              "cli": "Install the dnocs command line tool on the machine (Linux with systemd, Intel/AMD or ARM).",
-              "signIn": "Sign in with dnocs auth login and pick the workspace the machine belongs to.",
-              "register": "Run the command below as root. The server shows up here as ready within a minute."
-            },
-            "runOnMachine": "Run on the machine",
-            "copy": "Copy",
-            "copied": "Copied",
-            "copyFailed": "The command could not be copied. Select it and copy it by hand.",
-            "guide": "Read the step-by-step guide"
           }
         },
         "manual": {
-          "headerTitle": "Connect your own server",
-          "headerDesc": "Authorize one SSH key on your server, tell dPanel where it is, and connect.",
+          "headerTitle": "Connect a server over SSH",
+          "headerDesc": "dPanel connects with its SSH key: authorize one key on your server, tell dPanel where it is, and connect. Prefer not to add a key? Use the dPanel agent instead.",
           "back": "All ways to add a server",
           "key": {
             "title": "Choose an SSH key",
@@ -1455,6 +1462,61 @@
             "connection": "Server address and login",
             "connect": "Connect server",
             "whatHappens": "dPanel saves the server, then installs its agent over SSH. Follow progress on the server page."
+          }
+        },
+        "vmInstant": {
+          "steps": {
+            "cloudDescription": "Where the server runs and which cloud project pays for it.",
+            "connectTitle": "How dPanel connects",
+            "connectDescription": "How the new server joins dPanel, and whether it gets a public IP."
+          },
+          "join": {
+            "title": "How dPanel connects",
+            "ariaLabel": "How dPanel connects",
+            "recommended": "Recommended",
+            "agent": {
+              "title": "dPanel agent",
+              "subtitle": "The VM connects out to dPanel",
+              "detail": "The VM installs the dPanel agent on first boot and connects out to dPanel. No dPanel SSH key goes on the VM, and it needs no open port. It shows as ready once the agent connects, usually 1 to 5 minutes after the VM starts."
+            },
+            "ssh": {
+              "title": "SSH",
+              "subtitle": "dPanel connects in with its SSH key",
+              "detail": "dPanel puts the SSH key you choose on the VM, connects in over SSH and installs its agent. The VM needs a public IP."
+            },
+            "sshOnly": "For now, servers on this provider join over SSH: dPanel puts the SSH key you choose on the VM and connects in.",
+            "agentOnly": "Without a public IP, dPanel can only reach the VM through its agent, so SSH is not available."
+          },
+          "publicIP": {
+            "title": "Public IP",
+            "label": "Give the VM a public IP",
+            "on": "The VM gets a public IP, so it can serve websites and you can log in to it over SSH.",
+            "off": "The VM gets no public IP. It joins through the dPanel agent and needs outbound internet to do so.",
+            "offManaged": "dPanel adds a NAT to dpanel-network so the VM can still reach the internet.",
+            "offAws": "dPanel adds a NAT gateway to dpanel-network so the VM can still reach the internet. AWS bills the NAT gateway while it exists; dPanel removes it with the last VM that uses it.",
+            "offOwnNetwork": "The network you picked must already give the VM outbound internet. Without it the agent cannot connect, and the server stays in progress.",
+            "sshNeedsIP": "A server that joins over SSH needs a public IP."
+          },
+          "sshKey": {
+            "title": "SSH key"
+          },
+          "review": {
+            "join": "Connects through",
+            "joinAgent": "dPanel agent",
+            "joinSsh": "SSH",
+            "publicIP": "Public IP",
+            "yes": "Yes",
+            "no": "No",
+            "sshKey": "SSH key"
+          },
+          "launched": {
+            "agentTitle": "Your server is booting",
+            "agentContent": "dPanel asked the provider for the VM. The VM installs the dPanel agent on first boot and shows as ready once the agent connects, usually 1 to 5 minutes after the VM is up. You can follow progress on the server page.",
+            "sshTitle": "Your server is being created",
+            "sshContent": "dPanel asked the provider for the VM. Setup starts on its own once the VM is up, which takes about 10 to 20 minutes. You can follow progress on the server page.",
+            "another": "Launch another",
+            "open": "Open server",
+            "failed": "Could not launch the server"
           }
         }
       },
@@ -1633,7 +1695,8 @@
         "viewDetail": "See what happened",
         "terminalTitle": "Terminal on {name}",
         "closeTerminal": "Close terminal",
-        "privateHint": "Private server: dPanel reaches it through its agent, with no public IP or SSH"
+        "privateHint": "Private server: dPanel reaches it through its agent, with no public IP or SSH",
+        "agentHint": "dPanel reaches this server through its agent, not over SSH"
       },
       "tabs": {
         "ariaLabel": "Server sections",
@@ -1680,7 +1743,8 @@
         "connection": "Connection",
         "connectionPrivate": "Through the dPanel agent (no public IP or SSH)",
         "publicAddress": "Public address",
-        "publicAddressUnknown": "Unknown: the agent connects from a private network"
+        "publicAddressUnknown": "Unknown: the agent connects from a private network",
+        "connectionAgent": "Through the dPanel agent"
       },
       "modules": {
         "title": "Installed modules",

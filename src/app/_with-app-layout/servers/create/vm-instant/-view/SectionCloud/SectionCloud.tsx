@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import type { ReactNode } from 'react';
 
 import { PlusIcon, RefreshCwIcon } from 'lucide-react';
@@ -16,9 +17,9 @@ import {
   CloudProviderLogo,
   getCloudProviderLabel,
 } from '@/shared/presentation/molecules/CloudProviderLogo';
-import { SshKeyPicker } from '@/shared/presentation/organisms/SshKeyPicker';
 
 import { useForm } from '../../-model';
+import { readJoinContract } from '../../-model/join';
 import { ErrorInline } from '../../-presentation/ErrorInline';
 
 const PAGE_SIZE = 5;
@@ -143,6 +144,11 @@ const SubCloudProviderCbo = () => {
     form.setValue('spec.osVersion', '');
     form.setValue('spec.productID', undefined);
     form.setValue('vpcBulk', { id: '', subnet: '' });
+    // The join choices belong to the previous provider's contract; they are
+    // read again once the new contract loads.
+    form.setValue('contract', { agentJoin: false, publicIPChoice: false });
+    form.setValue('joinMethod', 'agent');
+    form.setValue('spec.reservePublicIP', true);
   };
 
   if (response.$status === 'loading' && response.prevData == null) {
@@ -237,6 +243,27 @@ const SubCloudProviderContractStatus = () => {
       options: { skip: !provider },
     });
 
+  const providerContract =
+    response.$status === 'success'
+      ? response
+      : response.$status === 'loading'
+        ? response.prevData
+        : undefined;
+  const vmContract = getVmCreateContract(providerContract);
+  const loaded = response.$status === 'success' && Boolean(vmContract);
+  const { agentJoin, defaultJoinMethod, publicIPChoice } = readJoinContract(
+    vmContract?.fields,
+  );
+
+  // Copies the contract's join and public IP choices into the form once it
+  // loads, so validation, the payload and the connect step agree on them.
+  useEffect(() => {
+    if (!loaded) return;
+    form.setValue('contract', { agentJoin, publicIPChoice });
+    form.setValue('joinMethod', defaultJoinMethod);
+    if (!publicIPChoice) form.setValue('spec.reservePublicIP', true);
+  }, [agentJoin, defaultJoinMethod, form, loaded, provider, publicIPChoice]);
+
   if (!provider || response.$status === 'initial') return null;
 
   if (response.$status === 'loading' && response.prevData == null) {
@@ -268,10 +295,6 @@ const SubCloudProviderContractStatus = () => {
       />
     );
   }
-
-  const providerContract =
-    response.$status === 'success' ? response : response.prevData;
-  const vmContract = getVmCreateContract(providerContract);
 
   if (!vmContract) {
     return (
@@ -445,27 +468,6 @@ const SubCloudProjectCbo = () => {
   );
 };
 
-const SubCloudSshCbo = () => {
-  const { form, formErrors, setLabel } = useForm();
-  const control = useController({
-    control: form.control,
-    name: 'cloud.sshKeyID',
-  });
-
-  return (
-    <div className="space-y-2">
-      <SshKeyPicker
-        selectedID={control.field.value}
-        onSelect={(sshKey) => {
-          setLabel('sshKey', sshKey.name || `SSH key ${sshKey.id}`);
-          control.field.onChange(String(sshKey.id));
-        }}
-      />
-      <ErrorInline message={formErrors.cloud?.sshKeyID?.message} />
-    </div>
-  );
-};
-
 export default function SectionCloud() {
   return (
     <div className="space-y-5">
@@ -478,11 +480,6 @@ export default function SectionCloud() {
       <div className="mt-5 space-y-2">
         <h6 className="text-sm font-semibold">Cloud project</h6>
         <SubCloudProjectCbo />
-      </div>
-
-      <div className="mt-5 space-y-2">
-        <h6 className="text-sm font-semibold">SSH key</h6>
-        <SubCloudSshCbo />
       </div>
     </div>
   );

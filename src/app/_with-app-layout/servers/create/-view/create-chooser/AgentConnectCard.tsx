@@ -5,7 +5,7 @@ import {
   ArrowRightIcon,
   CheckIcon,
   CopyIcon,
-  HouseIcon,
+  PlugZapIcon,
   TerminalIcon,
 } from 'lucide-react';
 
@@ -19,11 +19,13 @@ import { FLOW_ACCENTS } from '@/shared/presentation/organisms/FlowHero';
 const REGISTER_COMMAND = 'sudo dnocs machine register';
 
 /**
- * Third path of /servers/create: a machine with no public IP, such as a PC
- * or a home server behind a router, registers itself from its own terminal.
+ * Recommended path of /servers/create: any server the user already has (a
+ * VPS, a home machine, a VM behind a router) registers itself from its own
+ * terminal. The dPanel agent connects out, so the server needs no public IP,
+ * no open port and no dPanel SSH key.
  */
-export default function PrivateMachineCard() {
-  const t = useDevetekTranslations('page.servers.create.chooser.private');
+export default function AgentConnectCard() {
+  const t = useDevetekTranslations('page.servers.create.chooser.agent');
   const [openToaster] = useToaster();
   const [copied, setCopied] = useState(false);
   const tone = FLOW_ACCENTS.violet;
@@ -56,7 +58,7 @@ export default function PrivateMachineCard() {
                 tone.icon,
               )}
             >
-              <HouseIcon className="size-6" />
+              <PlugZapIcon className="size-6" />
             </span>
             <span
               className={cn(
@@ -73,7 +75,18 @@ export default function PrivateMachineCard() {
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             {t('description')}
           </p>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          <ul className="mt-4 flex flex-col gap-2">
+            {(['publicIP', 'port', 'key'] as const).map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-2 text-sm font-medium leading-snug"
+              >
+                <CheckIcon className="mt-0.5 size-4 shrink-0 text-violet-500 dark:text-violet-300" />
+                {t(`highlights.${item}`)}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
             {t('limits')}
           </p>
         </div>

@@ -106,7 +106,9 @@
       "type": "Tipe",
       "privateServer": "Server privat, tanpa IP publik",
       "privateServerHint": "Server ini tidak punya IP publik. dPanel menjangkaunya lewat agennya, jadi server ini tidak bisa memakai load balancer.",
-      "privateBadge": "Privat"
+      "privateBadge": "Privat",
+      "agentBadge": "Lewat agen",
+      "agentServerHint": "dPanel menjangkau server ini lewat agennya, bukan lewat SSH."
     },
     "actions": {
       "refresh": "Segarkan",
@@ -1319,7 +1321,7 @@
       "create": {
         "documentTitle": "Buat server | dPanel",
         "headerTitle": "Buat Server",
-        "headerDesc": "Luncurkan VM cloud dalam beberapa klik, atau hubungkan server yang sudah Anda jalankan. dPanel menyiapkannya untuk Anda.",
+        "headerDesc": "Hubungkan server yang sudah Anda jalankan dengan agen dPanel, atau luncurkan VM cloud dalam beberapa klik. dPanel menyiapkannya untuk Anda.",
         "ssh": {
           "keysTitle": "SSH key",
           "searchLabel": "Cari SSH key",
@@ -1364,69 +1366,74 @@
           "linuxUserInvalid": "Gunakan username Linux yang valid, contohnya root atau dpanel."
         },
         "chooser": {
-          "cloud": {
+          "agent": {
             "badge": "Direkomendasikan",
+            "title": "Hubungkan server dengan agen dPanel",
+            "description": "Tambahkan server Linux apa pun yang sudah Anda miliki: VPS, server dedicated, PC di rumah, atau VM di balik router. Anda menjalankan satu perintah di server itu, lalu agen dPanel terhubung keluar ke dPanel.",
+            "highlights": {
+              "publicIP": "Tidak perlu IP publik",
+              "port": "Tidak ada port yang perlu dibuka",
+              "key": "Tidak ada SSH key dPanel di server Anda"
+            },
+            "limits": "File, layanan, log, terminal, modul seperti MariaDB atau Docker, dan deploy aplikasi semuanya berjalan lewat agen.",
+            "steps": {
+              "cli": "Pasang alat baris perintah dnocs di mesin itu (Linux dengan systemd, Intel/AMD atau ARM).",
+              "signIn": "Masuk dengan dnocs auth login lalu pilih ruang kerja tempat mesin ini berada.",
+              "register": "Jalankan perintah di bawah sebagai root. Server akan muncul di sini dalam status siap dalam satu menit."
+            },
+            "runOnMachine": "Jalankan di server",
+            "copy": "Salin",
+            "copied": "Tersalin",
+            "copyFailed": "Perintah tidak bisa disalin. Pilih teksnya lalu salin secara manual.",
+            "guide": "Baca panduan langkah demi langkah"
+          },
+          "cloud": {
+            "badge": "VM baru",
             "title": "Luncurkan server cloud",
-            "description": "Pilih provider dan ukuran; dPanel membuat VM di akun cloud Anda lalu memasang semua yang dibutuhkan.",
+            "description": "Pilih provider dan ukuran; dPanel membuat VM di akun cloud Anda. VM memasang agen dPanel saat pertama kali menyala dan bergabung dengan sendirinya.",
             "providersTitle": "Luncurkan di",
             "launchOn": "Luncurkan server di {provider}",
             "features": {
               "ubuntu": "Ubuntu 24.04 atau 26.04.1 LTS",
               "network": "Jaringan dan firewall dibuatkan",
-              "setup": "Setup berjalan otomatis"
+              "setup": "Bergabung lewat agen dPanel dengan sendirinya"
             },
             "duration": "Siap dalam sekitar 10–20 menit",
             "cta": "Luncurkan server"
           },
           "manual": {
-            "badge": "Server Linux apa pun",
-            "title": "Hubungkan server Anda",
-            "description": "Gunakan VPS, bare metal, atau mesin home lab. dPanel terhubung lewat SSH dan melanjutkan sisanya.",
+            "badge": "Alternatif",
+            "title": "Hubungkan lewat SSH",
+            "description": "dPanel terhubung dengan SSH key miliknya. Pilih cara ini jika Anda lebih suka dPanel masuk ke server Anda daripada menjalankan perintah agen sendiri.",
             "requirementsTitle": "Yang dibutuhkan",
             "requirements": {
               "ssh": "Server yang bisa diakses lewat SSH (Ubuntu atau Debian)",
               "key": "Satu SSH key dPanel yang ditambahkan ke user login",
-              "agent": "Sebentar waktu bagi dPanel untuk memasang agent"
+              "agent": "Sebentar waktu bagi dPanel untuk memasang agen lewat SSH"
             },
             "duration": "Sekitar 5 menit",
-            "cta": "Hubungkan server"
+            "cta": "Hubungkan lewat SSH"
           },
           "next": {
             "title": "Selanjutnya",
             "step": "Langkah {number}",
             "create": {
               "title": "Buat atau hubungkan",
-              "description": "dPanel meluncurkan VM atau menjangkau server Anda dengan SSH key yang dipilih."
+              "description": "Jalankan perintah agen di server Anda, luncurkan VM cloud, atau biarkan dPanel terhubung lewat SSH."
             },
             "setup": {
               "title": "dPanel menyiapkannya",
-              "description": "Membuat user dpanel, memasang agent, dan mulai memantau."
+              "description": "Agen dPanel terhubung ke dPanel, lalu dPanel menyelesaikan setup dan mulai memantau."
             },
             "manage": {
               "title": "Mulai berkarya",
               "description": "Pasang modul, deploy aplikasi, dan tambah load balancer dari satu tempat."
             }
-          },
-          "private": {
-            "badge": "Tanpa IP publik",
-            "title": "Daftarkan mesin privat",
-            "description": "Tambahkan PC, server rumahan, atau VM di balik router. Mesin ini tidak perlu bisa dijangkau dari internet: Anda menjalankan satu perintah di mesin itu, lalu dPanel berkomunikasi lewat agen yang dipasangnya.",
-            "limits": "Anda bisa melihat file, layanan, log, dan pemakaiannya, membuka terminal, memasang modul seperti MariaDB atau Docker, serta deploy aplikasi yang Anda buka dari jaringan sendiri.",
-            "steps": {
-              "cli": "Pasang alat baris perintah dnocs di mesin itu (Linux dengan systemd, Intel/AMD atau ARM).",
-              "signIn": "Masuk dengan dnocs auth login lalu pilih ruang kerja tempat mesin ini berada.",
-              "register": "Jalankan perintah di bawah sebagai root. Server akan muncul di sini dalam status siap dalam satu menit."
-            },
-            "runOnMachine": "Jalankan di mesin",
-            "copy": "Salin",
-            "copied": "Tersalin",
-            "copyFailed": "Perintah tidak bisa disalin. Pilih teksnya lalu salin secara manual.",
-            "guide": "Baca panduan langkah demi langkah"
           }
         },
         "manual": {
-          "headerTitle": "Hubungkan server Anda",
-          "headerDesc": "Izinkan satu SSH key di server Anda, beri tahu dPanel lokasinya, lalu hubungkan.",
+          "headerTitle": "Hubungkan server lewat SSH",
+          "headerDesc": "dPanel terhubung dengan SSH key miliknya: izinkan satu key di server Anda, beri tahu dPanel lokasinya, lalu hubungkan. Tidak ingin menambahkan key? Gunakan agen dPanel.",
           "back": "Semua cara menambah server",
           "key": {
             "title": "Pilih SSH key",
@@ -1455,6 +1462,61 @@
             "connection": "Alamat server dan login",
             "connect": "Hubungkan server",
             "whatHappens": "dPanel menyimpan server, lalu memasang agent lewat SSH. Pantau progresnya di halaman server."
+          }
+        },
+        "vmInstant": {
+          "steps": {
+            "cloudDescription": "Tempat server berjalan dan project cloud yang membayarnya.",
+            "connectTitle": "Cara dPanel terhubung",
+            "connectDescription": "Cara server baru bergabung ke dPanel, dan apakah server mendapat IP publik."
+          },
+          "join": {
+            "title": "Cara dPanel terhubung",
+            "ariaLabel": "Cara dPanel terhubung",
+            "recommended": "Direkomendasikan",
+            "agent": {
+              "title": "Agen dPanel",
+              "subtitle": "VM terhubung keluar ke dPanel",
+              "detail": "VM memasang agen dPanel saat pertama kali menyala lalu terhubung keluar ke dPanel. Tidak ada SSH key dPanel yang dipasang di VM, dan tidak ada port yang perlu dibuka. Server tampil siap begitu agen terhubung, biasanya 1 sampai 5 menit setelah VM menyala."
+            },
+            "ssh": {
+              "title": "SSH",
+              "subtitle": "dPanel masuk dengan SSH key miliknya",
+              "detail": "dPanel memasang SSH key pilihan Anda di VM, masuk lewat SSH, lalu memasang agennya. VM membutuhkan IP publik."
+            },
+            "sshOnly": "Untuk saat ini, server di provider ini bergabung lewat SSH: dPanel memasang SSH key pilihan Anda di VM lalu masuk.",
+            "agentOnly": "Tanpa IP publik, dPanel hanya bisa menjangkau VM lewat agennya, jadi SSH tidak tersedia."
+          },
+          "publicIP": {
+            "title": "IP publik",
+            "label": "Beri VM IP publik",
+            "on": "VM mendapat IP publik, sehingga bisa melayani situs web dan Anda bisa masuk lewat SSH.",
+            "off": "VM tidak mendapat IP publik. VM bergabung lewat agen dPanel dan membutuhkan akses internet keluar untuk itu.",
+            "offManaged": "dPanel menambahkan NAT ke dpanel-network agar VM tetap bisa mengakses internet.",
+            "offAws": "dPanel menambahkan NAT gateway ke dpanel-network agar VM tetap bisa mengakses internet. AWS menagih NAT gateway selama masih ada; dPanel menghapusnya bersama VM terakhir yang memakainya.",
+            "offOwnNetwork": "Jaringan yang Anda pilih harus sudah memberi VM akses internet keluar. Tanpa itu agen tidak bisa terhubung, dan server tetap dalam proses.",
+            "sshNeedsIP": "Server yang bergabung lewat SSH membutuhkan IP publik."
+          },
+          "sshKey": {
+            "title": "SSH key"
+          },
+          "review": {
+            "join": "Terhubung lewat",
+            "joinAgent": "Agen dPanel",
+            "joinSsh": "SSH",
+            "publicIP": "IP publik",
+            "yes": "Ya",
+            "no": "Tidak",
+            "sshKey": "SSH key"
+          },
+          "launched": {
+            "agentTitle": "Server Anda sedang menyala",
+            "agentContent": "dPanel sudah meminta VM ke provider. VM memasang agen dPanel saat pertama kali menyala dan tampil siap begitu agen terhubung, biasanya 1 sampai 5 menit setelah VM aktif. Anda bisa memantau prosesnya di halaman server.",
+            "sshTitle": "Server Anda sedang dibuat",
+            "sshContent": "dPanel sudah meminta VM ke provider. Setup berjalan sendiri begitu VM aktif, sekitar 10 sampai 20 menit. Anda bisa memantau prosesnya di halaman server.",
+            "another": "Luncurkan lagi",
+            "open": "Buka server",
+            "failed": "Server tidak bisa diluncurkan"
           }
         }
       },
@@ -1633,7 +1695,8 @@
         "viewDetail": "Lihat penyebabnya",
         "terminalTitle": "Terminal di {name}",
         "closeTerminal": "Tutup terminal",
-        "privateHint": "Server privat: dPanel menjangkaunya lewat agen, tanpa IP publik atau SSH"
+        "privateHint": "Server privat: dPanel menjangkaunya lewat agen, tanpa IP publik atau SSH",
+        "agentHint": "dPanel menjangkau server ini lewat agennya, bukan lewat SSH"
       },
       "tabs": {
         "ariaLabel": "Bagian server",
@@ -1680,7 +1743,8 @@
         "connection": "Koneksi",
         "connectionPrivate": "Lewat agen dPanel (tanpa IP publik atau SSH)",
         "publicAddress": "Alamat publik",
-        "publicAddressUnknown": "Tidak diketahui: agen terhubung dari jaringan privat"
+        "publicAddressUnknown": "Tidak diketahui: agen terhubung dari jaringan privat",
+        "connectionAgent": "Lewat agen dPanel"
       },
       "modules": {
         "title": "Modul terpasang",
