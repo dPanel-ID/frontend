@@ -14,9 +14,10 @@ Never run a server before? Read [How a website runs on your server](../tutorials
 
 1. **Sign in.** Open [dnocs.devetek.app](https://dnocs.devetek.app) and sign in with Google or a username and password. See [Sign in and your profile](./sign-in.md).
 2. **Pick a workspace.** A workspace is the box your servers, applications and domains live in. Use your personal workspace to try things out, or a team workspace to share with others. See [Workspaces](./workspaces.md).
-3. **Get a server.** A server is the computer in a data centre your website runs on. Either way, dPanel first needs an [SSH key](./ssh-keys-and-cloud-projects.md). SSH is the secure way to sign in to a server, and the key lets dPanel do it without a password.
-   - **No server yet?** Connect your cloud account, such as AWS, Google Cloud or DigitalOcean, and launch one from dPanel. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
-   - **Already rent a VPS (a virtual server from a hosting company)?** Connect it over SSH instead. See [Connect your own server](../servers/connect-your-own-server.md).
+3. **Get a server.** A server is the computer your website runs on: a machine in a data centre, or one at home.
+   - **Already have one?** A VPS (a virtual server from a hosting company), a home server, a homelab PC or a Raspberry Pi: connect it with the dPanel agent. You run one command on the machine; it needs no SSH key, no public IP and no open port. See [Connect a server with the dPanel agent](../servers/register-a-private-machine.md).
+   - **No server yet?** Connect your cloud account, such as AWS, Google Cloud or DigitalOcean, and launch one from dPanel. It joins through the agent by itself. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
+   - **Prefer to let dPanel log in over SSH?** That works too; see [dPanel agent or SSH: which one?](../servers/register-a-private-machine.md#dpanel-agent-or-ssh-which-one)
 4. **Deploy your first app.** [Connect GitHub](./connect-github.md), then follow a tutorial from start to finish. Each tutorial starts by launching a server; if you did step 3, skip that step and use your server, as long as it has at least 2 vCPU and 4 GB RAM:
    - [Deploy WordPress with MariaDB](../tutorials/deploy-wordpress.md), the simplest place to start.
    - [Deploy Laravel with PostgreSQL](../tutorials/deploy-laravel.md), for a PHP web application.
@@ -30,9 +31,8 @@ You can also let the assistant do the clicking: describe what you want and appro
 | Step               | Your time     | Waiting for dPanel                         |
 | ------------------ | ------------- | ------------------------------------------ |
 | Sign in, workspace | 2 minutes     | none                                       |
-| SSH key            | 1 minute      | none                                       |
 | Cloud server       | 5 minutes     | 10–20 minutes while the server is set up   |
-| Your own server    | 5 minutes     | a few minutes while dPanel installs itself |
+| Your own server    | 5 minutes     | about a minute while the agent connects    |
 | First app          | 10–15 minutes | 5–15 minutes for software and the build    |
 | Domain and HTTPS   | 5 minutes     | 1–10 minutes for DNS and the certificate   |
 
@@ -46,7 +46,11 @@ You can also let the assistant do the clicking: describe what you want and appro
 
 ### Do I need to know Linux or use a terminal?
 
-Almost. If dPanel launches your server, every step happens in the browser. Connecting a server you already run needs one command on that server, and a private machine needs a few. dPanel signs in to your server over SSH for you, installs software from a list, and shows logs on the page.
+Almost. If dPanel launches your server, every step happens in the browser. Connecting a server you already have takes a few commands on that server, copied from [the guide](../servers/register-a-private-machine.md). After that, dPanel installs software from a list, gives you a terminal in the browser, and shows logs on the page.
+
+### Can I use my home server or homelab?
+
+Yes. Connect it with the [dPanel agent](../servers/register-a-private-machine.md): the agent connects out to dPanel, so the machine needs no public IP and no port forwarding. To share it with a team, see [Share a homelab with your team](../tutorials/team-homelab.md).
 
 ### Can I try dPanel without a domain?
 
@@ -54,7 +58,7 @@ Yes. Your application runs without one; you only need a domain to publish it on 
 
 ### Who bills me for the server?
 
-Your cloud provider, for every hour the server exists. dPanel does not resell servers. Delete a server you no longer use so it stops costing money. See [Delete a server](../servers/delete-a-server.md).
+Your cloud provider, for every hour a cloud server exists. dPanel does not resell servers. A server you connect yourself costs whatever it costs you today. Delete a server you no longer use so it stops costing money. See [Delete a server](../servers/delete-a-server.md).
 
 ### Something went wrong. Where do I look?
 

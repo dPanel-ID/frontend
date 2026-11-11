@@ -24,7 +24,7 @@ Deletion is refused while applications or load balancers still use the server. D
 ![The Delete server dialog, listing what happens and asking for the server name](../../assets/servers/server-delete.webp)
 
 :::danger[This cannot be undone]
-For a server dPanel launched, deleting uninstalls the agent and destroys the machine at your cloud provider, with its disk and everything on it. For a server you connected yourself, dPanel removes its agent and forgets the server. Your machine and your data stay.
+For a server dPanel launched, deleting destroys the machine at your cloud provider, with its disk and everything on it. For a server you connected over SSH, dPanel removes its agent and forgets the server. For a server you connected with the dPanel agent, dPanel forgets the server and revokes the agent's access at once; stop the agent on the machine afterwards with `sudo systemctl disable --now dpanel-agent`. Your own machines and their data stay.
 :::
 
 ## What happens next
@@ -79,4 +79,8 @@ No. A cloud server's disk is destroyed at the provider. Back up anything you nee
 
 ### Does deleting a server I connected myself wipe it?
 
-No. dPanel removes its agent and forgets it; the machine, your applications and their data stay.
+No. dPanel forgets it; the machine, your applications and their data stay. Over SSH, dPanel also removes its agent. With the dPanel agent, the agent's access is revoked, and you stop it yourself with `sudo systemctl disable --now dpanel-agent`.
+
+### A failed launch left a VM at my provider. How do I find it?
+
+`dnocs cloud-project orphans --id <cloud account ID>` lists VMs that dPanel created in that cloud account but that no longer belong to a server, on AWS, Google Cloud, DigitalOcean, IDCloudHost and Tencent Cloud. Add `--delete` to delete them at the provider.

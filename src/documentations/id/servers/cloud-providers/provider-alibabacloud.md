@@ -12,7 +12,7 @@ dPanel meluncurkan instance ECS Ubuntu di akun Alibaba Cloud Anda sendiri. dPane
 
 - Akun Alibaba Cloud yang boleh membeli server pay-as-you-go: verifikasi identitas (real-name verification) sudah selesai dan metode pembayaran sudah ditambahkan. Lihat [akun harus diizinkan membeli](#akun-harus-diizinkan-membeli).
 - Izin di akun itu untuk membuat RAM user.
-- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
+- SSH key di dPanel. Server Alibaba Cloud untuk saat ini bergabung lewat SSH, jadi butuh kunci dan IP publik. Lihat [Sebelum mulai](../before-you-start.md).
 
 ## 1. Buat RAM user untuk dPanel
 
@@ -37,7 +37,7 @@ Panduan Alibaba Cloud: [Membuat RAM user](https://www.alibabacloud.com/help/en/r
 | Penghapusan                     | Menghapus instance, security group, dan key pair-nya        | `DeleteInstance`, `DeleteSecurityGroup`, `DeleteKeyPairs`                                                                                            |
 
 :::note[Kalau peluncuran ditolak]
-Panggilan pencarian pilihan adalah panggilan yang dilakukan dPanel sendiri. Peluncuran dan penghapusan dijalankan lewat koleksi Ansible `alibaba.alicloud`, yang mungkin melakukan beberapa panggilan baca tambahan. Dua system policy di atas sudah mencakup semuanya. Kalau Anda menulis custom policy yang lebih sempit lalu peluncuran gagal, pesan error-nya menyebut action yang kurang.
+Panggilan pencarian pilihan adalah panggilan yang dilakukan dPanel sendiri. Peluncuran dan penghapusan dijalankan lewat library Alibaba Cloud yang dipakai dPanel, yang mungkin melakukan beberapa panggilan baca tambahan. Dua system policy di atas sudah mencakup semuanya. Kalau Anda menulis custom policy yang lebih sempit lalu peluncuran gagal, pesan error-nya menyebut action yang kurang.
 :::
 
 ## 2. Hubungkan ke dPanel
@@ -66,7 +66,7 @@ dPanel langsung menyimpan akun itu sebagai **Siap**, tanpa menguji kuncinya. Uji
 | **Ubuntu release** | 24.04 LTS atau 26.04 LTS. dPanel memilih image Alibaba Cloud terbaru untuk rilis itu.                                                                                                                                                         |
 | **Storage**        | System disk, 40 sampai 500 GB, ESSD.                                                                                                                                                                                                          |
 
-Untuk Alibaba Cloud tidak ada langkah **Access**. dPanel masuk sebagai `root` dengan SSH key Anda.
+Untuk Alibaba Cloud tidak ada langkah **Access**. dPanel masuk sebagai `root` dengan SSH key Anda. Langkah **Cara dPanel terhubung** menyebutkan bahwa penyedia ini untuk saat ini bergabung lewat SSH, dan IP publiknya tetap menyala.
 
 ## 4. Luncurkan
 

@@ -106,7 +106,8 @@ Kalau bagian ini menyebut firewall di server tidak bisa dibaca, berarti modul fi
 
 ## Keamanan: SSH dan pemulihan otomatis
 
-- SSH selalu tetap terbuka, di port SSH server itu walaupun bukan 22, jadi dPanel tetap bisa menjangkau server. Kalau sebuah perubahan akan menutup SSH, tinjauan menyebutkannya dan dPanel menolak menerapkannya.
+- SSH selalu tetap terbuka, di port SSH server itu walaupun bukan 22, jadi dPanel tetap bisa menjangkau server yang terhubung lewat SSH dan Anda tetap bisa masuk sendiri. Kalau sebuah perubahan akan menutup SSH, tinjauan menyebutkannya dan dPanel menolak menerapkannya.
+- Server yang terhubung dengan agen dPanel dijangkau lewat koneksi keluar milik agen, jadi aturan firewall untuk lalu lintas masuk tidak memutus dPanel.
 - Kalau SSH atau agen dPanel berhenti bekerja setelah perubahan, server memulihkan firewall sebelumnya dengan sendirinya dalam beberapa menit, dan tugasnya ditandai gagal. Sebelum mengubah apa pun, dPanel mencadangkan `/etc/ufw` dan `/etc/default/ufw` ke `/var/lib/dpanel-firewall/backup` dan menjalankan timer systemd `dpanel-firewall-rollback`.
 
 ## Mematikan firewall

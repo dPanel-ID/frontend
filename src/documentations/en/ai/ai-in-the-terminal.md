@@ -114,6 +114,8 @@ dnocs does much more than chat. `dnocs --help` lists every command, and `dnocs <
 
 | Command                   | What it does                                         |
 | ------------------------- | ---------------------------------------------------- |
+| `sudo dnocs machine register` | Connects the machine you run it on, with the dPanel agent. See [Connect a server with the dPanel agent](../servers/register-a-private-machine.md) |
+| `dnocs server create-cloud` | Launches a cloud server. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md#from-the-terminal) |
 | `dnocs server list`       | Your servers                                         |
 | `dnocs server setup`      | Runs server setup again                              |
 | `dnocs server firewall`   | Shows and changes a server's firewall                |

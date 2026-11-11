@@ -12,7 +12,7 @@ dPanel meluncurkan instance CVM Ubuntu di akun Tencent Cloud Anda sendiri. dPane
 
 - Akun Tencent Cloud yang boleh membeli server pay-as-you-go, dengan verifikasi identitas selesai dan saldo atau metode pembayaran.
 - Izin di akun itu untuk membuat sub-user CAM dan memberinya hak pembayaran.
-- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
+- SSH key di dPanel, hanya jika server perlu bergabung lewat SSH. Dengan agen dPanel, pilihan bawaannya, Anda tidak butuh kunci. Lihat [Sebelum mulai](../before-you-start.md).
 
 ## 1. Buat sub-user CAM untuk dPanel
 
@@ -33,12 +33,12 @@ Panduan Tencent Cloud: [Membuat sub-user](https://www.tencentcloud.com/document/
 | ------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | API dPanel (pencarian pilihan)  | Membaca region, zona, instance type, image, subnet, dan VM | `DescribeRegions`, `DescribeZones`, `DescribeZoneInstanceConfigInfos`, `DescribeImages`, `DescribeSubnets`, `DescribeInstances` |
 | Jaringan, hanya peluncuran awal | Membuat `dpanel-network` dan subnet di zona itu            | `CreateVpc`, `CreateSubnet`                                                                                                     |
-| Setiap peluncuran               | Mengimpor SSH key Anda dan membuka TCP 22, 80, dan 443     | `ImportKeyPair`, `CreateSecurityGroup`, `CreateSecurityGroupPolicies`                                                           |
-| Instance                        | Meluncurkannya, pay-as-you-go, dengan IP publik            | `RunInstances`                                                                                                                  |
+| Setiap peluncuran               | Membuka TCP 22, 80, dan 443, dan dengan SSH mengimpor kunci Anda | `ImportKeyPair`, `CreateSecurityGroup`, `CreateSecurityGroupPolicies`                                                           |
+| Instance                        | Meluncurkannya, pay-as-you-go, dengan atau tanpa IP publik | `RunInstances`                                                                                                                  |
 | Penghapusan                     | Menghapus instance, security group, dan key pair-nya       | `TerminateInstances`, `DeleteSecurityGroup`, `DeleteKeyPairs`                                                                   |
 
 :::note[Kalau peluncuran ditolak]
-Panggilan pencarian pilihan adalah panggilan yang dilakukan dPanel sendiri. Peluncuran dan penghapusan dijalankan lewat koleksi Ansible `susunola.tencentcloud`, yang mungkin melakukan beberapa panggilan baca tambahan. Dua preset policy di atas sudah mencakup semuanya. Kalau Anda menulis custom policy yang lebih sempit lalu peluncuran gagal, pesan error-nya menyebut action yang kurang.
+Panggilan pencarian pilihan adalah panggilan yang dilakukan dPanel sendiri. Peluncuran dan penghapusan dijalankan lewat library Tencent Cloud yang dipakai dPanel, yang mungkin melakukan beberapa panggilan baca tambahan. Untuk VM tanpa IP publik, dPanel juga membuat lalu kemudian menghapus NAT gateway (`CreateNatGateway`, `DeleteNatGateway`) beserta rutenya, yang sudah dicakup `QcloudVPCFullAccess`. Dua preset policy di atas sudah mencakup semuanya. Kalau Anda menulis custom policy yang lebih sempit lalu peluncuran gagal, pesan error-nya menyebut action yang kurang.
 :::
 
 ## 2. Hubungkan ke dPanel
@@ -66,7 +66,7 @@ dPanel langsung menyimpan akun itu sebagai **Siap**, tanpa menguji kuncinya. Uji
 | **Size**           | Geser **CPU** dan **RAM**. dPanel meluncurkan tipe `SA2`, `SA5`, atau `S5` termurah yang dijual di zona itu. **Choose the instance type yourself** menampilkan semuanya, misalnya `SA5.MEDIUM2`. |
 | **Ubuntu release** | 24.04 LTS atau 26.04 LTS. dPanel memilih image Tencent Cloud terbaru untuk rilis itu.                                                                                                            |
 
-Untuk Tencent Cloud tidak ada langkah **Access**. dPanel masuk sebagai `ubuntu` dengan SSH key Anda; image Ubuntu di Tencent Cloud tidak mengizinkan `root` login.
+Untuk Tencent Cloud tidak ada langkah **Access**. Dengan SSH, dPanel masuk sebagai `ubuntu` dengan SSH key Anda; image Ubuntu di Tencent Cloud tidak mengizinkan `root` login. Dengan agen dPanel, VM memasang agen saat pertama kali menyala dan tidak ada kunci yang dipasang.
 
 ## 4. Luncurkan
 
@@ -82,10 +82,11 @@ Kalau peluncuran gagal dengan `UnauthorizedOperation` dan pesan tentang **paymen
 
 - **Jaringan muncul di peluncuran pertama.** Di setiap region, peluncuran pertama membuat VPC bernama `dpanel-network` (`10.88.0.0/16`). Setiap zona mendapat subnet sendiri, `dpanel-network-<zona>`, saat pertama kali ada server di sana. Menghapus server tidak pernah menghapusnya.
 - **Satu security group per server**, bernama `dpanel-<nama server>`, terbuka ke internet di TCP 22, 80, dan 443, dengan trafik keluar diizinkan. dPanel menghapusnya bersama server.
-- **Satu key pair per server**, bernama `dpanel_<lingkungan>_<ID server>`, karena Tencent Cloud hanya menerima huruf, angka, dan garis bawah di sana. dPanel menghapusnya bersama server, termasuk saat peluncurannya gagal.
+- **Satu key pair per server yang bergabung lewat SSH**, bernama `dpanel_<lingkungan>_<ID server>`, karena Tencent Cloud hanya menerima huruf, angka, dan garis bawah di sana. dPanel menghapusnya bersama server, termasuk saat peluncurannya gagal.
 - **Nama server dipakai sebagai hostname.** Gunakan 2 sampai 63 huruf, angka, atau tanda hubung, diawali huruf. dPanel menolak nama yang sudah dipakai instance lain di region itu.
 - **Disk.** Ukuran dan tipe system disk mengikuti pilihan Tencent Cloud untuk image itu. Formulir peluncuran tidak punya slider storage untuk Tencent Cloud.
-- **IP publik dan bandwidth.** Instance mendapat alamat IPv4 publik, ditagih berdasarkan trafik, dibatasi 100 Mbps.
+- **IP publik dan bandwidth.** Instance mendapat alamat IPv4 publik, ditagih berdasarkan trafik, dibatasi 100 Mbps, kecuali Anda mematikan **Beri VM IP publik**.
+- **NAT gateway untuk VM tanpa IP publik.** VM tanpa IP publik di `dpanel-network` mengakses internet lewat NAT gateway yang ditambahkan dPanel. Tencent Cloud menagih NAT gateway untuk setiap jam keberadaannya. dPanel menghapusnya bersama VM terakhir yang memakainya.
 - **Tagihan berjalan sejak peluncuran.** Anda membayar Tencent Cloud untuk instance, disk, dan trafiknya selama masih ada, termasuk saat setup berjalan atau gagal. Hapus server yang sudah tidak dipakai.
 
 ## Keamanan

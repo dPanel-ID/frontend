@@ -10,6 +10,18 @@ This page collects the problems dPanel users run into most, with what you see an
 
 ## Servers
 
+### How do I add my home server or homelab without SSH?
+
+Connect it with the dPanel agent. On the machine, install dnocs, sign in with `dnocs auth login -u <your username>`, then run `sudo dnocs machine register`. The agent connects out to dPanel, so you need no SSH key, public IP or port forwarding. See [Connect a server with the dPanel agent](../servers/register-a-private-machine.md).
+
+### `sudo dnocs machine register` says "please login first"
+
+Sign in as your normal user first, without `sudo`: `dnocs auth login -u <your username>`. If it still says so, update dnocs to the newest version, or sign in with `sudo dnocs auth login -u <your username>`.
+
+### A server stays in progress and never turns Ready
+
+The agent on it has not connected yet. On a server you connected with `sudo dnocs machine register`, check that the machine can reach the internet over HTTPS (port 443) and that `sudo systemctl status dpanel-agent` shows it running. On a new cloud server that joins through the agent, give it a few minutes after the VM is created. If it was launched without a public IP on a network you picked yourself, that network must give it outbound internet; otherwise the agent cannot connect. Delete the server and launch it again with the public IP on, or on `dpanel-network`. See [Public IP](../servers/cloud-providers/create-a-cloud-server.md#public-ip).
+
 ### The server page says "Setup did not finish"
 
 The red banner means the provider or the setup stopped with an error. Press **See what happened** to read the reason. The usual causes are a cloud account without enough quota, and credentials that have expired or lack a permission. Each provider's page lists the quotas and permissions to check: see [Cloud providers](../servers/cloud-providers/index.md).
@@ -49,7 +61,7 @@ If SSH or the dPanel agent stop working after a change, the server restores its 
 
 ### The dashboard says "No contact" with a server
 
-The dPanel agent on that server has not reported in for a while. The server may be off, overloaded or out of network. Open it from **Needs your attention** with **Open server** and check whether it is reachable.
+The dPanel agent on that server has not reported in for a while. The server may be off, overloaded or out of network. Open it from **Needs your attention** with **Open server** and follow its [agent notice](../servers/your-server-page.md#agent-notices). The agent only needs outbound internet over HTTPS (port 443).
 
 ## Applications
 

@@ -1,26 +1,32 @@
 ---
 title: Terhubung lewat SSH
-description: Buka terminal SSH ke server Anda langsung di browser dengan dPanel, atau masuk dari komputer sendiri memakai ssh dan kunci publik Anda.
+description: Buka terminal ke server Anda langsung di browser dengan dPanel, atau masuk dari komputer sendiri memakai ssh dan kunci publik Anda.
 sidebar_position: 7
 sidebar_icon: square-terminal
 ---
 
-dPanel menyediakan terminal SSH di browser: tekan **Buka terminal** di bagian atas halaman server, lalu dPanel masuk dengan kunci yang disimpannya dan membuka shell. Biasanya Anda tidak membutuhkannya, karena tab-tab di halaman server sudah mencakup layanan, pengguna, berkas, dan log.
+dPanel menyediakan terminal di browser: tekan **Buka terminal** di bagian atas halaman server, lalu shell terbuka. Biasanya Anda tidak membutuhkannya, karena tab-tab di halaman server sudah mencakup layanan, pengguna, berkas, dan log.
+
+- Di server yang terhubung dengan [agen dPanel](./register-a-private-machine.md), terminal diteruskan lewat agen. Yang terbuka adalah shell root, tanpa SSH dan tanpa kunci sama sekali.
+- Di server yang terhubung lewat SSH, dPanel masuk dengan SSH key yang disimpannya.
+
+Halaman ini membahas terminal. Untuk memilih cara server bergabung ke dPanel, lihat [Agen dPanel atau SSH: pilih yang mana?](./register-a-private-machine.md#agen-dpanel-atau-ssh-pilih-yang-mana).
 
 ![Sesi shell di server, langsung di dalam browser](../../assets/servers/server-terminal.webp)
 
-Tidak ada yang perlu dipasang di komputer Anda, dan Anda tidak butuh kunci privatnya. Sesi itu milik user login yang disiapkan dPanel. Bagian kepala server menampilkannya, misalnya `dpanel@203.0.113.10:22`.
+Tidak ada yang perlu dipasang di komputer Anda, dan Anda tidak butuh kunci privat. Di server yang terhubung lewat SSH, sesi itu milik user login yang disiapkan dPanel. Bagian kepala server menampilkannya, misalnya `dpanel@203.0.113.10:22`.
 
-| Penyedia                         | User login               |
-| -------------------------------- | ------------------------ |
-| Google Cloud, AWS, Tencent Cloud | `ubuntu`                 |
-| Alibaba Cloud                    | `root`                   |
-| DigitalOcean, IDCloudHost        | `dpanel`                 |
-| Server yang Anda hubungkan       | User Linux yang Anda isi |
+| Server                                   | User login                     |
+| ---------------------------------------- | ------------------------------ |
+| Terhubung dengan agen dPanel             | `root`, lewat agen             |
+| Google Cloud, AWS, Tencent Cloud (SSH)   | `ubuntu`                       |
+| Alibaba Cloud                            | `root`                         |
+| DigitalOcean, IDCloudHost (SSH)          | `dpanel`                       |
+| Server yang Anda hubungkan lewat SSH     | User Linux yang Anda isi       |
 
 ## Dari komputer sendiri
 
-Kalau lebih suka terminal sendiri, pakai klien SSH apa pun dengan login yang tertera di kepala server.
+Kalau lebih suka terminal sendiri, pakai klien SSH apa pun. Alamat server harus bisa dijangkau dari komputer Anda: lewat IP publik, atau dari jaringan sendiri untuk server rumahan. Pakai login yang tertera di kepala server, atau di server yang terhubung lewat agen, user Linux Anda sendiri.
 
 ```bash
 ssh ubuntu@203.0.113.10
@@ -38,7 +44,7 @@ Ganti contoh itu dengan kunci publik Anda. Di komputer Anda, biasanya ada di `~/
 
 ### Apakah saya perlu memasang sesuatu untuk memakai terminal di browser?
 
-Tidak. **Buka terminal** bekerja di browser dengan kunci yang disimpan dPanel.
+Tidak. **Buka terminal** bekerja di browser, lewat agen atau dengan kunci yang disimpan dPanel.
 
 ### Bisakah saya menjalankan perintah sebagai root?
 

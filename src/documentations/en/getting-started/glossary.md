@@ -12,7 +12,7 @@ This glossary explains, in one plain sentence each, the words you meet in dPanel
 
 ### Server
 
-A computer that is always on and connected to the internet, which runs your website or app for visitors; in dPanel you connect one you have or launch a new one. See [Servers](../servers/overview.md).
+A computer that is always on, which runs your website or app; in dPanel you connect one you have, such as a VPS or a machine at home, or launch a new one. See [Servers](../servers/overview.md).
 
 ### VM (virtual machine) or VPS
 
@@ -36,15 +36,19 @@ The secure way to log in to a server over the internet and run commands on it.
 
 ### SSH key
 
-A pair of matching files that lets a computer log in to a server over SSH without a password; the public half goes on the server and the private half stays secret.
+A pair of matching files that lets a computer log in to a server over SSH without a password; the public half goes on the server and the private half stays secret. dPanel needs one only for servers that join over SSH.
 
 ### Agent
 
-dPanel's small program on each server, which reports the server's health and runs the jobs dPanel sends it.
+dPanel's small program on each server, which connects out to dPanel, reports the server's health and runs the jobs dPanel sends it; connecting a server with the agent needs no SSH key, public IP or open port. See [Connect a server with the dPanel agent](../servers/register-a-private-machine.md).
+
+### Private server
+
+A server dPanel reaches through its agent instead of over SSH, shown with a **Private** badge; it may still have a public IP.
 
 ### Server setup
 
-The first job dPanel runs on a new server: it installs the agent and prepares the machine; you can run it again if it failed.
+The first job dPanel runs on a server connected over SSH: it installs the agent and prepares the machine; you can run it again if it failed, and on a server connected with the agent, running it again reinstalls only the agent.
 
 ### Module
 
@@ -152,7 +156,7 @@ One entry in that address book, such as "shop.example.com points to 203.0.113.10
 
 ### IP address
 
-The number that identifies a server on the internet, such as `203.0.113.10`.
+The number that identifies a server on a network, such as `203.0.113.10`; a public IP can be reached from the whole internet; a machine at home usually has only a local one, such as `192.168.1.20`, behind your router's public IP.
 
 ### TLS, SSL and HTTPS
 

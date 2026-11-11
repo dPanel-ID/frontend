@@ -106,7 +106,8 @@ If this section says the live firewall cannot be read, the firewall module is no
 
 ## Safety: SSH and automatic rollback
 
-- SSH always stays open, on the server's SSH port even if that is not 22, so dPanel can still reach the server. If a change would close SSH, the review says so and dPanel refuses to apply it.
+- SSH always stays open, on the server's SSH port even if that is not 22, so dPanel can still reach a server connected over SSH and you can still log in yourself. If a change would close SSH, the review says so and dPanel refuses to apply it.
+- A server connected with the dPanel agent is reached through the agent's outgoing connection, so the firewall rules for incoming traffic don't cut dPanel off.
 - If SSH or the dPanel agent stop working after a change, the server restores its previous firewall by itself within a few minutes, and the job is marked failed. Before changing anything, dPanel backs up `/etc/ufw` and `/etc/default/ufw` to `/var/lib/dpanel-firewall/backup` and starts the systemd timer `dpanel-firewall-rollback`.
 
 ## Turn the firewall off

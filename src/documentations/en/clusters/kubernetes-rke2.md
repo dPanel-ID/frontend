@@ -22,8 +22,9 @@ You need servers that dPanel already manages and that read **Ready**. This guide
 - **Size:** 2 CPU and 4 GB of memory or more per server, amd64 or arm64. RKE2 runs more system pods than k3s; smaller servers struggle.
 - **System:** Ubuntu. This guide uses Ubuntu 24.04.
 - **Same region** for every server, not in any group, without Docker, k3s or RKE2, and with the dPanel firewall off.
+- **Connected over SSH.** Servers that joined through the dPanel agent can't be cluster nodes yet. See [Rules that keep your servers safe](./overview.md#rules-that-keep-your-servers-safe).
 
-A fresh server launched from dPanel meets all of this. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). With the dPanel firewall off, nothing on the server blocks ports. On DigitalOcean and IDCloudHost dPanel creates no provider firewall either, so port 30080 and the Kubernetes API on port 6443 can be reached from the internet. Add a provider firewall if you do not want that.
+A fresh server launched from dPanel with **SSH** under **How dPanel connects** meets all of this. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). With the dPanel firewall off, nothing on the server blocks ports. On DigitalOcean and IDCloudHost dPanel creates no provider firewall either, so port 30080 and the Kubernetes API on port 6443 can be reached from the internet. Add a provider firewall if you do not want that.
 
 ## 1. Start a Kubernetes group
 

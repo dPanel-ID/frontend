@@ -5,7 +5,9 @@ sidebar_position: 1
 sidebar_icon: settings-2
 ---
 
-**Worker** di dPanel adalah program yang menjalankan job workspace Anda: menyiapkan server, memasang modul, men-deploy aplikasi, menerapkan load balancer. Worker terhubung ke server Anda lewat SSH (cara aman untuk masuk ke server dari jauh) lalu melapor kembali ke dPanel. Lihat [Glosarium](../getting-started/glossary.md).
+**Worker** di dPanel adalah program yang menjalankan job workspace Anda: menyiapkan server, memasang modul, men-deploy aplikasi, menerapkan load balancer. Untuk server yang terhubung lewat SSH (cara aman untuk masuk ke server dari jauh), worker terhubung ke server itu lalu melapor kembali ke dPanel. Lihat [Glosarium](../getting-started/glossary.md).
+
+Server yang terhubung dengan [agen dPanel](../servers/register-a-private-machine.md) bekerja berbeda: pemasangan modul dan deploy-nya berjalan di server itu sendiri, disiapkan oleh agennya, apa pun worker yang dipakai workspace. Worker tetap membuat dan menghapus VM cloud di penyedia Anda.
 
 Anda tidak perlu menyiapkan apa pun. **Worker bersama dPanel** menjalankan setiap job kecuali Anda memilih worker sendiri.
 

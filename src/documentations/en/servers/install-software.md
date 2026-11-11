@@ -47,7 +47,7 @@ The root password is required and must be at least 8 characters. There is no def
 
 ## What happens next
 
-The module appears on the **Modules** tab as **Installing**. A database takes a few minutes. When it is done:
+The module appears on the **Modules** tab as **Installing**. A database takes a few minutes. On a server connected with the [dPanel agent](./register-a-private-machine.md), the very first install takes a few minutes longer, because the agent prepares dPanel's installer on the machine once; the install then runs on the server itself. When it is done:
 
 - The **Modules** tab shows it as **Installed**, with its version.
 - The **Overview** tab lists it under **What runs here**.
@@ -95,7 +95,7 @@ Once MariaDB, PostgreSQL or MongoDB reads **Installed**, its row on the **Module
 
 From there you can browse tables, run queries, and create databases and users with read-only or read-write access.
 
-The database manager reaches the database through the server's SSH connection, so the database never needs to be open to the internet. You can open it on servers you can edit: your own servers, and servers in a workspace where you have editor access or more.
+The database manager reaches the database through the dPanel agent, or through the server's SSH connection on a server connected over SSH, so the database never needs to be open to the internet. You can open it on servers you can edit: your own servers, and servers in a workspace where you have editor access or more.
 
 ## Create a database for an application
 

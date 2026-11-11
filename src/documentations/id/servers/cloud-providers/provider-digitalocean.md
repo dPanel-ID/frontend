@@ -11,7 +11,7 @@ dPanel meluncurkan Droplet Ubuntu di team DigitalOcean Anda sendiri. dPanel masu
 ## Yang perlu disiapkan
 
 - Team DigitalOcean yang sudah diatur penagihannya. Team terpisah khusus untuk dPanel membuat aksesnya tetap terbatas.
-- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
+- SSH key di dPanel, hanya jika server perlu bergabung lewat SSH. Dengan agen dPanel, pilihan bawaannya, Anda tidak butuh kunci. Lihat [Sebelum mulai](../before-you-start.md).
 
 ## 1. Buat token dengan cakupan khusus
 
@@ -36,7 +36,7 @@ DigitalOcean membolehkan Anda menentukan persis apa yang boleh dilakukan sebuah 
 Panduan DigitalOcean: [Membuat personal access token](https://docs.digitalocean.com/reference/api/create-personal-access-token/), [Cakupan token](https://docs.digitalocean.com/reference/api/scopes/).
 
 :::note[Scope tambahan]
-Daftar di atas mencakup panggilan API yang dilakukan dPanel (`/v2/regions`, `/v2/sizes`, `/v2/images`, `/v2/vpcs`, `/v2/droplets`) dan modul Ansible `digitalocean.cloud` yang dijalankannya (`droplet`, `droplets_info`, `ssh_key`). DigitalOcean kadang mewajibkan scope baca tambahan untuk sebuah aksi pembuatan, misalnya `actions:read` saat menunggu Droplet. Halaman token memberi tahu scope apa saja yang dibutuhkan sebuah scope pembuatan; terima saja. Kalau peluncuran gagal dengan `403`, pesan errornya menyebut scope yang kurang.
+Daftar di atas mencakup panggilan API yang dilakukan dPanel (`/v2/regions`, `/v2/sizes`, `/v2/images`, `/v2/vpcs`, `/v2/droplets`) dan panggilan library DigitalOcean yang dipakainya untuk membuat dan menampilkan Droplet serta mengimpor SSH key. DigitalOcean kadang mewajibkan scope baca tambahan untuk sebuah aksi pembuatan, misalnya `actions:read` saat menunggu Droplet. Halaman token memberi tahu scope apa saja yang dibutuhkan sebuah scope pembuatan; terima saja. Kalau peluncuran gagal dengan `403`, pesan errornya menyebut scope yang kurang.
 :::
 
 ## 2. Hubungkan ke dPanel
@@ -63,7 +63,9 @@ dPanel menyimpan akun itu sebagai **Siap** tanpa mengujinya. Ujian pertamanya ad
 | **Ubuntu release** | 24.04 LTS atau 26.04 LTS.                                                                                                                                                                        |
 | **Network**        | VPC bawaan region itu, kecuali Anda memilih yang lain.                                                                                                                                           |
 
-DigitalOcean menambahkan langkah keempat, **Access**, berisi **Default User**: user Linux yang dibuat dPanel dan dipakainya untuk masuk. Bawaannya `dpanel`.
+DigitalOcean menambahkan langkah **Access**, berisi **Default User**: user Linux yang dibuat dPanel, dan dipakainya untuk masuk bila server bergabung lewat SSH. Bawaannya `dpanel`.
+
+Droplet selalu mendapat IP publik, jadi formulir tidak punya sakelar IP publik untuk DigitalOcean.
 
 ## 4. Luncurkan
 
@@ -71,8 +73,8 @@ Ikuti [Membuat server cloud](./create-a-cloud-server.md). Pilih DigitalOcean di 
 
 ## Jebakan di DigitalOcean
 
-- **Ada SSH key baru di team Anda.** Setiap peluncuran mengimpor kunci publik dPanel Anda sebagai `dpanel-<nama server>` di **Settings**, **Security**. Menghapus server tidak ikut menghapusnya.
-- **dPanel tidak membuat firewall.** dPanel tidak membuat Cloud Firewall. Droplet baru menerima lalu lintas di semua port sampai Anda menambahkan firewall. Kalau menambahkannya, izinkan TCP 22, 80, dan 443, atau dPanel dan aplikasi Anda berhenti bekerja.
+- **Ada SSH key baru di team Anda, khusus SSH.** Setiap peluncuran yang bergabung lewat SSH mengimpor kunci publik dPanel Anda sebagai `dpanel-<nama server>` di **Settings**, **Security**. Menghapus server tidak ikut menghapusnya. Dengan agen dPanel, tidak ada kunci yang diimpor.
+- **dPanel tidak membuat firewall.** dPanel tidak membuat Cloud Firewall. Droplet baru menerima lalu lintas di semua port sampai Anda menambahkan firewall. Kalau menambahkannya, izinkan TCP 80 dan 443 untuk aplikasi Anda, dan TCP 22 bila server bergabung lewat SSH atau Anda sendiri masuk lewat SSH.
 - **Batas Droplet.** Team baru hanya boleh menjalankan sedikit Droplet. Peluncuran yang gagal karena batas butuh kenaikan limit dari DigitalOcean.
 - **Tanpa backup.** dPanel tidak menyalakan backup maupun monitoring DigitalOcean. Nyalakan di control panel kalau Anda butuh; backup dikenai biaya tambahan.
 - **Tagihan berjalan sejak peluncuran.** Anda membayar Droplet selama masih ada, bahkan saat dimatikan.

@@ -55,7 +55,7 @@ Hingga 100.000 baris sekaligus dengan **Semua di rentang waktu ini**, atau 5.000
 
 ### Bisakah saya mengunduh log server?
 
-Tidak sebagai file. Log server menampilkan 20 sampai 500 baris terbaru dari satu file. Pilih sebuah baris lalu gunakan **Salin baris mentah**, atau baca lewat SSH. Lihat [Terhubung lewat SSH](../servers/connect-over-ssh.md).
+Tidak sebagai file. Log server menampilkan 20 sampai 500 baris terbaru dari satu file. Pilih sebuah baris lalu gunakan **Salin baris mentah**, atau baca berkasnya di terminal server. Lihat [Terhubung lewat SSH](../servers/connect-over-ssh.md).
 
 ### Format filenya apa?
 

@@ -10,7 +10,7 @@ Worker GitHub Actions menjalankan job workspace dPanel Anda di repositori GitHub
 ## Sebelum mulai
 
 - Repositori GitHub yang bisa Anda push. Repositori baru yang privat pun boleh.
-- Server yang sudah terhubung ke dPanel. Tidak ada yang perlu disiapkan lagi di server.
+- Server yang sudah terhubung ke dPanel lewat SSH. Tidak ada yang perlu disiapkan lagi di server. Server yang terhubung dengan [agen dPanel](../servers/register-a-private-machine.md) menjalankan pemasangan dan deploy di dirinya sendiri, jadi worker ini tidak terhubung ke server itu.
 
 :::info[Tidak perlu menambahkan kunci SSH]
 Anda **tidak** perlu menambahkan kunci SSH apa pun ke GitHub, ke secrets repositori, maupun ke server Anda. Pada setiap job, dPanel memberi run akses SSH yang sama dengan yang sudah dipakai dPanel untuk server Anda, dan run melupakannya begitu selesai.

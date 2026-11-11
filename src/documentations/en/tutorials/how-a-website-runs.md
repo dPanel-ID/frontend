@@ -23,7 +23,7 @@ dPanel sets up every piece of that chain for you, from forms in the web app. The
 
 | Word                      | What it means here                                                                                                                                                                                                                           |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Server**                | A computer in a data centre that stays on all the time, rented from a cloud provider such as Google Cloud or AWS. dPanel launches it in your own cloud account and installs Ubuntu Linux on it. You pay the provider for it while it exists. |
+| **Server**                | A computer that stays on all the time: one rented from a cloud provider such as Google Cloud or AWS, which dPanel can launch in your own cloud account with Ubuntu Linux, or one you already have, such as a VPS or a machine at home. |
 | **Module**                | A piece of software dPanel installs on your server for you: a database such as MariaDB, a language such as PHP or Node.js, or a web server such as FrankenPHP. You pick it from a list instead of typing install commands.                   |
 | **Database**              | Where an application stores its data. One database program (MariaDB or PostgreSQL) can hold many databases; each application gets its own, with its own user and password, so it can't touch the others.                                     |
 | **Repository**            | The folder of your application's code on GitHub. dPanel copies (clones) it to the server.                                                                                                                                                    |
@@ -43,7 +43,7 @@ Set these up once; every tutorial uses them.
 
 1. **A dPanel account**, signed in. See [Sign in](../getting-started/sign-in.md).
 2. **GitHub connected**, so dPanel can read your code. See [Connect GitHub](../getting-started/connect-github.md).
-3. **An SSH key and a cloud account** in dPanel. The SSH key lets dPanel reach your server securely; the cloud account is where the server is created and billed. See [Before you start](../servers/before-you-start.md). If you already have an Ubuntu machine, you can [connect it](../servers/connect-your-own-server.md) instead.
+3. **A server.** If you already have one, such as a VPS or a machine at home, [connect it with the dPanel agent](../servers/register-a-private-machine.md): one command on the machine, no SSH key needed. Otherwise connect a **cloud account** in dPanel, where the server is created and billed; see [Before you start](../servers/before-you-start.md).
 4. **A domain** added under **Domain & DNS**. See [Domains and DNS](../networking/domains-and-dns.md).
 
 ## Good habits from the start
@@ -68,8 +68,8 @@ Prefer to chat? You can also do every tutorial with [Ask dPanel](../ai/overview.
 
 ### Do I need my own server?
 
-You need one server: either launched by dPanel in your cloud account, or one you already rent and connect over SSH. The tutorials work the same on both.
+You need one server: either launched by dPanel in your cloud account, or one you already have and [connect with the dPanel agent](../servers/register-a-private-machine.md). The tutorials work the same on both. To publish the site on the internet, visitors must reach the server on ports 80 and 443: a VPS with a public IP does that by itself, and a home server needs those ports forwarded on your router.
 
 ### How much does a tutorial cost?
 
-The server is billed by your cloud provider for every hour it exists, and a domain costs whatever your registrar charges. Delete the server when you are done to stop the cost.
+A cloud server is billed by your cloud provider for every hour it exists, and a domain costs whatever your registrar charges. A server you already have costs nothing extra. Delete the server when you are done to stop the cost.

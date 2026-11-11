@@ -34,7 +34,7 @@ The assistant looks up your cloud accounts, regions, machine types and SSH keys,
 
 To set up a server again after a failed setup: `Run server setup again on server 145.`
 
-Prefer the forms? See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
+The assistant launches servers that join over SSH, so it uses one of your SSH keys, as in the example. To launch a server that joins through the dPanel agent, with no SSH key, use the form or `dnocs server create-cloud`. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). To add a server you already have, run `sudo dnocs machine register` on it; see [Connect a server with the dPanel agent](../servers/register-a-private-machine.md).
 
 ## Install software on a server
 

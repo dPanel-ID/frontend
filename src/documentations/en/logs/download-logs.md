@@ -55,7 +55,7 @@ Up to 100,000 lines at once with **Everything in this time range**, or 5,000 for
 
 ### Can I download server logs?
 
-Not as a file. Server logs show the newest 20 to 500 lines of one file. Select a line and use **Copy raw line**, or read it over SSH. See [Connect over SSH](../servers/connect-over-ssh.md).
+Not as a file. Server logs show the newest 20 to 500 lines of one file. Select a line and use **Copy raw line**, or read the file in the server's terminal. See [Connect over SSH](../servers/connect-over-ssh.md).
 
 ### What format is the file?
 
