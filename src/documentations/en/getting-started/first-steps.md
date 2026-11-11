@@ -15,7 +15,7 @@ Never run a server before? Read [How a website runs on your server](../tutorials
 1. **Sign in.** Open [dnocs.devetek.app](https://dnocs.devetek.app) and sign in with Google or a username and password. See [Sign in and your profile](./sign-in.md).
 2. **Pick a workspace.** A workspace is the box your servers, applications and domains live in. Use your personal workspace to try things out, or a team workspace to share with others. See [Workspaces](./workspaces.md).
 3. **Get a server.** A server is the computer your website runs on: a machine in a data centre, or one at home.
-   - **Already have one?** A VPS (a virtual server from a hosting company), a home server, a homelab PC or a Raspberry Pi: connect it with the dPanel agent. You run one command on the machine; it needs no SSH key, no public IP and no open port. See [Connect a server with the dPanel agent](../servers/register-a-private-machine.md).
+   - **Already have one?** A VPS (a virtual server from a hosting company), a home server, a homelab PC or a Raspberry Pi: connect it with the dPanel agent. In dPanel, open **Servers**, then **Create Server**, choose **Get install command** and run that one command on the machine with `sudo`; the server shows **Ready** within a minute. It needs no SSH key, no public IP and no open port. See [Connect a server with the dPanel agent](../servers/register-a-private-machine.md).
    - **No server yet?** Connect your cloud account, such as AWS, Google Cloud or DigitalOcean, and launch one from dPanel. It joins through the agent by itself. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
    - **Prefer to let dPanel log in over SSH?** That works too; see [dPanel agent or SSH: which one?](../servers/register-a-private-machine.md#dpanel-agent-or-ssh-which-one)
 4. **Deploy your first app.** [Connect GitHub](./connect-github.md), then follow a tutorial from start to finish. Each tutorial starts by launching a server; if you did step 3, skip that step and use your server, as long as it has at least 2 vCPU and 4 GB RAM:
@@ -46,7 +46,7 @@ You can also let the assistant do the clicking: describe what you want and appro
 
 ### Do I need to know Linux or use a terminal?
 
-Almost. If dPanel launches your server, every step happens in the browser. Connecting a server you already have takes a few commands on that server, copied from [the guide](../servers/register-a-private-machine.md). After that, dPanel installs software from a list, gives you a terminal in the browser, and shows logs on the page.
+Almost. If dPanel launches your server, every step happens in the browser. Connecting a server you already have takes one command on that server, which you copy from dPanel; [the guide](../servers/register-a-private-machine.md) shows each step. After that, dPanel installs software from a list, gives you a terminal in the browser, and shows logs on the page.
 
 ### Can I use my home server or homelab?
 

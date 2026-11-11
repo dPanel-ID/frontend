@@ -105,7 +105,7 @@
       "ownServer": "Server sendiri",
       "type": "Tipe",
       "privateServer": "Server privat, tanpa IP publik",
-      "privateServerHint": "Server ini tidak punya IP publik. dPanel menjangkaunya lewat agennya, jadi server ini tidak bisa memakai load balancer.",
+      "privateServerHint": "Server ini tidak punya IP publik sendiri; dPanel menjangkaunya lewat agennya. Server ini tetap bisa memakai load balancer: domain yang Anda arahkan ke server ini bisa dipakai, DNS yang dikelola dPanel memakai alamat publik server, dan server rumahan perlu meneruskan port 80 dan 443 ke server ini.",
       "privateBadge": "Privat",
       "agentBadge": "Lewat agen",
       "agentServerHint": "dPanel menjangkau server ini lewat agennya, bukan lewat SSH."
@@ -1369,17 +1369,49 @@
           "agent": {
             "badge": "Direkomendasikan",
             "title": "Hubungkan server dengan agen dPanel",
-            "description": "Tambahkan server Linux apa pun yang sudah Anda miliki: VPS, server dedicated, PC di rumah, atau VM di balik router. Anda menjalankan satu perintah di server itu, lalu agen dPanel terhubung keluar ke dPanel.",
+            "description": "Tambahkan server Linux apa pun yang sudah Anda miliki: VPS, server dedicated, PC di rumah, atau VM di balik router. Ambil perintah satu baris di sini lalu jalankan di mesin itu; agen dPanel kemudian terhubung keluar ke dPanel.",
             "highlights": {
               "publicIP": "Tidak perlu IP publik",
               "port": "Tidak ada port yang perlu dibuka",
               "key": "Tidak ada SSH key dPanel di server Anda"
             },
+            "noExtras": "Perintah ini tidak butuh dnocs, tidak perlu masuk akun di mesin, tidak perlu IP publik, port terbuka, atau SSH key dPanel.",
+            "requirements": "Butuh Linux dengan systemd di amd64 atau arm64, sudo, dan akses internet keluar.",
             "limits": "File, layanan, log, terminal, modul seperti MariaDB atau Docker, dan deploy aplikasi semuanya berjalan lewat agen.",
             "steps": {
-              "cli": "Pasang alat baris perintah dnocs di mesin itu (Linux dengan systemd, Intel/AMD atau ARM).",
-              "signIn": "Masuk dengan dnocs auth login lalu pilih ruang kerja tempat mesin ini berada.",
-              "register": "Jalankan perintah di bawah sebagai root. Server akan muncul di sini dalam status siap dalam satu menit."
+              "name": "Beri nama server jika mau, lalu ambil perintah pemasangannya.",
+              "run": "Jalankan perintah itu di mesin. Perintah meminta sudo, karena memasang agen sebagai layanan sistem.",
+              "ready": "Server tampil Siap di sini, biasanya dalam satu menit."
+            },
+            "install": {
+              "nameLabel": "Nama server (opsional)",
+              "namePlaceholder": "home-server",
+              "nameHint": "Huruf, angka, dan tanda hubung. Biarkan kosong, dan server memakai nama mesinnya sendiri begitu terhubung.",
+              "nameInvalid": "Gunakan huruf, angka, dan tanda hubung, diawali huruf dan diakhiri huruf atau angka, maksimal 63 karakter.",
+              "get": "Ambil perintah pemasangan",
+              "getting": "Mengambil perintah…",
+              "failed": "Perintah pemasangan tidak bisa dibuat",
+              "expiry": "Hanya bisa dipakai sekali, selama 2 jam (sampai {time}). Ambil perintah baru untuk mesin lain.",
+              "expiryNoTime": "Hanya bisa dipakai sekali, selama 2 jam. Ambil perintah baru untuk mesin lain.",
+              "phase": {
+                "waiting": "Menunggu",
+                "ready": "Terhubung",
+                "failed": "Gagal",
+                "expired": "Kedaluwarsa"
+              },
+              "message": {
+                "waiting": "Menunggu mesinnya… Jalankan perintah di mesin itu; bagian ini diperbarui sendiri.",
+                "ready": "Terhubung! {name} sudah siap.",
+                "failed": "{name} tidak bisa dihubungkan. Buka servernya untuk melihat penyebabnya.",
+                "expired": "Perintah ini kedaluwarsa sebelum mesinnya terhubung. Ambil perintah baru."
+              },
+              "openServer": "Buka server",
+              "another": "Ambil perintah baru"
+            },
+            "cli": {
+              "summary": "Lebih suka CLI?",
+              "register": "Jika dnocs sudah terpasang dan Anda sudah masuk di mesin itu, perintah ini menghubungkannya dalam satu langkah:",
+              "print": "<code>{command}</code> mencetak perintah satu baris yang sama, dari komputer mana pun tempat Anda memakai dnocs."
             },
             "runOnMachine": "Jalankan di server",
             "copy": "Salin",
@@ -1404,7 +1436,7 @@
           "manual": {
             "badge": "Alternatif",
             "title": "Hubungkan lewat SSH",
-            "description": "dPanel terhubung dengan SSH key miliknya. Pilih cara ini jika Anda lebih suka dPanel masuk ke server Anda daripada menjalankan perintah agen sendiri.",
+            "description": "dPanel masuk dengan SSH key miliknya. Worker dPanel mengerjakan bagian beratnya, jadi beban server Anda lebih ringan, tetapi key tersebut mendapat akses sudo di server Anda.",
             "requirementsTitle": "Yang dibutuhkan",
             "requirements": {
               "ssh": "Server yang bisa diakses lewat SSH (Ubuntu atau Debian)",
@@ -1413,6 +1445,30 @@
             },
             "duration": "Sekitar 5 menit",
             "cta": "Hubungkan lewat SSH"
+          },
+          "compare": {
+            "title": "Agen dPanel atau SSH?",
+            "description": "Keduanya didukung penuh. Bedanya ada di tempat pekerjaan berjalan dan akses yang Anda berikan ke dPanel.",
+            "learnMore": "Bandingkan selengkapnya",
+            "docsAnchor": "agen-dpanel-atau-ssh-pilih-yang-mana",
+            "agent": {
+              "title": "Agen dPanel",
+              "badge": "Direkomendasikan",
+              "points": {
+                "runsOn": "Pemasangan perangkat lunak dan deploy berjalan di server Anda. Agennya sendiri ringan dan selalu berjalan; untuk pekerjaan, agen menyiapkan installer di mesin, yang memakai sebagian CPU, memori, dan disk selama pekerjaan berjalan lalu berhenti setelah 10 menit tanpa aktivitas.",
+                "noInbound": "Tidak ada yang masuk ke server: tidak perlu IP publik maupun port terbuka.",
+                "noKey": "Tidak ada SSH key dPanel, dan Anda tidak pernah memberi dPanel akses root."
+              }
+            },
+            "ssh": {
+              "title": "SSH",
+              "badge": "Didukung penuh",
+              "points": {
+                "workers": "Pekerjaan berat dilakukan worker milik dPanel lewat SSH, jadi beban server Anda lebih ringan. Cocok untuk VPS kecil.",
+                "trust": "Anda memercayakan SSH key dPanel ke user yang punya akses root (sudo) di server Anda.",
+                "publicIP": "Server membutuhkan IP publik dengan SSH yang bisa dijangkau."
+              }
+            }
           },
           "next": {
             "title": "Selanjutnya",
@@ -1435,6 +1491,8 @@
           "headerTitle": "Hubungkan server lewat SSH",
           "headerDesc": "dPanel terhubung dengan SSH key miliknya: izinkan satu key di server Anda, beri tahu dPanel lokasinya, lalu hubungkan. Tidak ingin menambahkan key? Gunakan agen dPanel.",
           "back": "Semua cara menambah server",
+          "trustNote": "Terhubung lewat SSH berarti memercayakan SSH key dPanel dengan akses administrator (sudo) ke server Anda, dan server membutuhkan IP publik dengan SSH yang bisa dijangkau. Tidak ingin menyerahkan key?",
+          "useAgent": "Gunakan agen dPanel saja",
           "key": {
             "title": "Pilih SSH key",
             "description": "dPanel terhubung dengan key ini. Pilih salah satu, atau buat key baru di sini."
@@ -1477,12 +1535,14 @@
             "agent": {
               "title": "Agen dPanel",
               "subtitle": "VM terhubung keluar ke dPanel",
-              "detail": "VM memasang agen dPanel saat pertama kali menyala lalu terhubung keluar ke dPanel. Tidak ada SSH key dPanel yang dipasang di VM, dan tidak ada port yang perlu dibuka. Server tampil siap begitu agen terhubung, biasanya 1 sampai 5 menit setelah VM menyala."
+              "detail": "VM memasang agen dPanel saat pertama kali menyala lalu terhubung keluar ke dPanel. Tidak ada SSH key dPanel yang dipasang di VM, dan tidak ada port yang perlu dibuka. Server tampil siap begitu agen terhubung, biasanya 1 sampai 5 menit setelah VM menyala.",
+              "tradeoff": "Pemasangan dan deploy berjalan di VM itu sendiri. Tidak ada key dPanel dan tidak ada akses root yang diberikan; bisa tanpa IP publik."
             },
             "ssh": {
               "title": "SSH",
               "subtitle": "dPanel masuk dengan SSH key miliknya",
-              "detail": "dPanel memasang SSH key pilihan Anda di VM, masuk lewat SSH, lalu memasang agennya. VM membutuhkan IP publik."
+              "detail": "dPanel memasang SSH key pilihan Anda di VM, masuk lewat SSH, lalu memasang agennya. VM membutuhkan IP publik.",
+              "tradeoff": "Worker dPanel mengerjakannya lewat SSH, jadi lebih ringan untuk VM, tetapi key dPanel mendapat akses root (sudo) dan VM membutuhkan IP publik."
             },
             "sshOnly": "Untuk saat ini, server di provider ini bergabung lewat SSH: dPanel memasang SSH key pilihan Anda di VM lalu masuk.",
             "agentOnly": "Tanpa IP publik, dPanel hanya bisa menjangkau VM lewat agennya, jadi SSH tidak tersedia."
@@ -2788,7 +2848,8 @@
         "viewRegions": "Lihat region",
         "openDetails": "Buka akun",
         "useOnServer": "Buat server di sini",
-        "updateCredentials": "Perbarui kredensial"
+        "updateCredentials": "Perbarui kredensial",
+        "findLeftovers": "Cari VM sisa"
       },
       "table": {
         "headers": {
@@ -2873,6 +2934,57 @@
         "filteredTitle": "Tidak ada akun yang cocok",
         "filteredMessage": "Coba nama lain, atau hapus filter untuk melihat semua akun.",
         "clear": "Hapus filter"
+      },
+      "orphans": {
+        "title": "VM sisa",
+        "description": "VM yang dibuat dPanel di <strong>{name}</strong> tetapi tidak lagi milik server mana pun, misalnya setelah peluncuran gagal atau server hanya dihapus dari dPanel. VM ini masih berjalan, dan masih ditagih, di provider.",
+        "regionLabel": "Region (opsional)",
+        "regionPlaceholder": "Semua region",
+        "regionHint": "Biarkan kosong untuk memindai semua region; bisa memakan waktu satu menit. Di Google Cloud Anda bisa mengisi region atau zona.",
+        "scan": "Pindai VM sisa",
+        "scanAgain": "Pindai lagi",
+        "scanning": "Memindai…",
+        "scanningHint": "Meminta daftar VM ke provider. Ini bisa memakan waktu puluhan detik.",
+        "idle": "Belum ada yang dipindai. dPanel hanya menampilkan VM yang dibuatnya, tidak pernah VM Anda yang lain.",
+        "failed": "Pemindaian tidak selesai",
+        "retry": "Coba lagi",
+        "empty": "Tidak ada VM sisa. Setiap VM yang dibuat dPanel di sini masih milik sebuah server.",
+        "emptyRegion": "Tidak ada VM sisa di {region}.",
+        "found": "{count, plural, other {# VM sisa}}",
+        "publicIp": "publik {ip}",
+        "privateIp": "privat {ip}",
+        "created": "dibuat {time}",
+        "formerServer": "Dulu milik server {id}.",
+        "evidence": {
+          "tagged": "Bertanda dibuat oleh dPanel.",
+          "legacy_security_group": "Memakai security group yang dibuat dPanel untuk VM-nya.",
+          "legacy_network_tag": "Membawa tag jaringan dPanel milik akun ini.",
+          "legacy_name": "Namanya seperti VM yang dibuat dPanel.",
+          "other": "Dibuat oleh dPanel."
+        },
+        "delete": "Hapus VM",
+        "deleteAgain": "Coba lagi",
+        "phase": {
+          "running": "Menghapus…",
+          "succeeded": "Terhapus",
+          "failed": "Gagal dihapus"
+        },
+        "footnote": "Menutup jendela ini tidak menghentikan penghapusan yang sudah dimulai.",
+        "close": "Tutup",
+        "toaster": {
+          "queueFailed": "{name} tidak bisa dihapus"
+        },
+        "confirm": {
+          "title": "Hapus VM ini?",
+          "description": "Ini menghapus <strong>{name}</strong> di provider akun <strong>{account}</strong>. Tindakan ini tidak bisa dibatalkan.",
+          "happens": "Yang terjadi",
+          "vmDeleted": "VM dihapus di provider dan berhenti ditagih.",
+          "disksGone": "Disk-nya dan semua isinya hilang untuk selamanya.",
+          "noServer": "Tidak ada server dPanel yang berubah: VM ini tidak punya server.",
+          "label": "Ketik <code>{name}</code> untuk konfirmasi",
+          "cancel": "Batal",
+          "submit": "Hapus VM"
+        }
       }
     },
     "sshKeys": {

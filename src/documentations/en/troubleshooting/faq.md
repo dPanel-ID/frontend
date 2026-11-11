@@ -12,7 +12,7 @@ This page collects the problems dPanel users run into most, with what you see an
 
 ### How do I add my home server or homelab without SSH?
 
-Connect it with the dPanel agent. On the machine, install dnocs, sign in with `dnocs auth login -u <your username>`, then run `sudo dnocs machine register`. The agent connects out to dPanel, so you need no SSH key, public IP or port forwarding. See [Connect a server with the dPanel agent](../servers/register-a-private-machine.md).
+Connect it with the dPanel agent. In dPanel, open **Servers**, then **Create Server**, choose **Get install command** and run that command on the machine. If you use dnocs, `sudo dnocs machine register` on the machine does the same. The agent connects out to dPanel, so you need no SSH key, public IP or port forwarding. See [Connect a server with the dPanel agent](../servers/register-a-private-machine.md).
 
 ### `sudo dnocs machine register` says "please login first"
 
@@ -20,7 +20,7 @@ Sign in as your normal user first, without `sudo`: `dnocs auth login -u <your us
 
 ### A server stays in progress and never turns Ready
 
-The agent on it has not connected yet. On a server you connected with `sudo dnocs machine register`, check that the machine can reach the internet over HTTPS (port 443) and that `sudo systemctl status dpanel-agent` shows it running. On a new cloud server that joins through the agent, give it a few minutes after the VM is created. If it was launched without a public IP on a network you picked yourself, that network must give it outbound internet; otherwise the agent cannot connect. Delete the server and launch it again with the public IP on, or on `dpanel-network`. See [Public IP](../servers/cloud-providers/create-a-cloud-server.md#public-ip).
+The agent on it has not connected yet. On a server you connected with the dPanel agent, check that the machine can reach the internet over HTTPS (port 443) and that `sudo systemctl status dpanel-agent` shows it running. On a new cloud server that joins through the agent, give it a few minutes after the VM is created. If it was launched without a public IP on a network you picked yourself, that network must give it outbound internet; otherwise the agent cannot connect. Delete the server and launch it again with the public IP on, or on `dpanel-network`. See [Public IP](../servers/cloud-providers/create-a-cloud-server.md#public-ip).
 
 ### The server page says "Setup did not finish"
 

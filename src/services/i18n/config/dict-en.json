@@ -105,7 +105,7 @@
       "ownServer": "Own server",
       "type": "Type",
       "privateServer": "Private server, no public IP",
-      "privateServerHint": "This server has no public IP. dPanel reaches it through its agent, so it cannot have load balancers.",
+      "privateServerHint": "This server has no public IP of its own; dPanel reaches it through its agent. It can still have load balancers: a domain you point at it works, DNS that dPanel manages uses the server's public address, and a home server needs ports 80 and 443 forwarded to it.",
       "privateBadge": "Private",
       "agentBadge": "Via agent",
       "agentServerHint": "dPanel reaches this server through its agent, not over SSH."
@@ -1369,17 +1369,49 @@
           "agent": {
             "badge": "Recommended",
             "title": "Connect a server with the dPanel agent",
-            "description": "Add any Linux server you already have: a VPS, a dedicated server, a PC at home or a VM behind a router. You run one command on it, and the dPanel agent connects out to dPanel.",
+            "description": "Add any Linux server you already have: a VPS, a dedicated server, a PC at home or a VM behind a router. Get a one-line command here and run it on the machine; the dPanel agent then connects out to dPanel.",
             "highlights": {
               "publicIP": "No public IP needed",
               "port": "No port to open",
               "key": "No dPanel SSH key on your server"
             },
+            "noExtras": "The command needs no dnocs, no sign-in on the machine, no public IP, no open port and no dPanel SSH key.",
+            "requirements": "Needs Linux with systemd on amd64 or arm64, sudo, and outbound internet.",
             "limits": "Files, services, logs, the terminal, modules such as MariaDB or Docker, and app deploys all work through the agent.",
             "steps": {
-              "cli": "Install the dnocs command line tool on the machine (Linux with systemd, Intel/AMD or ARM).",
-              "signIn": "Sign in with dnocs auth login and pick the workspace the machine belongs to.",
-              "register": "Run the command below as root. The server shows up here as ready within a minute."
+              "name": "Name the server if you like, then get the install command.",
+              "run": "Run the command on the machine. It asks for sudo, because it installs the agent as a system service.",
+              "ready": "The server shows Ready here, usually within a minute."
+            },
+            "install": {
+              "nameLabel": "Server name (optional)",
+              "namePlaceholder": "home-server",
+              "nameHint": "Letters, digits and hyphens. Leave it empty and the server takes the machine's own name once it connects.",
+              "nameInvalid": "Use letters, digits and hyphens, start with a letter and end with a letter or digit, up to 63 characters.",
+              "get": "Get install command",
+              "getting": "Getting the command…",
+              "failed": "The install command could not be created",
+              "expiry": "Works once, for 2 hours (until {time}). Get a new command for another machine.",
+              "expiryNoTime": "Works once, for 2 hours. Get a new command for another machine.",
+              "phase": {
+                "waiting": "Waiting",
+                "ready": "Connected",
+                "failed": "Failed",
+                "expired": "Expired"
+              },
+              "message": {
+                "waiting": "Waiting for the machine… Run the command on it; this updates by itself.",
+                "ready": "Connected! {name} is ready.",
+                "failed": "{name} could not be connected. Open the server to see why.",
+                "expired": "This command has expired before the machine connected. Get a new one."
+              },
+              "openServer": "Open server",
+              "another": "Get a new command"
+            },
+            "cli": {
+              "summary": "Prefer the CLI?",
+              "register": "With dnocs installed and signed in on the machine, this connects it in one step:",
+              "print": "<code>{command}</code> prints the same one-line command, from any computer where you use dnocs."
             },
             "runOnMachine": "Run on the server",
             "copy": "Copy",
@@ -1404,7 +1436,7 @@
           "manual": {
             "badge": "Alternative",
             "title": "Connect over SSH",
-            "description": "dPanel connects with its SSH key. Use this if you would rather let dPanel log in to your server than run the agent command yourself.",
+            "description": "dPanel connects in with its SSH key. Its workers do the heavy lifting, so your server carries less load, but the key gets sudo access on your server.",
             "requirementsTitle": "You need",
             "requirements": {
               "ssh": "A server reachable over SSH (Ubuntu or Debian)",
@@ -1413,6 +1445,30 @@
             },
             "duration": "Takes about 5 minutes",
             "cta": "Connect over SSH"
+          },
+          "compare": {
+            "title": "dPanel agent or SSH?",
+            "description": "Both are fully supported. They differ in where the work runs and what access you give dPanel.",
+            "learnMore": "Compare in detail",
+            "docsAnchor": "dpanel-agent-or-ssh-which-one",
+            "agent": {
+              "title": "dPanel agent",
+              "badge": "Recommended",
+              "points": {
+                "runsOn": "Installing software and deploying run on your server. The agent itself is light and always running; for jobs it prepares an installer on the machine, which uses some CPU, memory and disk while a job runs and stops after 10 quiet minutes.",
+                "noInbound": "Nothing connects in: no public IP and no open port needed.",
+                "noKey": "No dPanel SSH key, and you never give dPanel root access."
+              }
+            },
+            "ssh": {
+              "title": "SSH",
+              "badge": "Fully supported",
+              "points": {
+                "workers": "The heavy lifting comes from dPanel's own workers over SSH, so your server carries less load. Good for a small VPS.",
+                "trust": "You trust dPanel's SSH key with a user that has root (sudo) access on your server.",
+                "publicIP": "The server needs a public IP with SSH reachable."
+              }
+            }
           },
           "next": {
             "title": "What happens next",
@@ -1435,6 +1491,8 @@
           "headerTitle": "Connect a server over SSH",
           "headerDesc": "dPanel connects with its SSH key: authorize one key on your server, tell dPanel where it is, and connect. Prefer not to add a key? Use the dPanel agent instead.",
           "back": "All ways to add a server",
+          "trustNote": "Connecting over SSH means trusting dPanel's SSH key with administrator (sudo) access to your server, and the server needs a public IP with SSH reachable. Rather not hand over a key?",
+          "useAgent": "Use the dPanel agent instead",
           "key": {
             "title": "Choose an SSH key",
             "description": "dPanel connects with this key. Pick one, or create a new key here."
@@ -1477,12 +1535,14 @@
             "agent": {
               "title": "dPanel agent",
               "subtitle": "The VM connects out to dPanel",
-              "detail": "The VM installs the dPanel agent on first boot and connects out to dPanel. No dPanel SSH key goes on the VM, and it needs no open port. It shows as ready once the agent connects, usually 1 to 5 minutes after the VM starts."
+              "detail": "The VM installs the dPanel agent on first boot and connects out to dPanel. No dPanel SSH key goes on the VM, and it needs no open port. It shows as ready once the agent connects, usually 1 to 5 minutes after the VM starts.",
+              "tradeoff": "Installs and deploys run on the VM itself. No dPanel key and no root access given; works without a public IP."
             },
             "ssh": {
               "title": "SSH",
               "subtitle": "dPanel connects in with its SSH key",
-              "detail": "dPanel puts the SSH key you choose on the VM, connects in over SSH and installs its agent. The VM needs a public IP."
+              "detail": "dPanel puts the SSH key you choose on the VM, connects in over SSH and installs its agent. The VM needs a public IP.",
+              "tradeoff": "dPanel's workers do the work over SSH, so it is lighter on the VM, but dPanel's key gets root (sudo) access and the VM needs a public IP."
             },
             "sshOnly": "For now, servers on this provider join over SSH: dPanel puts the SSH key you choose on the VM and connects in.",
             "agentOnly": "Without a public IP, dPanel can only reach the VM through its agent, so SSH is not available."
@@ -2787,7 +2847,8 @@
         "viewRegions": "View regions",
         "openDetails": "Open account",
         "useOnServer": "Create a server here",
-        "updateCredentials": "Update credentials"
+        "updateCredentials": "Update credentials",
+        "findLeftovers": "Find leftover VMs"
       },
       "table": {
         "headers": {
@@ -2872,6 +2933,57 @@
         "filteredTitle": "No accounts match",
         "filteredMessage": "Try another name, or clear the filters to see every account.",
         "clear": "Clear filters"
+      },
+      "orphans": {
+        "title": "Leftover VMs",
+        "description": "VMs dPanel created in <strong>{name}</strong> that no longer belong to a server, for example after a launch failed or a server was removed from dPanel only. They still run, and cost money, at the provider.",
+        "regionLabel": "Region (optional)",
+        "regionPlaceholder": "All regions",
+        "regionHint": "Leave it empty to scan every region; that can take a minute. On Google Cloud you can enter a region or a zone.",
+        "scan": "Scan for leftover VMs",
+        "scanAgain": "Scan again",
+        "scanning": "Scanning…",
+        "scanningHint": "Asking the provider for its VMs. This can take tens of seconds.",
+        "idle": "Nothing scanned yet. dPanel only lists VMs it created, never your other VMs.",
+        "failed": "The scan did not finish",
+        "retry": "Try again",
+        "empty": "No leftover VMs. Every VM dPanel created here still belongs to a server.",
+        "emptyRegion": "No leftover VMs in {region}.",
+        "found": "{count, plural, one {# leftover VM} other {# leftover VMs}}",
+        "publicIp": "public {ip}",
+        "privateIp": "private {ip}",
+        "created": "created {time}",
+        "formerServer": "It belonged to server {id}.",
+        "evidence": {
+          "tagged": "Tagged as created by dPanel.",
+          "legacy_security_group": "Uses the security group dPanel creates for its VMs.",
+          "legacy_network_tag": "Carries this account's dPanel network tag.",
+          "legacy_name": "Named like a VM dPanel creates.",
+          "other": "Created by dPanel."
+        },
+        "delete": "Delete VM",
+        "deleteAgain": "Try again",
+        "phase": {
+          "running": "Deleting…",
+          "succeeded": "Deleted",
+          "failed": "Delete failed"
+        },
+        "footnote": "Closing this window does not stop a deletion that has started.",
+        "close": "Close",
+        "toaster": {
+          "queueFailed": "{name} could not be deleted"
+        },
+        "confirm": {
+          "title": "Delete this VM?",
+          "description": "This deletes <strong>{name}</strong> at the provider of <strong>{account}</strong>. It cannot be undone.",
+          "happens": "What happens",
+          "vmDeleted": "The VM is deleted at the provider and stops costing money.",
+          "disksGone": "Its disks and everything stored on them are gone for good.",
+          "noServer": "No dPanel server changes: this VM has none.",
+          "label": "Type <code>{name}</code> to confirm",
+          "cancel": "Cancel",
+          "submit": "Delete VM"
+        }
       }
     },
     "sshKeys": {

@@ -3,6 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import type { CloudProjectCard } from '../../-lib/describe-cloud-project';
+import { supportsOrphanScan } from '../../-lib/orphan-vms';
 import { useEmit } from '../../-model/events';
 
 export interface CloudProjectHandlers {
@@ -11,6 +12,8 @@ export interface CloudProjectHandlers {
   migrateOwnership: () => void;
   /** Absent when the account has no provider to pick a credential form by. */
   updateCredentials?: () => void;
+  /** Absent when the provider cannot be scanned for leftover VMs. */
+  findLeftovers?: () => void;
   remove: () => void;
 }
 
@@ -48,6 +51,10 @@ export function useCloudProjectHandlers() {
               provider,
             })
         : undefined,
+      findLeftovers:
+        provider && supportsOrphanScan(provider)
+          ? () => emit('@cloud-projects/open--orphans', { id, name, provider })
+          : undefined,
       remove: () => emit('@cloud-projects/project--delete', { id, name }),
     };
   });

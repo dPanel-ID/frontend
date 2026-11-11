@@ -5,11 +5,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
+  ArrowRightIcon,
   FileTextIcon,
   KeyRoundIcon,
   PlugZapIcon,
   ServerCogIcon,
   ServerIcon,
+  ShieldAlertIcon,
   ShieldCheckIcon,
 } from 'lucide-react';
 import { useForm, useWatch } from 'react-hook-form';
@@ -206,6 +208,20 @@ export default function ManualConnect() {
         <ArrowLeftIcon className="size-4" />
         {t('page.servers.create.manual.back')}
       </Link>
+
+      <div className="flex flex-col gap-2 rounded-xl border border-amber-400/30 bg-amber-500/10 p-3 text-sm leading-relaxed text-amber-800 sm:flex-row sm:items-center sm:justify-between sm:gap-4 dark:text-amber-200">
+        <p className="flex min-w-0 items-start gap-2">
+          <ShieldAlertIcon className="mt-0.5 size-4 shrink-0" />
+          <span>{t('page.servers.create.manual.trustNote')}</span>
+        </p>
+        <Link
+          to="/servers/create"
+          className="inline-flex shrink-0 items-center gap-1.5 font-semibold underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50"
+        >
+          {t('page.servers.create.manual.useAgent')}
+          <ArrowRightIcon className="size-4" />
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="flex min-w-0 flex-col gap-4">
