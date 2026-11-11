@@ -23,6 +23,78 @@ Both have no public IP and no open port. They reach dPanel through the agent, as
 - The workspace ID. You find it in the workspace picker, or with `dnocs workspace list`.
 - On each machine: Linux with systemd on Intel/AMD (`amd64`) or ARM (`arm64`), `sudo` and internet access. dnocs is needed only for the command line way and for moving a machine (Part 3): [Install dnocs](../ai/ai-in-the-terminal.md#install-dnocs).
 
+## No spare machine? Try it in a container
+
+You can try everything in this tutorial without a spare PC: run a Linux container with Docker or Podman on your laptop or any server, and connect the container as if it were a homelab machine. Each container becomes its own server in dPanel. This works with Ubuntu 24.04, Ubuntu 26.04 and Debian 13, on Linux, macOS and Windows (Docker Desktop).
+
+:::warning[For trying dPanel only]
+The container runs systemd and the dPanel agent, which install software and system services, so it starts with `--privileged`: it has nearly the same power as your own computer's administrator. Use it to try dPanel, not to host real websites; for those, connect a real machine or VM.
+:::
+
+**1. Save this file** as `Containerfile` in an empty folder. It installs systemd (the dPanel agent runs as a system service), `sudo` and `curl`, and adds a user called `dpanel` that may use `sudo`. The empty `/etc/machine-id` makes every container get its own machine ID, so each one is a separate server.
+
+```dockerfile
+ARG BASE=docker.io/library/ubuntu:24.04
+FROM ${BASE}
+ENV container=docker
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      systemd systemd-sysv sudo curl ca-certificates iproute2 \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* \
+ && rm -f /var/lib/dbus/machine-id && : > /etc/machine-id
+RUN useradd -m -s /bin/bash -G sudo dpanel \
+ && echo 'dpanel ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/dpanel
+STOPSIGNAL SIGRTMIN+3
+CMD ["/sbin/init"]
+```
+
+**2. Build an image** for the Linux you want to try. Pick one line:
+
+```bash
+docker build -f Containerfile --build-arg BASE=docker.io/library/ubuntu:24.04 -t dpanel-lab-ubuntu24 .
+docker build -f Containerfile --build-arg BASE=docker.io/library/ubuntu:26.04 -t dpanel-lab-ubuntu26 .
+docker build -f Containerfile --build-arg BASE=docker.io/library/debian:13 -t dpanel-lab-debian13 .
+```
+
+With Podman, write `podman build` instead of `docker build`; the rest is the same.
+
+**3. Start a container** that boots systemd. The `--hostname` is the name the server gets in dPanel:
+
+```bash
+docker run -d --name homelab-nas --hostname homelab-nas \
+  --privileged --cgroupns=host -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
+  dpanel-lab-ubuntu24
+```
+
+With Podman, which starts systemd by itself when the image runs `/sbin/init`:
+
+```bash
+sudo podman run -d --name homelab-nas --hostname homelab-nas dpanel-lab-ubuntu24
+```
+
+After a few seconds, `docker exec homelab-nas systemctl is-system-running` (or `sudo podman exec …`) prints `running` or `degraded`; both are fine.
+
+**4. Connect it to dPanel**, the same two ways as in [Part 2](#part-2-connect-a-machine-straight-into-the-workspace):
+
+- **The one-line command from the website.** Open a shell in the container with `docker exec -it homelab-nas bash`, paste the command from **Get install command** and press Enter.
+- **dnocs.** Open a shell as the `dpanel` user, install dnocs, sign in, then connect:
+
+  ```bash
+  docker exec -it -u dpanel -w /home/dpanel homelab-nas bash
+  curl --proto '=https' --tlsv1.2 -sSf https://dnocs.devetek.app/installer.sh | sh
+  dnocs auth login -u <your username>
+  dnocs workspace set --id <workspace id>
+  sudo dnocs machine register
+  ```
+
+Within a minute the server shows **Ready** in dPanel. Start more containers with other names (`homelab-pi`, …) or other images to get more servers.
+
+:::tip[Run dnocs machine register with sudo, from the user who signed in]
+`dnocs machine register` installs a system service, so it must run as root, and it reads the sign-in of the user who typed `sudo`. Sign in as `dpanel` and run `sudo dnocs machine register`. A root shell (`sudo su -`, `sudo -s` or `docker exec` without `-u dpanel`) has no sign-in of its own, so dnocs answers `please login first using 'dnocs auth login'`; run `dnocs auth login` in that shell first, or go back to the `dpanel` user.
+:::
+
+**5. When you are done**, delete the server in dPanel (**Settings** on the server page, or `dnocs server delete --id <server id>`), then remove the container with `docker rm -f homelab-nas` (or `sudo podman rm -f homelab-nas`). Restarting the container keeps the same server.
+
 ## Part 1: Pick the team workspace
 
 In dPanel, open the workspace picker at the top left. Personal resources and team workspaces are kept apart; the ID column shows each workspace's ID.
