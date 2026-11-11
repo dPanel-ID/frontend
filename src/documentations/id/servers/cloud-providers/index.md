@@ -27,7 +27,7 @@ Penyedia mana pun yang Anda pakai, server yang jadi menjalankan Ubuntu 24.04 LTS
 
 ## Sebelum memilih penyedia
 
-- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
+- SSH key di dPanel, hanya jika server perlu bergabung lewat SSH, bukan lewat agen dPanel. Lihat [Sebelum mulai](../before-you-start.md).
 - Kredensial yang hanya bisa melakukan apa yang dibutuhkan dPanel. Batas minimumnya ada di halaman tiap penyedia.
 - Baca [Kredensial cloud dan keamanan](./cloud-credentials-security.md) sekali. Di sana dijelaskan apa yang disimpan dPanel dan apa yang terjadi kalau kunci dicabut, serta cara menggantinya.
 
@@ -41,7 +41,7 @@ Yang akunnya sudah Anda punya. Setelah server menyala, dPanel bekerja sama saja 
 
 ### Penyedia saya tidak ada di daftar. Bisakah saya tetap memakai dPanel?
 
-Bisa. Buat mesinnya sendiri di penyedia Anda, lalu [hubungkan server Anda](../connect-your-own-server.md) lewat SSH.
+Bisa. Buat mesinnya sendiri di penyedia Anda, lalu [hubungkan dengan agen dPanel](../register-a-private-machine.md), atau [lewat SSH](../connect-your-own-server.md).
 
 ### Apakah saya membayar mesinnya ke dPanel?
 

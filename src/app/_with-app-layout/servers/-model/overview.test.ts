@@ -23,4 +23,24 @@ describe('summarizeServers', () => {
     expect(overview.ready).toBe(3);
     expect(overview.failed).toBe(1);
   });
+
+  it('counts a cloud VM that joined through its agent as cloud', () => {
+    const machines = [
+      {
+        id: 5,
+        status: 'progress',
+        provider: 'gcp',
+        connectivity: 'private',
+        source: 'cloud-partner',
+      },
+    ] as DTOs.MachineV1[];
+
+    const overview = summarizeServers({
+      machines,
+      pagination: { total_item: 1 } as DTOs.Pagination,
+    });
+
+    expect(overview.cloud).toBe(1);
+    expect(overview.own).toBe(0);
+  });
 });

@@ -1,13 +1,17 @@
 ---
 title: Before you start
-description: Before you add a server to dPanel, create an SSH key, and connect a cloud account if dPanel should launch the VPS. Both are set up once and reused.
+description: Before you add a server to dPanel, connect a cloud account if dPanel should launch the VPS, and create an SSH key only if dPanel should log in over SSH.
 sidebar_position: 2
 sidebar_icon: list-checks
 ---
 
-dPanel needs two things before your first server, and reuses both for every server after it: an SSH key to sign in to the machine, and, only if dPanel should launch a new VPS for you, a connected cloud account.
+To connect a server you already have with the dPanel agent, you need nothing in dPanel first: see [Connect a server with the dPanel agent](./register-a-private-machine.md).
+
+Two other things are set up once and reused for every server after it: a connected cloud account, only if dPanel should launch a new VPS for you, and an SSH key, only if dPanel should sign in to the machine over SSH instead of using the agent.
 
 ## An SSH key
+
+You need this only when dPanel connects to a server over SSH. Servers that join through the dPanel agent need no key.
 
 An SSH key is a pair of files that replaces a password when a computer signs in to a server. One half is public and is written onto the server. The other half is private and never leaves dPanel.
 
@@ -27,7 +31,7 @@ The private half is never shown again. dPanel keeps it encrypted and uses it for
 
 ## A cloud account
 
-You need this only to launch a new machine. To [connect your own server](./connect-your-own-server.md), the SSH key is enough.
+You need this only to launch a new machine. To connect a server you already have, use [the dPanel agent](./register-a-private-machine.md) or [SSH](./connect-your-own-server.md).
 
 A cloud account is dPanel's link to your account at a cloud provider. It holds the credentials that let dPanel create machines for you.
 
@@ -55,7 +59,7 @@ dPanel creates the key pair for you so the private half never leaves dPanel. To 
 
 ### Do I need a cloud account to try dPanel?
 
-No. [Connect your own server](./connect-your-own-server.md) needs only an SSH key and a machine you can reach over SSH.
+No. [Connect a server with the dPanel agent](./register-a-private-machine.md) needs only a Linux machine where you can run one command with `sudo`.
 
 ### Can my team use the same key and cloud account?
 

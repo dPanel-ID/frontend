@@ -24,6 +24,7 @@ import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import {
   canReinstallServer,
+  isAgentCloudServer,
   isCloudServer,
   isPrivateServer,
   serverDisplayName,
@@ -90,6 +91,11 @@ export default guard(function Hero() {
   // A private server has no public IP or SSH: its terminal runs through the
   // agent, and it has no connection details to edit.
   const isPrivate = isPrivateServer(server);
+  // A cloud VM reached through its agent may have a public IP; say only
+  // that dPanel reaches it through the agent.
+  const privateHint = isAgentCloudServer(server)
+    ? t('agentHint')
+    : t('privateHint');
   const accent = isCloudServer(server) ? FLOW_ACCENTS.sky : FLOW_ACCENTS.violet;
   const sshUser = server.ssh.defaultUser || 'root';
   const sshHint = t('sshHint', {
@@ -158,7 +164,7 @@ export default guard(function Hero() {
               buttonStyle="outline"
               buttonColor="secondary"
               size="sm"
-              title={isPrivate ? t('privateHint') : sshHint}
+              title={isPrivate ? privateHint : sshHint}
               onClick={() => setIsTerminalOpen(true)}
             >
               <TerminalIcon />
@@ -211,7 +217,7 @@ export default guard(function Hero() {
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-medium text-muted-foreground">
           {isPrivate ? (
-            <Fact icon={HouseIcon} value={t('privateHint')} />
+            <Fact icon={HouseIcon} value={privateHint} />
           ) : (
             <Fact icon={KeyRoundIcon} value={sshHint} mono />
           )}

@@ -1,12 +1,16 @@
 ---
-title: Connect your own server
-description: Connect a VPS, bare-metal or home-lab Ubuntu or Debian server you already run to dPanel over SSH. dPanel installs its agent in about 5 minutes.
+title: Connect your own server over SSH
+description: Connect a VPS, bare-metal or home-lab Ubuntu or Debian server you already run to dPanel over SSH with a dPanel SSH key. dPanel installs its agent in about 5 minutes.
 sidebar_position: 3
 sidebar_icon: terminal
 sidebar_label: Manual SSH
 ---
 
-You can add a server you already run, at any hosting company or at home, to dPanel. dPanel signs in over SSH with one of your dPanel SSH keys, installs its agent, and the machine then works like any server dPanel launched. It takes about 5 minutes and needs no cloud account.
+You can add a server you already run, at any hosting company or at home, to dPanel over SSH. dPanel signs in with one of your dPanel SSH keys, installs its agent, and the machine then works like any server dPanel launched. It takes about 5 minutes and needs no cloud account.
+
+:::tip[The recommended way needs no SSH key]
+[Connect the server with the dPanel agent](./register-a-private-machine.md) instead: you run one command on it, and the agent connects out to dPanel. You don't add a dPanel key, open a port or need a public IP. Use this page when you would rather let dPanel log in over SSH.
+:::
 
 ## What you need first
 
@@ -16,7 +20,7 @@ You can add a server you already run, at any hosting company or at home, to dPan
 
 ## Connect it
 
-1. Open **Servers**, then **Create Server**, then **Connect a server**.
+1. Open **Servers**, then **Create Server**, then **Connect over SSH**.
 2. Under **Choose an SSH key**, pick a key, or press **Create SSH key**.
 3. Copy the command under **Authorize the key on your server** and run it once on the server. Sign in the way you do today, usually your provider's web console or `ssh user@address` in a terminal. The command adds the key's public half to `~/.ssh/authorized_keys`, the list of keys allowed to sign in, and prints nothing when it works.
 4. Tick **I added this key to the server**.
@@ -51,7 +55,7 @@ No. dPanel signs in with an SSH key, never a password. The Linux user you enter 
 
 ### Does my server need a public IP address?
 
-dPanel must be able to reach the **Server address** and **SSH port** you enter. A server behind a home router usually needs no SSH at all: [register it as a private machine](./register-a-private-machine.md), which only connects out. To use this page instead, forward the SSH port to it or give it a public address.
+For this page, yes: dPanel must be able to reach the **Server address** and **SSH port** you enter. A server [connected with the dPanel agent](./register-a-private-machine.md) needs no public IP, because it only connects out.
 
 ### What happens if I remove the server from dPanel?
 

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { resolveJoinMethod } from './join';
 import {
   isAlibabaCloudProvider,
   isAwsProvider,
@@ -83,10 +84,15 @@ export const formSchema = z
 
         return value;
       }, z.number().optional()),
-      sshKeyID: z //
-        .string({ message: 'Please select a SSH key!' })
-        .min(1, 'Please select a SSH key!'),
+      // Required only when the VM joins over SSH; see superRefine.
+      sshKeyID: z.string().optional(),
       zoneSlug: z.string().optional(),
+    }),
+    joinMethod: z.enum(['agent', 'ssh']),
+    /** Choices the provider's VM create contract offers, set when it loads. */
+    contract: z.object({
+      agentJoin: z.boolean(),
+      publicIPChoice: z.boolean(),
     }),
     regionSlug: z.string().optional(),
     vpcBulk: z.object({
@@ -125,6 +131,25 @@ export const formSchema = z
     const usesAws = isAwsProvider(values.provider);
     const usesAlibabaCloud = isAlibabaCloudProvider(values.provider);
     const usesTencent = isTencentProvider(values.provider);
+    const joinMethod = resolveJoinMethod(values);
+
+    if (joinMethod === 'ssh' && !values.cloud.sshKeyID) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Please select a SSH key!',
+        path: ['cloud', 'sshKeyID'],
+      });
+    }
+
+    // dPanel reaches an SSH server on its public IP, so the API refuses SSH
+    // without one; the form switches to the agent before this can happen.
+    if (joinMethod === 'ssh' && !values.spec.reservePublicIP) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'A server that joins over SSH needs a public IP.',
+        path: ['spec', 'reservePublicIP'],
+      });
+    }
 
     const vmNameResult = (
       usesBiznetGio

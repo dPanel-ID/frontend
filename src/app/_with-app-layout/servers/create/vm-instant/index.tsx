@@ -10,12 +10,15 @@ import {
   FileTextIcon,
   HardDriveIcon,
   MapPinIcon,
+  PlugZapIcon,
   RocketIcon,
   UserRoundIcon,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useWatch } from 'react-hook-form';
 import { z } from 'zod';
+
+import { useDevetekTranslations } from '@/services/i18n';
 
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
@@ -35,6 +38,7 @@ import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
 import { FormProvider, useForm } from './-model';
 import { formSchema } from './-model/form';
+import { resolveJoinMethod } from './-model/join';
 import {
   getFixedLoginUser,
   isAlibabaCloudProvider,
@@ -47,6 +51,7 @@ import {
 } from './-model/provider';
 import useLaunch from './-usecase/use-launch';
 import { SectionCloud } from './-view/SectionCloud';
+import { SectionConnect } from './-view/SectionConnect';
 import { SectionLogin } from './-view/SectionLogin';
 import { SectionRegionVPC } from './-view/SectionRegionVPC';
 import { SectionSpecs } from './-view/SectionSpecs';
@@ -120,17 +125,19 @@ function PresetProvider() {
   return null;
 }
 
-type StepKey = 'cloud' | 'location' | 'spec' | 'access';
+type StepKey = 'cloud' | 'location' | 'connect' | 'spec' | 'access';
 
 /** The review rows each step owns; a step is done when all of them are. */
 const STEP_ROWS: Record<StepKey, string[]> = {
-  cloud: ['provider', 'project', 'sshKey'],
+  cloud: ['provider', 'project'],
   location: ['location', 'network'],
+  connect: ['join', 'publicIP', 'sshKey'],
   spec: ['name', 'size', 'image'],
   access: ['login'],
 };
 
 function LaunchFlow() {
+  const t = useDevetekTranslations('page.servers.create.vmInstant');
   const { form, labels } = useForm();
   const values = useWatch({ control: form.control });
   const { isSubmitting, launch, reset } = useLaunch();
@@ -146,6 +153,18 @@ function LaunchFlow() {
   const needsAccessStep = !fixedLoginUser;
   const picksInstanceType =
     usesZone || isAwsProvider(provider) || isDigitalOceanProvider(provider);
+  const contract = values.contract ?? {
+    agentJoin: false,
+    publicIPChoice: false,
+  };
+  const joinMethod = resolveJoinMethod({
+    joinMethod: values.joinMethod ?? 'agent',
+    contract: {
+      agentJoin: Boolean(contract.agentJoin),
+      publicIPChoice: Boolean(contract.publicIPChoice),
+    },
+    spec: { reservePublicIP: values.spec?.reservePublicIP !== false },
+  });
 
   // One validation pass drives every "done" state, so the panel can never
   // disagree with what the form will accept.
@@ -179,8 +198,7 @@ function LaunchFlow() {
       key: 'cloud',
       icon: CloudIcon,
       title: 'Provider and project',
-      description:
-        'Where the server runs, which cloud project pays for it, and the SSH key dPanel uses to reach it.',
+      description: t('steps.cloudDescription'),
       content: <SectionCloud />,
     },
     ...(usesBiznetGio
@@ -196,6 +214,13 @@ function LaunchFlow() {
             content: <SectionRegionVPC />,
           },
         ]),
+    {
+      key: 'connect',
+      icon: PlugZapIcon,
+      title: t('steps.connectTitle'),
+      description: t('steps.connectDescription'),
+      content: <SectionConnect />,
+    },
     {
       key: 'spec',
       icon: HardDriveIcon,
@@ -270,11 +295,38 @@ function LaunchFlow() {
         done: Boolean(values.cloud?.projectID) && clean('cloud.projectID'),
       },
       {
-        key: 'sshKey',
-        label: 'SSH key',
-        value: labels.sshKey,
-        done: Boolean(values.cloud?.sshKeyID) && clean('cloud.sshKeyID'),
+        key: 'join',
+        label: t('review.join'),
+        value: provider
+          ? joinMethod === 'agent'
+            ? t('review.joinAgent')
+            : t('review.joinSsh')
+          : undefined,
+        done: Boolean(provider) && clean('joinMethod'),
       },
+      ...(contract.publicIPChoice
+        ? [
+            {
+              key: 'publicIP',
+              label: t('review.publicIP'),
+              value:
+                values.spec?.reservePublicIP === false
+                  ? t('review.no')
+                  : t('review.yes'),
+              done: clean('spec.reservePublicIP'),
+            },
+          ]
+        : []),
+      ...(joinMethod === 'ssh'
+        ? [
+            {
+              key: 'sshKey',
+              label: t('review.sshKey'),
+              value: labels.sshKey,
+              done: Boolean(values.cloud?.sshKeyID) && clean('cloud.sshKeyID'),
+            },
+          ]
+        : []),
       ...(usesBiznetGio
         ? []
         : [

@@ -27,7 +27,7 @@ Whichever provider you use, the finished server runs Ubuntu 24.04 LTS or 26.04 L
 
 ## Before any provider
 
-- An SSH key in dPanel. See [Before you start](../before-you-start.md).
+- An SSH key in dPanel, only if the server should join over SSH instead of through the dPanel agent. See [Before you start](../before-you-start.md).
 - A credential that can do only what dPanel needs. Each provider page gives the minimum.
 - Read [Cloud credentials and security](./cloud-credentials-security.md) once. It explains what dPanel keeps and what happens if you revoke a key, and how to replace one.
 
@@ -41,7 +41,7 @@ The one you already have an account with. dPanel works the same on every provide
 
 ### My provider is not listed. Can I still use dPanel?
 
-Yes. Create the machine at your provider yourself, then [connect your own server](../connect-your-own-server.md) over SSH.
+Yes. Create the machine at your provider yourself, then [connect it with the dPanel agent](../register-a-private-machine.md), or [over SSH](../connect-your-own-server.md).
 
 ### Do I pay dPanel for the machine?
 
