@@ -117,3 +117,53 @@ export interface CloudProviderContractListV1 {
   project_payload_example?: Record<string, unknown>;
   providers?: CloudProviderContractV1[];
 }
+
+/**
+ * A VM dPanel created at a cloud provider that no longer belongs to a dPanel
+ * server (GET /v1/cloud/project/detail/{id}/orphans).
+ */
+export interface CloudOrphanVmV1 {
+  id?: string;
+  name?: string;
+  region?: string;
+  /** GCP zone; deleting a GCP VM names its zone as the region. */
+  zone?: string;
+  state?: string;
+  instance_type?: string;
+  private_ip?: string;
+  public_ip?: string;
+  created_at?: string;
+  tags?: Record<string, string> | null;
+  /** Why the VM counts as dPanel-created, e.g. `tagged` or `legacy_name`. */
+  evidence?: string;
+  /** The dPanel server it belonged to, when its tags say so. */
+  server_id?: string;
+}
+
+export interface CloudOrphanListV1 {
+  cloud_id?: string;
+  provider?: string;
+  region?: string;
+  items?: CloudOrphanVmV1[] | null;
+}
+
+export interface CloudOrphanDeleteResultV1 {
+  execution_id?: string;
+  cloud_id?: string;
+  provider?: string;
+  vm?: CloudOrphanVmV1;
+}
+
+/** The execution that deletes an orphan VM. */
+export interface CloudOrphanExecutionV1 {
+  id?: string;
+  /** queued, running, succeeded or failed. */
+  status?: string;
+  error?: string;
+  first_error_message?: string;
+  last_event_message?: string;
+  started_at?: string;
+  finished_at?: string;
+  created_at?: string;
+  updated_at?: string;
+}

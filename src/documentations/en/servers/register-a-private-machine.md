@@ -17,17 +17,41 @@ This guide walks through the whole thing with a real machine called `home-server
 - A Linux machine with systemd, such as Ubuntu, Debian or Raspberry Pi OS, on Intel/AMD (`amd64`) or ARM (`arm64`).
 - A terminal on that machine, sitting in front of it or through the login you already use, where you can run commands with `sudo` (as administrator).
 - Internet access from the machine. It only connects out, so nothing has to be opened on your router.
-- A dPanel account. You don't need an SSH key or a cloud account.
+- A dPanel account. You don't need an SSH key, a cloud account or dnocs on the machine.
 
 ## Step 1: Connect the machine
 
-In dPanel, open **Servers**, then **Create Server**. The **Connect a server with the dPanel agent** card shows the command to run and links back to this guide.
+The easiest way is from the dPanel website. You copy one command and run it on the machine.
+
+1. In dPanel, pick the workspace the machine should belong to, open **Servers**, then **Create Server**.
+2. On the **Connect a server with the dPanel agent** card, type a name for the server if you like, for example `home-server`. Leave it empty and the server takes the machine's own name once it connects.
+3. Choose **Get install command**. dPanel shows a one-line command in a dark box. Choose **Copy**.
+4. On the machine, paste the command into the terminal and run it. It looks like this:
+
+   ```bash
+   curl -fsSL --data 'code=dpe_…' https://…/api/v2/agent/install | sudo bash
+   ```
+
+   It may ask for your password, because of `sudo`.
+5. Back in dPanel, the card says **Waiting for the machine…** and changes to **Connected!** as soon as the agent connects, usually in under a minute. Choose **Open server**.
+
+The command works **once, for 2 hours**. For another machine, choose **Get a new command**; each command adds a new server. You don't install dnocs or sign in on the machine, and nothing needs a public IP, an open port or a dPanel SSH key.
+
+**What the command does.** It downloads dPanel's install script, sending its single-use code in the request body (never in a web address). The script creates a Linux user for your dPanel account, installs the agent as the system service `dpanel-agent`, and the agent connects out to dPanel.
+
+**Why `sudo`?** Connecting changes the machine itself: it creates a Linux user and installs the agent as a system service, which only an administrator may do.
+
+**Want to read it first?** Replace `| sudo bash` at the end of the command with `> install.sh`, read `install.sh`, then run `sudo bash install.sh`. The code is used up only when the agent connects, so saving the script first does not waste it.
+
+### Prefer the command line? Use dnocs
+
+If you already use dnocs, the dPanel command line tool, you can connect the machine with it instead. The card's **Prefer the CLI?** section shows the same command.
 
 ![The Create Server page with the Register a private machine card: a No public IP badge, three steps and the command sudo dnocs machine register](../../assets/servers/private-create-chooser.webp)
 
 On the machine:
 
-1. Install dnocs, the dPanel command line tool. Follow [Install dnocs](../ai/ai-in-the-terminal.md#install-dnocs).
+1. Install dnocs. Follow [Install dnocs](../ai/ai-in-the-terminal.md#install-dnocs).
 2. Sign in as your normal user, without `sudo`:
 
    ```bash
@@ -53,9 +77,9 @@ dnocs names the workspace and asks you to confirm. Then it creates a Linux user 
 
 ![A terminal on home-server running sudo dnocs machine register: it confirms, creates the Linux user, installs the agent and prints that server 206 is ready](../../assets/servers/private-register-terminal.webp)
 
-**Why `sudo`?** Connecting changes the machine itself: it creates a Linux user and installs the agent as a system service, which only an administrator may do. Sign in and pick the workspace as your normal user; `sudo dnocs machine register` then uses that sign-in. If it says `please login first using 'dnocs auth login'` although you signed in, update dnocs to the newest version, or sign in with `sudo dnocs auth login -u <your username>` first.
+Sign in and pick the workspace as your normal user; `sudo dnocs machine register` then uses that sign-in. If it says `please login first using 'dnocs auth login'` although you signed in, update dnocs to the newest version, or sign in with `sudo dnocs auth login -u <your username>` first. `sudo dnocs machine register --print-only` prints the install script without running anything.
 
-**Want to read it first?** `sudo dnocs machine register --print-only` prints the install script without running anything.
+To get the one-line command of the website from a computer where you use dnocs, run `dnocs server agent-install --name home-server`. It prints the same command, valid once for 2 hours, to run on the machine.
 
 The machine now appears on your **Servers** page with the status **Ready** and a **Private** badge, which means dPanel reaches it through its agent. Its address is its address on your own network.
 
@@ -65,7 +89,7 @@ The machine now appears on your **Servers** page with the status **Ready** and a
 
 - **Nothing connects in.** The agent dials out to dPanel over HTTPS, like a browser does. Your router and firewall stay closed.
 - **No keys to hand over.** dPanel never needs your SSH access and never puts its SSH key on your machine.
-- **You stay in control.** You can read the install script first (`--print-only`), stop the agent at any time, and delete the server in dPanel, which revokes the agent's access at once.
+- **You stay in control.** You can read the install script first, stop the agent at any time, and delete the server in dPanel, which revokes the agent's access at once.
 
 ## dPanel agent or SSH: which one?
 
@@ -165,7 +189,7 @@ You can also reinstall the agent yourself: open the server's **Settings** tab an
 
 ## Connect it again
 
-Running `sudo dnocs machine register` again on the same machine reconnects the same server in dPanel and gives its agent a new credential. A machine belongs to one workspace at a time.
+Running `sudo dnocs machine register` again on the same machine reconnects the same server in dPanel and gives its agent a new credential. A machine belongs to one workspace at a time. A command from **Get install command** always adds a new server; to repair the agent of a server you already have, use **Reinstall** (above).
 
 A workspace can connect up to 10 machines this way. Cloud servers that dPanel creates for you don't count toward that limit.
 

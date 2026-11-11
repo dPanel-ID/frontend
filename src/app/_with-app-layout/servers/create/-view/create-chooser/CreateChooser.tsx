@@ -30,6 +30,7 @@ import {
 import type { FlowAccent } from '@/shared/presentation/organisms/FlowHero';
 
 import AgentConnectCard from './AgentConnectCard';
+import JoinMethodComparison from './JoinMethodComparison';
 
 /**
  * Landing of /servers/create, agent first: connecting a server the user
@@ -83,6 +84,8 @@ export default function CreateChooser() {
           </ol>
         </PathCard>
       </div>
+
+      <JoinMethodComparison />
 
       <WhatHappensNext />
     </div>

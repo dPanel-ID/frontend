@@ -22,3 +22,10 @@ export interface CloudProjectMigrateOwnershipPayload {
   /** Casdoor workspace group ID; absent for personal projects. */
   teamId?: string | null;
 }
+
+export interface CloudProjectOrphansPayload {
+  id: string;
+  name: string;
+  /** Raw provider ID; only supported providers open the scan. */
+  provider: string;
+}

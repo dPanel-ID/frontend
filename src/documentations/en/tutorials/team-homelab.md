@@ -8,7 +8,7 @@ sidebar_label: Team homelab
 
 Homelab machines join dPanel with the dPanel agent: you run one command on each machine, and the agent connects out to dPanel. You don't need SSH, a public IP or port forwarding on your router. Never connected a machine before? Follow [Connect a server with the dPanel agent](../servers/register-a-private-machine.md) first; it explains every step for a single machine.
 
-A machine you connect with `sudo dnocs machine register` lands in the workspace your dnocs is pointed at. If that is your personal space, only you can see it. This tutorial puts homelab machines in a **team workspace** instead, so the whole team shares them: each member opens the same servers, installs software and deploys apps, within the role you give them.
+A machine you connect lands in the workspace you picked: the one selected in dPanel when you choose **Get install command**, or the one your dnocs is pointed at when you use `sudo dnocs machine register`. If that is your personal space, only you can see it. This tutorial puts homelab machines in a **team workspace** instead, so the whole team shares them: each member opens the same servers, installs software and deploys apps, within the role you give them.
 
 We use a workspace called **Home Lab** with two machines:
 
@@ -21,7 +21,7 @@ Both have no public IP and no open port. They reach dPanel through the agent, as
 
 - A team workspace, and a role that can add servers to it: Owner, Admin or DevOps. Create one from the workspace picker with **New workspace** (see [Workspaces](../getting-started/workspaces.md)).
 - The workspace ID. You find it in the workspace picker, or with `dnocs workspace list`.
-- On each machine: Linux with systemd on Intel/AMD (`amd64`) or ARM (`arm64`), `sudo`, internet access, and dnocs installed ([Install dnocs](../ai/ai-in-the-terminal.md#install-dnocs)).
+- On each machine: Linux with systemd on Intel/AMD (`amd64`) or ARM (`arm64`), `sudo` and internet access. dnocs is needed only for the command line way and for moving a machine (Part 3): [Install dnocs](../ai/ai-in-the-terminal.md#install-dnocs).
 
 ## Part 1: Pick the team workspace
 
@@ -31,7 +31,17 @@ In dPanel, open the workspace picker at the top left. Personal resources and tea
 
 ## Part 2: Connect a machine straight into the workspace
 
-On the machine, sign in as your normal user, point dnocs at the team workspace, then connect it:
+From the website:
+
+1. Switch dPanel to the **Home Lab** workspace in the workspace picker.
+2. Open **Servers**, then **Create Server**.
+3. On the **Connect a server with the dPanel agent** card, type `homelab-nas` as the server name and choose **Get install command**.
+4. Choose **Copy**, then paste the command into a terminal on the machine and run it. It asks for `sudo`.
+5. The card says **Connected!** once the agent connects, usually in under a minute. The server is created in the Home Lab workspace.
+
+The command works once, for 2 hours; get a new one for each machine. The machine needs no dnocs and no sign-in.
+
+**Prefer the command line?** On the machine, sign in as your normal user, point dnocs at the team workspace, then connect it:
 
 ```bash
 dnocs auth login -u <your username>

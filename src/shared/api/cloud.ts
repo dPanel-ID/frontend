@@ -2,6 +2,9 @@ import * as ProjectBillingAccounts$Id from './cloud.project.billing-accounts.$id
 import * as ProjectCreate from './cloud.project.create';
 import * as ProjectDelete$Id from './cloud.project.delete.$id';
 import * as ProjectFind from './cloud.project.find';
+import * as ProjectOrphans$Id from './cloud.project.orphans.$id';
+import * as ProjectOrphans$IdDelete from './cloud.project.orphans.$id.delete';
+import * as ProjectOrphans$IdExecutions$ExecutionId from './cloud.project.orphans.$id.executions.$executionId';
 import * as ProjectOstemplates$Id from './cloud.project.ostemplates.$id';
 import * as ProjectProducts$Id from './cloud.project.products.$id';
 import * as ProjectProviders from './cloud.project.providers';
@@ -26,6 +29,15 @@ const Root = {
     },
     BillingAccounts: {
       $Id: ProjectBillingAccounts$Id,
+    },
+    Orphans: {
+      $Id: {
+        ...ProjectOrphans$Id,
+        Delete: ProjectOrphans$IdDelete,
+        Executions: {
+          $ExecutionId: ProjectOrphans$IdExecutions$ExecutionId,
+        },
+      },
     },
     Ostemplates: {
       $Id: ProjectOstemplates$Id,

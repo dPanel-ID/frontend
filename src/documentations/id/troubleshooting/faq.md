@@ -12,7 +12,7 @@ Halaman ini mengumpulkan masalah yang paling sering dialami pengguna dPanel, bes
 
 ### Bagaimana cara menambahkan server rumahan atau homelab tanpa SSH?
 
-Hubungkan dengan agen dPanel. Di mesin itu, pasang dnocs, masuk dengan `dnocs auth login -u <username Anda>`, lalu jalankan `sudo dnocs machine register`. Agen menyambung keluar ke dPanel, jadi Anda tidak perlu SSH key, IP publik, atau port forwarding. Lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md).
+Hubungkan dengan agen dPanel. Di dPanel, buka **Server**, lalu **Buat Server**, pilih **Ambil perintah pemasangan**, dan jalankan perintah itu di mesin. Jika Anda memakai dnocs, `sudo dnocs machine register` di mesin itu melakukan hal yang sama. Agen menyambung keluar ke dPanel, jadi Anda tidak perlu SSH key, IP publik, atau port forwarding. Lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md).
 
 ### `sudo dnocs machine register` menampilkan "please login first"
 
@@ -20,7 +20,7 @@ Masuk dulu sebagai pengguna biasa, tanpa `sudo`: `dnocs auth login -u <username 
 
 ### Server tetap dalam proses dan tidak pernah menjadi Ready
 
-Agen di server itu belum tersambung. Pada server yang Anda hubungkan dengan `sudo dnocs machine register`, pastikan mesin bisa menjangkau internet lewat HTTPS (port 443) dan `sudo systemctl status dpanel-agent` menunjukkan agen berjalan. Pada server cloud baru yang bergabung lewat agen, tunggu beberapa menit setelah VM dibuat. Jika server diluncurkan tanpa IP publik di jaringan yang Anda pilih sendiri, jaringan itu harus memberi akses internet keluar; tanpa itu agen tidak bisa tersambung. Hapus server lalu luncurkan lagi dengan IP publik menyala, atau di `dpanel-network`. Lihat [IP publik](../servers/cloud-providers/create-a-cloud-server.md#ip-publik).
+Agen di server itu belum tersambung. Pada server yang Anda hubungkan dengan agen dPanel, pastikan mesin bisa menjangkau internet lewat HTTPS (port 443) dan `sudo systemctl status dpanel-agent` menunjukkan agen berjalan. Pada server cloud baru yang bergabung lewat agen, tunggu beberapa menit setelah VM dibuat. Jika server diluncurkan tanpa IP publik di jaringan yang Anda pilih sendiri, jaringan itu harus memberi akses internet keluar; tanpa itu agen tidak bisa tersambung. Hapus server lalu luncurkan lagi dengan IP publik menyala, atau di `dpanel-network`. Lihat [IP publik](../servers/cloud-providers/create-a-cloud-server.md#ip-publik).
 
 ### Halaman server menampilkan "Penyiapan tidak selesai"
 

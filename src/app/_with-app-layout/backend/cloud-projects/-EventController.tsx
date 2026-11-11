@@ -3,7 +3,9 @@ import useAddNewCloudProjectUsecase from './-usecase/use-add-new-cloud-project';
 import useDeleteCloudProjectUsecase from './-usecase/use-delete-cloud-project';
 import useOpenDetailsUsecase from './-usecase/use-open-details';
 import useOpenCloudProjectMigrateOwnershipUsecase from './-usecase/use-open-migrate-ownership';
+import useOrphanVmsUsecase from './-usecase/use-orphan-vms';
 import useUpdateCloudProjectCredentialsUsecase from './-usecase/use-update-cloud-project-credentials';
+import OrphanVmsDialog from './-view/OrphanVmsDialog';
 
 export default function EventController() {
   const emit = useEmit();
@@ -31,11 +33,14 @@ export default function EventController() {
     '@cloud-projects/open--migrate-ownership',
     handleOpenMigrateOwnership,
   );
+  const [handleOpenOrphans, orphans] = useOrphanVmsUsecase();
+
   useSubscribe('@cloud-projects/open--details', handleOpenDetails);
+  useSubscribe('@cloud-projects/open--orphans', handleOpenOrphans);
   useSubscribe(
     '@cloud-projects/open--update-credentials',
     handleUpdateCredentials,
   );
 
-  return null;
+  return <OrphanVmsDialog {...orphans} />;
 }

@@ -17,17 +17,41 @@ Panduan ini menunjukkan seluruh langkahnya dengan mesin sungguhan bernama `home-
 - Mesin Linux dengan systemd, seperti Ubuntu, Debian, atau Raspberry Pi OS, di prosesor Intel/AMD (`amd64`) atau ARM (`arm64`).
 - Terminal di mesin itu, langsung di depan mesinnya atau lewat cara masuk yang biasa Anda pakai, tempat Anda bisa menjalankan perintah dengan `sudo` (sebagai administrator).
 - Akses internet dari mesin itu. Mesin hanya terhubung keluar, jadi tidak ada yang perlu dibuka di router.
-- Akun dPanel. Anda tidak butuh SSH key atau akun cloud.
+- Akun dPanel. Anda tidak butuh SSH key, akun cloud, atau dnocs di mesin itu.
 
 ## Langkah 1: Hubungkan mesinnya
 
-Di dPanel, buka **Server**, lalu **Buat Server**. Kartu **Hubungkan server dengan agen dPanel** menampilkan perintah yang perlu dijalankan dan tautan ke panduan ini.
+Cara termudah adalah dari situs web dPanel. Anda menyalin satu perintah lalu menjalankannya di mesin itu.
+
+1. Di dPanel, pilih ruang kerja tempat mesin ini akan berada, buka **Server**, lalu **Buat Server**.
+2. Di kartu **Hubungkan server dengan agen dPanel**, ketik nama server jika mau, misalnya `home-server`. Jika dibiarkan kosong, server memakai nama mesinnya sendiri begitu terhubung.
+3. Pilih **Ambil perintah pemasangan**. dPanel menampilkan perintah satu baris di kotak gelap. Pilih **Salin**.
+4. Di mesin itu, tempel perintahnya di terminal lalu jalankan. Bentuknya seperti ini:
+
+   ```bash
+   curl -fsSL --data 'code=dpe_…' https://…/api/v2/agent/install | sudo bash
+   ```
+
+   Perintah ini mungkin meminta kata sandi Anda, karena memakai `sudo`.
+5. Kembali ke dPanel, kartu menampilkan **Menunggu mesinnya…** lalu berubah menjadi **Terhubung!** begitu agen terhubung, biasanya kurang dari satu menit. Pilih **Buka server**.
+
+Perintah ini hanya bisa dipakai **sekali, selama 2 jam**. Untuk mesin lain, pilih **Ambil perintah baru**; setiap perintah menambahkan server baru. Anda tidak perlu memasang dnocs atau masuk akun di mesin itu, dan tidak ada yang butuh IP publik, port terbuka, atau SSH key dPanel.
+
+**Apa yang dilakukan perintah ini.** Perintah mengunduh skrip pemasangan dPanel dan mengirim kode sekali pakainya di badan permintaan (tidak pernah di alamat web). Skrip membuat pengguna Linux untuk akun dPanel Anda, memasang agen sebagai layanan sistem `dpanel-agent`, lalu agen terhubung keluar ke dPanel.
+
+**Mengapa `sudo`?** Menghubungkan mengubah mesin itu sendiri: membuat pengguna Linux dan memasang agen sebagai layanan sistem, yang hanya boleh dilakukan administrator.
+
+**Ingin membacanya dulu?** Ganti `| sudo bash` di akhir perintah dengan `> install.sh`, baca `install.sh`, lalu jalankan `sudo bash install.sh`. Kodenya baru terpakai saat agen terhubung, jadi menyimpan skripnya lebih dulu tidak menghabiskan kode itu.
+
+### Lebih suka baris perintah? Pakai dnocs
+
+Jika Anda sudah memakai dnocs, alat baris perintah dPanel, Anda juga bisa menghubungkan mesin dengannya. Bagian **Lebih suka CLI?** di kartu tadi menampilkan perintah yang sama.
 
 ![Halaman Create Server dengan kartu Register a private machine: lencana No public IP, tiga langkah, dan perintah sudo dnocs machine register](../../assets/servers/private-create-chooser.webp)
 
 Di mesin itu:
 
-1. Pasang dnocs, alat baris perintah dPanel. Ikuti [Memasang dnocs](../ai/ai-in-the-terminal.md#memasang-dnocs).
+1. Pasang dnocs. Ikuti [Memasang dnocs](../ai/ai-in-the-terminal.md#memasang-dnocs).
 2. Masuk sebagai pengguna biasa, tanpa `sudo`:
 
    ```bash
@@ -53,9 +77,9 @@ dnocs menyebutkan ruang kerjanya dan meminta konfirmasi. Lalu dnocs membuat peng
 
 ![Terminal di home-server yang menjalankan sudo dnocs machine register: konfirmasi, pembuatan pengguna Linux, pemasangan agen, lalu pesan bahwa server 206 sudah siap](../../assets/servers/private-register-terminal.webp)
 
-**Mengapa `sudo`?** Menghubungkan mengubah mesin itu sendiri: membuat pengguna Linux dan memasang agen sebagai layanan sistem, yang hanya boleh dilakukan administrator. Login dan pilih ruang kerja sebagai pengguna biasa; `sudo dnocs machine register` lalu memakai login tersebut. Jika muncul `please login first using 'dnocs auth login'` padahal Anda sudah login, perbarui dnocs ke versi terbaru, atau login dulu dengan `sudo dnocs auth login -u <username Anda>`.
+Login dan pilih ruang kerja sebagai pengguna biasa; `sudo dnocs machine register` lalu memakai login tersebut. Jika muncul `please login first using 'dnocs auth login'` padahal Anda sudah login, perbarui dnocs ke versi terbaru, atau login dulu dengan `sudo dnocs auth login -u <username Anda>`. `sudo dnocs machine register --print-only` menampilkan skrip pemasangan tanpa menjalankan apa pun.
 
-**Ingin membacanya dulu?** `sudo dnocs machine register --print-only` menampilkan skrip pemasangan tanpa menjalankan apa pun.
+Untuk mendapatkan perintah satu baris seperti di situs web dari komputer tempat Anda memakai dnocs, jalankan `dnocs server agent-install --name home-server`. Perintah ini mencetak perintah yang sama, berlaku sekali selama 2 jam, untuk dijalankan di mesin itu.
 
 Mesin itu kini muncul di halaman **Server** dengan status **Ready** dan lencana **Privat**, yang berarti dPanel menjangkaunya lewat agennya. Alamatnya adalah alamat mesin di jaringan Anda sendiri.
 
@@ -65,7 +89,7 @@ Mesin itu kini muncul di halaman **Server** dengan status **Ready** dan lencana 
 
 - **Tidak ada yang masuk.** Agen menghubungi dPanel keluar lewat HTTPS, seperti browser. Router dan firewall Anda tetap tertutup.
 - **Tidak ada kunci yang diserahkan.** dPanel tidak pernah butuh akses SSH Anda dan tidak pernah memasang SSH key-nya di mesin Anda.
-- **Kendali tetap di tangan Anda.** Anda bisa membaca skrip pemasangan lebih dulu (`--print-only`), menghentikan agen kapan saja, dan menghapus server di dPanel, yang langsung mencabut akses agen.
+- **Kendali tetap di tangan Anda.** Anda bisa membaca skrip pemasangan lebih dulu, menghentikan agen kapan saja, dan menghapus server di dPanel, yang langsung mencabut akses agen.
 
 ## Agen dPanel atau SSH: pilih yang mana?
 
@@ -165,7 +189,7 @@ Anda juga bisa memasang ulang agen sendiri: buka tab **Pengaturan** server dan t
 
 ## Menghubungkannya lagi
 
-Menjalankan `sudo dnocs machine register` lagi di mesin yang sama akan menghubungkan kembali server yang sama di dPanel dan memberi agennya kredensial baru. Satu mesin hanya bisa berada di satu ruang kerja pada satu waktu.
+Menjalankan `sudo dnocs machine register` lagi di mesin yang sama akan menghubungkan kembali server yang sama di dPanel dan memberi agennya kredensial baru. Satu mesin hanya bisa berada di satu ruang kerja pada satu waktu. Perintah dari **Ambil perintah pemasangan** selalu menambahkan server baru; untuk memperbaiki agen server yang sudah ada, gunakan **Instal ulang** (di atas).
 
 Satu ruang kerja bisa menghubungkan hingga 10 mesin dengan cara ini. Server cloud yang dibuat dPanel untuk Anda tidak dihitung dalam batas itu.
 

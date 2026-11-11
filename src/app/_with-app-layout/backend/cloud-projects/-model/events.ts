@@ -7,6 +7,7 @@ import type {
   CloudProjectDeletePayload,
   CloudProjectDetailsPayload,
   CloudProjectMigrateOwnershipPayload,
+  CloudProjectOrphansPayload,
 } from '../-rules/usecase-types';
 
 type EventsRegistry = Rescope<
@@ -22,6 +23,7 @@ type EventsRegistry = Rescope<
     'open--update-credentials': CloudProjectCredentialsPayload;
     'open--migrate-ownership': CloudProjectMigrateOwnershipPayload;
     'open--details': CloudProjectDetailsPayload;
+    'open--orphans': CloudProjectOrphansPayload;
   }
 >;
 
