@@ -1,39 +1,24 @@
 ---
 title: Sebelum mulai
-description: Sebelum menambah server ke dPanel, hubungkan akun cloud jika dPanel perlu meluncurkan VPS, dan buat SSH key hanya jika dPanel perlu masuk lewat SSH.
+description: Sebagian besar server bergabung ke dPanel lewat agen dPanel dan tidak butuh persiapan apa pun. Hubungkan akun cloud hanya jika dPanel perlu meluncurkan VPS untuk Anda.
 sidebar_position: 2
 sidebar_icon: list-checks
 ---
 
-Untuk menghubungkan server yang sudah Anda punya dengan agen dPanel, Anda tidak perlu menyiapkan apa pun di dPanel: lihat [Hubungkan server dengan agen dPanel](./register-a-private-machine.md).
+Setiap server bergabung ke dPanel lewat **agen dPanel**, program kecil yang berjalan di server dan menghubungi dPanel dari dalam. Anda tidak memberi dPanel SSH key, kata sandi, atau port yang terbuka, jadi tidak ada yang masuk ke mesin Anda dari luar. Itulah pilihan bawaan, baik untuk server yang sudah Anda punya maupun untuk server yang diluncurkan dPanel di akun cloud Anda.
 
-Dua hal lain disiapkan sekali lalu dipakai lagi untuk setiap server berikutnya: akun cloud yang terhubung, hanya jika dPanel perlu meluncurkan VPS baru untuk Anda, dan SSH key, hanya jika dPanel perlu masuk ke mesin lewat SSH, bukan lewat agen.
+| Anda ingin | Yang perlu disiapkan dulu |
+| --- | --- |
+| Menambah server yang sudah Anda punya | Tidak ada. Jalankan satu perintah di server itu: [Hubungkan server dengan agen dPanel](./register-a-private-machine.md). |
+| Meminta dPanel meluncurkan server baru | [Akun cloud](#akun-cloud), cukup sekali. |
 
-## SSH key
+## Server yang sudah Anda punya
 
-Ini hanya dibutuhkan saat dPanel terhubung ke server lewat SSH: server yang Anda hubungkan lewat SSH, server cloud yang Anda pilih **SSH** di langkah **Cara dPanel terhubung**, atau server cloud di Biznet Gio atau Alibaba Cloud, yang untuk saat ini bergabung lewat SSH. Server yang bergabung lewat agen dPanel tidak butuh kunci, dan itulah pilihan bawaannya.
-
-SSH key adalah sepasang berkas pengganti kata sandi saat komputer masuk ke server. Separuhnya publik dan ditulis ke server. Separuh lainnya privat dan tidak pernah keluar dari dPanel.
-
-Anda tidak perlu membuatnya sendiri.
-
-1. Di sidebar, di bawah **Backend**, buka **Manajemen Kunci**. Menu ini langsung membuka halaman **Kunci SSH**.
-2. Tekan **Buat kunci SSH**.
-3. Beri nama yang mudah dikenali, misalnya `laptop-kerja`, lalu pilih jenis kuncinya.
-4. Tekan **Buat kunci SSH** di bagian bawah formulir.
-
-- **Untuk server saat ini** adalah pilihan yang tepat, kecuali ada server yang menolaknya. Kuncinya lebih pendek dan lebih cepat, dan semua Linux modern menerimanya.
-- **Untuk server lama** adalah cadangannya, dan juga menanyakan ukuran kunci.
-
-Separuh privatnya tidak akan ditampilkan lagi. dPanel menyimpannya terenkripsi dan memakainya untuk Anda. Halaman kunci menampilkan separuh publiknya, yang aman disalin ke mana saja, beserta fingerprint yang bisa Anda cocokkan dengan laporan server.
-
-![Halaman Kunci SSH berisi dua kunci beserta jenisnya, siapa yang boleh memakainya, dan pemiliknya](../../assets/getting-started/ssh-keys.webp)
+Anda tidak perlu menyiapkan apa pun di dPanel, cukup mesin Linux tempat Anda bisa menjalankan satu perintah dengan `sudo` (menjalankan perintah sebagai administrator). Mesinnya bisa VPS di penyedia mana pun, server dedicated, server rumahan, atau VM di balik router, dengan atau tanpa IP publik. Ikuti [Hubungkan server dengan agen dPanel](./register-a-private-machine.md).
 
 ## Akun cloud
 
-Akun cloud hanya dibutuhkan untuk meluncurkan mesin baru. Untuk menghubungkan server yang sudah Anda punya, pakai [agen dPanel](./register-a-private-machine.md) atau [SSH](./connect-your-own-server.md).
-
-Akun cloud adalah penghubung dPanel ke akun Anda di penyedia cloud. Di dalamnya ada kredensial yang mengizinkan dPanel membuat mesin atas nama Anda.
+Akun cloud hanya dibutuhkan jika dPanel perlu meluncurkan mesin baru untuk Anda. Akun cloud adalah penghubung dPanel ke akun Anda di penyedia cloud. Di dalamnya ada kredensial yang mengizinkan dPanel membuat mesin di sana.
 
 1. Di sidebar, buka **Proyek Cloud**. Judul halamannya **Akun cloud**.
 2. Tekan **Hubungkan akun cloud**.
@@ -47,20 +32,32 @@ Mesin dibuat di dalam akun cloud Anda sendiri, jadi tagihannya langsung dari pen
 
 ![Formulir peluncuran dengan proyek cloud yang siap dipilih](../../assets/servers/create-step1-provider.webp 'Kalau akun cloud sudah ada, formulir peluncuran langsung menawarkannya.')
 
-## Langkah berikutnya
+Mesin baru memasang agen dPanel saat menyala, jadi tidak butuh SSH key juga. Lanjut ke [Membuat server cloud](./cloud-providers/create-a-cloud-server.md).
 
-Lanjut ke [Membuat server cloud](./cloud-providers/create-a-cloud-server.md). Penjelasan lebih lengkap soal kunci dan akun, termasuk berbagi dengan tim, ada di [SSH key dan akun cloud](../getting-started/ssh-keys-and-cloud-projects.md).
+## Hanya jika Anda memilih SSH
+
+SSH key hanya dibutuhkan dalam beberapa kasus, saat dPanel masuk ke server lewat SSH, bukan lewat agen:
+
+- Anda memilih [Hubungkan lewat SSH](./connect-your-own-server.md) untuk server yang sudah Anda punya,
+- Anda memilih **SSH** di langkah **Cara dPanel terhubung** saat meluncurkan server cloud,
+- Anda meluncurkan di Biznet Gio atau Alibaba Cloud, yang untuk saat ini bergabung lewat SSH.
+
+dPanel membuatkan kuncinya untuk Anda: buka **Manajemen Kunci** di bawah **Backend** di sidebar, lalu tekan **Buat kunci SSH**. Bagian privatnya tidak pernah keluar dari dPanel. Langkah lengkapnya ada di [SSH key dan akun cloud](../getting-started/ssh-keys-and-cloud-projects.md).
 
 ## Pertanyaan yang sering diajukan
 
-### Bisakah saya memakai SSH key yang sudah saya punya?
+### Kenapa agen menjadi pilihan bawaan, bukan SSH?
 
-dPanel membuatkan pasangan kuncinya supaya bagian privatnya tidak pernah keluar dari dPanel. Kalau ingin masuk juga dari komputer sendiri, tambahkan kunci publik Anda ke server; lihat [Terhubung lewat SSH](./connect-over-ssh.md).
+Dengan SSH, Anda menaruh kunci dPanel di server dan membiarkan dPanel masuk dari internet. Dengan agen, Anda menjalankan satu perintah yang bisa Anda baca dulu, tidak ada yang masuk dari luar, dan Anda bisa menghentikannya kapan saja dengan `sudo systemctl disable --now dpanel-agent`. [Agen dPanel atau SSH: pilih yang mana?](./register-a-private-machine.md#agen-dpanel-atau-ssh-pilih-yang-mana) membandingkan keduanya.
 
 ### Apakah saya butuh akun cloud untuk mencoba dPanel?
 
 Tidak. [Hubungkan server dengan agen dPanel](./register-a-private-machine.md) hanya butuh mesin Linux tempat Anda bisa menjalankan satu perintah dengan `sudo`.
 
-### Bisakah tim saya memakai kunci dan akun cloud yang sama?
+### Apakah saya masih bisa masuk ke server sendiri?
 
-Bisa. Kunci dan akun cloud yang dibuat di sebuah workspace bisa dipakai anggotanya. Lihat [SSH key dan akun cloud](../getting-started/ssh-keys-and-cloud-projects.md).
+Bisa. dPanel menyediakan terminal di browser, dan Anda bisa menambahkan kunci publik sendiri untuk masuk dari komputer Anda; lihat [Terhubung lewat SSH](./connect-over-ssh.md).
+
+### Bisakah tim saya memakai akun cloud yang sama?
+
+Bisa. Akun cloud dan kunci yang dibuat di sebuah workspace bisa dipakai anggotanya. Lihat [SSH key dan akun cloud](../getting-started/ssh-keys-and-cloud-projects.md).

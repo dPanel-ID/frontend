@@ -1,39 +1,24 @@
 ---
 title: Before you start
-description: Before you add a server to dPanel, connect a cloud account if dPanel should launch the VPS, and create an SSH key only if dPanel should log in over SSH.
+description: Most servers join dPanel through the dPanel agent and need nothing set up first. Connect a cloud account only if dPanel should launch the VPS for you.
 sidebar_position: 2
 sidebar_icon: list-checks
 ---
 
-To connect a server you already have with the dPanel agent, you need nothing in dPanel first: see [Connect a server with the dPanel agent](./register-a-private-machine.md).
+Every server joins dPanel through the **dPanel agent**, a small program that runs on the server and connects out to dPanel. You don't give dPanel an SSH key, a password or an open port, so nothing connects in to your machine. That is the default for servers you already have and for servers dPanel launches in your cloud account.
 
-Two other things are set up once and reused for every server after it: a connected cloud account, only if dPanel should launch a new VPS for you, and an SSH key, only if dPanel should sign in to the machine over SSH instead of using the agent.
+| You want to | What you set up first |
+| --- | --- |
+| Add a server you already have | Nothing. Run one command on it: [Connect a server with the dPanel agent](./register-a-private-machine.md). |
+| Have dPanel launch a new server | A [cloud account](#a-cloud-account), once. |
 
-## An SSH key
+## A server you already have
 
-You need this only when dPanel connects to a server over SSH: a server you connect over SSH, a cloud server where you pick **SSH** under **How dPanel connects**, or a cloud server on Biznet Gio or Alibaba Cloud, which join over SSH for now. Servers that join through the dPanel agent need no key, and that is the default.
-
-An SSH key is a pair of files that replaces a password when a computer signs in to a server. One half is public and is written onto the server. The other half is private and never leaves dPanel.
-
-You don't have to make one by hand.
-
-1. In the sidebar, under **Backend**, open **Secret Managers**. It opens the **SSH keys** page.
-2. Press **Create SSH key**.
-3. Type a **Key name** you will recognise, such as `work-laptop`, and pick the **Key type**.
-4. Press **Generate SSH key**.
-
-- **For current servers** is the right choice unless something refuses it. It is shorter and faster, and every current Linux accepts it.
-- **For older servers** is the fallback. It also asks for a key size.
-
-The private half is never shown again. dPanel keeps it encrypted and uses it for you. The key's page shows the public half, which is safe to copy anywhere, and a fingerprint you can compare with what a server reports.
-
-![The SSH keys page listing two keys with their type, who can use them and their owner](../../assets/getting-started/ssh-keys.webp)
+You need nothing in dPanel first, only a Linux machine where you can run one command with `sudo` (run a command as administrator). It can be a VPS at any hosting company, a dedicated server, a home server or a VM behind a router, with or without a public IP. Follow [Connect a server with the dPanel agent](./register-a-private-machine.md).
 
 ## A cloud account
 
-You need this only to launch a new machine. To connect a server you already have, use [the dPanel agent](./register-a-private-machine.md) or [SSH](./connect-your-own-server.md).
-
-A cloud account is dPanel's link to your account at a cloud provider. It holds the credentials that let dPanel create machines for you.
+You need this only when dPanel should launch a new machine for you. A cloud account is dPanel's link to your account at a cloud provider. It holds the credentials that let dPanel create machines there.
 
 1. In the sidebar, open **Cloud Projects**. The page is titled **Cloud accounts**.
 2. Press **Connect a cloud account**.
@@ -47,20 +32,32 @@ The machine is created inside your own cloud account, so your provider bills you
 
 ![The launch form with a cloud project ready to pick](../../assets/servers/create-step1-provider.webp 'With a cloud account in place, the launch form offers it instead of asking you to connect one.')
 
-## What happens next
+The new machine installs the dPanel agent while it starts, so it needs no SSH key either. Go on to [Create a cloud server](./cloud-providers/create-a-cloud-server.md).
 
-Go to [Create a cloud server](./cloud-providers/create-a-cloud-server.md). More on keys and accounts, including sharing them with a team, is in [SSH keys and cloud accounts](../getting-started/ssh-keys-and-cloud-projects.md).
+## Only if you choose SSH
+
+An SSH key is needed only in the few cases where dPanel signs in to a server over SSH instead of using the agent:
+
+- you pick [Connect over SSH](./connect-your-own-server.md) for a server you already have,
+- you pick **SSH** under **How dPanel connects** when launching a cloud server,
+- you launch on Biznet Gio or Alibaba Cloud, which join over SSH for now.
+
+dPanel creates the key for you: open **Secret Managers** under **Backend** in the sidebar, then press **Create SSH key**. The private half never leaves dPanel. The steps are in [SSH keys and cloud accounts](../getting-started/ssh-keys-and-cloud-projects.md).
 
 ## Frequently asked questions
 
-### Can I use an SSH key I already have?
+### Why is the agent the default instead of SSH?
 
-dPanel creates the key pair for you so the private half never leaves dPanel. To sign in from your own computer as well, add your own public key to the server; see [Connect over SSH](./connect-over-ssh.md).
+With SSH you would put a dPanel key on your server and let dPanel sign in from the internet. With the agent you run one command you can read first, nothing connects in, and you can stop it at any time with `sudo systemctl disable --now dpanel-agent`. [dPanel agent or SSH: which one?](./register-a-private-machine.md#dpanel-agent-or-ssh-which-one) compares the two.
 
 ### Do I need a cloud account to try dPanel?
 
 No. [Connect a server with the dPanel agent](./register-a-private-machine.md) needs only a Linux machine where you can run one command with `sudo`.
 
-### Can my team use the same key and cloud account?
+### Can I still sign in to the server myself?
 
-Yes. Keys and cloud accounts created in a workspace can be used by its members. See [SSH keys and cloud accounts](../getting-started/ssh-keys-and-cloud-projects.md).
+Yes. dPanel gives you a terminal in the browser, and you can add your own public key to sign in from your own computer; see [Connect over SSH](./connect-over-ssh.md).
+
+### Can my team use the same cloud account?
+
+Yes. Cloud accounts and keys created in a workspace can be used by its members. See [SSH keys and cloud accounts](../getting-started/ssh-keys-and-cloud-projects.md).
