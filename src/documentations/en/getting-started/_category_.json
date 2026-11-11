@@ -1,7 +1,7 @@
 {
   "label": "Getting started",
   "position": 1,
-  "description": "Sign in, pick a workspace, find your way around the dashboard, and connect GitHub, an SSH key and a cloud account.",
+  "description": "Sign in, pick a workspace, find your way around the dashboard, and connect GitHub, your first server and a cloud account.",
   "app": {
     "label": "Open the dashboard",
     "href": "/dashboard"

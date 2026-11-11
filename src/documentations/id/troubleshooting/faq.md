@@ -10,6 +10,18 @@ Halaman ini mengumpulkan masalah yang paling sering dialami pengguna dPanel, bes
 
 ## Server
 
+### Bagaimana cara menambahkan server rumahan atau homelab tanpa SSH?
+
+Hubungkan dengan agen dPanel. Di mesin itu, pasang dnocs, masuk dengan `dnocs auth login -u <username Anda>`, lalu jalankan `sudo dnocs machine register`. Agen menyambung keluar ke dPanel, jadi Anda tidak perlu SSH key, IP publik, atau port forwarding. Lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md).
+
+### `sudo dnocs machine register` menampilkan "please login first"
+
+Masuk dulu sebagai pengguna biasa, tanpa `sudo`: `dnocs auth login -u <username Anda>`. Kalau pesannya masih muncul, perbarui dnocs ke versi terbaru, atau masuk dengan `sudo dnocs auth login -u <username Anda>`.
+
+### Server tetap dalam proses dan tidak pernah menjadi Ready
+
+Agen di server itu belum tersambung. Pada server yang Anda hubungkan dengan `sudo dnocs machine register`, pastikan mesin bisa menjangkau internet lewat HTTPS (port 443) dan `sudo systemctl status dpanel-agent` menunjukkan agen berjalan. Pada server cloud baru yang bergabung lewat agen, tunggu beberapa menit setelah VM dibuat. Jika server diluncurkan tanpa IP publik di jaringan yang Anda pilih sendiri, jaringan itu harus memberi akses internet keluar; tanpa itu agen tidak bisa tersambung. Hapus server lalu luncurkan lagi dengan IP publik menyala, atau di `dpanel-network`. Lihat [IP publik](../servers/cloud-providers/create-a-cloud-server.md#ip-publik).
+
 ### Halaman server menampilkan "Penyiapan tidak selesai"
 
 Banner merah berarti penyedia cloud atau proses penyiapan berhenti karena error. Tekan **Lihat penyebabnya** untuk membaca alasannya. Penyebab paling umum adalah kuota akun cloud yang tidak cukup, dan kredensial yang sudah kedaluwarsa atau kurang izin. Kuota dan izin yang perlu diperiksa ada di halaman tiap penyedia: lihat [Penyedia cloud](../servers/cloud-providers/index.md).
@@ -49,7 +61,7 @@ Kalau SSH atau agen dPanel berhenti bekerja setelah sebuah perubahan, server men
 
 ### Dasbor menampilkan "Tidak ada kontak dengan" sebuah server
 
-Agen dPanel di server itu sudah lama tidak melapor. Server mungkin mati, kelebihan beban, atau terputus dari jaringan. Buka dari **Perlu perhatian Anda** dengan **Buka server**, lalu periksa apakah server bisa dijangkau.
+Agen dPanel di server itu sudah lama tidak melapor. Server mungkin mati, kelebihan beban, atau terputus dari jaringan. Buka dari **Perlu perhatian Anda** dengan **Buka server**, lalu ikuti [pemberitahuan agennya](../servers/your-server-page.md#pemberitahuan-agen). Agen hanya membutuhkan akses internet keluar lewat HTTPS (port 443).
 
 ## Aplikasi
 

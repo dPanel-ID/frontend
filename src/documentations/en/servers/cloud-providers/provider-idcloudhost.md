@@ -11,7 +11,7 @@ dPanel launches Ubuntu cloud VMs in Indonesia in your own IDCloudHost account. I
 ## What you need first
 
 - An IDCloudHost account with a billing account that has credit or a payment method.
-- An SSH key in dPanel. See [Before you start](../before-you-start.md).
+- An SSH key in dPanel, only if the server should join over SSH. With the dPanel agent, the default, you need none. See [Before you start](../before-you-start.md).
 
 ## 1. Create the API key
 
@@ -63,10 +63,10 @@ dPanel saves the account as **Ready** without testing it. The launch form is the
 | **Storage**         | 20 to 500 GB.                                                                                       |
 | **Ubuntu release**  | 24.04 LTS or 26.04 LTS.                                                                             |
 
-IDCloudHost adds a fourth step, **Access**:
+IDCloudHost adds a step, **Access**:
 
-- **Default User**: the first Linux user. `dpanel` by default, and dPanel signs in as this user.
-- **Bootstrap Password**: that user's initial password. IDCloudHost requires one. dPanel still signs in with your SSH key.
+- **Default User**: the first Linux user. `dpanel` by default. When the server joins over SSH, dPanel signs in as this user.
+- **Bootstrap Password**: that user's initial password. IDCloudHost requires one. dPanel never signs in with it: with SSH it uses your SSH key, and with the dPanel agent it doesn't sign in at all.
 
 ## 4. Launch
 
@@ -74,6 +74,7 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick IDCloudHost in 
 
 ## IDCloudHost gotchas
 
+- **The public IP stays on.** A VM without a public IP cannot reach the internet on IDCloudHost, so its agent could not connect. dPanel always gives an IDCloudHost VM a public IP.
 - **Credit.** IDCloudHost charges the billing account. With no credit or payment method, creation fails at the provider.
 - **Creation is asynchronous.** dPanel waits up to 10 minutes for the VM to appear before it gives up. A busy location can be slow.
 - **No firewall from dPanel.** dPanel creates no firewall rules on IDCloudHost. Whatever the provider allows by default stays open, so check the VM's network settings in the console if you need to restrict ports.

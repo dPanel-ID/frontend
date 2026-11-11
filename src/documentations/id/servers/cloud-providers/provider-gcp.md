@@ -13,7 +13,7 @@ dPanel meluncurkan VM Compute Engine Ubuntu di salah satu project Google Cloud A
 - Project Google Cloud yang sudah terhubung ke akun penagihan. Paling baik project baru khusus untuk dPanel.
 - **Compute Engine API** sudah aktif di project itu.
 - Izin membuat service account, custom role, dan kunci di project itu.
-- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
+- SSH key di dPanel, hanya jika server perlu bergabung lewat SSH. Dengan agen dPanel, pilihan bawaannya, Anda tidak butuh kunci. Lihat [Sebelum mulai](../before-you-start.md).
 
 ## 1. Buat project dan service account khusus
 
@@ -65,16 +65,18 @@ Dibaca dari kode dPanel:
 | API dPanel (penelusuran)           | Membaca daftar region, zone, machine type, subnet, dan VM | `compute.regions.list`, `compute.zones.list`, `compute.machineTypes.list`, `compute.subnetworks.list`, `compute.instances.list`, `compute.instances.get`                                                                                                                  |
 | Jaringan, hanya peluncuran pertama | Membuat `dpanel-network` (VPC mode otomatis)              | `compute.networks.get`, `compute.networks.create`                                                                                                                                                                                                                         |
 | Firewall, tiap peluncuran          | Satu aturan ingress per server, TCP 22, 80, 443           | `compute.firewalls.get`, `compute.firewalls.create`, `compute.firewalls.update`, `compute.networks.updatePolicy`                                                                                                                                                          |
-| Instance                           | Membuat VM dengan SSH key, network tag, dan label Anda    | `compute.instances.create`, `compute.instances.setMetadata`, `compute.instances.setTags`, `compute.instances.setLabels`, `compute.disks.create`, `compute.images.useReadOnly`, `compute.subnetworks.use`, `compute.subnetworks.useExternalIp`, `compute.machineTypes.get` |
+| Instance                           | Membuat VM dengan skrip boot pertamanya (agen dPanel, atau SSH key Anda), network tag, dan label | `compute.instances.create`, `compute.instances.setMetadata`, `compute.instances.setTags`, `compute.instances.setLabels`, `compute.disks.create`, `compute.images.useReadOnly`, `compute.subnetworks.use`, `compute.subnetworks.useExternalIp`, `compute.machineTypes.get` |
 | Penghapusan                        | Menghapus VM dan aturan firewall-nya                      | `compute.instances.delete`, `compute.firewalls.delete`                                                                                                                                                                                                                    |
 | Menunggu operasi                   | Memantau proses buat dan hapus sampai selesai             | `compute.zoneOperations.get`, `compute.globalOperations.get`                                                                                                                                                                                                              |
 
 dPanel tidak memasang service account ke VM yang dibuatnya, jadi `roles/iam.serviceAccountUser` tidak diperlukan.
 
+Untuk meluncurkan VM tanpa IP publik, dPanel juga menambahkan Cloud NAT ke `dpanel-network` (Cloud Router dengan NAT, sekali per region). Tambahkan `compute.routers.get`, `compute.routers.create`, `compute.routers.update`, dan `compute.regionOperations.get` ke custom role untuk itu. Server dengan IP publik tidak membutuhkannya.
+
 Kalau lebih suka predefined role, kombinasi terdekatnya adalah `roles/compute.instanceAdmin.v1`, ditambah `roles/compute.securityAdmin` (aturan firewall), ditambah `roles/compute.networkAdmin` (jaringan, hanya saat peluncuran pertama). Ketiganya memberi jauh lebih banyak dari yang dipakai dPanel.
 
 :::note[Kalau peluncuran ditolak]
-Izin penelusuran dipakai untuk panggilan yang dilakukan dPanel sendiri. Sisanya berasal dari modul Ansible `google.cloud` yang dijalankan dPanel, dan izin yang diperiksa modul itu bisa berbeda antarversi. Kalau peluncuran gagal dengan `Required '…' permission`, tambahkan izin yang disebut ke custom role dengan `gcloud iam roles update`.
+Izin penelusuran dipakai untuk panggilan yang dilakukan dPanel sendiri. Sisanya berasal dari library Google Cloud yang dipakai dPanel, dan izin yang diperiksanya bisa berbeda antarversi. Kalau peluncuran gagal dengan `Required '…' permission`, tambahkan izin yang disebut ke custom role dengan `gcloud iam roles update`.
 :::
 
 ## 2. Hubungkan ke dPanel
@@ -103,7 +105,7 @@ dPanel menyimpan akun itu sebagai **Siap** tanpa mengujinya. Ujian pertamanya ad
 | **Storage**        | Ukuran boot disk, 20 sampai 500 GB. Bawaannya 20.                                                                                                                                         |
 | **Network**        | `dpanel-network`. Tidak perlu dipilih.                                                                                                                                                    |
 
-Untuk Google Cloud tidak ada langkah **Access**. dPanel masuk sebagai `ubuntu`.
+Untuk Google Cloud tidak ada langkah **Access**. Dengan SSH, dPanel masuk sebagai `ubuntu`.
 
 ![Langkah 3 untuk Google Cloud, dengan slider CPU, RAM, dan Storage serta machine type E2 yang akan diluncurkan dPanel](../../../assets/servers/create-step2-location-size.webp)
 
@@ -117,7 +119,8 @@ Ikuti [Membuat server cloud](./create-a-cloud-server.md). Pilih Google Cloud di 
 - **Jaringan muncul saat peluncuran pertama.** Peluncuran pertama membuat VPC mode otomatis bernama `dpanel-network`, yang punya subnet di setiap region. Peluncuran berikutnya memakainya lagi. Menghapus server tidak pernah menghapusnya.
 - **Satu aturan firewall per server**, bernama `dpanel-c-<ID akun cloud>-m-<ID server>-ingress`, terbuka ke internet di TCP 22, 80, dan 443, hanya untuk network tag server itu. dPanel menghapusnya bersama servernya.
 - **Kuota.** Project baru punya kuota CPU dan IP eksternal yang kecil per region. Peluncuran yang gagal dengan `QUOTA_EXCEEDED` butuh penambahan kuota di konsol.
-- **IP sementara.** VM mendapat IP eksternal sementara (ephemeral). Alamatnya bisa berubah kalau VM dimatikan lalu dinyalakan di luar dPanel.
+- **IP sementara.** VM mendapat IP eksternal sementara (ephemeral), kecuali Anda mematikan **Beri VM IP publik**. Alamatnya bisa berubah kalau VM dimatikan lalu dinyalakan di luar dPanel.
+- **Cloud NAT untuk VM tanpa IP publik.** VM tanpa IP publik di `dpanel-network` mengakses internet lewat Cloud NAT, yang ditambahkan dPanel saat pertama dipakai di setiap region. Google menagih Cloud NAT per VM yang memakainya, ditambah trafiknya.
 - **Tagihan berjalan sejak peluncuran.** Anda membayar VM, disk, dan IP eksternalnya selama masih ada.
 
 ## Keamanan

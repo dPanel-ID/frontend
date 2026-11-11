@@ -1,12 +1,12 @@
 ---
 title: Apa itu dPanel - dNocs?
-description: dPanel - dNocs adalah panel kontrol server berbasis web untuk membuat atau menghubungkan server Ubuntu, deploy aplikasi dari GitHub, dan mengelola DNS dan log.
+description: dPanel - dNocs adalah panel kontrol server berbasis web untuk menghubungkan server Anda atau membuat server baru, deploy aplikasi dari GitHub, dan mengelola DNS dan log.
 sidebar_position: 0
 sidebar_icon: rocket
 sidebar_label: Apa itu dPanel?
 ---
 
-dPanel - dNocs (distributed Node & Operations Control system) adalah panel kontrol server berbasis web: situs tempat Anda mengelola server sendiri dengan mengklik, bukan mengetik perintah. dPanel membuat server Ubuntu di akun cloud milik Anda sendiri atau menghubungkan VPS yang sudah Anda jalankan, lalu men-deploy aplikasi Anda dari GitHub, menempatkannya di belakang load balancer HTTPS, mengelola record DNS-nya, dan menampilkan log-nya. Semuanya dari browser.
+dPanel - dNocs (distributed Node & Operations Control system) adalah panel kontrol server berbasis web: situs tempat Anda mengelola server sendiri dengan mengklik, bukan mengetik perintah. dPanel menghubungkan server yang sudah Anda punya, seperti VPS atau mesin di rumah, atau membuat server Ubuntu di akun cloud milik Anda sendiri, lalu men-deploy aplikasi Anda dari GitHub, menempatkannya di belakang load balancer HTTPS, mengelola record DNS-nya, dan menampilkan log-nya. Semuanya dari browser.
 
 ## Untuk siapa
 
@@ -14,13 +14,13 @@ dPanel - dNocs (distributed Node & Operations Control system) adalah panel kontr
 - **Agensi dan freelancer** yang mengurus banyak situs klien dan ingin satu tempat untuk melihat semua server, aplikasi, dan domain.
 - **Engineer ops** yang menginginkan satu cara bersama bagi tim untuk membuat server dan merilis versi baru, dengan peran alih-alih berbagi password root.
 
-Anda tidak memerlukan terminal di komputer sendiri. dPanel masuk ke server Anda lewat SSH dengan kunci yang disimpankan untuk Anda, dan menjalankan agen kecil di setiap server untuk melaporkan kesehatannya.
+Anda tidak memerlukan terminal di komputer sendiri. dPanel menjalankan program kecil, yaitu agen, di setiap server. Agen menyambung keluar ke dPanel, melaporkan kesehatan server, dan menjalankan job Anda, jadi dPanel tidak perlu masuk ke server Anda. Kalau Anda mau, dPanel juga bisa terhubung lewat SSH.
 
 ## Apa yang dilakukan dPanel
 
 | Bidang        | Yang bisa Anda lakukan                                                                                                                                                                                                           |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Server        | Membuat VM di penyedia cloud, atau menghubungkan server Ubuntu atau Debian apa pun lewat SSH. Melihat CPU, memori, dan disk secara langsung, layanan systemd, user, port terbuka, file, dan log, serta mengatur firewall server. |
+| Server        | Menghubungkan server Linux apa pun dengan satu perintah, atau membuat VM di penyedia cloud. Melihat CPU, memori, dan disk secara langsung, layanan systemd, user, port terbuka, file, dan log, serta mengatur firewall server. |
 | Software      | Memasang basis data, runtime, dan web server dari katalog modul yang sudah teruji, misalnya MariaDB, Go, atau Caddy.                                                                                                             |
 | Aplikasi      | Membangun repositori GitHub di server Anda, menjalankannya sebagai layanan systemd, menyimpan setiap build, dan rollback dalam satu langkah.                                                                                     |
 | Load balancer | Memublikasikan aplikasi di sebuah domain dengan sertifikat HTTPS Let's Encrypt gratis yang diperpanjang otomatis.                                                                                                                |
@@ -34,7 +34,7 @@ Anda tidak memerlukan terminal di komputer sendiri. dPanel masuk ke server Anda 
 ## Penyedia dan sistem yang didukung
 
 - **Penyedia cloud:** AWS EC2, Google Compute Engine, DigitalOcean Droplets, IDCloudHost, Alibaba Cloud ECS, dan Tencent Cloud CVM. Formulir peluncuran juga mencantumkan Biznet Gio. Lihat [Penyedia cloud](../servers/cloud-providers/index.md).
-- **Server Anda sendiri:** VPS, mesin bare-metal, atau perangkat home-lab apa pun yang menjalankan Ubuntu atau Debian dan bisa dijangkau dPanel lewat SSH. Lihat [Menghubungkan server Anda](../servers/connect-your-own-server.md).
+- **Server Anda sendiri:** VPS, mesin bare-metal, server rumahan, atau Raspberry Pi apa pun yang menjalankan Linux dengan systemd, di Intel/AMD atau ARM, dihubungkan dengan agen dPanel. Tidak perlu IP publik. Lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md). Server Ubuntu dan Debian juga bisa [dihubungkan lewat SSH](../servers/connect-your-own-server.md).
 - **Sistem operasi pada server yang dibuat dPanel:** Ubuntu 24.04 LTS atau 26.04 LTS.
 - **Kode:** repositori GitHub yang bisa dibaca oleh akun atau organisasi GitHub Anda, dibangun dengan perintah yang Anda tentukan.
 - **DNS:** Cloudflare dan DigitalOcean.
@@ -53,7 +53,7 @@ dPanel tidak menjual ulang server maupun domain. Mesin berjalan di akun penyedia
 | Membaca log                    | Masuk lewat SSH, `journalctl` atau `tail -f`                             | Cari dan unduh di browser                                                              |
 | Memberi akses ke rekan kerja   | Berbagi kunci atau password                                              | Tambahkan ke tim dengan sebuah peran                                                   |
 
-Anda tetap punya akses penuh ke mesinnya. dPanel bekerja lewat SSH dan alat standar Ubuntu, jadi Anda tetap bisa masuk sendiri kapan pun Anda mau.
+Anda tetap punya akses penuh ke mesinnya. dPanel bekerja dengan alat standar Linux, jadi Anda tetap bisa masuk sendiri kapan pun Anda mau.
 
 ## Cara memulai
 
@@ -71,11 +71,11 @@ dNocs adalah singkatan dari distributed Node & Operations Control system. dPanel
 
 ### Apakah saya perlu memasang sesuatu?
 
-Tidak. dPanel berjalan di browser Anda di dnocs.devetek.app. Di setiap server yang dikelolanya, dPanel memasang agennya sendiri lewat SSH untuk Anda.
+Tidak, di komputer Anda tidak perlu. dPanel berjalan di browser Anda di dnocs.devetek.app. Setiap server menjalankan agen dPanel: Anda memasangnya dengan satu perintah, server cloud memasangnya sendiri, atau dPanel memasangnya lewat SSH.
 
 ### Sistem operasi apa saja yang didukung dPanel?
 
-Server yang dibuat dPanel menjalankan Ubuntu 24.04 LTS atau 26.04 LTS. Server yang Anda hubungkan sendiri bisa menjalankan Ubuntu atau Debian.
+Server yang dibuat dPanel menjalankan Ubuntu 24.04 LTS atau 26.04 LTS. Server yang Anda hubungkan dengan agen dPanel bisa menjalankan Linux apa pun dengan systemd, di Intel/AMD (`amd64`) atau ARM (`arm64`). Server yang Anda hubungkan lewat SSH harus menjalankan Ubuntu atau Debian.
 
 ### Siapa yang membayar servernya?
 
@@ -83,8 +83,8 @@ Penyedia cloud Anda menagih Anda secara langsung, karena dPanel membuat mesin di
 
 ### Apakah saya masih bisa memakai SSH di server saya?
 
-Bisa. dPanel punya terminal di browser, dan Anda bisa menambahkan kunci publik Anda sendiri ke server lalu terhubung dengan klien SSH apa pun. Lihat [Terhubung lewat SSH](../servers/connect-over-ssh.md).
+Bisa. dPanel punya terminal di browser, dan Anda bisa menambahkan kunci publik Anda sendiri ke server lalu terhubung dengan klien SSH apa pun. dPanel sendiri tidak membutuhkan SSH di server yang terhubung dengan agen. Lihat [Terhubung lewat SSH](../servers/connect-over-ssh.md).
 
 ### Apa yang terjadi pada server saya kalau saya berhenti memakai dPanel?
 
-Server tetap berjalan di penyedia Anda, dengan aplikasi Anda sebagai layanan systemd. Menghapus server yang Anda hubungkan sendiri hanya membuat dPanel melupakannya; mesinnya tidak disentuh.
+Server tetap berjalan di tempatnya, dengan aplikasi Anda sebagai layanan systemd. Menghapus server yang Anda hubungkan sendiri hanya membuat dPanel melupakannya; mesinnya tidak disentuh.

@@ -23,17 +23,17 @@ Baca [Cara situs web berjalan di server Anda](./how-a-website-runs.md) terlebih 
 
 - Akun dPanel yang sudah masuk, di workspace yang ingin Anda pakai. Lihat [Masuk](../getting-started/sign-in.md).
 - GitHub sudah terhubung dan punya akses ke repositori yang akan dirilis. Agar sama persis dengan tutorial ini, fork **dPanel-ID/laravel-example** ke akun Anda. Lihat [Hubungkan GitHub](../getting-started/connect-github.md).
-- SSH key dan akun cloud di dPanel, atau server milik Anda sendiri. Lihat [Sebelum memulai](../servers/before-you-start.md).
+- Sebuah server: akun cloud di dPanel untuk meluncurkannya, atau server milik Anda sendiri (VPS dengan IP publik, agar pengunjung bisa menjangkaunya) yang dihubungkan dengan [agen dPanel](../servers/register-a-private-machine.md). Lihat [Sebelum memulai](../servers/before-you-start.md).
 - Domain di **Domain & DNS**, supaya dPanel bisa membuat record DNS-nya. Lihat [Domain dan DNS](../networking/domains-and-dns.md).
 
 ## Langkah 1: Luncurkan server
 
 1. Buka **Server**, tekan **Buat Server**, lalu **Luncurkan server**.
-2. Pilih **Provider**, **Cloud project**, dan **SSH key**, lalu **Region** yang dekat dengan pengguna Anda.
+2. Pilih **Provider** dan **Cloud project**, lalu **Region** yang dekat dengan pengguna Anda. Di **Cara dPanel terhubung**, biarkan **Agen dPanel** terpilih dan **Beri VM IP publik** menyala: situsnya butuh IP publik.
 3. Isi **Server name**, misalnya `laravel-1`, biarkan **Ubuntu release** 24.04 LTS, lalu geser slider ke minimal **2 vCPU** dan RAM **4 GB**. Storage 30 GB sudah cukup.
 4. Saat panel Review bertuliskan **Ready to launch**, tekan **Launch server**.
 
-Tunggu sampai status server **Ready**, biasanya 10 sampai 20 menit. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md), atau [hubungkan server Anda sendiri](../servers/connect-your-own-server.md).
+Tunggu sampai status server **Ready**, biasanya 10 sampai 20 menit. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md), atau [hubungkan server yang sudah Anda punya dengan agen dPanel](../servers/register-a-private-machine.md).
 
 **Yang seharusnya Anda lihat:** server muncul di **Server** dengan status **Ready**.
 

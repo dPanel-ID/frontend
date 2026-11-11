@@ -20,14 +20,18 @@ Whichever you pick, the finished server is the same: same agent, same tabs, same
 | Login user             | `ubuntu`                                            | `ubuntu`                                  | **Default User**, `dpanel` by default    | **Default User**, `dpanel` by default      | `root`                                      | `ubuntu`                                   |
 | Disk                   | 20 to 500 GB                                        | 20 to 500 GB                              | 20 to 500 GB                             | Comes with the Droplet size                | 40 to 500 GB                                | Provider default                           |
 | Extra step in the form | None                                                | None                                      | **Access**: user and bootstrap password  | **Access**: user                           | None                                        | None                                       |
+| How it joins dPanel    | dPanel agent (default) or SSH                       | dPanel agent (default) or SSH             | dPanel agent (default) or SSH            | dPanel agent (default) or SSH              | SSH only, for now                           | dPanel agent (default) or SSH              |
+| VM without public IP   | Yes, with a NAT gateway                             | Yes, with Cloud NAT                       | No                                       | No                                         | No                                          | Yes, with a NAT gateway                    |
 
-The launch form also lists **Biznet Gio**. It follows the same steps, with its own **Product** and **Billing Cycle** pickers instead of the size sliders, and is not covered in detail here.
+The launch form also lists **Biznet Gio**. It follows the same steps, with its own **Product** and **Billing Cycle** pickers instead of the size sliders, joins over SSH for now, and is not covered in detail here.
+
+With the dPanel agent, the VM installs the agent on first boot and connects out to dPanel; no dPanel SSH key goes on it. See [Step 3: How dPanel connects](./create-a-cloud-server.md#step-3-how-dpanel-connects).
 
 Whichever provider you use, the finished server runs Ubuntu 24.04 LTS or 26.04 LTS.
 
 ## Before any provider
 
-- An SSH key in dPanel, only if the server should join over SSH instead of through the dPanel agent. See [Before you start](../before-you-start.md).
+- An SSH key in dPanel, only if the server should join over SSH instead of through the dPanel agent, or on Biznet Gio and Alibaba Cloud. See [Before you start](../before-you-start.md).
 - A credential that can do only what dPanel needs. Each provider page gives the minimum.
 - Read [Cloud credentials and security](./cloud-credentials-security.md) once. It explains what dPanel keeps and what happens if you revoke a key, and how to replace one.
 
@@ -46,3 +50,7 @@ Yes. Create the machine at your provider yourself, then [connect it with the dPa
 ### Do I pay dPanel for the machine?
 
 No. The provider bills you for the machine directly; dPanel does not resell machines.
+
+### dPanel created a VM that is not on my servers page. How do I clean it up?
+
+This can happen after a failed launch. `dnocs cloud-project orphans --id <cloud account ID>` lists VMs that dPanel created in that account but that no longer belong to a server, and `--delete` deletes them at the provider. It works on AWS, Google Cloud, DigitalOcean, IDCloudHost and Tencent Cloud.

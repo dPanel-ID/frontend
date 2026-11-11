@@ -114,6 +114,8 @@ dnocs bisa melakukan jauh lebih banyak daripada chat. `dnocs --help` menampilkan
 
 | Perintah                  | Fungsinya                                             |
 | ------------------------- | ----------------------------------------------------- |
+| `sudo dnocs machine register` | Menghubungkan mesin tempat perintah ini dijalankan, dengan agen dPanel. Lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md) |
+| `dnocs server create-cloud` | Meluncurkan server cloud. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md#dari-terminal) |
 | `dnocs server list`       | Server Anda                                           |
 | `dnocs server setup`      | Menjalankan ulang penyiapan server                    |
 | `dnocs server firewall`   | Menampilkan dan mengubah firewall server              |

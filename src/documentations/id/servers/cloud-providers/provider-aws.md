@@ -12,7 +12,7 @@ dPanel meluncurkan instance EC2 Ubuntu di akun AWS Anda sendiri. dPanel masuk de
 
 - Akun AWS yang sudah diatur penagihannya.
 - Izin di akun itu untuk membuat IAM user dan policy.
-- SSH key di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
+- SSH key di dPanel, hanya jika server perlu bergabung lewat SSH. Dengan agen dPanel, pilihan bawaannya, Anda tidak butuh kunci. Lihat [Sebelum mulai](../before-you-start.md).
 
 ## 1. Buat IAM user khusus
 
@@ -45,7 +45,7 @@ Berikut panggilan EC2 yang dilakukan dPanel, dibaca dari kodenya:
 | Instance                           | Meluncurkan, menyalakan, dan menghapusnya               | `RunInstances`, `StartInstances`, `TerminateInstances`, `CreateTags`                                                                                                                                   |
 | Penghapusan                        | Menghapus security group server                         | `DeleteSecurityGroup`                                                                                                                                                                                  |
 
-dPanel tidak butuh izin IAM, S3, atau `iam:PassRole`. dPanel tidak memasang instance profile, dan menaruh SSH key Anda di server lewat cloud-init, jadi `ec2:ImportKeyPair` juga tidak diperlukan.
+dPanel tidak butuh izin IAM, S3, atau `iam:PassRole`. dPanel tidak memasang instance profile dan juga tidak butuh `ec2:ImportKeyPair`: saat pertama kali menyala, cloud-init memasang agen dPanel, atau, kalau server bergabung lewat SSH, menaruh SSH key Anda di sana.
 
 Setiap resource yang dibuat dPanel diberi tag `managed-by = dpanel`. Policy ini memakai tag itu supaya dPanel hanya bisa menghapus instance dan security group buatannya sendiri.
 
@@ -149,8 +149,30 @@ Setiap resource yang dibuat dPanel diberi tag `managed-by = dpanel`. Policy ini 
 ```
 
 :::note[Kalau peluncuran ditolak]
-Panggilan di tabel pertama adalah panggilan yang dilakukan dPanel sendiri. Beberapa action di JSON, misalnya `DescribeInstanceStatus`, `DescribeTags`, dan `DescribeSecurityGroupRules`, dipanggil di dalam modul Ansible `amazon.aws` yang dipakai dPanel, bukan oleh dPanel sendiri. Kalau peluncuran gagal dengan `UnauthorizedOperation`, pesan errornya menyebut action yang kurang. Tambahkan, lalu coba lagi. Server yang dibuat sebelum dPanel memberi tag mungkin tidak punya tag `managed-by`; menghapusnya butuh `TerminateInstances` tanpa syarat tag.
+Panggilan di tabel pertama adalah panggilan yang dilakukan dPanel sendiri. Beberapa action di JSON, misalnya `DescribeInstanceStatus`, `DescribeTags`, dan `DescribeSecurityGroupRules`, dipanggil di dalam library AWS yang dipakai dPanel, bukan oleh dPanel sendiri. Kalau peluncuran gagal dengan `UnauthorizedOperation`, pesan errornya menyebut action yang kurang. Tambahkan, lalu coba lagi. Server yang dibuat sebelum dPanel memberi tag mungkin tidak punya tag `managed-by`; menghapusnya butuh `TerminateInstances` tanpa syarat tag.
 :::
+
+### Izin tambahan untuk VM tanpa IP publik
+
+Kalau Anda mematikan **Beri VM IP publik**, dPanel menambahkan subnet privat dan NAT gateway ke `dpanel-network`, lalu menghapus NAT gateway itu lagi bersama VM terakhir yang memakainya. Tambahkan statement ini ke policy untuk keperluan itu:
+
+```json
+{
+  "Sid": "DpanelNatGateway",
+  "Effect": "Allow",
+  "Action": [
+    "ec2:DescribeNatGateways",
+    "ec2:DescribeAddresses",
+    "ec2:AllocateAddress",
+    "ec2:ReleaseAddress",
+    "ec2:CreateNatGateway",
+    "ec2:DeleteNatGateway"
+  ],
+  "Resource": "*"
+}
+```
+
+Server dengan IP publik tidak membutuhkannya.
 
 ## 2. Hubungkan ke dPanel
 
@@ -176,7 +198,7 @@ dPanel langsung menyimpan akun itu sebagai **Siap**, tanpa menguji kuncinya. Uji
 | **Ubuntu release** | 24.04 LTS atau 26.04 LTS. dPanel mencari image yang cocok di region itu.                                                                                                                                                                                                                      |
 | **Network**        | `dpanel-network`. Tidak perlu dipilih.                                                                                                                                                                                                                                                        |
 
-Untuk AWS tidak ada langkah **Access**. dPanel masuk sebagai `ubuntu`.
+Untuk AWS tidak ada langkah **Access**. Dengan SSH, dPanel masuk sebagai `ubuntu`.
 
 ## 4. Luncurkan
 
@@ -187,7 +209,8 @@ Ikuti [Membuat server cloud](./create-a-cloud-server.md). Pilih AWS di langkah 1
 - **Jaringan muncul saat peluncuran pertama.** Di tiap region, peluncuran pertama membuat VPC bernama `dpanel-network` (`10.88.0.0/16`), internet gateway, subnet publik, dan route table. Peluncuran berikutnya memakainya lagi. Menghapus server tidak pernah menghapusnya.
 - **Kuota VPC.** Bawaan AWS adalah 5 VPC per region. Kalau region sudah penuh, peluncuran pertama gagal sampai Anda mengosongkan satu atau menaikkan kuota.
 - **Satu security group per server**, bernama `dpanel-<nama server>`, terbuka ke internet di TCP 22, 80, dan 443. dPanel menghapusnya bersama servernya.
-- **IP publik.** Instance mendapat alamat IPv4 publik otomatis. AWS menagih IPv4 publik per jam, dan alamatnya bisa berubah kalau instance dimatikan lalu dinyalakan di luar dPanel.
+- **IP publik.** Instance mendapat alamat IPv4 publik otomatis, kecuali Anda mematikan **Beri VM IP publik**. AWS menagih IPv4 publik per jam, dan alamatnya bisa berubah kalau instance dimatikan lalu dinyalakan di luar dPanel. Dengan agen dPanel, alamatnya bisa baru muncul di halaman server beberapa menit setelah server menjadi **Ready**.
+- **NAT gateway untuk VM tanpa IP publik.** VM tanpa IP publik di `dpanel-network` mengakses internet lewat NAT gateway yang ditambahkan dPanel. AWS menagih NAT gateway untuk setiap jam keberadaannya, ditambah trafiknya. dPanel menghapusnya saat Anda menghapus VM tanpa IP publik terakhir di jaringan itu.
 - **Nama harus unik.** dPanel menolak nama server yang sudah dipakai instance yang menyala atau mati di region itu.
 - **Tagihan berjalan sejak peluncuran.** Anda membayar instance, volume EBS, dan IP publiknya selama masih ada, termasuk saat setup berjalan atau gagal.
 

@@ -1,21 +1,25 @@
 ---
 title: Kunci SSH & akun cloud
-description: Buat kunci SSH yang dipakai dPanel untuk masuk ke server, dan hubungkan akun AWS, Google Cloud, DigitalOcean, atau cloud lain untuk membuat server VPS.
+description: Hubungkan akun AWS, Google Cloud, DigitalOcean, atau cloud lain untuk meluncurkan server, dan buat kunci SSH hanya jika dPanel perlu masuk ke server lewat SSH.
 sidebar_position: 5
 sidebar_icon: key-round
 sidebar_label: Kunci SSH dan akun cloud
 ---
 
-Sebelum dPanel bisa membuat atau menghubungkan server pertama Anda, dPanel membutuhkan kunci SSH, dan untuk membuat VPS baru juga membutuhkan akun cloud. Keduanya ada di bawah **Backend** di sidebar, dan dipakai ulang untuk semua server berikutnya.
+Untuk meluncurkan VPS (server virtual sewaan) baru dari dPanel, Anda membutuhkan akun cloud. Kunci SSH (kunci tanpa kata sandi yang dipakai dPanel untuk masuk ke server) hanya diperlukan jika dPanel harus terhubung ke server lewat SSH. Keduanya ada di bawah **Backend** di sidebar, dan dipakai ulang untuk semua server berikutnya.
 
-| Yang dibutuhkan | Letaknya                                    | Gunanya                                          |
-| --------------- | ------------------------------------------- | ------------------------------------------------ |
-| Kunci SSH       | **Manajemen Kunci** (membuka **Kunci SSH**) | dPanel memakainya untuk masuk ke server Anda     |
-| Akun cloud      | **Proyek Cloud**                            | dPanel membuat mesin di akun penyedia milik Anda |
+Menghubungkan server yang sudah Anda punya dengan [agen dPanel](../servers/register-a-private-machine.md), cara yang disarankan, tidak membutuhkan keduanya: Anda menjalankan satu perintah di server, lalu agen menyambung keluar ke dPanel. Server cloud baru juga bergabung lewat agen secara bawaan, jadi tidak perlu kunci SSH.
 
-Akun cloud hanya diperlukan untuk membuat mesin baru. Untuk menghubungkan server yang sudah berjalan, kunci SSH saja cukup.
+| Yang dibutuhkan | Letaknya                                    | Kapan                                                                                      |
+| --------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Akun cloud      | **Proyek Cloud**                            | Untuk meluncurkan server baru: dPanel membuatnya di akun penyedia milik Anda                |
+| Kunci SSH       | **Manajemen Kunci** (membuka **Kunci SSH**) | Hanya untuk server yang bergabung lewat SSH, termasuk semua server di Biznet Gio dan Alibaba Cloud |
+
+Akun cloud hanya diperlukan untuk membuat mesin baru. Untuk menghubungkan server yang sudah berjalan, Anda tidak butuh apa pun di sini: pakai [agen dPanel](../servers/register-a-private-machine.md), atau kunci SSH kalau Anda [menghubungkan lewat SSH](../servers/connect-your-own-server.md).
 
 ## Membuat kunci SSH
+
+Lewati bagian ini jika server Anda bergabung lewat agen dPanel.
 
 1. Di sidebar, di bawah **Backend**, buka **Manajemen Kunci** (di tampilan bahasa Inggris: **Secret Managers**). Menu ini langsung membuka halaman **Kunci SSH**.
 2. Tekan **Buat kunci SSH**.
@@ -60,7 +64,7 @@ dPanel tidak menjual ulang server. Mesin dibuat di dalam akun penyedia milik And
 
 ## Langkah berikutnya
 
-Buat atau hubungkan server pertama Anda. [Sebelum memulai](../servers/before-you-start.md) menjelaskan jenis kunci dan kredensial penyedia lebih rinci, dan [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md) memandu pengisian formulirnya.
+Buat atau hubungkan server pertama Anda. Untuk menghubungkan server yang sudah ada, ikuti [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md). [Sebelum memulai](../servers/before-you-start.md) menjelaskan jenis kunci dan kredensial penyedia lebih rinci, dan [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md) memandu pengisian formulirnya.
 
 Anda juga bisa meminta **Ask dPanel** menampilkan kunci dan akun cloud Anda lalu meluncurkan server dengannya; lihat [Prompt cookbook](../ai/prompt-cookbook.md).
 
@@ -68,7 +72,11 @@ Anda juga bisa meminta **Ask dPanel** menampilkan kunci dan akun cloud Anda lalu
 
 ### Apakah saya wajib punya akun cloud untuk memakai dPanel?
 
-Tidak. Akun cloud hanya diperlukan untuk meluncurkan server baru dari dPanel. Untuk memakai server yang sudah Anda sewa, kunci SSH saja cukup. Lihat [Menghubungkan server sendiri](../servers/connect-your-own-server.md).
+Tidak. Akun cloud hanya diperlukan untuk meluncurkan server baru dari dPanel. Untuk memakai server yang sudah Anda punya, [hubungkan dengan agen dPanel](../servers/register-a-private-machine.md); Anda tidak perlu akun cloud maupun kunci SSH.
+
+### Apakah saya butuh kunci SSH?
+
+Hanya jika dPanel harus terhubung ke server lewat SSH: saat Anda [menghubungkan server lewat SSH](../servers/connect-your-own-server.md), memilih **SSH** untuk server cloud baru, atau meluncurkan di Biznet Gio atau Alibaba Cloud, yang untuk sementara bergabung lewat SSH. Lihat [Agen dPanel atau SSH: pilih yang mana?](../servers/register-a-private-machine.md#agen-dpanel-atau-ssh-pilih-yang-mana)
 
 ### Bisakah saya mengunduh kunci privatnya?
 

@@ -24,7 +24,7 @@ Setelah disimpan, kredensial tidak pernah dikirim balik ke browser. Halaman hany
 dPanel mendekripsi kredensial di dua tempat:
 
 1. **Di server dPanel**, untuk mengisi formulir peluncuran: membaca daftar region, ukuran, image, dan jaringan, serta memeriksa apakah nama server sudah dipakai.
-2. **Di worker dPanel**, untuk membuat atau menghapus VM. Kredensial ikut terkirim bersama job dan dipakai oleh modul Ansible penyedia, yang berjalan dengan pencatatan rahasia dimatikan.
+2. **Di worker dPanel**, untuk membuat atau menghapus VM. Kredensial ikut terkirim bersama job dan dipakai oleh library milik penyedia, dengan pencatatan rahasia dimatikan.
 
 :::warning[Apa yang dilindungi enkripsi ini]
 Enkripsinya AES mode CFB, dengan kunci simetris yang disimpan di samping aplikasi, bukan di KMS atau HSM cloud. Ini melindungi cadangan basis data yang dicuri. Ini tidak melindungi dari orang yang punya akses ke server dPanel yang sedang berjalan beserta berkas kuncinya.
@@ -88,7 +88,7 @@ Kalau kunci lama sudah bocor, jangan menunggu: perbarui kredensialnya dengan kun
 
 Mencabut berarti menghapus atau menonaktifkan kunci di penyedia. Ini yang terjadi pada server yang diluncurkan dengannya:
 
-- **Server tetap berjalan.** dPanel menjangkau server lewat SSH dan agennya, bukan lewat kredensial cloud. Aplikasi, log, terminal, dan modul tetap bekerja.
+- **Server tetap berjalan.** dPanel menjangkau server lewat agennya (dan lewat SSH, kalau server bergabung dengan cara itu), bukan lewat kredensial cloud. Aplikasi, log, terminal, dan modul tetap bekerja.
 - **Peluncuran baru gagal.** Formulir peluncuran tidak bisa memuat region atau ukuran, dan pembuatan gagal di penyedia.
 - **Menghapus server hanya setengah berhasil.** dPanel tidak bisa menghancurkan VM di penyedia. Server tertahan di **Deleting** atau **Deleted**, dPanel tidak menghapus catatannya sampai penyedia mengonfirmasi, dan **VM tetap berjalan dan terus ditagih** di penyedia. Hapus sendiri lewat konsol penyedia.
 - **Akun cloud tidak bisa diputus** selama masih ada server yang merujuk ke sana.

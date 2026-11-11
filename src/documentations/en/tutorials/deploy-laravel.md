@@ -23,17 +23,17 @@ Read [How a website runs on your server](./how-a-website-runs.md) first. It expl
 
 - A dPanel account, signed in, in the workspace you want to use. See [Sign in](../getting-started/sign-in.md).
 - GitHub connected, with access to the repository you deploy. To follow along exactly, fork **dPanel-ID/laravel-example** into your own account. See [Connect GitHub](../getting-started/connect-github.md).
-- An SSH key and a cloud account in dPanel, or a server of your own. See [Before you start](../servers/before-you-start.md).
+- A server: a cloud account in dPanel to launch one, or a server of your own (a VPS with a public IP, so visitors can reach it) connected with the [dPanel agent](../servers/register-a-private-machine.md). See [Before you start](../servers/before-you-start.md).
 - A domain in **Domain & DNS**, so dPanel can create the DNS record for you. See [Domains and DNS](../networking/domains-and-dns.md).
 
 ## Step 1: Launch a server
 
 1. Open **Servers**, press **Create Server**, then **Launch a server**.
-2. Pick your **Provider**, **Cloud project** and **SSH key**, then a **Region** near your users.
+2. Pick your **Provider** and **Cloud project**, then a **Region** near your users. Under **How dPanel connects**, keep **dPanel agent** and **Give the VM a public IP** on: the site needs a public IP.
 3. Set **Server name**, for example `laravel-1`, keep **Ubuntu release** 24.04 LTS, and move the sliders to at least **2 vCPU** and **4 GB** RAM. 30 GB of storage is enough.
 4. When the Review panel says **Ready to launch**, press **Launch server**.
 
-Wait until the server's status is **Ready**, usually 10 to 20 minutes. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md), or [connect your own server](../servers/connect-your-own-server.md) instead.
+Wait until the server's status is **Ready**, usually 10 to 20 minutes. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md), or [connect a server you already have with the dPanel agent](../servers/register-a-private-machine.md) instead.
 
 **You should see:** the server listed under **Servers** with the status **Ready**.
 

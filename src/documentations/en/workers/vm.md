@@ -5,7 +5,11 @@ sidebar_position: 3
 sidebar_icon: server
 ---
 
-A VM worker is a server or VM (virtual machine: a computer rented or run in software) that takes your dPanel workspace's jobs. It runs all the time, asks dPanel for jobs, and runs them against your servers over SSH. Use it when your servers are reachable only from your own network.
+A VM worker is a server or VM (virtual machine: a computer rented or run in software) that takes your dPanel workspace's jobs. It runs all the time, asks dPanel for jobs, and runs them against your servers over SSH. Use it when servers connected over SSH are reachable only from your own network.
+
+:::tip[Servers behind a router don't need a worker]
+If your servers are at home or behind a router, the simpler way is to [connect them with the dPanel agent](../servers/register-a-private-machine.md). Their jobs then run on the servers themselves, and you need no VM worker.
+:::
 
 ## Before you start
 

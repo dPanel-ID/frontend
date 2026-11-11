@@ -18,20 +18,20 @@ Read [How a website runs on your server](./how-a-website-runs.md) first. It expl
 
 - A dPanel account, signed in, in the workspace you want to use. See [Sign in](../getting-started/sign-in.md).
 - GitHub connected, with access to the repository you deploy. To follow along exactly, fork **dPanel-ID/wordpress-example** into your own account. See [Connect GitHub](../getting-started/connect-github.md).
-- An SSH key and a cloud account in dPanel, or a server of your own. See [Before you start](../servers/before-you-start.md).
+- A server: a cloud account in dPanel to launch one, or a server of your own (a VPS with a public IP, so visitors can reach it) connected with the [dPanel agent](../servers/register-a-private-machine.md). See [Before you start](../servers/before-you-start.md).
 - A domain in **Domain & DNS**, so dPanel can create the DNS record for you. See [Domains and DNS](../networking/domains-and-dns.md).
 
 ## Step 1: Launch a server
 
 1. Open **Servers**, press **Create Server**, then **Launch a server**.
-2. Pick your **Provider**, **Cloud project** and **SSH key**.
-3. Pick a **Region** near your visitors.
+2. Pick your **Provider** and **Cloud project**.
+3. Pick a **Region** near your visitors. Under **How dPanel connects**, keep **dPanel agent** and **Give the VM a public IP** on: the site needs a public IP.
 4. Set **Server name**, for example `wordpress-1`, keep **Ubuntu release** 24.04 LTS, and move the sliders to at least **2 vCPU** and **4 GB** RAM. 30 GB of storage is enough.
 5. When the Review panel says **Ready to launch**, press **Launch server**.
 
-![The launch form with a provider, cloud project and SSH key selected](../../assets/servers/create-step1-provider.webp)
+![The launch form with a provider, cloud project and SSH key selected](../../assets/servers/create-step1-provider.webp 'An older capture: with the dPanel agent, the default, the form asks for no SSH key.')
 
-The server appears in the list. Wait until its status is **Ready**, usually 10 to 20 minutes. The full form is described in [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). Already have a machine? [Connect your own server](../servers/connect-your-own-server.md) instead.
+The server appears in the list. Wait until its status is **Ready**, usually 10 to 20 minutes. The full form is described in [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). Already have a machine? [Connect it with the dPanel agent](../servers/register-a-private-machine.md) instead, and skip this step.
 
 **You should see:** the server listed under **Servers** with the status **Ready**.
 

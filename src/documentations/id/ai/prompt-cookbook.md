@@ -34,7 +34,7 @@ Asisten mencari akun cloud, region, tipe mesin, dan kunci SSH Anda, lalu mengusu
 
 Untuk menyiapkan ulang server setelah penyiapan gagal: `Jalankan ulang penyiapan server di server 145.`
 
-Lebih suka memakai formulir? Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
+Asisten meluncurkan server yang bergabung lewat SSH, jadi asisten memakai salah satu SSH key Anda, seperti pada contoh. Untuk meluncurkan server yang bergabung lewat agen dPanel, tanpa SSH key, pakai formulir atau `dnocs server create-cloud`. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Untuk menambahkan server yang sudah Anda punya, jalankan `sudo dnocs machine register` di server itu; lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md).
 
 ## Memasang perangkat lunak di server
 

@@ -5,7 +5,11 @@ sidebar_position: 3
 sidebar_icon: server
 ---
 
-Worker VM adalah server atau VM (virtual machine: komputer yang disewa atau dijalankan secara perangkat lunak) yang Anda jalankan untuk mengambil job workspace dPanel Anda. Worker ini berjalan terus, meminta job ke dPanel, dan menjalankannya ke server Anda lewat SSH. Gunakan saat server Anda hanya bisa dijangkau dari jaringan Anda sendiri.
+Worker VM adalah server atau VM (virtual machine: komputer yang disewa atau dijalankan secara perangkat lunak) yang Anda jalankan untuk mengambil job workspace dPanel Anda. Worker ini berjalan terus, meminta job ke dPanel, dan menjalankannya ke server Anda lewat SSH. Gunakan saat server yang terhubung lewat SSH hanya bisa dijangkau dari jaringan Anda sendiri.
+
+:::tip[Server di balik router tidak butuh worker]
+Kalau server Anda ada di rumah atau di balik router, cara yang lebih mudah adalah [menghubungkannya dengan agen dPanel](../servers/register-a-private-machine.md). Job-nya lalu berjalan di server itu sendiri, dan Anda tidak butuh worker VM.
+:::
 
 ## Sebelum mulai
 

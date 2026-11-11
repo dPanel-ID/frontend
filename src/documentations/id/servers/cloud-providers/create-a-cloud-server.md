@@ -5,13 +5,16 @@ sidebar_position: 1
 sidebar_icon: cloud-upload
 ---
 
-dPanel meluncurkan server Ubuntu baru (VM) di akun cloud Anda sendiri dari satu formulir: pilih penyedia, region, ukuran, dan rilis Ubuntu, lalu dPanel membuat mesinnya dan membuka SSH, HTTP, serta HTTPS. Mesin memasang agen dPanel saat pertama kali menyala dan bergabung ke dPanel dengan sendirinya, jadi dPanel tidak perlu memasang SSH key di mesin itu. Server siap dalam sekitar 10 sampai 20 menit.
+dPanel meluncurkan server Ubuntu baru (VM) di akun cloud Anda sendiri dari satu formulir: pilih penyedia, region, ukuran, dan rilis Ubuntu, lalu dPanel membuat mesinnya dan membuka SSH, HTTP, serta HTTPS. Secara bawaan, mesin memasang agen dPanel saat pertama kali menyala dan bergabung ke dPanel dengan sendirinya, jadi dPanel tidak perlu memasang SSH key di mesin itu. Server siap dalam sekitar 10 sampai 20 menit.
+
+Sudah punya server, seperti VPS atau mesin di rumah? Anda tidak butuh halaman ini: [hubungkan dengan agen dPanel](../register-a-private-machine.md).
 
 Panduan ini memakai Google Cloud. Penyedia lain menanyakan hal yang sama dengan urutan yang sama. Perbedaannya dibahas di [Penyedia cloud](./index.md), yang punya halaman tersendiri untuk tiap penyedia.
 
 ## Yang perlu disiapkan
 
-- Akun cloud di dPanel, dan SSH key hanya jika server perlu bergabung lewat SSH. Lihat [Sebelum mulai](../before-you-start.md).
+- Akun cloud di dPanel. Lihat [Sebelum mulai](../before-you-start.md).
+- SSH key, hanya jika server perlu bergabung lewat SSH, atau jika Anda meluncurkan di Biznet Gio atau Alibaba Cloud. Dengan agen dPanel, Anda tidak butuh kunci.
 - Kuota yang cukup di penyedia untuk satu mesin lagi.
 
 ## Buka formulirnya
@@ -25,7 +28,7 @@ Formulirnya satu halaman dengan empat langkah bernomor. Panel **Review** di kana
 1. **Provider**: tempat mesin berjalan.
 2. **Cloud project**: akun cloud mana yang membayarnya. **Add project** menghubungkan akun lain.
 
-![Langkah 1 formulir peluncuran, dengan Google Cloud, proyek cloud, dan SSH key terpilih](../../../assets/servers/create-step1-provider.webp)
+![Langkah 1 formulir peluncuran, dengan Google Cloud, proyek cloud, dan SSH key terpilih](../../../assets/servers/create-step1-provider.webp 'Tangkapan layar lama: SSH key kini ditanyakan di langkah Cara dPanel terhubung, dan hanya untuk SSH.')
 
 ## Langkah 2: Location
 
@@ -35,11 +38,28 @@ Formulirnya satu halaman dengan empat langkah bernomor. Panel **Review** di kana
 
 ## Langkah 3: Cara dPanel terhubung
 
-- **Agen dPanel** terpilih dan direkomendasikan. Mesin memasang agen dPanel saat pertama kali menyala lalu terhubung keluar ke dPanel. Tidak ada SSH key dPanel yang dipasang di mesin.
-- **SSH** adalah alternatifnya: dPanel memasang **SSH key** yang Anda pilih di mesin lalu masuk untuk menyiapkannya. **Create SSH key** membuat kunci baru di sini. SSH membutuhkan IP publik.
-- **IP publik** menyala secara bawaan, sehingga mesin bisa melayani situs web. Matikan untuk mesin yang hanya dipakai di dalam jaringan Anda. Tanpa IP publik, mesin hanya bergabung lewat agen, dan tetap perlu akses ke internet: di `dpanel-network`, dPanel menambahkan NAT (di AWS berupa NAT gateway, yang ditagih AWS selama masih ada, dan dihapus dPanel bersama mesin terakhir yang memakainya). Di jaringan yang Anda pilih sendiri, pastikan jaringan itu sudah memberi mesin akses internet, atau agen tidak bisa terhubung.
+Langkah ini menentukan cara server baru bergabung ke dPanel, dan apakah server mendapat IP publik. Ragu? Biarkan pilihan bawaannya. [Agen dPanel atau SSH: pilih yang mana?](../register-a-private-machine.md#agen-dpanel-atau-ssh-pilih-yang-mana) membandingkan keduanya.
 
-DigitalOcean selalu memberi Droplet IP publik, dan IDCloudHost tetap memakainya karena VM tanpa IP publik tidak bisa mengakses internet. Biznet Gio dan Alibaba Cloud untuk saat ini bergabung lewat SSH, jadi selalu meminta SSH key dan IP publiknya tetap menyala.
+- **Agen dPanel** terpilih dan ditandai **Direkomendasikan**. VM memasang agen dPanel saat pertama kali menyala lalu terhubung keluar ke dPanel. Tidak ada SSH key dPanel yang dipasang di VM, dan tidak ada port yang perlu dibuka. Server tampil **Ready** begitu agennya terhubung, beberapa menit setelah VM dibuat.
+- **SSH** adalah alternatifnya: dPanel memasang **SSH key** yang Anda pilih di VM, masuk lewat SSH, lalu memasang agennya. **Create SSH key** membuat kunci baru di sini. SSH membutuhkan IP publik.
+
+| Penyedia                          | Cara bergabung              | IP publik                                         |
+| --------------------------------- | --------------------------- | ------------------------------------------------- |
+| AWS, Google Cloud, Tencent Cloud  | Agen dPanel atau SSH        | Anda yang memilih                                 |
+| DigitalOcean                      | Agen dPanel atau SSH        | Selalu (Droplet selalu mendapatkannya)            |
+| IDCloudHost                       | Agen dPanel atau SSH        | Selalu (VM tanpa IP publik tidak bisa ke internet) |
+| Biznet Gio, Alibaba Cloud         | Untuk saat ini hanya SSH    | Selalu (SSH membutuhkannya)                       |
+
+Di penyedia yang hanya bisa bergabung lewat SSH, formulir memberi tahu hal itu dan meminta SSH key.
+
+### IP publik
+
+**Beri VM IP publik** menyala secara bawaan. Biarkan menyala kalau VM akan melayani situs web: pengunjung dan sertifikat HTTPS load balancer membutuhkannya. Matikan di AWS, Google Cloud, atau Tencent Cloud untuk VM yang tidak boleh dijangkau dari internet. VM itu tetap bergabung ke dPanel lewat agen; SSH tidak tersedia tanpa IP publik.
+
+VM tanpa IP publik tetap butuh akses internet keluar, agar agennya bisa terhubung:
+
+- **Di `dpanel-network`**, jaringan yang dibuat dPanel, dPanel menambahkan akses internet keluar (NAT) untuk Anda. Di Google Cloud berupa Cloud NAT, yang ditagih per VM yang memakainya. Di AWS dan Tencent Cloud berupa NAT gateway, yang ditagih penyedia untuk setiap jam keberadaannya; dPanel menghapusnya saat Anda menghapus VM tanpa IP publik terakhir di jaringan itu.
+- **Di jaringan atau subnet yang Anda pilih sendiri**, dPanel tidak menambahkan apa pun. Jaringan itu harus sudah memberi VM akses internet keluar, atau agen tidak bisa terhubung dan server tetap dalam proses.
 
 ## Langkah 4: Size and image
 
@@ -80,7 +100,7 @@ Saat panel Review bertuliskan **Ready to launch**, semua jawaban sudah lengkap.
 Banner biru memberi tahu bahwa dPanel sedang menyiapkan server. Biasanya 10 sampai 20 menit:
 
 1. Penyedia membuat mesinnya.
-2. Dengan agen dPanel, mesin memasang agen saat pertama kali menyala, dan server menjadi **Ready** begitu agen terhubung, biasanya 1 sampai 5 menit setelah mesin aktif. Dengan SSH, dPanel masuk, memasang agennya, dan membaca isi mesin.
+2. Dengan agen dPanel, mesin memasang agen saat pertama kali menyala, dan server menjadi **Ready** begitu agen terhubung, biasanya 1 sampai 5 menit setelah mesin aktif. Di AWS, alamatnya bisa baru muncul beberapa menit setelah **Ready**. Dengan SSH, dPanel masuk, memasang agennya, dan membaca isi mesin.
 3. dPanel membuka port yang dibutuhkan.
 
 Begitu banner hilang dan lencananya bertuliskan **Ready**, server siap dipakai. Selanjutnya, [pasang perangkat lunak](../install-software.md) di server itu atau [buat aplikasi](../../applications/create-an-application.md).
@@ -90,14 +110,36 @@ Banner merah muncul dengan tombol **Lihat penyebabnya**, berisi alasan dari peny
 :::
 
 :::tip[Tagihan berjalan sejak sekarang]
-Penyedia menagih mesin selama mesin itu ada, termasuk selama setup. [Hapus servernya](../delete-a-server.md) kalau sudah tidak dipakai.
+Penyedia menagih mesin selama mesin itu ada, termasuk selama setup. [Hapus servernya](../delete-a-server.md) kalau sudah tidak dipakai: menghapus server di dPanel juga menghapus VM-nya di penyedia.
 :::
+
+## Dari terminal
+
+`dnocs server create-cloud` meluncurkan server cloud dari terminal. Perintah ini menanyakan cara server bergabung (agen dPanel lebih dulu) dan apakah server mendapat IP publik, lalu menunggu sampai server siap. Untuk skrip, berikan semuanya sebagai flag:
+
+```bash
+dnocs server create-cloud --cloud-project-id <id> --join agent --public-ip=false --yes --vm-json '{...}' --wait 30m
+```
+
+| Flag                 | Artinya                                                        |
+| -------------------- | -------------------------------------------------------------- |
+| `--cloud-project-id` | Akun cloud tempat server diluncurkan                           |
+| `--join`             | `agent` (direkomendasikan) atau `ssh`                          |
+| `--secret-id`        | SSH key yang dipasang di VM, hanya dengan `--join ssh`         |
+| `--public-ip`        | `true` atau `false`                                            |
+| `--vm-json`          | Region, ukuran, image, dan nama VM, dalam JSON                 |
+| `--yes`              | Lewati pertanyaan konfirmasi                                   |
+| `--wait`             | Berapa lama menunggu server siap, misalnya `30m`               |
+
+`dnocs server create` membuka menu berisi tiga cara menambah server: server cloud, agen dPanel (menampilkan perintah yang dijalankan di mesin Anda), dan SSH.
+
+Untuk menemukan VM buatan dPanel yang tidak lagi terkait dengan server, misalnya setelah peluncuran gagal, jalankan `dnocs cloud-project orphans --id <ID akun cloud>`. Tambahkan `--delete` untuk menghapusnya di penyedia. Ini berlaku di AWS, Google Cloud, DigitalOcean, IDCloudHost, dan Tencent Cloud.
 
 ## Pertanyaan yang sering diajukan
 
 ### Berapa lama waktu yang dibutuhkan untuk meluncurkan server?
 
-Sekitar 10 sampai 20 menit dari **Launch server** sampai **Ready**. Sebagian besar waktunya dipakai penyedia untuk membuat VM dan untuk memasang agen dPanel.
+Sekitar 10 sampai 20 menit dari **Launch server** sampai **Ready**, sering kali lebih cepat dengan agen dPanel. Sebagian besar waktunya dipakai penyedia untuk membuat VM dan untuk memasang agen dPanel.
 
 ### Versi Ubuntu apa saja yang bisa diluncurkan?
 
@@ -113,4 +155,12 @@ Bisa, di AWS, DigitalOcean, Alibaba Cloud, dan Tencent Cloud. Tekan **Choose the
 
 ### User login apa yang didapat server?
 
-`ubuntu` di AWS, Google Cloud, dan Tencent Cloud, `root` di Alibaba Cloud, dan **Default User** yang Anda tentukan (bawaannya `dpanel`) di DigitalOcean dan IDCloudHost. Lihat [Terhubung lewat SSH](../connect-over-ssh.md).
+`ubuntu` di AWS, Google Cloud, dan Tencent Cloud, `root` di Alibaba Cloud, dan **Default User** yang Anda tentukan (bawaannya `dpanel`) di DigitalOcean dan IDCloudHost. Di server yang bergabung lewat agen, terminal di browser justru membuka shell root lewat agen. Lihat [Terhubung lewat SSH](../connect-over-ssh.md).
+
+### Apakah server cloud butuh SSH key?
+
+Tidak dengan agen dPanel, pilihan bawaan di AWS, Google Cloud, DigitalOcean, IDCloudHost, dan Tencent Cloud. Anda butuh kunci hanya jika memilih **SSH**, atau di Biznet Gio dan Alibaba Cloud.
+
+### Perlukah saya mematikan IP publik?
+
+Hanya untuk VM yang tidak boleh dijangkau dari internet, seperti database atau worker latar belakang. VM yang melayani situs web butuh IP publiknya. Di AWS dan Tencent Cloud, VM tanpa IP publik di `dpanel-network` juga berarti NAT gateway yang ditagih penyedia per jam.

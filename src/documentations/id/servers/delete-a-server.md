@@ -24,7 +24,7 @@ Penghapusan ditolak selama masih ada aplikasi atau load balancer yang memakai se
 ![Dialog Hapus server, berisi apa yang akan terjadi dan kolom untuk mengetik nama server](../../assets/servers/server-delete.webp)
 
 :::danger[Tidak bisa dibatalkan]
-Untuk server yang diluncurkan dPanel, penghapusan mencopot agen dan menghancurkan mesinnya di penyedia cloud, beserta disk dan seluruh isinya. Untuk server yang Anda hubungkan sendiri, dPanel mencopot agennya dan melupakan server itu. Mesin dan data Anda tetap ada.
+Untuk server yang diluncurkan dPanel, penghapusan menghancurkan mesinnya di penyedia cloud, beserta disk dan seluruh isinya. Untuk server yang Anda hubungkan lewat SSH, dPanel mencopot agennya dan melupakan server itu. Untuk server yang Anda hubungkan dengan agen dPanel, dPanel melupakan server itu dan langsung mencabut akses agennya; setelah itu hentikan agen di mesinnya dengan `sudo systemctl disable --now dpanel-agent`. Mesin Anda sendiri dan datanya tetap ada.
 :::
 
 ## Setelah itu
@@ -79,4 +79,8 @@ Tidak. Disk server cloud dihancurkan di penyedia. Cadangkan apa pun yang Anda pe
 
 ### Apakah menghapus server yang saya hubungkan sendiri akan mengosongkannya?
 
-Tidak. dPanel mencopot agennya dan melupakannya; mesin, aplikasi, dan datanya tetap ada.
+Tidak. dPanel melupakannya; mesin, aplikasi, dan datanya tetap ada. Lewat SSH, dPanel juga mencopot agennya. Dengan agen dPanel, akses agen dicabut, dan Anda menghentikannya sendiri dengan `sudo systemctl disable --now dpanel-agent`.
+
+### Peluncuran yang gagal meninggalkan VM di penyedia. Bagaimana menemukannya?
+
+`dnocs cloud-project orphans --id <ID akun cloud>` menampilkan VM yang dibuat dPanel di akun cloud itu tetapi tidak lagi terkait dengan server, di AWS, Google Cloud, DigitalOcean, IDCloudHost, dan Tencent Cloud. Tambahkan `--delete` untuk menghapusnya di penyedia.

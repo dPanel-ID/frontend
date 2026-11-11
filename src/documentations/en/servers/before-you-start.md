@@ -11,7 +11,7 @@ Two other things are set up once and reused for every server after it: a connect
 
 ## An SSH key
 
-You need this only when dPanel connects to a server over SSH. Servers that join through the dPanel agent need no key.
+You need this only when dPanel connects to a server over SSH: a server you connect over SSH, a cloud server where you pick **SSH** under **How dPanel connects**, or a cloud server on Biznet Gio or Alibaba Cloud, which join over SSH for now. Servers that join through the dPanel agent need no key, and that is the default.
 
 An SSH key is a pair of files that replaces a password when a computer signs in to a server. One half is public and is written onto the server. The other half is private and never leaves dPanel.
 
@@ -45,7 +45,7 @@ How to create a least-privilege credential, step by step, is on each provider's 
 The machine is created inside your own cloud account, so your provider bills you directly. dPanel does not resell machines.
 :::
 
-![The launch form with a cloud project and an SSH key ready to pick](../../assets/servers/create-step1-provider.webp 'With both in place, the launch form offers them instead of asking you to connect one.')
+![The launch form with a cloud project and an SSH key ready to pick](../../assets/servers/create-step1-provider.webp 'With a cloud account in place, the launch form offers it instead of asking you to connect one.')
 
 ## What happens next
 

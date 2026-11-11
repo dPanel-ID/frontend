@@ -9,12 +9,12 @@ sidebar_label: SSH manual
 Anda bisa menambahkan server yang sudah berjalan, di penyedia hosting mana pun atau di rumah, ke dPanel lewat SSH. dPanel masuk dengan salah satu SSH key Anda di dPanel, memasang agennya, lalu mesin itu bisa dipakai seperti server yang diluncurkan dPanel. Prosesnya sekitar 5 menit dan tidak butuh akun cloud.
 
 :::tip[Cara yang direkomendasikan tidak butuh SSH key]
-[Hubungkan server dengan agen dPanel](./register-a-private-machine.md): Anda menjalankan satu perintah di server, lalu agen terhubung keluar ke dPanel. Anda tidak perlu menambahkan kunci dPanel, membuka port, atau punya IP publik. Pakai halaman ini kalau Anda lebih suka dPanel masuk lewat SSH.
+[Hubungkan server dengan agen dPanel](./register-a-private-machine.md): Anda menjalankan satu perintah di server, lalu agen terhubung keluar ke dPanel. Anda tidak perlu menambahkan kunci dPanel, membuka port, atau punya IP publik. Pakai halaman ini kalau Anda lebih suka dPanel masuk lewat SSH. [Agen dPanel atau SSH: pilih yang mana?](./register-a-private-machine.md#agen-dpanel-atau-ssh-pilih-yang-mana) membandingkan keduanya.
 :::
 
 ## Yang perlu disiapkan
 
-- Server Ubuntu atau Debian yang bisa dijangkau dPanel lewat SSH dari internet.
+- Server Ubuntu atau Debian dengan IP publik, yang bisa dijangkau dPanel lewat SSH dari internet.
 - User Linux yang berupa `root`, atau yang bisa menjalankan `sudo` (menjalankan perintah sebagai administrator) tanpa mengetik kata sandi. dPanel masuk dengan kunci dan tidak punya kata sandi untuk diberikan ke `sudo`.
 - SSH key di dPanel. Anda juga bisa membuatnya langsung dari formulir.
 
