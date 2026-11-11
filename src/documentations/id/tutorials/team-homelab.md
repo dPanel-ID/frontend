@@ -23,6 +23,78 @@ Keduanya tidak punya IP publik maupun port yang terbuka. Mereka terhubung ke dPa
 - ID ruang kerja. Anda bisa melihatnya di pemilih ruang kerja, atau dengan `dnocs workspace list`.
 - Di setiap mesin: Linux dengan systemd di Intel/AMD (`amd64`) atau ARM (`arm64`), `sudo`, dan akses internet. dnocs hanya dibutuhkan untuk cara baris perintah dan untuk memindahkan mesin (Bagian 3): [Memasang dnocs](../ai/ai-in-the-terminal.md#memasang-dnocs).
 
+## Tidak punya mesin cadangan? Coba di kontainer
+
+Anda bisa mencoba seluruh tutorial ini tanpa PC cadangan: jalankan kontainer Linux dengan Docker atau Podman di laptop atau server mana pun, lalu hubungkan kontainer itu seolah-olah mesin homelab. Setiap kontainer menjadi satu server tersendiri di dPanel. Cara ini bisa dipakai dengan Ubuntu 24.04, Ubuntu 26.04, dan Debian 13, di Linux, macOS, maupun Windows (Docker Desktop).
+
+:::warning[Hanya untuk mencoba dPanel]
+Kontainer menjalankan systemd dan agen dPanel, yang memasang perangkat lunak dan layanan sistem, jadi kontainer dijalankan dengan `--privileged`: kekuasaannya hampir sama dengan administrator komputer Anda. Pakai untuk mencoba dPanel, bukan untuk menjalankan situs sungguhan; untuk itu, hubungkan mesin atau VM sungguhan.
+:::
+
+**1. Simpan berkas ini** dengan nama `Containerfile` di folder kosong. Berkas ini memasang systemd (agen dPanel berjalan sebagai layanan sistem), `sudo`, dan `curl`, serta menambah pengguna bernama `dpanel` yang boleh memakai `sudo`. Berkas `/etc/machine-id` yang kosong membuat setiap kontainer mendapat ID mesin sendiri, jadi masing-masing menjadi server terpisah.
+
+```dockerfile
+ARG BASE=docker.io/library/ubuntu:24.04
+FROM ${BASE}
+ENV container=docker
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      systemd systemd-sysv sudo curl ca-certificates iproute2 \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* \
+ && rm -f /var/lib/dbus/machine-id && : > /etc/machine-id
+RUN useradd -m -s /bin/bash -G sudo dpanel \
+ && echo 'dpanel ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/dpanel
+STOPSIGNAL SIGRTMIN+3
+CMD ["/sbin/init"]
+```
+
+**2. Buat image** untuk Linux yang ingin dicoba. Pilih satu baris:
+
+```bash
+docker build -f Containerfile --build-arg BASE=docker.io/library/ubuntu:24.04 -t dpanel-lab-ubuntu24 .
+docker build -f Containerfile --build-arg BASE=docker.io/library/ubuntu:26.04 -t dpanel-lab-ubuntu26 .
+docker build -f Containerfile --build-arg BASE=docker.io/library/debian:13 -t dpanel-lab-debian13 .
+```
+
+Dengan Podman, tulis `podman build`, bukan `docker build`; sisanya sama.
+
+**3. Jalankan kontainer** yang menyalakan systemd. `--hostname` adalah nama server di dPanel:
+
+```bash
+docker run -d --name homelab-nas --hostname homelab-nas \
+  --privileged --cgroupns=host -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
+  dpanel-lab-ubuntu24
+```
+
+Dengan Podman, yang menyalakan systemd sendiri jika image menjalankan `/sbin/init`:
+
+```bash
+sudo podman run -d --name homelab-nas --hostname homelab-nas dpanel-lab-ubuntu24
+```
+
+Setelah beberapa detik, `docker exec homelab-nas systemctl is-system-running` (atau `sudo podman exec …`) menampilkan `running` atau `degraded`; keduanya tidak masalah.
+
+**4. Hubungkan ke dPanel**, dengan dua cara yang sama seperti di [Bagian 2](#bagian-2-hubungkan-mesin-langsung-ke-ruang-kerja):
+
+- **Perintah satu baris dari situs web.** Buka shell di kontainer dengan `docker exec -it homelab-nas bash`, tempel perintah dari **Get install command**, lalu tekan Enter.
+- **dnocs.** Buka shell sebagai pengguna `dpanel`, pasang dnocs, masuk, lalu hubungkan:
+
+  ```bash
+  docker exec -it -u dpanel -w /home/dpanel homelab-nas bash
+  curl --proto '=https' --tlsv1.2 -sSf https://dnocs.devetek.app/installer.sh | sh
+  dnocs auth login -u <nama pengguna Anda>
+  dnocs workspace set --id <id ruang kerja>
+  sudo dnocs machine register
+  ```
+
+Dalam satu menit server tampil **Ready** di dPanel. Jalankan kontainer lain dengan nama lain (`homelab-pi`, …) atau image lain untuk mendapat server tambahan.
+
+:::tip[Jalankan dnocs machine register dengan sudo, dari pengguna yang sudah masuk]
+`dnocs machine register` memasang layanan sistem, jadi harus berjalan sebagai root, dan membaca sesi masuk milik pengguna yang mengetik `sudo`. Masuklah sebagai `dpanel` lalu jalankan `sudo dnocs machine register`. Shell root (`sudo su -`, `sudo -s`, atau `docker exec` tanpa `-u dpanel`) tidak punya sesi masuk sendiri, jadi dnocs menjawab `please login first using 'dnocs auth login'`; jalankan `dnocs auth login` dulu di shell itu, atau kembali ke pengguna `dpanel`.
+:::
+
+**5. Setelah selesai**, hapus server di dPanel (**Settings** di halaman server, atau `dnocs server delete --id <id server>`), lalu hapus kontainernya dengan `docker rm -f homelab-nas` (atau `sudo podman rm -f homelab-nas`). Menyalakan ulang kontainer tetap memakai server yang sama.
+
 ## Bagian 1: Pilih ruang kerja tim
 
 Di dPanel, buka pemilih ruang kerja di kiri atas. Sumber daya personal dan ruang kerja tim dipisahkan; kolom ID menampilkan ID setiap ruang kerja.
