@@ -29,7 +29,7 @@ The list opens as a table. Switch to **Card Grid View** to see live CPU, memory 
 
 Open **Servers**, then **Create Server**. The recommended way, for any server you already have, is to connect it with the dPanel agent: you run one command on the server, and the agent connects out to dPanel. dPanel never needs to log in to your server, so you don't have to trust it with an SSH key, open a port or even have a public IP. Start here: [Connect a server with the dPanel agent](./register-a-private-machine.md).
 
-![The Create Server page, offering Launch a cloud server or Connect your own server](../../assets/servers/create-choose-path.webp)
+![The Create Server page: Connect a server with the dPanel agent first, then Launch a cloud server, Connect over SSH, and a comparison of the dPanel agent and SSH](../../assets/servers/create-choose-path.webp)
 
 |              | Connect with the dPanel agent (recommended)           | Launch a cloud server                                                                  | Connect over SSH                     |
 | ------------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------ |

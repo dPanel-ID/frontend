@@ -45,7 +45,7 @@ How to create a least-privilege credential, step by step, is on each provider's 
 The machine is created inside your own cloud account, so your provider bills you directly. dPanel does not resell machines.
 :::
 
-![The launch form with a cloud project and an SSH key ready to pick](../../assets/servers/create-step1-provider.webp 'With a cloud account in place, the launch form offers it instead of asking you to connect one.')
+![The launch form with a cloud project ready to pick](../../assets/servers/create-step1-provider.webp 'With a cloud account in place, the launch form offers it instead of asking you to connect one.')
 
 ## What happens next
 

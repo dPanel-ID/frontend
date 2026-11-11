@@ -35,6 +35,8 @@ The easiest way is from the dPanel website. You copy one command and run it on t
    It may ask for your password, because of `sudo`.
 5. Back in dPanel, the card says **Waiting for the machine…** and changes to **Connected!** as soon as the agent connects, usually in under a minute. Choose **Open server**.
 
+![The Connect a server with the dPanel agent card after Get install command: the one-line command with a Copy button, how long it works, and the Waiting status with Open server](../../assets/servers/private-create-chooser.webp 'The card waits for the machine and changes to Connected! by itself. The code in the command is shown here as a placeholder.')
+
 The command works **once, for 2 hours**. For another machine, choose **Get a new command**; each command adds a new server. You don't install dnocs or sign in on the machine, and nothing needs a public IP, an open port or a dPanel SSH key.
 
 **What the command does.** It downloads dPanel's install script, sending its single-use code in the request body (never in a web address). The script creates a Linux user for your dPanel account, installs the agent as the system service `dpanel-agent`, and the agent connects out to dPanel.
@@ -46,8 +48,6 @@ The command works **once, for 2 hours**. For another machine, choose **Get a new
 ### Prefer the command line? Use dnocs
 
 If you already use dnocs, the dPanel command line tool, you can connect the machine with it instead. The card's **Prefer the CLI?** section shows the same command.
-
-![The Create Server page with the Register a private machine card: a No public IP badge, three steps and the command sudo dnocs machine register](../../assets/servers/private-create-chooser.webp)
 
 On the machine:
 

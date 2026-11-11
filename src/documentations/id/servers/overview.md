@@ -29,7 +29,7 @@ Daftar ini terbuka sebagai tabel. Beralihlah ke **Tampilan Grid Kartu** untuk me
 
 Buka **Server**, lalu **Buat Server**. Cara yang direkomendasikan, untuk server apa pun yang sudah Anda punya, adalah menghubungkannya dengan agen dPanel: Anda menjalankan satu perintah di server, lalu agen terhubung keluar ke dPanel. dPanel tidak perlu masuk ke server Anda, jadi Anda tidak perlu memercayakan SSH key, membuka port, atau bahkan punya IP publik. Mulai di sini: [Hubungkan server dengan agen dPanel](./register-a-private-machine.md).
 
-![Halaman Buat Server dengan pilihan meluncurkan server cloud atau menghubungkan server sendiri](../../assets/servers/create-choose-path.webp)
+![Halaman Buat Server: Connect a server with the dPanel agent paling atas, lalu Launch a cloud server, Connect over SSH, dan perbandingan agen dPanel dengan SSH](../../assets/servers/create-choose-path.webp)
 
 |                    | Hubungkan dengan agen dPanel (direkomendasikan)       | Luncurkan server cloud                                                                 | Hubungkan lewat SSH                       |
 | ------------------ | ----------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------- |

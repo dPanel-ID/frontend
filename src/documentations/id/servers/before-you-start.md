@@ -45,7 +45,7 @@ Cara membuat kredensial dengan hak akses seminimal mungkin, langkah demi langkah
 Mesin dibuat di dalam akun cloud Anda sendiri, jadi tagihannya langsung dari penyedia. dPanel tidak menjual ulang mesin.
 :::
 
-![Formulir peluncuran dengan proyek cloud dan SSH key yang siap dipilih](../../assets/servers/create-step1-provider.webp 'Kalau akun cloud sudah ada, formulir peluncuran langsung menawarkannya.')
+![Formulir peluncuran dengan proyek cloud yang siap dipilih](../../assets/servers/create-step1-provider.webp 'Kalau akun cloud sudah ada, formulir peluncuran langsung menawarkannya.')
 
 ## Langkah berikutnya
 

@@ -35,6 +35,8 @@ Cara termudah adalah dari situs web dPanel. Anda menyalin satu perintah lalu men
    Perintah ini mungkin meminta kata sandi Anda, karena memakai `sudo`.
 5. Kembali ke dPanel, kartu menampilkan **Menunggu mesinnya…** lalu berubah menjadi **Terhubung!** begitu agen terhubung, biasanya kurang dari satu menit. Pilih **Buka server**.
 
+![Kartu Connect a server with the dPanel agent setelah Get install command: perintah satu baris dengan tombol Copy, masa berlakunya, dan status Waiting dengan Open server](../../assets/servers/private-create-chooser.webp 'Kartu menunggu mesinnya dan berubah menjadi Terhubung! dengan sendirinya. Kode di dalam perintah ditampilkan sebagai contoh.')
+
 Perintah ini hanya bisa dipakai **sekali, selama 2 jam**. Untuk mesin lain, pilih **Ambil perintah baru**; setiap perintah menambahkan server baru. Anda tidak perlu memasang dnocs atau masuk akun di mesin itu, dan tidak ada yang butuh IP publik, port terbuka, atau SSH key dPanel.
 
 **Apa yang dilakukan perintah ini.** Perintah mengunduh skrip pemasangan dPanel dan mengirim kode sekali pakainya di badan permintaan (tidak pernah di alamat web). Skrip membuat pengguna Linux untuk akun dPanel Anda, memasang agen sebagai layanan sistem `dpanel-agent`, lalu agen terhubung keluar ke dPanel.
@@ -46,8 +48,6 @@ Perintah ini hanya bisa dipakai **sekali, selama 2 jam**. Untuk mesin lain, pili
 ### Lebih suka baris perintah? Pakai dnocs
 
 Jika Anda sudah memakai dnocs, alat baris perintah dPanel, Anda juga bisa menghubungkan mesin dengannya. Bagian **Lebih suka CLI?** di kartu tadi menampilkan perintah yang sama.
-
-![Halaman Create Server dengan kartu Register a private machine: lencana No public IP, tiga langkah, dan perintah sudo dnocs machine register](../../assets/servers/private-create-chooser.webp)
 
 Di mesin itu:
 
