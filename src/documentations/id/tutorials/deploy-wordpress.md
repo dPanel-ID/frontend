@@ -29,7 +29,7 @@ Baca [Cara situs web berjalan di server Anda](./how-a-website-runs.md) terlebih 
 4. Isi **Server name**, misalnya `wordpress-1`, biarkan **Ubuntu release** 24.04 LTS, lalu geser slider ke minimal **2 vCPU** dan RAM **4 GB**. Storage 30 GB sudah cukup.
 5. Saat panel Review bertuliskan **Ready to launch**, tekan **Launch server**.
 
-![Formulir peluncuran dengan provider, cloud project, dan SSH key terpilih](../../assets/servers/create-step1-provider.webp 'Tangkapan layar lama: dengan agen dPanel, pilihan bawaan, formulir tidak meminta SSH key.')
+![Langkah 1 formulir peluncuran dengan provider dan cloud project terpilih](../../assets/servers/create-step1-provider.webp 'Dengan agen dPanel, pilihan bawaan, formulir tidak meminta SSH key.')
 
 Server muncul di daftar. Tunggu sampai statusnya **Ready**, biasanya 10 sampai 20 menit. Formulir lengkapnya dijelaskan di [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Sudah punya mesin sendiri? [Hubungkan dengan agen dPanel](../servers/register-a-private-machine.md) saja, lalu lewati langkah ini.
 

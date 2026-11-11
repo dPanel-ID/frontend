@@ -28,7 +28,7 @@ Formulirnya satu halaman dengan empat langkah bernomor. Panel **Review** di kana
 1. **Provider**: tempat mesin berjalan.
 2. **Cloud project**: akun cloud mana yang membayarnya. **Add project** menghubungkan akun lain.
 
-![Langkah 1 formulir peluncuran, dengan Google Cloud, proyek cloud, dan SSH key terpilih](../../../assets/servers/create-step1-provider.webp 'Tangkapan layar lama: SSH key kini ditanyakan di langkah Cara dPanel terhubung, dan hanya untuk SSH.')
+![Langkah 1 formulir peluncuran, dengan Google Cloud dan proyek cloud terpilih](../../../assets/servers/create-step1-provider.webp)
 
 ## Langkah 2: Location
 
@@ -51,6 +51,8 @@ Langkah ini menentukan cara server baru bergabung ke dPanel, dan apakah server m
 | Biznet Gio, Alibaba Cloud         | Untuk saat ini hanya SSH    | Selalu (SSH membutuhkannya)                       |
 
 Di penyedia yang hanya bisa bergabung lewat SSH, formulir memberi tahu hal itu dan meminta SSH key.
+
+![Langkah 3, How dPanel connects: dPanel agent terpilih, SSH sebagai alternatif, dan tombol Give the VM a public IP](../../../assets/servers/create-step-connect.webp 'Agen dPanel adalah pilihan bawaan: tidak ada kunci dPanel di VM, dan IP publik opsional di Google Cloud, AWS, dan Tencent Cloud.')
 
 ### IP publik
 
