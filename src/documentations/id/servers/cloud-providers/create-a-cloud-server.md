@@ -39,7 +39,7 @@ Formulirnya satu halaman dengan empat langkah bernomor. Panel **Review** di kana
 - **SSH** adalah alternatifnya: dPanel memasang **SSH key** yang Anda pilih di mesin lalu masuk untuk menyiapkannya. **Create SSH key** membuat kunci baru di sini. SSH membutuhkan IP publik.
 - **IP publik** menyala secara bawaan, sehingga mesin bisa melayani situs web. Matikan untuk mesin yang hanya dipakai di dalam jaringan Anda. Tanpa IP publik, mesin hanya bergabung lewat agen, dan tetap perlu akses ke internet: di `dpanel-network`, dPanel menambahkan NAT (di AWS berupa NAT gateway, yang ditagih AWS selama masih ada, dan dihapus dPanel bersama mesin terakhir yang memakainya). Di jaringan yang Anda pilih sendiri, pastikan jaringan itu sudah memberi mesin akses internet, atau agen tidak bisa terhubung.
 
-DigitalOcean selalu memberi Droplet IP publik. Biznet Gio, Alibaba Cloud, dan Tencent Cloud untuk saat ini bergabung lewat SSH, jadi selalu meminta SSH key dan IP publiknya tetap menyala.
+DigitalOcean selalu memberi Droplet IP publik, dan IDCloudHost tetap memakainya karena VM tanpa IP publik tidak bisa mengakses internet. Biznet Gio dan Alibaba Cloud untuk saat ini bergabung lewat SSH, jadi selalu meminta SSH key dan IP publiknya tetap menyala.
 
 ## Langkah 4: Size and image
 

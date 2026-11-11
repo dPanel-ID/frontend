@@ -39,7 +39,7 @@ The form is one page with four numbered steps. The **Review** panel on the right
 - **SSH** is the alternative: dPanel puts the **SSH key** you pick on the machine and logs in to set it up. **Create SSH key** makes one here. SSH needs a public IP.
 - **Public IP** is on by default, so the machine can serve websites. Turn it off for a machine that only works inside your network. Without a public IP the machine joins through the agent only, and it still needs to reach the internet: on `dpanel-network` dPanel adds a NAT (on AWS a NAT gateway, which AWS bills while it exists, and which dPanel removes with the last machine that uses it). On a network you pick yourself, make sure it already gives machines internet access, or the agent cannot connect.
 
-DigitalOcean always gives a Droplet a public IP. Biznet Gio, Alibaba Cloud and Tencent Cloud join over SSH for now, so they always ask for an SSH key and keep the public IP on.
+DigitalOcean always gives a Droplet a public IP, and IDCloudHost keeps it on because a VM without one cannot reach the internet. Biznet Gio and Alibaba Cloud join over SSH for now, so they always ask for an SSH key and keep the public IP on.
 
 ## Step 4: Size and image
 

@@ -9,7 +9,7 @@ function values(provider: string, spec: Partial<FormSchema['spec']> = {}) {
   return {
     provider,
     cloud: { projectID: '11', sshKeyID: '33', zoneSlug: 'ap-jakarta-1' },
-    // Alibaba Cloud and Tencent Cloud join over SSH only for now.
+    // Alibaba Cloud and Biznet Gio join over SSH only for now.
     joinMethod: 'agent',
     contract: { agentJoin: false, publicIPChoice: true },
     regionSlug: 'ap-jakarta',
