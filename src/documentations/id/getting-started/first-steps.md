@@ -15,7 +15,7 @@ Belum pernah mengelola server? Baca dulu [Cara situs web berjalan di server Anda
 1. **Masuk.** Buka [dnocs.devetek.app](https://dnocs.devetek.app) lalu masuk dengan Google atau nama pengguna dan kata sandi. Lihat [Masuk dan profil Anda](./sign-in.md).
 2. **Pilih ruang kerja.** Ruang kerja (workspace) adalah wadah tempat server, aplikasi, dan domain Anda berada. Pakai ruang kerja pribadi untuk mencoba-coba, atau ruang kerja tim untuk berbagi dengan orang lain. Lihat [Ruang kerja](./workspaces.md).
 3. **Siapkan server.** Server adalah komputer tempat situs Anda berjalan: mesin di pusat data, atau mesin di rumah.
-   - **Sudah punya?** VPS (server virtual dari perusahaan hosting), server rumahan, PC homelab, atau Raspberry Pi: hubungkan dengan agen dPanel. Anda cukup menjalankan satu perintah di mesin itu; tidak perlu kunci SSH, IP publik, atau port yang dibuka. Lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md).
+   - **Sudah punya?** VPS (server virtual dari perusahaan hosting), server rumahan, PC homelab, atau Raspberry Pi: hubungkan dengan agen dPanel. Di dPanel, buka **Server**, lalu **Buat Server**, pilih **Ambil perintah pemasangan**, dan jalankan satu perintah itu di mesin dengan `sudo`; server tampil **Siap** dalam satu menit. Tidak perlu kunci SSH, IP publik, atau port yang dibuka. Lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md).
    - **Belum punya server?** Hubungkan akun cloud Anda, misalnya AWS, Google Cloud, atau DigitalOcean, lalu luncurkan server dari dPanel. Server itu bergabung lewat agen dengan sendirinya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
    - **Lebih suka dPanel masuk lewat SSH?** Itu juga bisa; lihat [Agen dPanel atau SSH: pilih yang mana?](../servers/register-a-private-machine.md#agen-dpanel-atau-ssh-pilih-yang-mana)
 4. **Deploy aplikasi pertama.** [Hubungkan GitHub](./connect-github.md), lalu ikuti salah satu tutorial sampai selesai. Setiap tutorial dimulai dengan meluncurkan server; kalau Anda sudah mengerjakan langkah 3, lewati langkah itu dan pakai server Anda, asalkan punya minimal 2 vCPU dan RAM 4 GB:
@@ -46,7 +46,7 @@ Anda juga bisa menyerahkan klik-kliknya kepada asisten: jelaskan apa yang Anda m
 
 ### Apakah saya harus paham Linux atau memakai terminal?
 
-Hampir tidak perlu. Kalau dPanel yang meluncurkan server Anda, semua langkah dilakukan di browser. Menghubungkan server yang sudah Anda punya butuh beberapa perintah di server itu, tinggal disalin dari [panduannya](../servers/register-a-private-machine.md). Setelah itu, dPanel memasang perangkat lunak dari daftar, menyediakan terminal di browser, dan menampilkan log di halaman.
+Hampir tidak perlu. Kalau dPanel yang meluncurkan server Anda, semua langkah dilakukan di browser. Menghubungkan server yang sudah Anda punya butuh satu perintah di server itu, yang Anda salin dari dPanel; [panduannya](../servers/register-a-private-machine.md) menunjukkan setiap langkah. Setelah itu, dPanel memasang perangkat lunak dari daftar, menyediakan terminal di browser, dan menampilkan log di halaman.
 
 ### Bisakah saya memakai server rumahan atau homelab saya?
 

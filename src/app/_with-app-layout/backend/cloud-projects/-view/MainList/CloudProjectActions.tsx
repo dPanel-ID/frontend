@@ -5,6 +5,7 @@ import {
   EyeIcon,
   KeyRoundIcon,
   MoreHorizontalIcon,
+  ScanSearchIcon,
   ServerIcon,
   Trash2Icon,
 } from 'lucide-react';
@@ -66,6 +67,13 @@ export function CloudProjectActions(props: CloudProjectActionsProps) {
             onClick={handlers.updateCredentials}
           />
         )}
+        {handlers.findLeftovers && (
+          <ActionIcon
+            icon={ScanSearchIcon}
+            title={t('page.cloudProjects.actions.findLeftovers')}
+            onClick={handlers.findLeftovers}
+          />
+        )}
         <ActionIcon
           icon={Trash2Icon}
           title={t('common.actions.delete')}
@@ -110,6 +118,12 @@ export function CloudProjectActions(props: CloudProjectActionsProps) {
             <DropdownMenuItem onClick={handlers.updateCredentials}>
               <KeyRoundIcon className="size-4" />
               {t('page.cloudProjects.actions.updateCredentials')}
+            </DropdownMenuItem>
+          )}
+          {handlers.findLeftovers && (
+            <DropdownMenuItem onClick={handlers.findLeftovers}>
+              <ScanSearchIcon className="size-4" />
+              {t('page.cloudProjects.actions.findLeftovers')}
             </DropdownMenuItem>
           )}
           <DropdownMenuSeparator />

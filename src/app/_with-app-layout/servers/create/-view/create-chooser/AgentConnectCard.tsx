@@ -1,44 +1,55 @@
-import { useState } from 'react';
+import type { FormEvent } from 'react';
+import { useId, useState } from 'react';
 
 import { Link } from '@tanstack/react-router';
 import {
   ArrowRightIcon,
   CheckIcon,
-  CopyIcon,
+  ChevronDownIcon,
+  ClockIcon,
   PlugZapIcon,
-  TerminalIcon,
+  RotateCcwIcon,
 } from 'lucide-react';
 
-import { useDevetekTranslations } from '@/services/i18n';
-import { useToaster } from '@/services/toaster';
+import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
-import { FLOW_ACCENTS } from '@/shared/presentation/organisms/FlowHero';
+import { Input } from '@/shared/presentation/atoms/Input';
+import { Spinner } from '@/shared/presentation/atoms/Spinner';
+import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
+import type { StatusTone } from '@/shared/presentation/molecules/StatusPill';
+import {
+  FLOW_ACCENTS,
+  flowCtaClassName,
+} from '@/shared/presentation/organisms/FlowHero';
+
+import type { AgentInstallPhase } from '../../-lib/agent-install';
+import { schemaAgentServerName } from '../../-rules/agent-install';
+import useAgentInstall from '../../-usecase/use-agent-install';
+
+import CommandBox from './CommandBox';
 
 const REGISTER_COMMAND = 'sudo dnocs machine register';
+const PRINT_COMMAND = 'dnocs server agent-install';
+
+const PHASE_TONES: Record<AgentInstallPhase, StatusTone> = {
+  waiting: 'info',
+  ready: 'success',
+  failed: 'danger',
+  expired: 'warning',
+};
 
 /**
  * Recommended path of /servers/create: any server the user already has (a
- * VPS, a home machine, a VM behind a router) registers itself from its own
- * terminal. The dPanel agent connects out, so the server needs no public IP,
- * no open port and no dPanel SSH key.
+ * VPS, a home machine, a VM behind a router) joins with one command that the
+ * web hands out. The dPanel agent connects out, so the server needs no
+ * public IP, no open port and no dPanel SSH key, and the machine needs no
+ * dnocs or sign-in. The dnocs way stays available below.
  */
 export default function AgentConnectCard() {
   const t = useDevetekTranslations('page.servers.create.chooser.agent');
-  const [openToaster] = useToaster();
-  const [copied, setCopied] = useState(false);
   const tone = FLOW_ACCENTS.violet;
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(REGISTER_COMMAND);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      openToaster({ variant: 'error', message: t('copyFailed') });
-    }
-  };
 
   return (
     <section
@@ -87,13 +98,16 @@ export default function AgentConnectCard() {
             ))}
           </ul>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            {t('limits')}
+            {t('noExtras')}
+          </p>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            {t('requirements')}
           </p>
         </div>
 
-        <div className="flex flex-col gap-4 lg:col-span-3">
+        <div className="flex min-w-0 flex-col gap-4 lg:col-span-3">
           <ol className="flex flex-col gap-3">
-            {(['cli', 'signIn', 'register'] as const).map((step, index) => (
+            {(['name', 'run', 'ready'] as const).map((step, index) => (
               <li key={step} className="flex items-start gap-3">
                 <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-violet-400/30 bg-violet-500/10 text-xs font-semibold text-violet-500 dark:text-violet-300">
                   {index + 1}
@@ -105,31 +119,9 @@ export default function AgentConnectCard() {
             ))}
           </ol>
 
-          <div className="overflow-hidden rounded-xl border bg-neutral-950 text-neutral-100">
-            <div className="flex items-center justify-between gap-3 border-b border-white/10 px-3 py-2">
-              <span className="inline-flex min-w-0 items-center gap-2 text-xs text-neutral-400">
-                <TerminalIcon className="size-3.5 shrink-0" />
-                <span className="truncate">{t('runOnMachine')}</span>
-              </span>
-              <Button
-                size="sm"
-                buttonStyle="ghost"
-                buttonColor="secondary"
-                className="h-7 shrink-0 text-neutral-200 hover:bg-white/10 hover:text-white"
-                onClick={handleCopy}
-              >
-                {copied ? (
-                  <CheckIcon className="size-3.5" />
-                ) : (
-                  <CopyIcon className="size-3.5" />
-                )}
-                {copied ? t('copied') : t('copy')}
-              </Button>
-            </div>
-            <pre className="overflow-auto p-3 font-mono text-xs leading-relaxed">
-              {REGISTER_COMMAND}
-            </pre>
-          </div>
+          <InstallCommand />
+
+          <CliAlternative />
 
           <Link
             to="/docs/$section/$page"
@@ -142,5 +134,183 @@ export default function AgentConnectCard() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** Name the server, get the one-line command, then watch it connect. */
+function InstallCommand() {
+  const t = useDevetekTranslations('page.servers.create.chooser.agent');
+  const locale = useDevetekLocale();
+  const nameId = useId();
+  const hintId = useId();
+  const [name, setName] = useState('');
+  const { isRequesting, phase, request, reset, ticket } = useAgentInstall();
+
+  const nameValid = schemaAgentServerName.safeParse(name).success;
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const parsed = schemaAgentServerName.safeParse(name);
+    if (!parsed.success) return;
+    void request(parsed.data);
+  };
+
+  if (!ticket || !phase) {
+    return (
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-3 rounded-xl border bg-background/60 p-4"
+      >
+        <label htmlFor={nameId} className="text-sm font-semibold">
+          {t('install.nameLabel')}
+        </label>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <Input
+            id={nameId}
+            autoComplete="off"
+            spellCheck={false}
+            maxLength={63}
+            placeholder={t('install.namePlaceholder')}
+            value={name}
+            disabled={isRequesting}
+            aria-invalid={!nameValid}
+            aria-describedby={hintId}
+            onChange={(event) => setName(event.target.value)}
+            className="min-w-0 flex-1"
+          />
+          <button
+            type="submit"
+            className={flowCtaClassName('violet', 'shrink-0')}
+            disabled={!nameValid || isRequesting}
+          >
+            {isRequesting ? (
+              <Spinner className="size-4" />
+            ) : (
+              <PlugZapIcon className="size-4" />
+            )}
+            {isRequesting ? t('install.getting') : t('install.get')}
+          </button>
+        </div>
+        <p
+          id={hintId}
+          className={cn(
+            'text-xs leading-relaxed',
+            nameValid
+              ? 'text-muted-foreground'
+              : 'font-semibold text-destructive',
+          )}
+        >
+          {nameValid ? t('install.nameHint') : t('install.nameInvalid')}
+        </p>
+      </form>
+    );
+  }
+
+  const expiresAt = ticket.expiresAt
+    ? ticket.expiresAt.toLocaleTimeString(locale, {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : null;
+
+  return (
+    <div className="flex flex-col gap-3">
+      {phase !== 'expired' && (
+        <>
+          <CommandBox
+            command={ticket.command}
+            label={t('runOnMachine')}
+            copyLabel={t('copy')}
+            copiedLabel={t('copied')}
+            copyFailedMessage={t('copyFailed')}
+          />
+          <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
+            <ClockIcon className="mt-0.5 size-3.5 shrink-0" />
+            {expiresAt
+              ? t('install.expiry', { time: expiresAt })
+              : t('install.expiryNoTime')}
+          </p>
+        </>
+      )}
+
+      <div
+        role="status"
+        aria-live="polite"
+        className="flex flex-col gap-3 rounded-xl border bg-background/60 p-3 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div className="flex min-w-0 items-start gap-2">
+          <StatusPill
+            tone={PHASE_TONES[phase]}
+            label={t(`install.phase.${phase}`)}
+            pulse={phase === 'waiting'}
+            className="shrink-0"
+          />
+          <span className="min-w-0 text-sm leading-relaxed text-muted-foreground">
+            {t(`install.message.${phase}`, { name: ticket.serverName })}
+          </span>
+        </div>
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
+          {(phase === 'expired' || phase === 'failed') && (
+            <Button
+              size="sm"
+              buttonStyle="outline"
+              buttonColor="secondary"
+              onClick={reset}
+            >
+              <RotateCcwIcon className="size-3.5" />
+              {t('install.another')}
+            </Button>
+          )}
+          <Link
+            to="/servers/$id"
+            params={{ id: ticket.serverId }}
+            className={
+              phase === 'ready'
+                ? flowCtaClassName('violet')
+                : 'inline-flex items-center gap-1.5 text-sm font-semibold text-violet-600 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50 dark:text-violet-300'
+            }
+          >
+            {t('install.openServer')}
+            <ArrowRightIcon className="size-4" />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** The dnocs way, for people who already use the command line tool. */
+function CliAlternative() {
+  const t = useDevetekTranslations('page.servers.create.chooser.agent');
+
+  return (
+    <details className="group rounded-xl border bg-background/40">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50 [&::-webkit-details-marker]:hidden">
+        {t('cli.summary')}
+        <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="flex flex-col gap-3 border-t px-4 py-3">
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {t('cli.register')}
+        </p>
+        <CommandBox
+          command={REGISTER_COMMAND}
+          label={t('runOnMachine')}
+          copyLabel={t('copy')}
+          copiedLabel={t('copied')}
+          copyFailedMessage={t('copyFailed')}
+        />
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          {t.rich('cli.print', {
+            command: PRINT_COMMAND,
+            code: (chunks) => (
+              <code className="rounded bg-border/50 px-1 py-0.5 font-mono text-xs">
+                {chunks}
+              </code>
+            ),
+          })}
+        </p>
+      </div>
+    </details>
   );
 }

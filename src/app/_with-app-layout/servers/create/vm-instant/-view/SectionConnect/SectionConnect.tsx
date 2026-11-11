@@ -78,22 +78,26 @@ export default function SectionConnect() {
               {(['agent', 'ssh'] as const).map((method) => {
                 const Icon = JOIN_ICONS[method];
                 return (
-                  <ChoiceTile
-                    key={method}
-                    selected={joinMethod === method}
-                    onSelect={() => selectJoinMethod(method)}
-                    disabled={method === 'ssh' && publicIPOff}
-                    badge={
-                      method === 'agent' ? t('join.recommended') : undefined
-                    }
-                    leading={
-                      <span className="flex size-9 items-center justify-center rounded-lg border bg-background">
-                        <Icon className="size-4" />
-                      </span>
-                    }
-                    title={t(`join.${method}.title`)}
-                    subtitle={t(`join.${method}.subtitle`)}
-                  />
+                  <div key={method} className="flex min-w-0 flex-col gap-1.5">
+                    <ChoiceTile
+                      selected={joinMethod === method}
+                      onSelect={() => selectJoinMethod(method)}
+                      disabled={method === 'ssh' && publicIPOff}
+                      badge={
+                        method === 'agent' ? t('join.recommended') : undefined
+                      }
+                      leading={
+                        <span className="flex size-9 items-center justify-center rounded-lg border bg-background">
+                          <Icon className="size-4" />
+                        </span>
+                      }
+                      title={t(`join.${method}.title`)}
+                      subtitle={t(`join.${method}.subtitle`)}
+                    />
+                    <p className="px-1 text-xs leading-relaxed text-muted-foreground">
+                      {t(`join.${method}.tradeoff`)}
+                    </p>
+                  </div>
                 );
               })}
             </div>
