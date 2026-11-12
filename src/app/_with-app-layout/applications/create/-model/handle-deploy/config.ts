@@ -65,18 +65,14 @@ export const getVarsWordpress = (vars: BundleVars) => {
           },
         },
         {
-          name: 'geerlingguy.php-versions',
-        },
-        {
-          name: 'geerlingguy.php',
+          // PHP from the new runtime: prebuilt, shared by every user of the server.
+          name: 'dpanel-runtime',
           tag: 'language,php,php-8.4',
           variable: {
+            runtime_module: 'php',
+            runtime_version: '8.4',
             php_version: '8.4',
-            php_enable_webserver: false,
-            php_enable_php_fpm: false,
-            php_fpm_state: 'stopped',
-            php_fpm_enabled_on_boot: false,
-            php_packages_extra: ['sendmail'],
+            runtime_apt_packages: ['sendmail'],
           },
         },
         {
@@ -279,18 +275,22 @@ export const getVarsLaravel = (vars: BundleVars) => {
           },
         },
         {
-          name: 'geerlingguy.php-versions',
-        },
-        {
-          name: 'geerlingguy.php',
+          // PHP from the new runtime: prebuilt, shared by every user of the server.
+          name: 'dpanel-runtime',
           tag: 'language,php,php-8.4',
           variable: {
+            runtime_module: 'php',
+            runtime_version: '8.4',
             php_version: '8.4',
-            php_enable_webserver: false,
-            php_enable_php_fpm: false,
-            php_fpm_state: 'stopped',
-            php_fpm_enabled_on_boot: false,
-            php_packages_extra: ['php{{ php_version }}-swoole'],
+          },
+        },
+        {
+          // Not in the PHP build: compiled for this PHP on the server, with build
+          // tools installed for the build and removed afterwards.
+          name: 'dpanel.php-extensions',
+          variable: {
+            php_version: '8.4',
+            php_extensions: 'swoole',
           },
         },
         {
@@ -325,17 +325,16 @@ export const getVarsLaravel = (vars: BundleVars) => {
           },
         },
         {
-          name: 'geerlingguy.composer',
-        },
-        {
           name: 'devetek.laravel',
           variable: {
             laravel_source: 'cli',
             laravel_install_path: '{{ deploy_workdir }}',
             laravel_owner: '{{ username }}',
             laravel_group: '{{ username }}',
-            laravel_php_executable: '/usr/bin/php{{ php_version }}',
-            laravel_composer_executable: '/usr/local/bin/composer',
+            laravel_php_executable:
+              '/opt/dpanel/runtimes/php/{{ php_version }}/bin/php',
+            laravel_composer_executable:
+              '/opt/dpanel/runtimes/php/{{ php_version }}/bin/composer',
           },
         },
         {
@@ -521,22 +520,23 @@ export const getVarsGitLaravel = (vars: GitVars) => {
           },
         },
         {
-          name: 'geerlingguy.php-versions',
-        },
-        {
-          name: 'geerlingguy.php',
+          // PHP from the new runtime: prebuilt, shared by every user of the server.
+          name: 'dpanel-runtime',
           tag: 'language,php,php-8.2',
           variable: {
+            runtime_module: 'php',
+            runtime_version: '8.2',
             php_version: '8.2',
-            php_enable_webserver: false,
-            php_enable_php_fpm: false,
-            php_fpm_state: 'stopped',
-            php_fpm_enabled_on_boot: false,
-            php_packages_extra: ['php8.2-swoole'],
           },
         },
         {
-          name: 'geerlingguy.composer',
+          // Not in the PHP build: compiled for this PHP on the server, with build
+          // tools installed for the build and removed afterwards.
+          name: 'dpanel.php-extensions',
+          variable: {
+            php_version: '8.2',
+            php_extensions: 'swoole',
+          },
         },
         {
           name: 'dpanel-git',

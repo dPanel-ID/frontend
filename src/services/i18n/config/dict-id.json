@@ -944,6 +944,18 @@
         "stepCount": "{count} langkah build",
         "buildNotFound": "Build untuk rilis ini sudah tidak tersimpan",
         "deleteForever": "Hapus permanen",
+        "runtime": {
+          "button": "Runtime",
+          "title": "Pindah ke runtime baru?",
+          "body": "Runtime baru memasang setiap versi bahasa sekali di server, siap pakai, dan dipakai bersama oleh semua pengguna. dPanel men-deploy rilis ini lagi: memasang runtime jika belum ada, membangun ulang aplikasi di atasnya, lalu memulai ulang aplikasi.",
+          "note": "Runtime lama tetap terpasang, jadi Anda bisa kembali dengan cara yang sama. Virtual environment Python dibuat ulang.",
+          "moveNew": "Pindah ke runtime baru",
+          "movePrevious": "Kembali ke runtime lama",
+          "cancel": "Batal",
+          "movedNew": "Pindah ke runtime baru: deployment sudah dimulai.",
+          "movedPrevious": "Kembali ke runtime lama: deployment sudah dimulai.",
+          "failed": "Gagal memindahkan runtime"
+        },
         "checkingService": "Memeriksa layanan",
         "installer": "Pemasang",
         "pageOf": "Halaman {page} dari {total}",
@@ -1715,7 +1727,9 @@
           "title": "Uninstall instalasi modul?",
           "message": "Ini akan menghapus {module} {version} dari inventori dPanel dan menghapus folder metadata modulnya. Paket di server tidak ikut dihapus.",
           "success": "{module} {version} dihapus dari inventori dPanel.",
-          "errorTitle": "Gagal uninstall {module} {version}"
+          "errorTitle": "Gagal uninstall {module} {version}",
+          "runtimeMessage": "Ini menghapus {module} {version} dari server. dPanel menolak selama masih ada aplikasi yang memakainya.",
+          "runtimeSuccess": "Penghapusan {module} {version} dari server sudah dimulai."
         },
         "emptyState": {
           "title": "Anda belum memasang modul apapun saat ini.",
@@ -1847,7 +1861,9 @@
         "openDatabase": "Buka database",
         "openDatabaseAria": "Buka {module} di pengelola database",
         "manageFirewall": "Kelola firewall",
-        "manageFirewallAria": "Kelola firewall server ini"
+        "manageFirewallAria": "Kelola firewall server ini",
+        "previousRuntime": "Runtime lama",
+        "previousRuntimeHelp": "Dipasang oleh penginstal dPanel sebelumnya. Aplikasi yang memakainya tetap berjalan; pindahkan ke runtime baru dari halaman aplikasi."
       },
       "files": {
         "title": "Berkas",

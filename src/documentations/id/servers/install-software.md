@@ -33,6 +33,18 @@ Butuh rilis yang tidak ada di daftar? Kalau daftarnya diakhiri **Custom version�
 
 ![Formulir pemasangan Go dengan daftar Go Version terbuka: 1.27.3, 1.27.2, 1.27.1, 1.27.0, 1.26.10 dan Custom version…](../../assets/servers/server-module-version.webp 'Lima rilis terbaru, atau Custom version… untuk rilis lain.')
 
+## Bahasa pemrograman
+
+Node.js, Go, Python, Ruby, Bun, uv, dan PHP dipasang **sekali per server** dan dipakai bersama oleh semua pengguna dan semua aplikasi di server itu. dPanel mengunduhnya dalam bentuk siap pakai, jadi pemasangan hanya butuh beberapa detik sampai beberapa menit dan tidak memasang compiler di server Anda. Beberapa versi bisa terpasang berdampingan; setiap aplikasi memakai versi yang dimintanya.
+
+- **PHP** hanya menyediakan versi tetap: 8.5, 8.4, 8.3, 8.2, 8.1, 8.0, 7.4, 7.3, dan 5.6, masing-masing rilis terbaru di jalurnya. PHP-FPM, Composer, dan ekstensi umum (OPcache, Redis, Imagick, Memcached, APCu, GD, intl, …) sudah disertakan. Versi 8.0 ke bawah sudah tidak didukung lagi: pakai hanya untuk aplikasi yang belum bisa pindah. Tambahkan ekstensi lain lewat **PHP Extensions**.
+- **Set As Default** menjadikan sebuah versi yang dipakai saat Anda mengetik `node`, `php`, atau `python3` di terminal server. Versi pertama yang dipasang otomatis menjadi default.
+- Pengguna server tidak bisa mengunduh salinan bahasa sendiri: semuanya berasal dari pemasangan bersama, sehingga server tetap bersih.
+
+### Runtime lama
+
+Di server yang sudah memiliki bahasa sebelum perubahan ini, versi-versi tersebut diberi tanda **Runtime lama** di tab Modul. Semuanya tetap berjalan, dan aplikasi yang memakainya tetap di sana. Untuk memindahkan aplikasi, buka aplikasinya, masuk ke **Deployments**, lalu pilih **Runtime** → **Pindah ke runtime baru** pada deployment-nya. dPanel memasang bahasanya di runtime baru jika perlu, membangun ulang aplikasi di atasnya, lalu memulai ulang aplikasi. **Kembali ke runtime lama** mengembalikannya dengan cara yang sama.
+
 ## Memasang basis data
 
 1. Tekan **Pasang** pada modul yang diinginkan, misalnya **MariaDB**.
@@ -150,7 +162,7 @@ dPanel menampilkan apa yang terakhir dilaporkan agen. Tekan **Segarkan inventari
 
 ### Apakah Uninstall menghapus perangkat lunak dari server?
 
-Tidak. **Uninstall** pada chip versi hanya menghapus catatan dPanel. Paket, datanya, dan layanannya tetap ada di server.
+Untuk bahasa pemrograman, ya: **Uninstall** menghapus versi itu dari server, dan menolak selama masih ada aplikasi yang memakainya. Untuk perangkat lunak lain, tidak: **Uninstall** pada chip versi hanya menghapus catatan dPanel, sedangkan paket, datanya, dan layanannya tetap ada di server.
 
 ### Bisakah saya memasang versi yang tidak ada di daftar?
 
