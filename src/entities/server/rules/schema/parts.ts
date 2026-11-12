@@ -13,6 +13,8 @@ export const agent = z.object({
   upgradeAvailable: z.boolean().catch(false),
   /** The release dPanel installs today. */
   newVersion: z.string().optional(),
+  /** A private server whose agent has not connected yet. */
+  awaitingAgent: z.boolean().optional(),
 });
 
 export type CloudProvider = z.output<typeof cloudProvider>;

@@ -211,6 +211,10 @@ Tidak, kalau hanya untuk dikelola dPanel. Agen hanya terhubung keluar. Anda perl
 
 Bisa, dengan Linux 64-bit (`arm64`) yang memakai systemd, seperti Raspberry Pi OS 64-bit atau Ubuntu.
 
+### Server menampilkan Menunggu agen. Apa artinya?
+
+dPanel sudah membuat server dan menunggu Anda menjalankan perintah instalasinya di mesin. Perintah itu berlaku 2 jam. Jika belum ada yang terhubung sampai saat itu, server menampilkan **Failed** dengan catatan bahwa perintah instalasinya sudah kedaluwarsa: buat perintah instalasi baru untuk server itu lalu jalankan, dan server yang sama menjadi **Ready**.
+
 ### Perintahnya menunggu dan server tidak pernah menjadi Ready. Apa yang perlu dicek?
 
 Pastikan mesin bisa mengakses internet lewat HTTPS (port 443), dan `sudo systemctl status dpanel-agent` menunjukkan agen berjalan. `sudo journalctl -u dpanel-agent -n 50` menampilkan pesan terakhirnya.
