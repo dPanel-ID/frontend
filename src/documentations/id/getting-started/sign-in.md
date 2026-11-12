@@ -78,6 +78,10 @@ Pilih ruang kerja yang akan dipakai. Lihat [Ruang kerja](./workspaces.md). Setel
 
 Bisa. Buat akun lewat **Daftar**, lalu masuk dengan username dan password.
 
+### Saya mendaftar dengan Google. Bagaimana memakai baris perintah dnocs?
+
+`dnocs auth login` memerlukan username dan password. Atur password di **Edit profile** (password lama tidak ditanyakan), lalu masuk ke dnocs dengan username yang tertera di profil Anda. Atau buat token [akun layanan](../teams/service-accounts.md) dan jalankan dnocs dengan `DNOCS_TOKEN`.
+
 ### Bagaimana mengatur ulang password yang terlupa?
 
 Tekan **Lupa password?**. dPanel belum bisa mengatur ulang password lewat email; dialog yang muncul berisi kontak dukungan yang bisa Anda hubungi.

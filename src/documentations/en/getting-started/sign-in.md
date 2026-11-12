@@ -78,6 +78,10 @@ Pick the workspace you want to work in. See [Workspaces](./workspaces.md). Then 
 
 Yes. Create an account with **Sign Up** and sign in with your username and password.
 
+### I signed up with Google. How do I use the dnocs command line?
+
+`dnocs auth login` needs a username and password. Set a password under **Edit profile** (no old password is asked), then sign in to dnocs with the username shown on your profile. Or create a [service account](../teams/service-accounts.md) token and run dnocs with `DNOCS_TOKEN`.
+
 ### How do I reset a forgotten password?
 
 Press **Forgot password?**. dPanel does not reset passwords by email yet; the dialog gives you the support contact to write to.

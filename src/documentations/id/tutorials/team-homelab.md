@@ -58,13 +58,17 @@ docker build -f Containerfile --build-arg BASE=docker.io/library/debian:13 -t dp
 
 Dengan Podman, tulis `podman build`, bukan `docker build`; sisanya sama.
 
-**3. Jalankan kontainer** yang menyalakan systemd. `--hostname` adalah nama server di dPanel:
+**3. Jalankan kontainer** yang menyalakan systemd. `--hostname` adalah nama server di dPanel. Perintahnya satu baris, jadi bisa dipakai di bash, zsh, PowerShell, maupun Command Prompt:
 
 ```bash
-docker run -d --name homelab-nas --hostname homelab-nas \
-  --privileged --cgroupns=host -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
-  dpanel-lab-ubuntu24
+docker run -d --name homelab-nas --hostname homelab-nas --privileged --cgroupns=host -v /sys/fs/cgroup:/sys/fs/cgroup:rw dpanel-lab-ubuntu24
 ```
+
+Pakai image yang Anda buat di langkah 2: misalnya `dpanel-lab-debian13` untuk Debian 13 atau `dpanel-lab-ubuntu26` untuk Ubuntu 26.04.
+
+:::note[Di Windows]
+Jalankan perintahnya di PowerShell atau Command Prompt dengan Docker Desktop menyala. Docker Desktop memerlukan WSL 2; kalau belum terpasang, `wsl --install --no-distribution` hanya memasang yang dibutuhkan Docker Desktop, tanpa mengunduh distribusi Linux lengkap.
+:::
 
 Dengan Podman, yang menyalakan systemd sendiri jika image menjalankan `/sbin/init`:
 
@@ -86,6 +90,8 @@ Setelah beberapa detik, `docker exec homelab-nas systemctl is-system-running` (a
   dnocs workspace set --id <id ruang kerja>
   sudo dnocs machine register
   ```
+
+  Mendaftar dengan Google? Lihat [Memakai dnocs dengan akun Google](#memakai-dnocs-dengan-akun-google).
 
 Dalam satu menit server tampil **Ready** di dPanel. Jalankan kontainer lain dengan nama lain (`homelab-pi`, …) atau image lain untuk mendapat server tambahan.
 
@@ -120,6 +126,8 @@ dnocs auth login -u <username Anda>
 dnocs workspace set --id <ID ruang kerja>
 sudo dnocs machine register
 ```
+
+Mendaftar dengan Google? Lihat [Memakai dnocs dengan akun Google](#memakai-dnocs-dengan-akun-google).
 
 dnocs menyebut nama ruang kerja dalam pertanyaannya, jadi Anda bisa memastikan pilihan Anda benar sebelum mengonfirmasi. Setelah itu dnocs membuat user Linux untuk akun dPanel Anda, memasang agen, dan menunggu sampai server siap, biasanya kurang dari satu menit. Server dibuat di ruang kerja itu. Untuk membaca skrip pemasangannya sebelum dijalankan, pakai `sudo dnocs machine register --print-only`.
 
@@ -167,6 +175,13 @@ Pilih **Add Member**, pilih orangnya dan peran yang ia dapat. Peran menentukan a
 | Viewer | Hanya melihat: server, pemakaian, log, dan pekerjaan |
 
 Lihat [Anggota dan peran](../teams/members-and-roles.md) untuk rincian setiap peran.
+
+## Memakai dnocs dengan akun Google
+
+`dnocs auth login` masuk dengan username dan password, sedangkan akun yang dibuat lewat Google belum punya password dPanel. Pilih salah satu:
+
+- **Atur password.** Di dPanel, buka profil Anda, pilih **Edit profile**, isi **New password** dan **Retype password**, lalu simpan. Setelah itu jalankan `dnocs auth login -u <username Anda>`; username Anda tertera di profil.
+- **Pakai token akun layanan.** Buat [akun layanan](../teams/service-accounts.md) beserta tokennya, lalu jalankan dnocs dengan token itu: `DNOCS_TOKEN=dps_token_anda dnocs server list`. Untuk ruang kerja tim, pemilik atau admin ruang kerja membuat akun layanan **ruang kerja**, yang tokennya bertindak di ruang kerja itu.
 
 ## Perlu diketahui
 
