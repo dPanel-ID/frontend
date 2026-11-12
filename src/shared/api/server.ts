@@ -16,6 +16,7 @@ import * as Firewall$IdRules$RuleId from './server.firewall.$id.rules.$ruleId';
 import * as Modules$Id from './server.modules.$id';
 import * as Modules$Id$InstallationId from './server.modules.$id.$installationId';
 import * as Modules$IdAdopt from './server.modules.$id.adopt';
+import * as Modules$IdHealth from './server.modules.$id.health';
 import * as Modules$IdRefresh from './server.modules.$id.refresh';
 import * as Origin$IdCpu from './server.origin.$id.cpu';
 import * as Origin$IdCpuUsage from './server.origin.$id.cpu.usage';
@@ -64,6 +65,7 @@ const Root = {
       $InstallationId: Modules$Id$InstallationId,
       Refresh: Modules$IdRefresh,
       Adopt: Modules$IdAdopt,
+      Health: Modules$IdHealth,
     },
   },
   Origin: {
