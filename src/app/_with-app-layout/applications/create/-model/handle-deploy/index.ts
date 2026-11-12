@@ -65,6 +65,16 @@ function runtimeItemInstallationKey(config: DependencyConfig) {
   const moduleId = config.moduleId || config.id;
   if (!config.version) return moduleId;
 
+  // The new runtime installer records its own key; PHP is installed by
+  // branch (8.4.27 -> 8.4).
+  if (config.roles.some((role) => role.trim() === 'dpanel-runtime')) {
+    const version =
+      moduleId === 'php'
+        ? config.version.split('.').slice(0, 2).join('.')
+        : config.version;
+    return `${moduleId}@${version}:mise`;
+  }
+
   return `${moduleId}@${config.version}:system`;
 }
 
