@@ -192,6 +192,31 @@ export function executionFailureSummary(
   return redactSecrets(String(candidate).trim());
 }
 
+/**
+ * The failed task and its output, for the technical disclosure. Only for
+ * executions that need attention, so a run that recovered shows no error.
+ */
+export function executionErrorDetail(
+  execution: DTOs.ExecutionV2,
+  lifecycle: ExecutionLifecycle = executionLifecycle(execution.status),
+): Pick<ActivityItem, 'errorTask' | 'errorOutput'> {
+  const detail = execution.error_detail;
+  if (!detail || !needsAttentionLifecycle(lifecycle)) return {};
+
+  const text = (key: string) => {
+    const value = detail[key];
+    return typeof value === 'string' && value.trim() ? value.trim() : undefined;
+  };
+  const task = text('task');
+  const host = text('host');
+  const output = text('stderr') ?? text('detail') ?? text('message');
+
+  return {
+    errorTask: task && host ? `${task} (${host})` : task,
+    errorOutput: output ? redactSecrets(output) : undefined,
+  };
+}
+
 /** Label for the machine an execution ran against. */
 export function executionTarget(
   execution: DTOs.ExecutionV2,
@@ -259,6 +284,10 @@ export interface ActivityItem {
   rawType?: string;
   traceId?: string;
   machineId?: string;
+  /** The task that failed, from the execution's error detail. */
+  errorTask?: string;
+  /** What that task printed when it failed, redacted. */
+  errorOutput?: string;
 }
 
 /** Projects a stored execution into the shape the activity feed renders. */
@@ -288,6 +317,7 @@ export function toActivityItem(execution: DTOs.ExecutionV2): ActivityItem {
     rawType: execution.type,
     traceId: execution.trace_id,
     machineId: execution.machine_id,
+    ...executionErrorDetail(execution, lifecycle),
   };
 }
 

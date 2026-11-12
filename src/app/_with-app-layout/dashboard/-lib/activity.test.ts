@@ -5,6 +5,7 @@ import type { DTOs } from '@/shared/api';
 import {
   AGENT_STALE_AFTER_MS,
   executionDurationMs,
+  executionErrorDetail,
   executionFailureSummary,
   executionLifecycle,
   executionTarget,
@@ -175,6 +176,49 @@ describe('executionFailureSummary', () => {
         execution({ status: 'failed', error: 'auth failed token=abc' }),
       ),
     ).toBe('auth failed token=[redacted]');
+  });
+});
+
+describe('executionErrorDetail', () => {
+  it('names the failed task and shows its output', () => {
+    expect(
+      executionErrorDetail(
+        execution({
+          status: 'failed',
+          error_detail: {
+            task: 'Install node 26.13.1',
+            host: 'localhost',
+            stderr: 'curl: (22) 404\nmise ERROR failed to install',
+            message: 'non-zero return code',
+          },
+        }),
+      ),
+    ).toEqual({
+      errorTask: 'Install node 26.13.1 (localhost)',
+      errorOutput: 'curl: (22) 404\nmise ERROR failed to install',
+    });
+  });
+
+  it('falls back to the message when the task printed nothing', () => {
+    expect(
+      executionErrorDetail(
+        execution({
+          status: 'failed',
+          error_detail: { task: 'Copy config', message: 'Destination missing' },
+        }),
+      ),
+    ).toEqual({ errorTask: 'Copy config', errorOutput: 'Destination missing' });
+  });
+
+  it('shows nothing for a run that succeeded', () => {
+    expect(
+      executionErrorDetail(
+        execution({
+          status: 'succeeded',
+          error_detail: { task: 'Old task', message: 'old' },
+        }),
+      ),
+    ).toEqual({});
   });
 });
 

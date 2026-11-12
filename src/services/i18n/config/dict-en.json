@@ -591,6 +591,8 @@
         "failedDescription": "The activity feed is temporarily unavailable. Your infrastructure is unaffected.",
         "retry": "Try again",
         "field": {
+          "failedTask": "Failed task",
+          "error": "Error",
           "type": "Type",
           "status": "Status",
           "module": "Module",
