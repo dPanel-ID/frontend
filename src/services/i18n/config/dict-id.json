@@ -1751,6 +1751,11 @@
           "description": "Membuka tampilan firewall server ini, tempat Anda menambah aturan dan menerapkannya.",
           "button": "Kelola firewall",
           "buttonAria": "Kelola firewall server ini"
+        },
+        "whyFailed": {
+          "title": "Mengapa gagal",
+          "noReason": "dPanel tidak mencatat alasannya. Pasang ulang modul untuk melihat galatnya.",
+          "execution": "Eksekusi {id}"
         }
       },
       "hero": {
@@ -1868,7 +1873,8 @@
         "manageFirewall": "Kelola firewall",
         "manageFirewallAria": "Kelola firewall server ini",
         "previousRuntime": "Runtime lama",
-        "previousRuntimeHelp": "Dipasang oleh penginstal dPanel sebelumnya. Aplikasi yang memakainya tetap berjalan; pindahkan ke runtime baru dari halaman aplikasi."
+        "previousRuntimeHelp": "Dipasang oleh penginstal dPanel sebelumnya. Aplikasi yang memakainya tetap berjalan; pindahkan ke runtime baru dari halaman aplikasi.",
+        "openFailedAria": "Lihat mengapa {module} gagal"
       },
       "files": {
         "title": "Berkas",
