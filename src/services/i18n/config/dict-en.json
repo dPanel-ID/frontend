@@ -1167,7 +1167,8 @@
             "agent": "Agent",
             "unknown": "unknown",
             "retry": "Retry",
-            "private": "Private · through the agent"
+            "private": "Private · through the agent",
+            "throughAgent": "Through the agent"
           },
           "sectionDependencies": {
             "title": "Select dependencies",

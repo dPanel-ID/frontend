@@ -1167,7 +1167,8 @@
             "agent": "Agent",
             "unknown": "unknown",
             "retry": "Coba lagi",
-            "private": "Privat · lewat agen"
+            "private": "Privat · lewat agen",
+            "throughAgent": "Lewat agen"
           },
           "sectionDependencies": {
             "title": "Pilih dependency",

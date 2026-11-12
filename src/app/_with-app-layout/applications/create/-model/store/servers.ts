@@ -24,8 +24,14 @@ export interface ApplicationCreateServerOption {
   inventoryRefreshedAt?: string;
   osName?: string;
   osVersion?: string;
-  /** No public IP: reached through its agent; publicIP holds its LAN address. */
+  /**
+   * Reached through its agent instead of SSH. publicIP holds its registered
+   * public address when it has one (a cloud VM joined with a public IP),
+   * else its LAN address.
+   */
   private?: boolean;
+  /** An agent-connected server whose publicIP is a public address. */
+  hasPublicAddress?: boolean;
   provider?: string;
   region?: string;
   sshPort?: string;
@@ -88,9 +94,14 @@ export const [ServersStoreProvider, useServersStore] = buildContext(
               version,
             } = machine;
 
-            // A private server has no public address; show its LAN address.
+            // A server reached through its agent may still have a public
+            // address (a cloud VM joined with a public IP); show it, and fall
+            // back to its LAN address only when it has none.
             const isPrivate = connectivity === 'private';
-            const publicIP = isPrivate ? lan_address || '-' : address;
+            const registeredAddress = address?.trim();
+            const publicIP = isPrivate
+              ? registeredAddress || lan_address || '-'
+              : address;
             const serverId = Number(id);
             if (!Number.isFinite(serverId) || !hostname || !publicIP) {
               return null;
@@ -108,6 +119,7 @@ export const [ServersStoreProvider, useServersStore] = buildContext(
               osName: distributor ?? os_family,
               osVersion: version,
               private: isPrivate,
+              hasPublicAddress: isPrivate && !!registeredAddress,
               provider,
               region,
               sshPort: ssh_port,

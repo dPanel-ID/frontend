@@ -494,11 +494,20 @@ function ServerPicker(props: {
         const osLabel = [server.osName, server.osVersion]
           .filter(Boolean)
           .join(' ');
-        // A private server has no SSH: it is reached through its agent.
+        // A server without SSH is reached through its agent. One with a
+        // public address shows it; only a server without one is private.
         const metadata = server.private
           ? [
-              { icon: HouseIcon, label: server.publicIP },
-              { icon: TerminalIcon, label: t('private') },
+              {
+                icon: server.hasPublicAddress ? Globe2Icon : HouseIcon,
+                label: server.publicIP,
+              },
+              {
+                icon: TerminalIcon,
+                label: server.hasPublicAddress
+                  ? t('throughAgent')
+                  : t('private'),
+              },
             ]
           : [
               {

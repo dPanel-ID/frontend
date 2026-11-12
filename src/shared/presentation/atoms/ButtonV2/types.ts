@@ -7,6 +7,11 @@ export interface ButtonExtraProps {
   asChild?: boolean;
   disabled?: boolean;
   bubbleUpClick?: boolean;
+  /**
+   * Inside a form a button submits it unless it says otherwise; pass
+   * `"button"` for one that only acts on the page.
+   */
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export type ButtonProps<V extends (...args: any) => any> = ButtonExtraProps &
