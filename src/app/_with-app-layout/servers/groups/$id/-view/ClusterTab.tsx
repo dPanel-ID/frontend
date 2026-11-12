@@ -22,6 +22,7 @@ import {
   ClusterEngineIcon,
   ClusterKindIcon,
 } from '@/features/server-groups/view/ClusterKindIcon';
+import { ClusterPreflight } from '@/features/server-groups/view/ClusterPreflight';
 import { ClusterStatusPill } from '@/features/server-groups/view/ClusterStatusPill';
 
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
@@ -139,6 +140,18 @@ export default function ClusterTab() {
         </div>
       )}
 
+      {status === 'failed' && cluster.failure_reason && (
+        <div
+          role="alert"
+          className="border-b bg-red-500/5 px-4 py-3 text-sm text-red-700 dark:text-red-300"
+        >
+          <p className="font-semibold">{t('failureReason')}</p>
+          <p className="mt-1 whitespace-pre-wrap break-words">
+            {cluster.failure_reason}
+          </p>
+        </div>
+      )}
+
       <dl className="grid gap-x-6 gap-y-3 border-b p-4 text-sm sm:grid-cols-2 lg:grid-cols-3">
         <Fact label={t('kind')}>
           <span className="inline-flex items-center gap-1.5">
@@ -166,7 +179,25 @@ export default function ClusterTab() {
         <Fact label={t('lastExecution')}>
           <ClusterExecution execution={cluster.last_execution} />
         </Fact>
+        {cluster.transport && (
+          <Fact label={t('runsFrom')}>
+            {cluster.transport === 'member' ? (
+              <span>
+                {t('runsFromMember', {
+                  server:
+                    cluster.nodes.find(
+                      (node) => node.server_id === cluster.controller_server_id,
+                    )?.server_name || cluster.controller_server_id,
+                })}
+              </span>
+            ) : (
+              <span>{t('runsFromWorker')}</span>
+            )}
+          </Fact>
+        )}
       </dl>
+
+      {cluster.preflight && <ClusterPreflight preflight={cluster.preflight} />}
 
       {isClusterTransitioning(status) && (
         <p
@@ -200,6 +231,12 @@ export default function ClusterTab() {
               </TableHead>
               <TableHead className={cn(dataTable.head, 'w-36')}>
                 {t('table.region')}
+              </TableHead>
+              <TableHead className={cn(dataTable.head, 'w-28')}>
+                {t('table.joined')}
+              </TableHead>
+              <TableHead className={cn(dataTable.head, 'w-40')}>
+                {t('table.access')}
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -244,6 +281,37 @@ export default function ClusterTab() {
                 <TableCell className={dataTable.cell}>
                   {node.region || '-'}
                 </TableCell>
+                <TableCell className={dataTable.cell}>
+                  {node.join_method === 'agent'
+                    ? t('joinedAgent')
+                    : node.join_method === 'ssh'
+                      ? t('joinedSsh')
+                      : '-'}
+                </TableCell>
+                <TableCell className={dataTable.cell}>
+                  {node.access ? (
+                    <span
+                      className="block"
+                      title={node.access.error || node.access.execution_id}
+                    >
+                      <StatusPill
+                        tone={nodeTone(node.access.status)}
+                        label={
+                          node.access.type === 'cluster_revoke'
+                            ? t('accessRevoke', { status: node.access.status })
+                            : node.access.status
+                        }
+                      />
+                      {node.access.error && (
+                        <span className="mt-1 block truncate text-xs text-red-600 dark:text-red-300">
+                          {node.access.error}
+                        </span>
+                      )}
+                    </span>
+                  ) : (
+                    <span className="text-muted-foreground">-</span>
+                  )}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -266,6 +334,7 @@ function nodeTone(status: string) {
     case 'installing':
     case 'uninstalling':
     case 'pending':
+    case 'queued':
       return 'info' as const;
     default:
       return 'neutral' as const;
