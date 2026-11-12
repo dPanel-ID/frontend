@@ -62,4 +62,48 @@ describe('useServersStore', () => {
     ]);
     expect(servers.totalPage).toBe(1);
   });
+
+  // A cloud VM joined through its agent with a public IP showed "-" and
+  // "Private" although the server kept its public address.
+  it('shows the public address of a server reached through its agent', () => {
+    mockedUseGet.mockReturnValue([
+      {
+        $status: 'success',
+        machines: [
+          {
+            id: '304',
+            hostname: 'gcp-01',
+            address: '203.0.113.32',
+            connectivity: 'private',
+          },
+          {
+            id: '305',
+            hostname: 'home-01',
+            address: '',
+            connectivity: 'private',
+            lan_address: '192.168.1.20',
+          },
+        ],
+        pagination: { page: 1, size: 3, total_item: 2, total_page: 1 },
+      },
+      vi.fn(),
+    ] as unknown as ReturnType<typeof ApiServer.Find.useGet>);
+
+    const { result } = renderHook(() => useServersStore(), { wrapper });
+    const [servers] = result.current;
+
+    if (servers.$status !== 'success') throw new Error('expected success');
+    expect(
+      servers.servers.map(
+        ({ publicIP, private: isPrivate, hasPublicAddress }) => ({
+          publicIP,
+          isPrivate,
+          hasPublicAddress,
+        }),
+      ),
+    ).toEqual([
+      { publicIP: '203.0.113.32', isPrivate: true, hasPublicAddress: true },
+      { publicIP: '192.168.1.20', isPrivate: true, hasPublicAddress: false },
+    ]);
+  });
 });
