@@ -4,6 +4,7 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import { ApiUser } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import { readReturnUrl } from '../-lib/return-url';
@@ -61,7 +62,7 @@ export default function useLoginUsecase() {
         title: t('toaster.loginByEmail.error', {
           email: username,
         }),
-        message: response.error.message,
+        message: getApiErrorDetail(response.error),
       });
 
       throw response.error;

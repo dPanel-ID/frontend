@@ -1,9 +1,19 @@
-import { CloudOffIcon } from 'lucide-react';
+import { useState } from 'react';
+
+import { CloudOffIcon, XIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import { ApiServer } from '@/shared/api';
 import type { ReturnedServerDto } from '@/shared/api/server.removed';
+import { Button } from '@/shared/presentation/atoms/Button';
+
+import {
+  dismissAll,
+  readDismissed,
+  visibleReturnedServers,
+  writeDismissed,
+} from './dismissed';
 
 /**
  * Servers removed from dPanel whose agent called again in the last 7 days:
@@ -15,10 +25,20 @@ export default function RemovedServersNotice() {
   const t = useDevetekTranslations();
   const locale = useDevetekLocale();
   const [response] = ApiServer.Removed.useGet();
+  const [dismissed, setDismissed] = useState(readDismissed);
 
   if (response.$status !== 'success' || !Array.isArray(response)) return null;
-  const servers: ReturnedServerDto[] = response;
+  const servers: ReturnedServerDto[] = visibleReturnedServers(
+    response,
+    dismissed,
+  );
   if (servers.length === 0) return null;
+
+  const handleDismiss = () => {
+    const next = dismissAll(servers, dismissed);
+    writeDismissed(next);
+    setDismissed(next);
+  };
 
   const formatTime = (value?: string) =>
     value ? new Date(value).toLocaleString(locale) : '-';
@@ -29,7 +49,7 @@ export default function RemovedServersNotice() {
         <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-amber-400/30 bg-amber-500/10 text-amber-600 dark:text-amber-300">
           <CloudOffIcon className="size-4" />
         </span>
-        <div className="min-w-0 grid gap-2">
+        <div className="min-w-0 flex-1 grid gap-2">
           <p className="font-semibold">
             {t('page.servers.removedNotice.title', { count: servers.length })}
           </p>
@@ -63,6 +83,18 @@ export default function RemovedServersNotice() {
             ))}
           </ul>
         </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="shrink-0"
+          onClick={handleDismiss}
+          aria-label={t('page.servers.removedNotice.dismissAria')}
+          title={t('page.servers.removedNotice.dismissAria')}
+        >
+          <XIcon className="size-4" />
+          {t('page.servers.removedNotice.dismiss')}
+        </Button>
       </div>
     </section>
   );

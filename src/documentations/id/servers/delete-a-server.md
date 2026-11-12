@@ -63,6 +63,8 @@ dPanel tidak bisa tahu apakah mesin hilang untuk selamanya atau hanya mati semen
 - jalankan `sudo dnocs machine register` di mesin itu untuk mengelolanya lagi di dPanel, atau
 - hentikan agennya dengan `sudo systemctl disable --now dpanel-agent`.
 
+Pemberitahuan ini tampil selama 7 hari sejak panggilan terakhir agen. **Tutup** menyembunyikannya di browser Anda sampai agen itu menghubungi lagi.
+
 ## Pertanyaan yang sering diajukan
 
 ### Kenapa Hapus server ditolak?

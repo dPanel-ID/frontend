@@ -7,6 +7,7 @@ import { useSidepanelEmit } from '@/services/sidepanel/model/event';
 import { useToaster } from '@/services/toaster';
 
 import { ApiUser } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 
 import type { SignUpForm } from '../rules/login';
 
@@ -45,16 +46,19 @@ export default function useSubmitUsecase() {
         title: t('toaster.signUp.error', {
           email,
         }),
-        message: response.error.message,
+        message: getApiErrorDetail(response.error),
       });
       return;
     }
 
     setSubmitState('success');
 
+    const createdUsername = response.user?.username;
     openToaster({
       variant: 'info',
-      message: t('toaster.signUp.success'),
+      message: createdUsername
+        ? t('toaster.signUp.successWithUsername', { username: createdUsername })
+        : t('toaster.signUp.success'),
     });
 
     sidepanelEmit('%%sidepanel/close', null);

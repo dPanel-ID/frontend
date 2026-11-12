@@ -63,6 +63,8 @@ dPanel cannot know whether a machine is gone for good or only down for a while. 
 - run `sudo dnocs machine register` on it to manage it in dPanel again, or
 - stop its agent with `sudo systemctl disable --now dpanel-agent`.
 
+The notice stays for 7 days after the agent's last call. **Dismiss** hides it in your browser until that agent calls again.
+
 ## Frequently asked questions
 
 ### Why is Delete server refused?

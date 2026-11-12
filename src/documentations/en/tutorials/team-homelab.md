@@ -73,8 +73,10 @@ Run the commands in PowerShell or Command Prompt with Docker Desktop running. Do
 With Podman, which starts systemd by itself when the image runs `/sbin/init`:
 
 ```bash
-sudo podman run -d --name homelab-nas --hostname homelab-nas dpanel-lab-ubuntu24
+sudo podman run -d --name homelab-nas --hostname homelab-nas --privileged dpanel-lab-ubuntu24
 ```
+
+Keep `--privileged` with Docker and Podman alike. Without it, services such as Caddy Server install but cannot start: systemd needs it to apply their protections, and the Services tab shows them **Failed**.
 
 After a few seconds, `docker exec homelab-nas systemctl is-system-running` (or `sudo podman exec …`) prints `running` or `degraded`; both are fine.
 
@@ -99,7 +101,7 @@ Within a minute the server shows **Ready** in dPanel. Start more containers with
 `dnocs machine register` installs a system service, so it must run as root, and it reads the sign-in of the user who typed `sudo`. Sign in as `dpanel` and run `sudo dnocs machine register`. A root shell (`sudo su -`, `sudo -s` or `docker exec` without `-u dpanel`) has no sign-in of its own, so dnocs answers `please login first using 'dnocs auth login'`; run `dnocs auth login` in that shell first, or go back to the `dpanel` user.
 :::
 
-**5. When you are done**, delete the server in dPanel (**Settings** on the server page, or `dnocs server delete --id <server id>`), then remove the container with `docker rm -f homelab-nas` (or `sudo podman rm -f homelab-nas`). Restarting the container keeps the same server.
+**5. When you are done**, delete the server in dPanel (**Settings** on the server page, or `dnocs server delete --id <server id>`), then remove the container with `docker rm -f homelab-nas` (or `sudo podman rm -f homelab-nas`). Restarting the container keeps the same server. On a real machine, also stop the agent there with `sudo systemctl disable --now dpanel-agent`: deleting the server in dPanel does not stop it, and dPanel lists the machine under removed servers that came back for 7 days after its last call.
 
 ## Part 1: Pick the team workspace
 
@@ -114,7 +116,7 @@ From the website:
 1. Switch dPanel to the **Home Lab** workspace in the workspace picker.
 2. Open **Servers**, then **Create Server**.
 3. On the **Connect a server with the dPanel agent** card, type `homelab-nas` as the server name and choose **Get install command**.
-4. Choose **Copy**, then paste the command into a terminal on the machine and run it. It asks for `sudo`.
+4. Choose **Copy**, then paste the command into a terminal on the machine and run it. It asks for `sudo` (in a container shell you are already root, so it does not).
 5. The card says **Connected!** once the agent connects, usually in under a minute. The server is created in the Home Lab workspace.
 
 The command works once, for 2 hours; get a new one for each machine. The machine needs no dnocs and no sign-in.

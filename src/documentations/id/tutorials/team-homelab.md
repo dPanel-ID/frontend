@@ -73,8 +73,10 @@ Jalankan perintahnya di PowerShell atau Command Prompt dengan Docker Desktop men
 Dengan Podman, yang menyalakan systemd sendiri jika image menjalankan `/sbin/init`:
 
 ```bash
-sudo podman run -d --name homelab-nas --hostname homelab-nas dpanel-lab-ubuntu24
+sudo podman run -d --name homelab-nas --hostname homelab-nas --privileged dpanel-lab-ubuntu24
 ```
+
+Tetap pakai `--privileged`, baik dengan Docker maupun Podman. Tanpanya, layanan seperti Caddy Server terpasang tetapi tidak bisa berjalan: systemd memerlukannya untuk menerapkan perlindungan layanan itu, dan tab Services menampilkannya **Failed**.
 
 Setelah beberapa detik, `docker exec homelab-nas systemctl is-system-running` (atau `sudo podman exec …`) menampilkan `running` atau `degraded`; keduanya tidak masalah.
 
@@ -99,7 +101,7 @@ Dalam satu menit server tampil **Ready** di dPanel. Jalankan kontainer lain deng
 `dnocs machine register` memasang layanan sistem, jadi harus berjalan sebagai root, dan membaca sesi masuk milik pengguna yang mengetik `sudo`. Masuklah sebagai `dpanel` lalu jalankan `sudo dnocs machine register`. Shell root (`sudo su -`, `sudo -s`, atau `docker exec` tanpa `-u dpanel`) tidak punya sesi masuk sendiri, jadi dnocs menjawab `please login first using 'dnocs auth login'`; jalankan `dnocs auth login` dulu di shell itu, atau kembali ke pengguna `dpanel`.
 :::
 
-**5. Setelah selesai**, hapus server di dPanel (**Settings** di halaman server, atau `dnocs server delete --id <id server>`), lalu hapus kontainernya dengan `docker rm -f homelab-nas` (atau `sudo podman rm -f homelab-nas`). Menyalakan ulang kontainer tetap memakai server yang sama.
+**5. Setelah selesai**, hapus server di dPanel (**Settings** di halaman server, atau `dnocs server delete --id <id server>`), lalu hapus kontainernya dengan `docker rm -f homelab-nas` (atau `sudo podman rm -f homelab-nas`). Menyalakan ulang kontainer tetap memakai server yang sama. Di mesin sungguhan, hentikan juga agennya di mesin itu dengan `sudo systemctl disable --now dpanel-agent`: menghapus server di dPanel tidak menghentikannya, dan dPanel mencantumkan mesin itu di server dihapus yang aktif kembali selama 7 hari sejak panggilan terakhirnya.
 
 ## Bagian 1: Pilih ruang kerja tim
 
@@ -114,7 +116,7 @@ Dari situs web:
 1. Pindahkan dPanel ke ruang kerja **Home Lab** di pemilih ruang kerja.
 2. Buka **Server**, lalu **Buat Server**.
 3. Di kartu **Hubungkan server dengan agen dPanel**, ketik `homelab-nas` sebagai nama server lalu pilih **Ambil perintah pemasangan**.
-4. Pilih **Salin**, lalu tempel perintahnya di terminal mesin itu dan jalankan. Perintah ini meminta `sudo`.
+4. Pilih **Salin**, lalu tempel perintahnya di terminal mesin itu dan jalankan. Perintah ini meminta `sudo` (di shell kontainer Anda sudah root, jadi tidak diminta).
 5. Kartu menampilkan **Terhubung!** begitu agen terhubung, biasanya kurang dari satu menit. Server dibuat di ruang kerja Home Lab.
 
 Perintahnya hanya bisa dipakai sekali, selama 2 jam; ambil perintah baru untuk setiap mesin. Mesin tidak butuh dnocs dan tidak perlu masuk akun.

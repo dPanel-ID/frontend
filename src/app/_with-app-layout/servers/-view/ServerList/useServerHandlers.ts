@@ -55,6 +55,7 @@ export function useServerHandlers() {
           serverName: server.host.name,
           serverAddress: server.host.address,
           provider: server.cloud?.provider,
+          isPrivate: server.host.private,
         }),
       reinstall: !canReinstallServer(server)
         ? undefined
