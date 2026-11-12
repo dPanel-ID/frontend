@@ -1833,7 +1833,9 @@
         "publicAddressUnknown": "Tidak diketahui: agen terhubung dari jaringan privat",
         "connectionAgent": "Lewat agen dPanel",
         "publicAddressHelp": "Alamat publik yang dipakai jaringan Anda untuk ke internet. Arahkan domain ke sini hanya jika port 80 dan 443 diteruskan ke mesin ini.",
-        "lanAddressUnknown": "Belum dilaporkan"
+        "lanAddressUnknown": "Belum dilaporkan",
+        "serviceNotRunning": "Layanan tidak berjalan: {units}. Buka tab Modul atau Layanan.",
+        "serviceNotRunningShort": "layanan tidak berjalan"
       },
       "modules": {
         "title": "Modul terpasang",
@@ -1869,7 +1871,8 @@
           "installed": "Terpasang",
           "installing": "Memasang",
           "failed": "Gagal",
-          "mixed": "Campuran"
+          "mixed": "Campuran",
+          "serviceDown": "Layanan tidak berjalan"
         },
         "searchPlaceholder": "Cari modul",
         "noMatch": "Tidak ada modul yang cocok.",
@@ -1883,6 +1886,15 @@
         "installWait": {
           "queued": "Menunggu pekerjaan lain di server ini selesai",
           "packageManager": "Menunggu pemasangan lain di server ini selesai"
+        },
+        "serviceState": "{unit}: {state}",
+        "openServices": "Buka Layanan",
+        "serviceStates": {
+          "failed": "gagal",
+          "stopped": "berhenti",
+          "missing": "tidak ditemukan",
+          "running": "berjalan",
+          "starting": "sedang dimulai"
         }
       },
       "files": {

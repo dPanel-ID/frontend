@@ -67,6 +67,8 @@ The module appears on the **Modules** tab as **Installing**. A database takes a 
 
 If it reads **Failed**, open the module to see why, fix the cause, and install it again.
 
+A module that runs a service, such as Caddy Server, Redis or a database, also shows **Service not running** when that service has stopped or failed after the install. The row names the service and links to the **Services** tab, where its last log lines say why; the module counts under **Needs attention** and is marked under **What runs here**.
+
 ## The Modules tab
 
 The **Modules** tab lists one row per module with its versions and status (**Installed**, **Installing**, **Failed**, or **Mixed** when versions differ). The **Modules**, **Installed** and **Needs attention** counts include top-level modules only: databases you create on MariaDB or PostgreSQL appear inside that module's **Manage** view, not as their own rows.
