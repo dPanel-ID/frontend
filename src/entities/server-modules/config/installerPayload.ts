@@ -260,7 +260,7 @@ export const payloadDbRedis: PayloadFn = (props) => {
   return {
     installer_attributes: {
       redis_port: 6379,
-      redis_bind_interface: '0.0.0.0',
+      redis_bind_interface: '127.0.0.1',
     },
     installer_type: 'database',
     installer_name: 'redis',
