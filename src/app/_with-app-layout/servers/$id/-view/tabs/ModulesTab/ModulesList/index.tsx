@@ -88,6 +88,11 @@ export default function ModulesList(props: ModulesListProps) {
     [catalogModules],
   );
 
+  const openGroup = (group: InstalledModuleGroup) => {
+    const installation = preferredInstallation(group.installations);
+    if (installation) setSelectedInstallation({ group, installation });
+  };
+
   const groupedModules = useMemo(
     () => groupInstalledModules(modules, catalog),
     [modules, catalog],
@@ -126,7 +131,15 @@ export default function ModulesList(props: ModulesListProps) {
             const firewallSearch = firstFirewallViewSearch(group.installations);
 
             return (
-              <TableRow key={group.id}>
+              <TableRow
+                key={group.id}
+                className="cursor-pointer"
+                onClick={(event) => {
+                  // Buttons and links inside the row do their own thing.
+                  if ((event.target as HTMLElement).closest('a,button')) return;
+                  openGroup(group);
+                }}
+              >
                 <TableCell className={dataTable.cell}>
                   <div className="flex min-w-0 items-center gap-3">
                     <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-white p-1.5 shadow-sm">
@@ -178,11 +191,26 @@ export default function ModulesList(props: ModulesListProps) {
                   </div>
                 </TableCell>
                 <TableCell className={dataTable.cell}>
-                  <StatusPill
-                    tone={GROUP_STATUS_TONE[status]}
-                    pulse={status === 'installing'}
-                    label={t(`status.${status}`)}
-                  />
+                  {status === 'failed' ? (
+                    <button
+                      type="button"
+                      className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50"
+                      aria-label={t('openFailedAria', { module: group.name })}
+                      title={t('openFailedAria', { module: group.name })}
+                      onClick={() => openGroup(group)}
+                    >
+                      <StatusPill
+                        tone={GROUP_STATUS_TONE[status]}
+                        label={t(`status.${status}`)}
+                      />
+                    </button>
+                  ) : (
+                    <StatusPill
+                      tone={GROUP_STATUS_TONE[status]}
+                      pulse={status === 'installing'}
+                      label={t(`status.${status}`)}
+                    />
+                  )}
                 </TableCell>
                 <TableCell className={cn(dataTable.cell, 'text-right')}>
                   {databaseUrl && (
@@ -228,6 +256,19 @@ const GROUP_STATUS_TONE: Record<GroupStatus, StatusTone> = {
   failed: 'danger',
   mixed: 'warning',
 };
+
+/**
+ * The installation a click on a module's row opens: a failed one first, so
+ * the reason is one click away, otherwise the newest.
+ */
+export function preferredInstallation(
+  installations: DTOs.ModuleInstallationV1[],
+): DTOs.ModuleInstallationV1 | undefined {
+  return (
+    installations.find((installation) => installation.status === 'failed') ??
+    installations[installations.length - 1]
+  );
+}
 
 /** The one word that describes every installation of a module. */
 export function groupStatus(
@@ -417,6 +458,9 @@ function InstalledModuleDialog(props: {
             </DialogHeader>
 
             <div className="min-h-0 overflow-y-auto px-5 py-4">
+              {selected.installation.status === 'failed' && (
+                <FailureReason installation={selected.installation} />
+              )}
               <div className="grid gap-3 md:grid-cols-2">
                 <ReadOnlyField
                   label="Status"
@@ -634,6 +678,51 @@ function VariableList(props: { variables?: Record<string, unknown> }) {
           </pre>
         </div>
       ))}
+    </div>
+  );
+}
+
+/** The failed task and its message, the first thing a failed install shows. */
+export function failureReason(installation: DTOs.ModuleInstallationV1): {
+  task?: string;
+  message?: string;
+} {
+  const detail = installation.last_error_detail;
+  const text = (value?: string | null) => {
+    const trimmed = String(value ?? '').trim();
+    return trimmed || undefined;
+  };
+  return {
+    task: text(detail?.task),
+    message:
+      text(detail?.message) ??
+      text(detail?.summary) ??
+      text(installation.last_error) ??
+      text(detail?.stderr),
+  };
+}
+
+function FailureReason(props: { installation: DTOs.ModuleInstallationV1 }) {
+  const { installation } = props;
+  const t = useDevetekTranslations('page.serverDetail.sectionModules');
+  const { task, message } = failureReason(installation);
+
+  return (
+    <div className="mb-4 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3">
+      <p className="text-sm font-bold text-destructive">
+        {t('whyFailed.title')}
+      </p>
+      {task && (
+        <p className="mt-1 text-xs font-semibold text-primary/70">{task}</p>
+      )}
+      <pre className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap break-words text-xs text-primary/85">
+        {message ?? t('whyFailed.noReason')}
+      </pre>
+      {installation.last_execution_id && (
+        <p className="mt-2 font-mono text-[11px] text-primary/55">
+          {t('whyFailed.execution', { id: installation.last_execution_id })}
+        </p>
+      )}
     </div>
   );
 }
