@@ -70,6 +70,7 @@ export function ServerTable(props: ServerTableProps) {
                 <TableCell>
                   <ServerStatusPill
                     state={server.state}
+                    awaitingAgent={server.agent.awaitingAgent}
                     onClick={handlers.showStatus}
                   />
                 </TableCell>

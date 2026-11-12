@@ -137,6 +137,7 @@ export default guard(function Hero() {
             trailing={
               <ServerStatusPill
                 state={server.state}
+                awaitingAgent={server.agent.awaitingAgent}
                 size="md"
                 onClick={() =>
                   emit('@servers::detail/server-status-info', null)

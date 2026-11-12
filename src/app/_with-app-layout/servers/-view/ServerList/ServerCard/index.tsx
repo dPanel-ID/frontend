@@ -197,6 +197,7 @@ export default function ServerCard(props: ServerCardProps) {
               <>
                 <ServerStatusPill
                   state={server.state}
+                  awaitingAgent={server.agent.awaitingAgent}
                   onClick={handlers?.showStatus}
                 />
                 {badge}
