@@ -55,13 +55,18 @@ dPanel updates the application definition (the saved description of how to build
 
 ## Delete an application
 
-The **Danger zone** sits at the bottom of **Settings**.
+First take the application off its servers, then delete it.
 
-1. Press **Delete this application**.
-2. Confirm in the **Delete Application** dialog.
+1. Open the **Deployments** tab and switch to **On servers**.
+2. Press **Delete** on each release and confirm. dPanel stops the service and removes it from that server. Wait until the release shows as deleted.
+3. Open **Settings**. The **Danger zone** sits at the bottom.
+4. Press **Delete this application**.
+5. Confirm in the **Delete Application** dialog.
+
+You do not need **Delete permanently** on the releases first: deleting the application removes them too. While a release is still on a server, dPanel refuses to delete the application and tells you to delete its releases first.
 
 :::danger[This cannot be undone]
-Deleting removes the application, its builds and its release history from dPanel, and stops the service on every server it runs on. Your server and your Git repository are left untouched.
+Deleting removes the application, its builds and its release history from dPanel. Your server and your Git repository are left untouched.
 :::
 
 ## Frequently asked questions
@@ -80,8 +85,8 @@ When you added or changed modules, such as a new runtime version. dPanel then in
 
 ### Does deleting an application delete my repository or server?
 
-No. Your Git repository and your server stay. dPanel stops the service and removes the application, its builds and its release history.
+No. Your Git repository and your server stay. Deleting a release stops its service on that server; deleting the application then removes the application, its builds and its release history from dPanel.
 
 ### Can I delete an application from the terminal?
 
-`dnocs application delete` deletes an application that has no deployments. Delete its releases first, or use **Delete this application** in the web UI.
+Yes. Delete each release with `dnocs application detail deployment delete --id <app> --deployment-id <release>`, which stops the service on its server, then run `dnocs application delete --id <app>`. Like the web UI, `dnocs application delete` refuses while a release is still on a server.
