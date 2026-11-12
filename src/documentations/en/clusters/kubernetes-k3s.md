@@ -22,9 +22,9 @@ You need servers that dPanel already manages and that read **Ready**. This guide
 - **Size:** 2 GB of memory or more per server is comfortable; 1 GB is the minimum. amd64, arm64 or armhf (Raspberry Pi) all work.
 - **System:** Ubuntu. This guide uses Ubuntu 24.04.
 - **Same region** for every server, not in any group, without Docker, k3s or RKE2, and with the dPanel firewall off.
-- **Connected over SSH.** Servers that joined through the dPanel agent can't be cluster nodes yet. See [Rules that keep your servers safe](./overview.md#rules-that-keep-your-servers-safe).
+- **In one private network,** so the servers reach each other. Servers that joined through the dPanel agent work as well as servers connected over SSH. See [Rules that keep your servers safe](./overview.md#rules-that-keep-your-servers-safe).
 
-A fresh server launched from dPanel with **SSH** under **How dPanel connects** meets all of this. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). With the dPanel firewall off, nothing on the server blocks ports. On DigitalOcean and IDCloudHost dPanel creates no provider firewall either, so port 30080 and the Kubernetes API on port 6443 can be reached from the internet. Add a provider firewall if you do not want that.
+Fresh servers launched from dPanel in the same cloud project and region meet all of this, whichever way they connect. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). With the dPanel firewall off, nothing on the server blocks ports. On DigitalOcean and IDCloudHost dPanel creates no provider firewall either, so port 30080 and the Kubernetes API on port 6443 can be reached from the internet. Add a provider firewall if you do not want that.
 
 ## 1. Start a Kubernetes group
 
@@ -177,13 +177,16 @@ Delete the load balancer first if you made one for the cluster.
 
 ## Troubleshooting
 
-| What you see                                                | Fix                                                                                                                                                                     |
-| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A server can't be picked: **Already in a group**            | Remove it from its group first, or pick another server.                                                                                                                 |
-| Creating fails: the server already runs Docker, k3s or RKE2 | Use a fresh server, or uninstall that software first. If you removed it by hand, press **Refresh inventory** on the server's **Modules** tab so dPanel sees it is gone. |
-| The status reads **Failed**                                 | Open the last execution from the **Cluster** tab to read the error, fix it, then press **Install again**.                                                               |
-| `kubectl` says permission denied                            | Start the command with `sudo k3s kubectl`.                                                                                                                              |
-| The domain doesn't answer                                   | Check `curl http://127.0.0.1:30080` on kube-k3s-1 first, then the load balancer's status and **Logs**.                                                                  |
+| What you see                                                           | Fix                                                                                                                                                                                                                     |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A server can't be picked: **Already in a group**                       | Remove it from its group first, or pick another server.                                                                                                                                                                 |
+| Creating fails: the server already runs Docker, k3s or RKE2            | Use a fresh server, or uninstall that software first. If you removed it by hand, press **Refresh inventory** on the server's **Modules** tab so dPanel sees it is gone.                                                 |
+| The status reads **Failed**                                            | Read **Why it failed** at the top of the **Cluster** tab, fix it, then press **Install again**.                                                                                                                         |
+| **Cluster preflight failed:** a server cannot reach another on a port  | The **Connectivity check** table lists each blocked path. Allow those ports between the servers in your cloud's firewall or security group, or move the servers into one private network, then press **Install again**. |
+| A server **did not accept the cluster job's SSH sign-in**              | Look at that server's **Cluster access** in the **Nodes** table. Make sure its agent is online (the server page shows it), then press **Install again**.                                                                |
+| Creating is refused: no server that joined through the agent is online | Start one of the servers, or wait until its agent shows online, and try again.                                                                                                                                          |
+| `kubectl` says permission denied                                       | Start the command with `sudo k3s kubectl`.                                                                                                                                                                              |
+| The domain doesn't answer                                              | Check `curl http://127.0.0.1:30080` on kube-k3s-1 first, then the load balancer's status and **Logs**.                                                                                                                  |
 
 ## From the terminal
 

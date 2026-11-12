@@ -94,6 +94,53 @@ export const schemaClusterNodeDto = z.object({
   status: nullableString,
   arch: nullableString,
   region: nullableString,
+  /** "agent" or "ssh": how the server joined dPanel. */
+  join_method: nullableString,
+  /** The node's last cluster access or revoke job (member-driven clusters). */
+  access: z
+    .object({
+      execution_id: nullableString,
+      type: nullableString,
+      status: nullableString,
+      error: nullableString,
+    })
+    .nullish()
+    .transform((v) => v ?? null),
+});
+
+/** One checked path of the connectivity preflight. */
+export const schemaClusterPreflightPathDto = z.object({
+  from: nullableString,
+  from_name: nullableString,
+  to: nullableString,
+  to_name: nullableString,
+  address: nullableString,
+  port: z.coerce
+    .number()
+    .nullish()
+    .transform((v) => v ?? 0),
+  protocol: nullableString,
+  title: nullableString,
+  result: nullableString,
+  detail: nullableString,
+  cause: nullableString,
+  ok: z
+    .boolean()
+    .nullish()
+    .transform((v) => v ?? false),
+  required: z
+    .boolean()
+    .nullish()
+    .transform((v) => v ?? true),
+});
+
+export const schemaClusterPreflightDto = z.object({
+  ok: z
+    .boolean()
+    .nullish()
+    .transform((v) => v ?? false),
+  checked_at: nullableString,
+  paths: listOf(schemaClusterPreflightPathDto),
 });
 
 export const schemaClusterDetailDto = z.object({
@@ -112,6 +159,11 @@ export const schemaClusterDetailDto = z.object({
   last_execution: schemaClusterExecutionDto
     .nullish()
     .transform((v) => v ?? null),
+  /** "worker" (a dPanel worker over SSH) or "member" (controller_server_id). */
+  transport: nullableString,
+  controller_server_id: nullableString,
+  failure_reason: nullableString,
+  preflight: schemaClusterPreflightDto.nullish().transform((v) => v ?? null),
   nodes: listOf(schemaClusterNodeDto),
   created_at: nullableString,
   updated_at: nullableString,
@@ -158,6 +210,10 @@ export type ClusterKindDto = z.output<typeof schemaClusterKindDto>;
 export type ClusterExecutionDto = z.output<typeof schemaClusterExecutionDto>;
 export type ClusterNodeDto = z.output<typeof schemaClusterNodeDto>;
 export type ClusterDetailDto = z.output<typeof schemaClusterDetailDto>;
+export type ClusterPreflightDto = z.output<typeof schemaClusterPreflightDto>;
+export type ClusterPreflightPathDto = z.output<
+  typeof schemaClusterPreflightPathDto
+>;
 export type ClusterMutationResponseDto = z.output<
   typeof schemaClusterMutationResponseDto
 >;

@@ -22,9 +22,9 @@ Anda butuh server yang sudah dikelola dPanel dan berstatus **Ready**. Panduan in
 - **Ukuran:** memori 2 GB atau lebih per server sudah nyaman; 1 GB adalah batas minimum. amd64, arm64, atau armhf (Raspberry Pi) bisa semua.
 - **Sistem:** Ubuntu. Panduan ini memakai Ubuntu 24.04.
 - **Region yang sama** untuk semua server, tidak masuk grup mana pun, tanpa Docker, k3s, atau RKE2, dan firewall dPanel mati.
-- **Terhubung lewat SSH.** Server yang bergabung lewat agen dPanel untuk saat ini belum bisa menjadi node klaster. Lihat [Aturan yang menjaga server Anda](./overview.md#aturan-yang-menjaga-server-anda).
+- **Dalam satu jaringan privat,** supaya server bisa saling terhubung. Server yang bergabung lewat agen dPanel bisa dipakai, sama seperti server yang terhubung lewat SSH. Lihat [Aturan yang menjaga server Anda](./overview.md#aturan-yang-menjaga-server-anda).
 
-Server baru yang diluncurkan dari dPanel dengan **SSH** di **Cara dPanel terhubung** sudah memenuhi semuanya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Saat firewall dPanel mati, tidak ada yang memblokir port di server. Di DigitalOcean dan IDCloudHost dPanel juga tidak membuat firewall penyedia, jadi port 30080 dan API Kubernetes di port 6443 bisa dijangkau dari internet. Tambahkan firewall penyedia kalau Anda tidak menginginkannya.
+Server baru yang diluncurkan dari dPanel dalam project cloud dan region yang sama sudah memenuhi semuanya, apa pun cara terhubungnya. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Saat firewall dPanel mati, tidak ada yang memblokir port di server. Di DigitalOcean dan IDCloudHost dPanel juga tidak membuat firewall penyedia, jadi port 30080 dan API Kubernetes di port 6443 bisa dijangkau dari internet. Tambahkan firewall penyedia kalau Anda tidak menginginkannya.
 
 ## 1. Mulai grup Kubernetes
 
@@ -177,13 +177,16 @@ Hapus dulu load balancer yang Anda buat untuk klaster itu.
 
 ## Pemecahan masalah
 
-| Yang Anda lihat                                                  | Solusi                                                                                                                                                                            |
-| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Server tidak bisa dipilih: **Already in a group**                | Keluarkan dulu dari grupnya, atau pilih server lain.                                                                                                                              |
-| Pembuatan gagal: server sudah menjalankan Docker, k3s, atau RKE2 | Gunakan server baru, atau copot perangkat lunak itu dulu. Kalau Anda menghapusnya manual, tekan **Refresh inventory** di tab **Modules** server agar dPanel tahu sudah tidak ada. |
-| Status bertuliskan **Failed**                                    | Buka eksekusi terakhir dari tab **Cluster** untuk membaca galatnya, perbaiki, lalu tekan **Install again**.                                                                       |
-| `kubectl` menolak dengan permission denied                       | Awali perintahnya dengan `sudo k3s kubectl`.                                                                                                                                      |
-| Domain tidak menjawab                                            | Periksa dulu `curl http://127.0.0.1:30080` di kube-k3s-1, lalu status dan **Logs** load balancer.                                                                                 |
+| Yang Anda lihat                                                                             | Solusi                                                                                                                                                                                                                              |
+| ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Server tidak bisa dipilih: **Already in a group**                                           | Keluarkan dulu dari grupnya, atau pilih server lain.                                                                                                                                                                                |
+| Pembuatan gagal: server sudah menjalankan Docker, k3s, atau RKE2                            | Gunakan server baru, atau copot perangkat lunak itu dulu. Kalau Anda menghapusnya manual, tekan **Refresh inventory** di tab **Modules** server agar dPanel tahu sudah tidak ada.                                                   |
+| Status bertuliskan **Failed**                                                               | Baca **Penyebab gagal** di bagian atas tab **Cluster**, perbaiki, lalu tekan **Install again**.                                                                                                                                     |
+| **Cluster preflight failed:** sebuah server tidak bisa menjangkau server lain di suatu port | Tabel **Pemeriksaan konektivitas** mencantumkan setiap jalur yang terblokir. Izinkan port itu antar server di firewall atau security group cloud Anda, atau pindahkan server ke satu jaringan privat, lalu tekan **Install again**. |
+| Sebuah server **did not accept the cluster job's SSH sign-in**                              | Lihat **Akses klaster** server itu di tabel **Nodes**. Pastikan agennya online (terlihat di halaman server), lalu tekan **Install again**.                                                                                          |
+| Pembuatan ditolak: tidak ada server yang bergabung lewat agen yang sedang online            | Nyalakan salah satu server, atau tunggu sampai agennya online, lalu coba lagi.                                                                                                                                                      |
+| `kubectl` menolak dengan permission denied                                                  | Awali perintahnya dengan `sudo k3s kubectl`.                                                                                                                                                                                        |
+| Domain tidak menjawab                                                                       | Periksa dulu `curl http://127.0.0.1:30080` di kube-k3s-1, lalu status dan **Logs** load balancer.                                                                                                                                   |
 
 ## Dari terminal
 

@@ -3635,7 +3635,9 @@
           "role": "Role",
           "status": "Status",
           "arch": "Arch",
-          "region": "Region"
+          "region": "Region",
+          "joined": "Joined",
+          "access": "Cluster access"
         },
         "noNodes": "No nodes recorded.",
         "loadFailed": "The cluster could not be loaded.",
@@ -3649,7 +3651,7 @@
           "installTitle": "Install cluster again",
           "installDescription": "Installs {engine} again on every node of <strong>{name}</strong>.",
           "installStep1": "The same servers, roles, engine and version are used.",
-          "installStep2": "The cluster reads installing until the job finishes, then ready or failed.",
+          "installStep2": "dPanel first checks that the nodes reach each other; a blocked port fails the cluster with the reason, before anything is installed.",
           "installConfirm": "Install again",
           "installing": "Queueing…",
           "uninstallTitle": "Uninstall cluster",
@@ -3661,11 +3663,31 @@
           "deleteTitle": "Delete cluster",
           "deleteDescription": "Deletes the cluster record of <strong>{name}</strong>.",
           "deleteStep1": "The group stays as a generic group with the same servers.",
-          "deleteStep2": "Nothing is changed on the servers.",
+          "deleteStep2": "Servers that joined through the dPanel Agent drop the cluster's access key; nothing else changes on the servers.",
           "deleteConfirm": "Delete cluster",
           "deleting": "Deleting…",
           "happens": "What happens",
           "cancel": "Cancel"
+        },
+        "failureReason": "Why it failed",
+        "runsFrom": "Runs from",
+        "runsFromMember": "{server}, over the private network with the cluster key",
+        "runsFromWorker": "A dPanel worker over SSH",
+        "joinedAgent": "Agent",
+        "joinedSsh": "SSH",
+        "accessRevoke": "revoke {status}",
+        "preflight": {
+          "title": "Connectivity check",
+          "passed": "All {count} paths between the nodes are open.",
+          "blocked": "{blocked} of {count} paths are blocked.",
+          "checkedAt": "checked {time}",
+          "showAll": "Show all paths",
+          "showBlocked": "Show blocked only",
+          "from": "From",
+          "to": "To",
+          "port": "Port",
+          "result": "Result",
+          "cause": "Likely cause"
         }
       }
     },
