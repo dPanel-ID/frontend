@@ -181,13 +181,18 @@ export default function OverviewTab() {
             <Row
               icon={isPrivate ? HouseIcon : GlobeIcon}
               label={isPrivate ? t('lanAddress') : t('address')}
-              value={server?.host.address}
-              mono
+              value={
+                isPrivate
+                  ? server.host.address || t('lanAddressUnknown')
+                  : server?.host.address
+              }
+              mono={!isPrivate || !!server.host.address}
             />
             {isPrivate && (
               <Row
                 icon={GlobeIcon}
                 label={t('publicAddress')}
+                help={t('publicAddressHelp')}
                 value={server.host.publicAddress ?? t('publicAddressUnknown')}
                 mono={!!server.host.publicAddress}
               />
@@ -356,8 +361,10 @@ function Row(props: {
   label: string;
   value?: ReactNode;
   mono?: boolean;
+  /** One line under the value explaining what it means. */
+  help?: string;
 }) {
-  const { icon: Icon, label, mono, value } = props;
+  const { help, icon: Icon, label, mono, value } = props;
 
   return (
     <div className="grid grid-cols-[1.25rem_minmax(0,9rem)_minmax(0,1fr)] items-center gap-2 py-2.5 first:pt-0 last:pb-0">
@@ -367,6 +374,11 @@ function Row(props: {
         className={`break-words text-sm font-semibold text-primary/90 ${mono ? 'font-mono text-xs' : ''}`}
       >
         {value || '-'}
+        {help && (
+          <span className="mt-0.5 block font-sans text-xs font-normal text-muted-foreground">
+            {help}
+          </span>
+        )}
       </dd>
     </div>
   );

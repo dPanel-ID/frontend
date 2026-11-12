@@ -1826,9 +1826,11 @@
         "lanAddress": "Local address",
         "connection": "Connection",
         "connectionPrivate": "Through the dPanel agent (no public IP or SSH)",
-        "publicAddress": "Public address",
+        "publicAddress": "Connects from",
         "publicAddressUnknown": "Unknown: the agent connects from a private network",
-        "connectionAgent": "Through the dPanel agent"
+        "connectionAgent": "Through the dPanel agent",
+        "publicAddressHelp": "The public address your network uses to reach the internet. Point a domain here only if ports 80 and 443 are forwarded to this machine.",
+        "lanAddressUnknown": "Not reported yet"
       },
       "modules": {
         "title": "Installed modules",
