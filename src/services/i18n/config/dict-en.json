@@ -1751,6 +1751,11 @@
           "description": "Opens the firewall view of this server, where you add rules and apply them.",
           "button": "Manage firewall",
           "buttonAria": "Manage the firewall of this server"
+        },
+        "whyFailed": {
+          "title": "Why it failed",
+          "noReason": "dPanel did not record a reason. Install the module again to see the error.",
+          "execution": "Execution {id}"
         }
       },
       "hero": {
@@ -1868,7 +1873,8 @@
         "manageFirewall": "Manage firewall",
         "manageFirewallAria": "Manage the firewall of this server",
         "previousRuntime": "Previous runtime",
-        "previousRuntimeHelp": "Installed by dPanel's previous installer. Applications on it keep working; move them to the new runtime from the application page."
+        "previousRuntimeHelp": "Installed by dPanel's previous installer. Applications on it keep working; move them to the new runtime from the application page.",
+        "openFailedAria": "Show why {module} failed"
       },
       "files": {
         "title": "Files",
