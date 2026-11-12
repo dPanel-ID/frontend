@@ -58,13 +58,17 @@ docker build -f Containerfile --build-arg BASE=docker.io/library/debian:13 -t dp
 
 With Podman, write `podman build` instead of `docker build`; the rest is the same.
 
-**3. Start a container** that boots systemd. The `--hostname` is the name the server gets in dPanel:
+**3. Start a container** that boots systemd. The `--hostname` is the name the server gets in dPanel. The command is one line, so it works in bash, zsh, PowerShell and Command Prompt alike:
 
 ```bash
-docker run -d --name homelab-nas --hostname homelab-nas \
-  --privileged --cgroupns=host -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
-  dpanel-lab-ubuntu24
+docker run -d --name homelab-nas --hostname homelab-nas --privileged --cgroupns=host -v /sys/fs/cgroup:/sys/fs/cgroup:rw dpanel-lab-ubuntu24
 ```
+
+Use the image you built in step 2: for example `dpanel-lab-debian13` for Debian 13 or `dpanel-lab-ubuntu26` for Ubuntu 26.04.
+
+:::note[On Windows]
+Run the commands in PowerShell or Command Prompt with Docker Desktop running. Docker Desktop needs WSL 2; if it is not installed yet, `wsl --install --no-distribution` installs only what Docker Desktop needs, without downloading a full Linux distribution.
+:::
 
 With Podman, which starts systemd by itself when the image runs `/sbin/init`:
 
@@ -86,6 +90,8 @@ After a few seconds, `docker exec homelab-nas systemctl is-system-running` (or `
   dnocs workspace set --id <workspace id>
   sudo dnocs machine register
   ```
+
+  Signed up with Google? See [Use dnocs with a Google account](#use-dnocs-with-a-google-account).
 
 Within a minute the server shows **Ready** in dPanel. Start more containers with other names (`homelab-pi`, …) or other images to get more servers.
 
@@ -120,6 +126,8 @@ dnocs auth login -u <your username>
 dnocs workspace set --id <workspace id>
 sudo dnocs machine register
 ```
+
+Signed up with Google? See [Use dnocs with a Google account](#use-dnocs-with-a-google-account).
 
 dnocs names the workspace in its question, so you can check you picked the right one before you confirm. It then creates a Linux user for your dPanel account, installs the agent and waits until the server is ready, usually in under a minute. The server is created in that workspace. To read the install script before running it, use `sudo dnocs machine register --print-only`.
 
@@ -167,6 +175,13 @@ Choose **Add Member**, pick the person and the roles they get. The role decides 
 | Viewer | Look only: servers, usage, logs and jobs |
 
 See [Members and roles](../teams/members-and-roles.md) for every role in detail.
+
+## Use dnocs with a Google account
+
+`dnocs auth login` signs in with a username and password, and an account created with Google has no dPanel password yet. Pick one:
+
+- **Set a password.** In dPanel, open your profile, choose **Edit profile**, fill in **New password** and **Retype password**, and save. Then run `dnocs auth login -u <your username>`; your username is on your profile.
+- **Use a service-account token.** Create a [service account](../teams/service-accounts.md) and a token, and run dnocs with it: `DNOCS_TOKEN=dps_your_token dnocs server list`. For a team workspace, a workspace owner or admin creates a **workspace** service account, whose token acts in that workspace.
 
 ## Good to know
 
