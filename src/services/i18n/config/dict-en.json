@@ -1664,7 +1664,8 @@
           "ownKept": "The machine keeps running; only dPanel forgets it.",
           "blocked": "Deletion is refused while applications or load balancers still use this server, unless the server can no longer be reached.",
           "confirmLabel": "Type <code>{name}</code> to confirm",
-          "confirm": "Delete server"
+          "confirm": "Delete server",
+          "agentKeepsRunning": "dPanel cannot reach this machine to remove its agent: it stops accepting the agent, which keeps running. To stop it, run sudo systemctl disable --now dpanel-agent on the machine; otherwise it is listed under removed servers that came back for 7 days after its last call."
         },
         "forget": {
           "title": "Remove from dPanel",
@@ -1710,10 +1711,12 @@
       },
       "removedNotice": {
         "title": "{count, plural, one {# removed server came back} other {# removed servers came back}}",
-        "description": "These servers were removed from dPanel but their agent called again, so the machine may only have been down. dPanel refuses the agent and tells it to go quiet; nothing on the machine was changed. To manage one again, run <code>sudo dnocs machine register</code> on it. To stop its agent instead, run <code>sudo systemctl disable --now dpanel-agent</code>.",
+        "description": "These servers were removed from dPanel but their agent called again, so the machine may only have been down. dPanel refuses the agent and tells it to go quiet; nothing on the machine was changed. To manage one again, run <code>sudo dnocs machine register</code> on it. To stop its agent instead, run <code>sudo systemctl disable --now dpanel-agent</code>. The notice stays for 7 days after the agent's last call; dismissing it hides it in this browser until the agent calls again.",
         "item": "(server {id}, {reason} on {removedAt}, last call {lastContact})",
         "forgotten": "removed while unreachable",
-        "deleted": "deleted"
+        "deleted": "deleted",
+        "dismiss": "Dismiss",
+        "dismissAria": "Hide this notice until one of these agents calls again"
       }
     },
     "serverDetail": {
@@ -1876,7 +1879,11 @@
         "manageFirewallAria": "Manage the firewall of this server",
         "previousRuntime": "Previous runtime",
         "previousRuntimeHelp": "Installed by dPanel's previous installer. Applications on it keep working; move them to the new runtime from the application page.",
-        "openFailedAria": "Show why {module} failed"
+        "openFailedAria": "Show why {module} failed",
+        "installWait": {
+          "queued": "Waiting for another job on this server to finish",
+          "packageManager": "Waiting for another install on this server to finish"
+        }
       },
       "files": {
         "title": "Files",
@@ -4295,14 +4302,15 @@
   },
   "toaster": {
     "loginByEmail": {
-      "error": "Failed to login for account {email}."
+      "error": "Could not sign in as {email}."
     },
     "logout": {
       "error": "Failed to log out, please try again."
     },
     "signUp": {
       "success": "Successfully registered {email}, please wait for the redirection.",
-      "error": "Failed to register {email}!"
+      "error": "Failed to register {email}!",
+      "successWithUsername": "Account created. Your username is {username}; sign in with it or with your email address."
     },
     "machineReinstall": {
       "success": "Successfully reinstalled machine with id <code>{machineID}</code>.",

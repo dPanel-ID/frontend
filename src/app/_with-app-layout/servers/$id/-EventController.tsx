@@ -115,6 +115,7 @@ export default function EventController() {
         serverName: server.host.name,
         serverAddress: server.host.address,
         provider: server.cloud?.provider,
+        isPrivate: server.host.private,
       });
     }),
   );

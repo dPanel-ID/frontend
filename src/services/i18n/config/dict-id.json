@@ -1664,7 +1664,8 @@
           "ownKept": "Mesin tetap berjalan; hanya dPanel yang melupakannya.",
           "blocked": "Penghapusan ditolak selama aplikasi atau load balancer masih memakai server ini, kecuali server sudah tidak dapat dijangkau.",
           "confirmLabel": "Ketik <code>{name}</code> untuk konfirmasi",
-          "confirm": "Hapus server"
+          "confirm": "Hapus server",
+          "agentKeepsRunning": "dPanel tidak bisa menjangkau mesin ini untuk menghapus agennya: dPanel berhenti menerima agen itu, yang tetap berjalan. Untuk menghentikannya, jalankan sudo systemctl disable --now dpanel-agent di mesin itu; jika tidak, mesin tercantum di server dihapus yang aktif kembali selama 7 hari sejak panggilan terakhirnya."
         },
         "forget": {
           "title": "Hapus dari dPanel",
@@ -1710,10 +1711,12 @@
       },
       "removedNotice": {
         "title": "{count, plural, other {# server yang dihapus aktif kembali}}",
-        "description": "Server ini sudah dihapus dari dPanel, tetapi agennya menghubungi dPanel lagi, jadi mesinnya mungkin hanya sempat mati. dPanel menolak agen itu dan memintanya diam; tidak ada yang diubah di mesin. Untuk mengelolanya lagi, jalankan <code>sudo dnocs machine register</code> di mesin itu. Untuk menghentikan agennya, jalankan <code>sudo systemctl disable --now dpanel-agent</code>.",
+        "description": "Server ini sudah dihapus dari dPanel, tetapi agennya menghubungi dPanel lagi, jadi mesinnya mungkin hanya sempat mati. dPanel menolak agen itu dan memintanya diam; tidak ada yang diubah di mesin. Untuk mengelolanya lagi, jalankan <code>sudo dnocs machine register</code> di mesin itu. Untuk menghentikan agennya, jalankan <code>sudo systemctl disable --now dpanel-agent</code>. Pemberitahuan ini tampil selama 7 hari sejak panggilan terakhir agen; menutupnya menyembunyikannya di browser ini sampai agen menghubungi lagi.",
         "item": "(server {id}, {reason} pada {removedAt}, terakhir menghubungi {lastContact})",
         "forgotten": "dihapus saat tidak terjangkau",
-        "deleted": "dihapus"
+        "deleted": "dihapus",
+        "dismiss": "Tutup",
+        "dismissAria": "Sembunyikan pemberitahuan ini sampai salah satu agen ini menghubungi lagi"
       }
     },
     "serverDetail": {
@@ -1876,7 +1879,11 @@
         "manageFirewallAria": "Kelola firewall server ini",
         "previousRuntime": "Runtime lama",
         "previousRuntimeHelp": "Dipasang oleh penginstal dPanel sebelumnya. Aplikasi yang memakainya tetap berjalan; pindahkan ke runtime baru dari halaman aplikasi.",
-        "openFailedAria": "Lihat mengapa {module} gagal"
+        "openFailedAria": "Lihat mengapa {module} gagal",
+        "installWait": {
+          "queued": "Menunggu pekerjaan lain di server ini selesai",
+          "packageManager": "Menunggu pemasangan lain di server ini selesai"
+        }
       },
       "files": {
         "title": "Berkas",
@@ -4296,14 +4303,15 @@
   },
   "toaster": {
     "loginByEmail": {
-      "error": "Gagal masuk menggunakan akun {email}."
+      "error": "Tidak bisa masuk sebagai {email}."
     },
     "logout": {
       "error": "Gagal keluar, mohon dicoba kembali."
     },
     "signUp": {
       "success": "Berhasil mendaftarkan {email}, mohon menunggu untuk pengarahan halaman.",
-      "error": "Gagal mendaftarkan {email}!"
+      "error": "Gagal mendaftarkan {email}!",
+      "successWithUsername": "Akun dibuat. Username Anda {username}; masuk dengan username itu atau dengan alamat email Anda."
     },
     "machineReinstall": {
       "success": "Berhasil melakukan reinstall mesin dengan id <code>{machineID}</code>.",
