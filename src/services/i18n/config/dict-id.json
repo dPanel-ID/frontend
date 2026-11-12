@@ -591,6 +591,8 @@
         "failedDescription": "Umpan aktivitas sedang tidak tersedia. Infrastruktur Anda tidak terpengaruh.",
         "retry": "Coba lagi",
         "field": {
+          "failedTask": "Tugas gagal",
+          "error": "Galat",
           "type": "Tipe",
           "status": "Status",
           "module": "Modul",

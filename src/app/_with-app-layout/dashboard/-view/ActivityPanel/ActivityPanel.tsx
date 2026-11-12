@@ -270,6 +270,15 @@ function ActivityRow(props: { item: ActivityItem; currentUserId?: string }) {
               {t('technicalDetails')}
             </summary>
             <dl className="mt-2 grid gap-1 rounded-md border bg-card px-3 py-2 text-xs">
+              <TechnicalRow
+                label={t('field.failedTask')}
+                value={item.errorTask}
+              />
+              <TechnicalRow
+                label={t('field.error')}
+                value={item.errorOutput}
+                wrap
+              />
               <TechnicalRow label={t('field.type')} value={item.rawType} />
               <TechnicalRow label={t('field.status')} value={item.rawStatus} />
               <TechnicalRow label={t('field.module')} value={item.module} />
@@ -287,14 +296,28 @@ function ActivityRow(props: { item: ActivityItem; currentUserId?: string }) {
   );
 }
 
-function TechnicalRow(props: { label: string; value?: string }) {
-  const { label, value } = props;
+function TechnicalRow(props: {
+  label: string;
+  value?: string;
+  /** Show the whole value on several lines instead of cutting it off. */
+  wrap?: boolean;
+}) {
+  const { label, value, wrap } = props;
   if (!String(value ?? '').trim()) return null;
 
   return (
     <div className="flex min-w-0 items-baseline gap-2">
       <dt className="shrink-0 font-medium text-muted-foreground">{label}</dt>
-      <dd className="min-w-0 truncate font-mono text-primary">{value}</dd>
+      <dd
+        className={cn(
+          'min-w-0 font-mono text-primary',
+          wrap
+            ? 'max-h-40 overflow-y-auto whitespace-pre-wrap break-words'
+            : 'truncate',
+        )}
+      >
+        {value}
+      </dd>
     </div>
   );
 }
