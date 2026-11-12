@@ -3636,7 +3636,9 @@
           "role": "Peran",
           "status": "Status",
           "arch": "Arsitektur",
-          "region": "Region"
+          "region": "Region",
+          "joined": "Bergabung",
+          "access": "Akses klaster"
         },
         "noNodes": "Belum ada node tercatat.",
         "loadFailed": "Klaster gagal dimuat.",
@@ -3650,7 +3652,7 @@
           "installTitle": "Pasang klaster lagi",
           "installDescription": "Memasang {engine} lagi di setiap node <strong>{name}</strong>.",
           "installStep1": "Server, peran, engine, dan versi yang sama dipakai lagi.",
-          "installStep2": "Status klaster menjadi memasang sampai job selesai, lalu siap atau gagal.",
+          "installStep2": "dPanel lebih dulu memeriksa node bisa saling terhubung; port yang terblokir menggagalkan klaster beserta penyebabnya, sebelum apa pun dipasang.",
           "installConfirm": "Pasang lagi",
           "installing": "Mengantrekan…",
           "uninstallTitle": "Copot klaster",
@@ -3662,11 +3664,31 @@
           "deleteTitle": "Hapus klaster",
           "deleteDescription": "Menghapus catatan klaster <strong>{name}</strong>.",
           "deleteStep1": "Grup tetap ada sebagai grup umum dengan server yang sama.",
-          "deleteStep2": "Tidak ada yang diubah di server.",
+          "deleteStep2": "Server yang bergabung lewat dPanel Agent menghapus kunci akses klaster; selain itu tidak ada yang berubah di server.",
           "deleteConfirm": "Hapus klaster",
           "deleting": "Menghapus…",
           "happens": "Apa yang terjadi",
           "cancel": "Batal"
+        },
+        "failureReason": "Penyebab gagal",
+        "runsFrom": "Dijalankan dari",
+        "runsFromMember": "{server}, lewat jaringan privat dengan kunci klaster",
+        "runsFromWorker": "Worker dPanel lewat SSH",
+        "joinedAgent": "Agent",
+        "joinedSsh": "SSH",
+        "accessRevoke": "cabut {status}",
+        "preflight": {
+          "title": "Pemeriksaan konektivitas",
+          "passed": "Semua {count} jalur antar node terbuka.",
+          "blocked": "{blocked} dari {count} jalur terblokir.",
+          "checkedAt": "diperiksa {time}",
+          "showAll": "Tampilkan semua jalur",
+          "showBlocked": "Hanya yang terblokir",
+          "from": "Dari",
+          "to": "Ke",
+          "port": "Port",
+          "result": "Hasil",
+          "cause": "Kemungkinan penyebab"
         }
       }
     },
