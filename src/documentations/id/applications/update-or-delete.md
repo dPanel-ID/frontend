@@ -55,13 +55,18 @@ dPanel memperbarui definisi aplikasi (deskripsi tersimpan tentang cara membangun
 
 ## Menghapus aplikasi
 
-**Zona berbahaya** ada di bagian bawah **Pengaturan**.
+Keluarkan dulu aplikasi dari servernya, lalu hapus aplikasinya.
 
-1. Tekan **Hapus aplikasi ini**.
-2. Konfirmasi di dialog **Delete Application**.
+1. Buka tab **Rilis** dan pilih **Di server**.
+2. Tekan **Hapus** pada setiap rilis lalu konfirmasi. dPanel menghentikan layanannya dan menghapusnya dari server itu. Tunggu sampai rilis tersebut berstatus terhapus.
+3. Buka **Pengaturan**. **Zona berbahaya** ada di bagian bawah.
+4. Tekan **Hapus aplikasi ini**.
+5. Konfirmasi di dialog **Delete Application**.
+
+Anda tidak perlu menekan **Hapus permanen** pada rilisnya lebih dulu: menghapus aplikasi ikut menghapusnya. Selama masih ada rilis di server, dPanel menolak menghapus aplikasi dan meminta Anda menghapus rilisnya dulu.
 
 :::danger[Tidak bisa dibatalkan]
-Menghapus aplikasi akan menghapus aplikasi, build, dan riwayat rilisnya dari dPanel, serta menghentikan layanannya di setiap server tempatnya berjalan. Server dan repositori Git Anda tidak diubah.
+Menghapus aplikasi akan menghapus aplikasi, build, dan riwayat rilisnya dari dPanel. Server dan repositori Git Anda tidak diubah.
 :::
 
 ## Pertanyaan yang sering diajukan
@@ -80,8 +85,8 @@ Saat Anda menambah atau mengubah modul, misalnya versi runtime baru. dPanel lalu
 
 ### Apakah menghapus aplikasi juga menghapus repositori atau server saya?
 
-Tidak. Repositori Git dan server Anda tetap ada. dPanel menghentikan layanannya dan menghapus aplikasi, build, serta riwayat rilisnya.
+Tidak. Repositori Git dan server Anda tetap ada. Menghapus rilis menghentikan layanannya di server itu; menghapus aplikasi lalu menghapus aplikasi, build, serta riwayat rilisnya dari dPanel.
 
 ### Bisakah saya menghapus aplikasi dari terminal?
 
-`dnocs application delete` menghapus aplikasi yang tidak punya deployment. Hapus dulu rilisnya, atau gunakan **Hapus aplikasi ini** di web.
+Bisa. Hapus setiap rilis dengan `dnocs application detail deployment delete --id <app> --deployment-id <rilis>`, yang menghentikan layanannya di server, lalu jalankan `dnocs application delete --id <app>`. Sama seperti di web, `dnocs application delete` menolak selama masih ada rilis di server.
