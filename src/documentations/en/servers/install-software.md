@@ -33,6 +33,18 @@ Need a release that is not listed? If the list ends with **Custom version…**, 
 
 ![The Go install form with the Go Version list open: 1.27.3, 1.27.2, 1.27.1, 1.27.0, 1.26.10 and Custom version…](../../assets/servers/server-module-version.webp 'The five newest releases, or Custom version… for any other.')
 
+## Programming languages
+
+Node.js, Go, Python, Ruby, Bun, uv and PHP are installed **once per server** and shared by every user and every application on it. dPanel downloads them ready to run, so an install takes seconds to a couple of minutes and puts no compiler on your server. Several versions can live side by side; each application uses the version it asks for.
+
+- **PHP** offers fixed versions only: 8.5, 8.4, 8.3, 8.2, 8.1, 8.0, 7.4, 7.3 and 5.6, each the newest release of its line. PHP-FPM, Composer and common extensions (OPcache, Redis, Imagick, Memcached, APCu, GD, intl, …) come with it. 8.0 and older are end of life: use them only for applications that cannot move yet. Add another extension with **PHP Extensions**.
+- **Set As Default** makes a version the one you get when you type `node`, `php` or `python3` in the server's terminal. The first version you install is the default.
+- Users of the server cannot download their own copies of a language: everything comes from the shared install, which keeps the server clean.
+
+### Previous runtime
+
+On a server that had languages before this change, those versions show a **Previous runtime** tag on the Modules tab. They keep working, and the applications on them stay on them. To move an application, open it, go to **Deployments**, and choose **Runtime** → **Move to the new runtime** on its deployment. dPanel installs the language on the new runtime if needed, rebuilds the application on it and restarts it. **Move back to the previous runtime** returns it the same way.
+
 ## Install a database
 
 1. Press **Install** on the module you want, for example **MariaDB**.
@@ -150,7 +162,7 @@ dPanel shows what the agent last reported. Press **Refresh inventory**; modules 
 
 ### Does Uninstall remove the software from my server?
 
-No. **Uninstall** on a version chip removes dPanel's record only. The package, its data and its service stay on the server.
+For a programming language, yes: **Uninstall** removes that version from the server, and refuses while an application still uses it. For other software, no: **Uninstall** on a version chip removes dPanel's record only, and the package, its data and its service stay on the server.
 
 ### Can I install a version that is not in the list?
 

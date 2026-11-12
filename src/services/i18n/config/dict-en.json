@@ -944,6 +944,18 @@
         "stepCount": "{count} build steps",
         "buildNotFound": "The build behind this release is no longer kept",
         "deleteForever": "Delete permanently",
+        "runtime": {
+          "button": "Runtime",
+          "title": "Move to the new runtime?",
+          "body": "The new runtime installs each language version once on the server, prebuilt, shared by every user. dPanel deploys this release again: it installs the runtime if it is missing, rebuilds the application on it and restarts it.",
+          "note": "The previous runtime stays installed, so you can move back the same way. A Python virtual environment is created again.",
+          "moveNew": "Move to the new runtime",
+          "movePrevious": "Move back to the previous runtime",
+          "cancel": "Cancel",
+          "movedNew": "Moving to the new runtime: the deployment has started.",
+          "movedPrevious": "Moving back to the previous runtime: the deployment has started.",
+          "failed": "Could not move the runtime"
+        },
         "checkingService": "Checking the service",
         "installer": "Installer",
         "pageOf": "Page {page} of {total}",
@@ -1715,7 +1727,9 @@
           "title": "Uninstall module installation?",
           "message": "This removes {module} {version} from dPanel inventory and deletes its module metadata folder. It does not remove the server package.",
           "success": "{module} {version} was removed from dPanel inventory.",
-          "errorTitle": "Failed to uninstall {module} {version}"
+          "errorTitle": "Failed to uninstall {module} {version}",
+          "runtimeMessage": "This removes {module} {version} from the server. dPanel refuses while an application still uses it.",
+          "runtimeSuccess": "Removing {module} {version} from the server has started."
         },
         "emptyState": {
           "title": "You haven't installed any modules yet.",
@@ -1847,7 +1861,9 @@
         "openDatabase": "Open database",
         "openDatabaseAria": "Open {module} in the database manager",
         "manageFirewall": "Manage firewall",
-        "manageFirewallAria": "Manage the firewall of this server"
+        "manageFirewallAria": "Manage the firewall of this server",
+        "previousRuntime": "Previous runtime",
+        "previousRuntimeHelp": "Installed by dPanel's previous installer. Applications on it keep working; move them to the new runtime from the application page."
       },
       "files": {
         "title": "Files",

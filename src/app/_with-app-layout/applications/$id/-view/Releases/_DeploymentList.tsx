@@ -8,6 +8,7 @@ import {
   GitBranchIcon,
   HammerIcon,
   HashIcon,
+  LayersIcon,
   LoaderCircle,
   PlayIcon,
   RotateCcwIcon,
@@ -191,6 +192,7 @@ interface DeploymentCardProps {
   onClickActivity: (activity: 'start' | 'stop' | 'restart') => void;
   onClickDelete: () => void;
   onClickRestore: () => void;
+  onClickRuntime: () => void;
 }
 
 function DeploymentCard({
@@ -199,6 +201,7 @@ function DeploymentCard({
   onClickActivity,
   onClickDelete,
   onClickRestore,
+  onClickRuntime,
 }: DeploymentCardProps) {
   const locale = useDevetekLocale();
   const t = useDevetekTranslations();
@@ -392,6 +395,14 @@ function DeploymentCard({
         )}
 
         <div className="flex justify-end gap-2">
+          {data.state.status !== 'deleted' &&
+            (artifact?.configSnapshot.lifecycle.setup.languages.length ?? 0) >
+              0 && (
+              <Button variant="outline" size="sm" onClick={onClickRuntime}>
+                <LayersIcon className="size-3" />
+                {t('page.applicationDetail.releases.runtime.button')}
+              </Button>
+            )}
           {data.state.status === 'deleted' && (
             <Button variant="outline" size="sm" onClick={onClickRestore}>
               <UndoIcon className="size-3" />
@@ -467,6 +478,13 @@ export function DeploymentList({ list, artifactList }: DeploymentListProps) {
           }
           onClickRestore={() =>
             emit('@applications::detail/deployment-restore', {
+              applicationId: deployment.pointerIds.application,
+              artifactId: deployment.pointerIds.artifact,
+              workerId: deployment.pointerIds.machine,
+            })
+          }
+          onClickRuntime={() =>
+            emit('@applications::detail/runtime-move', {
               applicationId: deployment.pointerIds.application,
               artifactId: deployment.pointerIds.artifact,
               workerId: deployment.pointerIds.machine,
