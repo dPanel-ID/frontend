@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import tailwindcss from '@tailwindcss/vite';
 import { devtools } from '@tanstack/devtools-vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
@@ -54,6 +55,15 @@ const config = defineConfig(({ mode }) => {
   return {
     build: {
       outDir: BUILD_DIR,
+    },
+    test: {
+      server: {
+        deps: {
+          // Loaded outside Vite, the form library gets its own copy of React
+          // and every component test that renders a form fails on hooks.
+          inline: [/react-hook-form/, /@hookform\/resolvers/],
+        },
+      },
     },
     base: BASE_PATH,
     server: {

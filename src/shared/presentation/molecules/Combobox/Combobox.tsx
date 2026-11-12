@@ -48,6 +48,8 @@ export default function Combobox<V>(props: ComboboxProps<V>) {
       <PopoverTrigger asChild>
         <Button
           ref={refButton}
+          // Opening the list must not submit the form it sits in.
+          type="button"
           buttonStyle="outline"
           buttonColor="secondary"
           size={size === 'sm' ? 'sm' : 'default'}
@@ -66,6 +68,7 @@ export default function Combobox<V>(props: ComboboxProps<V>) {
           {items?.map((item) => {
             return (
               <Button
+                type="button"
                 className="min-h-8 h-max py-1"
                 key={String(item.value)}
                 buttonStyle="ghost"

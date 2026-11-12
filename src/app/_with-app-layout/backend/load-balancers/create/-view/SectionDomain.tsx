@@ -95,6 +95,7 @@ export function DomainField(props: {
           aria-label={t('page.loadBalancersCreate.gateway.domainMode')}
         >
           <Button
+            type="button"
             size="sm"
             buttonStyle={isExternal ? 'flat' : 'ghost'}
             buttonColor={isExternal ? 'primary' : 'secondary'}
@@ -103,6 +104,7 @@ export function DomainField(props: {
             {t('page.loadBalancersCreate.gateway.externalDomain')}
           </Button>
           <Button
+            type="button"
             size="sm"
             buttonStyle={!isExternal ? 'flat' : 'ghost'}
             buttonColor={!isExternal ? 'primary' : 'secondary'}
@@ -145,7 +147,10 @@ export function DomainField(props: {
         </div>
       )}
 
-      <ErrorInline t={t} message={form.formState.errors.domain?.message} />
+      {/* Read through the controller: it subscribes to this field's error,
+          so the message clears as soon as the hostname is valid even when
+          the page reuses this element (React Compiler memoizes it). */}
+      <ErrorInline t={t} message={domain.fieldState.error?.message} />
 
       <DnsRecordPanel
         form={form}
