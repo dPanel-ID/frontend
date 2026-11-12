@@ -67,6 +67,8 @@ Modul muncul di tab **Modul** dengan status **Memasang**. Basis data butuh beber
 
 Kalau statusnya **Gagal**, buka modulnya untuk melihat penyebabnya, perbaiki, lalu pasang lagi.
 
+Modul yang menjalankan layanan, seperti Caddy Server, Redis, atau basis data, juga menampilkan **Layanan tidak berjalan** kalau layanannya berhenti atau gagal setelah dipasang. Barisnya menyebut nama layanan dan menautkan ke tab **Layanan**, tempat baris log terakhirnya menjelaskan penyebabnya; modul itu dihitung di **Perlu perhatian** dan ditandai di **Yang berjalan di sini**.
+
 ## Tab Modul
 
 Tab **Modul** menampilkan satu baris per modul dengan versi dan statusnya (**Terpasang**, **Memasang**, **Gagal**, atau **Campuran** kalau versinya berbeda-beda). Hitungan **Modul**, **Terpasang** dan **Perlu perhatian** hanya mencakup modul tingkat atas: basis data yang Anda buat di MariaDB atau PostgreSQL tampil di tampilan **Kelola** modul itu, bukan sebagai baris sendiri.

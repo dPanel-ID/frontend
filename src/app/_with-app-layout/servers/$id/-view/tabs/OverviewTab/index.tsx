@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 
 import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import {
+  AlertTriangleIcon,
   AppWindowIcon,
   BuildingIcon,
   CalendarIcon,
@@ -41,8 +42,10 @@ import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 import { ApiApplication, ApiLoadBalancer } from '@/shared/api';
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
 
+import { servicesNeedingAttention } from '../../../-lib/module-health';
 import { useSubscribe } from '../../../-model/events';
 import { useServerDataModel } from '../../../-model/server-data';
+import { useModuleHealth } from '../../../-usecase/module-health';
 
 import LiveUsage from './LiveUsage';
 
@@ -57,6 +60,7 @@ export default function OverviewTab() {
     s.modules,
   ]);
 
+  const moduleHealth = useModuleHealth(serverId);
   const server = responseData(detail);
   const isPrivate = !!server && isPrivateServer(server);
 
@@ -289,24 +293,49 @@ export default function OverviewTab() {
             </p>
           ) : (
             <div className="flex flex-wrap gap-2">
-              {overview.moduleGroups.slice(0, 12).map((group) => (
-                <span
-                  key={group.id}
-                  className="inline-flex max-w-full items-center gap-2 rounded-full border bg-background/60 px-3 py-1.5 text-sm font-semibold"
-                >
-                  <img
-                    src={group.logoUrl}
-                    alt=""
-                    className="size-4 shrink-0 object-contain"
-                  />
-                  <span className="truncate">{group.name}</span>
-                  <span className="text-muted-foreground">
-                    {group.installations.length > 1
-                      ? `${group.installations.length}x`
-                      : moduleInstanceLabel(group.installations[0])}
+              {overview.moduleGroups.slice(0, 12).map((group) => {
+                const down = group.installations.flatMap((installation) =>
+                  installation.status === 'installed'
+                    ? servicesNeedingAttention(moduleHealth, installation.id)
+                    : [],
+                );
+                return (
+                  <span
+                    key={group.id}
+                    title={
+                      down.length > 0
+                        ? t('serviceNotRunning', {
+                            units: down
+                              .map((service) => service.unit)
+                              .join(', '),
+                          })
+                        : undefined
+                    }
+                    className={`inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold ${down.length > 0 ? 'border-red-400/50 bg-red-500/5' : 'bg-background/60'}`}
+                  >
+                    {down.length > 0 ? (
+                      <AlertTriangleIcon className="size-4 shrink-0 text-red-600 dark:text-red-300" />
+                    ) : (
+                      <img
+                        src={group.logoUrl}
+                        alt=""
+                        className="size-4 shrink-0 object-contain"
+                      />
+                    )}
+                    <span className="truncate">{group.name}</span>
+                    <span className="text-muted-foreground">
+                      {group.installations.length > 1
+                        ? `${group.installations.length}x`
+                        : moduleInstanceLabel(group.installations[0])}
+                    </span>
+                    {down.length > 0 && (
+                      <span className="text-xs font-medium text-red-600 dark:text-red-300">
+                        {t('serviceNotRunningShort')}
+                      </span>
+                    )}
                   </span>
-                </span>
-              ))}
+                );
+              })}
               {overview.moduleGroups.length > 12 && (
                 <span className="inline-flex items-center rounded-full border border-dashed px-3 py-1.5 text-sm font-semibold text-muted-foreground">
                   {t('more', { count: overview.moduleGroups.length - 12 })}

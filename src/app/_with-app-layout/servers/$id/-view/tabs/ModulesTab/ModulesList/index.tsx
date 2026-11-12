@@ -42,6 +42,7 @@ import { isAdoptedModule } from '../-lib/adopt';
 import { dbManagerUrl, firstDbManagerUrl } from '../-lib/db-manager';
 import { firewallViewSearch, firstFirewallViewSearch } from '../-lib/firewall';
 import { installWait } from '../-lib/install-wait';
+import { servicesNeedingAttention } from '../../../../-lib/module-health';
 import type { ServerDetailSearch } from '../../../../-rules/tabs';
 import useModuleInstallationDelete from '../../../../-usecase/module-installation-delete';
 
@@ -69,7 +70,7 @@ const DB_MANAGER_HOST = import.meta.env.VITE_DB_MANAGER_HOST as
 
 /** One row per module, its installations as version chips. */
 export default function ModulesList(props: ModulesListProps) {
-  const { modules, onDeleted, serverId } = props;
+  const { moduleHealth, modules, onDeleted, serverId } = props;
   const t = useDevetekTranslations('page.serverDetail.modules');
   const versionLabel = useModuleVersionLabel();
   const [selectedInstallation, setSelectedInstallation] =
@@ -148,6 +149,13 @@ export default function ModulesList(props: ModulesListProps) {
               group.installations,
             );
             const firewallSearch = firstFirewallViewSearch(group.installations);
+            const serviceIssues = moduleHealth
+              ? group.installations.flatMap((installation) =>
+                  installation.status === 'installed'
+                    ? servicesNeedingAttention(moduleHealth, installation.id)
+                    : [],
+                )
+              : [];
 
             return (
               <TableRow
@@ -223,6 +231,31 @@ export default function ModulesList(props: ModulesListProps) {
                         label={t(`status.${status}`)}
                       />
                     </button>
+                  ) : serviceIssues.length > 0 ? (
+                    <div className="grid justify-items-start gap-1">
+                      <StatusPill
+                        tone="danger"
+                        label={t('status.serviceDown')}
+                      />
+                      <ul className="grid gap-0.5 text-xs text-muted-foreground">
+                        {serviceIssues.map((service) => (
+                          <li key={service.unit} className="font-mono">
+                            {t('serviceState', {
+                              unit: service.unit,
+                              state: t(`serviceStates.${service.state}`),
+                            })}
+                          </li>
+                        ))}
+                      </ul>
+                      <Link
+                        to="/servers/$id"
+                        params={{ id: serverId }}
+                        search={{ tab: 'services' }}
+                        className="text-xs font-semibold text-sky-600 underline-offset-2 hover:underline dark:text-sky-300"
+                      >
+                        {t('openServices')}
+                      </Link>
+                    </div>
                   ) : (
                     <StatusPill
                       tone={GROUP_STATUS_TONE[status]}

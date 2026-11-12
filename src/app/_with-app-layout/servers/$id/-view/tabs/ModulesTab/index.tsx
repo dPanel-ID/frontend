@@ -34,9 +34,11 @@ import {
 } from '@/shared/presentation/organisms/DataPanel';
 import { flowCtaClassName } from '@/shared/presentation/organisms/FlowHero';
 
+import { servicesNeedingAttention } from '../../../-lib/module-health';
 import { useEmit } from '../../../-model/events';
 import { useServerDataModel } from '../../../-model/server-data';
 import useModuleAdopt from '../../../-usecase/module-adopt';
+import { useModuleHealth } from '../../../-usecase/module-health';
 
 import { ADOPTABLE_MODULE, canOfferModuleAdoption } from './-lib/adopt';
 import { ModulesTabStates as UIStates } from './_States';
@@ -86,7 +88,14 @@ export default guard(function ModulesTab() {
   const moduleCount = new Set(
     ownModules.map((module) => module.module_name || module.name),
   ).size;
-  const attention = ownModules.length - installed;
+  const moduleHealth = useModuleHealth(serverId);
+  // An installed module whose service is not running needs attention too.
+  const serviceDown = ownModules.filter(
+    (module) =>
+      module.status === 'installed' &&
+      servicesNeedingAttention(moduleHealth, module.id).length > 0,
+  ).length;
+  const attention = ownModules.length - installed + serviceDown;
 
   const visibleModules = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -224,6 +233,7 @@ export default guard(function ModulesTab() {
       ) : (
         <ModulesList
           modules={visibleModules}
+          moduleHealth={moduleHealth}
           serverId={serverId}
           onDeleted={refreshModules}
         />
