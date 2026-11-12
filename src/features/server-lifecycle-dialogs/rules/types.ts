@@ -13,6 +13,11 @@ export interface DeleteServerPayload {
   serverAddress?: string;
   /** Cloud provider ID when dPanel launched the VM; absent for own servers. */
   provider?: string;
+  /**
+   * Connected through its agent. dPanel cannot reach such a machine to remove
+   * the agent, so deleting only stops dPanel from accepting it.
+   */
+  isPrivate?: boolean;
 }
 
 /**

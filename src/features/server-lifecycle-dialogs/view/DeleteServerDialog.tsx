@@ -108,7 +108,9 @@ function DeleteServerDialogBody(
           tone="danger"
           title={t('page.servers.dialogs.delete.happens')}
           items={[
-            t('page.servers.dialogs.delete.uninstallAgent'),
+            target.isPrivate && !target.provider
+              ? t('page.servers.dialogs.delete.agentKeepsRunning')
+              : t('page.servers.dialogs.delete.uninstallAgent'),
             providerLabel
               ? t('page.servers.dialogs.delete.cloudDeleted', {
                   provider: providerLabel,

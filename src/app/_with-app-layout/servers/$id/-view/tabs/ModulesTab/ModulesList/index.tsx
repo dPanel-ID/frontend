@@ -15,7 +15,7 @@ import { runtimeInstaller } from '@/entities/server-modules/lib/runtime';
 import { useModuleVersionLabel } from '@/entities/server-modules/lib/version';
 import { getModuleInfoByFind } from '@/entities/server-modules/model/getModuleInfo';
 
-import { ApiModule } from '@/shared/api';
+import { ApiExecution, ApiModule } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/Button';
@@ -41,6 +41,7 @@ import { dataTable } from '@/shared/presentation/organisms/DataPanel';
 import { isAdoptedModule } from '../-lib/adopt';
 import { dbManagerUrl, firstDbManagerUrl } from '../-lib/db-manager';
 import { firewallViewSearch, firstFirewallViewSearch } from '../-lib/firewall';
+import { installWait } from '../-lib/install-wait';
 import type { ServerDetailSearch } from '../../../../-rules/tabs';
 import useModuleInstallationDelete from '../../../../-usecase/module-installation-delete';
 
@@ -97,6 +98,24 @@ export default function ModulesList(props: ModulesListProps) {
     () => groupInstalledModules(modules, catalog),
     [modules, catalog],
   );
+
+  // An install may wait for another job or install on this server; read the
+  // server's unfinished jobs while something installs, to say so.
+  const hasInstalling = modules.some(
+    (module) => module.status === 'installing' || module.status === 'progress',
+  );
+  const [pendingResponse] = ApiExecution.Find.useGet({
+    machineId: serverId,
+    status: ['queued', 'running'],
+    limit: 20,
+    options: { skip: !hasInstalling, refreshIntervalMs: 10_000 },
+  });
+  const pendingExecutions = useMemo(() => {
+    // The api-client glues $status onto the payload; copy the rows out.
+    const list: DTOs.ExecutionV2[] =
+      pendingResponse.$status === 'success' ? Array.from(pendingResponse) : [];
+    return new Map(list.map((execution) => [execution.id ?? '', execution]));
+  }, [pendingResponse]);
 
   return (
     <>
@@ -211,6 +230,18 @@ export default function ModulesList(props: ModulesListProps) {
                       label={t(`status.${status}`)}
                     />
                   )}
+                  {(() => {
+                    const wait = group.installations
+                      .map((installation) =>
+                        installWait(installation, pendingExecutions),
+                      )
+                      .find(Boolean);
+                    return wait ? (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {t(`installWait.${wait}`)}
+                      </p>
+                    ) : null;
+                  })()}
                 </TableCell>
                 <TableCell className={cn(dataTable.cell, 'text-right')}>
                   {databaseUrl && (
