@@ -1826,9 +1826,11 @@
         "lanAddress": "Alamat lokal",
         "connection": "Koneksi",
         "connectionPrivate": "Lewat agen dPanel (tanpa IP publik atau SSH)",
-        "publicAddress": "Alamat publik",
+        "publicAddress": "Terhubung dari",
         "publicAddressUnknown": "Tidak diketahui: agen terhubung dari jaringan privat",
-        "connectionAgent": "Lewat agen dPanel"
+        "connectionAgent": "Lewat agen dPanel",
+        "publicAddressHelp": "Alamat publik yang dipakai jaringan Anda untuk ke internet. Arahkan domain ke sini hanya jika port 80 dan 443 diteruskan ke mesin ini.",
+        "lanAddressUnknown": "Belum dilaporkan"
       },
       "modules": {
         "title": "Modul terpasang",
