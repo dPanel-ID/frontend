@@ -59,6 +59,8 @@
       "success": "Sukses",
       "failed": "Gagal",
       "inProgress": "Dalam Proses",
+      "waitingForAgent": "Menunggu agen",
+      "waitingForAgentHint": "Jalankan perintah instalasi di server. dPanel menunggu agennya terhubung hingga 2 jam.",
       "deployed": "Terpasang",
       "cancelled": "Dibatalkan",
       "inactive": "Tidak Aktif",

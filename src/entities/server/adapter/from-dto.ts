@@ -37,6 +37,8 @@ export const toServerCard = createAdapter<DTOs.MachineV1, ServerCard>((raw) =>
       lastSeenAt: raw.agent?.last_seen_at || undefined,
       upgradeAvailable: raw.agent?.upgrade_available ?? false,
       newVersion: raw.agent?.new_version || undefined,
+      awaitingAgent:
+        raw.connectivity === 'private' && raw.agent?.reporting === 'never',
     },
     cloud: ctorCloud(raw),
     host: ctorHost(raw),
@@ -78,6 +80,8 @@ export const toServerDetail = createAdapter<DTOs.MachineV1, ServerDetail>(
         lastSeenAt: raw.agent?.last_seen_at || undefined,
         upgradeAvailable: raw.agent?.upgrade_available ?? false,
         newVersion: raw.agent?.new_version || undefined,
+        awaitingAgent:
+          raw.connectivity === 'private' && raw.agent?.reporting === 'never',
       },
       hostGroupId: raw.host_group_id || undefined,
       cloud: ctorCloud(raw),

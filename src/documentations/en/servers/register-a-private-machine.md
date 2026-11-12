@@ -211,6 +211,10 @@ No, not to be managed by dPanel. The agent only connects out. You need ports 80 
 
 Yes, a 64-bit (`arm64`) Linux with systemd, such as 64-bit Raspberry Pi OS or Ubuntu.
 
+### The server says Waiting for agent. What does that mean?
+
+dPanel has created the server and is waiting for you to run its install command on the machine. The command works for 2 hours. If nothing connects by then, the server shows **Failed** with a note that its install command expired: create a new install command for the server and run it, and the same server turns **Ready**.
+
 ### The command waits and the server never turns Ready. What do I check?
 
 That the machine can reach the internet over HTTPS (port 443), and that `sudo systemctl status dpanel-agent` shows the agent running. `sudo journalctl -u dpanel-agent -n 50` shows its last messages.

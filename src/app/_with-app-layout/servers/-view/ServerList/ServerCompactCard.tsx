@@ -52,6 +52,7 @@ export function ServerCompactCard(props: ServerCompactCardProps) {
 
       <ServerStatusPill
         state={server.state}
+        awaitingAgent={server.agent.awaitingAgent}
         onClick={handlers.showStatus}
         className="self-start"
       />

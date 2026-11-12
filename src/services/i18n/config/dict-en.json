@@ -59,6 +59,8 @@
       "success": "Success",
       "failed": "Failed",
       "inProgress": "In Progress",
+      "waitingForAgent": "Waiting for agent",
+      "waitingForAgentHint": "Run the install command on the server. dPanel waits up to 2 hours for its agent to connect.",
       "deployed": "Deployed",
       "cancelled": "Cancelled",
       "inactive": "Inactive",
