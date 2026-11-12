@@ -39,6 +39,13 @@ export interface DeploymentRestorePayload {
   workerId: SchemaCommon.UnitId;
 }
 
+/** Move a deployment's application between the new and previous runtime. */
+export interface RuntimeMovePayload {
+  applicationId: SchemaCommon.UnitId;
+  artifactId: SchemaCommon.UnitId;
+  workerId: SchemaCommon.UnitId;
+}
+
 // =============================================================================
 //   Scope: Application *
 // =============================================================================

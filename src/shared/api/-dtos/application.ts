@@ -242,6 +242,8 @@ export interface AppDefinition {
 
 interface AppConfig {
   auto_deploy?: AutoDeploy;
+  /** Where the application's languages come from: the new or previous runtime. */
+  runtime?: 'new' | 'previous';
 }
 
 interface AutoDeploy {

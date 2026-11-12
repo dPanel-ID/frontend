@@ -10,6 +10,7 @@ import useArtifactRollbackUsecase from './-usecase/artifact-rollback';
 import useDeploymentDeleteUsecase from './-usecase/deployment-delete';
 import useDeploymentRestoreUsecase from './-usecase/deployment-restore';
 import useGithubLoginUsecase from './-usecase/github-login';
+import useRuntimeMoveUsecase from './-usecase/runtime-move';
 
 export default function EventController() {
   const emit = useEmit();
@@ -57,6 +58,10 @@ export default function EventController() {
     onSuccess: handleDefaultSuccess,
   });
 
+  const [handleRuntimeMove] = useRuntimeMoveUsecase({
+    onSuccess: handleDefaultSuccess,
+  });
+
   const [handleGithubLogin] = useGithubLoginUsecase();
 
   useSubscribe('@applications::detail/artifact-delete', handleArtifactDelete);
@@ -80,6 +85,8 @@ export default function EventController() {
     '@applications::detail/deployment-restore',
     handleDeploymentRestore,
   );
+
+  useSubscribe('@applications::detail/runtime-move', handleRuntimeMove);
 
   useSubscribe('@applications::detail/github-login', handleGithubLogin);
 

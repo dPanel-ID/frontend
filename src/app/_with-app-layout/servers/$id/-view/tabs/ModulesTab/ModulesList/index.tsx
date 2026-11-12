@@ -11,6 +11,7 @@ import {
 } from '@/entities/server-modules/config/registry';
 import { indexCatalogModules } from '@/entities/server-modules/lib/catalog-index';
 import type { CatalogModuleLook } from '@/entities/server-modules/lib/catalog-index';
+import { runtimeInstaller } from '@/entities/server-modules/lib/runtime';
 import { useModuleVersionLabel } from '@/entities/server-modules/lib/version';
 import { getModuleInfoByFind } from '@/entities/server-modules/model/getModuleInfo';
 
@@ -164,6 +165,14 @@ export default function ModulesList(props: ModulesListProps) {
                         <span className="truncate">
                           {versionLabel(moduleInstanceLabel(installation))}
                         </span>
+                        {runtimeInstaller(installation) === 'previous' && (
+                          <span
+                            className="shrink-0 rounded-full bg-amber-500/10 px-1.5 text-[10px] font-medium text-amber-700 dark:text-amber-300"
+                            title={t('previousRuntimeHelp')}
+                          >
+                            {t('previousRuntime')}
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -302,6 +311,18 @@ function moduleInstanceLabel(installation: DTOs.ModuleInstallationV1) {
   return installation.status === 'installed' ? 'Default' : 'Pending';
 }
 
+/** The version input a new-runtime language version is uninstalled with. */
+function runtimeUninstallVersion(installation: DTOs.ModuleInstallationV1) {
+  if (runtimeInstaller(installation) !== 'new') return undefined;
+  const version = installation.installation_key?.match(/@([^:]+):/)?.[1];
+  if (!version) return undefined;
+  const input =
+    installation.module_name === 'go'
+      ? 'golang_version'
+      : `${installation.module_name}_version`;
+  return { input, value: version };
+}
+
 function moduleVersion(installation: DTOs.ModuleInstallationV1) {
   const variables = installation.variables ?? {};
   const moduleName = installation.module_name;
@@ -365,6 +386,7 @@ function InstalledModuleDialog(props: {
       installationId: selected.installation.id,
       moduleName: selected.group.name,
       onSuccess: onDeleted,
+      runtimeVersion: runtimeUninstallVersion(selected.installation),
       serverId,
       versionLabel: installationLabel,
     });

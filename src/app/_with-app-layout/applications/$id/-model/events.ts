@@ -12,6 +12,7 @@ import type {
   ArtifactRollbackPayload,
   DeploymentDeletePayload,
   DeploymentRestorePayload,
+  RuntimeMovePayload,
 } from '../-rules/usecase-types';
 
 type EventsRegistry = Rescope<
@@ -23,6 +24,7 @@ type EventsRegistry = Rescope<
     'artifact-history-refresh': null;
     'deployment-delete': DeploymentDeletePayload;
     'deployment-restore': DeploymentRestorePayload;
+    'runtime-move': RuntimeMovePayload;
     'deployment-history-refresh': null;
     'application-delete': ApplicationDeletePayload;
     'application-edit': ApplicationEditPayload;
