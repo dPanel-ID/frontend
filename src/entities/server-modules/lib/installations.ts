@@ -11,6 +11,15 @@ export const DATABASE_MODULE_IDS = new Set([
   'redis',
 ]);
 
+/**
+ * Modules that each record one database created on a database server, as
+ * opposed to the server engines above.
+ */
+export const CREATED_DATABASE_MODULE_IDS = new Set([
+  'mariadb-database',
+  'postgresql-database',
+]);
+
 /** One module with every installation of it on a server. */
 export type OverviewModuleGroup = {
   id: string;
