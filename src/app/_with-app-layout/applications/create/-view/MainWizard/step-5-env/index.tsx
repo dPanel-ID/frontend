@@ -1,12 +1,13 @@
 import { useState } from 'react';
 
-import { BracesIcon, EyeIcon } from 'lucide-react';
+import { BracesIcon, EyeIcon, EyeOffIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import {
   SECRET_MASK,
+  hideRevealedEnvText,
   revealMaskedEnvText,
 } from '@/entities/application/lib/secret-mask';
 
@@ -30,12 +31,24 @@ export default function Step5Env() {
   const updateApplicationId = useFormStore((s) => s.updateApplicationId);
   const [openToaster] = useToaster();
   const [isRevealing, setIsRevealing] = useState(false);
+  const [revealed, setRevealed] = useState<{
+    build: Array<{ key: string; value: string }>;
+    run: Array<{ key: string; value: string }>;
+  } | null>(null);
   // Values of a saved application arrive masked; unchanged ones keep their
   // stored value. Showing them is a separate, logged call.
   const hasMasked =
     !!updateApplicationId &&
     (buildEnvText.includes(SECRET_MASK) ||
       runtimeEnvText.includes(SECRET_MASK));
+  const isShown = !!updateApplicationId && !hasMasked && revealed !== null;
+
+  const hideValues = () => {
+    if (!revealed) return;
+    setBuildEnvText(hideRevealedEnvText(buildEnvText, revealed.build));
+    setRuntimeEnvText(hideRevealedEnvText(runtimeEnvText, revealed.run));
+    setRevealed(null);
+  };
 
   const revealValues = async () => {
     if (!updateApplicationId) return;
@@ -54,6 +67,7 @@ export default function Step5Env() {
       }
       setBuildEnvText(revealMaskedEnvText(buildEnvText, response.build));
       setRuntimeEnvText(revealMaskedEnvText(runtimeEnvText, response.run));
+      setRevealed({ build: response.build, run: response.run });
     } finally {
       setIsRevealing(false);
     }
@@ -67,19 +81,23 @@ export default function Step5Env() {
         sectionDescription={t('desc')}
         classNameContent="grid gap-4"
       >
-        {hasMasked && (
+        {(hasMasked || isShown) && (
           <div className="flex items-center justify-between gap-2 rounded-md border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
-            <span>{t('hiddenNote')}</span>
+            <span>{isShown ? t('shownNote') : t('hiddenNote')}</span>
             <Button
               type="button"
               variant="outline"
               size="sm"
               className="h-7 shrink-0 gap-1"
               disabled={isRevealing}
-              onClick={() => void revealValues()}
+              onClick={() => (isShown ? hideValues() : void revealValues())}
             >
-              <EyeIcon className="size-3" />
-              {isRevealing ? t('revealing') : t('reveal')}
+              {isShown ? (
+                <EyeOffIcon className="size-3" />
+              ) : (
+                <EyeIcon className="size-3" />
+              )}
+              {isShown ? t('hide') : isRevealing ? t('revealing') : t('reveal')}
             </Button>
           </div>
         )}

@@ -1289,6 +1289,8 @@
             "runtimeDesc": "Satu pasangan KEY=value per baris. Digunakan oleh service yang berjalan.",
             "hiddenNote": "Nilai disembunyikan. Nilai yang tidak diubah tetap memakai nilai tersimpan.",
             "reveal": "Tampilkan nilai",
+            "hide": "Sembunyikan nilai",
+            "shownNote": "Nilai ditampilkan. Sembunyikan sebelum membagikan layar.",
             "revealing": "Menampilkan…",
             "revealFailed": "Nilai tidak dapat ditampilkan"
           }
