@@ -1,7 +1,7 @@
 import type { DTOs } from '@/shared/api';
 
 /** Why an installing module is not moving yet, if dPanel can tell. */
-export type InstallWait = 'queued' | 'packageManager';
+export type InstallWait = 'queued' | 'starting' | 'packageManager';
 
 const PACKAGE_MANAGER_WAIT_TASK = 'wait for other package installs';
 
@@ -24,7 +24,15 @@ export function installWait(
     ? executions.get(installation.last_execution_id)
     : undefined;
   if (!execution) return undefined;
-  if (execution.status === 'queued') return 'queued';
+  if (execution.status === 'queued') {
+    // Only say another job is in the way when one really runs; otherwise
+    // the server is still picking the job up (on a new server, preparing
+    // the worker for its first job).
+    const otherRunning = [...executions.values()].some(
+      (other) => other.id !== execution.id && other.status === 'running',
+    );
+    return otherRunning ? 'queued' : 'starting';
+  }
   const step =
     `${execution.last_event_phase ?? ''} ${execution.last_event_message ?? ''}`.toLowerCase();
   if (
@@ -40,7 +48,11 @@ export function installWait(
 export interface InstallStep {
   /** The task the job runs, without its role name. */
   step: string;
-  /** When the job started, to say how long it has run. */
+  /**
+   * When the install was asked for, to say how long it has taken. The job's
+   * own start moves when its playbook begins, which leaves out the wait and
+   * the server's preparation the customer sat through.
+   */
   startedAt?: string;
 }
 
@@ -71,9 +83,12 @@ export function installStep(
     : '';
   const step = task.split(' : ').pop()?.trim() ?? '';
   if (!step || /^run (role|generated module roles)\b/i.test(step)) {
-    return { step: '', startedAt: execution.started_at };
+    return {
+      step: '',
+      startedAt: execution.created_at ?? execution.started_at,
+    };
   }
-  return { step, startedAt: execution.started_at };
+  return { step, startedAt: execution.created_at ?? execution.started_at };
 }
 
 /** "3m 12s" from a start time, or '' when it is unknown. */

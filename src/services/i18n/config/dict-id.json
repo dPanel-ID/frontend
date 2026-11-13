@@ -1889,6 +1889,7 @@
         "openFailedAria": "Lihat mengapa {module} gagal",
         "installWait": {
           "queued": "Menunggu pekerjaan lain di server ini selesai",
+          "starting": "Menunggu server memulai pemasangan ini",
           "packageManager": "Menunggu pemasangan lain di server ini selesai"
         },
         "serviceState": "{unit}: {state}",
