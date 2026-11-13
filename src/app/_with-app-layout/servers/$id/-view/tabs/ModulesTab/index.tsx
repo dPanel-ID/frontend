@@ -95,7 +95,15 @@ export default guard(function ModulesTab() {
       module.status === 'installed' &&
       servicesNeedingAttention(moduleHealth, module.id).length > 0,
   ).length;
-  const attention = ownModules.length - installed + serviceDown;
+  // An install in progress is not a problem; only a failed one, or an
+  // installed module whose service is down, needs attention.
+  const failed = ownModules.filter(
+    (module) =>
+      module.status !== 'installed' &&
+      module.status !== 'installing' &&
+      module.status !== 'progress',
+  ).length;
+  const attention = failed + serviceDown;
 
   const visibleModules = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();

@@ -1889,6 +1889,7 @@
         "openFailedAria": "Show why {module} failed",
         "installWait": {
           "queued": "Waiting for another job on this server to finish",
+          "starting": "Waiting for the server to start this install",
           "packageManager": "Waiting for another install on this server to finish"
         },
         "serviceState": "{unit}: {state}",

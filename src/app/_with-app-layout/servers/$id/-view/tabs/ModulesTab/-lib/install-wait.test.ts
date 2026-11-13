@@ -8,13 +8,22 @@ const executions = (...list: DTOs.ExecutionV2[]) =>
   new Map(list.map((execution) => [execution.id ?? '', execution]));
 
 describe('installWait', () => {
-  it('says a queued job waits for another job on the server', () => {
+  it('says a queued job waits for another job only when one runs', () => {
+    expect(
+      installWait(
+        { status: 'installing', last_execution_id: 'exec_2' },
+        executions(
+          { id: 'exec_1', status: 'running' },
+          { id: 'exec_2', status: 'queued' },
+        ),
+      ),
+    ).toBe('queued');
     expect(
       installWait(
         { status: 'installing', last_execution_id: 'exec_2' },
         executions({ id: 'exec_2', status: 'queued' }),
       ),
-    ).toBe('queued');
+    ).toBe('starting');
   });
 
   it('says a job in the package-manager wait waits for another install', () => {
