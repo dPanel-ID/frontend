@@ -1,6 +1,17 @@
-import { PlusIcon, Trash2Icon } from 'lucide-react';
-import { useFieldArray } from 'react-hook-form';
+import { useState } from 'react';
 
+import { EyeIcon, PlusIcon, Trash2Icon } from 'lucide-react';
+import { useFieldArray, useWatch } from 'react-hook-form';
+
+import { useToaster } from '@/services/toaster';
+
+import {
+  isMaskedValue,
+  revealMaskedValues,
+} from '@/entities/application/lib/secret-mask';
+
+import { ApiApplication } from '@/shared/api';
+import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Input } from '@/shared/presentation/atoms/Input';
 
@@ -41,8 +52,51 @@ function RunCommandSection() {
   );
 }
 
+/**
+ * Values arrive masked; this reads them in clear on request (it needs
+ * permission to change the application, and the API logs it) and fills only
+ * the masked fields, keeping anything already typed.
+ */
+function useRevealValues() {
+  const { form, props } = useApplicationRunEditModel();
+  const [openToaster] = useToaster();
+  const [isRevealing, setIsRevealing] = useState(false);
+  const envs = useWatch({ control: form.control, name: 'envs' });
+  const hasMasked = envs.some((env) => isMaskedValue(env.value));
+
+  const reveal = async () => {
+    setIsRevealing(true);
+    try {
+      const response = await ApiApplication.EnvironmentReveal.$Id.doPost({
+        applicationId: String(props.applicationId),
+      });
+      if (response.$status !== 'success') {
+        openToaster({
+          variant: 'error',
+          title: 'Could not show the values',
+          message: getApiErrorDetail(response.error),
+        });
+        return;
+      }
+      const current = form.getValues('envs');
+      revealMaskedValues(current, response.run).forEach((env, index) => {
+        if (env.value !== current.at(index)?.value) {
+          form.setValue(`envs.${index}.value`, env.value, {
+            shouldDirty: false,
+          });
+        }
+      });
+    } finally {
+      setIsRevealing(false);
+    }
+  };
+
+  return { hasMasked, isRevealing, reveal };
+}
+
 function RunEnvsSection() {
   const { form } = useApplicationRunEditModel();
+  const { hasMasked, isRevealing, reveal } = useRevealValues();
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -56,6 +110,25 @@ function RunEnvsSection() {
   return (
     <div className="flex flex-col gap-1 pb-4">
       <SectionTitle>Environment Variables</SectionTitle>
+
+      {hasMasked && (
+        <div className="flex items-center justify-between gap-2 rounded-md border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+          <span>
+            Values are hidden. Unchanged ones keep their stored value.
+          </span>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-7 shrink-0 gap-1"
+            disabled={isRevealing}
+            onClick={() => void reveal()}
+          >
+            <EyeIcon className="size-3" />
+            {isRevealing ? 'Showing…' : 'Show values'}
+          </Button>
+        </div>
+      )}
 
       <div className="flex flex-col gap-2">
         {fields.length === 0 ? (

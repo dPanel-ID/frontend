@@ -4,6 +4,7 @@ import * as BuildProgress$Id from './application.build-progress.$id';
 import * as Create from './application.create';
 import * as Delete$Id from './application.delete.$id';
 import * as Detail$Id from './application.detail.$id';
+import * as EnvironmentReveal$Id from './application.environment.reveal.$id';
 import * as Find from './application.find';
 import * as IAC$Id from './application.iac.$id';
 import * as Logs$Id from './application.logs.$id';
@@ -26,6 +27,9 @@ const Root = {
   },
   Detail: {
     $Id: Detail$Id,
+  },
+  EnvironmentReveal: {
+    $Id: EnvironmentReveal$Id,
   },
   Find,
   IAC: {
