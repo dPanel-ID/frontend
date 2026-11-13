@@ -1289,6 +1289,8 @@
             "runtimeDesc": "One KEY=value pair per line. Used by the running service.",
             "hiddenNote": "Values are hidden. Unchanged ones keep their stored value.",
             "reveal": "Show values",
+            "hide": "Hide values",
+            "shownNote": "Values are shown. Hide them before sharing your screen.",
             "revealing": "Showing…",
             "revealFailed": "Could not show the values"
           }

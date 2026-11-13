@@ -43,3 +43,38 @@ export function revealMaskedEnvText(
     })
     .join('\n');
 }
+
+/**
+ * Puts the mask back on every value still equal to its revealed value, so
+ * values can be hidden again. Values the person changed stay as typed.
+ */
+export function hideRevealedValues<
+  T extends { key: string; value?: string | null },
+>(variables: T[], revealed: Array<{ key: string; value: string }>): T[] {
+  const values = new Map(revealed.map((item) => [item.key, item.value]));
+  return variables.map((variable) =>
+    variable.value && values.get(variable.key) === variable.value
+      ? { ...variable, value: SECRET_MASK }
+      : variable,
+  );
+}
+
+/** Same for KEY=VALUE lines. */
+export function hideRevealedEnvText(
+  text: string,
+  revealed: Array<{ key: string; value: string }>,
+) {
+  const values = new Map(revealed.map((item) => [item.key, item.value]));
+  return text
+    .split('\n')
+    .map((line) => {
+      const separator = line.indexOf('=');
+      if (separator <= 0) return line;
+      const key = line.slice(0, separator).trim();
+      const value = line.slice(separator + 1);
+      return value && values.get(key) === value
+        ? `${line.slice(0, separator)}=${SECRET_MASK}`
+        : line;
+    })
+    .join('\n');
+}

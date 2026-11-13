@@ -1,11 +1,12 @@
 import { useState } from 'react';
 
-import { EyeIcon, PlusIcon, Trash2Icon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { useFieldArray, useWatch } from 'react-hook-form';
 
 import { useToaster } from '@/services/toaster';
 
 import {
+  hideRevealedValues,
   isMaskedValue,
   revealMaskedValues,
 } from '@/entities/application/lib/secret-mask';
@@ -55,14 +56,36 @@ function RunCommandSection() {
 /**
  * Values arrive masked; this reads them in clear on request (it needs
  * permission to change the application, and the API logs it) and fills only
- * the masked fields, keeping anything already typed.
+ * the masked fields, keeping anything already typed. Hiding masks again
+ * every value still equal to what was revealed; edited values stay visible
+ * so they are saved as typed.
  */
 function useRevealValues() {
   const { form, props } = useApplicationRunEditModel();
   const [openToaster] = useToaster();
   const [isRevealing, setIsRevealing] = useState(false);
+  const [revealed, setRevealed] = useState<
+    Array<{ key: string; value: string }>
+  >([]);
   const envs = useWatch({ control: form.control, name: 'envs' });
   const hasMasked = envs.some((env) => isMaskedValue(env.value));
+  const isShown = !hasMasked && revealed.length > 0;
+
+  const setEnvValues = (next: Array<{ value?: string | null }>) => {
+    const current = form.getValues('envs');
+    next.forEach((env, index) => {
+      if (env.value !== current.at(index)?.value) {
+        form.setValue(`envs.${index}.value`, env.value ?? '', {
+          shouldDirty: false,
+        });
+      }
+    });
+  };
+
+  const hide = () => {
+    setEnvValues(hideRevealedValues(form.getValues('envs'), revealed));
+    setRevealed([]);
+  };
 
   const reveal = async () => {
     setIsRevealing(true);
@@ -78,25 +101,19 @@ function useRevealValues() {
         });
         return;
       }
-      const current = form.getValues('envs');
-      revealMaskedValues(current, response.run).forEach((env, index) => {
-        if (env.value !== current.at(index)?.value) {
-          form.setValue(`envs.${index}.value`, env.value, {
-            shouldDirty: false,
-          });
-        }
-      });
+      setEnvValues(revealMaskedValues(form.getValues('envs'), response.run));
+      setRevealed(response.run);
     } finally {
       setIsRevealing(false);
     }
   };
 
-  return { hasMasked, isRevealing, reveal };
+  return { hasMasked, isShown, isRevealing, reveal, hide };
 }
 
 function RunEnvsSection() {
   const { form } = useApplicationRunEditModel();
-  const { hasMasked, isRevealing, reveal } = useRevealValues();
+  const { hasMasked, isShown, isRevealing, reveal, hide } = useRevealValues();
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -111,10 +128,12 @@ function RunEnvsSection() {
     <div className="flex flex-col gap-1 pb-4">
       <SectionTitle>Environment Variables</SectionTitle>
 
-      {hasMasked && (
+      {(hasMasked || isShown) && (
         <div className="flex items-center justify-between gap-2 rounded-md border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
           <span>
-            Values are hidden. Unchanged ones keep their stored value.
+            {isShown
+              ? 'Values are shown. Hide them before sharing your screen.'
+              : 'Values are hidden. Unchanged ones keep their stored value.'}
           </span>
           <Button
             type="button"
@@ -122,10 +141,14 @@ function RunEnvsSection() {
             size="sm"
             className="h-7 shrink-0 gap-1"
             disabled={isRevealing}
-            onClick={() => void reveal()}
+            onClick={() => (isShown ? hide() : void reveal())}
           >
-            <EyeIcon className="size-3" />
-            {isRevealing ? 'Showing…' : 'Show values'}
+            {isShown ? (
+              <EyeOffIcon className="size-3" />
+            ) : (
+              <EyeIcon className="size-3" />
+            )}
+            {isShown ? 'Hide values' : isRevealing ? 'Showing…' : 'Show values'}
           </Button>
         </div>
       )}
