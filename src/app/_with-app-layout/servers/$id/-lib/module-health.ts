@@ -1,6 +1,7 @@
 import type {
   ModuleHealthDto,
   ModuleServiceDto,
+  ModuleVersionDto,
 } from '@/shared/api/server.modules.$id.health';
 
 /** Health of installed modules by installation ID. */
@@ -27,4 +28,22 @@ export function servicesNeedingAttention(
       service.state === 'stopped' ||
       service.state === 'missing',
   );
+}
+
+/** The release an installation really runs, when the agent reported it. */
+export function installedVersion(
+  health: ModuleHealthIndex,
+  installationId: string,
+): ModuleVersionDto | undefined {
+  const version = health.get(installationId)?.version;
+  return version?.installed ? version : undefined;
+}
+
+/** The installation runs another release than the one chosen at install. */
+export function versionMismatch(
+  health: ModuleHealthIndex,
+  installationId: string,
+): ModuleVersionDto | undefined {
+  const version = installedVersion(health, installationId);
+  return version?.mismatch ? version : undefined;
 }
