@@ -5,7 +5,7 @@ export const schemaSignUpForm = z
   .object({
     email: z.email('formErrors.invalidEmailAddress'),
     username: z.string().min(1, 'formErrors.usernameMustBeFilled'),
-    password: z.string().min(1, 'formErrors.invalidPassword'),
+    password: z.string().min(1, 'formErrors.passwordMustBeFilled'),
     confirmPassword: z
       .string()
       .min(1, 'formErrors.confirmPasswordMustBeFilled'),

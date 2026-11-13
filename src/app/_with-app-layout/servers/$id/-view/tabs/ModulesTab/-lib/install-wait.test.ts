@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { DTOs } from '@/shared/api';
 
-import { installWait } from './install-wait';
+import { elapsedSince, installStep, installWait } from './install-wait';
 
 const executions = (...list: DTOs.ExecutionV2[]) =>
   new Map(list.map((execution) => [execution.id ?? '', execution]));
@@ -49,5 +49,63 @@ describe('installWait', () => {
         running,
       ),
     ).toBeUndefined();
+  });
+});
+
+describe('installStep', () => {
+  const installing = { status: 'installing', last_execution_id: 'exec_3' };
+
+  it('names the task a running install is on, without its role', () => {
+    expect(
+      installStep(
+        installing,
+        executions({
+          id: 'exec_3',
+          status: 'running',
+          started_at: '2026-11-13T08:00:00Z',
+          last_event_type: 'ansible_callback_task_started',
+          last_event_phase: 'fauust.mariadb : Install packages (apt)',
+        }),
+      ),
+    ).toEqual({
+      step: 'Install packages (apt)',
+      startedAt: '2026-11-13T08:00:00Z',
+    });
+  });
+
+  it("hides dPanel's wrapper tasks but keeps the start time", () => {
+    expect(
+      installStep(
+        installing,
+        executions({
+          id: 'exec_3',
+          status: 'running',
+          started_at: '2026-11-13T08:00:00Z',
+          last_event_type: 'ansible_callback_task_started',
+          last_event_phase: 'Run role "fauust.mariadb"',
+        }),
+      ),
+    ).toEqual({ step: '', startedAt: '2026-11-13T08:00:00Z' });
+  });
+
+  it('says nothing for a queued job or an installed module', () => {
+    expect(
+      installStep(installing, executions({ id: 'exec_3', status: 'queued' })),
+    ).toBeUndefined();
+    expect(
+      installStep(
+        { status: 'installed', last_execution_id: 'exec_3' },
+        executions({ id: 'exec_3', status: 'running' }),
+      ),
+    ).toBeUndefined();
+  });
+});
+
+describe('elapsedSince', () => {
+  it('reads minutes and seconds', () => {
+    const now = new Date('2026-11-13T08:03:12Z').getTime();
+    expect(elapsedSince('2026-11-13T08:00:00Z', now)).toBe('3m 12s');
+    expect(elapsedSince('2026-11-13T08:03:00Z', now)).toBe('12s');
+    expect(elapsedSince(undefined, now)).toBe('');
   });
 });

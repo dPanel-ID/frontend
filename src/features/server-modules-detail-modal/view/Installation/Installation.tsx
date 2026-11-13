@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+
+import { useDevetekTranslations } from '@/services/i18n';
 
 import { ApiModule } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
@@ -98,7 +100,14 @@ export default function Installation() {
   const { moduleInfo, serverID, hostGroupTarget } = useBaseContext();
   const { installModule } = useHandleInstallModule();
   const [values, setValues] = useState<Record<string, FieldValue>>({});
+  const t = useDevetekTranslations('page.serverDetail.modules.installForm');
   const [formError, setFormError] = useState('');
+  // The fields scroll under a fixed Install button; an error is shown at the
+  // top of them and the list scrolls back so it is seen.
+  const fieldsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (formError) fieldsRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [formError]);
   const [targetMode, setTargetMode] = useState<'server' | 'hostgroup'>(
     serverID ? 'server' : 'hostgroup',
   );
@@ -164,16 +173,16 @@ export default function Installation() {
       activeTarget.type === 'hostgroup' &&
       isBlockedHostGroupAction(action.name)
     ) {
-      setFormError(
-        'Delete and reprovision actions are only available for a single server target.',
-      );
+      setFormError(t('singleServerOnly'));
       return;
     }
 
     const missing = missingRequiredInputs(moduleDetail.inputs, values);
     if (missing.length > 0) {
       setFormError(
-        `Fill in ${missing.map((input) => input.label || input.name).join(', ')} before installing.`,
+        t('missing', {
+          fields: missing.map((input) => input.label || input.name).join(', '),
+        }),
       );
       return;
     }
@@ -186,7 +195,11 @@ export default function Installation() {
     );
     if (malformed.length > 0) {
       setFormError(
-        `Check the format of ${malformed.map((input) => input.label || input.name).join(', ')}.`,
+        t('malformed', {
+          fields: malformed
+            .map((input) => input.label || input.name)
+            .join(', '),
+        }),
       );
       return;
     }
@@ -213,11 +226,7 @@ export default function Installation() {
         },
       });
     } catch (error) {
-      setFormError(
-        error instanceof Error
-          ? error.message
-          : 'Unable to parse the role options.',
-      );
+      setFormError(error instanceof Error ? error.message : t('unreadable'));
     }
   };
 
@@ -337,7 +346,11 @@ export default function Installation() {
         </Button>
       </div>
 
-      <div className="flex max-h-[clamp(18rem,calc(100svh-22rem),40rem)] min-h-0 flex-col gap-5 overflow-y-auto overscroll-contain border-t p-4">
+      <div
+        ref={fieldsRef}
+        className="flex max-h-[clamp(18rem,calc(100svh-22rem),40rem)] min-h-0 flex-col gap-5 overflow-y-auto overscroll-contain border-t p-4"
+      >
+        {formError && <ErrorInline message={formError} />}
         {serverID && hostGroupTarget ? (
           <div className="rounded-lg border bg-card p-3">
             <h6 className="text-sm font-bold text-primary/80">Target</h6>
@@ -398,8 +411,6 @@ export default function Installation() {
           Source: {moduleDetail.input_catalog.ref_name} @{' '}
           {moduleDetail.resolved_commit.slice(0, 12)}
         </div>
-
-        {formError && <ErrorInline message={formError} />}
       </div>
     </div>
   );

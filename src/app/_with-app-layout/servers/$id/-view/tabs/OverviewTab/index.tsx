@@ -33,6 +33,7 @@ import {
 } from '@/entities/server/lib/describeServer';
 import { ServerCreator } from '@/entities/server/ui/ServerCreator';
 import {
+  CREATED_DATABASE_MODULE_IDS,
   DATABASE_MODULE_IDS,
   groupModules,
   moduleInstanceLabel,
@@ -123,7 +124,12 @@ export default function OverviewTab() {
         loadBalancersData?.pagination.total_item ??
         loadBalancersData?.routers?.length ??
         0,
+      // Databases people created, not the engines that hold them: a fresh
+      // PostgreSQL install has no database of its own yet.
       databases: installed.filter((module) =>
+        CREATED_DATABASE_MODULE_IDS.has(module.module_name),
+      ).length,
+      databaseServers: installed.filter((module) =>
         DATABASE_MODULE_IDS.has(module.module_name),
       ).length,
       installedModules: installed.length,
@@ -171,6 +177,7 @@ export default function OverviewTab() {
           tone="amber"
           label={t('databases')}
           value={overview.databases}
+          hint={t('databaseServersHint', { count: overview.databaseServers })}
           onClick={goToModules}
         />
         <StatTile
