@@ -1837,7 +1837,8 @@
         "serviceNotRunning": "Service not running: {units}. Open the Modules or Services tab.",
         "serviceNotRunningShort": "service not running",
         "versionMismatch": "Runs {installed}, not the chosen {chosen}. Open the Modules tab.",
-        "versionMismatchShort": "not {chosen}"
+        "versionMismatchShort": "not {chosen}",
+        "databaseServersHint": "{count, plural, =0 {no database server} one {on # database server} other {on # database servers}}"
       },
       "modules": {
         "title": "Installed modules",
@@ -1902,7 +1903,16 @@
         "versionRuns": "Runs {installed}",
         "chosenVersion": "{chosen} chosen",
         "versionMismatchHelp": "This server runs {module} {installed}, not the {chosen} chosen at install. It was installed before dPanel used the official repository. Your data is unchanged; choose {release} when you reinstall to keep it.",
-        "otherVersionDetail": "Runs {installed}, not {chosen}"
+        "otherVersionDetail": "Runs {installed}, not {chosen}",
+        "installStep": "Now: {step}",
+        "installRunning": "Working on it",
+        "installElapsed": "{elapsed} so far",
+        "installForm": {
+          "missing": "Fill in {fields} before installing.",
+          "malformed": "Check the format of {fields}.",
+          "singleServerOnly": "Delete and reprovision run on one server only; choose a single server.",
+          "unreadable": "The options could not be read; check them and try again."
+        }
       },
       "files": {
         "title": "Files",
@@ -4893,6 +4903,7 @@
     "invalidUrl": "Invalid URL retrieved!",
     "invalidEmailAddress": "Invalid email address",
     "usernameMustBeFilled": "Username must be filled",
+    "passwordMustBeFilled": "Password must be filled",
     "invalidPassword": "Invalid Password",
     "confirmPasswordMustBeFilled": "Confirm password must be filled",
     "confirmPasswordMismatch": "Password and confirm password don't match",

@@ -1837,7 +1837,8 @@
         "serviceNotRunning": "Layanan tidak berjalan: {units}. Buka tab Modul atau Layanan.",
         "serviceNotRunningShort": "layanan tidak berjalan",
         "versionMismatch": "Berjalan {installed}, bukan {chosen} yang dipilih. Buka tab Modul.",
-        "versionMismatchShort": "bukan {chosen}"
+        "versionMismatchShort": "bukan {chosen}",
+        "databaseServersHint": "{count, plural, =0 {belum ada server database} other {di # server database}}"
       },
       "modules": {
         "title": "Modul terpasang",
@@ -1902,7 +1903,16 @@
         "versionRuns": "Berjalan {installed}",
         "chosenVersion": "dipilih {chosen}",
         "versionMismatchHelp": "Server ini menjalankan {module} {installed}, bukan {chosen} yang dipilih saat pemasangan. Modul ini dipasang sebelum dPanel memakai repositori resmi. Data Anda tidak berubah; pilih {release} saat memasang ulang agar tetap dipakai.",
-        "otherVersionDetail": "Berjalan {installed}, bukan {chosen}"
+        "otherVersionDetail": "Berjalan {installed}, bukan {chosen}",
+        "installStep": "Sekarang: {step}",
+        "installRunning": "Sedang dikerjakan",
+        "installElapsed": "sudah {elapsed}",
+        "installForm": {
+          "missing": "Isi {fields} sebelum memasang.",
+          "malformed": "Periksa format {fields}.",
+          "singleServerOnly": "Hapus dan siapkan ulang hanya berjalan di satu server; pilih satu server.",
+          "unreadable": "Opsi tidak dapat dibaca; periksa lalu coba lagi."
+        }
       },
       "files": {
         "title": "Berkas",
@@ -4894,6 +4904,7 @@
     "invalidUrl": "URL diterima tidak valid!",
     "invalidEmailAddress": "Alamat email tidak sah",
     "usernameMustBeFilled": "Username perlu diisi",
+    "passwordMustBeFilled": "Password perlu diisi",
     "invalidPassword": "Password tidak sah",
     "confirmPasswordMustBeFilled": "Konfirmasi password perlu diisi",
     "confirmPasswordMismatch": "Password dan konfirmasi password tidak serupa",

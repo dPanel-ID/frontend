@@ -41,7 +41,7 @@ import { dataTable } from '@/shared/presentation/organisms/DataPanel';
 import { isAdoptedModule } from '../-lib/adopt';
 import { dbManagerUrl, firstDbManagerUrl } from '../-lib/db-manager';
 import { firewallViewSearch, firstFirewallViewSearch } from '../-lib/firewall';
-import { installWait } from '../-lib/install-wait';
+import { elapsedSince, installStep, installWait } from '../-lib/install-wait';
 import {
   installedVersion,
   servicesNeedingAttention,
@@ -328,11 +328,33 @@ export default function ModulesList(props: ModulesListProps) {
                         installWait(installation, pendingExecutions),
                       )
                       .find(Boolean);
-                    return wait ? (
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {t(`installWait.${wait}`)}
+                    if (wait) {
+                      return (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {t(`installWait.${wait}`)}
+                        </p>
+                      );
+                    }
+                    // A long install shows the task it is on and how long it
+                    // has run, so it does not look stuck.
+                    const progress = group.installations
+                      .map((installation) =>
+                        installStep(installation, pendingExecutions),
+                      )
+                      .find(Boolean);
+                    if (!progress) return null;
+                    const elapsed = elapsedSince(
+                      progress.startedAt,
+                      Date.now(),
+                    );
+                    return (
+                      <p className="mt-1 max-w-xs text-xs text-muted-foreground">
+                        {progress.step
+                          ? t('installStep', { step: progress.step })
+                          : t('installRunning')}
+                        {elapsed && ` · ${t('installElapsed', { elapsed })}`}
                       </p>
-                    ) : null;
+                    );
                   })()}
                 </TableCell>
                 <TableCell className={cn(dataTable.cell, 'text-right')}>
