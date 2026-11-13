@@ -42,7 +42,11 @@ import { isAdoptedModule } from '../-lib/adopt';
 import { dbManagerUrl, firstDbManagerUrl } from '../-lib/db-manager';
 import { firewallViewSearch, firstFirewallViewSearch } from '../-lib/firewall';
 import { installWait } from '../-lib/install-wait';
-import { servicesNeedingAttention } from '../../../../-lib/module-health';
+import {
+  installedVersion,
+  servicesNeedingAttention,
+  versionMismatch,
+} from '../../../../-lib/module-health';
 import type { ServerDetailSearch } from '../../../../-rules/tabs';
 import useModuleInstallationDelete from '../../../../-usecase/module-installation-delete';
 
@@ -156,6 +160,15 @@ export default function ModulesList(props: ModulesListProps) {
                     : [],
                 )
               : [];
+            const versionIssues = moduleHealth
+              ? group.installations.flatMap((installation) => {
+                  const mismatch =
+                    installation.status === 'installed'
+                      ? versionMismatch(moduleHealth, installation.id)
+                      : undefined;
+                  return mismatch ? [mismatch] : [];
+                })
+              : [];
 
             return (
               <TableRow
@@ -188,33 +201,54 @@ export default function ModulesList(props: ModulesListProps) {
                 </TableCell>
                 <TableCell className={dataTable.cell}>
                   <div className="flex flex-wrap gap-1.5">
-                    {group.installations.map((installation) => (
-                      <button
-                        key={installation.id}
-                        type="button"
-                        className={cn(
-                          'inline-flex max-w-full items-center gap-1 rounded-full border bg-background/60 px-2.5 py-1 text-left text-xs font-semibold text-primary/80 transition-colors hover:border-sky-400/50 hover:bg-sky-500/5',
-                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50',
-                          installation.status !== 'installed' &&
-                            'border-dashed text-muted-foreground',
-                        )}
-                        onClick={() =>
-                          setSelectedInstallation({ group, installation })
-                        }
-                      >
-                        <span className="truncate">
-                          {versionLabel(moduleInstanceLabel(installation))}
-                        </span>
-                        {runtimeInstaller(installation) === 'previous' && (
-                          <span
-                            className="shrink-0 rounded-full bg-amber-500/10 px-1.5 text-[10px] font-medium text-amber-700 dark:text-amber-300"
-                            title={t('previousRuntimeHelp')}
-                          >
-                            {t('previousRuntime')}
+                    {group.installations.map((installation) => {
+                      const real = moduleHealth
+                        ? installedVersion(moduleHealth, installation.id)
+                        : undefined;
+                      return (
+                        <button
+                          key={installation.id}
+                          type="button"
+                          className={cn(
+                            'inline-flex max-w-full items-center gap-1 rounded-full border bg-background/60 px-2.5 py-1 text-left text-xs font-semibold text-primary/80 transition-colors hover:border-sky-400/50 hover:bg-sky-500/5',
+                            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/50',
+                            installation.status !== 'installed' &&
+                              'border-dashed text-muted-foreground',
+                          )}
+                          onClick={() =>
+                            setSelectedInstallation({ group, installation })
+                          }
+                        >
+                          <span className="truncate">
+                            {versionLabel(
+                              real?.installed ??
+                                moduleInstanceLabel(installation),
+                            )}
                           </span>
-                        )}
-                      </button>
-                    ))}
+                          {real?.mismatch && real.chosen && (
+                            <span
+                              className="shrink-0 rounded-full bg-amber-500/10 px-1.5 text-[10px] font-medium text-amber-700 dark:text-amber-300"
+                              title={t('versionMismatchHelp', {
+                                module: group.name,
+                                installed: real.installed ?? '',
+                                chosen: real.chosen,
+                                release: releaseOf(real.installed ?? ''),
+                              })}
+                            >
+                              {t('chosenVersion', { chosen: real.chosen })}
+                            </span>
+                          )}
+                          {runtimeInstaller(installation) === 'previous' && (
+                            <span
+                              className="shrink-0 rounded-full bg-amber-500/10 px-1.5 text-[10px] font-medium text-amber-700 dark:text-amber-300"
+                              title={t('previousRuntimeHelp')}
+                            >
+                              {t('previousRuntime')}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </TableCell>
                 <TableCell className={dataTable.cell}>
@@ -255,6 +289,31 @@ export default function ModulesList(props: ModulesListProps) {
                       >
                         {t('openServices')}
                       </Link>
+                    </div>
+                  ) : versionIssues.length > 0 ? (
+                    <div className="grid justify-items-start gap-1">
+                      <StatusPill
+                        tone="warning"
+                        label={t('status.otherVersion')}
+                      />
+                      <ul className="grid gap-0.5 text-xs text-muted-foreground">
+                        {versionIssues.map((version) => (
+                          <li
+                            key={`${version.package}-${version.installed}`}
+                            title={t('versionMismatchHelp', {
+                              module: group.name,
+                              installed: version.installed ?? '',
+                              chosen: version.chosen ?? '',
+                              release: releaseOf(version.installed ?? ''),
+                            })}
+                          >
+                            {t('otherVersionDetail', {
+                              installed: version.installed ?? '',
+                              chosen: version.chosen ?? '',
+                            })}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   ) : (
                     <StatusPill
@@ -397,6 +456,11 @@ function groupInstalledModules(
     ...group,
     installations: group.installations.sort(compareInstallations),
   }));
+}
+
+/** The release line of a version: 10.11.14 is release 10.11. */
+function releaseOf(version: string) {
+  return version.split('.').slice(0, 2).join('.');
 }
 
 function compareInstallations(

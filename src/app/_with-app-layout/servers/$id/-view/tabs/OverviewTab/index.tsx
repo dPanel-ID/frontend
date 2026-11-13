@@ -42,7 +42,11 @@ import { OwnerLink } from '@/entities/user/ui/OwnerLink';
 import { ApiApplication, ApiLoadBalancer } from '@/shared/api';
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
 
-import { servicesNeedingAttention } from '../../../-lib/module-health';
+import {
+  installedVersion,
+  servicesNeedingAttention,
+  versionMismatch,
+} from '../../../-lib/module-health';
 import { useSubscribe } from '../../../-model/events';
 import { useServerDataModel } from '../../../-model/server-data';
 import { useModuleHealth } from '../../../-usecase/module-health';
@@ -299,6 +303,18 @@ export default function OverviewTab() {
                     ? servicesNeedingAttention(moduleHealth, installation.id)
                     : [],
                 );
+                const only =
+                  group.installations.length === 1
+                    ? group.installations[0]
+                    : undefined;
+                const real =
+                  only?.status === 'installed'
+                    ? installedVersion(moduleHealth, only.id)
+                    : undefined;
+                const mismatch =
+                  only?.status === 'installed'
+                    ? versionMismatch(moduleHealth, only.id)
+                    : undefined;
                 return (
                   <span
                     key={group.id}
@@ -309,7 +325,12 @@ export default function OverviewTab() {
                               .map((service) => service.unit)
                               .join(', '),
                           })
-                        : undefined
+                        : mismatch
+                          ? t('versionMismatch', {
+                              installed: mismatch.installed ?? '',
+                              chosen: mismatch.chosen ?? '',
+                            })
+                          : undefined
                     }
                     className={`inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold ${down.length > 0 ? 'border-red-400/50 bg-red-500/5' : 'bg-background/60'}`}
                   >
@@ -326,8 +347,16 @@ export default function OverviewTab() {
                     <span className="text-muted-foreground">
                       {group.installations.length > 1
                         ? `${group.installations.length}x`
-                        : moduleInstanceLabel(group.installations[0])}
+                        : (real?.installed ??
+                          moduleInstanceLabel(group.installations[0]))}
                     </span>
+                    {down.length === 0 && mismatch && (
+                      <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
+                        {t('versionMismatchShort', {
+                          chosen: mismatch.chosen ?? '',
+                        })}
+                      </span>
+                    )}
                     {down.length > 0 && (
                       <span className="text-xs font-medium text-red-600 dark:text-red-300">
                         {t('serviceNotRunningShort')}

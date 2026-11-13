@@ -27,16 +27,32 @@ export interface ModuleServiceDto {
   sub?: string;
 }
 
+/** The release a module really runs, read from its package on the server. */
+export interface ModuleVersionDto {
+  package: string;
+  /** Release installed, such as 12.3.3; empty when the package is gone. */
+  installed?: string;
+  package_version?: string;
+  /** Release chosen at install, such as 12.3. */
+  chosen?: string;
+  /** The server runs another release than the one chosen. */
+  mismatch: boolean;
+  missing?: boolean;
+}
+
 export interface ModuleHealthDto {
   installation_id: string;
   module_name: string;
   needs_attention: boolean;
   services: ModuleServiceDto[];
+  version?: ModuleVersionDto;
 }
 
 export interface Dto {
   /** False when the server's agent could not be asked. */
   checked: boolean;
+  /** False when the agent cannot read package versions (older agent). */
+  versions_checked?: boolean;
   modules: ModuleHealthDto[];
 }
 
