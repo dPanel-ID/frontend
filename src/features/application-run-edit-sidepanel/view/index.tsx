@@ -2,12 +2,14 @@ import Layout from '@/services/sidepanel/ui/presentation/Layout/General';
 
 import { ApplicationRunEditModelProvider as ModelProvider } from '../model';
 import type { ApplicationRunEditSidepanelProps as Props } from '../rules/types';
+import useFormBhvGuardUsecase from '../usecase/form-bhv-guard';
 import useFormSubmissionUsecase from '../usecase/form-submission';
 
 import Actions from './Actions';
 import Forms from './Forms';
 
 const Controller = () => {
+  useFormBhvGuardUsecase();
   useFormSubmissionUsecase();
 
   return null;
