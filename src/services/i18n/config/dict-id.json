@@ -1835,7 +1835,9 @@
         "publicAddressHelp": "Alamat publik yang dipakai jaringan Anda untuk ke internet. Arahkan domain ke sini hanya jika port 80 dan 443 diteruskan ke mesin ini.",
         "lanAddressUnknown": "Belum dilaporkan",
         "serviceNotRunning": "Layanan tidak berjalan: {units}. Buka tab Modul atau Layanan.",
-        "serviceNotRunningShort": "layanan tidak berjalan"
+        "serviceNotRunningShort": "layanan tidak berjalan",
+        "versionMismatch": "Berjalan {installed}, bukan {chosen} yang dipilih. Buka tab Modul.",
+        "versionMismatchShort": "bukan {chosen}"
       },
       "modules": {
         "title": "Modul terpasang",
@@ -1872,7 +1874,8 @@
           "installing": "Memasang",
           "failed": "Gagal",
           "mixed": "Campuran",
-          "serviceDown": "Layanan tidak berjalan"
+          "serviceDown": "Layanan tidak berjalan",
+          "otherVersion": "Versi lain"
         },
         "searchPlaceholder": "Cari modul",
         "noMatch": "Tidak ada modul yang cocok.",
@@ -1895,7 +1898,11 @@
           "missing": "tidak ditemukan",
           "running": "berjalan",
           "starting": "sedang dimulai"
-        }
+        },
+        "versionRuns": "Berjalan {installed}",
+        "chosenVersion": "dipilih {chosen}",
+        "versionMismatchHelp": "Server ini menjalankan {module} {installed}, bukan {chosen} yang dipilih saat pemasangan. Modul ini dipasang sebelum dPanel memakai repositori resmi. Data Anda tidak berubah; pilih {release} saat memasang ulang agar tetap dipakai.",
+        "otherVersionDetail": "Berjalan {installed}, bukan {chosen}"
       },
       "files": {
         "title": "Berkas",
