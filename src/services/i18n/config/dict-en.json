@@ -1286,7 +1286,11 @@
             "buildTitle": "Build-time variables",
             "buildDesc": "One KEY=value pair per line. Used only while building the artifact.",
             "runtimeTitle": "Runtime variables",
-            "runtimeDesc": "One KEY=value pair per line. Used by the running service."
+            "runtimeDesc": "One KEY=value pair per line. Used by the running service.",
+            "hiddenNote": "Values are hidden. Unchanged ones keep their stored value.",
+            "reveal": "Show values",
+            "revealing": "Showing…",
+            "revealFailed": "Could not show the values"
           }
         },
         "step6": {

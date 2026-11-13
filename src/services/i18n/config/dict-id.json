@@ -1286,7 +1286,11 @@
             "buildTitle": "Variabel build-time",
             "buildDesc": "Satu pasangan KEY=value per baris. Hanya digunakan saat build artifact.",
             "runtimeTitle": "Variabel runtime",
-            "runtimeDesc": "Satu pasangan KEY=value per baris. Digunakan oleh service yang berjalan."
+            "runtimeDesc": "Satu pasangan KEY=value per baris. Digunakan oleh service yang berjalan.",
+            "hiddenNote": "Nilai disembunyikan. Nilai yang tidak diubah tetap memakai nilai tersimpan.",
+            "reveal": "Tampilkan nilai",
+            "revealing": "Menampilkan…",
+            "revealFailed": "Nilai tidak dapat ditampilkan"
           }
         },
         "step6": {
