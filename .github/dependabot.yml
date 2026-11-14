@@ -6,6 +6,13 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # Types must match the Node 24 runtime used in CI and engines.
+      - dependency-name: "@types/node"
+        versions: [">=25.0.0"]
+      # lucide-react 1.x removes brand icons (GithubIcon) that the app uses.
+      - dependency-name: lucide-react
+        versions: [">=1.0.0"]
     groups:
       npm-minor-and-patch:
         update-types:
