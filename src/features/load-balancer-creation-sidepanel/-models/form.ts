@@ -1,7 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { DefaultValues } from 'react-hook-form';
 
 import { buildRHF } from '@/shared/libs/react-factories/buildRHF';
 
+import type { CreationFormValues } from '../-rules/schemas/form';
 import { schemaCreationForm } from '../-rules/schemas/form';
 
 export const [FormProvider, useLbCreationForm] = buildRHF({
@@ -27,5 +29,8 @@ export const [FormProvider, useLbCreationForm] = buildRHF({
         applicationIdIfProxyPassApp: '',
       },
     ],
-  },
+    // The kind control renders the value as is, so the compiler keeps a
+    // valid kind here and the field is never blank, even after reset().
+  } satisfies DefaultValues<CreationFormValues> &
+    Pick<CreationFormValues, 'lbKind'>,
 });

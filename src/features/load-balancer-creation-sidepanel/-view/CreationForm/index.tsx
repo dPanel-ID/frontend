@@ -251,7 +251,7 @@ function SectionLbType() {
 
       <div className="flex flex-col gap-1 px-4 pb-4">
         <SegmentedControl
-          activeItemId={lbKind.field.value || 'l7'}
+          activeItemId={lbKind.field.value}
           onClickOption={lbKind.field.onChange}
           segmentSizing="uniform"
           options={[
