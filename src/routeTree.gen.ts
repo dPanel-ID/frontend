@@ -9,44 +9,49 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './app/__root'
+import { Route as IndexRouteImport } from './app/index'
 import { Route as SplatRouteImport } from './app/$'
 import { Route as WithAppLayoutRouteRouteImport } from './app/_with-app-layout/route'
-import { Route as IndexRouteImport } from './app/index'
 import { Route as DocsIndexRouteImport } from './app/docs/index'
-import { Route as DocsIntroIndexRouteImport } from './app/docs/intro/index'
-import { Route as DocsSectionIndexRouteImport } from './app/docs/$section/index'
-import { Route as AuthCallbackIndexRouteImport } from './app/auth/callback/index'
-import { Route as WithAppLayoutTeamsIndexRouteImport } from './app/_with-app-layout/teams/index'
-import { Route as WithAppLayoutServersIndexRouteImport } from './app/_with-app-layout/servers/index'
-import { Route as WithAppLayoutProfileIndexRouteImport } from './app/_with-app-layout/profile/index'
-import { Route as WithAppLayoutDashboardIndexRouteImport } from './app/_with-app-layout/dashboard/index'
 import { Route as WithAppLayoutApplicationsIndexRouteImport } from './app/_with-app-layout/applications/index'
-import { Route as DocsSectionPageIndexRouteImport } from './app/docs/$section/$page/index'
-import { Route as WithAppLayoutUUsernameIndexRouteImport } from './app/_with-app-layout/u/$username/index'
-import { Route as WithAppLayoutTeamsIdIndexRouteImport } from './app/_with-app-layout/teams/$id/index'
-import { Route as WithAppLayoutServersGroupsIndexRouteImport } from './app/_with-app-layout/servers/groups/index'
-import { Route as WithAppLayoutServersCreateIndexRouteImport } from './app/_with-app-layout/servers/create/index'
-import { Route as WithAppLayoutServersIdIndexRouteImport } from './app/_with-app-layout/servers/$id/index'
-import { Route as WithAppLayoutBackendLoadBalancersIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/index'
-import { Route as WithAppLayoutBackendDomainIndexRouteImport } from './app/_with-app-layout/backend/domain/index'
-import { Route as WithAppLayoutBackendCloudProjectsIndexRouteImport } from './app/_with-app-layout/backend/cloud-projects/index'
-import { Route as WithAppLayoutApplicationsCreateIndexRouteImport } from './app/_with-app-layout/applications/create/index'
-import { Route as WithAppLayoutApplicationsIdIndexRouteImport } from './app/_with-app-layout/applications/$id/index'
-import { Route as WithAppLayoutAdministratorTasksIndexRouteImport } from './app/_with-app-layout/administrator/tasks/index'
+import { Route as WithAppLayoutDashboardIndexRouteImport } from './app/_with-app-layout/dashboard/index'
+import { Route as WithAppLayoutProfileIndexRouteImport } from './app/_with-app-layout/profile/index'
+import { Route as WithAppLayoutServersIndexRouteImport } from './app/_with-app-layout/servers/index'
+import { Route as WithAppLayoutTeamsIndexRouteImport } from './app/_with-app-layout/teams/index'
+import { Route as AuthCallbackIndexRouteImport } from './app/auth/callback/index'
+import { Route as DocsSectionIndexRouteImport } from './app/docs/$section/index'
+import { Route as DocsIntroIndexRouteImport } from './app/docs/intro/index'
 import { Route as WithAppLayoutAdministratorResourcesIndexRouteImport } from './app/_with-app-layout/administrator/resources/index'
-import { Route as WithAppLayoutServersGroupsIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$id/index'
-import { Route as WithAppLayoutServersCreateVmInstantIndexRouteImport } from './app/_with-app-layout/servers/create/vm-instant/index'
-import { Route as WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/index'
-import { Route as WithAppLayoutBackendLoadBalancersCreateIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/create/index'
-import { Route as WithAppLayoutBackendLoadBalancersIdIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/$id/index'
-import { Route as WithAppLayoutBackendDomainCreateIndexRouteImport } from './app/_with-app-layout/backend/domain/create/index'
-import { Route as WithAppLayoutBackendDomainDomainIdIndexRouteImport } from './app/_with-app-layout/backend/domain/$domainId/index'
+import { Route as WithAppLayoutAdministratorTasksIndexRouteImport } from './app/_with-app-layout/administrator/tasks/index'
+import { Route as WithAppLayoutApplicationsIdIndexRouteImport } from './app/_with-app-layout/applications/$id/index'
+import { Route as WithAppLayoutApplicationsCreateIndexRouteImport } from './app/_with-app-layout/applications/create/index'
+import { Route as WithAppLayoutBackendCloudProjectsIndexRouteImport } from './app/_with-app-layout/backend/cloud-projects/index'
+import { Route as WithAppLayoutBackendDomainIndexRouteImport } from './app/_with-app-layout/backend/domain/index'
+import { Route as WithAppLayoutBackendLoadBalancersIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/index'
+import { Route as WithAppLayoutServersIdIndexRouteImport } from './app/_with-app-layout/servers/$id/index'
+import { Route as WithAppLayoutServersCreateIndexRouteImport } from './app/_with-app-layout/servers/create/index'
+import { Route as WithAppLayoutServersGroupsIndexRouteImport } from './app/_with-app-layout/servers/groups/index'
+import { Route as WithAppLayoutTeamsIdIndexRouteImport } from './app/_with-app-layout/teams/$id/index'
+import { Route as WithAppLayoutUUsernameIndexRouteImport } from './app/_with-app-layout/u/$username/index'
+import { Route as DocsSectionPageIndexRouteImport } from './app/docs/$section/$page/index'
 import { Route as WithAppLayoutApplicationsIdUpdateIndexRouteImport } from './app/_with-app-layout/applications/$id/update/index'
+import { Route as WithAppLayoutBackendDomainDomainIdIndexRouteImport } from './app/_with-app-layout/backend/domain/$domainId/index'
+import { Route as WithAppLayoutBackendDomainCreateIndexRouteImport } from './app/_with-app-layout/backend/domain/create/index'
+import { Route as WithAppLayoutBackendLoadBalancersIdIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/$id/index'
+import { Route as WithAppLayoutBackendLoadBalancersCreateIndexRouteImport } from './app/_with-app-layout/backend/load-balancers/create/index'
+import { Route as WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/index'
+import { Route as WithAppLayoutServersCreateVmInstantIndexRouteImport } from './app/_with-app-layout/servers/create/vm-instant/index'
+import { Route as WithAppLayoutServersGroupsIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$id/index'
 import { Route as WithAppLayoutBackendSecretManagersSshKeyIdIndexRouteImport } from './app/_with-app-layout/backend/secret-managers/ssh-key/$id/index'
 import { Route as WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/index'
-import { Route as WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/index'
 import { Route as WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/index'
+import { Route as WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRouteImport } from './app/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/index'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SplatRoute = SplatRouteImport.update({
   id: '/$',
   path: '/$',
@@ -56,46 +61,15 @@ const WithAppLayoutRouteRoute = WithAppLayoutRouteRouteImport.update({
   id: '/_with-app-layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DocsIndexRoute = DocsIndexRouteImport.update({
   id: '/docs/',
   path: '/docs/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DocsIntroIndexRoute = DocsIntroIndexRouteImport.update({
-  id: '/docs/intro/',
-  path: '/docs/intro/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DocsSectionIndexRoute = DocsSectionIndexRouteImport.update({
-  id: '/docs/$section/',
-  path: '/docs/$section/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthCallbackIndexRoute = AuthCallbackIndexRouteImport.update({
-  id: '/auth/callback/',
-  path: '/auth/callback/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WithAppLayoutTeamsIndexRoute = WithAppLayoutTeamsIndexRouteImport.update({
-  id: '/teams/',
-  path: '/teams/',
-  getParentRoute: () => WithAppLayoutRouteRoute,
-} as any)
-const WithAppLayoutServersIndexRoute =
-  WithAppLayoutServersIndexRouteImport.update({
-    id: '/servers/',
-    path: '/servers/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutProfileIndexRoute =
-  WithAppLayoutProfileIndexRouteImport.update({
-    id: '/profile/',
-    path: '/profile/',
+const WithAppLayoutApplicationsIndexRoute =
+  WithAppLayoutApplicationsIndexRouteImport.update({
+    id: '/applications/',
+    path: '/applications/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
 const WithAppLayoutDashboardIndexRoute =
@@ -104,75 +78,42 @@ const WithAppLayoutDashboardIndexRoute =
     path: '/dashboard/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutApplicationsIndexRoute =
-  WithAppLayoutApplicationsIndexRouteImport.update({
-    id: '/applications/',
-    path: '/applications/',
+const WithAppLayoutProfileIndexRoute =
+  WithAppLayoutProfileIndexRouteImport.update({
+    id: '/profile/',
+    path: '/profile/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const DocsSectionPageIndexRoute = DocsSectionPageIndexRouteImport.update({
-  id: '/docs/$section/$page/',
-  path: '/docs/$section/$page/',
+const WithAppLayoutServersIndexRoute =
+  WithAppLayoutServersIndexRouteImport.update({
+    id: '/servers/',
+    path: '/servers/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
+const WithAppLayoutTeamsIndexRoute = WithAppLayoutTeamsIndexRouteImport.update({
+  id: '/teams/',
+  path: '/teams/',
+  getParentRoute: () => WithAppLayoutRouteRoute,
+} as any)
+const AuthCallbackIndexRoute = AuthCallbackIndexRouteImport.update({
+  id: '/auth/callback/',
+  path: '/auth/callback/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WithAppLayoutUUsernameIndexRoute =
-  WithAppLayoutUUsernameIndexRouteImport.update({
-    id: '/u/$username/',
-    path: '/u/$username/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutTeamsIdIndexRoute =
-  WithAppLayoutTeamsIdIndexRouteImport.update({
-    id: '/teams/$id/',
-    path: '/teams/$id/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutServersGroupsIndexRoute =
-  WithAppLayoutServersGroupsIndexRouteImport.update({
-    id: '/servers/groups/',
-    path: '/servers/groups/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutServersCreateIndexRoute =
-  WithAppLayoutServersCreateIndexRouteImport.update({
-    id: '/servers/create/',
-    path: '/servers/create/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutServersIdIndexRoute =
-  WithAppLayoutServersIdIndexRouteImport.update({
-    id: '/servers/$id/',
-    path: '/servers/$id/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutBackendLoadBalancersIndexRoute =
-  WithAppLayoutBackendLoadBalancersIndexRouteImport.update({
-    id: '/backend/load-balancers/',
-    path: '/backend/load-balancers/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutBackendDomainIndexRoute =
-  WithAppLayoutBackendDomainIndexRouteImport.update({
-    id: '/backend/domain/',
-    path: '/backend/domain/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutBackendCloudProjectsIndexRoute =
-  WithAppLayoutBackendCloudProjectsIndexRouteImport.update({
-    id: '/backend/cloud-projects/',
-    path: '/backend/cloud-projects/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutApplicationsCreateIndexRoute =
-  WithAppLayoutApplicationsCreateIndexRouteImport.update({
-    id: '/applications/create/',
-    path: '/applications/create/',
-    getParentRoute: () => WithAppLayoutRouteRoute,
-  } as any)
-const WithAppLayoutApplicationsIdIndexRoute =
-  WithAppLayoutApplicationsIdIndexRouteImport.update({
-    id: '/applications/$id/',
-    path: '/applications/$id/',
+const DocsSectionIndexRoute = DocsSectionIndexRouteImport.update({
+  id: '/docs/$section/',
+  path: '/docs/$section/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsIntroIndexRoute = DocsIntroIndexRouteImport.update({
+  id: '/docs/intro/',
+  path: '/docs/intro/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WithAppLayoutAdministratorResourcesIndexRoute =
+  WithAppLayoutAdministratorResourcesIndexRouteImport.update({
+    id: '/administrator/resources/',
+    path: '/administrator/resources/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
 const WithAppLayoutAdministratorTasksIndexRoute =
@@ -181,46 +122,75 @@ const WithAppLayoutAdministratorTasksIndexRoute =
     path: '/administrator/tasks/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutAdministratorResourcesIndexRoute =
-  WithAppLayoutAdministratorResourcesIndexRouteImport.update({
-    id: '/administrator/resources/',
-    path: '/administrator/resources/',
+const WithAppLayoutApplicationsIdIndexRoute =
+  WithAppLayoutApplicationsIdIndexRouteImport.update({
+    id: '/applications/$id/',
+    path: '/applications/$id/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutServersGroupsIdIndexRoute =
-  WithAppLayoutServersGroupsIdIndexRouteImport.update({
-    id: '/servers/groups/$id/',
-    path: '/servers/groups/$id/',
+const WithAppLayoutApplicationsCreateIndexRoute =
+  WithAppLayoutApplicationsCreateIndexRouteImport.update({
+    id: '/applications/create/',
+    path: '/applications/create/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutServersCreateVmInstantIndexRoute =
-  WithAppLayoutServersCreateVmInstantIndexRouteImport.update({
-    id: '/servers/create/vm-instant/',
-    path: '/servers/create/vm-instant/',
+const WithAppLayoutBackendCloudProjectsIndexRoute =
+  WithAppLayoutBackendCloudProjectsIndexRouteImport.update({
+    id: '/backend/cloud-projects/',
+    path: '/backend/cloud-projects/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutBackendSecretManagersSshKeyIndexRoute =
-  WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport.update({
-    id: '/backend/secret-managers/ssh-key/',
-    path: '/backend/secret-managers/ssh-key/',
+const WithAppLayoutBackendDomainIndexRoute =
+  WithAppLayoutBackendDomainIndexRouteImport.update({
+    id: '/backend/domain/',
+    path: '/backend/domain/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutBackendLoadBalancersCreateIndexRoute =
-  WithAppLayoutBackendLoadBalancersCreateIndexRouteImport.update({
-    id: '/backend/load-balancers/create/',
-    path: '/backend/load-balancers/create/',
+const WithAppLayoutBackendLoadBalancersIndexRoute =
+  WithAppLayoutBackendLoadBalancersIndexRouteImport.update({
+    id: '/backend/load-balancers/',
+    path: '/backend/load-balancers/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutBackendLoadBalancersIdIndexRoute =
-  WithAppLayoutBackendLoadBalancersIdIndexRouteImport.update({
-    id: '/backend/load-balancers/$id/',
-    path: '/backend/load-balancers/$id/',
+const WithAppLayoutServersIdIndexRoute =
+  WithAppLayoutServersIdIndexRouteImport.update({
+    id: '/servers/$id/',
+    path: '/servers/$id/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutBackendDomainCreateIndexRoute =
-  WithAppLayoutBackendDomainCreateIndexRouteImport.update({
-    id: '/backend/domain/create/',
-    path: '/backend/domain/create/',
+const WithAppLayoutServersCreateIndexRoute =
+  WithAppLayoutServersCreateIndexRouteImport.update({
+    id: '/servers/create/',
+    path: '/servers/create/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
+const WithAppLayoutServersGroupsIndexRoute =
+  WithAppLayoutServersGroupsIndexRouteImport.update({
+    id: '/servers/groups/',
+    path: '/servers/groups/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
+const WithAppLayoutTeamsIdIndexRoute =
+  WithAppLayoutTeamsIdIndexRouteImport.update({
+    id: '/teams/$id/',
+    path: '/teams/$id/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
+const WithAppLayoutUUsernameIndexRoute =
+  WithAppLayoutUUsernameIndexRouteImport.update({
+    id: '/u/$username/',
+    path: '/u/$username/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
+const DocsSectionPageIndexRoute = DocsSectionPageIndexRouteImport.update({
+  id: '/docs/$section/$page/',
+  path: '/docs/$section/$page/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WithAppLayoutApplicationsIdUpdateIndexRoute =
+  WithAppLayoutApplicationsIdUpdateIndexRouteImport.update({
+    id: '/applications/$id/update/',
+    path: '/applications/$id/update/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
 const WithAppLayoutBackendDomainDomainIdIndexRoute =
@@ -229,10 +199,40 @@ const WithAppLayoutBackendDomainDomainIdIndexRoute =
     path: '/backend/domain/$domainId/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
-const WithAppLayoutApplicationsIdUpdateIndexRoute =
-  WithAppLayoutApplicationsIdUpdateIndexRouteImport.update({
-    id: '/applications/$id/update/',
-    path: '/applications/$id/update/',
+const WithAppLayoutBackendDomainCreateIndexRoute =
+  WithAppLayoutBackendDomainCreateIndexRouteImport.update({
+    id: '/backend/domain/create/',
+    path: '/backend/domain/create/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
+const WithAppLayoutBackendLoadBalancersIdIndexRoute =
+  WithAppLayoutBackendLoadBalancersIdIndexRouteImport.update({
+    id: '/backend/load-balancers/$id/',
+    path: '/backend/load-balancers/$id/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
+const WithAppLayoutBackendLoadBalancersCreateIndexRoute =
+  WithAppLayoutBackendLoadBalancersCreateIndexRouteImport.update({
+    id: '/backend/load-balancers/create/',
+    path: '/backend/load-balancers/create/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
+const WithAppLayoutBackendSecretManagersSshKeyIndexRoute =
+  WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport.update({
+    id: '/backend/secret-managers/ssh-key/',
+    path: '/backend/secret-managers/ssh-key/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
+const WithAppLayoutServersCreateVmInstantIndexRoute =
+  WithAppLayoutServersCreateVmInstantIndexRouteImport.update({
+    id: '/servers/create/vm-instant/',
+    path: '/servers/create/vm-instant/',
+    getParentRoute: () => WithAppLayoutRouteRoute,
+  } as any)
+const WithAppLayoutServersGroupsIdIndexRoute =
+  WithAppLayoutServersGroupsIdIndexRouteImport.update({
+    id: '/servers/groups/$id/',
+    path: '/servers/groups/$id/',
     getParentRoute: () => WithAppLayoutRouteRoute,
   } as any)
 const WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute =
@@ -249,14 +249,6 @@ const WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute =
       getParentRoute: () => WithAppLayoutRouteRoute,
     } as any,
   )
-const WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute =
-  WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRouteImport.update(
-    {
-      id: '/servers/groups/$groupId/operations/executions/$operationId/$machineId/',
-      path: '/servers/groups/$groupId/operations/executions/$operationId/$machineId/',
-      getParentRoute: () => WithAppLayoutRouteRoute,
-    } as any,
-  )
 const WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRoute =
   WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRouteImport.update(
     {
@@ -265,44 +257,52 @@ const WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachine
       getParentRoute: () => WithAppLayoutRouteRoute,
     } as any,
   )
+const WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute =
+  WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRouteImport.update(
+    {
+      id: '/servers/groups/$groupId/operations/executions/$operationId/$machineId/',
+      path: '/servers/groups/$groupId/operations/executions/$operationId/$machineId/',
+      getParentRoute: () => WithAppLayoutRouteRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
-  '/docs': typeof DocsIndexRoute
-  '/applications': typeof WithAppLayoutApplicationsIndexRoute
-  '/dashboard': typeof WithAppLayoutDashboardIndexRoute
-  '/profile': typeof WithAppLayoutProfileIndexRoute
-  '/servers': typeof WithAppLayoutServersIndexRoute
-  '/teams': typeof WithAppLayoutTeamsIndexRoute
-  '/auth/callback': typeof AuthCallbackIndexRoute
-  '/docs/$section': typeof DocsSectionIndexRoute
-  '/docs/intro': typeof DocsIntroIndexRoute
-  '/administrator/resources': typeof WithAppLayoutAdministratorResourcesIndexRoute
-  '/administrator/tasks': typeof WithAppLayoutAdministratorTasksIndexRoute
-  '/applications/$id': typeof WithAppLayoutApplicationsIdIndexRoute
-  '/applications/create': typeof WithAppLayoutApplicationsCreateIndexRoute
-  '/backend/cloud-projects': typeof WithAppLayoutBackendCloudProjectsIndexRoute
-  '/backend/domain': typeof WithAppLayoutBackendDomainIndexRoute
-  '/backend/load-balancers': typeof WithAppLayoutBackendLoadBalancersIndexRoute
-  '/servers/$id': typeof WithAppLayoutServersIdIndexRoute
-  '/servers/create': typeof WithAppLayoutServersCreateIndexRoute
-  '/servers/groups': typeof WithAppLayoutServersGroupsIndexRoute
-  '/teams/$id': typeof WithAppLayoutTeamsIdIndexRoute
-  '/u/$username': typeof WithAppLayoutUUsernameIndexRoute
-  '/docs/$section/$page': typeof DocsSectionPageIndexRoute
-  '/applications/$id/update': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
-  '/backend/domain/$domainId': typeof WithAppLayoutBackendDomainDomainIdIndexRoute
-  '/backend/domain/create': typeof WithAppLayoutBackendDomainCreateIndexRoute
-  '/backend/load-balancers/$id': typeof WithAppLayoutBackendLoadBalancersIdIndexRoute
-  '/backend/load-balancers/create': typeof WithAppLayoutBackendLoadBalancersCreateIndexRoute
-  '/backend/secret-managers/ssh-key': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
-  '/servers/create/vm-instant': typeof WithAppLayoutServersCreateVmInstantIndexRoute
-  '/servers/groups/$id': typeof WithAppLayoutServersGroupsIdIndexRoute
-  '/backend/secret-managers/ssh-key/$id': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
-  '/servers/groups/$groupId/operations/deployments/$id': typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute
-  '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId': typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRoute
-  '/servers/groups/$groupId/operations/executions/$operationId/$machineId': typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute
+  '/docs/': typeof DocsIndexRoute
+  '/applications/': typeof WithAppLayoutApplicationsIndexRoute
+  '/dashboard/': typeof WithAppLayoutDashboardIndexRoute
+  '/profile/': typeof WithAppLayoutProfileIndexRoute
+  '/servers/': typeof WithAppLayoutServersIndexRoute
+  '/teams/': typeof WithAppLayoutTeamsIndexRoute
+  '/auth/callback/': typeof AuthCallbackIndexRoute
+  '/docs/$section/': typeof DocsSectionIndexRoute
+  '/docs/intro/': typeof DocsIntroIndexRoute
+  '/administrator/resources/': typeof WithAppLayoutAdministratorResourcesIndexRoute
+  '/administrator/tasks/': typeof WithAppLayoutAdministratorTasksIndexRoute
+  '/applications/$id/': typeof WithAppLayoutApplicationsIdIndexRoute
+  '/applications/create/': typeof WithAppLayoutApplicationsCreateIndexRoute
+  '/backend/cloud-projects/': typeof WithAppLayoutBackendCloudProjectsIndexRoute
+  '/backend/domain/': typeof WithAppLayoutBackendDomainIndexRoute
+  '/backend/load-balancers/': typeof WithAppLayoutBackendLoadBalancersIndexRoute
+  '/servers/$id/': typeof WithAppLayoutServersIdIndexRoute
+  '/servers/create/': typeof WithAppLayoutServersCreateIndexRoute
+  '/servers/groups/': typeof WithAppLayoutServersGroupsIndexRoute
+  '/teams/$id/': typeof WithAppLayoutTeamsIdIndexRoute
+  '/u/$username/': typeof WithAppLayoutUUsernameIndexRoute
+  '/docs/$section/$page/': typeof DocsSectionPageIndexRoute
+  '/applications/$id/update/': typeof WithAppLayoutApplicationsIdUpdateIndexRoute
+  '/backend/domain/$domainId/': typeof WithAppLayoutBackendDomainDomainIdIndexRoute
+  '/backend/domain/create/': typeof WithAppLayoutBackendDomainCreateIndexRoute
+  '/backend/load-balancers/$id/': typeof WithAppLayoutBackendLoadBalancersIdIndexRoute
+  '/backend/load-balancers/create/': typeof WithAppLayoutBackendLoadBalancersCreateIndexRoute
+  '/backend/secret-managers/ssh-key/': typeof WithAppLayoutBackendSecretManagersSshKeyIndexRoute
+  '/servers/create/vm-instant/': typeof WithAppLayoutServersCreateVmInstantIndexRoute
+  '/servers/groups/$id/': typeof WithAppLayoutServersGroupsIdIndexRoute
+  '/backend/secret-managers/ssh-key/$id/': typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRoute
+  '/servers/groups/$groupId/operations/deployments/$id/': typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRoute
+  '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/': typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRoute
+  '/servers/groups/$groupId/operations/executions/$operationId/$machineId/': typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -387,40 +387,40 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$'
-    | '/docs'
-    | '/applications'
-    | '/dashboard'
-    | '/profile'
-    | '/servers'
-    | '/teams'
-    | '/auth/callback'
-    | '/docs/$section'
-    | '/docs/intro'
-    | '/administrator/resources'
-    | '/administrator/tasks'
-    | '/applications/$id'
-    | '/applications/create'
-    | '/backend/cloud-projects'
-    | '/backend/domain'
-    | '/backend/load-balancers'
-    | '/servers/$id'
-    | '/servers/create'
-    | '/servers/groups'
-    | '/teams/$id'
-    | '/u/$username'
-    | '/docs/$section/$page'
-    | '/applications/$id/update'
-    | '/backend/domain/$domainId'
-    | '/backend/domain/create'
-    | '/backend/load-balancers/$id'
-    | '/backend/load-balancers/create'
-    | '/backend/secret-managers/ssh-key'
-    | '/servers/create/vm-instant'
-    | '/servers/groups/$id'
-    | '/backend/secret-managers/ssh-key/$id'
-    | '/servers/groups/$groupId/operations/deployments/$id'
-    | '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId'
-    | '/servers/groups/$groupId/operations/executions/$operationId/$machineId'
+    | '/docs/'
+    | '/applications/'
+    | '/dashboard/'
+    | '/profile/'
+    | '/servers/'
+    | '/teams/'
+    | '/auth/callback/'
+    | '/docs/$section/'
+    | '/docs/intro/'
+    | '/administrator/resources/'
+    | '/administrator/tasks/'
+    | '/applications/$id/'
+    | '/applications/create/'
+    | '/backend/cloud-projects/'
+    | '/backend/domain/'
+    | '/backend/load-balancers/'
+    | '/servers/$id/'
+    | '/servers/create/'
+    | '/servers/groups/'
+    | '/teams/$id/'
+    | '/u/$username/'
+    | '/docs/$section/$page/'
+    | '/applications/$id/update/'
+    | '/backend/domain/$domainId/'
+    | '/backend/domain/create/'
+    | '/backend/load-balancers/$id/'
+    | '/backend/load-balancers/create/'
+    | '/backend/secret-managers/ssh-key/'
+    | '/servers/create/vm-instant/'
+    | '/servers/groups/$id/'
+    | '/backend/secret-managers/ssh-key/$id/'
+    | '/servers/groups/$groupId/operations/deployments/$id/'
+    | '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/'
+    | '/servers/groups/$groupId/operations/executions/$operationId/$machineId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -513,6 +513,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$': {
       id: '/$'
       path: '/$'
@@ -523,253 +530,246 @@ declare module '@tanstack/react-router' {
     '/_with-app-layout': {
       id: '/_with-app-layout'
       path: ''
-      fullPath: ''
-      preLoaderRoute: typeof WithAppLayoutRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof WithAppLayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/docs/': {
       id: '/docs/'
       path: '/docs'
-      fullPath: '/docs'
+      fullPath: '/docs/'
       preLoaderRoute: typeof DocsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/docs/intro/': {
-      id: '/docs/intro/'
-      path: '/docs/intro'
-      fullPath: '/docs/intro'
-      preLoaderRoute: typeof DocsIntroIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/docs/$section/': {
-      id: '/docs/$section/'
-      path: '/docs/$section'
-      fullPath: '/docs/$section'
-      preLoaderRoute: typeof DocsSectionIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/callback/': {
-      id: '/auth/callback/'
-      path: '/auth/callback'
-      fullPath: '/auth/callback'
-      preLoaderRoute: typeof AuthCallbackIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_with-app-layout/teams/': {
-      id: '/_with-app-layout/teams/'
-      path: '/teams'
-      fullPath: '/teams'
-      preLoaderRoute: typeof WithAppLayoutTeamsIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/servers/': {
-      id: '/_with-app-layout/servers/'
-      path: '/servers'
-      fullPath: '/servers'
-      preLoaderRoute: typeof WithAppLayoutServersIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/profile/': {
-      id: '/_with-app-layout/profile/'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof WithAppLayoutProfileIndexRouteImport
+    '/_with-app-layout/applications/': {
+      id: '/_with-app-layout/applications/'
+      path: '/applications'
+      fullPath: '/applications/'
+      preLoaderRoute: typeof WithAppLayoutApplicationsIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
     '/_with-app-layout/dashboard/': {
       id: '/_with-app-layout/dashboard/'
       path: '/dashboard'
-      fullPath: '/dashboard'
+      fullPath: '/dashboard/'
       preLoaderRoute: typeof WithAppLayoutDashboardIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/applications/': {
-      id: '/_with-app-layout/applications/'
-      path: '/applications'
-      fullPath: '/applications'
-      preLoaderRoute: typeof WithAppLayoutApplicationsIndexRouteImport
+    '/_with-app-layout/profile/': {
+      id: '/_with-app-layout/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof WithAppLayoutProfileIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/docs/$section/$page/': {
-      id: '/docs/$section/$page/'
-      path: '/docs/$section/$page'
-      fullPath: '/docs/$section/$page'
-      preLoaderRoute: typeof DocsSectionPageIndexRouteImport
+    '/_with-app-layout/servers/': {
+      id: '/_with-app-layout/servers/'
+      path: '/servers'
+      fullPath: '/servers/'
+      preLoaderRoute: typeof WithAppLayoutServersIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/teams/': {
+      id: '/_with-app-layout/teams/'
+      path: '/teams'
+      fullPath: '/teams/'
+      preLoaderRoute: typeof WithAppLayoutTeamsIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/auth/callback/': {
+      id: '/auth/callback/'
+      path: '/auth/callback'
+      fullPath: '/auth/callback/'
+      preLoaderRoute: typeof AuthCallbackIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_with-app-layout/u/$username/': {
-      id: '/_with-app-layout/u/$username/'
-      path: '/u/$username'
-      fullPath: '/u/$username'
-      preLoaderRoute: typeof WithAppLayoutUUsernameIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
+    '/docs/$section/': {
+      id: '/docs/$section/'
+      path: '/docs/$section'
+      fullPath: '/docs/$section/'
+      preLoaderRoute: typeof DocsSectionIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_with-app-layout/teams/$id/': {
-      id: '/_with-app-layout/teams/$id/'
-      path: '/teams/$id'
-      fullPath: '/teams/$id'
-      preLoaderRoute: typeof WithAppLayoutTeamsIdIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
+    '/docs/intro/': {
+      id: '/docs/intro/'
+      path: '/docs/intro'
+      fullPath: '/docs/intro/'
+      preLoaderRoute: typeof DocsIntroIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_with-app-layout/servers/groups/': {
-      id: '/_with-app-layout/servers/groups/'
-      path: '/servers/groups'
-      fullPath: '/servers/groups'
-      preLoaderRoute: typeof WithAppLayoutServersGroupsIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/servers/create/': {
-      id: '/_with-app-layout/servers/create/'
-      path: '/servers/create'
-      fullPath: '/servers/create'
-      preLoaderRoute: typeof WithAppLayoutServersCreateIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/servers/$id/': {
-      id: '/_with-app-layout/servers/$id/'
-      path: '/servers/$id'
-      fullPath: '/servers/$id'
-      preLoaderRoute: typeof WithAppLayoutServersIdIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/backend/load-balancers/': {
-      id: '/_with-app-layout/backend/load-balancers/'
-      path: '/backend/load-balancers'
-      fullPath: '/backend/load-balancers'
-      preLoaderRoute: typeof WithAppLayoutBackendLoadBalancersIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/backend/domain/': {
-      id: '/_with-app-layout/backend/domain/'
-      path: '/backend/domain'
-      fullPath: '/backend/domain'
-      preLoaderRoute: typeof WithAppLayoutBackendDomainIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/backend/cloud-projects/': {
-      id: '/_with-app-layout/backend/cloud-projects/'
-      path: '/backend/cloud-projects'
-      fullPath: '/backend/cloud-projects'
-      preLoaderRoute: typeof WithAppLayoutBackendCloudProjectsIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/applications/create/': {
-      id: '/_with-app-layout/applications/create/'
-      path: '/applications/create'
-      fullPath: '/applications/create'
-      preLoaderRoute: typeof WithAppLayoutApplicationsCreateIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/applications/$id/': {
-      id: '/_with-app-layout/applications/$id/'
-      path: '/applications/$id'
-      fullPath: '/applications/$id'
-      preLoaderRoute: typeof WithAppLayoutApplicationsIdIndexRouteImport
+    '/_with-app-layout/administrator/resources/': {
+      id: '/_with-app-layout/administrator/resources/'
+      path: '/administrator/resources'
+      fullPath: '/administrator/resources/'
+      preLoaderRoute: typeof WithAppLayoutAdministratorResourcesIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
     '/_with-app-layout/administrator/tasks/': {
       id: '/_with-app-layout/administrator/tasks/'
       path: '/administrator/tasks'
-      fullPath: '/administrator/tasks'
+      fullPath: '/administrator/tasks/'
       preLoaderRoute: typeof WithAppLayoutAdministratorTasksIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/administrator/resources/': {
-      id: '/_with-app-layout/administrator/resources/'
-      path: '/administrator/resources'
-      fullPath: '/administrator/resources'
-      preLoaderRoute: typeof WithAppLayoutAdministratorResourcesIndexRouteImport
+    '/_with-app-layout/applications/$id/': {
+      id: '/_with-app-layout/applications/$id/'
+      path: '/applications/$id'
+      fullPath: '/applications/$id/'
+      preLoaderRoute: typeof WithAppLayoutApplicationsIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/servers/groups/$id/': {
-      id: '/_with-app-layout/servers/groups/$id/'
-      path: '/servers/groups/$id'
-      fullPath: '/servers/groups/$id'
-      preLoaderRoute: typeof WithAppLayoutServersGroupsIdIndexRouteImport
+    '/_with-app-layout/applications/create/': {
+      id: '/_with-app-layout/applications/create/'
+      path: '/applications/create'
+      fullPath: '/applications/create/'
+      preLoaderRoute: typeof WithAppLayoutApplicationsCreateIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/servers/create/vm-instant/': {
-      id: '/_with-app-layout/servers/create/vm-instant/'
-      path: '/servers/create/vm-instant'
-      fullPath: '/servers/create/vm-instant'
-      preLoaderRoute: typeof WithAppLayoutServersCreateVmInstantIndexRouteImport
+    '/_with-app-layout/backend/cloud-projects/': {
+      id: '/_with-app-layout/backend/cloud-projects/'
+      path: '/backend/cloud-projects'
+      fullPath: '/backend/cloud-projects/'
+      preLoaderRoute: typeof WithAppLayoutBackendCloudProjectsIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/backend/secret-managers/ssh-key/': {
-      id: '/_with-app-layout/backend/secret-managers/ssh-key/'
-      path: '/backend/secret-managers/ssh-key'
-      fullPath: '/backend/secret-managers/ssh-key'
-      preLoaderRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport
+    '/_with-app-layout/backend/domain/': {
+      id: '/_with-app-layout/backend/domain/'
+      path: '/backend/domain'
+      fullPath: '/backend/domain/'
+      preLoaderRoute: typeof WithAppLayoutBackendDomainIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/backend/load-balancers/create/': {
-      id: '/_with-app-layout/backend/load-balancers/create/'
-      path: '/backend/load-balancers/create'
-      fullPath: '/backend/load-balancers/create'
-      preLoaderRoute: typeof WithAppLayoutBackendLoadBalancersCreateIndexRouteImport
+    '/_with-app-layout/backend/load-balancers/': {
+      id: '/_with-app-layout/backend/load-balancers/'
+      path: '/backend/load-balancers'
+      fullPath: '/backend/load-balancers/'
+      preLoaderRoute: typeof WithAppLayoutBackendLoadBalancersIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/backend/load-balancers/$id/': {
-      id: '/_with-app-layout/backend/load-balancers/$id/'
-      path: '/backend/load-balancers/$id'
-      fullPath: '/backend/load-balancers/$id'
-      preLoaderRoute: typeof WithAppLayoutBackendLoadBalancersIdIndexRouteImport
+    '/_with-app-layout/servers/$id/': {
+      id: '/_with-app-layout/servers/$id/'
+      path: '/servers/$id'
+      fullPath: '/servers/$id/'
+      preLoaderRoute: typeof WithAppLayoutServersIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/backend/domain/create/': {
-      id: '/_with-app-layout/backend/domain/create/'
-      path: '/backend/domain/create'
-      fullPath: '/backend/domain/create'
-      preLoaderRoute: typeof WithAppLayoutBackendDomainCreateIndexRouteImport
+    '/_with-app-layout/servers/create/': {
+      id: '/_with-app-layout/servers/create/'
+      path: '/servers/create'
+      fullPath: '/servers/create/'
+      preLoaderRoute: typeof WithAppLayoutServersCreateIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/servers/groups/': {
+      id: '/_with-app-layout/servers/groups/'
+      path: '/servers/groups'
+      fullPath: '/servers/groups/'
+      preLoaderRoute: typeof WithAppLayoutServersGroupsIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/teams/$id/': {
+      id: '/_with-app-layout/teams/$id/'
+      path: '/teams/$id'
+      fullPath: '/teams/$id/'
+      preLoaderRoute: typeof WithAppLayoutTeamsIdIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/u/$username/': {
+      id: '/_with-app-layout/u/$username/'
+      path: '/u/$username'
+      fullPath: '/u/$username/'
+      preLoaderRoute: typeof WithAppLayoutUUsernameIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/docs/$section/$page/': {
+      id: '/docs/$section/$page/'
+      path: '/docs/$section/$page'
+      fullPath: '/docs/$section/$page/'
+      preLoaderRoute: typeof DocsSectionPageIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_with-app-layout/applications/$id/update/': {
+      id: '/_with-app-layout/applications/$id/update/'
+      path: '/applications/$id/update'
+      fullPath: '/applications/$id/update/'
+      preLoaderRoute: typeof WithAppLayoutApplicationsIdUpdateIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
     '/_with-app-layout/backend/domain/$domainId/': {
       id: '/_with-app-layout/backend/domain/$domainId/'
       path: '/backend/domain/$domainId'
-      fullPath: '/backend/domain/$domainId'
+      fullPath: '/backend/domain/$domainId/'
       preLoaderRoute: typeof WithAppLayoutBackendDomainDomainIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
-    '/_with-app-layout/applications/$id/update/': {
-      id: '/_with-app-layout/applications/$id/update/'
-      path: '/applications/$id/update'
-      fullPath: '/applications/$id/update'
-      preLoaderRoute: typeof WithAppLayoutApplicationsIdUpdateIndexRouteImport
+    '/_with-app-layout/backend/domain/create/': {
+      id: '/_with-app-layout/backend/domain/create/'
+      path: '/backend/domain/create'
+      fullPath: '/backend/domain/create/'
+      preLoaderRoute: typeof WithAppLayoutBackendDomainCreateIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/backend/load-balancers/$id/': {
+      id: '/_with-app-layout/backend/load-balancers/$id/'
+      path: '/backend/load-balancers/$id'
+      fullPath: '/backend/load-balancers/$id/'
+      preLoaderRoute: typeof WithAppLayoutBackendLoadBalancersIdIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/backend/load-balancers/create/': {
+      id: '/_with-app-layout/backend/load-balancers/create/'
+      path: '/backend/load-balancers/create'
+      fullPath: '/backend/load-balancers/create/'
+      preLoaderRoute: typeof WithAppLayoutBackendLoadBalancersCreateIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/backend/secret-managers/ssh-key/': {
+      id: '/_with-app-layout/backend/secret-managers/ssh-key/'
+      path: '/backend/secret-managers/ssh-key'
+      fullPath: '/backend/secret-managers/ssh-key/'
+      preLoaderRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/servers/create/vm-instant/': {
+      id: '/_with-app-layout/servers/create/vm-instant/'
+      path: '/servers/create/vm-instant'
+      fullPath: '/servers/create/vm-instant/'
+      preLoaderRoute: typeof WithAppLayoutServersCreateVmInstantIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/servers/groups/$id/': {
+      id: '/_with-app-layout/servers/groups/$id/'
+      path: '/servers/groups/$id'
+      fullPath: '/servers/groups/$id/'
+      preLoaderRoute: typeof WithAppLayoutServersGroupsIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
     '/_with-app-layout/backend/secret-managers/ssh-key/$id/': {
       id: '/_with-app-layout/backend/secret-managers/ssh-key/$id/'
       path: '/backend/secret-managers/ssh-key/$id'
-      fullPath: '/backend/secret-managers/ssh-key/$id'
+      fullPath: '/backend/secret-managers/ssh-key/$id/'
       preLoaderRoute: typeof WithAppLayoutBackendSecretManagersSshKeyIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
     '/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/': {
       id: '/_with-app-layout/servers/groups/$groupId/operations/deployments/$id/'
       path: '/servers/groups/$groupId/operations/deployments/$id'
-      fullPath: '/servers/groups/$groupId/operations/deployments/$id'
+      fullPath: '/servers/groups/$groupId/operations/deployments/$id/'
       preLoaderRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsDeploymentsIdIndexRouteImport
-      parentRoute: typeof WithAppLayoutRouteRoute
-    }
-    '/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/': {
-      id: '/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/'
-      path: '/servers/groups/$groupId/operations/executions/$operationId/$machineId'
-      fullPath: '/servers/groups/$groupId/operations/executions/$operationId/$machineId'
-      preLoaderRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
     '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/': {
       id: '/_with-app-layout/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/'
       path: '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId'
-      fullPath: '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId'
+      fullPath: '/servers/groups/$groupId/operations/agent-commands/$operationId/$machineId/'
       preLoaderRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsAgentCommandsOperationIdMachineIdIndexRouteImport
+      parentRoute: typeof WithAppLayoutRouteRoute
+    }
+    '/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/': {
+      id: '/_with-app-layout/servers/groups/$groupId/operations/executions/$operationId/$machineId/'
+      path: '/servers/groups/$groupId/operations/executions/$operationId/$machineId'
+      fullPath: '/servers/groups/$groupId/operations/executions/$operationId/$machineId/'
+      preLoaderRoute: typeof WithAppLayoutServersGroupsGroupIdOperationsExecutionsOperationIdMachineIdIndexRouteImport
       parentRoute: typeof WithAppLayoutRouteRoute
     }
   }

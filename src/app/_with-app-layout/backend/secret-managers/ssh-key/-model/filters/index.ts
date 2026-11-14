@@ -14,7 +14,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
   'FilterModel',
 )(() => {
   const navigate = useNavigate({
-    from: '/backend/secret-managers/ssh-key',
+    from: '/backend/secret-managers/ssh-key/',
   });
 
   const qs = useSearch({

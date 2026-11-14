@@ -25,7 +25,7 @@ export const [DomainRecordsModelProvider, useDomainRecordsModel] =
   buildSelector('DomainRecordsModel')(() => {
     const { domainId } = useParams({ from: ROUTE_ID });
     const query = useSearch({ from: ROUTE_ID });
-    const navigate = useNavigate({ from: '/backend/domain/$domainId' });
+    const navigate = useNavigate({ from: '/backend/domain/$domainId/' });
 
     const search = query.search ?? '';
     const type = query.type;

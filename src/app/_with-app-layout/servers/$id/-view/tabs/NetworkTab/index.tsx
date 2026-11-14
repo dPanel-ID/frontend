@@ -79,7 +79,7 @@ export default function NetworkTab() {
       ? serverDisplayName(serverDetail)
       : serverId;
   const search = useSearch({ from: '/_with-app-layout/servers/$id/' });
-  const navigate = useNavigate({ from: '/servers/$id' });
+  const navigate = useNavigate({ from: '/servers/$id/' });
   const view: ServerNetworkView = search.view ?? 'ports';
   const setView = (next: ServerNetworkView) => {
     void navigate({

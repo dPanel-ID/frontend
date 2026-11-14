@@ -14,7 +14,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
   'TeamMembersFilterModel',
 )(() => {
   const navigate = useNavigate({
-    from: '/teams/$id',
+    from: '/teams/$id/',
   });
 
   const qs = useSearch({
