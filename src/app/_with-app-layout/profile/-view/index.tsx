@@ -25,7 +25,7 @@ export default function ProfileView() {
   const authEmit = useAuthEmit();
   const [openUserEdit] = useUserEditSidepanel();
   const t = useDevetekTranslations('page.profile.tabs');
-  const navigate = useNavigate({ from: '/profile' });
+  const navigate = useNavigate({ from: '/profile/' });
   const { tab = 'profile' } = useSearch({
     from: '/_with-app-layout/profile/',
   });

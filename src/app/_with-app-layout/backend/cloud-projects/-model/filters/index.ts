@@ -14,7 +14,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
   'FilterModel',
 )(() => {
   const navigate = useNavigate({
-    from: '/backend/cloud-projects',
+    from: '/backend/cloud-projects/',
   });
 
   const qs = useSearch({

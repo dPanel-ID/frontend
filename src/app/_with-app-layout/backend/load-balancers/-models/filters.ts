@@ -15,7 +15,7 @@ export const [FilterModelProvider, useFilterModel] = buildSelector(
   'FilterModel',
 )(() => {
   const navigate = useNavigate({
-    from: '/backend/load-balancers',
+    from: '/backend/load-balancers/',
   });
 
   const qs = useSearch({

@@ -92,6 +92,16 @@ const config = defineConfig(({ mode }) => {
         router: {
           routesDirectory: './app',
         },
+        importProtection: {
+          client: {
+            // `admin.server.*` are the admin API's "server" endpoints, not
+            // server-only code, so the `*.server.*` rule must skip them.
+            excludeFiles: [
+              '**/node_modules/**',
+              'src/shared/api/admin.server.*',
+            ],
+          },
+        },
         ...(isStaticSpa
           ? {
               // The public pages (home and docs) are written out as real HTML

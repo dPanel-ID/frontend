@@ -13,7 +13,7 @@ import Workers from '../Workers';
 /** A team's sections. The active one lives in the URL, so it can be shared. */
 export default function TeamTabs() {
   const t = useDevetekTranslations('page.teamDetail.tabs');
-  const navigate = useNavigate({ from: '/teams/$id' });
+  const navigate = useNavigate({ from: '/teams/$id/' });
   const { tab = 'members' } = useSearch({
     from: '/_with-app-layout/teams/$id/',
   });
