@@ -40,6 +40,11 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build SPA static site
+        # Prerendering fetches its own local preview server through
+        # `localhost`. On the runner that resolves to ::1 first, the server
+        # is not reachable there, and the build fails with `fetch failed`.
+        env:
+          NODE_OPTIONS: --dns-result-order=ipv4first
         run: pnpm run build:static
 
       - name: Deploy Cloudflare Pages
