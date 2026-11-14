@@ -1,10 +1,8 @@
 # dNocs UI/UX standard
 
 Status: adopted 2026-10-21. This is the house style for every product surface
-in this repository. It was extracted from the `/servers` module, which was
-redesigned first (`SERVERS_UI_REDESIGN_PLAN.md`) and is the reference
-implementation, and it was applied a second time to
-`/backend/secret-managers/ssh-key` (`SECRET_MANAGERS_UI_REDESIGN_PLAN.md`).
+in this repository. It was extracted from the `/servers` module, which is the
+reference implementation, and every other module has since been rebuilt on it.
 
 Read this before you design or build a page, a panel, a modal or a table.
 When something here and a local habit disagree, this document wins. When this
