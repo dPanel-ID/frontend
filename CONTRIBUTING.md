@@ -186,12 +186,13 @@ In short:
 ```bash
 pnpm type-check
 pnpm test
-pnpm exec eslint <files you changed>
+pnpm exec eslint .
 pnpm exec prettier --write <files you changed>
 ```
 
-`pnpm lint` checks the whole repository, which still has older warnings and
-errors; make sure it reports nothing new in the files you touched.
+ESLint reports no problems on the whole repository; keep it that way. You do
+not have to run everything locally: GitHub runs the same checks on every pull
+request (see below).
 
 ## Branches, commits and pull requests
 
@@ -208,6 +209,28 @@ errors; make sure it reports nothing new in the files you touched.
   Use the same Conventional Commits format for it.
 - This project is released under the [MIT License](LICENSE). By opening a pull
   request you agree that your contribution is licensed under the same terms.
+
+## How pull requests are checked, approved and merged
+
+1. **Checks.** Every pull request into `dev` runs the **CI** workflow on
+   GitHub: install, type check, ESLint, tests and the static build. Its `ci`
+   job must pass, and the branch must be up to date with `dev`.
+2. **Approval.** The code owner (`CODEOWNERS`) must approve. A push that
+   changes the code dismisses an earlier approval, so the approval always
+   covers the latest code. Updating the branch from `dev` keeps it.
+3. **Merge.** When the owner approves and `ci` has passed, the **Auto-merge**
+   workflow squash-merges the pull request, whichever of the two happens
+   last, and starts the production deploy. The branch is deleted after the
+   merge. Approvals from anyone else do not merge.
+
+If the pull request is behind `dev`, update the branch (or, for Dependabot,
+comment `@dependabot rebase`). CI runs again and the pull request merges
+when it passes.
+
+The owner's own pull requests are the exception: the owner can merge them
+directly, without waiting for approval or CI (CI still runs as
+information). Force pushes to `dev` and deleting `dev` are blocked for
+everyone.
 
 ## Reporting a security problem
 
