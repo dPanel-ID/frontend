@@ -31,6 +31,7 @@ import { SITE, siteUrl } from '@/shared/libs/seo';
 
 import appCss from '../styles.css?url';
 
+import { BootSplash } from './-view/BootSplash';
 import NotFoundView from './-view/NotFound';
 
 const isStaticBuild =
@@ -121,7 +122,11 @@ function RootComponent() {
               <AssistantLauncher />
             </ClientOnly>
 
-            <Outlet />
+            {/* Empty in the static shell every signed-in page starts from,
+                which is what shows the boot splash; see BootSplash. */}
+            <div data-app-content className="contents">
+              <Outlet />
+            </div>
           </AuthModelProvider>
         </DevetekThemeModel>
       </DevetekIntlProvider>
@@ -156,6 +161,7 @@ function ShellComponent({ children }: { children: React.ReactNode }) {
         <ThemeScript />
       </head>
       <body>
+        <BootSplash />
         {children}
         <TanStackDevtools
           config={{

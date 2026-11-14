@@ -25,6 +25,7 @@ import type { LucideIcon } from 'lucide-react';
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
 import {
+  cloudPublicAddress,
   isAgentCloudServer,
   isCloudServer,
   isPrivateServer,
@@ -68,6 +69,7 @@ export default function OverviewTab() {
   const moduleHealth = useModuleHealth(serverId);
   const server = responseData(detail);
   const isPrivate = !!server && isPrivateServer(server);
+  const publicIP = server ? cloudPublicAddress(server) : undefined;
 
   const [applicationsResponse, refreshApplications] =
     ApiApplication.Find.useGet({
@@ -191,6 +193,17 @@ export default function OverviewTab() {
       <div className="grid gap-4 xl:grid-cols-2">
         <Section icon={ServerIcon} title={t('details')}>
           <dl className="divide-y">
+            {/* A cloud VM's public IP is its own: it comes first and reads
+                as one. A home machine only "connects from" its router's. */}
+            {publicIP && (
+              <Row
+                icon={GlobeIcon}
+                label={t('cloudPublicAddress')}
+                help={t('cloudPublicAddressHelp')}
+                value={publicIP}
+                mono
+              />
+            )}
             <Row
               icon={isPrivate ? HouseIcon : GlobeIcon}
               label={isPrivate ? t('lanAddress') : t('address')}
@@ -201,7 +214,7 @@ export default function OverviewTab() {
               }
               mono={!isPrivate || !!server.host.address}
             />
-            {isPrivate && (
+            {isPrivate && !publicIP && (
               <Row
                 icon={GlobeIcon}
                 label={t('publicAddress')}

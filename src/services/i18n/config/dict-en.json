@@ -912,9 +912,16 @@
         "deleting": "Deleting",
         "unknown": "Unknown"
       },
+      "statusLog": {
+        "title": "Build",
+        "commit": "Commit {commit}",
+        "build": "Build: {status}",
+        "release": "Release: {status}"
+      },
       "releaseStatus": {
         "pending": "Waiting",
         "progress": "Releasing",
+        "removing": "Removing",
         "deployed": "On the server",
         "failed": "Failed",
         "cancelled": "Cancelled",
@@ -1550,6 +1557,11 @@
           }
         },
         "vmInstant": {
+          "location": {
+            "searchRegion": "Search regions",
+            "searchZone": "Search zones",
+            "noMatch": "Nothing matches your search."
+          },
           "steps": {
             "cloudDescription": "Where the server runs and which cloud project pays for it.",
             "connectTitle": "How dPanel connects",
@@ -1848,6 +1860,8 @@
         "publicAddressUnknown": "Unknown: the agent connects from a private network",
         "connectionAgent": "Through the dPanel agent",
         "publicAddressHelp": "The public address your network uses to reach the internet. Point a domain here only if ports 80 and 443 are forwarded to this machine.",
+        "cloudPublicAddress": "Public address",
+        "cloudPublicAddressHelp": "The VM's public IP from your cloud provider. Point a domain's A record here.",
         "lanAddressUnknown": "Not reported yet",
         "serviceNotRunning": "Service not running: {units}. Open the Modules or Services tab.",
         "serviceNotRunningShort": "service not running",
@@ -1924,6 +1938,15 @@
         "installRunning": "Working on it",
         "installElapsed": "{elapsed} so far",
         "installForm": {
+          "confirmTitle": "Install {module}",
+          "confirmActionTitle": "{action}",
+          "confirmInstall": "Install {module} on {target}?",
+          "confirmAction": "Run \"{action}\" on {target}?",
+          "snapshot": "{count, plural, one {dPanel snapshots exactly # member before queueing.} other {dPanel snapshots exactly # members before queueing.}}",
+          "theServer": "server {id}",
+          "queued": "{module} is queued. It shows as installing in the Modules tab.",
+          "actionQueued": "\"{action}\" is queued.",
+          "queueFailed": "{module} could not be queued",
           "missing": "Fill in {fields} before installing.",
           "malformed": "Check the format of {fields}.",
           "singleServerOnly": "Delete and reprovision run on one server only; choose a single server.",

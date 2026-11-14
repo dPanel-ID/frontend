@@ -90,5 +90,26 @@ export function applicationSource(application: ApplicationCard) {
     return `${identity.repoOrganization}/${identity.repoName}`;
   }
 
-  return identity.bundleType;
+  return applicationKind(application) ?? '';
+}
+
+const BUNDLE_LABELS: Record<string, string> = {
+  wordpress: 'WordPress',
+  laravel: 'Laravel',
+};
+
+/**
+ * What kind of application this is, for the line under its name: the
+ * one-click bundle it came from (WordPress, Laravel), else the language it
+ * runs on ("Go 1.25"). An ordinary repository application has no bundle;
+ * its bundle type is "unknown", which is never shown.
+ */
+export function applicationKind(application: ApplicationCard) {
+  const bundle = BUNDLE_LABELS[application.identity.bundleType];
+  if (bundle) return bundle;
+
+  const language = application.configDefs.lifecycle?.setup.languages.at(0);
+  if (!language?.name) return undefined;
+  const name = language.name.charAt(0).toUpperCase() + language.name.slice(1);
+  return [name, language.version].filter(Boolean).join(' ');
 }

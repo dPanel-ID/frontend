@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronsUpDown, SearchIcon } from 'lucide-react';
 
 import useResizeObserver from '@/shared/libs/react-hooks/useResizeObserver';
 import { cn } from '@/shared/libs/tailwind/cn';
@@ -12,6 +12,8 @@ import {
   PopoverTrigger,
 } from '@/shared/presentation/atoms/Popover';
 
+import { filterComboboxItems } from './filter';
+
 export default function Combobox<V>(props: ComboboxProps<V>) {
   const {
     classNameButton,
@@ -19,8 +21,15 @@ export default function Combobox<V>(props: ComboboxProps<V>) {
     placeholder,
     value,
     size = 'default',
+    searchPlaceholder,
+    emptySearchText,
     onChange,
   } = props;
+  const searchable = searchPlaceholder !== undefined;
+  const [query, setQuery] = useState('');
+  const visibleItems = searchable
+    ? filterComboboxItems(items ?? [], query)
+    : items;
 
   const [popoverWidth, setPopoverWidth] = useState(0);
 
@@ -44,7 +53,13 @@ export default function Combobox<V>(props: ComboboxProps<V>) {
   )?.label;
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next);
+        if (!next) setQuery('');
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           ref={refButton}
@@ -65,7 +80,36 @@ export default function Combobox<V>(props: ComboboxProps<V>) {
       </PopoverTrigger>
       <PopoverContent className="p-0" style={{ width: popoverWidth }}>
         <div className="p-1 w-full flex flex-col gap-1.5 max-h-80 overflow-y-auto">
-          {items?.map((item) => {
+          {searchable && (
+            <label className="sticky top-0 z-10 flex min-h-9 items-center gap-2 rounded-md border bg-popover px-2.5 focus-within:border-accent">
+              <SearchIcon className="size-4 shrink-0 opacity-50" aria-hidden />
+              <input
+                type="text"
+                // Typing goes straight to the list, as in any combobox.
+                autoFocus
+                className="w-full bg-transparent text-sm outline-hidden"
+                placeholder={searchPlaceholder}
+                aria-label={searchPlaceholder}
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  const first = visibleItems?.[0];
+                  if (event.key === 'Enter' && first) {
+                    event.preventDefault();
+                    onChange?.(first.value);
+                    setOpen(false);
+                    setQuery('');
+                  }
+                }}
+              />
+            </label>
+          )}
+          {searchable && visibleItems?.length === 0 && (
+            <p className="px-2 py-3 text-center text-xs text-muted-foreground">
+              {emptySearchText}
+            </p>
+          )}
+          {visibleItems?.map((item) => {
             return (
               <Button
                 type="button"
@@ -77,6 +121,7 @@ export default function Combobox<V>(props: ComboboxProps<V>) {
                 onClick={() => {
                   onChange?.(item.value);
                   setOpen(false);
+                  setQuery('');
                 }}
               >
                 <p className="w-full text-start flex flex-col">
@@ -106,10 +151,16 @@ interface ComboboxProps<V> {
   value?: V;
   onChange?: (value: V) => void;
   size?: 'default' | 'sm';
+  /** Turns on a search box at the top of the list, with this hint. */
+  searchPlaceholder?: string;
+  /** Shown when the search matches nothing. */
+  emptySearchText?: string;
 }
 
 export interface ComboboxItem<V> {
   value: V;
   label: ReactNode;
   description?: ReactNode;
+  /** Text the search box matches, for a label that is not plain text. */
+  searchText?: string;
 }

@@ -8,7 +8,11 @@ import { useServerDataModel } from '../-model/server-data';
 import type { FavoriteNavigationPayload as Payload } from '../-rules/usecase-types';
 
 export default function useFavoriteNavigationUsecase() {
-  const [serverId, detail] = useServerDataModel((s) => [s.serverId, s.detail]);
+  const [serverId, detail, refreshModules] = useServerDataModel((s) => [
+    s.serverId,
+    s.detail,
+    s.refreshModules,
+  ]);
   const [openServerModulesDiscoverSidepanel] =
     useServerModulesDiscoverSidepanel();
   const navigate = useNavigate();
@@ -32,6 +36,9 @@ export default function useFavoriteNavigationUsecase() {
           },
         });
       },
+      // The API records the install as "installing" when it is queued, so
+      // the Modules tab shows the row as soon as it reloads the list.
+      onModuleQueued: () => refreshModules(),
       serverId: String(serverId),
       serverName,
     });

@@ -27,6 +27,16 @@ export function isAgentCloudServer(server: ServerLike) {
 }
 
 /**
+ * The public IP a cloud VM that joined through its agent got from its
+ * provider: the VM's own address, shown as "Public address". A home or
+ * office machine only connects from its router's address, so it has none.
+ */
+export function cloudPublicAddress(server: ServerLike) {
+  if (!isAgentCloudServer(server)) return undefined;
+  return server.host.publicAddress || undefined;
+}
+
+/**
  * True for a server with no public IP, reached only through its agent: it
  * has no SSH and dPanel does not run setup on it. Its terminal, module
  * installs, deploys, databases and load balancers go through the agent.

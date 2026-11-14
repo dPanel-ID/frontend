@@ -20,7 +20,8 @@ const CardWrapper = (props: CardWrapperProps) => {
         {
           'border-emerald-500/40': releaseStatus === 'deployed',
           'border-red-500/40': releaseStatus === 'failed',
-          'border-sky-400/40': releaseStatus === 'progress',
+          'border-sky-400/40':
+            releaseStatus === 'progress' || releaseStatus === 'removing',
           'border-amber-400/40': releaseStatus === 'cancelled',
         },
       )}

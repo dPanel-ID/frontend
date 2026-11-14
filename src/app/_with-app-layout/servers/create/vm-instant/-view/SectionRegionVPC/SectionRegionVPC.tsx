@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 import { RefreshCwIcon } from 'lucide-react';
 import { useController, useWatch } from 'react-hook-form';
 
+import { useDevetekTranslations } from '@/services/i18n';
+
 import { ApiCloud } from '@/shared/api';
 import type { BillingAccountItem } from '@/shared/api/cloud.project.billing-accounts.$id';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
@@ -56,6 +58,7 @@ function InlineState(props: {
 }
 
 const SubRegionCbo = () => {
+  const t = useDevetekTranslations('page.servers.create.vmInstant.location');
   const { form, formErrors } = useForm();
   const cloudProjectID = useWatch({
     control: form.control,
@@ -112,12 +115,14 @@ const SubRegionCbo = () => {
 
   const responseData =
     response.$status === 'success' ? response : response.prevData;
-  const items: Array<{ label: ReactNode; value: string }> = [];
+  const items: Array<{ label: ReactNode; value: string; searchText: string }> =
+    [];
 
   for (const region of responseData?.items ?? []) {
     if (!region.name || !region.id) continue;
 
     items.push({
+      searchText: `${region.name} ${region.id}`,
       label: (
         <span>
           <span>{region.name}</span>&nbsp;
@@ -134,6 +139,8 @@ const SubRegionCbo = () => {
         <Combobox
           classNameButton="w-full flex-1 bg-background"
           placeholder="Select a Region"
+          searchPlaceholder={t('searchRegion')}
+          emptySearchText={t('noMatch')}
           onChange={(value) => {
             form.setValue('cloud.zoneSlug', '');
             form.setValue('spec.machineType', '');
@@ -168,6 +175,7 @@ const SubRegionCbo = () => {
 };
 
 const SubZoneCbo = () => {
+  const t = useDevetekTranslations('page.servers.create.vmInstant.location');
   const { form, formErrors } = useForm();
   const cloudProjectID = useWatch({
     control: form.control,
@@ -229,12 +237,14 @@ const SubZoneCbo = () => {
 
   const responseData =
     response.$status === 'success' ? response : response.prevData;
-  const items: Array<{ label: ReactNode; value: string }> = [];
+  const items: Array<{ label: ReactNode; value: string; searchText: string }> =
+    [];
 
   for (const zone of responseData?.items ?? []) {
     if (!zone.name || !zone.id) continue;
 
     items.push({
+      searchText: `${zone.name} ${zone.id}`,
       label: (
         <span>
           <span>{zone.name}</span>&nbsp;
@@ -251,6 +261,8 @@ const SubZoneCbo = () => {
         <Combobox
           classNameButton="w-full flex-1 bg-background"
           placeholder="Select a Zone"
+          searchPlaceholder={t('searchZone')}
+          emptySearchText={t('noMatch')}
           onChange={(value) => {
             form.setValue('spec.machineType', '');
             form.setValue('vpcBulk', { id: '', subnet: '' });
@@ -317,8 +329,7 @@ const SubManagedNetwork = (props: { scopeLabel: string }) => {
 const SubAutoNetwork = () => {
   const { form, formErrors } = useForm();
   const provider = useWatch({ control: form.control, name: 'provider' }) as
-    | string
-    | undefined;
+    string | undefined;
   const cloudProjectID = useWatch({
     control: form.control,
     name: 'cloud.projectID',
@@ -445,8 +456,7 @@ const SubAutoNetwork = () => {
 const SubNetwork = () => {
   const { form } = useForm();
   const provider = useWatch({ control: form.control, name: 'provider' }) as
-    | string
-    | undefined;
+    string | undefined;
 
   if (isGcpProvider(provider))
     return <SubManagedNetwork scopeLabel="zone's region" />;
@@ -655,8 +665,7 @@ const SubBillingAccountCbo = () => {
 export default function SectionRegionVPC() {
   const { form } = useForm();
   const provider = useWatch({ control: form.control, name: 'provider' }) as
-    | string
-    | undefined;
+    string | undefined;
   const usesZone = isZonalProvider(provider);
   const usesDigitalOcean = isDigitalOceanProvider(provider);
   const usesAws = isAwsProvider(provider);

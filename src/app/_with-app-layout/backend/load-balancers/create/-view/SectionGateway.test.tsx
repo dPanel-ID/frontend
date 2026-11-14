@@ -41,7 +41,12 @@ vi.mock('@/entities/server/ui/ServerStatusPill', () => ({
 
 const server = {
   id: '7',
-  host: { name: 'dpanel-loadbalancer', address: '10.0.16.133', private: true },
+  host: {
+    name: 'dpanel-loadbalancer',
+    address: '10.0.16.133',
+    publicAddress: '34.101.60.146',
+    private: true,
+  },
   state: { status: 'ready' },
   system: {},
 } as unknown as ServerCard;
@@ -108,6 +113,15 @@ afterEach(() => {
 const required = () => screen.queryByRole('alert');
 
 describe('Gateway step', () => {
+  // The server list showed the gateway's local address, not the public one
+  // its DNS record goes to.
+  it('lists an agent server under the address its DNS record points at', () => {
+    render(<Harness />);
+
+    expect(screen.getByText(/34\.101\.60\.146/)).toBeTruthy();
+    expect(screen.queryByText(/10\.0\.16\.133/)).toBeNull();
+  });
+
   // "Required" showed under the engine as soon as a server was picked and
   // stayed after Caddy was selected.
   it('shows no "Required" while picking a server, then an engine', async () => {

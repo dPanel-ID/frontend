@@ -167,3 +167,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* See src/app/-view/BootSplash: shown only while the app has rendered
+   nothing yet (the static shell of a signed-in page). */
+.boot-splash {
+  display: none;
+}
+body:has([data-app-content]:empty) .boot-splash {
+  display: flex;
+}

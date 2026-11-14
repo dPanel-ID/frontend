@@ -912,9 +912,16 @@
         "deleting": "Menghapus",
         "unknown": "Tidak diketahui"
       },
+      "statusLog": {
+        "title": "Build",
+        "commit": "Commit {commit}",
+        "build": "Build: {status}",
+        "release": "Rilis: {status}"
+      },
       "releaseStatus": {
         "pending": "Menunggu",
         "progress": "Merilis",
+        "removing": "Menghapus",
         "deployed": "Sudah di server",
         "failed": "Gagal",
         "cancelled": "Dibatalkan",
@@ -1550,6 +1557,11 @@
           }
         },
         "vmInstant": {
+          "location": {
+            "searchRegion": "Cari region",
+            "searchZone": "Cari zona",
+            "noMatch": "Tidak ada yang cocok dengan pencarian Anda."
+          },
           "steps": {
             "cloudDescription": "Tempat server berjalan dan project cloud yang membayarnya.",
             "connectTitle": "Cara dPanel terhubung",
@@ -1848,6 +1860,8 @@
         "publicAddressUnknown": "Tidak diketahui: agen terhubung dari jaringan privat",
         "connectionAgent": "Lewat agen dPanel",
         "publicAddressHelp": "Alamat publik yang dipakai jaringan Anda untuk ke internet. Arahkan domain ke sini hanya jika port 80 dan 443 diteruskan ke mesin ini.",
+        "cloudPublicAddress": "Alamat publik",
+        "cloudPublicAddressHelp": "IP publik VM dari penyedia cloud Anda. Arahkan record A domain ke sini.",
         "lanAddressUnknown": "Belum dilaporkan",
         "serviceNotRunning": "Layanan tidak berjalan: {units}. Buka tab Modul atau Layanan.",
         "serviceNotRunningShort": "layanan tidak berjalan",
@@ -1924,6 +1938,15 @@
         "installRunning": "Sedang dikerjakan",
         "installElapsed": "sudah {elapsed}",
         "installForm": {
+          "confirmTitle": "Pasang {module}",
+          "confirmActionTitle": "{action}",
+          "confirmInstall": "Pasang {module} di {target}?",
+          "confirmAction": "Jalankan \"{action}\" di {target}?",
+          "snapshot": "{count, plural, other {dPanel mengambil snapshot tepat # anggota sebelum mengantrekan.}}",
+          "theServer": "server {id}",
+          "queued": "{module} masuk antrean. Modul tampil sebagai sedang dipasang di tab Modul.",
+          "actionQueued": "\"{action}\" masuk antrean.",
+          "queueFailed": "{module} tidak dapat diantrekan",
           "missing": "Isi {fields} sebelum memasang.",
           "malformed": "Periksa format {fields}.",
           "singleServerOnly": "Hapus dan siapkan ulang hanya berjalan di satu server; pilih satu server.",

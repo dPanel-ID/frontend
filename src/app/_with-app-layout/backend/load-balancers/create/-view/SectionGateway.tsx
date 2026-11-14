@@ -13,7 +13,6 @@ import { useController, useWatch } from 'react-hook-form';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-
 import type { ServerCard } from '@/entities/server/rules/schema';
 import { ServerStatusPill } from '@/entities/server/ui/ServerStatusPill';
 import { useModuleVersionLabel } from '@/entities/server-modules/lib/version';
@@ -32,6 +31,7 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import {
   getSelectedServer,
   getServerName,
+  getServerPublicAddress,
   hasInstalledModule,
   hasReportedGatewayModule,
   moduleInstallationLabels,
@@ -223,7 +223,9 @@ export function ServerOption(props: {
         </span>
         <span className="mt-0.5 block truncate text-xs text-muted-foreground">
           {[
-            server.host.address,
+            // The address the DNS record goes to, as dNocs creates it; an
+            // agent server without a public IP shows its local one.
+            getServerPublicAddress(server) ?? server.host.address,
             [server.system.name, server.system.version]
               .filter(Boolean)
               .join(' '),
@@ -287,9 +289,12 @@ export function EnginePicker(props: {
   const openModuleInstaller = (module: ServerModule) => {
     if (!serverId) return;
 
+    const server = getSelectedServer(resources, serverId);
     openServerModulesDetailModal({
       moduleInfo: module,
+      onServerInstallQueued: resources.refreshModules,
       serverID: serverId,
+      serverName: server ? getServerName(server) : undefined,
     });
   };
 

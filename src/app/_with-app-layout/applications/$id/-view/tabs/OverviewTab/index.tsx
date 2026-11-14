@@ -60,6 +60,7 @@ const RELEASE_TONES: Record<ReleaseStatus, StatTileTone> = {
   deployed: 'emerald',
   pending: 'sky',
   progress: 'sky',
+  removing: 'sky',
   failed: 'red',
   cancelled: 'amber',
   inactive: 'neutral',
