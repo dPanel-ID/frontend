@@ -63,7 +63,7 @@ Kode statusnya `4xx`: halaman yang tidak ada (`404`) atau request yang perlu log
 
 ### Bisakah saya membaca request load balancer dari terminal?
 
-Bisa. `dnocs load-balancer log --id <ID load balancer>` mencetak baris request yang sama, terbaru lebih dulu. Tambahkan `--since 24h` untuk mundur lebih jauh (hingga `72h`, 3 hari), `--page 2` untuk baris yang lebih lama, atau `--json` untuk semua field. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang dnocs.
+Bisa. `dnocs load-balancer log --id <ID load balancer>` mencetak baris request yang sama, terbaru lebih dulu. Tambahkan `--since 24h` untuk mundur lebih jauh (hingga `72h`, 3 hari), `--page 2` untuk baris yang lebih lama, `--status 5xx` untuk menyisakan request yang gagal saja, atau `--json` untuk semua field. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang dnocs.
 
 ### Seberapa jauh ke belakang log bisa dibaca?
 

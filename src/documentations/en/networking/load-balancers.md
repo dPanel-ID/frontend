@@ -82,6 +82,8 @@ You can also ask the assistant to set one up, for example "Put my app on app.exa
 
 With **L4**, you set a **Service** (such as PostgreSQL or Redis), the **Listen port**, the **Allowed sources** and the **Balancing**, then the upstream addresses (where connections are forwarded to). **Allowed sources** is required for databases. HTTPS is not used: connections pass through, so a database keeps its own TLS end to end.
 
+A database installed on the gateway itself is reached on `127.0.0.1`. A database on another server must listen on a network address, not only on `127.0.0.1`; otherwise dPanel refuses the load balancer and says what to change. Reinstall the database module with its bind setting (such as **Bind Address** for MariaDB or **Bind Interface** for Redis) set to that server's private address. Redis also needs a **Password** of at least 16 characters before it may listen on the network.
+
 ### Redirect a domain
 
 A route can send visitors to another URL instead of an application or address, on Caddy, HAProxy and Apache APISIX. In **Routing**, set the rule's **Type** to **Redirect**, then fill in **Redirect to** and choose **302 Temporary** or **301 Permanent**. Browsers remember a 301, so use 302 until the destination is final. The requested path and query are kept unless you turn off **Keep the requested path and query**.
@@ -195,7 +197,12 @@ dnocs load-balancer log --id 31                 # the last 10 minutes
 dnocs load-balancer log --id 31 --since 24h     # up to 72h (3 days)
 dnocs load-balancer log --id 31 --page 2 --limit 500
 dnocs load-balancer log --id 31 --json          # each line with its parsed fields
+dnocs load-balancer log --id 31 --since 2h --status 5xx,429   # only these statuses
+dnocs load-balancer log --id 31 --since 30m --summary         # count requests per status
+dnocs load-balancer log --id 31 --follow --status 5xx --for 5m
 ```
+
+`--status` takes codes such as `502` or classes such as `5xx`, separated by commas. `--follow` keeps printing new requests until you stop it, or until `--for` runs out.
 
 ## Delete a load balancer
 

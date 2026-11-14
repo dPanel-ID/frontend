@@ -102,6 +102,10 @@ GitHub no longer confirms your saved account. Press **Reconnect GitHub** or **Re
 
 Open **GitHub team** in **Create Application** and choose **Add GitHub account**. Install the dnocs-id GitHub App on the organisation, and give it access to the repository.
 
+### My variable values are hidden
+
+dPanel masks variable values on the application's pages, so they are not shown by accident on a shared screen. If you may change the application, press **Show values** to see them; each time is recorded. See [Environment variables](../applications/environment-variables.md) and [Security and your data](../getting-started/security-and-your-data.md).
+
 ## Load balancers, HTTPS and DNS
 
 ### My site shows a 502 error
@@ -145,6 +149,14 @@ With a **Managed** domain, dPanel will not overwrite an existing DNS record. Pic
 
 A job such as a deployment, a server setup or a module install sits waiting. If your workspace uses **Private workers**, its jobs go only to your own workers, and wait until one of them is running. Start your worker, or switch the workspace back to **Shared workers (dPanel)** on your profile or team page. See [Workers](../workers/overview.md).
 
+### An install says "Waiting for the server to start this install"
+
+On a server connected with the dPanel agent, the first job after the server joins waits while the agent prepares dPanel's installer on the machine, which takes about two minutes. Later jobs start right away. **Waiting for another job on this server to finish** means dPanel runs one job at a time per server; yours starts when the other one ends. See [Install software](../servers/install-software.md).
+
+### A job failed but shows warnings too
+
+Open **Technical details** on the failed run in **Recent activity**. **Failed task** names the step that really failed, with its **Error**. Warnings are steps the job was allowed to skip, such as stopping a service that did not exist yet; they are not the cause. See [The dashboard](../getting-started/dashboard.md).
+
 ## Logs
 
 ### "This application has no run command or server yet"
@@ -177,13 +189,17 @@ The web app does not move resources between workspaces, so the action is hidden 
 
 Every member of a workspace can read its execution and agent status. If you still see this, you are probably not a member of the selected workspace: check the workspace switcher, or ask a workspace owner to add you. See [Members and roles](../teams/members-and-roles.md).
 
+### I lost access right after my role changed
+
+That is expected. When a team owner or admin removes you or lowers your role, the change applies at once, without waiting for you to sign out. Ask them for the role you need. See [Members and roles](../teams/members-and-roles.md).
+
 ### The assistant says it "isn't available yet"
 
 **The assistant isn't available yet** means dPanel could not reach the assistant service, or the assistant is not turned on for you. Press **Check again** after a moment. The rest of dPanel keeps working without it. See [Limits and privacy](../ai/limits-and-privacy.md).
 
 ### Where is Secret Managers for my passwords?
 
-**Secret Managers** in the sidebar opens the **SSH keys** page; it holds SSH keys only. Keep application passwords in [environment variables](../applications/environment-variables.md).
+**Secret Managers** in the sidebar opens the **SSH keys** page; it holds SSH keys only. Keep application passwords in [environment variables](../applications/environment-variables.md), which dPanel stores encrypted. See [Security and your data](../getting-started/security-and-your-data.md).
 
 ## Getting help
 

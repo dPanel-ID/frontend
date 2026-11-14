@@ -53,7 +53,7 @@ Usage appears a few minutes after a server becomes ready. Servers report every 3
 
 ## Activity
 
-**Recent activity** lists what dPanel did to your infrastructure in the last two days: server setup, module installs, deployments. Each entry says what ran, on which target, who started it and how long it took. The person's name links to their public profile. Open **Technical details** for the raw detail of a failed run. Press **Refresh** to load the newest entries.
+**Recent activity** lists what dPanel did to your infrastructure in the last two days: server setup, module installs, deployments. Each entry says what ran, on which target, who started it and how long it took. The person's name links to their public profile. Open **Technical details** on a failed run to see the **Failed task** and its **Error**. Steps a job was allowed to skip are counted as warnings, such as **2 warnings**, not as the failure. Press **Refresh** to load the newest entries.
 
 ## Resources
 

@@ -33,6 +33,7 @@ The easiest way is from the dPanel website. You copy one command and run it on t
    ```
 
    It may ask for your password, because of `sudo`.
+
 5. Back in dPanel, the card says **Waiting for the machine…** and changes to **Connected!** as soon as the agent connects, usually in under a minute. Choose **Open server**.
 
 ![The Connect a server with the dPanel agent card after Get install command: the one-line command with a Copy button, how long it works, and the Waiting status with Open server](../../assets/servers/private-create-chooser.webp 'The card waits for the machine and changes to Connected! by itself. The code in the command is shown here as a placeholder.')
@@ -98,20 +99,20 @@ dPanel can also connect to a server over SSH instead. Both are fully supported; 
 - **dPanel agent:** nothing connects in to your server; the agent connects out to dPanel. You need no public IP, no open port and no dPanel SSH key, and you never give dPanel administrator (root) access over SSH. The trade-off: the work runs **on your server**. Besides the agent itself, which is light and always running, installing software or deploying an app uses an installer that the agent prepares on the machine (Python and Ansible, set up once, which takes a few minutes the first time). It runs the job on the machine and stops again after 10 quiet minutes. So installs and deploys use some of your server's CPU, memory and disk while they run.
 - **SSH:** dPanel puts its SSH key on your server for a user with administrator (`sudo`) rights and connects in from dPanel's own workers. Those workers do the heavy lifting of installing and configuring software from outside, so your server carries less load, which helps on a small VPS. The trade-off: you trust dPanel's SSH key with administrator access to your machine, and the server needs a public IP with SSH reachable from the internet.
 
-|                                | dPanel agent (recommended)                                       | SSH                                                   |
-| ------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------- |
-| Where installs and deploys run | On your server                                                   | On dPanel's workers, which connect to your server     |
-| Load on your server            | A little more while a job runs                                   | Less                                                  |
-| Access you give dPanel         | None: the agent connects out                                     | dPanel's SSH key, with `sudo` rights                  |
-| Public IP needed               | No                                                               | Yes                                                   |
-| Open port needed               | No                                                               | Yes, SSH reachable from the internet                  |
-| Best for                       | Homelabs, PCs, servers behind a router, anyone who keeps SSH private | A small VPS with a public IP, if you prefer SSH       |
+|                                | dPanel agent (recommended)                                           | SSH                                               |
+| ------------------------------ | -------------------------------------------------------------------- | ------------------------------------------------- |
+| Where installs and deploys run | On your server                                                       | On dPanel's workers, which connect to your server |
+| Load on your server            | A little more while a job runs                                       | Less                                              |
+| Access you give dPanel         | None: the agent connects out                                         | dPanel's SSH key, with `sudo` rights              |
+| Public IP needed               | No                                                                   | Yes                                               |
+| Open port needed               | No                                                                   | Yes, SSH reachable from the internet              |
+| Best for                       | Homelabs, PCs, servers behind a router, anyone who keeps SSH private | A small VPS with a public IP, if you prefer SSH   |
 
 To connect over SSH instead, see [Connect your own server over SSH](./connect-your-own-server.md). New cloud servers make the same choice in their **How dPanel connects** step; see [Create a cloud server](./cloud-providers/create-a-cloud-server.md#step-3-how-dpanel-connects).
 
 ## Step 2: Look around the server page
 
-Open the server. It has the same tabs as any other server: live usage, modules, services, users, network, files, logs and settings. The details say how dPanel reaches it: **Local address**, **Public address** (the internet address the agent connects from, when dPanel can tell) and **Connection: Through the dPanel agent**, instead of an SSH login.
+Open the server. It has the same tabs as any other server: live usage, modules, services, users, network, files, logs and settings. The details say how dPanel reaches it: **Local address** (its address on your own network), **Connects from** (the public address your network uses to reach the internet, or **Unknown: the agent connects from a private network**) and **Connection**: **Through the dPanel agent (no public IP or SSH)**, instead of an SSH login.
 
 ![The home-server page: live CPU, memory and disk usage, counts of applications, databases and modules, and details with Local address 172.17.0.2, Connection through the dPanel agent and the agent version](../../assets/servers/private-overview.webp)
 
@@ -153,17 +154,18 @@ Choose **Open terminal** at the top of the server page. You get a root shell on 
 
 ## What you can do with it
 
-| You can                                                                     | Not available                                    |
-| --------------------------------------------------------------------------- | ------------------------------------------------ |
-| See CPU, memory and disk usage                                              | Kubernetes clusters with other servers           |
-| Browse and edit files                                                       | Changing SSH connection details (there are none) |
-| Start, stop and restart services, read logs                                 |                                                  |
-| Manage Linux users                                                          |                                                  |
-| Install modules such as MariaDB, PostgreSQL, Redis or Docker                |                                                  |
-| Open MariaDB and PostgreSQL in the database manager, with import and export |                                                  |
-| Build and deploy applications                                               |                                                  |
-| Open a terminal in the browser or with `dnocs server exec`                  |                                                  |
-| Add load balancers and domains                                              |                                                  |
+| You can                                                                                       | Not available                                    |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| See CPU, memory and disk usage                                                                | Changing SSH connection details (there are none) |
+| Browse and edit files                                                                         |                                                  |
+| Start, stop and restart services, read logs                                                   |                                                  |
+| Manage Linux users                                                                            |                                                  |
+| Install modules such as MariaDB, PostgreSQL, Redis or Docker                                  |                                                  |
+| Open MariaDB and PostgreSQL in the database manager, with import and export                   |                                                  |
+| Build and deploy applications                                                                 |                                                  |
+| Open a terminal in the browser or with `dnocs server exec`                                    |                                                  |
+| Add load balancers and domains                                                                |                                                  |
+| Join a [Kubernetes cluster](../clusters/overview.md) with servers on the same private network |                                                  |
 
 ## Put a load balancer on it
 
@@ -173,7 +175,7 @@ You can add a [load balancer](../networking/load-balancers.md) to a server conne
 - **A home server or homelab PC:** a DNS record dPanel manages points at your router's public IP. Forward ports 80 and 443 on your router to the machine, or the site cannot be reached and the load balancer cannot get its HTTPS certificate.
 - **A domain you manage yourself:** point it at the server's public address yourself.
 
-If dPanel knows no **Public address** for the server, use your own domain and point it at the server yourself.
+If the server's **Connects from** reads **Unknown**, use your own domain and point it at the server yourself.
 
 If the machine is off or offline when you start an install or a deploy, the job waits and then fails; start it again once the machine is back.
 
@@ -213,7 +215,7 @@ Yes, a 64-bit (`arm64`) Linux with systemd, such as 64-bit Raspberry Pi OS or Ub
 
 ### The server says Waiting for agent. What does that mean?
 
-dPanel has created the server and is waiting for you to run its install command on the machine. The command works for 2 hours. If nothing connects by then, the server shows **Failed** with a note that its install command expired: create a new install command for the server and run it, and the same server turns **Ready**.
+dPanel has created the server and is waiting for you to run its install command on the machine. The command works for 2 hours. If nothing connects by then, the server shows **Failed** with a note that its install command expired. Delete that server (a server whose command never ran can be deleted at once), then choose **Get install command** again and run the new command on the machine.
 
 ### The command waits and the server never turns Ready. What do I check?
 

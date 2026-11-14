@@ -11,14 +11,14 @@ Every server in dPanel has one page, and everything you can do to that server is
 
 The header shows the name, the status, the address, the Ubuntu release and where it runs, then a line of facts: how dPanel reaches it (the SSH login, such as `ubuntu@203.0.113.10:22`, or, for a server connected with the dPanel agent, **Through the dPanel agent**), the agent version, the workspace, who created the server and when.
 
-| Control              | What it does                                                                              |
-| -------------------- | ----------------------------------------------------------------------------------------- |
-| Refresh (↻)          | Reads the server's status, usage, services and modules again.                             |
-| **Edit server** (✎)  | Changes the address, SSH login and agent ports dPanel uses, on servers connected over SSH. |
+| Control              | What it does                                                                                                |
+| -------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Refresh (↻)          | Reads the server's status, usage, services and modules again.                                               |
+| **Edit server** (✎)  | Changes the address, SSH login and agent ports dPanel uses, on servers connected over SSH.                  |
 | **Open terminal**    | Opens a shell in the browser, through the agent or over SSH. See [Connect over SSH](./connect-over-ssh.md). |
-| **More actions** (⋯) | **Reinstall server** runs setup again; **Delete server** removes it. See the table below. |
+| **More actions** (⋯) | **Reinstall server** runs setup again; **Delete server** removes it. See the table below.                   |
 
-Select the status badge to see what the status means. While dPanel is setting a server up, a blue banner says so, with **Follow the logs**. If setup fails, a red **Setup did not finish** banner offers **See what happened**.
+Select the status badge to see what the status means. A server added with an install command reads **Waiting for agent** until you run that command on the machine; dPanel waits up to 2 hours for its agent to connect. While dPanel is setting a server up, a blue banner says so, with **Follow the logs**. If setup fails, a red **Setup did not finish** banner offers **See what happened**.
 
 ## Agent notices
 
@@ -45,11 +45,15 @@ Also make sure the server can reach the internet over HTTPS (port 443): the agen
 
 **Live usage** reads CPU, memory and disk from the agent every few seconds while the page is open. Below it are counts of applications, load balancers, databases and modules, then **Server details** (address, SSH login, operating system, agent, provider, ownership, **Created by** and when it was added) and **What runs here**.
 
+On a server connected with the dPanel agent, **Server details** shows **Local address** (its address on its own network), **Connects from** (the public address its network uses to reach the internet, or **Unknown: the agent connects from a private network**) and **Connection** instead of an SSH login. Point a domain at the **Connects from** address only if ports 80 and 443 are forwarded to the machine.
+
+When a module's service has stopped, or a database runs a different release from the one chosen, **What runs here** marks it, for example **Service not running: redis-server.service. Open the Modules or Services tab.**
+
 ![A server page on the Overview tab](../../assets/servers/server-overview.webp)
 
 ## Modules
 
-Everything dPanel installed, one row per module, with its versions and status: **Installed**, **Installing**, **Failed**, or **Mixed**. **Add module** opens the catalogue. **Refresh inventory** asks the agent again and drops modules it no longer reports. The counts include top-level modules only; databases you create on MariaDB or PostgreSQL live inside that module's **Manage** view.
+Everything dPanel installed, one row per module, with its versions and status: **Installed**, **Installing**, **Failed**, **Service not running**, **Other version**, or **Mixed**. Select a **Failed** row to see **Why it failed**: the task that failed and its reason. **Add module** opens the catalogue. **Refresh inventory** asks the agent again and drops modules it no longer reports. The counts include top-level modules only; databases you create on MariaDB or PostgreSQL live inside that module's **Manage** view.
 
 Some rows have a shortcut: **Open database** on MariaDB, PostgreSQL and MongoDB opens DB Manager, a database tool in your browser, already pointed at this server; **Manage firewall** on the Firewall module opens the [Firewall](./firewall.md) view. See [Install software](./install-software.md).
 
@@ -121,11 +125,11 @@ This tab reads the newest lines of a file. The time range, paging and download a
 
 The changes you rarely need, each saying what it does.
 
-| Card        | Button              | What it does                                                                                                                                                                                                                 |
-| ----------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Connection  | **Edit connection** | Changes the address, SSH login and agent ports dPanel uses, on servers connected over SSH. A server connected with the agent has no SSH details to change.                                                                  |
+| Card        | Button              | What it does                                                                                                                                                                                                                                                                                                                                  |
+| ----------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Connection  | **Edit connection** | Changes the address, SSH login and agent ports dPanel uses, on servers connected over SSH. A server connected with the agent has no SSH details to change.                                                                                                                                                                                    |
 | Setup       | **Reinstall**       | Runs server setup again. On a server connected over SSH, it reconnects over SSH, reinstalls the agent and refreshes the inventory. On a server connected with the [dPanel agent](./register-a-private-machine.md), including cloud servers that joined through the agent, it reinstalls only the agent. Installed modules and your data stay. |
-| Danger zone | **Delete server**   | Removes the server. See [Delete a server](./delete-a-server.md).                                                                                                                                                             |
+| Danger zone | **Delete server**   | Removes the server. See [Delete a server](./delete-a-server.md).                                                                                                                                                                                                                                                                              |
 
 **Setup** is hidden while a server is being set up or deleted, and on a deleted server, because there is nothing to reinstall then. A server stays in the workspace it was created in; it cannot be moved to another one.
 

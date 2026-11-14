@@ -75,6 +75,10 @@ Applications or load balancers still use the server, or it is a node of a Kubern
 
 The machine is off or gone. If it is only down, start it again and wait for the agent to report, then delete it normally. If it is gone for good, use **Remove from dPanel**. See [Remove a server dPanel can no longer reach](#remove-a-server-dpanel-can-no-longer-reach).
 
+### Can I delete a server that still reads Waiting for agent?
+
+Yes. If you never ran its install command, or the command expired, delete it like any other server. Nothing was installed on a machine, so there is nothing to clean up there.
+
 ### Can I get a deleted server back?
 
 No. A cloud server's disk is destroyed at the provider. Back up anything you need before you delete it.

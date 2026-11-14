@@ -65,6 +65,19 @@ dPanel releases that build again on those servers. A rollback restores your code
 
 In **On servers**, each release has **Start**, **Restart** and **Stop** for its service, and **Delete**. A deleted release can be brought back with **Restore**, or removed for good with **Delete permanently**.
 
+**Restart** keeps the environment variables the service already had. After changing a variable, release again instead; see [Environment variables](./environment-variables.md).
+
+### Move to the new runtime
+
+The **runtime** is the language an application runs on, such as Node.js, Python, Go, Ruby, Bun, uv or PHP. dPanel now installs each language version once per server, ready to run and shared by every user. Applications on servers set up before this keep their previous runtime until you move them. See [Install software](../servers/install-software.md#previous-runtime).
+
+1. In **On servers**, press **Runtime** on the release. It appears on releases of applications that declare a language.
+2. In **Move to the new runtime?**, press **Move to the new runtime**.
+
+dPanel deploys the release again: it installs the language on the new runtime if it is missing, rebuilds the application on it and restarts it. A Python virtual environment is created again. The previous runtime stays installed, so **Move back to the previous runtime** in the same dialog returns the application the same way.
+
+From the terminal: `dnocs application runtime upgrade --id <application ID> --server-id <server ID>`, with `--back` to move back.
+
 ### Delete a build
 
 Press **Delete** on a build to remove it from the list. dPanel asks you to confirm first.

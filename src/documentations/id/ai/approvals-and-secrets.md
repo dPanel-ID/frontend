@@ -17,6 +17,7 @@ Saat Anda meminta perubahan ke **Tanya dPanel** (**Ask dPanel** di tampilan baha
 | Mencari di dokumentasi                                              | Membuat, mengubah, atau merilis aplikasi, mengatur variabel lingkungan                                 |
 | Memeriksa apa yang akan berubah kalau firewall diterapkan           | Membuat atau mengubah rute load balancer, menambah atau menghapus aturan firewall, menerapkan firewall |
 | Menyegarkan daftar modul server dari agent-nya                      | Membuat grup server dan cluster, beralih antara worker bersama dan privat                              |
+| Memeriksa layanan apa saja yang berjalan di server                  | Membuat kunci SSH                                                                                      |
 |                                                                     | Setiap penghapusan                                                                                     |
 
 ## Membaca kartu
@@ -74,7 +75,7 @@ Beberapa perubahan membutuhkan nilai yang hanya Anda yang tahu, seperti kata san
 2. Tekan ikon mata (**Tampilkan nilai**) untuk memeriksa apa yang Anda ketik.
 3. **Setujui** tetap abu-abu sampai semua kolom terisi.
 
-Nilainya dikirim bersama persetujuan Anda langsung ke dPanel. Asisten tidak pernah melihatnya; ia hanya tahu nama variabelnya.
+Nilainya dikirim bersama persetujuan Anda langsung ke dPanel, yang menyimpannya dalam bentuk terenkripsi dan menyamarkannya di halaman aplikasi. Asisten tidak pernah melihatnya; ia hanya tahu nama variabelnya. Lihat [Keamanan dan data Anda](../getting-started/security-and-your-data.md).
 
 ## Rahasia yang dibuat dPanel
 

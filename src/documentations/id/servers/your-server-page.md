@@ -11,14 +11,14 @@ Setiap server di dPanel punya satu halaman, dan semua tindakan terhadap server i
 
 Bagian kepala menampilkan nama, status, alamat, versi Ubuntu, dan lokasi server, lalu sebaris keterangan: cara dPanel menjangkaunya (login SSH, misalnya `ubuntu@203.0.113.10:22`, atau, untuk server yang terhubung dengan agen dPanel, **Lewat agen dPanel**), versi agen, workspace, siapa yang membuat server, dan kapan.
 
-| Kontrol               | Fungsinya                                                                                            |
-| --------------------- | ---------------------------------------------------------------------------------------------------- |
-| Segarkan (↻)          | Membaca ulang status, pemakaian, layanan, dan modul server.                                          |
-| **Ubah server** (✎)   | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel, di server yang terhubung lewat SSH.   |
+| Kontrol               | Fungsinya                                                                                                |
+| --------------------- | -------------------------------------------------------------------------------------------------------- |
+| Segarkan (↻)          | Membaca ulang status, pemakaian, layanan, dan modul server.                                              |
+| **Ubah server** (✎)   | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel, di server yang terhubung lewat SSH.       |
 | **Buka terminal**     | Membuka shell di browser, lewat agen atau lewat SSH. Lihat [Terhubung lewat SSH](./connect-over-ssh.md). |
-| **Tindakan lain** (⋯) | **Pasang ulang server** menjalankan setup lagi; **Hapus server** menghapusnya. Lihat tabel di bawah. |
+| **Tindakan lain** (⋯) | **Pasang ulang server** menjalankan setup lagi; **Hapus server** menghapusnya. Lihat tabel di bawah.     |
 
-Pilih lencana status untuk melihat arti status tersebut. Selama dPanel menyiapkan server, banner biru memberi tahu hal itu, dengan tombol **Ikuti log**. Jika setup gagal, banner merah **Penyiapan tidak selesai** menawarkan **Lihat penyebabnya**.
+Pilih lencana status untuk melihat arti status tersebut. Server yang ditambahkan dengan perintah instalasi berstatus **Menunggu agen** sampai Anda menjalankan perintah itu di mesinnya; dPanel menunggu agennya terhubung hingga 2 jam. Selama dPanel menyiapkan server, banner biru memberi tahu hal itu, dengan tombol **Ikuti log**. Jika setup gagal, banner merah **Penyiapan tidak selesai** menawarkan **Lihat penyebabnya**.
 
 ## Pemberitahuan agen
 
@@ -45,11 +45,15 @@ Pastikan juga server bisa menjangkau internet lewat HTTPS (port 443): agen terhu
 
 **Pemakaian langsung** membaca CPU, memori, dan disk dari agen setiap beberapa detik selama halaman terbuka. Di bawahnya ada jumlah aplikasi, load balancer, basis data, dan modul, lalu **Detail server** (alamat, login SSH, sistem operasi, agen, penyedia, kepemilikan, **Dibuat oleh**, dan kapan server ditambahkan) dan **Yang berjalan di sini**.
 
+Di server yang terhubung dengan agen dPanel, **Detail server** menampilkan **Alamat lokal** (alamatnya di jaringannya sendiri), **Terhubung dari** (alamat publik yang dipakai jaringannya untuk keluar ke internet, atau **Tidak diketahui: agen terhubung dari jaringan privat**) dan **Koneksi**, bukan login SSH. Arahkan domain ke alamat **Terhubung dari** hanya jika port 80 dan 443 diteruskan ke mesin itu.
+
+Kalau layanan sebuah modul berhenti, atau basis data menjalankan rilis yang berbeda dari yang dipilih, **Yang berjalan di sini** menandainya, misalnya **Layanan tidak berjalan: redis-server.service. Buka tab Modul atau Layanan.**
+
 ![Halaman server pada tab Ringkasan](../../assets/servers/server-overview.webp)
 
 ## Modul
 
-Semua yang dipasang dPanel, satu baris per modul, dengan versi dan statusnya: **Terpasang**, **Memasang**, **Gagal**, atau **Campuran**. **Tambah modul** membuka katalog. **Segarkan inventaris** meminta data terbaru dari agen dan membuang modul yang tidak lagi dilaporkannya. Hitungannya hanya mencakup modul tingkat atas; basis data yang Anda buat di MariaDB atau PostgreSQL ada di tampilan **Kelola** modul tersebut.
+Semua yang dipasang dPanel, satu baris per modul, dengan versi dan statusnya: **Terpasang**, **Memasang**, **Gagal**, **Layanan tidak berjalan**, **Versi lain**, atau **Campuran**. Pilih baris **Gagal** untuk melihat **Mengapa gagal**: tugas yang gagal dan alasannya. **Tambah modul** membuka katalog. **Segarkan inventaris** meminta data terbaru dari agen dan membuang modul yang tidak lagi dilaporkannya. Hitungannya hanya mencakup modul tingkat atas; basis data yang Anda buat di MariaDB atau PostgreSQL ada di tampilan **Kelola** modul tersebut.
 
 Beberapa baris punya pintasan: **Buka database** pada MariaDB, PostgreSQL, dan MongoDB membuka DB Manager, alat basis data di browser, langsung mengarah ke server ini; **Kelola firewall** pada modul Firewall membuka tampilan [Firewall](./firewall.md). Lihat [Memasang perangkat lunak](./install-software.md).
 
@@ -121,11 +125,11 @@ Tab ini membaca baris terbaru dari sebuah berkas. Rentang waktu, halaman, dan un
 
 Perubahan yang jarang dibutuhkan, masing-masing dengan penjelasan.
 
-| Kartu          | Tombol           | Fungsinya                                                                                                                                                                                                                                 |
-| -------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Koneksi        | **Edit koneksi** | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel, di server yang terhubung lewat SSH. Server yang terhubung dengan agen tidak punya detail SSH untuk diubah.                                                                   |
+| Kartu          | Tombol           | Fungsinya                                                                                                                                                                                                                                                                                                                                                |
+| -------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Koneksi        | **Edit koneksi** | Mengubah alamat, login SSH, dan port agen yang dipakai dPanel, di server yang terhubung lewat SSH. Server yang terhubung dengan agen tidak punya detail SSH untuk diubah.                                                                                                                                                                                |
 | Penyiapan      | **Instal ulang** | Menjalankan penyiapan server lagi. Di server yang terhubung lewat SSH: masuk ulang lewat SSH, memasang ulang agen, dan menyegarkan inventaris. Di server yang terhubung dengan [agen dPanel](./register-a-private-machine.md), termasuk server cloud yang bergabung lewat agen, hanya agen yang dipasang ulang. Modul terpasang dan data Anda tetap ada. |
-| Zona berbahaya | **Hapus server** | Menghapus server. Lihat [Menghapus server](./delete-a-server.md).                                                                                                                                                                         |
+| Zona berbahaya | **Hapus server** | Menghapus server. Lihat [Menghapus server](./delete-a-server.md).                                                                                                                                                                                                                                                                                        |
 
 **Penyiapan** disembunyikan selama server sedang disiapkan atau dihapus, dan pada server yang sudah dihapus, karena saat itu tidak ada yang bisa dipasang ulang. Server tetap berada di workspace tempat ia dibuat; server tidak bisa dipindahkan ke workspace lain.
 

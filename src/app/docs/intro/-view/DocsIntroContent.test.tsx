@@ -29,6 +29,63 @@ describe('DocsIntroContent', () => {
     }
   });
 
+  it('names each reader and the problem dPanel solves for them', () => {
+    render(<DocsIntroContent locale="en" />);
+
+    for (const item of DOCS_INTRO_EN.problems.items) {
+      expect(screen.getByRole('heading', { name: item.who })).toBeTruthy();
+      expect(screen.getByText(item.problem)).toBeTruthy();
+      expect(screen.getByText(item.answer)).toBeTruthy();
+    }
+  });
+
+  it('draws how dPanel works and says it in words too', () => {
+    render(<DocsIntroContent locale="en" />);
+
+    const how = DOCS_INTRO_EN.howItWorks;
+    for (const node of [how.you, how.dpanel, how.servers]) {
+      expect(screen.getByRole('heading', { name: node.title })).toBeTruthy();
+    }
+    // The numbered sentences are the picture's text alternative.
+    const figure = screen.getByRole('figure');
+    expect(figure.getAttribute('aria-describedby')).toBe(
+      'docs-intro-how-steps',
+    );
+    for (const step of how.steps) {
+      expect(screen.getByRole('heading', { name: step.title })).toBeTruthy();
+    }
+  });
+
+  it('highlights the home lab and links to its tutorial', () => {
+    render(<DocsIntroContent locale="en" />);
+
+    expect(
+      screen.getByRole('heading', { name: DOCS_INTRO_EN.homelab.title }),
+    ).toBeTruthy();
+    expect(
+      screen
+        .getByRole('link', { name: DOCS_INTRO_EN.homelab.cta })
+        .getAttribute('href'),
+    ).toBe('/docs/tutorials/team-homelab');
+    expect(
+      screen
+        .getByRole('link', { name: DOCS_INTRO_EN.homelab.secondaryCta })
+        .getAttribute('href'),
+    ).toBe('/docs/servers/register-a-private-machine');
+  });
+
+  it('says where data lives and links to the details', () => {
+    render(<DocsIntroContent locale="en" />);
+
+    for (const column of DOCS_INTRO_EN.data.columns) {
+      expect(screen.getByRole('heading', { name: column.title })).toBeTruthy();
+    }
+    const more = screen.getByRole('link', { name: DOCS_INTRO_EN.data.more });
+    expect(more.getAttribute('href')).toBe(
+      '/docs/getting-started/security-and-your-data',
+    );
+  });
+
   it('gives the lock-in answer its own section', () => {
     render(<DocsIntroContent locale="en" />);
 
@@ -167,6 +224,34 @@ describe('DocsIntroContent', () => {
     );
     expect(DOCS_INTRO_ID.providers.items).toHaveLength(
       DOCS_INTRO_EN.providers.items.length,
+    );
+    expect(DOCS_INTRO_ID.problems.items.map((i) => i.key)).toEqual(
+      DOCS_INTRO_EN.problems.items.map((i) => i.key),
+    );
+    expect(DOCS_INTRO_ID.howItWorks.steps).toHaveLength(
+      DOCS_INTRO_EN.howItWorks.steps.length,
+    );
+    expect(DOCS_INTRO_ID.howItWorks.outside.items).toHaveLength(
+      DOCS_INTRO_EN.howItWorks.outside.items.length,
+    );
+    expect(DOCS_INTRO_ID.data.columns.map((c) => c.key)).toEqual(
+      DOCS_INTRO_EN.data.columns.map((c) => c.key),
+    );
+    for (const [index, column] of DOCS_INTRO_EN.data.columns.entries()) {
+      expect(DOCS_INTRO_ID.data.columns[index]?.items).toHaveLength(
+        column.items.length,
+      );
+    }
+    expect(DOCS_INTRO_ID.data.control.items).toHaveLength(
+      DOCS_INTRO_EN.data.control.items.length,
+    );
+    expect(DOCS_INTRO_ID.data.moreHref).toBe(DOCS_INTRO_EN.data.moreHref);
+    expect(DOCS_INTRO_ID.homelab.points).toHaveLength(
+      DOCS_INTRO_EN.homelab.points.length,
+    );
+    expect(DOCS_INTRO_ID.homelab.href).toBe(DOCS_INTRO_EN.homelab.href);
+    expect(DOCS_INTRO_ID.homelab.secondaryHref).toBe(
+      DOCS_INTRO_EN.homelab.secondaryHref,
     );
   });
 });

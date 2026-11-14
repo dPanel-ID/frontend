@@ -22,7 +22,7 @@ Buka **Aplikasi**, lalu tekan **Buat Aplikasi**. Formulirnya punya lima langkah.
 1. Buka **Tim GitHub** dan pilih akun atau organisasi pemilik repositori. **Tambah akun GitHub** di ujung daftar menghubungkan akun lain.
 2. Ketik di **Cari repositori**, lalu tekan Enter.
 3. Pilih repositorinya. dPanel membaca detailnya dan menampilkannya di **Repositori terpilih**.
-4. Periksa **Branch**. Isinya otomatis branch default repositori.
+4. Periksa **Branch**. Isinya otomatis branch default repositori. dPanel menyimpan pilihan Anda sebagai branch default aplikasi, yang dipakai `dnocs application deploy` jika Anda tidak memberi `--branch`.
 5. Tekan **Lanjut**.
 
 ![Langkah 1 formulir, dengan dPanel-ID/go-example terpilih dan branch main](../../assets/applications/apps-create-repository.webp)

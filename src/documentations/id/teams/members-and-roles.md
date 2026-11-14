@@ -55,7 +55,7 @@ Mulailah dengan peran tersempit yang masih cukup untuk pekerjaannya. **Developer
 3. Centang peran yang seharusnya mereka miliki. Tombol pilih grup mencentang satu grup sekaligus, dan tombol hapus pilihan mengosongkan semuanya.
 4. Tekan **Simpan peran**.
 
-Menyimpan berarti mengganti seluruh set peran anggota itu. Seorang anggota hanya memegang satu peran preset, jadi mencentang **Admin** menggantikan **Developer** atau **DevOps**.
+Menyimpan berarti mengganti seluruh set peran anggota itu. Seorang anggota hanya memegang satu peran preset, jadi mencentang **Admin** menggantikan **Developer** atau **DevOps**. Perubahannya langsung berlaku: anggota yang perannya Anda turunkan kehilangan akses tambahannya pada tindakan berikutnya, tanpa perlu keluar.
 
 Owner dan Admin ditandai **Dilindungi**. Hanya owner ruang kerja yang bisa mencentangnya, atau mengubah dan mengeluarkan anggota yang memegangnya. Bagi yang lain, keduanya tampil tetapi tidak aktif.
 

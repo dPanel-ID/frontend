@@ -17,6 +17,7 @@ Katakan **apa** yang Anda inginkan dan berikan fakta yang tidak mungkin diketahu
 | ----------------------------------- | -------------------------------------------------------------------- |
 | Melihat server                      | `Server mana saja yang sedang berhenti?`                             |
 | Melihat apa yang berjalan di mana   | `Aplikasi apa saja yang berjalan di server 145, dan di port berapa?` |
+| Memeriksa sebuah layanan            | `Apakah layanan MariaDB di server 145 sedang berjalan?`              |
 | Memeriksa job terbaru               | `Apakah ada job yang gagal dalam 24 jam terakhir?`                   |
 | Menampilkan domain                  | `Tampilkan domain saya beserta penyedia DNS-nya.`                    |
 | Memeriksa ruang disk                | `Server mana yang disknya hampir penuh?`                             |
@@ -27,14 +28,16 @@ Katakan **apa** yang Anda inginkan dan berikan fakta yang tidak mungkin diketahu
 ## Meluncurkan server
 
 ```text
-Buat VM di proyek Google Cloud 7 saya bernama web-1: Ubuntu 24.04, 2 vCPU dan memori 4 GB, tipe mesin termurah, disk 30 GB, region asia-southeast1, dengan kunci SSH 37.
+Buat VM di proyek Google Cloud 7 saya bernama web-1: Ubuntu 24.04, 2 vCPU dan memori 4 GB, tipe mesin termurah, disk 30 GB, region asia-southeast1.
 ```
 
-Asisten mencari akun cloud, region, tipe mesin, dan kunci SSH Anda, lalu mengusulkan server dengan harga **perkiraan**. Harga sebenarnya adalah yang ditagihkan penyedia cloud Anda. Server baru butuh 10 sampai 20 menit hingga siap; tanyakan "Apakah server web-1 sudah siap?" untuk memeriksanya.
+Asisten mencari akun cloud, region, dan tipe mesin Anda, lalu mengusulkan server dengan harga **perkiraan**. Harga sebenarnya adalah yang ditagihkan penyedia cloud Anda. Server baru butuh 10 sampai 20 menit hingga siap; tanyakan "Apakah server web-1 sudah siap?" untuk memeriksanya.
 
 Untuk menyiapkan ulang server setelah penyiapan gagal: `Jalankan ulang penyiapan server di server 145.`
 
-Asisten meluncurkan server yang bergabung lewat SSH, jadi asisten memakai salah satu SSH key Anda, seperti pada contoh. Untuk meluncurkan server yang bergabung lewat agen dPanel, tanpa SSH key, pakai formulir atau `dnocs server create-cloud`. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Untuk menambahkan server yang sudah Anda punya, jalankan `sudo dnocs machine register` di server itu; lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md).
+Server baru bergabung lewat agen dPanel, jadi tidak perlu kunci SSH. Di Google Cloud, AWS, dan Tencent Cloud Anda bisa menambahkan "tanpa IP publik": server tetap bisa mengakses internet lewat NAT milik penyedia. Server DigitalOcean dan IDCloudHost selalu mendapat IP publik. Server Biznet Gio dan Alibaba Cloud bergabung lewat SSH, jadi sebutkan kunci SSH-nya; kalau Anda belum punya, asisten mengusulkan pembuatannya untuk Anda setujui. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md).
+
+Untuk menambahkan server yang sudah Anda punya, jalankan `sudo dnocs machine register` di server itu, atau ambil perintah pemasangan satu barisnya di **Server** → **Buat Server** → **Ambil perintah pemasangan**; lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md).
 
 ## Memasang perangkat lunak di server
 
