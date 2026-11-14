@@ -115,8 +115,11 @@ export function ServerPicker(props: {
               server={server}
               selected={serverId.field.value === server.id}
               onSelect={() => {
+                // A new server starts without an engine. That is the
+                // next thing to pick, not a mistake to flag yet.
                 if (serverId.field.value !== server.id) {
-                  form.setValue('engine', '', { shouldValidate: true });
+                  form.setValue('engine', '');
+                  form.clearErrors('engine');
                 }
                 serverId.field.onChange(server.id);
               }}
@@ -175,7 +178,7 @@ export function ServerPicker(props: {
       </div>
 
       <div className="px-4 pb-4">
-        <ErrorInline t={t} message={form.formState.errors.serverId?.message} />
+        <ErrorInline t={t} message={serverId.fieldState.error?.message} />
       </div>
     </Card>
   );
@@ -395,7 +398,16 @@ export function EnginePicker(props: {
                           resources.selectedEngineRuntimeItem,
                         )}
                         onSelect={() => {
-                          if (installed) engine.field.onChange(module.id);
+                          // Validated on pick: the picker is a set of
+                          // buttons, never blurred, so "onTouched" would
+                          // otherwise keep an earlier "Required".
+                          if (installed) {
+                            form.setValue('engine', module.id, {
+                              shouldDirty: true,
+                              shouldTouch: true,
+                              shouldValidate: true,
+                            });
+                          }
                         }}
                       />
                     );
@@ -491,7 +503,7 @@ export function EnginePicker(props: {
             </Button>
           </div>
         ) : (
-          <ErrorInline t={t} message={form.formState.errors.engine?.message} />
+          <ErrorInline t={t} message={engine.fieldState.error?.message} />
         )}
       </div>
     </Card>

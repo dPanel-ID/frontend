@@ -31,8 +31,12 @@ import { FlowStepper } from '@/shared/presentation/organisms/FlowStepper';
 import type { ReviewPanelRow } from '@/shared/presentation/organisms/ReviewPanel';
 import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 
-import { getSelectedServer, getServerName } from './-lib/modules';
-import { getRoutePreviewItems } from './-lib/payload';
+import {
+  getSelectedServer,
+  getServerName,
+  getServerPublicAddress,
+} from './-lib/modules';
+import { getRoutePreviewItems, isHttpsRequested } from './-lib/payload';
 import { DEFAULT_VALUES } from './-model/form';
 import { useLoadBalancerCreateResources } from './-model/resources';
 import useCreateLoadBalancer from './-usecase/use-create';
@@ -180,6 +184,8 @@ function CreateFlow() {
       ? `${subdomain}.${formValues.domain}`
       : formValues.domain;
   const proxied = formValues.internalDomainMetadata?.cloudflare?.proxied;
+  // What will be sent, not what the switch last held: L4 never gets one.
+  const https = isHttpsRequested(formValues);
 
   const rows: ReviewPanelRow[] = [
     {
@@ -220,7 +226,7 @@ function CreateFlow() {
     {
       key: 'https',
       label: t('page.loadBalancersCreate.review.https'),
-      value: formValues.features?.sslEnabled
+      value: https
         ? t('page.loadBalancersCreate.review.httpsOn')
         : t('page.loadBalancersCreate.review.httpsOff'),
       done: true,
@@ -333,7 +339,10 @@ function CreateFlow() {
               <DomainField
                 form={form}
                 domains={resources.domains}
-                gatewayAddress={selectedServer?.host.address}
+                gatewayAddress={getServerPublicAddress(selectedServer)}
+                gatewayHasNoPublicAddress={Boolean(
+                  selectedServer && !getServerPublicAddress(selectedServer),
+                )}
               />
             )}
 
@@ -353,6 +362,7 @@ function CreateFlow() {
               <ReviewSummary
                 rows={rows}
                 routes={routes}
+                https={https}
                 onEdit={(row) =>
                   setCurrent(
                     (
@@ -402,9 +412,10 @@ function rowsDone(rows: ReviewPanelRow[], keys: string[]) {
 function ReviewSummary(props: {
   rows: ReviewPanelRow[];
   routes: Array<{ key: string; match: string; destination: string }>;
+  https: boolean;
   onEdit: (row: string) => void;
 }) {
-  const { onEdit, routes, rows } = props;
+  const { https, onEdit, routes, rows } = props;
   const t = useDevetekTranslations();
 
   return (
@@ -452,7 +463,9 @@ function ReviewSummary(props: {
       )}
 
       <p className="text-xs leading-relaxed text-muted-foreground">
-        {t('page.loadBalancersCreate.review.footnote')}
+        {https
+          ? t('page.loadBalancersCreate.review.footnote')
+          : t('page.loadBalancersCreate.review.footnoteNoHttps')}
       </p>
     </div>
   );

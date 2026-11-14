@@ -1,6 +1,8 @@
 import { useAuthModel } from '@/services/auth/model';
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { workspaceToOrganizationId } from '@/shared/api/-dtos';
+import { selectedWorkspaceOrganizationId } from '@/shared/libs/api-client/config';
 import LayoutAutoGridList from '@/shared/presentation/atoms/LayoutAutoGridList';
 import { EmptyState } from '@/shared/presentation/organisms/EmptyState';
 import { buildResponseView } from '@/widgets/response-view-builder';
@@ -28,6 +30,8 @@ export default buildResponseView({
     const { resUserProfile } = useAuthModel();
     const profile =
       resUserProfile.$status === 'success' ? resUserProfile : undefined;
+    // The team the sidebar shows as active; null in the personal workspace.
+    const selectedTeamId = selectedWorkspaceOrganizationId();
 
     if (list.length < 1) {
       return (
@@ -53,7 +57,7 @@ export default buildResponseView({
           access: profile
             ? myTeamAccess(profile.workspaces, org.id)
             : undefined,
-          isActive: profile?.active_workspace === org.id,
+          isActive: workspaceToOrganizationId(org.id) === selectedTeamId,
         },
       ];
     });

@@ -9,6 +9,22 @@ export function normalizeWorkspaceOrganizationId(value?: string | null) {
   return value;
 }
 
+/**
+ * The team workspace this browser works in, the one every API request is
+ * sent for and the sidebar shows; null for the personal workspace (or on
+ * the server, where nothing is stored).
+ */
+export function selectedWorkspaceOrganizationId() {
+  if (typeof window === 'undefined') return null;
+  try {
+    return normalizeWorkspaceOrganizationId(
+      window.localStorage.getItem(LS_ORGANIZATION_ID),
+    );
+  } catch {
+    return null;
+  }
+}
+
 /** Header value that selects the signed-in person's own workspace. */
 export const PERSONAL_WORKSPACE_ID = 'personal';
 

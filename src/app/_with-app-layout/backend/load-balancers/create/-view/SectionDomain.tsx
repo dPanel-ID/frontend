@@ -20,10 +20,12 @@ import type { CreateResources } from '../-model/resources';
 export function DomainField(props: {
   form: Form;
   domains: CreateResources['domains'];
-  /** Where the record points: the gateway server's address. */
+  /** Where the record points: the gateway server's public address. */
   gatewayAddress?: string;
+  /** The gateway is picked but has no public address to point a record at. */
+  gatewayHasNoPublicAddress?: boolean;
 }) {
-  const { form, domains, gatewayAddress } = props;
+  const { form, domains, gatewayAddress, gatewayHasNoPublicAddress } = props;
   const t = useDevetekTranslations();
   const [isExternal, setIsExternal] = useState(true);
   const domain = useController({ control: form.control, name: 'domain' });
@@ -157,6 +159,7 @@ export function DomainField(props: {
         external={isExternal}
         provider={selectedDomain?.provider}
         gatewayAddress={gatewayAddress}
+        gatewayHasNoPublicAddress={gatewayHasNoPublicAddress}
       />
     </Card>
   );
@@ -173,8 +176,15 @@ function DnsRecordPanel(props: {
   external: boolean;
   provider?: string;
   gatewayAddress?: string;
+  gatewayHasNoPublicAddress?: boolean;
 }) {
-  const { external, form, gatewayAddress, provider } = props;
+  const {
+    external,
+    form,
+    gatewayAddress,
+    gatewayHasNoPublicAddress,
+    provider,
+  } = props;
   const t = useDevetekTranslations('page.loadBalancersCreate.dns');
   const values = useWatch({ control: form.control });
   const proxied = useController({
@@ -214,9 +224,18 @@ function DnsRecordPanel(props: {
         <span className="min-w-0 break-all">{host || t('hostPending')}</span>
         <ArrowRightIcon className="size-3.5 shrink-0 text-muted-foreground" />
         <span className="break-all">
-          {gatewayAddress || t('gatewayPending')}
+          {gatewayAddress ||
+            (gatewayHasNoPublicAddress
+              ? t('gatewayNoPublicAddress')
+              : t('gatewayPending'))}
         </span>
       </div>
+
+      {gatewayHasNoPublicAddress && (
+        <p className="text-xs leading-relaxed text-amber-700 dark:text-amber-300">
+          {t('gatewayNoPublicAddressHint')}
+        </p>
+      )}
 
       <p className="text-xs leading-relaxed text-muted-foreground">
         {external

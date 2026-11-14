@@ -1108,7 +1108,7 @@
         },
         "position": "Step {step} of {total}",
         "blocked": {
-          "source": "Choose a repository and the branch to build from, or pick a ready-made application.",
+          "source": "Choose a repository and the branch to build from.",
           "server": "Choose the server to install on, and set up each dependency you picked.",
           "details": "A name (letters, numbers and spaces only), a language, a build command, a start command and a free port are all needed.",
           "env": "",
@@ -1155,7 +1155,11 @@
             "loadingBranches": "Loading branches…",
             "branchesEmpty": "This repository has no branches dNocs can read.",
             "branchesError": "Could not load the branch list. dNocs will build {branch}.",
-            "branchesGithubAuthError": "GitHub would not confirm your account, so the branch list is unavailable. Reconnect GitHub to choose a branch."
+            "branchesGithubAuthError": "GitHub would not confirm your account, so the branch list is unavailable. Reconnect GitHub to choose a branch.",
+            "loadFailedTitle": "Could not load your repositories",
+            "loadFailedDesc": "GitHub did not answer. Try again in a moment.",
+            "retry": "Try again",
+            "repoDetailFailed": "Could not read this repository's details from GitHub. Pick it again to retry."
           }
         },
         "step2": {
@@ -1342,7 +1346,7 @@
       "docs": "Docs",
       "createServer": "Create Server",
       "create": {
-        "documentTitle": "Create server | dPanel",
+        "documentTitle": "Add a server | dnocs",
         "headerTitle": "Create Server",
         "headerDesc": "Connect a server you already run with the dPanel agent, or launch a cloud VM in a few clicks. dPanel sets it up either way.",
         "ssh": {
@@ -1568,7 +1572,8 @@
               "tradeoff": "dPanel's workers do the work over SSH, so it is lighter on the VM, but dPanel's key gets root (sudo) access and the VM needs a public IP."
             },
             "sshOnly": "For now, servers on this provider join over SSH: dPanel puts the SSH key you choose on the VM and connects in.",
-            "agentOnly": "Without a public IP, dPanel can only reach the VM through its agent, so SSH is not available."
+            "agentOnly": "Without a public IP, dPanel can only reach the VM through its agent, so SSH is not available.",
+            "pickProvider": "Pick a provider first. It decides how the new server can join dNocs."
           },
           "publicIP": {
             "title": "Public IP",
@@ -1600,6 +1605,10 @@
             "another": "Launch another",
             "open": "Open server",
             "failed": "Could not launch the server"
+          },
+          "cloud": {
+            "projectsHint": "Cloud projects in this workspace connected to this provider.",
+            "projectsEmpty": "No cloud project for this provider in this workspace yet."
           }
         }
       },
@@ -2483,7 +2492,8 @@
         "mode": "Routing mode",
         "routes": "Routes",
         "footnote": "dNocs writes the routes to the gateway and requests the certificate. It usually takes a minute.",
-        "startTitle": "Start with a gateway server"
+        "startTitle": "Start with a gateway server",
+        "footnoteNoHttps": "dNocs writes the routes to the gateway. It usually takes a minute."
       },
       "flow": {
         "back": "Back",
@@ -2507,7 +2517,9 @@
         "proxiedHint": "Traffic goes through Cloudflare, which hides the gateway address. The certificate is issued over DNS-01, which works for Caddy and APISIX alike.",
         "dnsOnlyHint": "Visitors reach the gateway directly. The certificate is issued over HTTP-01.",
         "proxiedToggle": "Proxy through Cloudflare",
-        "proxiedToggleHint": "Hides the gateway address behind Cloudflare. Works with any SSL/TLS mode; Full (strict) also encrypts the hop from Cloudflare to the gateway."
+        "proxiedToggleHint": "Hides the gateway address behind Cloudflare. Works with any SSL/TLS mode; Full (strict) also encrypts the hop from Cloudflare to the gateway.",
+        "gatewayNoPublicAddress": "no public address yet",
+        "gatewayNoPublicAddressHint": "This gateway joined through its agent and has not connected from a public IP yet, so dNocs has no address to point the record at. Pick a gateway with a public address, or use your own domain and point it at the server yourself."
       },
       "l4": {
         "service": "Service",
@@ -5005,7 +5017,12 @@
     "loadBalancers": "Load Balancers",
     "dDns": "Domain & DNS",
     "cloudProject": "Cloud Projects",
-    "secretMgr": "Secret Managers"
+    "secretMgr": "Secret Managers",
+    "footer": {
+      "switchToDark": "Switch to dark mode",
+      "switchToLight": "Switch to light mode",
+      "switchLanguage": "Change language"
+    }
   },
   "entities": {
     "server": {

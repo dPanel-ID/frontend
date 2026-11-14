@@ -319,6 +319,7 @@ function OperationDetail() {
   const tCommon = useDevetekTranslations('common.dataPanel');
   const {
     goTo,
+    group,
     groupId,
     isOperationDegraded,
     operation,
@@ -329,6 +330,12 @@ function OperationDetail() {
   } = useGroupDetailModel();
 
   if (!operationId) return null;
+
+  // Targets name servers by ID; the group's members carry their names. A
+  // server that has left the group since keeps its ID.
+  const serverNames = new Map(
+    (group?.members ?? []).map((member) => [member.id, member.hostname]),
+  );
 
   const isRunning = operation
     ? !isTerminalOperationStatus(operation.status)
@@ -462,8 +469,10 @@ function OperationDetail() {
                       to={links.server.to}
                       params={links.server.params}
                       className="text-primary hover:underline"
+                      title={`#${target.serverId}`}
                     >
-                      {target.serverId}
+                      {serverNames.get(target.serverId) ||
+                        `#${target.serverId}`}
                     </Link>
                   </TableCell>
                   <TableCell className={dataTable.cell}>

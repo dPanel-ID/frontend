@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 import { PlusIcon, RefreshCwIcon } from 'lucide-react';
 import { useController, useWatch } from 'react-hook-form';
 
+import { useDevetekTranslations } from '@/services/i18n';
+
 import { useCloudProjectCreateModal } from '@/features/cloud-project-create-modal';
 
 import { ApiCloud } from '@/shared/api';
@@ -311,6 +313,7 @@ const SubCloudProviderContractStatus = () => {
 };
 
 const SubCloudProjectCbo = () => {
+  const t = useDevetekTranslations('page.servers.create.vmInstant.cloud');
   const { form, formErrors, setLabel } = useForm();
   const [openCloudProjectCreateModal] = useCloudProjectCreateModal();
   const provider = useWatch({ control: form.control, name: 'provider' }) as
@@ -409,9 +412,9 @@ const SubCloudProjectCbo = () => {
     <div className="space-y-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-xs text-muted-foreground">
-          {items.length === 0
-            ? 'No project yet for this provider.'
-            : 'Projects connected to this provider.'}
+          {/* Cloud projects belong to a workspace, so a project added in
+              another one does not show here. */}
+          {items.length === 0 ? t('projectsEmpty') : t('projectsHint')}
         </p>
         <div className="flex items-center gap-2">
           <Button

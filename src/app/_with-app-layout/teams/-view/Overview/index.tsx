@@ -8,6 +8,8 @@ import {
 import { useAuthModel } from '@/services/auth/model';
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { workspaceToOrganizationId } from '@/shared/api/-dtos';
+import { selectedWorkspaceOrganizationId } from '@/shared/libs/api-client/config';
 import { StatTile } from '@/shared/presentation/molecules/StatTile';
 
 import { teamAccessOf, teamWorkspaces } from '../../-lib/team-roles';
@@ -27,11 +29,16 @@ export default function Overview() {
   const owned = teams.filter(
     (team) => teamAccessOf(team.roles ?? []) === 'owner',
   ).length;
-  const active = (profile?.workspaces ?? []).find(
-    (workspace) => workspace.id === profile?.active_workspace,
-  );
-  const activeName =
-    !active || active.type !== 'group' ? t('personal') : active.name;
+  // The workspace the sidebar shows and requests are sent for. The
+  // profile's active_workspace is the identity provider's default, which
+  // stays "personal" after switching to a team in this browser.
+  const selectedId = selectedWorkspaceOrganizationId();
+  const active = selectedId
+    ? teams.find((team) => workspaceToOrganizationId(team.id) === selectedId)
+    : undefined;
+  const activeName = !selectedId
+    ? t('personal')
+    : active?.name || `#${selectedId}`;
 
   return (
     <div className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">

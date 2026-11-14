@@ -64,7 +64,8 @@ export function RoutingModePicker(props: { form: Form }) {
         'features.protocol',
         l4ProtocolsOf(form.getValues('engine'))[0],
       );
-      form.setValue('features.sslEnabled', false);
+      // HTTPS stays as the person left it: L4 ignores it (see
+      // isHttpsRequested), and switching back to L7 must not turn it off.
     } else {
       form.setValue('features.protocol', 'http');
     }
