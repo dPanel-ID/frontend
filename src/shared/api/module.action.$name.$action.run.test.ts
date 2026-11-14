@@ -3,11 +3,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { apiDoPost } from '@/shared/libs/api-client/lib/apiDoPost';
 import { AdapterError } from '@/shared/libs/api-client/lib/error';
 
-import { doPost } from './module.action.$name.$action.run';
 import {
   canonicalLegacyServerModuleActionResponse,
   canonicalModuleHostGroupActionResponse,
 } from './host-group.test-fixtures';
+import { doPost } from './module.action.$name.$action.run';
 
 vi.mock('@/shared/libs/api-client/lib/apiDoPost', () => ({
   apiDoPost: vi.fn(),

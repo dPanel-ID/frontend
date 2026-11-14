@@ -1,5 +1,6 @@
-import type { AppDefinition } from '@/shared/api/-dtos/application';
 import type { SchemaCommon } from '@/entities/shared/rules/schema';
+
+import type { AppDefinition } from '@/shared/api/-dtos/application';
 
 import type { SchemaApplicationSetupEdit } from './form-schema';
 

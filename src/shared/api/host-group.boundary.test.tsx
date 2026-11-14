@@ -2,15 +2,15 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { AdapterError } from '@/shared/libs/api-client/lib/error';
 import { apiClient } from '@/shared/libs/api-client/lib/client';
+import { AdapterError } from '@/shared/libs/api-client/lib/error';
 import type {
   ApiClientResponse,
 } from '@/shared/libs/api-client/rules/types';
 
-import * as HostGroupAgentCommandApi from './host-group.operation.agent-command.$operationId.$machineId';
 import * as HostGroupDetailApi from './host-group.detail.$id';
 import * as HostGroupOperationApi from './host-group.operation.$id';
+import * as HostGroupAgentCommandApi from './host-group.operation.agent-command.$operationId.$machineId';
 import {
   parseHostGroupActionResponsePayload,
   parseHostGroupDetailPayload,

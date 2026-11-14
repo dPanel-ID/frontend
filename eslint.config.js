@@ -3,6 +3,7 @@
 import { tanstackConfig } from '@tanstack/eslint-config';
 import eslintPluginImport from 'eslint-plugin-import';
 import eslintPluginReactHooks from 'eslint-plugin-react-hooks';
+import tseslint from 'typescript-eslint';
 
 const eslintConfig = [
   ...tanstackConfig,
@@ -90,6 +91,12 @@ const eslintConfig = [
       ],
       'react-hooks/exhaustive-deps': 'error',
     },
+  },
+  {
+    // The root JS config files sit outside the TypeScript program, so lint
+    // them without type information instead of failing to parse them.
+    ...tseslint.configs.disableTypeChecked,
+    files: ['*.config.js'],
   },
 ];
 

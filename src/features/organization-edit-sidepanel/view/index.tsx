@@ -1,5 +1,5 @@
-import Layout from '@/services/sidepanel/ui/presentation/Layout/General';
 import { useDevetekTranslations } from '@/services/i18n';
+import Layout from '@/services/sidepanel/ui/presentation/Layout/General';
 
 import { DisclaimersLabel } from '@/widgets/disclaimers-label';
 

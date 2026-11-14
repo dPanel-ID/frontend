@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { Link, createFileRoute } from '@tanstack/react-router';
+
+import { DetailSummaryTable } from '@/features/server-groups/view/DetailSummaryTable';
 
 import * as ApiHostGroupOperationAgentCommand from '@/shared/api/host-group.operation.agent-command.$operationId.$machineId';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
@@ -7,7 +9,6 @@ import {
   PageHeader,
   PageHeaderShimmer,
 } from '@/shared/presentation/organisms/PageHeader';
-import { DetailSummaryTable } from '@/features/server-groups/view/DetailSummaryTable';
 import { FailedState } from '@/widgets/failed-state';
 import { FallbackState } from '@/widgets/fallback-state';
 
@@ -71,7 +72,7 @@ function AgentCommandDetailPage() {
             ]}
           />
         }
-        title={`Agent Command ${command.id ?? machineId}`}
+        title={`Agent Command ${command.id}`}
         description="Scoped agent-command detail for a server-group operation target."
       />
 
@@ -85,16 +86,16 @@ function AgentCommandDetailPage() {
             {
               label: 'Command ID',
               value: (
-                <span className="font-mono text-xs">{command.id ?? '-'}</span>
+                <span className="font-mono text-xs">{command.id}</span>
               ),
             },
             {
               label: 'Status',
-              value: command.status ?? '-',
+              value: command.status,
             },
             {
               label: 'Type',
-              value: command.command_type ?? '-',
+              value: command.command_type,
             },
             {
               label: 'Execution',
@@ -146,11 +147,11 @@ function AgentCommandDetailPage() {
             },
             {
               label: 'Created',
-              value: command.created_at ?? '-',
+              value: command.created_at,
             },
             {
               label: 'Updated',
-              value: command.updated_at ?? '-',
+              value: command.updated_at,
             },
           ]}
         />

@@ -1,10 +1,12 @@
-import type { DoRequestRecipe } from '@/shared/libs/api-client/rules/types';
-import type { PureResponse } from '@/shared/libs/api-client/rules/types';
 import { processError } from '@/shared/libs/api-client/lib/processor';
-
+import type {
+  DoRequestRecipe,
+  PureResponse,
+} from '@/shared/libs/api-client/rules/types';
 import type { ExplicitTarget } from '@/shared/rules/host-group';
 
 import { apiDoPost } from '../libs/api-client';
+
 import { parseHostGroupModuleActionResponsePayload } from './host-group.parsers';
 
 import type { DTOs } from '.';

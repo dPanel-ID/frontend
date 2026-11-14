@@ -20,14 +20,9 @@ import type { DeploymentTargetsData } from '@/features/artifact-new-sidepanel/mo
 import { useWorkersModel } from '@/features/artifact-new-sidepanel/model/workers';
 import { syncDeploymentTargetSelection } from '@/features/artifact-new-sidepanel/usecase/target-selection';
 
+import { ApiHostGroup } from '@/shared/api';
+import { resolveExplicitTargetSelection } from '@/shared/lib/explicit-target/resolve-target-selection';
 import type { Response } from '@/shared/libs/api-client/rules/types';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/shared/presentation/atoms/Select';
 import {
   couple,
   guardedSelects,
@@ -37,8 +32,13 @@ import { cn } from '@/shared/libs/tailwind/cn';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
 import { Pagination } from '@/shared/presentation/atoms/Pagination';
-import { resolveExplicitTargetSelection } from '@/shared/lib/explicit-target/resolve-target-selection';
-import { ApiHostGroup } from '@/shared/api';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/presentation/atoms/Select';
 
 import {
   FieldLoading,
@@ -80,18 +80,22 @@ const WorkersList = guard(() => {
     control: form.control,
     name: 'workerId',
   });
-  const { field: hostGroupField } = useController({
+  const {
+    field: { value: hostGroupId, onChange: onHostGroupChange },
+  } = useController({
     control: form.control,
     name: 'hostGroupId',
   });
-  const { field: targetModeField } = useController({
+  const {
+    field: { value: targetMode, onChange: onTargetModeChange },
+  } = useController({
     control: form.control,
     name: 'targetMode',
   });
 
   const selectedServer = servers.find((server) => server.id === field.value);
   const previousServerIdRef = useRef<string | undefined>(field.value || undefined);
-  const activeHostGroupId = hostGroupField.value || selectedServer?.hostGroupId || '';
+  const activeHostGroupId = hostGroupId || selectedServer?.hostGroupId || '';
   const [hostGroupResponse] = ApiHostGroup.Detail.$Id.useGet({
     id: activeHostGroupId,
     options: {
@@ -102,15 +106,14 @@ const WorkersList = guard(() => {
   const hostGroupTarget =
     hostGroupResponse.$status === 'success'
       ? {
-          id: String(hostGroupResponse.id ?? ''),
-          label: hostGroupResponse.name ?? `Group ${hostGroupResponse.id ?? ''}`,
-          memberCount: hostGroupResponse.members?.length ?? 0,
+          id: hostGroupResponse.id,
+          label: hostGroupResponse.name,
+          memberCount: hostGroupResponse.members.length,
         }
       : undefined;
 
   const targetSelection = resolveExplicitTargetSelection({
-    preferredMode:
-      targetModeField.value === 'hostgroup' ? 'hostgroup' : 'server',
+    preferredMode: targetMode === 'hostgroup' ? 'hostgroup' : 'server',
     serverId: field.value,
     hostGroup: hostGroupTarget,
   });
@@ -121,9 +124,8 @@ const WorkersList = guard(() => {
 
   useEffect(() => {
     const nextSelection = syncDeploymentTargetSelection({
-      currentHostGroupId: hostGroupField.value || undefined,
-      currentTargetMode:
-        targetModeField.value === 'hostgroup' ? 'hostgroup' : 'server',
+      currentHostGroupId: hostGroupId || undefined,
+      currentTargetMode: targetMode === 'hostgroup' ? 'hostgroup' : 'server',
       nextHostGroupId: selectedServer?.hostGroupId,
       nextServerId: field.value || undefined,
       previousServerId: previousServerIdRef.current,
@@ -131,20 +133,20 @@ const WorkersList = guard(() => {
 
     previousServerIdRef.current = field.value || undefined;
 
-    if (hostGroupField.value !== nextSelection.hostGroupId) {
-      hostGroupField.onChange(nextSelection.hostGroupId);
+    if (hostGroupId !== nextSelection.hostGroupId) {
+      onHostGroupChange(nextSelection.hostGroupId);
     }
 
-    if (targetModeField.value !== nextSelection.targetMode) {
-      targetModeField.onChange(nextSelection.targetMode);
+    if (targetMode !== nextSelection.targetMode) {
+      onTargetModeChange(nextSelection.targetMode);
     }
   }, [
     field.value,
-    hostGroupField.onChange,
-    hostGroupField.value,
+    hostGroupId,
+    onHostGroupChange,
+    onTargetModeChange,
     selectedServer?.hostGroupId,
-    targetModeField.onChange,
-    targetModeField.value,
+    targetMode,
   ]);
 
   const totalPage = Math.max(1, pagination.total_page);
@@ -292,7 +294,7 @@ const WorkersList = guard(() => {
           </span>
           <Select
             value={targetSelection.activeMode}
-            onValueChange={(value) => targetModeField.onChange(value)}
+            onValueChange={(value) => onTargetModeChange(value)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Choose target" />

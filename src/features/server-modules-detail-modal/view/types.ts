@@ -1,5 +1,6 @@
-import type { ExplicitTarget } from '@/shared/rules/host-group';
 import type { ServerModule } from '@/entities/server-modules/model/types';
+
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 
 export interface ServerModulesDetailModalProps {
   serverID?: string | number;

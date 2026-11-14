@@ -76,7 +76,7 @@ function ExecutionDetailPage() {
             ]}
           />
         }
-        title={`Execution ${execution.id ?? machineId}`}
+        title={`Execution ${execution.id}`}
         description="Scoped execution detail for a server-group operation target."
       />
 
@@ -90,16 +90,16 @@ function ExecutionDetailPage() {
             {
               label: 'Execution ID',
               value: (
-                <span className="font-mono text-xs">{execution.id ?? '-'}</span>
+                <span className="font-mono text-xs">{execution.id}</span>
               ),
             },
             {
               label: 'Status',
-              value: execution.status ?? '-',
+              value: execution.status,
             },
             {
               label: 'Type',
-              value: execution.type ?? '-',
+              value: execution.type,
             },
             {
               label: 'Server',
@@ -133,15 +133,15 @@ function ExecutionDetailPage() {
             },
             {
               label: 'Created',
-              value: execution.created_at ?? '-',
+              value: execution.created_at,
             },
             {
               label: 'Updated',
-              value: execution.updated_at ?? '-',
+              value: execution.updated_at,
             },
             {
               label: 'Events',
-              value: detail.events_message ?? 'No event detail was returned.',
+              value: detail.events_message,
             },
             {
               label: 'Retention',

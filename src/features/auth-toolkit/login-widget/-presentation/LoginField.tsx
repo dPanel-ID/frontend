@@ -2,7 +2,6 @@ import { useState } from 'react';
 import type { HTMLInputTypeAttribute, ReactNode } from 'react';
 
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
-
 import { useController } from 'react-hook-form';
 import type { FieldValues, Path, UseFormReturn } from 'react-hook-form';
 

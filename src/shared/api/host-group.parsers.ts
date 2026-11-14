@@ -1,10 +1,10 @@
+import { schemaHostGroupOperationAgentCommandDetailV2 } from '@/shared/api/-dtos/agent-command';
 import useAdapter from '@/shared/libs/api-client/hooks/useAdapter';
 import { processError } from '@/shared/libs/api-client/lib/processor';
 import type {
   ApiClientResponse,
   Response,
 } from '@/shared/libs/api-client/rules/types';
-import { schemaHostGroupOperationAgentCommandDetailV2 } from '@/shared/api/-dtos/agent-command';
 import {
   schemaHostGroupActionResponseDto,
   schemaHostGroupDeploymentActionResponseDto,
@@ -52,7 +52,7 @@ function adaptSuccessResponse<Data>(
   }
 }
 
-function adaptResponse<Data>(
+function useParsedResponse<Data>(
   response: Response<unknown>,
   parse: (value: unknown) => Data,
 ) {
@@ -152,23 +152,23 @@ export function parseHostGroupSummaryResponse(
 }
 
 export function useHostGroupListAdapter(response: Response<unknown>) {
-  return adaptResponse(response, parseHostGroupListPayload);
+  return useParsedResponse(response, parseHostGroupListPayload);
 }
 
 export function useHostGroupDetailAdapter(response: Response<unknown>) {
-  return adaptResponse(response, parseHostGroupDetailPayload);
+  return useParsedResponse(response, parseHostGroupDetailPayload);
 }
 
 export function useHostGroupOperationDetailAdapter(response: Response<unknown>) {
-  return adaptResponse(response, parseHostGroupOperationDetailPayload);
+  return useParsedResponse(response, parseHostGroupOperationDetailPayload);
 }
 
 export function useHostGroupOperationHistoryAdapter(
   response: Response<unknown>,
 ) {
-  return adaptResponse(response, parseHostGroupOperationHistoryPayload);
+  return useParsedResponse(response, parseHostGroupOperationHistoryPayload);
 }
 
 export function useHostGroupAgentCommandAdapter(response: Response<unknown>) {
-  return adaptResponse(response, parseHostGroupAgentCommandPayload);
+  return useParsedResponse(response, parseHostGroupAgentCommandPayload);
 }

@@ -1,6 +1,6 @@
 import { useApiGet } from '@/shared/libs/api-client';
-import { apiClient } from '@/shared/libs/api-client/lib/client';
 import { apiDoPost } from '@/shared/libs/api-client/lib/apiDoPost';
+import { apiClient } from '@/shared/libs/api-client/lib/client';
 import { processError } from '@/shared/libs/api-client/lib/processor';
 import type {
   GetRequestRecipe,
