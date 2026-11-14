@@ -6,6 +6,17 @@ import eslintPluginReactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
 
 const eslintConfig = [
+  {
+    // Generated build output; `pnpm run build:static` writes it into the repo.
+    ignores: [
+      '.output/**',
+      '.output-static/**',
+      '.nitro/**',
+      '.tanstack/**',
+      '.vinxi/**',
+      '.mock/**',
+    ],
+  },
   ...tanstackConfig,
   eslintPluginReactHooks.configs.flat.recommended,
   {
