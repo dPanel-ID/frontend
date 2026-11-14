@@ -280,11 +280,11 @@ describe('executionTarget', () => {
 describe('shortHostLabel', () => {
   it.each([
     [
-      'bbo-pubsub-consumer-01.asia-southeast2-a.c.bizgital.internal',
-      'bbo-pubsub-consumer-01',
+      'queue-consumer-01.asia-southeast2-a.c.example-project.internal',
+      'queue-consumer-01',
     ],
     ['web-01', 'web-01'],
-    ['34.158.53.175', '34.158.53.175'],
+    ['203.0.113.175', '203.0.113.175'],
     ['2001:db8::1', '2001:db8::1'],
   ])('%s → %s', (target, expected) => {
     expect(shortHostLabel(target)).toBe(expected);

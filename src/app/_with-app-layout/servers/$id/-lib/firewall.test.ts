@@ -45,7 +45,7 @@ const firewall = {
       direction: 'route',
       protocol: 'tcp',
       port: '4150',
-      source: '82.153.226.242',
+      source: '198.51.100.242',
       comment: 'legacy nsqd',
       origin: 'user',
       locked: false,
@@ -74,7 +74,7 @@ describe('toFirewallView', () => {
       ['docker', false],
     ]);
     expect(view.rules[1]).toMatchObject({
-      source: '82.153.226.242',
+      source: '198.51.100.242',
       comment: 'legacy nsqd',
       origin: 'user',
     });

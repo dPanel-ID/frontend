@@ -38,7 +38,8 @@ can and cannot do.
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) for the project layout, conventions,
-the mock API and how to open a pull request. Documentation pages live in
+the mock API and how to open a pull request. To explore the real API with
+your own data, see [Explore the real API](CONTRIBUTING.md#explore-the-real-api). Documentation pages live in
 [src/documentations](src/documentations/README.md).
 
 ## Security

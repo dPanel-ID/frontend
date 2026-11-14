@@ -102,6 +102,38 @@ When the API changes, refresh the contract with `pnpm mock:spec` and commit
 the backend, so the app and the API must share a parent domain over HTTPS; the
 `Caddyfile` shows one way to serve both locally.
 
+## Explore the real API
+
+The mock is for building UI. To see how dPanel behaves with your own data, use
+the live API reference at
+[pawon.devetek.app/swagger](https://pawon.devetek.app/swagger/index.html). It
+lists every endpoint the dashboard uses, with its parameters and response
+shapes, and **Try it out** sends a real request.
+
+1. Sign in at [dnocs.devetek.app](https://dnocs.devetek.app) with your dPanel
+   account.
+2. Open the Swagger page in the same browser and try a read-only call first,
+   such as `GET /api/v1/user/profile` or `GET /api/v1/server/find`.
+3. To work in a team workspace, set the `x-auth-organization-id` header to that
+   workspace's ID (shown on your profile page).
+
+Requests run as you, on your real servers, applications and data. A `POST`,
+`PUT` or `DELETE` really creates, changes or deletes things, so use a test
+workspace or test resources while you experiment.
+
+This is the same contract the mock serves, so what you learn there applies to
+`pnpm dev:mock`. Use it to:
+
+- understand the data behind a page before you change it;
+- copy a real response shape, with your own values replaced by demo data, into
+  `mock/examples/`;
+- build your own tool or product on top of dPanel, or reshape a flow in this
+  frontend so it fits the way you work.
+
+If you build something that would help other dPanel users, a better flow, a
+new page or a fix, please open a pull request. See
+[Branches, commits and pull requests](#branches-commits-and-pull-requests).
+
 ## Project structure
 
 ```text
