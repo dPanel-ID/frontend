@@ -1,0 +1,157 @@
+{
+  "GET /api/v1/server/find": {
+    "code": 200,
+    "status": "success",
+    "error": null,
+    "data": {
+      "machines": [
+        {
+          "id": 101,
+          "hostname": "web-01",
+          "address": "203.0.113.10",
+          "connectivity": "public",
+          "ssh_port": "22",
+          "http_port": "9000",
+          "default_user": "ubuntu",
+          "source": "cloud",
+          "provider": "gcp",
+          "region": "asia-southeast2",
+          "region_id": "asia-southeast2-a",
+          "distributor": "Ubuntu",
+          "version": "24.04",
+          "os_arch": "x86_64",
+          "agent_version": "v0.1.28",
+          "agent": {
+            "last_seen_at": "2026-01-01T00:00:00Z",
+            "reporting": "live",
+            "silent_seconds": 5,
+            "upgrade_available": false
+          },
+          "organization_id": "1000000000000000001",
+          "organization": {
+            "id": "1000000000000000001",
+            "name": "Demo Team"
+          },
+          "user_id": 1,
+          "user": {
+            "id": "1",
+            "fullname": "Demo User",
+            "username": "demo"
+          },
+          "status": "ready",
+          "created_at": "2026-01-01T00:00:00Z",
+          "updated_at": "2026-01-01T00:00:00Z"
+        },
+        {
+          "id": 102,
+          "hostname": "home-lab",
+          "address": "",
+          "lan_address": "192.168.1.20",
+          "connectivity": "private",
+          "default_user": "dpanel",
+          "source": "manual",
+          "provider": "own",
+          "distributor": "Debian",
+          "version": "12",
+          "os_arch": "aarch64",
+          "agent_version": "v0.1.28",
+          "agent": {
+            "last_seen_at": "2026-01-01T00:00:00Z",
+            "reporting": "live",
+            "silent_seconds": 12,
+            "upgrade_available": false
+          },
+          "organization_id": "1000000000000000001",
+          "organization": {
+            "id": "1000000000000000001",
+            "name": "Demo Team"
+          },
+          "user_id": 1,
+          "user": {
+            "id": "1",
+            "fullname": "Demo User",
+            "username": "demo"
+          },
+          "status": "ready",
+          "created_at": "2026-01-02T00:00:00Z",
+          "updated_at": "2026-01-02T00:00:00Z"
+        }
+      ],
+      "pagination": {
+        "page": 1,
+        "size": 2,
+        "total_item": 2,
+        "total_page": 1
+      }
+    }
+  },
+  "GET /api/v1/server/removed": {
+    "code": 200,
+    "status": "success",
+    "error": null,
+    "data": []
+  },
+  "GET /api/v1/server/detail/{id}": {
+    "code": 200,
+    "status": "success",
+    "error": null,
+    "data": {
+      "id": 101,
+      "hostname": "web-01",
+      "address": "203.0.113.10",
+      "connectivity": "public",
+      "ssh_port": "22",
+      "http_port": "9000",
+      "default_user": "ubuntu",
+      "source": "cloud",
+      "provider": "gcp",
+      "region": "asia-southeast2",
+      "region_id": "asia-southeast2-a",
+      "distributor": "Ubuntu",
+      "version": "24.04",
+      "os_arch": "x86_64",
+      "agent_version": "v0.1.28",
+      "agent": {
+        "last_seen_at": "2026-01-01T00:00:00Z",
+        "reporting": "live",
+        "silent_seconds": 5,
+        "upgrade_available": false
+      },
+      "organization_id": "1000000000000000001",
+      "organization": {
+        "id": "1000000000000000001",
+        "name": "Demo Team"
+      },
+      "user_id": 1,
+      "user": {
+        "id": "1",
+        "fullname": "Demo User",
+        "username": "demo"
+      },
+      "status": "ready",
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z",
+      "kernel_name": "Linux",
+      "kernel_version": "6.8.0",
+      "disks": [
+        {
+          "device": "/dev/sda1",
+          "fstype": "ext4",
+          "mountpoint": "/",
+          "opts": ["rw"]
+        }
+      ],
+      "secret_id": "301"
+    }
+  },
+  "GET /api/v1/server/{id}/modules": {
+    "code": 200,
+    "status": "success",
+    "error": null,
+    "data": {
+      "modules": [],
+      "observed_at": "2026-01-01T00:00:00Z",
+      "refreshed": true
+    }
+  }
+}
