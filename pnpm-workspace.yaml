@@ -1,4 +1,6 @@
 allowBuilds:
+  # Usage telemetry pulled in by the mock API (Prism); never needed.
+  '@scarf/scarf': false
   esbuild: true
   sharp: true
   unrs-resolver: true

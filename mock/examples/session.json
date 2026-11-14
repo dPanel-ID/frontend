@@ -1,0 +1,65 @@
+{
+  "GET /api/v1/user/profile": {
+    "code": 200,
+    "status": "success",
+    "error": null,
+    "data": {
+      "active_workspace": "1000000000000000001",
+      "agent": "mock",
+      "router": "mock",
+      "user": {
+        "id": 1,
+        "fullname": "Demo User",
+        "username": "demo",
+        "email": "demo@example.com",
+        "avatar_url": "",
+        "created_at": "2026-01-01T00:00:00Z",
+        "updated_at": "2026-01-01T00:00:00Z"
+      },
+      "github": {
+        "connected": false
+      },
+      "casdoor": {
+        "connected": true,
+        "provider": "casdoor",
+        "nickname": "demo",
+        "roles": [],
+        "groups": [],
+        "permissions": []
+      },
+      "organization": {
+        "id": "1000000000000000001",
+        "name": "Demo Team",
+        "description": "The workspace the mock API signs you into.",
+        "status": "active",
+        "user_id": "1",
+        "created_at": "2026-01-01T00:00:00Z",
+        "updated_at": "2026-01-01T00:00:00Z"
+      },
+      "workspaces": [
+        {
+          "id": "1000000000000000001",
+          "type": "organization",
+          "name": "Demo Team",
+          "roles": ["owner"]
+        }
+      ]
+    }
+  },
+  "POST /api/v1/auth/login": {
+    "code": 200,
+    "status": "success",
+    "error": null,
+    "data": {
+      "message": "Signed in to the mock API."
+    }
+  },
+  "GET /api/v1/auth/logout": {
+    "code": 200,
+    "status": "success",
+    "error": null,
+    "data": {
+      "message": "The mock API keeps you signed in."
+    }
+  }
+}
