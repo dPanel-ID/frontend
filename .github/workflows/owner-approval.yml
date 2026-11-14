@@ -21,4 +21,5 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           COMMIT: ${{ github.event.review.commit_id }}
-        run: echo "Owner approved #${PR_NUMBER} at ${COMMIT}."
+        run: |
+          echo "Owner approved pull request ${PR_NUMBER} at ${COMMIT}."
