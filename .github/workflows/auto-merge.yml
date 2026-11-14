@@ -1,7 +1,7 @@
 name: Auto-merge
 
-# Squash-merges a pull request into dev once the owner has approved its
-# current commit and the dev ruleset allows the merge (the `ci` check
+# Squash-merges a pull request into dev once the owner has approved it and
+# the dev ruleset allows the merge (the `ci` check
 # passed, the branch is up to date, code-owner review given). The owner's
 # own pull requests cannot be approved by the owner; the owner merges them
 # directly, bypassing the ruleset.
@@ -75,7 +75,7 @@ jobs:
                 pullRequest(number: $number) {
                   state isDraft headRefOid baseRefName title
                   latestOpinionatedReviews(first: 50) {
-                    nodes { state author { login } commit { oid } }
+                    nodes { state author { login } }
                   }
                 }
               }
@@ -85,10 +85,13 @@ jobs:
             .state == "OPEN" and (.isDraft | not) and .baseRefName == "dev"
             and .headRefOid == $sha
             and any(.latestOpinionatedReviews.nodes[];
-                    .author.login == $owner and .state == "APPROVED" and .commit.oid == $sha)
+                    .author.login == $owner and .state == "APPROVED")
           ' <<<"$info")
+          # The ruleset dismisses an approval when a push changes the code, so
+          # a remaining approval still covers the head commit; an update from
+          # dev that changes nothing in the diff keeps it.
           if [ "$ready" != "true" ]; then
-            echo "#$pr is not approved by $OWNER at $HEAD_SHA yet; nothing to do."
+            echo "#$pr is not approved by $OWNER at $HEAD_SHA; nothing to do."
             exit 0
           fi
 
