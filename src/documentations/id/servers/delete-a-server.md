@@ -75,6 +75,10 @@ Masih ada aplikasi atau load balancer yang memakai server itu, atau server itu a
 
 Mesinnya mati atau sudah tidak ada. Jika hanya mati sementara, nyalakan lagi dan tunggu agennya melapor, lalu hapus seperti biasa. Jika sudah hilang untuk selamanya, gunakan **Hapus dari dPanel**. Lihat [Menghapus server yang tidak bisa dijangkau dPanel](#menghapus-server-yang-tidak-bisa-dijangkau-dpanel).
 
+### Bisakah saya menghapus server yang masih berstatus Menunggu agen?
+
+Bisa. Jika perintah instalasinya belum pernah Anda jalankan, atau perintahnya sudah kedaluwarsa, hapus seperti server lain. Belum ada yang terpasang di mesin mana pun, jadi tidak ada yang perlu dibersihkan di sana.
+
 ### Bisakah server yang sudah dihapus dikembalikan?
 
 Tidak. Disk server cloud dihancurkan di penyedia. Cadangkan apa pun yang Anda perlukan sebelum menghapusnya.

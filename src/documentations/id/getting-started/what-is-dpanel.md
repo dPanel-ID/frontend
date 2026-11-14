@@ -18,18 +18,18 @@ Anda tidak memerlukan terminal di komputer sendiri. dPanel menjalankan program k
 
 ## Apa yang dilakukan dPanel
 
-| Bidang        | Yang bisa Anda lakukan                                                                                                                                                                                                           |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Bidang        | Yang bisa Anda lakukan                                                                                                                                                                                                         |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Server        | Menghubungkan server Linux apa pun dengan satu perintah, atau membuat VM di penyedia cloud. Melihat CPU, memori, dan disk secara langsung, layanan systemd, user, port terbuka, file, dan log, serta mengatur firewall server. |
-| Software      | Memasang basis data, runtime, dan web server dari katalog modul yang sudah teruji, misalnya MariaDB, Go, atau Caddy.                                                                                                             |
-| Aplikasi      | Membangun repositori GitHub di server Anda, menjalankannya sebagai layanan systemd, menyimpan setiap build, dan rollback dalam satu langkah.                                                                                     |
-| Load balancer | Memublikasikan aplikasi di sebuah domain dengan sertifikat HTTPS Let's Encrypt gratis yang diperpanjang otomatis.                                                                                                                |
-| Domain        | Mengelola record DNS domain yang di-host di Cloudflare atau DigitalOcean.                                                                                                                                                        |
-| Log           | Membaca log aplikasi, load balancer, build, dan server, mencarinya, dan mengunduhnya hingga 3 hari ke belakang.                                                                                                                  |
-| Cluster       | Mengelompokkan server, lalu menjadikan grup itu cluster Kubernetes dengan k3s atau RKE2.                                                                                                                                         |
-| Tim           | Berbagi ruang kerja dengan tim dan memberi setiap orang peran, dari Viewer sampai Owner.                                                                                                                                         |
-| Worker        | Menjalankan pekerjaan ruang kerja Anda di worker bersama milik dPanel, atau di worker pribadi yang Anda jalankan sendiri.                                                                                                        |
-| Asisten       | Bertanya dalam bahasa sehari-hari, atau membiarkan [Ask dPanel](../ai/overview.md) menyiapkan perubahan untuk Anda setujui.                                                                                                      |
+| Software      | Memasang basis data, runtime, dan web server dari katalog modul yang sudah teruji, misalnya MariaDB, Go, atau Caddy.                                                                                                           |
+| Aplikasi      | Membangun repositori GitHub di server Anda, menjalankannya sebagai layanan systemd, menyimpan setiap build, dan rollback dalam satu langkah.                                                                                   |
+| Load balancer | Memublikasikan aplikasi di sebuah domain dengan sertifikat HTTPS Let's Encrypt gratis yang diperpanjang otomatis.                                                                                                              |
+| Domain        | Mengelola record DNS domain yang di-host di Cloudflare atau DigitalOcean.                                                                                                                                                      |
+| Log           | Membaca log aplikasi, load balancer, build, dan server, mencarinya, dan mengunduhnya hingga 3 hari ke belakang.                                                                                                                |
+| Cluster       | Mengelompokkan server, lalu menjadikan grup itu cluster Kubernetes dengan k3s atau RKE2.                                                                                                                                       |
+| Tim           | Berbagi ruang kerja dengan tim dan memberi setiap orang peran, dari Viewer sampai Owner.                                                                                                                                       |
+| Worker        | Menjalankan pekerjaan ruang kerja Anda di worker bersama milik dPanel, atau di worker pribadi yang Anda jalankan sendiri.                                                                                                      |
+| Asisten       | Bertanya dalam bahasa sehari-hari, atau membiarkan [Ask dPanel](../ai/overview.md) menyiapkan perubahan untuk Anda setujui.                                                                                                    |
 
 ## Penyedia dan sistem yang didukung
 
@@ -84,6 +84,10 @@ Penyedia cloud Anda menagih Anda secara langsung, karena dPanel membuat mesin di
 ### Apakah saya masih bisa memakai SSH di server saya?
 
 Bisa. dPanel punya terminal di browser, dan Anda bisa menambahkan kunci publik Anda sendiri ke server lalu terhubung dengan klien SSH apa pun. dPanel sendiri tidak membutuhkan SSH di server yang terhubung dengan agen. Lihat [Terhubung lewat SSH](../servers/connect-over-ssh.md).
+
+### Bagaimana dPanel melindungi data saya?
+
+Kode dan basis data Anda tetap berada di server Anda sendiri. dPanel menyimpan rahasia yang Anda berikan dalam bentuk terenkripsi, menyembunyikan nilai variabel di layar, dan agen di setiap server hanya menyambung keluar. Lihat [Keamanan dan data Anda](./security-and-your-data.md).
 
 ### Apa yang terjadi pada server saya kalau saya berhenti memakai dPanel?
 

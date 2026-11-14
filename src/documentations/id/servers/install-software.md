@@ -57,6 +57,27 @@ Di server yang sudah memiliki bahasa sebelum perubahan ini, versi-versi tersebut
 Kata sandi root wajib diisi, minimal 8 karakter. Tidak ada nilai bawaan, karena basis data dengan kata sandi bawaan yang sudah tersebar bisa dimasuki siapa saja. dPanel hanya menyimpannya di server dan tidak menampilkannya lagi, jadi simpan salinannya di tempat yang aman.
 :::
 
+### Rilis yang Anda dapatkan
+
+MariaDB, PostgreSQL, MongoDB, dan Redis memasang rilis yang Anda pilih dari repositori paket resmi basis data itu sendiri, bukan salinan lama bawaan Ubuntu. Setelah terpasang, dPanel membaca rilis yang benar-benar berjalan di server dari paketnya dan menampilkannya di chip versi modul.
+
+| Modul      | Rilis yang tersedia                                 | Bawaan | Repositori paket     | Memindahkan server ke rilis lain |
+| ---------- | --------------------------------------------------- | ------ | -------------------- | -------------------------------- |
+| MariaDB    | 13.0, 12.3, 11.8, 11.4, 10.11, atau `x.y` lain      | 12.3   | Repositori MariaDB   | Tidak diizinkan                  |
+| PostgreSQL | 18, 17, 16, 15, 14, atau versi mayor lain           | 18     | `apt.postgresql.org` | Tidak diizinkan                  |
+| MongoDB    | 9.0.4, 8.3.13, 8.2.12, 8.0.34, 7.0.45, atau lainnya | 8.2.12 | Repositori MongoDB   | Tidak diizinkan                  |
+| Redis      | 8.10, 8.8, 8.6, 8.4, 8.2, 8.0, 7.4, 7.2, 6.2        | 8.10   | `packages.redis.io`  | Hanya ke rilis yang lebih baru   |
+
+Berkas data basis data terikat pada rilis yang menulisnya, jadi dPanel memeriksa hal ini sebelum pemasangan dimulai. Kalau server sudah menjalankan rilis lain dari basis data itu, pemasangan ditolak dengan pesan seperti _This server already runs MariaDB 10.11, so it cannot be installed as MariaDB 12.3_, dan tidak ada yang berubah di server. Pasang lagi dengan rilis yang sudah berjalan di server, atau cadangkan datanya dan hapus basis datanya lebih dulu. Redis boleh naik ke rilis yang lebih baru, tetapi tidak turun.
+
+Di MongoDB, tetap pakai jalur bawaan 8.2 di Ubuntu 24.04 dengan kernel yang lebih baru (HWE) dan di Ubuntu 26.04: 8.0, 8.3, dan 9.0 menolak berjalan di kernel tersebut.
+
+Basis data yang dipasang sebelum dPanel memakai repositori resmi bisa saja menjalankan rilis yang berbeda dari yang dipilih waktu itu. Barisnya lalu menampilkan **Versi lain** dengan **Berjalan 10.11, bukan 11.4** (misalnya), dan **Ringkasan** server menyebut hal yang sama. Data Anda tidak berubah; pilih rilis yang sedang berjalan saat memasangnya lagi.
+
+### Redis
+
+Secara bawaan Redis mendengarkan di `127.0.0.1` (**Bind Interface**), jadi hanya aplikasi di server yang sama yang bisa menjangkaunya. Agar server lain bisa memakainya, isi **Bind Interface** dengan alamat privat server ini dan isi **Password**: kata sandi minimal 16 karakter wajib setiap kali Redis mendengarkan di alamat selain `127.0.0.1`. Klien mengirimkannya lewat `AUTH`. dPanel hanya menyimpannya di server. **Memory Limit (MB)** membatasi memori yang dipakai Redis untuk data (`0` berarti seperempat memori server), dan **When Memory Is Full** memilih antara menolak penulisan baru (`noeviction`, bawaan, aman untuk antrean dan sesi) atau membuang kunci yang paling lama tidak dipakai (`allkeys-lru`, untuk cache).
+
 ## Setelah itu
 
 Modul muncul di tab **Modul** dengan status **Memasang**. Basis data butuh beberapa menit. Di server yang terhubung dengan [agen dPanel](./register-a-private-machine.md), pemasangan pertama kali butuh beberapa menit lebih lama, karena agen menyiapkan installer dPanel di mesin itu satu kali; pemasangannya lalu berjalan di server itu sendiri. Setelah selesai:
@@ -65,13 +86,21 @@ Modul muncul di tab **Modul** dengan status **Memasang**. Basis data butuh beber
 - Tab **Ringkasan** mencantumkannya di **Yang berjalan di sini**.
 - Tab **Layanan** menunjukkan layanannya berjalan.
 
-Kalau statusnya **Gagal**, buka modulnya untuk melihat penyebabnya, perbaiki, lalu pasang lagi.
+Selama pemasangan, barisnya menampilkan apa yang sedang dikerjakan setelah **Sekarang:**, dan sudah berapa lama berjalan. Kalau belum dimulai, barisnya menjelaskan alasannya:
+
+| Pesan                                              | Artinya                                                                                                                                     |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Menunggu pekerjaan lain di server ini selesai**  | Pekerjaan di satu server berjalan satu per satu. Yang ini dimulai saat pekerjaan sekarang selesai.                                          |
+| **Menunggu server memulai pemasangan ini**         | Server belum mengambil pekerjaannya. Di server yang terhubung dengan agen, pekerjaan pertama menunggu selama agen menyiapkan installer-nya. |
+| **Menunggu pemasangan lain di server ini selesai** | Program lain sedang memasang paket di server, jadi pemasangan ini menunggu giliran alih-alih gagal.                                         |
+
+Kalau statusnya **Gagal**, pilih barisnya. **Mengapa gagal** menyebutkan tugas yang gagal dan alasannya. Perbaiki penyebabnya, lalu pasang lagi.
 
 Modul yang menjalankan layanan, seperti Caddy Server, Redis, atau basis data, juga menampilkan **Layanan tidak berjalan** kalau layanannya berhenti atau gagal setelah dipasang. Barisnya menyebut nama layanan dan menautkan ke tab **Layanan**, tempat baris log terakhirnya menjelaskan penyebabnya; modul itu dihitung di **Perlu perhatian** dan ditandai di **Yang berjalan di sini**.
 
 ## Tab Modul
 
-Tab **Modul** menampilkan satu baris per modul dengan versi dan statusnya (**Terpasang**, **Memasang**, **Gagal**, atau **Campuran** kalau versinya berbeda-beda). Hitungan **Modul**, **Terpasang** dan **Perlu perhatian** hanya mencakup modul tingkat atas: basis data yang Anda buat di MariaDB atau PostgreSQL tampil di tampilan **Kelola** modul itu, bukan sebagai baris sendiri.
+Tab **Modul** menampilkan satu baris per modul dengan versi dan statusnya (**Terpasang**, **Memasang**, **Gagal**, **Layanan tidak berjalan**, **Versi lain** kalau server menjalankan rilis yang berbeda dari yang dipilih, atau **Campuran** kalau versinya berbeda-beda). Hitungan **Modul**, **Terpasang** dan **Perlu perhatian** hanya mencakup modul tingkat atas: basis data yang Anda buat di MariaDB atau PostgreSQL tampil di tampilan **Kelola** modul itu, bukan sebagai baris sendiri.
 
 ![Tab Modules dengan Caddy Server, Firewall, FrankenPHP, MariaDB dan PHP terpasang, Manage firewall di baris Firewall dan Open database di baris MariaDB](../../assets/servers/server-modules.webp 'Setiap baris menunjukkan modul, versinya, statusnya, dan pintasan seperti Buka database.')
 
@@ -140,9 +169,12 @@ dnocs module list --server-id 140                      # katalog untuk server in
 dnocs module install nodejs --server-id 140 --var nodejs.nodejs_version=22
 dnocs module install postgresql --server-id 140 --generate-secrets
 dnocs module installed --server-id 140                 # yang terpasang, beserta ID-nya
+dnocs module uninstall nodejs --server-id 140 --var nodejs.nodejs_version=22.23.5
 ```
 
 `--generate-secrets` membuat kata sandi yang wajib, misalnya kata sandi admin basis data, dan menyimpannya ke berkas yang hanya bisa Anda baca; yang dicetak hanya lokasi berkasnya, tidak pernah nilainya.
+
+`dnocs module uninstall` menghapus satu versi bahasa pemrograman dari server, yang disebutkan dengan `--var`, dan menolak selama masih ada aplikasi yang memakainya. `dnocs module forget` hanya menghapus catatan pemasangan di dPanel. Kalau pemasangan ditolak sebelum dimulai, misalnya karena perpindahan rilis basis data, CLI mencetak alasan lengkapnya di baris yang gagal.
 
 ## Banyak server sekaligus
 

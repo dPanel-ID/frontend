@@ -112,22 +112,26 @@ Jalankan lagi sampai job menunjukkan `succeeded` atau `failed`. Kalau gagal, tan
 
 dnocs bisa melakukan jauh lebih banyak daripada chat. `dnocs --help` menampilkan semua perintah, dan `dnocs <command> --help` menjelaskan satu perintah. Beberapa yang akan Anda temui di dokumentasi ini:
 
-| Perintah                  | Fungsinya                                             |
-| ------------------------- | ----------------------------------------------------- |
-| `sudo dnocs machine register` | Menghubungkan mesin tempat perintah ini dijalankan, dengan agen dPanel. Lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md) |
-| `dnocs server create-cloud` | Meluncurkan server cloud. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md#dari-terminal) |
-| `dnocs server list`       | Server Anda                                           |
-| `dnocs server setup`      | Menjalankan ulang penyiapan server                    |
-| `dnocs server firewall`   | Menampilkan dan mengubah firewall server              |
-| `dnocs module list`       | Perangkat lunak yang bisa dipasang di server          |
-| `dnocs application list`  | Aplikasi Anda                                         |
-| `dnocs load-balancer log` | Permintaan yang dilayani sebuah load balancer         |
-| `dnocs cluster kinds`     | Engine dan versi Kubernetes yang bisa Anda pakai      |
-| `dnocs worker list`       | Apakah ruang kerja memakai worker bersama atau privat |
-| `dnocs domain record`     | Melihat, menambah, mengubah, dan menghapus record DNS |
-| `dnocs server user`       | Melihat, menambah, dan menghapus pengguna Linux       |
-| `dnocs service-account`   | Mengelola login untuk skrip dan agen AI               |
-| `dnocs module adopt`      | Mencatat MariaDB yang sudah ada di server             |
+| Perintah                            | Fungsinya                                                                                                                                                      |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sudo dnocs machine register`       | Menghubungkan mesin tempat perintah ini dijalankan, dengan agen dPanel. Lihat [Hubungkan server dengan agen dPanel](../servers/register-a-private-machine.md)  |
+| `dnocs server agent-install`        | Mencetak perintah satu baris untuk dijalankan dengan `sudo` di mesin lain, yang menghubungkannya dengan agen dPanel. Perintah itu berlaku sekali, selama 2 jam |
+| `dnocs server create-cloud`         | Meluncurkan server cloud. Lihat [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md#dari-terminal)                                      |
+| `dnocs server list`                 | Server Anda                                                                                                                                                    |
+| `dnocs server setup`                | Menjalankan ulang penyiapan server                                                                                                                             |
+| `dnocs server firewall`             | Menampilkan dan mengubah firewall server                                                                                                                       |
+| `dnocs module list`                 | Perangkat lunak yang bisa dipasang di server                                                                                                                   |
+| `dnocs application list`            | Aplikasi Anda                                                                                                                                                  |
+| `dnocs load-balancer log`           | Permintaan yang dilayani sebuah load balancer                                                                                                                  |
+| `dnocs cluster kinds`               | Engine dan versi Kubernetes yang bisa Anda pakai                                                                                                               |
+| `dnocs worker list`                 | Apakah ruang kerja memakai worker bersama atau privat                                                                                                          |
+| `dnocs domain record`               | Melihat, menambah, mengubah, dan menghapus record DNS                                                                                                          |
+| `dnocs server user`                 | Melihat, menambah, dan menghapus pengguna Linux                                                                                                                |
+| `dnocs service-account`             | Mengelola login untuk skrip dan agen AI                                                                                                                        |
+| `dnocs module adopt`                | Mencatat MariaDB yang sudah ada di server                                                                                                                      |
+| `dnocs module uninstall`            | Menghapus satu versi modul dari server                                                                                                                         |
+| `dnocs application runtime upgrade` | Memindahkan aplikasi ke runtime bahasa yang baru, atau kembali dengan `--back`                                                                                 |
+| `dnocs service status`              | Menampilkan apakah layanan berjalan, beserta keluaran terbarunya                                                                                               |
 
 ## Pertanyaan yang sering diajukan
 

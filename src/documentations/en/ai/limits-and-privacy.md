@@ -25,6 +25,8 @@ sidebar_label: Limits and privacy
 
 That is why the rule is simple: **never type a password, token or key in the chat**. If you did, treat that value as exposed and change it. The assistant will not repeat or use it, and asks you to type it on the approval card instead. See [Approve or reject changes](./approvals-and-secrets.md#secrets-you-type).
 
+Outside the chat, dPanel stores the secrets you give it encrypted and masks variable values on screen. See [Security and your data](../getting-started/security-and-your-data.md).
+
 ## Who can see your conversations
 
 - **You.** A conversation belongs to the person who started it, in the workspace it was started in.
@@ -35,15 +37,15 @@ Your browser remembers which conversation was last open for each workspace, so t
 
 ## Limits
 
-| Limit                                | What it means                                                                                                    |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| Only dPanel topics                   | Questions about anything else get "I can only help with dPanel"                                                  |
-| Approval cards expire after 24 hours | Ask again to get a fresh card                                                                                    |
-| One job at a time per server         | Approve changes to the same server one by one                                                                    |
-| It checks a long job once            | After a deploy or install, ask again for progress                                                                |
-| Prices are estimates                 | Cloud server prices come from general public price knowledge, not from your provider's bill                      |
-| Not everything is in chat yet        | For example creating SSH keys or DNS records, managing team members and connecting cloud accounts: use the pages |
-| Very broad requests                  | A request that needs too many steps stops; ask about one thing at a time                                         |
+| Limit                                | What it means                                                                                              |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Only dPanel topics                   | Questions about anything else get "I can only help with dPanel"                                            |
+| Approval cards expire after 24 hours | Ask again to get a fresh card                                                                              |
+| One job at a time per server         | Approve changes to the same server one by one                                                              |
+| It checks a long job once            | After a deploy or install, ask again for progress                                                          |
+| Prices are estimates                 | Cloud server prices come from general public price knowledge, not from your provider's bill                |
+| Not everything is in chat yet        | For example adding DNS records by hand, managing team members and connecting cloud accounts: use the pages |
+| Very broad requests                  | A request that needs too many steps stops; ask about one thing at a time                                   |
 
 The assistant can make mistakes. Read every card before you approve it, and check important answers against the page in dPanel; every answer gives IDs and names so you can.
 
@@ -72,7 +74,7 @@ There is no delete button yet. **New conversation** starts a clean one, and the 
 
 ### Can the assistant see my environment variable values?
 
-No. It sees variable names only. A secret value you type on an approval card goes with your approval straight to dPanel.
+No. It sees variable names only. A secret value you type on an approval card goes with your approval straight to dPanel, which stores it encrypted. See [Security and your data](../getting-started/security-and-your-data.md).
 
 ### Is the assistant available in my personal workspace?
 

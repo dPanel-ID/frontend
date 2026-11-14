@@ -78,4 +78,4 @@ The last build or release failed. Open the application, go to **Deployments**, a
 
 ### Can I manage applications from the terminal?
 
-Yes. The dnocs command-line tool has `dnocs application list`, `detail`, `create`, `deploy` and `delete`. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install it.
+Yes. The dnocs command-line tool has `dnocs application list`, `detail`, `create`, `deploy` and `delete`, plus `status`, `logs`, `service`, `env` for runtime variables and `runtime` to move to the new runtime. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install it.

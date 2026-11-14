@@ -11,10 +11,10 @@ dPanel runs in your browser at [dnocs.devetek.app](https://dnocs.devetek.app), s
 
 The sign-in panel on the home page offers two ways in.
 
-| Way in                | What you do                                                                      |
-| --------------------- | -------------------------------------------------------------------------------- |
-| Google                | Press the Google button at the top of the panel and pick your Google account.    |
-| Username and password | Type your username and password under **Or sign in with**, then press **Login**. |
+| Way in                | What you do                                                                                                                         |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Google                | Press the Google button at the top of the panel and pick your Google account.                                                       |
+| Username and password | Type your username and password under **Or sign in with**, then press **Login**. Your email address works in place of the username. |
 
 After a successful sign-in you go straight to the **Dashboard**. If you are already signed in, the home page greets you instead and offers **Go to dashboard**, **View profile** and **Logout**.
 
@@ -27,6 +27,8 @@ Signing in with Google needs no password of its own. Use it if your team already
 1. On the home page, press **Sign Up** under **Don't have an account?**.
 2. Fill in your email, a username, a password, and the password again.
 3. Press **Sign Up**. dPanel registers the account and redirects you once it is ready.
+
+The username you type is the one you sign in with, in lowercase letters. If someone already has it, dPanel says **That username is already taken. Choose another one.**
 
 ## Forgot your password
 
@@ -81,6 +83,10 @@ Yes. Create an account with **Sign Up** and sign in with your username and passw
 ### I signed up with Google. How do I use the dnocs command line?
 
 `dnocs auth login` needs a username and password. Set a password under **Edit profile** (no old password is asked), then sign in to dnocs with the username shown on your profile. Or create a [service account](../teams/service-accounts.md) token and run dnocs with `DNOCS_TOKEN`.
+
+### Sign-in says "Wrong username or password"
+
+Check both, or sign in with your email address instead of the username. For your safety, dPanel gives the same message whether the account does not exist or the password is wrong. **Signing in is not available right now. Try again in a minute.** means the problem is on dPanel's side; wait a minute and try again.
 
 ### How do I reset a forgotten password?
 

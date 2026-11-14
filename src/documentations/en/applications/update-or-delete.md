@@ -32,7 +32,9 @@ Each item with an **Edit** button opens a panel for just that part.
 | Build steps, Environment variables (Build) | Edit Build Configuration   | The build steps and build-time variables. |
 | Start command, Environment variables (Run) | Edit Runtime Configuration | The start command and runtime variables.  |
 
-Press **Save** in the panel. The change applies from the next release, so release again with **Build and release** or **Redeploy**.
+Press **Save** in the panel, or **Cancel** to close it; with unsaved changes, dPanel asks you to confirm first. The change applies from the next release, so release again with **Build and release** or **Redeploy**.
+
+Variable values are hidden in these panels. Leave a hidden value as it is to keep it, or press **Show values** in **Edit Runtime Configuration** to see the runtime values. See [Environment variables](./environment-variables.md#see-a-saved-value).
 
 ## What stays fixed
 
@@ -45,7 +47,7 @@ To use other values, create a new application, release it, point your load balan
 **Edit settings** at the top of the application opens **Update Application**. It is the same five-step form you created the application with, filled in with the current values: server and modules, name, commands, port and environment. The port is read-only here; see [What stays fixed](#what-stays-fixed).
 
 1. Press **Edit settings**.
-2. Walk through the steps and change what you need.
+2. Walk through the steps and change what you need. On **Environment**, values are hidden; **Show values** shows them and **Hide values** hides them again. A hidden value you leave untouched keeps what is stored.
 3. On **Preview**, tick **Run bootstrap playbooks** if you changed modules or the server's dependencies need to be applied again.
 4. Press **Save changes**.
 

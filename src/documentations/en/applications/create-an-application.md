@@ -22,7 +22,7 @@ Open **Applications** and press **Create Application**. The form has five steps.
 1. Open **GitHub team** and pick the account or organization that owns the repository. **Add GitHub account** at the end of the list connects another one.
 2. Type in **Search repositories** and press Enter.
 3. Select the repository. dPanel reads its details, and shows it under **Selected repository**.
-4. Check **Branch**. It defaults to the repository's default branch.
+4. Check **Branch**. It defaults to the repository's default branch. dPanel keeps your choice as the application's default branch, which `dnocs application deploy` uses when you give no `--branch`.
 5. Press **Continue**.
 
 ![Step 1 of the form, with dPanel-ID/go-example selected and the main branch chosen](../../assets/applications/apps-create-repository.webp)

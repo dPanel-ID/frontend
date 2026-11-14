@@ -17,6 +17,7 @@ Say **what** you want and give the facts the assistant cannot know: which server
 | ------------------------- | ------------------------------------------------------------ |
 | See your servers          | `Which of my servers are stopped?`                           |
 | See what runs where       | `Which applications run on server 145, and on which ports?`  |
+| Check a service           | `Is the MariaDB service running on server 145?`              |
 | Check recent jobs         | `Did any job fail in the last 24 hours?`                     |
 | List domains              | `List my domains and their DNS providers.`                   |
 | Check disk space          | `Which of my servers is running out of disk?`                |
@@ -27,14 +28,16 @@ Say **what** you want and give the facts the assistant cannot know: which server
 ## Launch a server
 
 ```text
-Create a VM in my Google Cloud project 7 named web-1: Ubuntu 24.04, 2 vCPU and 4 GB of memory, the cheapest machine type, 30 GB disk, region asia-southeast1, with SSH key 37.
+Create a VM in my Google Cloud project 7 named web-1: Ubuntu 24.04, 2 vCPU and 4 GB of memory, the cheapest machine type, 30 GB disk, region asia-southeast1.
 ```
 
-The assistant looks up your cloud accounts, regions, machine types and SSH keys, then proposes the server with an **estimated** price. The real price is what your cloud provider charges. A new server takes 10 to 20 minutes to be ready; ask "Is server web-1 ready?" to check.
+The assistant looks up your cloud accounts, regions and machine types, then proposes the server with an **estimated** price. The real price is what your cloud provider charges. A new server takes 10 to 20 minutes to be ready; ask "Is server web-1 ready?" to check.
 
 To set up a server again after a failed setup: `Run server setup again on server 145.`
 
-The assistant launches servers that join over SSH, so it uses one of your SSH keys, as in the example. To launch a server that joins through the dPanel agent, with no SSH key, use the form or `dnocs server create-cloud`. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). To add a server you already have, run `sudo dnocs machine register` on it; see [Connect a server with the dPanel agent](../servers/register-a-private-machine.md).
+The new server joins through the dPanel agent, so it needs no SSH key. On Google Cloud, AWS and Tencent Cloud you can add "without a public IP": the server still reaches the internet through the provider's NAT. DigitalOcean and IDCloudHost servers always get a public IP. Biznet Gio and Alibaba Cloud servers join over SSH, so name an SSH key there; if you have none, the assistant proposes creating one for you to approve. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md).
+
+To add a server you already have, run `sudo dnocs machine register` on it, or get its one-line install command in **Servers** → **Create Server** → **Get install command**; see [Connect a server with the dPanel agent](../servers/register-a-private-machine.md).
 
 ## Install software on a server
 

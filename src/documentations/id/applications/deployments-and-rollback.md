@@ -65,6 +65,19 @@ dPanel merilis ulang build itu di server-server tersebut. Rollback hanya memulih
 
 Di **Di server**, setiap rilis punya tombol **Mulai**, **Restart**, dan **Hentikan** untuk layanannya, serta **Hapus**. Rilis yang sudah dihapus bisa dikembalikan dengan **Pulihkan**, atau dihapus selamanya dengan **Hapus permanen**.
 
+**Restart** tetap memakai variabel environment yang sudah dimiliki layanan. Setelah mengubah variabel, rilis lagi; lihat [Variabel environment](./environment-variables.md).
+
+### Pindah ke runtime baru
+
+**Runtime** adalah bahasa yang dipakai aplikasi untuk berjalan, misalnya Node.js, Python, Go, Ruby, Bun, uv, atau PHP. Kini dPanel memasang setiap versi bahasa sekali per server, siap pakai, dan dipakai bersama oleh semua pengguna. Aplikasi di server yang disiapkan sebelum perubahan ini tetap memakai runtime lama sampai Anda memindahkannya. Lihat [Memasang perangkat lunak](../servers/install-software.md#runtime-lama).
+
+1. Di **Di server**, tekan **Runtime** pada rilisnya. Tombol ini muncul pada rilis aplikasi yang memakai sebuah bahasa.
+2. Di **Pindah ke runtime baru?**, tekan **Pindah ke runtime baru**.
+
+dPanel men-deploy rilis itu lagi: memasang bahasanya di runtime baru jika belum ada, membangun ulang aplikasi di atasnya, lalu memulai ulang aplikasi. Virtual environment Python dibuat ulang. Runtime lama tetap terpasang, jadi **Kembali ke runtime lama** di dialog yang sama mengembalikan aplikasi dengan cara yang sama.
+
+Dari terminal: `dnocs application runtime upgrade --id <ID aplikasi> --server-id <ID server>`, tambahkan `--back` untuk kembali.
+
 ### Menghapus build
 
 Tekan **Hapus** pada sebuah build untuk mengeluarkannya dari daftar. dPanel meminta konfirmasi lebih dulu.

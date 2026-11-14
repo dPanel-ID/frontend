@@ -112,22 +112,26 @@ Run it again until the job says `succeeded` or `failed`. If it failed, ask the a
 
 dnocs does much more than chat. `dnocs --help` lists every command, and `dnocs <command> --help` explains one. A few you will meet in these docs:
 
-| Command                   | What it does                                         |
-| ------------------------- | ---------------------------------------------------- |
-| `sudo dnocs machine register` | Connects the machine you run it on, with the dPanel agent. See [Connect a server with the dPanel agent](../servers/register-a-private-machine.md) |
-| `dnocs server create-cloud` | Launches a cloud server. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md#from-the-terminal) |
-| `dnocs server list`       | Your servers                                         |
-| `dnocs server setup`      | Runs server setup again                              |
-| `dnocs server firewall`   | Shows and changes a server's firewall                |
-| `dnocs module list`       | Software you can install on a server                 |
-| `dnocs application list`  | Your applications                                    |
-| `dnocs load-balancer log` | The requests a load balancer served                  |
-| `dnocs cluster kinds`     | The Kubernetes engines and versions you can use      |
-| `dnocs worker list`       | Whether the workspace uses shared or private workers |
-| `dnocs domain record`     | Lists, adds, changes and deletes DNS records         |
-| `dnocs server user`       | Lists, adds and removes a server's Linux users       |
-| `dnocs service-account`   | Manages logins for scripts and AI agents             |
-| `dnocs module adopt`      | Records a MariaDB that is already on a server        |
+| Command                             | What it does                                                                                                                                      |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sudo dnocs machine register`       | Connects the machine you run it on, with the dPanel agent. See [Connect a server with the dPanel agent](../servers/register-a-private-machine.md) |
+| `dnocs server agent-install`        | Prints a one-line command to run with `sudo` on another machine, which connects it with the dPanel agent. The command works once, for 2 hours     |
+| `dnocs server create-cloud`         | Launches a cloud server. See [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md#from-the-terminal)                       |
+| `dnocs server list`                 | Your servers                                                                                                                                      |
+| `dnocs server setup`                | Runs server setup again                                                                                                                           |
+| `dnocs server firewall`             | Shows and changes a server's firewall                                                                                                             |
+| `dnocs module list`                 | Software you can install on a server                                                                                                              |
+| `dnocs application list`            | Your applications                                                                                                                                 |
+| `dnocs load-balancer log`           | The requests a load balancer served                                                                                                               |
+| `dnocs cluster kinds`               | The Kubernetes engines and versions you can use                                                                                                   |
+| `dnocs worker list`                 | Whether the workspace uses shared or private workers                                                                                              |
+| `dnocs domain record`               | Lists, adds, changes and deletes DNS records                                                                                                      |
+| `dnocs server user`                 | Lists, adds and removes a server's Linux users                                                                                                    |
+| `dnocs service-account`             | Manages logins for scripts and AI agents                                                                                                          |
+| `dnocs module adopt`                | Records a MariaDB that is already on a server                                                                                                     |
+| `dnocs module uninstall`            | Removes one version of a module from a server                                                                                                     |
+| `dnocs application runtime upgrade` | Moves an application to the new language runtime, or back with `--back`                                                                           |
+| `dnocs service status`              | Shows whether a service runs, with its recent output                                                                                              |
 
 ## Frequently asked questions
 

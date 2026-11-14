@@ -56,7 +56,7 @@ A piece of software dPanel installs on a server for you, such as PHP, Node.js, M
 
 ### Runtime (language)
 
-The software that runs code written in one language, such as PHP for WordPress or Node.js for a JavaScript app.
+The software that runs code written in one language, such as PHP for WordPress or Node.js for a JavaScript app; dPanel installs each version once per server, ready-built, and every application on the server shares it. See [Programming languages](../servers/install-software.md#programming-languages).
 
 ### Database
 
@@ -64,7 +64,7 @@ The program that stores an application's data in tables, such as MariaDB, Postgr
 
 ### DB Manager
 
-dPanel's web tool for opening a MariaDB or PostgreSQL database in the browser, to browse, query, import or export data.
+dPanel's web tool for opening a MariaDB, PostgreSQL or MongoDB database in the browser, to browse, query, import or export data.
 
 ### Terminal
 
@@ -122,7 +122,7 @@ The saved description of how to build and run your app: its language, build comm
 
 ### Environment variable
 
-A named setting, such as `APP_ENV=production` or a database password, that your app reads when it starts. See [Environment variables](../applications/environment-variables.md).
+A named setting, such as `APP_ENV=production` or a database password, that your app reads when it starts; dPanel stores the values encrypted and hides them on screen until you ask to see them. See [Environment variables](../applications/environment-variables.md) and [Security and your data](./security-and-your-data.md).
 
 ### Service
 

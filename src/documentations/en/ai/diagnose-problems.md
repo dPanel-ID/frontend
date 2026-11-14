@@ -19,6 +19,7 @@ Describe what you see, and name the thing that fails:
 - `My site shop.example.com shows a 502 error. Find out why.`
 - `Did any job fail in the last 24 hours? Tell me why the most recent one failed.`
 - `Server 145 feels slow. Is it out of memory or disk?`
+- `Is MariaDB running on server 145? If not, why did its service stop?`
 - `Is the load balancer for shop.example.com healthy? Check its certificate and recent errors.`
 
 ## Read the diagnosis
@@ -31,6 +32,8 @@ A good diagnosis has three parts:
 2. **The likely cause**, in plain words.
 3. **The fix**, in dPanel. When the fix is a change, such as updating the build command and deploying again, the assistant proposes it as a card for you to approve.
 
+For a failed job, the assistant quotes the task that failed first, not the steps that only show warnings: a step a module is allowed to skip, such as stopping a service that is not there yet, counts as a warning, not as the error.
+
 If the evidence is not conclusive, the assistant says what it checked and what it could not tell. **Checked:** under the answer lists every source it read, such as **deployment get**, **application logs** and **server usage**.
 
 ## What it looks at
@@ -40,7 +43,8 @@ If the evidence is not conclusive, the assistant says what it checked and what i
 | A build failed                   | The build's log                                                                   | Fix the build command or a missing runtime, then deploy again       |
 | An app does not start or crashes | The deployment, the runtime log, the server's memory and disk                     | Fix the start command or an environment variable, then deploy again |
 | A website shows an error         | The load balancer, its access logs and certificate, and the application behind it | Re-route the load balancer, or fix the application                  |
-| A job failed                     | The job and its error                                                             | Run server setup again, install a missing module, retry             |
+| A job failed                     | The job, the task that failed first and its error                                 | Run server setup again, install a missing module, retry             |
+| Software is installed but down   | The server's services and the failed service's latest status lines                | Fix the cause it names, then restart the service or install again   |
 | A server is slow or full         | CPU, memory and disk usage                                                        | A bigger server, or removing old builds                             |
 | A port does not answer           | The server's firewall rules and what an apply would change                        | Allow the port and apply the firewall                               |
 

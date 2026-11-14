@@ -57,6 +57,27 @@ On a server that had languages before this change, those versions show a **Previ
 The root password is required and must be at least 8 characters. There is no default, because a database installed with a published default password is open to anyone who knows it. dPanel stores it only on the server and never shows it again, so keep your own copy somewhere safe.
 :::
 
+### Which release you get
+
+MariaDB, PostgreSQL, MongoDB and Redis install the release you pick from the database's own official package repository, not the older copy that comes with Ubuntu. After the install, dPanel reads the release the server really runs from its package and shows it on the module's version chip.
+
+| Module     | Releases offered                                 | Default | Package repository   | Moving an existing server to another release |
+| ---------- | ------------------------------------------------ | ------- | -------------------- | -------------------------------------------- |
+| MariaDB    | 13.0, 12.3, 11.8, 11.4, 10.11, or a custom `x.y` | 12.3    | MariaDB's repository | Not allowed                                  |
+| PostgreSQL | 18, 17, 16, 15, 14, or a custom major            | 18      | `apt.postgresql.org` | Not allowed                                  |
+| MongoDB    | 9.0.4, 8.3.13, 8.2.12, 8.0.34, 7.0.45, or custom | 8.2.12  | MongoDB's repository | Not allowed                                  |
+| Redis      | 8.10, 8.8, 8.6, 8.4, 8.2, 8.0, 7.4, 7.2, 6.2     | 8.10    | `packages.redis.io`  | Only to a newer release                      |
+
+A database's data files belong to the release that wrote them, so dPanel checks this before the install starts. If the server already runs another release of that database, the install is refused with a message such as _This server already runs MariaDB 10.11, so it cannot be installed as MariaDB 12.3_, and nothing on the server changes. Install again with the release the server already runs, or back up the data and remove the database first. Redis can move up to a newer release, never down.
+
+On MongoDB, keep the default 8.2 line on Ubuntu 24.04 with the newer (HWE) kernel and on Ubuntu 26.04: 8.0, 8.3 and 9.0 refuse to start on those kernels.
+
+A database installed before dPanel used the official repositories may run a different release from the one chosen then. Its row then reads **Other version** with **Runs 10.11, not 11.4** (for example), and the server's **Overview** says the same. Your data is unchanged; pick the release it runs when you install it again.
+
+### Redis
+
+Redis listens on `127.0.0.1` by default (**Bind Interface**), so only applications on the same server can reach it. To let other servers use it, set **Bind Interface** to this server's private address and fill in **Password**: a password of at least 16 characters is required whenever Redis listens on anything other than `127.0.0.1`. Clients send it with `AUTH`. dPanel stores it only on the server. **Memory Limit (MB)** caps the memory Redis uses for data (`0` means a quarter of the server's memory), and **When Memory Is Full** chooses between refusing new writes (`noeviction`, the default, safe for queues and sessions) and dropping the least recently used keys (`allkeys-lru`, for caches).
+
 ## What happens next
 
 The module appears on the **Modules** tab as **Installing**. A database takes a few minutes. On a server connected with the [dPanel agent](./register-a-private-machine.md), the very first install takes a few minutes longer, because the agent prepares dPanel's installer on the machine once; the install then runs on the server itself. When it is done:
@@ -65,13 +86,21 @@ The module appears on the **Modules** tab as **Installing**. A database takes a 
 - The **Overview** tab lists it under **What runs here**.
 - The **Services** tab shows its service running.
 
-If it reads **Failed**, open the module to see why, fix the cause, and install it again.
+While it installs, the row shows what it is doing now, after **Now:**, and how long it has taken so far. If it has not started yet, the row says why:
+
+| Message                                                  | What it means                                                                                                                               |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Waiting for another job on this server to finish**     | Jobs on one server run one at a time. This one starts when the current job ends.                                                            |
+| **Waiting for the server to start this install**         | The server has not picked the job up yet. On a server connected with the agent, the first job waits while the agent prepares its installer. |
+| **Waiting for another install on this server to finish** | Another program is installing packages on the server, so this install waits its turn instead of failing.                                    |
+
+If it reads **Failed**, select the row. **Why it failed** names the task that failed and the reason it gave. Fix the cause and install it again.
 
 A module that runs a service, such as Caddy Server, Redis or a database, also shows **Service not running** when that service has stopped or failed after the install. The row names the service and links to the **Services** tab, where its last log lines say why; the module counts under **Needs attention** and is marked under **What runs here**.
 
 ## The Modules tab
 
-The **Modules** tab lists one row per module with its versions and status (**Installed**, **Installing**, **Failed**, or **Mixed** when versions differ). The **Modules**, **Installed** and **Needs attention** counts include top-level modules only: databases you create on MariaDB or PostgreSQL appear inside that module's **Manage** view, not as their own rows.
+The **Modules** tab lists one row per module with its versions and status (**Installed**, **Installing**, **Failed**, **Service not running**, **Other version** when the server runs a different release from the one chosen, or **Mixed** when versions differ). The **Modules**, **Installed** and **Needs attention** counts include top-level modules only: databases you create on MariaDB or PostgreSQL appear inside that module's **Manage** view, not as their own rows.
 
 ![The Modules tab with Caddy Server, Firewall, FrankenPHP, MariaDB and PHP installed, Manage firewall on the Firewall row and Open database on the MariaDB row](../../assets/servers/server-modules.webp 'Each row shows the module, its versions, its status and shortcuts such as Open database.')
 
@@ -140,9 +169,12 @@ dnocs module list --server-id 140                      # the catalog for this se
 dnocs module install nodejs --server-id 140 --var nodejs.nodejs_version=22
 dnocs module install postgresql --server-id 140 --generate-secrets
 dnocs module installed --server-id 140                 # what is installed, with IDs
+dnocs module uninstall nodejs --server-id 140 --var nodejs.nodejs_version=22.23.5
 ```
 
 `--generate-secrets` creates any required password, such as a database admin password, and saves it to a file only you can read; it prints the file's path, never the value.
+
+`dnocs module uninstall` removes one version of a programming language from the server, named with `--var`, and refuses while an application still uses it. `dnocs module forget` removes only dPanel's record of an installation. When an install is refused before it starts, for example a database release move, the CLI prints the full reason on the failed line.
 
 ## Many servers at once
 

@@ -102,6 +102,10 @@ GitHub tidak lagi mengonfirmasi akun yang tersimpan. Tekan **Hubungkan ulang Git
 
 Buka **Tim GitHub** di **Buat Aplikasi** lalu pilih **Tambah akun GitHub**. Pasang GitHub App dnocs-id di organisasi itu, dan beri akses ke repositorinya.
 
+### Nilai variabel saya tersembunyi
+
+dPanel menyamarkan nilai variabel di halaman aplikasi, supaya tidak terlihat tanpa sengaja saat layar dibagikan. Kalau Anda boleh mengubah aplikasi itu, tekan **Tampilkan nilai** untuk melihatnya; setiap kali dicatat. Lihat [Variabel lingkungan](../applications/environment-variables.md) dan [Keamanan dan data Anda](../getting-started/security-and-your-data.md).
+
 ## Load balancer, HTTPS, dan DNS
 
 ### Situs saya menampilkan error 502
@@ -145,6 +149,14 @@ Untuk domain **Terkelola**, dPanel tidak akan menimpa record DNS yang sudah ada.
 
 Sebuah job, misalnya deployment, setup server, atau pemasangan modul, terus menunggu. Kalau ruang kerja Anda memakai **Worker privat**, job-nya hanya dikirim ke worker milik Anda sendiri dan menunggu sampai salah satunya berjalan. Jalankan worker Anda, atau kembalikan ruang kerja ke **Worker bersama (dPanel)** di halaman profil atau halaman tim. Lihat [Worker](../workers/overview.md).
 
+### Pemasangan menampilkan "Menunggu server memulai pemasangan ini"
+
+Di server yang terhubung dengan agen dPanel, job pertama setelah server bergabung menunggu selama agen menyiapkan installer dPanel di mesin itu, sekitar dua menit. Job berikutnya langsung mulai. **Menunggu pekerjaan lain di server ini selesai** berarti dPanel menjalankan satu job pada satu waktu per server; job Anda mulai setelah yang lain selesai. Lihat [Memasang perangkat lunak](../servers/install-software.md).
+
+### Job gagal tetapi juga menampilkan peringatan
+
+Buka **Detail teknis** pada operasi yang gagal di **Aktivitas terbaru**. **Tugas gagal** menyebut langkah yang benar-benar gagal, beserta **Galat**-nya. Peringatan adalah langkah yang boleh dilewati job, misalnya menghentikan layanan yang belum ada; itu bukan penyebabnya. Lihat [Dasbor](../getting-started/dashboard.md).
+
 ## Log
 
 ### "Aplikasi ini belum punya perintah run atau server"
@@ -177,13 +189,17 @@ Aplikasi web tidak memindahkan resource antar ruang kerja, jadi tindakan ini dis
 
 Setiap anggota ruang kerja bisa membaca status eksekusi dan agennya. Jika pesan ini masih muncul, kemungkinan Anda bukan anggota ruang kerja yang dipilih: periksa pemilih ruang kerja, atau minta owner ruang kerja menambahkan Anda. Lihat [Anggota dan peran](../teams/members-and-roles.md).
 
+### Akses saya hilang tepat setelah peran saya diubah
+
+Itu memang disengaja. Saat owner atau admin tim mengeluarkan Anda atau menurunkan peran Anda, perubahannya langsung berlaku, tanpa menunggu Anda keluar. Mintalah peran yang Anda butuhkan kepada mereka. Lihat [Anggota dan peran](../teams/members-and-roles.md).
+
 ### Asisten menyebut "Asisten belum tersedia"
 
 **Asisten belum tersedia** berarti dPanel tidak bisa menjangkau layanan asisten, atau asisten belum diaktifkan untuk Anda. Tekan **Periksa lagi** setelah beberapa saat. Bagian dPanel lainnya tetap berjalan tanpa asisten. Lihat [Batasan dan privasi](../ai/limits-and-privacy.md).
 
 ### Di mana Manajemen Kunci untuk password saya?
 
-**Manajemen Kunci** di sidebar membuka halaman **Kunci SSH**; isinya hanya kunci SSH. Simpan password aplikasi di [variabel lingkungan](../applications/environment-variables.md).
+**Manajemen Kunci** di sidebar membuka halaman **Kunci SSH**; isinya hanya kunci SSH. Simpan password aplikasi di [variabel lingkungan](../applications/environment-variables.md), yang disimpan dPanel dalam bentuk terenkripsi. Lihat [Keamanan dan data Anda](../getting-started/security-and-your-data.md).
 
 ## Meminta bantuan
 

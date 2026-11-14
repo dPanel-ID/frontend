@@ -55,7 +55,7 @@ Start people on the narrowest role that lets them do their job. **Developer** su
 3. Tick the roles they should have. **Select group** ticks a whole group; **Clear** unticks everything.
 4. Press **Save roles**.
 
-Saving replaces the member's role set. A member holds one preset role, so ticking **Admin** replaces **Developer** or **DevOps**.
+Saving replaces the member's role set. A member holds one preset role, so ticking **Admin** replaces **Developer** or **DevOps**. The change takes effect at once: a member whose role you lower loses the extra access on their next action, without signing out.
 
 Owner and Admin are marked **Protected**. Only a workspace owner can tick them, or change or remove a member who holds one. For everyone else they are shown but disabled.
 

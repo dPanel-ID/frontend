@@ -78,4 +78,4 @@ Build atau rilis terakhir gagal. Buka aplikasinya, masuk ke **Rilis**, lalu teka
 
 ### Bisakah saya mengelola aplikasi dari terminal?
 
-Bisa. Alat baris perintah dnocs punya `dnocs application list`, `detail`, `create`, `deploy`, dan `delete`. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasangnya.
+Bisa. Alat baris perintah dnocs punya `dnocs application list`, `detail`, `create`, `deploy`, dan `delete`, ditambah `status`, `logs`, `service`, `env` untuk variabel runtime, dan `runtime` untuk pindah ke runtime baru. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasangnya.

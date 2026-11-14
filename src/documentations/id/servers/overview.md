@@ -60,11 +60,11 @@ Anda juga bisa meminta **Ask dPanel** memeriksa server atau memasang sesuatu di 
 
 Kalau Anda merawat server, inilah yang diubah oleh penyiapan:
 
-| Apa            | Di mana                                                                         |
-| -------------- | ------------------------------------------------------------------------------- |
-| Program agen   | `/opt/dpanel/bin/dpanel-agent`, berjalan sebagai layanan systemd `dpanel-agent` |
-| Pengaturannya  | `/opt/dpanel/etc/environment`                                                   |
-| Datanya        | `/opt/dpanel/var/lib/agent`                                                     |
+| Apa            | Di mana                                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------------------------- |
+| Program agen   | `/opt/dpanel/bin/dpanel-agent`, berjalan sebagai layanan systemd `dpanel-agent`                               |
+| Pengaturannya  | `/opt/dpanel/etc/environment`                                                                                 |
+| Datanya        | `/opt/dpanel/var/lib/agent`                                                                                   |
 | Pengguna Linux | Satu untuk akun dPanel Anda; di server yang disiapkan lewat SSH juga `dpanel`, dengan `sudo` tanpa kata sandi |
 
 Aplikasi berada di satu folder per aplikasi, yang tampil sebagai **Direktori kerja** di tab **Pengaturan** aplikasi, dan berjalan sebagai layanan systemd.
@@ -81,7 +81,7 @@ Server yang diluncurkan dPanel menjalankan Ubuntu 24.04 LTS atau 26.04 LTS. Serv
 
 ### Bisakah server dikelola dari terminal?
 
-Bisa. CLI `dnocs` bisa menghubungkan mesin (`sudo dnocs machine register`), meluncurkan server cloud (`dnocs server create-cloud`), menampilkan daftar server, menjalankan penyiapan lagi, memasang modul, dan mengelola firewall. Lihat [AI di terminal](../ai/ai-in-the-terminal.md).
+Bisa. CLI `dnocs` bisa menghubungkan mesin (`sudo dnocs machine register` di mesin itu, atau `dnocs server agent-install` untuk mencetak perintah instalasi satu barisnya), meluncurkan server cloud (`dnocs server create-cloud`), menampilkan daftar server, menjalankan penyiapan lagi, memasang modul, dan mengelola firewall. Lihat [AI di terminal](../ai/ai-in-the-terminal.md).
 
 ### Apa itu agen, dan amankah kalau dihapus?
 

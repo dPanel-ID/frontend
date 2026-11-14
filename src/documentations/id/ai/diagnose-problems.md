@@ -19,6 +19,7 @@ Ceritakan apa yang Anda lihat, dan sebutkan apa yang gagal:
 - `Situs saya shop.example.com menampilkan error 502. Cari tahu penyebabnya.`
 - `Apakah ada job yang gagal dalam 24 jam terakhir? Jelaskan kenapa yang terakhir gagal.`
 - `Server 145 terasa lambat. Apakah memori atau disknya habis?`
+- `Apakah MariaDB berjalan di server 145? Kalau tidak, kenapa layanannya berhenti?`
 - `Apakah load balancer untuk shop.example.com sehat? Periksa sertifikatnya dan error terbaru.`
 
 ## Membaca diagnosisnya
@@ -31,18 +32,21 @@ Diagnosis yang baik punya tiga bagian:
 2. **Kemungkinan penyebabnya**, dengan kata-kata sederhana.
 3. **Perbaikannya**, di dPanel. Kalau perbaikannya berupa perubahan, misalnya memperbarui perintah build lalu merilis ulang, asisten mengusulkannya sebagai kartu untuk Anda setujui.
 
+Untuk job yang gagal, asisten mengutip tugas yang pertama kali gagal, bukan langkah yang hanya menghasilkan peringatan: langkah yang boleh dilewati sebuah modul, misalnya menghentikan layanan yang belum ada, dihitung sebagai peringatan, bukan sebagai error.
+
 Kalau buktinya belum meyakinkan, asisten menyebutkan apa yang sudah diperiksanya dan apa yang belum bisa dipastikan. **Diperiksa:** (**Checked:**) di bawah jawaban mencantumkan setiap sumber yang dibacanya, seperti **deployment get**, **application logs**, dan **server usage**.
 
 ## Apa yang diperiksa asisten
 
-| Masalah                             | Yang dibaca asisten                                                        | Perbaikan yang biasa diusulkan                                               |
-| ----------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Build gagal                         | Log build-nya                                                              | Memperbaiki perintah build atau runtime yang kurang, lalu merilis ulang      |
-| Aplikasi tidak mau jalan atau crash | Deployment, log runtime, memori dan disk server                            | Memperbaiki perintah start atau variabel lingkungan, lalu merilis ulang      |
-| Situs web menampilkan error         | Load balancer, log akses dan sertifikatnya, serta aplikasi di belakangnya  | Mengubah rute load balancer, atau memperbaiki aplikasinya                    |
-| Job gagal                           | Job dan error-nya                                                          | Menjalankan ulang penyiapan server, memasang modul yang kurang, mencoba lagi |
-| Server lambat atau penuh            | Penggunaan CPU, memori, dan disk                                           | Server yang lebih besar, atau menghapus build lama                           |
-| Port tidak merespons                | Aturan firewall server dan apa yang akan berubah kalau firewall diterapkan | Mengizinkan port lalu menerapkan firewall                                    |
+| Masalah                             | Yang dibaca asisten                                                        | Perbaikan yang biasa diusulkan                                                          |
+| ----------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Build gagal                         | Log build-nya                                                              | Memperbaiki perintah build atau runtime yang kurang, lalu merilis ulang                 |
+| Aplikasi tidak mau jalan atau crash | Deployment, log runtime, memori dan disk server                            | Memperbaiki perintah start atau variabel lingkungan, lalu merilis ulang                 |
+| Situs web menampilkan error         | Load balancer, log akses dan sertifikatnya, serta aplikasi di belakangnya  | Mengubah rute load balancer, atau memperbaiki aplikasinya                               |
+| Job gagal                           | Job, tugas yang pertama kali gagal, dan error-nya                          | Menjalankan ulang penyiapan server, memasang modul yang kurang, mencoba lagi            |
+| Perangkat lunak terpasang tapi mati | Layanan di server dan baris status terakhir dari layanan yang gagal        | Memperbaiki penyebab yang disebutkan, lalu menyalakan ulang layanan atau memasang ulang |
+| Server lambat atau penuh            | Penggunaan CPU, memori, dan disk                                           | Server yang lebih besar, atau menghapus build lama                                      |
+| Port tidak merespons                | Aturan firewall server dan apa yang akan berubah kalau firewall diterapkan | Mengizinkan port lalu menerapkan firewall                                               |
 
 ## Mengikuti job yang lama
 

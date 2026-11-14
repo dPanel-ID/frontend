@@ -82,6 +82,8 @@ Anda juga bisa meminta asisten menyiapkannya, misalnya "Pasang aplikasi saya di 
 
 Dengan **L4**, Anda mengatur **Layanan** (misalnya PostgreSQL atau Redis), **Port listen**, **Sumber yang diizinkan**, dan **Penyeimbangan**, lalu alamat upstream-nya (tujuan koneksi diteruskan). **Sumber yang diizinkan** wajib untuk basis data. HTTPS tidak dipakai: koneksi diteruskan apa adanya, jadi basis data tetap memakai TLS-nya sendiri dari ujung ke ujung.
 
+Basis data yang terpasang di gateway itu sendiri dijangkau di `127.0.0.1`. Basis data di server lain harus mendengarkan di alamat jaringan, bukan hanya di `127.0.0.1`; jika tidak, dPanel menolak load balancer itu dan menyebutkan apa yang perlu diubah. Pasang ulang modul basis data dengan pengaturan bind-nya (misalnya **Bind Address** untuk MariaDB atau **Bind Interface** untuk Redis) diisi alamat privat server itu. Redis juga membutuhkan **Password** minimal 16 karakter sebelum boleh mendengarkan di jaringan.
+
 ### Mengalihkan domain
 
 Sebuah rute bisa mengirim pengunjung ke URL lain, bukan ke aplikasi atau alamat, di Caddy, HAProxy, dan Apache APISIX. Di **Routing**, ubah **Tipe** aturan menjadi **Pengalihan**, isi **Alihkan ke**, lalu pilih **302 Sementara** atau **301 Permanen**. Peramban mengingat 301, jadi gunakan 302 sampai tujuannya pasti. Jalur dan query yang diminta tetap dibawa, kecuali Anda mematikan **Pertahankan jalur dan query yang diminta**.
@@ -195,7 +197,12 @@ dnocs load-balancer log --id 31                 # 10 menit terakhir
 dnocs load-balancer log --id 31 --since 24h     # hingga 72h (3 hari)
 dnocs load-balancer log --id 31 --page 2 --limit 500
 dnocs load-balancer log --id 31 --json          # setiap baris beserta field-nya
+dnocs load-balancer log --id 31 --since 2h --status 5xx,429   # hanya status ini
+dnocs load-balancer log --id 31 --since 30m --summary         # hitung request per status
+dnocs load-balancer log --id 31 --follow --status 5xx --for 5m
 ```
+
+`--status` menerima kode seperti `502` atau kelas seperti `5xx`, dipisahkan koma. `--follow` terus mencetak request baru sampai Anda menghentikannya, atau sampai waktu `--for` habis.
 
 ## Menghapus load balancer
 
