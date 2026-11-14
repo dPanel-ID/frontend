@@ -25,6 +25,8 @@ sidebar_label: Batasan dan privasi
 
 Karena itu aturannya sederhana: **jangan pernah mengetik kata sandi, token, atau kunci di chat**. Kalau telanjur, anggap nilai itu sudah bocor dan segera ganti. Asisten tidak akan mengulang atau memakainya, dan akan meminta Anda mengetiknya di kartu persetujuan. Lihat [Setujui atau tolak perubahan](./approvals-and-secrets.md#rahasia-yang-anda-ketik).
 
+Di luar chat, dPanel menyimpan rahasia yang Anda berikan dalam bentuk terenkripsi dan menyamarkan nilai variabel di layar. Lihat [Keamanan dan data Anda](../getting-started/security-and-your-data.md).
+
 ## Siapa yang bisa melihat percakapan Anda
 
 - **Anda.** Percakapan milik orang yang memulainya, di ruang kerja tempat percakapan itu dimulai.
@@ -42,7 +44,7 @@ Browser Anda mengingat percakapan mana yang terakhir dibuka untuk setiap ruang k
 | Satu job pada satu waktu per server          | Setujui perubahan di server yang sama satu per satu                                                               |
 | Job yang lama hanya diperiksa sekali         | Setelah rilis atau pemasangan, tanyakan lagi untuk melihat perkembangannya                                        |
 | Harga hanya perkiraan                        | Harga server cloud berasal dari pengetahuan umum tentang harga publik, bukan dari tagihan penyedia Anda           |
-| Belum semua tersedia lewat chat              | Misalnya membuat kunci SSH atau record DNS, mengelola anggota tim, dan menghubungkan akun cloud: pakai halamannya |
+| Belum semua tersedia lewat chat              | Misalnya menambah record DNS secara manual, mengelola anggota tim, dan menghubungkan akun cloud: pakai halamannya |
 | Permintaan yang terlalu luas                 | Permintaan yang butuh terlalu banyak langkah akan berhenti; tanyakan satu hal setiap kali                         |
 
 Asisten bisa keliru. Baca setiap kartu sebelum menyetujuinya, dan cocokkan jawaban penting dengan halamannya di dPanel; setiap jawaban mencantumkan ID dan nama agar Anda bisa melakukannya.
@@ -74,7 +76,7 @@ Belum ada tombol hapus. **Percakapan baru** memulai percakapan yang bersih, dan 
 
 ### Bisakah asisten melihat nilai variabel lingkungan saya?
 
-Tidak. Asisten hanya melihat nama variabel. Nilai rahasia yang Anda ketik di kartu persetujuan dikirim bersama persetujuan Anda langsung ke dPanel.
+Tidak. Asisten hanya melihat nama variabel. Nilai rahasia yang Anda ketik di kartu persetujuan dikirim bersama persetujuan Anda langsung ke dPanel, yang menyimpannya dalam bentuk terenkripsi. Lihat [Keamanan dan data Anda](../getting-started/security-and-your-data.md).
 
 ### Apakah asisten tersedia di ruang kerja personal saya?
 

@@ -63,7 +63,7 @@ The status codes were `4xx`: pages that do not exist (`404`) or requests that ne
 
 ### Can I read load balancer requests from the terminal?
 
-Yes. `dnocs load-balancer log --id <load balancer ID>` prints the same request lines, newest first. Add `--since 24h` to look further back (up to `72h`, 3 days), `--page 2` for older lines, or `--json` for every field. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install dnocs.
+Yes. `dnocs load-balancer log --id <load balancer ID>` prints the same request lines, newest first. Add `--since 24h` to look further back (up to `72h`, 3 days), `--page 2` for older lines, `--status 5xx` to keep only failed requests, or `--json` for every field. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install dnocs.
 
 ### How far back can I read?
 

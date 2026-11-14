@@ -33,6 +33,7 @@ Cara termudah adalah dari situs web dPanel. Anda menyalin satu perintah lalu men
    ```
 
    Perintah ini mungkin meminta kata sandi Anda, karena memakai `sudo`.
+
 5. Kembali ke dPanel, kartu menampilkan **Menunggu mesinnya…** lalu berubah menjadi **Terhubung!** begitu agen terhubung, biasanya kurang dari satu menit. Pilih **Buka server**.
 
 ![Kartu Connect a server with the dPanel agent setelah Get install command: perintah satu baris dengan tombol Copy, masa berlakunya, dan status Waiting dengan Open server](../../assets/servers/private-create-chooser.webp 'Kartu menunggu mesinnya dan berubah menjadi Terhubung! dengan sendirinya. Kode di dalam perintah ditampilkan sebagai contoh.')
@@ -98,20 +99,20 @@ dPanel juga bisa terhubung ke server lewat SSH. Keduanya didukung penuh; agen dP
 - **Agen dPanel:** tidak ada yang masuk ke server Anda; agen yang terhubung keluar ke dPanel. Anda tidak butuh IP publik, port terbuka, atau SSH key dPanel, dan Anda tidak pernah memberi dPanel akses administrator (root) lewat SSH. Konsekuensinya: pekerjaan berjalan **di server Anda**. Selain agen itu sendiri, yang ringan dan selalu berjalan, memasang perangkat lunak atau deploy aplikasi memakai installer yang disiapkan agen di mesin itu (Python dan Ansible, disiapkan sekali, butuh beberapa menit pada kali pertama). Installer menjalankan pekerjaan di mesin itu lalu berhenti lagi setelah 10 menit tanpa pekerjaan. Jadi pemasangan dan deploy memakai sebagian CPU, memori, dan disk server Anda selama berjalan.
 - **SSH:** dPanel memasang SSH key-nya di server Anda untuk pengguna dengan hak administrator (`sudo`) lalu masuk dari worker milik dPanel. Worker itulah yang mengerjakan bagian berat memasang dan mengonfigurasi perangkat lunak dari luar, sehingga beban server Anda lebih ringan, cocok untuk VPS kecil. Konsekuensinya: Anda memercayakan akses administrator ke mesin Anda pada SSH key dPanel, dan server butuh IP publik dengan SSH yang bisa dijangkau dari internet.
 
-|                                     | Agen dPanel (direkomendasikan)                                       | SSH                                                     |
-| ----------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------- |
-| Tempat pemasangan dan deploy berjalan | Di server Anda                                                     | Di worker dPanel, yang terhubung ke server Anda         |
-| Beban pada server Anda              | Sedikit lebih besar selama pekerjaan berjalan                        | Lebih ringan                                            |
-| Akses yang Anda berikan ke dPanel   | Tidak ada: agen yang terhubung keluar                                | SSH key dPanel, dengan hak `sudo`                       |
-| Perlu IP publik                     | Tidak                                                                | Ya                                                      |
-| Perlu port terbuka                  | Tidak                                                                | Ya, SSH yang bisa dijangkau dari internet               |
-| Paling cocok untuk                  | Homelab, PC, server di balik router, siapa pun yang menjaga SSH tetap privat | VPS kecil dengan IP publik, jika Anda lebih suka SSH |
+|                                       | Agen dPanel (direkomendasikan)                                               | SSH                                                  |
+| ------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Tempat pemasangan dan deploy berjalan | Di server Anda                                                               | Di worker dPanel, yang terhubung ke server Anda      |
+| Beban pada server Anda                | Sedikit lebih besar selama pekerjaan berjalan                                | Lebih ringan                                         |
+| Akses yang Anda berikan ke dPanel     | Tidak ada: agen yang terhubung keluar                                        | SSH key dPanel, dengan hak `sudo`                    |
+| Perlu IP publik                       | Tidak                                                                        | Ya                                                   |
+| Perlu port terbuka                    | Tidak                                                                        | Ya, SSH yang bisa dijangkau dari internet            |
+| Paling cocok untuk                    | Homelab, PC, server di balik router, siapa pun yang menjaga SSH tetap privat | VPS kecil dengan IP publik, jika Anda lebih suka SSH |
 
 Untuk terhubung lewat SSH, lihat [Menghubungkan server sendiri lewat SSH](./connect-your-own-server.md). Server cloud baru membuat pilihan yang sama di langkah **Cara dPanel terhubung**; lihat [Membuat server cloud](./cloud-providers/create-a-cloud-server.md#langkah-3-cara-dpanel-terhubung).
 
 ## Langkah 2: Kenali halaman servernya
 
-Buka servernya. Tab-nya sama dengan server lain: pemakaian langsung, modul, layanan, pengguna, jaringan, berkas, log, dan pengaturan. Bagian detail menjelaskan cara dPanel menjangkaunya: **Alamat lokal**, **Alamat publik** (alamat internet yang dipakai agen untuk terhubung, bila dPanel bisa mengetahuinya), dan **Koneksi: Lewat agen dPanel**, bukan login SSH.
+Buka servernya. Tab-nya sama dengan server lain: pemakaian langsung, modul, layanan, pengguna, jaringan, berkas, log, dan pengaturan. Bagian detail menjelaskan cara dPanel menjangkaunya: **Alamat lokal** (alamatnya di jaringan Anda sendiri), **Terhubung dari** (alamat publik yang dipakai jaringan Anda untuk keluar ke internet, atau **Tidak diketahui: agen terhubung dari jaringan privat**), dan **Koneksi**: **Lewat agen dPanel (tanpa IP publik atau SSH)**, bukan login SSH.
 
 ![Halaman home-server: pemakaian CPU, memori, dan disk secara langsung, jumlah aplikasi, database, dan modul, serta detail Local address 172.17.0.2, koneksi lewat agen dPanel, dan versi agen](../../assets/servers/private-overview.webp)
 
@@ -153,17 +154,18 @@ Pilih **Open terminal** di bagian atas halaman server. Anda mendapat shell root 
 
 ## Yang bisa dilakukan
 
-| Bisa                                                                            | Tidak tersedia                                 |
-| ------------------------------------------------------------------------------- | ---------------------------------------------- |
-| Melihat pemakaian CPU, memori, dan disk                                         | Cluster Kubernetes bersama server lain         |
-| Menelusuri dan mengubah berkas                                                  | Mengubah detail koneksi SSH (memang tidak ada) |
-| Menyalakan, mematikan, dan memulai ulang layanan, membaca log                   |                                                |
-| Mengelola pengguna Linux                                                        |                                                |
-| Memasang modul seperti MariaDB, PostgreSQL, Redis, atau Docker                  |                                                |
-| Membuka MariaDB dan PostgreSQL di pengelola database, termasuk impor dan ekspor |                                                |
-| Build dan deploy aplikasi                                                       |                                                |
-| Membuka terminal di browser atau dengan `dnocs server exec`                     |                                                |
-| Menambah load balancer dan domain                                               |                                                |
+| Bisa                                                                                                   | Tidak tersedia                                 |
+| ------------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
+| Melihat pemakaian CPU, memori, dan disk                                                                | Mengubah detail koneksi SSH (memang tidak ada) |
+| Menelusuri dan mengubah berkas                                                                         |                                                |
+| Menyalakan, mematikan, dan memulai ulang layanan, membaca log                                          |                                                |
+| Mengelola pengguna Linux                                                                               |                                                |
+| Memasang modul seperti MariaDB, PostgreSQL, Redis, atau Docker                                         |                                                |
+| Membuka MariaDB dan PostgreSQL di pengelola database, termasuk impor dan ekspor                        |                                                |
+| Build dan deploy aplikasi                                                                              |                                                |
+| Membuka terminal di browser atau dengan `dnocs server exec`                                            |                                                |
+| Menambah load balancer dan domain                                                                      |                                                |
+| Bergabung ke [cluster Kubernetes](../clusters/overview.md) bersama server di jaringan privat yang sama |                                                |
 
 ## Pasang load balancer di server ini
 
@@ -173,7 +175,7 @@ Anda bisa menambah [load balancer](../networking/load-balancers.md) ke server ya
 - **Server rumahan atau PC homelab:** record DNS yang dikelola dPanel mengarah ke IP publik router Anda. Teruskan port 80 dan 443 di router ke mesin itu, atau situs tidak bisa dijangkau dan load balancer tidak bisa mendapatkan sertifikat HTTPS.
 - **Domain yang Anda kelola sendiri:** arahkan sendiri ke alamat publik server.
 
-Bila dPanel tidak mengetahui **Alamat publik** server, gunakan domain Anda sendiri dan arahkan sendiri ke server.
+Bila **Terhubung dari** server bertuliskan **Tidak diketahui**, gunakan domain Anda sendiri dan arahkan sendiri ke server.
 
 Jika mesin mati atau offline saat Anda memulai pemasangan atau deploy, pekerjaannya menunggu lalu gagal; jalankan lagi setelah mesin kembali menyala.
 
@@ -213,7 +215,7 @@ Bisa, dengan Linux 64-bit (`arm64`) yang memakai systemd, seperti Raspberry Pi O
 
 ### Server menampilkan Menunggu agen. Apa artinya?
 
-dPanel sudah membuat server dan menunggu Anda menjalankan perintah instalasinya di mesin. Perintah itu berlaku 2 jam. Jika belum ada yang terhubung sampai saat itu, server menampilkan **Failed** dengan catatan bahwa perintah instalasinya sudah kedaluwarsa: buat perintah instalasi baru untuk server itu lalu jalankan, dan server yang sama menjadi **Ready**.
+dPanel sudah membuat server dan menunggu Anda menjalankan perintah instalasinya di mesin. Perintah itu berlaku 2 jam. Jika belum ada yang terhubung sampai saat itu, server menampilkan **Gagal** dengan catatan bahwa perintah instalasinya sudah kedaluwarsa. Hapus server itu (server yang perintahnya belum pernah dijalankan bisa langsung dihapus), lalu pilih **Ambil perintah pemasangan** lagi dan jalankan perintah barunya di mesin.
 
 ### Perintahnya menunggu dan server tidak pernah menjadi Ready. Apa yang perlu dicek?
 

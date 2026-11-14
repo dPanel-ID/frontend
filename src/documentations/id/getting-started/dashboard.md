@@ -53,7 +53,7 @@ Data penggunaan muncul beberapa menit setelah server siap. Server melapor setiap
 
 ## Aktivitas
 
-**Aktivitas terbaru** mencatat apa saja yang dilakukan dPanel pada infrastruktur Anda dalam dua hari terakhir: penyiapan server, pemasangan modul, deployment. Setiap entri menyebut apa yang dijalankan, targetnya, siapa yang memulai, dan berapa lama. Nama orangnya tertaut ke profil publiknya. Buka **Detail teknis** untuk melihat rincian mentah operasi yang gagal. Tekan tombol muat ulang untuk mengambil entri terbaru.
+**Aktivitas terbaru** mencatat apa saja yang dilakukan dPanel pada infrastruktur Anda dalam dua hari terakhir: penyiapan server, pemasangan modul, deployment. Setiap entri menyebut apa yang dijalankan, targetnya, siapa yang memulai, dan berapa lama. Nama orangnya tertaut ke profil publiknya. Buka **Detail teknis** pada operasi yang gagal untuk melihat **Tugas gagal** dan **Galat**-nya. Langkah yang boleh dilewati sebuah job dihitung sebagai peringatan, misalnya **2 peringatan**, bukan sebagai kegagalannya. Tekan tombol muat ulang untuk mengambil entri terbaru.
 
 ## Sumber daya
 

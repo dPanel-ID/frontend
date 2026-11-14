@@ -60,11 +60,11 @@ You can also ask **Ask dPanel** to check a server or install something on it; se
 
 If you maintain servers, this is what setup changes:
 
-| What              | Where                                                                     |
-| ----------------- | ------------------------------------------------------------------------- |
-| The agent program | `/opt/dpanel/bin/dpanel-agent`, run as the systemd service `dpanel-agent` |
-| Its settings      | `/opt/dpanel/etc/environment`                                             |
-| Its data          | `/opt/dpanel/var/lib/agent`                                               |
+| What              | Where                                                                                           |
+| ----------------- | ----------------------------------------------------------------------------------------------- |
+| The agent program | `/opt/dpanel/bin/dpanel-agent`, run as the systemd service `dpanel-agent`                       |
+| Its settings      | `/opt/dpanel/etc/environment`                                                                   |
+| Its data          | `/opt/dpanel/var/lib/agent`                                                                     |
 | A Linux user      | One for your dPanel account; on servers set up over SSH also `dpanel`, with passwordless `sudo` |
 
 Applications live in a folder per application, shown as **Work directory** on the application's **Settings** tab, and run as systemd services.
@@ -81,7 +81,7 @@ Servers dPanel launches run Ubuntu 24.04 LTS or 26.04 LTS. A server you connect 
 
 ### Can I manage servers from a terminal instead?
 
-Yes. The `dnocs` CLI connects a machine (`sudo dnocs machine register`), launches cloud servers (`dnocs server create-cloud`), lists servers, runs setup again, installs modules and manages the firewall. See [AI in the terminal](../ai/ai-in-the-terminal.md).
+Yes. The `dnocs` CLI connects a machine (`sudo dnocs machine register` on it, or `dnocs server agent-install` to print the one-line install command for it), launches cloud servers (`dnocs server create-cloud`), lists servers, runs setup again, installs modules and manages the firewall. See [AI in the terminal](../ai/ai-in-the-terminal.md).
 
 ### What is the agent and is it safe to remove?
 

@@ -32,7 +32,9 @@ Setiap item yang punya tombol **Ubah** membuka panel khusus untuk bagian itu saj
 | Langkah build, Variabel lingkungan (Build)  | Edit Build Configuration   | Langkah build dan variabel build-time. |
 | Perintah jalan, Variabel lingkungan (Jalan) | Edit Runtime Configuration | Perintah jalan dan variabel runtime.   |
 
-Tekan **Simpan** di panel. Perubahan berlaku mulai rilis berikutnya, jadi rilis lagi dengan **Bangun dan rilis** atau **Rilis ulang**.
+Tekan **Simpan** di panel, atau **Batal** untuk menutupnya; jika ada perubahan yang belum disimpan, dPanel meminta konfirmasi lebih dulu. Perubahan berlaku mulai rilis berikutnya, jadi rilis lagi dengan **Bangun dan rilis** atau **Rilis ulang**.
+
+Nilai variabel disembunyikan di panel-panel ini. Biarkan nilai yang tersembunyi apa adanya untuk mempertahankannya, atau tekan **Show values** di **Edit Runtime Configuration** untuk melihat nilai runtime. Lihat [Variabel environment](./environment-variables.md#melihat-nilai-yang-tersimpan).
 
 ## Pengaturan yang tetap
 
@@ -45,7 +47,7 @@ Untuk memakai nilai lain, buat aplikasi baru, rilis, arahkan load balancer Anda 
 **Ubah pengaturan** di bagian atas aplikasi membuka **Update Aplikasi**. Isinya formulir lima langkah yang sama dengan saat membuat aplikasi, sudah terisi nilai saat ini: server dan modul, nama, perintah, port, dan environment. Port hanya bisa dibaca di sini; lihat [Pengaturan yang tetap](#pengaturan-yang-tetap).
 
 1. Tekan **Ubah pengaturan**.
-2. Telusuri langkah-langkahnya dan ubah yang perlu.
+2. Telusuri langkah-langkahnya dan ubah yang perlu. Di langkah **Environment**, nilai disembunyikan; **Tampilkan nilai** menampilkannya dan **Sembunyikan nilai** menyembunyikannya lagi. Nilai tersembunyi yang tidak Anda ubah tetap memakai nilai tersimpan.
 3. Di **Pratinjau**, centang **Jalankan playbook bootstrap** jika Anda mengubah modul atau dependency server perlu dipasang ulang.
 4. Tekan **Simpan perubahan**.
 

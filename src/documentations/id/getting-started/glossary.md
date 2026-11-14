@@ -56,7 +56,7 @@ Perangkat lunak yang dipasang dPanel di server untuk Anda, seperti PHP, Node.js,
 
 ### Runtime (bahasa)
 
-Perangkat lunak yang menjalankan kode dalam satu bahasa pemrograman, seperti PHP untuk WordPress atau Node.js untuk aplikasi JavaScript.
+Perangkat lunak yang menjalankan kode dalam satu bahasa pemrograman, seperti PHP untuk WordPress atau Node.js untuk aplikasi JavaScript; dPanel memasang setiap versi sekali per server, dalam bentuk siap pakai, dan semua aplikasi di server itu memakainya bersama. Lihat [Bahasa pemrograman](../servers/install-software.md#bahasa-pemrograman).
 
 ### Basis data
 
@@ -64,7 +64,7 @@ Program yang menyimpan data aplikasi dalam tabel, seperti MariaDB, PostgreSQL, M
 
 ### DB Manager
 
-Alat web dPanel untuk membuka basis data MariaDB atau PostgreSQL di browser, untuk menelusuri, menjalankan kueri, mengimpor, atau mengekspor data.
+Alat web dPanel untuk membuka basis data MariaDB, PostgreSQL, atau MongoDB di browser, untuk menelusuri, menjalankan kueri, mengimpor, atau mengekspor data.
 
 ### Terminal
 
@@ -122,7 +122,7 @@ Deskripsi tersimpan tentang cara membuild dan menjalankan aplikasi Anda: bahasan
 
 ### Variabel lingkungan
 
-Pengaturan bernama, seperti `APP_ENV=production` atau kata sandi basis data, yang dibaca aplikasi saat mulai berjalan. Lihat [Variabel lingkungan](../applications/environment-variables.md).
+Pengaturan bernama, seperti `APP_ENV=production` atau kata sandi basis data, yang dibaca aplikasi saat mulai berjalan; dPanel menyimpan nilainya dalam bentuk terenkripsi dan menyembunyikannya di layar sampai Anda memintanya. Lihat [Variabel lingkungan](../applications/environment-variables.md) dan [Keamanan dan data Anda](./security-and-your-data.md).
 
 ### Service
 

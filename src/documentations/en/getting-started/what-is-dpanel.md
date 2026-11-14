@@ -18,18 +18,18 @@ You need no terminal on your own computer. dPanel runs a small program, the agen
 
 ## What dPanel does
 
-| Area           | What you can do                                                                                                                                                                                         |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Servers        | Connect any Linux server with one command, or launch a VM at a cloud provider. See live CPU, memory and disk, systemd services, users, open ports, files and logs, and manage the server's firewall.   |
-| Software       | Install databases, runtimes and web servers from a catalogue of tested modules, such as MariaDB, Go or Caddy.                                                                                           |
-| Applications   | Build a GitHub repository on your server, run it as a systemd service, keep every build, and roll back in one step.                                                                                     |
-| Load balancers | Publish an application on a domain with a free Let's Encrypt HTTPS certificate, renewed for you.                                                                                                        |
-| Domains        | Manage the DNS records of a domain hosted at Cloudflare or DigitalOcean.                                                                                                                                |
-| Logs           | Read application, load balancer, build and server logs, search them, and download up to 3 days back.                                                                                                    |
-| Clusters       | Group servers, and turn a group into a Kubernetes cluster with k3s or RKE2.                                                                                                                             |
-| Teams          | Share a workspace with your team and give each person a role, from Viewer to Owner.                                                                                                                     |
-| Workers        | Run your workspace's jobs on dPanel's shared workers, or on private workers you run yourself.                                                                                                           |
-| Assistant      | Ask questions in plain language, or let [Ask dPanel](../ai/overview.md) prepare changes for you to approve.                                                                                             |
+| Area           | What you can do                                                                                                                                                                                      |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Servers        | Connect any Linux server with one command, or launch a VM at a cloud provider. See live CPU, memory and disk, systemd services, users, open ports, files and logs, and manage the server's firewall. |
+| Software       | Install databases, runtimes and web servers from a catalogue of tested modules, such as MariaDB, Go or Caddy.                                                                                        |
+| Applications   | Build a GitHub repository on your server, run it as a systemd service, keep every build, and roll back in one step.                                                                                  |
+| Load balancers | Publish an application on a domain with a free Let's Encrypt HTTPS certificate, renewed for you.                                                                                                     |
+| Domains        | Manage the DNS records of a domain hosted at Cloudflare or DigitalOcean.                                                                                                                             |
+| Logs           | Read application, load balancer, build and server logs, search them, and download up to 3 days back.                                                                                                 |
+| Clusters       | Group servers, and turn a group into a Kubernetes cluster with k3s or RKE2.                                                                                                                          |
+| Teams          | Share a workspace with your team and give each person a role, from Viewer to Owner.                                                                                                                  |
+| Workers        | Run your workspace's jobs on dPanel's shared workers, or on private workers you run yourself.                                                                                                        |
+| Assistant      | Ask questions in plain language, or let [Ask dPanel](../ai/overview.md) prepare changes for you to approve.                                                                                          |
 
 ## Supported providers and systems
 
@@ -84,6 +84,10 @@ Your cloud provider bills you directly, because dPanel creates machines inside y
 ### Can I still use SSH on my servers?
 
 Yes. dPanel has a terminal in the browser, and you can add your own public key to a server and connect with any SSH client. dPanel itself doesn't need SSH on a server connected with the agent. See [Connect over SSH](../servers/connect-over-ssh.md).
+
+### How does dPanel protect my data?
+
+Your code and databases stay on your own servers. dPanel stores the secrets you give it encrypted, hides variable values on screen, and the agent on each server only connects out. See [Security and your data](./security-and-your-data.md).
 
 ### What happens to my servers if I stop using dPanel?
 

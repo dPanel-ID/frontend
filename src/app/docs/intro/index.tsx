@@ -17,9 +17,9 @@ export const Route = createFileRoute('/docs/intro/')({
   ssr: true,
   head: () =>
     seoHead({
-      title: 'Docs: servers, apps and domains in one place',
+      title: 'Docs: put your app online on a server you own',
       description:
-        'Learn dPanel - dNocs: launch a server on AWS, Google Cloud or DigitalOcean, or connect your own over SSH, then deploy your app and add a domain.',
+        'Learn dPanel - dNocs: launch a server on seven clouds or connect your own with the dPanel agent, deploy from GitHub, add a domain with HTTPS, and see what happens to your data.',
       path: '/docs/intro',
       jsonLd: [
         softwareApplicationJsonLd(),

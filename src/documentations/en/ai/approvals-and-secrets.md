@@ -17,6 +17,7 @@ When you ask **Ask dPanel**, the dPanel AI assistant, for a change, it never mak
 | Searching the documentation                                   | Creating, updating or deploying an application, setting environment variables                   |
 | Checking what a firewall apply would change                   | Creating or re-routing load balancers, adding or removing firewall rules, applying the firewall |
 | Refreshing a server's module list from its agent              | Creating server groups and clusters, switching between shared and private workers               |
+| Checking which services run on a server                       | Creating an SSH key                                                                             |
 |                                                               | Every delete                                                                                    |
 
 ## Read the card
@@ -74,7 +75,7 @@ Some changes need a value only you know, such as the database password an applic
 2. Press the eye icon (**Show value**) to check what you typed.
 3. **Approve** stays grey until every field is filled.
 
-The value goes with your approval straight to dPanel. The assistant never sees it; it knows only the variable's name.
+The value goes with your approval straight to dPanel, which stores it encrypted and masks it on the application's pages. The assistant never sees it; it knows only the variable's name. See [Security and your data](../getting-started/security-and-your-data.md).
 
 ## Secrets dPanel generates
 
