@@ -68,7 +68,11 @@ export default function SectionConnect() {
     <div className="space-y-5">
       <div className="space-y-2">
         <h6 className="text-sm font-semibold">{t('join.title')}</h6>
-        {contract.agentJoin ? (
+        {!provider ? (
+          // The provider decides how a VM can join; until one is picked
+          // nothing is known, and SSH is not the answer by default.
+          <Note>{t('join.pickProvider')}</Note>
+        ) : contract.agentJoin ? (
           <>
             <div
               role="radiogroup"
@@ -145,7 +149,7 @@ export default function SectionConnect() {
         </div>
       )}
 
-      {joinMethod === 'ssh' && (
+      {provider && joinMethod === 'ssh' && (
         <div className="space-y-2">
           <h6 className="text-sm font-semibold">{t('sshKey.title')}</h6>
           <SshKeyField />

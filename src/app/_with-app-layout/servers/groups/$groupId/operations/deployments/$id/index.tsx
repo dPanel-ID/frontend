@@ -1,5 +1,8 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
 
+import { useDevetekLocale } from '@/services/i18n';
+
+import { formatOperationTime } from '@/features/server-groups/shared/lib/time';
 import { DetailSummaryTable } from '@/features/server-groups/view/DetailSummaryTable';
 
 import { ApiDeploy } from '@/shared/api';
@@ -23,6 +26,7 @@ export const Route = createFileRoute(
 
 function DeploymentDetailPage() {
   const { groupId, id } = Route.useParams();
+  const locale = useDevetekLocale();
   const [response, refresh] = ApiDeploy.Detail.$Id.useGet({
     id,
   });
@@ -128,11 +132,11 @@ function DeploymentDetailPage() {
             },
             {
               label: 'Created',
-              value: detail.created_at ?? '-',
+              value: formatOperationTime(detail.created_at, locale),
             },
             {
               label: 'Updated',
-              value: detail.updated_at ?? '-',
+              value: formatOperationTime(detail.updated_at, locale),
             },
           ]}
         />

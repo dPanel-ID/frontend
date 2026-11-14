@@ -11,6 +11,18 @@ export function getServerName(server: ServerCard) {
   return server.host.name || server.host.address || server.id;
 }
 
+/**
+ * The address a load balancer's DNS record points at, the one dNocs uses when
+ * it creates the record. A private (agent-joined) server is reached from the
+ * internet at the public IP its agent connects from, never at its local
+ * address; one without a public IP has none to point at.
+ */
+export function getServerPublicAddress(server?: ServerCard) {
+  if (!server) return undefined;
+  if (server.host.private) return server.host.publicAddress || undefined;
+  return server.host.address || undefined;
+}
+
 export function getSelectedServer(
   resources: CreateResources,
   serverId?: string,

@@ -242,17 +242,21 @@ function LaunchFlow() {
   ];
 
   const providerLabel = getCloudProviderLabel(provider) || provider;
-  const sizeValue = usesBiznetGio
-    ? labels.product
-    : (usesAlibabaCloud || usesAws || usesGcp) && values.spec?.machineType
-      ? `${values.spec.machineType} · ${values.spec.diskSizeGB} GB disk`
-      : picksInstanceType
-        ? values.spec?.machineType
-        : values.spec?.cpuCore &&
-            values.spec.ramSizeGB &&
-            values.spec.diskSizeGB
-          ? `${values.spec.cpuCore} vCPU · ${values.spec.ramSizeGB} GB RAM · ${values.spec.diskSizeGB} GB disk`
-          : undefined;
+  // Nothing is sized or imaged until a provider is picked; the spec's
+  // starting values belong to whichever provider comes next.
+  const sizeValue = !provider
+    ? undefined
+    : usesBiznetGio
+      ? labels.product
+      : (usesAlibabaCloud || usesAws || usesGcp) && values.spec?.machineType
+        ? `${values.spec.machineType} · ${values.spec.diskSizeGB} GB disk`
+        : picksInstanceType
+          ? values.spec?.machineType
+          : values.spec?.cpuCore &&
+              values.spec.ramSizeGB &&
+              values.spec.diskSizeGB
+            ? `${values.spec.cpuCore} vCPU · ${values.spec.ramSizeGB} GB RAM · ${values.spec.diskSizeGB} GB disk`
+            : undefined;
   const sizeFields = usesBiznetGio
     ? ['spec.productID', 'spec.billingCycle']
     : usesGcp || usesAlibabaCloud || usesAws
@@ -260,11 +264,14 @@ function LaunchFlow() {
       : picksInstanceType
         ? ['spec.machineType']
         : ['spec.cpuCore', 'spec.ramSizeGB', 'spec.diskSizeGB'];
-  const imageValue =
-    values.spec?.osName && values.spec.osVersion
+  const imageValue = !provider
+    ? undefined
+    : values.spec?.osName && values.spec.osVersion
       ? `${capitalize(values.spec.osName)} ${values.spec.osVersion}`
       : values.spec?.osTemplate || undefined;
-  const loginValue = fixedLoginUser ?? values.login?.username;
+  const loginValue = provider
+    ? (fixedLoginUser ?? values.login?.username)
+    : undefined;
 
   const rows: ReviewPanelRow[] = buildRows();
   const stepDone = (step: StepKey) =>
@@ -317,7 +324,7 @@ function LaunchFlow() {
             },
           ]
         : []),
-      ...(joinMethod === 'ssh'
+      ...(provider && joinMethod === 'ssh'
         ? [
             {
               key: 'sshKey',

@@ -62,6 +62,17 @@ const domains = {
 
 const onSubmit = vi.fn();
 
+function RecordHarness(props: {
+  gatewayAddress?: string;
+  gatewayHasNoPublicAddress?: boolean;
+}) {
+  const form = useForm<LoadBalancerCreationFormValues>({
+    defaultValues: DEFAULT_VALUES,
+  });
+
+  return <DomainField form={form} domains={domains} {...props} />;
+}
+
 function Harness() {
   const form = useForm<LoadBalancerCreationFormValues>({
     resolver: zodResolver(schemaLoadBalancerCreationForm),
@@ -134,5 +145,20 @@ describe('DomainField', () => {
     });
 
     await waitFor(() => expect(screen.queryByRole('alert')).toBeNull());
+  });
+
+  it('points the record at the address it is given', () => {
+    render(<RecordHarness gatewayAddress="151.243.222.218" />);
+
+    expect(screen.getByText('151.243.222.218')).toBeTruthy();
+    expect(screen.queryByText('gatewayNoPublicAddressHint')).toBeNull();
+  });
+
+  // An agent server's local address is no record target; say so instead.
+  it('says when the gateway has no public address', () => {
+    render(<RecordHarness gatewayHasNoPublicAddress />);
+
+    expect(screen.getByText('gatewayNoPublicAddress')).toBeTruthy();
+    expect(screen.getByText('gatewayNoPublicAddressHint')).toBeTruthy();
   });
 });

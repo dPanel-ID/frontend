@@ -1,9 +1,12 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
 
+import { useDevetekLocale } from '@/services/i18n';
+
 import { personOf } from '@/entities/user/lib/person';
 import type { PublicUserSource } from '@/entities/user/lib/person';
 import { UserLink } from '@/entities/user/ui/UserLink';
 
+import { formatOperationTime } from '@/features/server-groups/shared/lib/time';
 import { DetailSummaryTable } from '@/features/server-groups/view/DetailSummaryTable';
 
 import * as ApiHostGroupOperationExecution from '@/shared/api/host-group.operation.execution.$operationId.$machineId';
@@ -27,6 +30,7 @@ export const Route = createFileRoute(
 
 function ExecutionDetailPage() {
   const { groupId, machineId, operationId } = Route.useParams();
+  const locale = useDevetekLocale();
   const [response, refresh] = ApiHostGroupOperationExecution.useGet({
     machineId,
     operationId,
@@ -125,19 +129,19 @@ function ExecutionDetailPage() {
             },
             {
               label: 'Started',
-              value: execution.started_at ?? '-',
+              value: formatOperationTime(execution.started_at, locale),
             },
             {
               label: 'Finished',
-              value: execution.finished_at ?? '-',
+              value: formatOperationTime(execution.finished_at, locale),
             },
             {
               label: 'Created',
-              value: execution.created_at,
+              value: formatOperationTime(execution.created_at, locale),
             },
             {
               label: 'Updated',
-              value: execution.updated_at,
+              value: formatOperationTime(execution.updated_at, locale),
             },
             {
               label: 'Events',
@@ -145,7 +149,7 @@ function ExecutionDetailPage() {
             },
             {
               label: 'Retention',
-              value: detail.events_retention_expires_at ?? '-',
+              value: formatOperationTime(detail.events_retention_expires_at, locale),
             },
           ]}
         />

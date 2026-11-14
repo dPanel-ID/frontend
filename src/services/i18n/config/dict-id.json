@@ -1108,7 +1108,7 @@
         },
         "position": "Langkah {step} dari {total}",
         "blocked": {
-          "source": "Pilih repositori dan branch yang akan dibangun, atau pilih aplikasi siap pakai.",
+          "source": "Pilih repositori dan branch yang akan dibangun.",
           "server": "Pilih server tempat pemasangan, lalu atur setiap dependensi yang Anda pilih.",
           "details": "Nama (hanya huruf, angka, dan spasi), bahasa, perintah build, perintah jalan, dan port yang bebas semuanya diperlukan.",
           "env": "",
@@ -1155,7 +1155,11 @@
             "loadingBranches": "Memuat daftar branch…",
             "branchesEmpty": "Repositori ini tidak memiliki branch yang dapat dibaca dNocs.",
             "branchesError": "Daftar branch gagal dimuat. dNocs akan membangun {branch}.",
-            "branchesGithubAuthError": "GitHub tidak dapat memverifikasi akun Anda, sehingga daftar branch tidak tersedia. Hubungkan ulang GitHub untuk memilih branch."
+            "branchesGithubAuthError": "GitHub tidak dapat memverifikasi akun Anda, sehingga daftar branch tidak tersedia. Hubungkan ulang GitHub untuk memilih branch.",
+            "loadFailedTitle": "Repositori Anda tidak bisa dimuat",
+            "loadFailedDesc": "GitHub tidak menjawab. Coba lagi sebentar lagi.",
+            "retry": "Coba lagi",
+            "repoDetailFailed": "Detail repositori ini tidak bisa dibaca dari GitHub. Pilih lagi untuk mencoba ulang."
           }
         },
         "step2": {
@@ -1342,7 +1346,7 @@
       "docs": "Docs",
       "createServer": "Buat Server",
       "create": {
-        "documentTitle": "Buat server | dPanel",
+        "documentTitle": "Tambah server | dnocs",
         "headerTitle": "Buat Server",
         "headerDesc": "Hubungkan server yang sudah Anda jalankan dengan agen dPanel, atau luncurkan VM cloud dalam beberapa klik. dPanel menyiapkannya untuk Anda.",
         "ssh": {
@@ -1568,7 +1572,8 @@
               "tradeoff": "Worker dPanel mengerjakannya lewat SSH, jadi lebih ringan untuk VM, tetapi key dPanel mendapat akses root (sudo) dan VM membutuhkan IP publik."
             },
             "sshOnly": "Untuk saat ini, server di provider ini bergabung lewat SSH: dPanel memasang SSH key pilihan Anda di VM lalu masuk.",
-            "agentOnly": "Tanpa IP publik, dPanel hanya bisa menjangkau VM lewat agennya, jadi SSH tidak tersedia."
+            "agentOnly": "Tanpa IP publik, dPanel hanya bisa menjangkau VM lewat agennya, jadi SSH tidak tersedia.",
+            "pickProvider": "Pilih penyedia dulu. Penyedia menentukan cara server baru bergabung ke dNocs."
           },
           "publicIP": {
             "title": "IP publik",
@@ -1600,6 +1605,10 @@
             "another": "Luncurkan lagi",
             "open": "Buka server",
             "failed": "Server tidak bisa diluncurkan"
+          },
+          "cloud": {
+            "projectsHint": "Proyek cloud di workspace ini yang terhubung ke penyedia ini.",
+            "projectsEmpty": "Belum ada proyek cloud untuk penyedia ini di workspace ini."
           }
         }
       },
@@ -2484,7 +2493,8 @@
         "mode": "Mode routing",
         "routes": "Rute",
         "footnote": "dNocs menulis rute ke gateway dan meminta sertifikat. Biasanya butuh sekitar satu menit.",
-        "startTitle": "Mulai dengan server gateway"
+        "startTitle": "Mulai dengan server gateway",
+        "footnoteNoHttps": "dNocs menulis rute ke gateway. Biasanya butuh sekitar satu menit."
       },
       "flow": {
         "back": "Kembali",
@@ -2508,7 +2518,9 @@
         "proxiedHint": "Trafik melewati Cloudflare, yang menyembunyikan alamat gateway. Sertifikat diterbitkan lewat DNS-01, berlaku untuk Caddy maupun APISIX.",
         "dnsOnlyHint": "Pengunjung langsung menuju gateway. Sertifikat diterbitkan lewat HTTP-01.",
         "proxiedToggle": "Proxy lewat Cloudflare",
-        "proxiedToggleHint": "Menyembunyikan alamat gateway di balik Cloudflare. Berfungsi di semua mode SSL/TLS; Full (strict) juga mengenkripsi jalur dari Cloudflare ke gateway."
+        "proxiedToggleHint": "Menyembunyikan alamat gateway di balik Cloudflare. Berfungsi di semua mode SSL/TLS; Full (strict) juga mengenkripsi jalur dari Cloudflare ke gateway.",
+        "gatewayNoPublicAddress": "belum ada alamat publik",
+        "gatewayNoPublicAddressHint": "Gateway ini bergabung lewat agen dan belum terhubung dari IP publik, jadi dNocs belum punya alamat untuk tujuan record. Pilih gateway yang punya alamat publik, atau pakai domain Anda sendiri dan arahkan sendiri ke server."
       },
       "l4": {
         "service": "Layanan",
@@ -5006,7 +5018,12 @@
     "loadBalancers": "Load Balancer",
     "dDns": "Domain & DNS",
     "cloudProject": "Proyek Cloud",
-    "secretMgr": "Manajemen Kunci"
+    "secretMgr": "Manajemen Kunci",
+    "footer": {
+      "switchToDark": "Beralih ke mode gelap",
+      "switchToLight": "Beralih ke mode terang",
+      "switchLanguage": "Ganti bahasa"
+    }
   },
   "entities": {
     "server": {

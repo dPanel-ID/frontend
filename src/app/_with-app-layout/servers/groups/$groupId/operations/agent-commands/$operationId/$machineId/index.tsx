@@ -1,5 +1,8 @@
 import { Link, createFileRoute } from '@tanstack/react-router';
 
+import { useDevetekLocale } from '@/services/i18n';
+
+import { formatOperationTime } from '@/features/server-groups/shared/lib/time';
 import { DetailSummaryTable } from '@/features/server-groups/view/DetailSummaryTable';
 
 import * as ApiHostGroupOperationAgentCommand from '@/shared/api/host-group.operation.agent-command.$operationId.$machineId';
@@ -23,6 +26,7 @@ export const Route = createFileRoute(
 
 function AgentCommandDetailPage() {
   const { groupId, machineId, operationId } = Route.useParams();
+  const locale = useDevetekLocale();
   const [response, refresh] = ApiHostGroupOperationAgentCommand.useGet({
     machineId,
     operationId,
@@ -135,23 +139,23 @@ function AgentCommandDetailPage() {
             },
             {
               label: 'Expires',
-              value: command.expires_at ?? '-',
+              value: formatOperationTime(command.expires_at, locale),
             },
             {
               label: 'Started',
-              value: command.started_at ?? '-',
+              value: formatOperationTime(command.started_at, locale),
             },
             {
               label: 'Finished',
-              value: command.finished_at ?? '-',
+              value: formatOperationTime(command.finished_at, locale),
             },
             {
               label: 'Created',
-              value: command.created_at,
+              value: formatOperationTime(command.created_at, locale),
             },
             {
               label: 'Updated',
-              value: command.updated_at,
+              value: formatOperationTime(command.updated_at, locale),
             },
           ]}
         />

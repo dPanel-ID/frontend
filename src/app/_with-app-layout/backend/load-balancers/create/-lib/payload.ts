@@ -146,11 +146,21 @@ export function toCreateLoadBalancerPayload(
     lbKind: values.lbKind,
     protocol: values.features.protocol ?? 'http',
     // L4 traffic passes through untouched; TLS stays the database's own.
-    sslEnabled:
-      values.lbKind === 'l4' ? false : (values.features.sslEnabled ?? true),
+    sslEnabled: isHttpsRequested(values),
     l4,
     defaultUpstream,
     rules,
     runtimeItems: runtimeItem ? [runtimeItem] : undefined,
   };
+}
+
+/**
+ * Whether the load balancer gets a certificate. L4 passes traffic through
+ * untouched, so it never does, whatever the switch held before L4 was picked.
+ */
+export function isHttpsRequested(values: {
+  lbKind?: string;
+  features?: { sslEnabled?: boolean };
+}) {
+  return values.lbKind !== 'l4' && (values.features?.sslEnabled ?? true);
 }

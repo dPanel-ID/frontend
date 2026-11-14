@@ -7,13 +7,16 @@ import {
   Code2Icon,
   GitBranchIcon,
   GithubIcon,
+  RefreshCwIcon,
   SearchXIcon,
+  TriangleAlertIcon,
 } from 'lucide-react';
 
 import { useAuthLoggedIn } from '@/services/auth';
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { ApiGitRepository } from '@/shared/api';
+import { isGithubAuthFailure } from '@/shared/libs/api-client/is-github-auth-failure';
 import {
   buildFrontendReturnUrl,
   buildGithubAuthUrl,
@@ -29,6 +32,7 @@ import {
   ADD_GITHUB_ACCOUNT_VALUE,
   useGithubReposStore,
 } from '../../../../-model/store/github-repos';
+import GithubSessionBanner from '../../../../../-view/GithubSessionBanner';
 import GithubLoginWall from '../_presentation/GithubLoginWall/GithubLoginWall';
 
 import BranchPicker from './BranchPicker';
@@ -81,6 +85,7 @@ export default function SectionSourceGithub() {
     setQuery,
     githubOrg,
     setGithubOrg,
+    refresh,
   } = useGithubReposStore();
 
   const [githubRepoUrl, setGithubRepoUrl] = useState<string>();
@@ -156,6 +161,28 @@ export default function SectionSourceGithub() {
     ) : (
       <Spinner />
     );
+
+  // A lapsed GitHub session answers 401; without this the step spun forever.
+  if (githubRepos.$status === 'failed') {
+    elContent = isGithubAuthFailure(githubRepos) ? (
+      <GithubSessionBanner extraResponses={[githubRepos]} />
+    ) : (
+      <div
+        role="alert"
+        className="flex min-h-56 flex-col items-center justify-center gap-3 rounded-lg border bg-background px-4 py-8 text-center"
+      >
+        <TriangleAlertIcon className="size-8 text-muted-foreground" />
+        <p className="text-sm font-semibold">{t('loadFailedTitle')}</p>
+        <p className="max-w-md text-xs text-muted-foreground">
+          {t('loadFailedDesc')}
+        </p>
+        <Button variant="outline" size="sm" onClick={() => refresh()}>
+          <RefreshCwIcon className="h-4 w-4" />
+          {t('retry')}
+        </Button>
+      </div>
+    );
+  }
 
   if (githubRepos.$status === 'success') {
     const gitOrgs = [
@@ -236,6 +263,19 @@ export default function SectionSourceGithub() {
             {t('loadingRepoDetails')}
           </div>
         )}
+
+        {githubRepoUrl &&
+          repositoryDetail.$status === 'failed' &&
+          (isGithubAuthFailure(repositoryDetail) ? (
+            <GithubSessionBanner extraResponses={[repositoryDetail]} />
+          ) : (
+            <p
+              role="alert"
+              className="rounded-lg border bg-background px-3 py-2 text-xs text-muted-foreground"
+            >
+              {t('repoDetailFailed')}
+            </p>
+          ))}
 
         {githubRepoUrl && repositoryDetail.$status === 'success' && (
           <>
