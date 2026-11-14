@@ -63,7 +63,7 @@ export default buildResponseView({
     }
 
     return (
-      <LayoutAutoGridList viewMode={derivedViewMode as 'grid' | 'list'}>
+      <LayoutAutoGridList viewMode={derivedViewMode}>
         {teams.map((team) => (
           <TeamCard key={team.id} team={team} />
         ))}

@@ -18,7 +18,7 @@ export function useRetainedResponseData<T>(response: Response<T>) {
     // The snapshot is read only once the response stops being a success, so
     // remembering it can be a non-urgent update instead of a cascading render.
     startTransition(() => {
-      setSnapshot(response as T);
+      setSnapshot(response);
     });
   }, [response]);
 

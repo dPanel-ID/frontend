@@ -16,7 +16,7 @@ import {
 const detailsFrom = (rules: DTOs.LoadBalancerRuleV2[]) =>
   ({
     configuration: configuration.parse(
-      ctorConfiguration({ id: '91', rules } as DTOs.LoadBalancerV2),
+      ctorConfiguration({ id: '91', rules }),
     ),
   }) as LoadBalancerDetails;
 
@@ -119,7 +119,7 @@ describe('getApplicationRouteTargets', () => {
         { machine_id: 253, machine: { id: 253, hostname: 'etos-app-01' } },
         { machine_id: 256, machine: { id: 256 } },
       ],
-    } as DTOs.ApplicationV1);
+    });
 
     expect(getApplicationRouteTargets(row!, servers)).toEqual([
       {

@@ -21,7 +21,7 @@ describe('deployment host-group action response boundary', () => {
     mockedApiDoPost.mockResolvedValue({
       $status: 'success',
       ...canonicalDeploymentHostGroupActionResponse,
-    } as Awaited<ReturnType<typeof doPost>>);
+    });
 
     await expect(
       doPost({

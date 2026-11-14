@@ -29,7 +29,7 @@ describe('host-group scoped execution detail client', () => {
       $status: 'success',
       $statusCode: 200,
       ...buildSafeDetail(),
-    } as ApiClientResponse<unknown>);
+    });
 
     await expect(
       fetchGet({

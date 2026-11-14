@@ -24,7 +24,7 @@ describe('module host-group action response boundary', () => {
     mockedApiDoPost.mockResolvedValue({
       $status: 'success',
       ...canonicalModuleHostGroupActionResponse,
-    } as Awaited<ReturnType<typeof doPost>>);
+    });
 
     await expect(
       doPost({
@@ -74,7 +74,7 @@ describe('module host-group action response boundary', () => {
     mockedApiDoPost.mockResolvedValue({
       $status: 'success',
       ...canonicalLegacyServerModuleActionResponse,
-    } as Awaited<ReturnType<typeof doPost>>);
+    });
 
     await expect(
       doPost({

@@ -69,7 +69,7 @@ const MenuItemWrapper = (props: MenuItemServersProps) => {
               <Link
                 key={i18nKeyFilter}
                 className="cursor-pointer pl-2 text-sm italic hover:underline text-primary"
-                to={url.replace(/\/v2/, '') as any}
+                to={url.replace(/\/v2/, '')}
                 search={Object.fromEntries(qs) as any}
               >
                 {t(i18nKeyFilter)}

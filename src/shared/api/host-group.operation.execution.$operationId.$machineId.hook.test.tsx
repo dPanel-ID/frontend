@@ -91,7 +91,7 @@ describe('host-group scoped execution detail hook', () => {
       {
         $status: 'success',
         ...buildSafeDetail(),
-      } as Response<unknown>,
+      },
       refresh,
     ]);
 

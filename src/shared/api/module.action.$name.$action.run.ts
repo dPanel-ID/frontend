@@ -71,19 +71,19 @@ export function doPost(
       !hasLegacyServerId && params.payload.target?.type === 'hostgroup';
 
     if (!isHostGroupTarget) {
-      return response as PureResponse<Dto>;
+      return response;
     }
 
     try {
       return {
         $status: 'success' as const,
         ...parseHostGroupModuleActionResponsePayload(response),
-      } as PureResponse<DTOs.HostGroupModuleActionResponseV1>;
+      };
     } catch (error) {
       return {
         $status: 'failed' as const,
         ...processError(error),
-      } as PureResponse<ModuleRunResponse>;
+      };
     }
   });
 }

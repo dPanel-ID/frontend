@@ -15,7 +15,7 @@ import {
 const NOW = Date.parse('2026-10-21T12:00:00Z');
 
 function server(status?: string, id = 'm_1'): DTOs.MachineV1 {
-  return { id, hostname: `host-${id}`, status } as DTOs.MachineV1;
+  return { id, hostname: `host-${id}`, status };
 }
 
 function agent(lastSeenAt?: string): DTOs.AgentV2 {

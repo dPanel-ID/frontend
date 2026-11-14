@@ -74,19 +74,19 @@ export function doPost(
     const isHostGroupTarget =
       !params.workerId && params.target?.type === 'hostgroup';
     if (!isHostGroupTarget) {
-      return response as PureResponse<DTOs.DeployV1>;
+      return response;
     }
 
     try {
       return {
         $status: 'success' as const,
         ...parseHostGroupDeploymentActionResponsePayload(response),
-      } as PureResponse<DTOs.HostGroupDeploymentActionResponseV1>;
+      };
     } catch (error) {
       return {
         $status: 'failed' as const,
         ...processError(error),
-      } as PureResponse<DeployCreateResponse>;
+      };
     }
   });
 }

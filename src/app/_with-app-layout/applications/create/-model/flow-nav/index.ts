@@ -41,7 +41,7 @@ export function useFlowNav(): FlowNav {
 
   const { byStep, ready, steps } = useFlowReadiness();
 
-  const rawIndex = steps.indexOf(progress as FlowStepKey);
+  const rawIndex = steps.indexOf(progress);
   const index = rawIndex < 0 ? 0 : rawIndex;
   const current = steps[index]!;
 

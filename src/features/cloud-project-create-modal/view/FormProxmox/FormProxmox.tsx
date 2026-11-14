@@ -4,10 +4,7 @@ import type { DTOs } from '@/shared/api';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 
 import { useCpcFormContext } from '../../model/forms/context';
-import type {
-  SchemaProxmoxForm,
-  SchemaProxmoxUpload,
-} from '../../model/forms/schema';
+import type { SchemaProxmoxUpload } from '../../model/forms/schema';
 import { schemaProxmoxUpload } from '../../model/forms/schema';
 import { getProviderLabel } from '../../model/provider-contract';
 import useModelSubmission from '../../model/submission';
@@ -95,7 +92,7 @@ export default function FormProxmox(props: {
   );
 
   const handleUploadData = (data: SchemaProxmoxUpload) => {
-    form.reset(data as SchemaProxmoxForm);
+    form.reset(data);
     setUploadedData(data);
   };
 

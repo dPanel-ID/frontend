@@ -1,5 +1,3 @@
-import type { z } from 'zod';
-
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
 import {
   resolveOwnershipOwner,
@@ -8,7 +6,6 @@ import {
 import { resolveOwnershipTeamId } from '@/entities/shared/lib/resolveOwnershipTeamId';
 
 import type { DTOs } from '@/shared/api';
-import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
 
 import { schemaDnsRecordPage, schemaDomainCard } from '../rules/schema';
 import type { DnsRecordPage, DomainCard } from '../rules/schema';
@@ -31,7 +28,7 @@ export const toDomainCard = createAdapter<DTOs.DomainV1, DomainCard>((raw) => {
     domain: raw.domain,
     description: raw.name,
     provider: ctorProvider(raw),
-  } as KeysOnlyDeep<z.input<typeof schemaDomainCard>>);
+  });
 });
 
 export const toDnsRecordPage = createAdapter<

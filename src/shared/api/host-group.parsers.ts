@@ -34,7 +34,7 @@ function adaptSuccessResponse<Data>(
   parse: (value: unknown) => Data,
 ): ApiClientResponse<Data> {
   if (response.$status !== 'success') {
-    return response as ApiClientResponse<Data>;
+    return response;
   }
 
   try {
