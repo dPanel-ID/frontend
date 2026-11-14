@@ -41,8 +41,8 @@ describe('rulePortCovers', () => {
 describe('portCoverage', () => {
   const rules = [
     rule({ port: '22', origin: 'system', locked: true }),
-    rule({ port: '4150', target: 'docker', source: '82.153.226.242' }),
-    rule({ port: '4150', target: 'docker', source: '82.153.226.243' }),
+    rule({ port: '4150', target: 'docker', source: '198.51.100.242' }),
+    rule({ port: '4150', target: 'docker', source: '198.51.100.243' }),
     rule({ port: '9100', action: 'deny' }),
   ];
 
@@ -55,7 +55,7 @@ describe('portCoverage', () => {
     expect(portCoverage('4150', firewall(rules))).toEqual({
       kind: 'restricted',
       enforced: true,
-      sources: ['82.153.226.242', '82.153.226.243'],
+      sources: ['198.51.100.242', '198.51.100.243'],
     });
   });
 

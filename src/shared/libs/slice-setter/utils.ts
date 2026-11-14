@@ -90,7 +90,7 @@ export function mapSettersAsCallbacks<
    * however this would mean that we have to iterate it 2 times instead of just having it once
    * imperatively (using index operator to directly fill the specified key).
    */
-  // @ts-expect-error: aldey.putra@tokopedia.com see notes above
+  // @ts-expect-error: see the SAFETY note above
   const registeredSetters: {
     // This is defined inline to allow full type description on our output.
     [K in keyof TSetterRegistry]: (

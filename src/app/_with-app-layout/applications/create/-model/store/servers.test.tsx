@@ -73,7 +73,7 @@ describe('useServersStore', () => {
           {
             id: '304',
             hostname: 'gcp-01',
-            address: '34.128.99.32',
+            address: '203.0.113.32',
             connectivity: 'private',
           },
           {
@@ -102,7 +102,7 @@ describe('useServersStore', () => {
         }),
       ),
     ).toEqual([
-      { publicIP: '34.128.99.32', isPrivate: true, hasPublicAddress: true },
+      { publicIP: '203.0.113.32', isPrivate: true, hasPublicAddress: true },
       { publicIP: '192.168.1.20', isPrivate: true, hasPublicAddress: false },
     ]);
   });

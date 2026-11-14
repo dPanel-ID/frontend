@@ -32,7 +32,7 @@ describe('profile workspaces', () => {
     {
       id: '2430473335433071236',
       type: 'group',
-      name: 'BBO',
+      name: 'Acme',
       roles: ['2430473335433071236:workspace-admin'],
     },
   ];
@@ -40,7 +40,7 @@ describe('profile workspaces', () => {
   it('counts teams without the personal workspace', () => {
     expect(teamWorkspaces(workspaces).map((team) => team.name)).toEqual([
       'Devetek Inc',
-      'BBO',
+      'Acme',
     ]);
     expect(teamWorkspaces(undefined)).toEqual([]);
   });

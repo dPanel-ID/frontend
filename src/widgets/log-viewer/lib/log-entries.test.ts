@@ -63,7 +63,7 @@ describe('toParsedLogLines', () => {
           line: '2026/10/29 20:20:19 [postRequestForm] Response from API: {"ok":1,"message":"Pembayaran Berhasil Diterima"}',
           severity: 'INFO',
           time: at,
-          source: 'bbo-pubsub-consumer-01',
+          source: 'queue-consumer-01',
         },
       ],
       OPTIONS,
@@ -77,7 +77,7 @@ describe('toParsedLogLines', () => {
     expect(line?.jsonPrefix).toBe('[postRequestForm] Response from API:');
     expect(line?.timestamp).toBe('Today 20:20:19');
     expect(line?.level).toBe('info');
-    expect(line?.sourceLabel).toBe('bbo-pubsub-consumer-01');
+    expect(line?.sourceLabel).toBe('queue-consumer-01');
     expect(line?.raw).toContain('2026/10/29 20:20:19');
   });
 
