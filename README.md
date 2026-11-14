@@ -45,3 +45,7 @@ your own data, see [Explore the real API](CONTRIBUTING.md#explore-the-real-api).
 
 Please do not open a public issue for a security problem. Report it privately
 through the repository's **Security** tab, **Report a vulnerability**.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
