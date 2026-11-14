@@ -1,7 +1,12 @@
+import { useDevetekTranslations } from '@/services/i18n';
+
 import { useArtifactLogsModal } from '@/features/artifact-logs-modal';
 import { useItemStatusLogModal } from '@/features/item-status-log-modal';
 
-import { releaseStatusOfArtifact } from '../../-lib/describe-detail';
+import {
+  buildStatusKey,
+  releaseStatusOfArtifact,
+} from '../../-lib/describe-detail';
 import { useAppDataModel } from '../../-model/app-data';
 import { useEmit } from '../../-model/events';
 
@@ -12,6 +17,7 @@ export function ArtifactsHistoryList(props: ArtifactsHistoryListProps) {
   const { list, deploymentList, lastDeployment } = props;
 
   const emit = useEmit();
+  const t = useDevetekTranslations('page.applicationDetail');
   const selectedServerId = useAppDataModel((s) => s.selectedServerId);
 
   const [openArtifactLogsModal] = useArtifactLogsModal();
@@ -58,11 +64,24 @@ export function ArtifactsHistoryList(props: ArtifactsHistoryListProps) {
       if (machine) openLogsForMachine(machine);
     };
 
+    const releaseStatus = releaseStatusOfArtifact({ artifact, lastDeployment });
+
+    // The same words as the badge: the build's own state ("Passed") and the
+    // release's ("Releasing"), never a raw "Status: ready" beside them.
     const handleClickStatus = () => {
       openItemStatusLogModal({
-        logTopicTitle: 'Artifact',
-        logTopicMessage: `Commit ${artifact.commitMetadata.head.slice(0, 7)}`,
-        mainLogs: `Status: ${artifact.state.status}`,
+        logTopicTitle: t('statusLog.title'),
+        logTopicMessage: t('statusLog.commit', {
+          commit: artifact.commitMetadata.head.slice(0, 7),
+        }),
+        mainLogs: [
+          t('statusLog.build', {
+            status: t(`buildStatus.${buildStatusKey(artifact.state.status)}`),
+          }),
+          t('statusLog.release', {
+            status: t(`releaseStatus.${releaseStatus}`),
+          }),
+        ].join('\n'),
         additionalLogs: artifact.state.message,
       });
     };
@@ -88,7 +107,7 @@ export function ArtifactsHistoryList(props: ArtifactsHistoryListProps) {
       <ArtifactCard
         key={artifact.id}
         data={artifact}
-        releaseStatus={releaseStatusOfArtifact({ artifact, lastDeployment })}
+        releaseStatus={releaseStatus}
         isUsed={isUsed}
         isDeploying={isDeploying}
         onClickLogs={handleClickLogs}

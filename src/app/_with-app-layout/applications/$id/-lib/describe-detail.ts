@@ -12,6 +12,7 @@ import type { StatusTone } from '@/shared/presentation/molecules/StatusPill';
 export type ReleaseStatus =
   | 'pending'
   | 'progress'
+  | 'removing'
   | 'deployed'
   | 'failed'
   | 'cancelled'
@@ -43,6 +44,9 @@ export function releaseStatusOfArtifact(
         return 'failed';
       case 'progress':
         return 'progress';
+      // The release is being taken off the server, not put on it.
+      case 'deleting':
+        return 'removing';
       case 'cancelled':
         return 'cancelled';
       default:
@@ -62,6 +66,24 @@ export function releaseStatusOfArtifact(
   }
 }
 
+const BUILD_STATUS_KEYS = [
+  'ready',
+  'progress',
+  'failed',
+  'cancelled',
+  'deleted',
+  'deleting',
+] as const;
+
+/** The buildStatus label key for a build's state; anything else is unknown. */
+export function buildStatusKey(
+  status: string,
+): (typeof BUILD_STATUS_KEYS)[number] | 'unknown' {
+  return (BUILD_STATUS_KEYS as readonly string[]).includes(status)
+    ? (status as (typeof BUILD_STATUS_KEYS)[number])
+    : 'unknown';
+}
+
 /** Colour family for a release state. */
 export function releaseTone(status: ReleaseStatus): StatusTone {
   switch (status) {
@@ -69,6 +91,7 @@ export function releaseTone(status: ReleaseStatus): StatusTone {
       return 'success';
     case 'progress':
     case 'pending':
+    case 'removing':
       return 'info';
     case 'failed':
       return 'danger';
@@ -102,7 +125,12 @@ export function deploymentTone(
 
 /** True while the state is still changing, so the pill's dot pulses. */
 export function isMovingStatus(status: string) {
-  return status === 'progress' || status === 'pending' || status === 'deleting';
+  return (
+    status === 'progress' ||
+    status === 'pending' ||
+    status === 'deleting' ||
+    status === 'removing'
+  );
 }
 
 /**

@@ -1,4 +1,5 @@
 import { useDialog } from '@/services/dialog';
+import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import { ApiModule } from '@/shared/api';
@@ -7,6 +8,8 @@ import useHandler from '@/shared/libs/react-hooks/useHandler';
 import type { ExplicitTarget } from '@/shared/rules/host-group';
 
 import { useBaseContext } from '../../config/base-context';
+
+import { isInstallAction } from './wording';
 
 interface InstallModuleParams {
   action: string;
@@ -22,26 +25,37 @@ interface InstallModuleParams {
 }
 
 export default function useHandleInstallModule() {
+  const t = useDevetekTranslations('page.serverDetail.modules.installForm');
   const [openDialog] = useDialog();
-  const { moduleInfo, onOperationQueued } = useBaseContext();
+  const { moduleInfo, onOperationQueued, onServerInstallQueued } =
+    useBaseContext();
 
   const [openToaster] = useToaster();
 
   const installModule = useHandler((params: InstallModuleParams) => {
     const actionTitle = params.actionTitle || params.action;
     const isHostGroupTarget = params.target.type === 'hostgroup';
+    // "Install Go on web-01?", not "Run Install Go for Go on the selected
+    // server?": the module's own action title already names the module.
+    const install = isInstallAction(params.action);
+    const module = moduleInfo.name;
 
     openDialog({
-      title: 'Install role',
+      title: install
+        ? t('confirmTitle', { module })
+        : t('confirmActionTitle', { action: actionTitle }),
       content: (
         <>
-          Run {actionTitle} for {moduleInfo.name} on{' '}
-          {isHostGroupTarget ? params.targetLabel : 'the selected server'}?
+          {install
+            ? t('confirmInstall', { module, target: params.targetLabel })
+            : t('confirmAction', {
+                action: actionTitle,
+                target: params.targetLabel,
+              })}
           {isHostGroupTarget && params.snapshotCount != null ? (
             <>
               <br />
-              This will snapshot exactly {params.snapshotCount} member
-              {params.snapshotCount === 1 ? '' : 's'} before queueing.
+              {t('snapshot', { count: params.snapshotCount })}
             </>
           ) : null}
         </>
@@ -66,7 +80,7 @@ export default function useHandleInstallModule() {
           if (response.$status === 'failed') {
             openToaster({
               variant: 'error',
-              title: <>Failed to install {moduleInfo.name}</>,
+              title: t('queueFailed', { module }),
               message: getApiErrorDetail(response.error),
             });
             return;
@@ -75,12 +89,15 @@ export default function useHandleInstallModule() {
           if (params.target.type === 'hostgroup' && response.operation_id) {
             onOperationQueued?.(response.operation_id);
           }
+          if (params.target.type === 'server') {
+            onServerInstallQueued?.();
+          }
 
           openToaster({
             variant: 'success',
-            message: (
-              <>{moduleInfo.name} installation was queued successfully.</>
-            ),
+            message: install
+              ? t('queued', { module })
+              : t('actionQueued', { action: actionTitle }),
           });
         },
       },

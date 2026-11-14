@@ -34,6 +34,7 @@ import {
 import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 
 import {
+  applicationKind,
   applicationSource,
   applicationStatusKey,
   applicationTone,
@@ -96,9 +97,11 @@ export default function AppTable(props: AppTableProps) {
                     >
                       {application.identity.name}
                     </Link>
-                    <span className="truncate text-xs text-muted-foreground">
-                      {application.identity.bundleType}
-                    </span>
+                    {applicationKind(application) && (
+                      <span className="truncate text-xs text-muted-foreground">
+                        {applicationKind(application)}
+                      </span>
+                    )}
                   </div>
                 </TableCell>
                 <TableCell>

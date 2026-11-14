@@ -4,6 +4,7 @@ import type { ServerCard } from '../rules/schema';
 
 import {
   canReinstallServer,
+  cloudPublicAddress,
   isAgentCloudServer,
   isCloudServer,
 } from './describeServer';
@@ -58,5 +59,32 @@ describe('isCloudServer', () => {
     expect(isAgentCloudServer(server('gcp', true))).toBe(true);
     expect(isAgentCloudServer(server('gcp'))).toBe(false);
     expect(isAgentCloudServer(server(undefined, true))).toBe(false);
+  });
+});
+
+describe('cloudPublicAddress', () => {
+  const server = (provider: string | undefined, publicAddress?: string) =>
+    ({
+      id: '1',
+      host: { address: '10.184.0.20', private: true, publicAddress },
+      cloud: provider ? { provider } : undefined,
+      system: {},
+    }) as unknown as ServerCard;
+
+  // The Overview showed a GCP VM's public IP only as "Connects from".
+  it('is the public IP of a cloud VM that joined through its agent', () => {
+    expect(cloudPublicAddress(server('gcp', '34.101.60.146'))).toBe(
+      '34.101.60.146',
+    );
+  });
+
+  it('is undefined for a home machine, which only connects from an address', () => {
+    expect(cloudPublicAddress(server(undefined, '151.243.222.218'))).toBe(
+      undefined,
+    );
+  });
+
+  it('is undefined for a cloud VM without a public IP', () => {
+    expect(cloudPublicAddress(server('gcp'))).toBe(undefined);
   });
 });

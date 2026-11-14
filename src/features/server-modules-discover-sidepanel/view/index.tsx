@@ -46,8 +46,13 @@ const ALL_CATEGORIES = 'all';
  * is, and a single Install action that opens the install form.
  */
 export default function ServerModulesDiscoverSidepanel(props: Props) {
-  const { serverId, serverName, hostGroupId, onHostGroupOperationQueued } =
-    props;
+  const {
+    serverId,
+    serverName,
+    hostGroupId,
+    onHostGroupOperationQueued,
+    onModuleQueued,
+  } = props;
   const t = useDevetekTranslations('sidepanel.modulesDiscover');
   const tCommon = useDevetekTranslations('common.dataPanel');
 
@@ -271,7 +276,9 @@ export default function ServerModulesDiscoverSidepanel(props: Props) {
                   hostGroupTarget={hostGroupTarget}
                   moduleInfo={module}
                   onHostGroupOperationQueued={onHostGroupOperationQueued}
+                  onModuleQueued={onModuleQueued}
                   serverId={serverId}
+                  serverName={serverName}
                 />
               ))}
             </div>
@@ -290,12 +297,20 @@ interface ModuleCardProps {
   hostGroupTarget?: { id: string; label: string; memberCount: number };
   moduleInfo: ServerModule;
   onHostGroupOperationQueued?: (groupId: string, operationId: string) => void;
+  onModuleQueued?: () => void;
   serverId: string;
+  serverName?: string;
 }
 
 function ModuleCard(props: ModuleCardProps) {
-  const { hostGroupTarget, moduleInfo, onHostGroupOperationQueued, serverId } =
-    props;
+  const {
+    hostGroupTarget,
+    moduleInfo,
+    onHostGroupOperationQueued,
+    onModuleQueued,
+    serverId,
+    serverName,
+  } = props;
   const t = useDevetekTranslations('sidepanel.modulesDiscover');
   const [openServerModulesDetailModal] = useServerModulesDetailModal();
 
@@ -309,7 +324,9 @@ function ModuleCard(props: ModuleCardProps) {
         if (!hostGroupTarget) return;
         onHostGroupOperationQueued?.(hostGroupTarget.id, operationId);
       },
+      onServerInstallQueued: onModuleQueued,
       serverID: Number(serverId),
+      serverName,
     });
   };
 

@@ -4,6 +4,7 @@ import type { ApplicationCard } from '@/entities/application/rules/schema';
 
 import {
   applicationBucket,
+  applicationKind,
   applicationSource,
   applicationTone,
 } from './describe-application';
@@ -23,6 +24,7 @@ const app = (
       ...identity,
     },
     state: { service, lastArtifact: { status: build } },
+    configDefs: {},
     additionalInfo: {
       deploymentCount: deployStatuses.length,
       servers: deployStatuses.map((deployStatus, index) => ({
@@ -81,8 +83,10 @@ describe('applicationSource', () => {
     expect(applicationSource(repo)).toBe('devetek/api');
   });
 
-  it('falls back to the bundle type', () => {
-    expect(applicationSource(app('running', 'ready'))).toBe('docker');
+  it('falls back to the bundle it came from', () => {
+    expect(
+      applicationSource(app('running', 'ready', { bundleType: 'wordpress' })),
+    ).toBe('WordPress');
   });
 });
 
@@ -122,5 +126,31 @@ describe('applicationBucket, falling back to the release', () => {
     expect(applicationBucket(app('dead', 'unknown', {}, ['ready']))).toBe(
       'attention',
     );
+  });
+});
+
+describe('applicationKind', () => {
+  // Every application in the list carried the label "unknown": its bundle
+  // type, which is "unknown" for any app that is not a one-click bundle.
+  it('never shows an unknown bundle type', () => {
+    expect(
+      applicationKind(app('running', 'ready', { bundleType: 'unknown' })),
+    ).toBeUndefined();
+  });
+
+  it('names the language an ordinary application runs on', () => {
+    const goApp = {
+      ...app('running', 'ready', { bundleType: 'unknown' }),
+      configDefs: {
+        lifecycle: { setup: { languages: [{ name: 'go', version: '1.25' }] } },
+      },
+    } as unknown as ApplicationCard;
+    expect(applicationKind(goApp)).toBe('Go 1.25');
+  });
+
+  it('names a one-click bundle', () => {
+    expect(
+      applicationKind(app('running', 'ready', { bundleType: 'laravel' })),
+    ).toBe('Laravel');
   });
 });

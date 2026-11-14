@@ -4,6 +4,7 @@ import type { CicdArtifact } from '@/entities/cicd-artifact/rules/schema';
 import type { CicdDeployment } from '@/entities/cicd-deployment/rules/schema';
 
 import {
+  buildStatusKey,
   headlineState,
   isMovingStatus,
   liveServerCount,
@@ -36,6 +37,18 @@ function deployment(
 }
 
 describe('releaseStatusOfArtifact', () => {
+  // Deleting a release showed the badge "Releasing".
+  it('reports a release being deleted as removing, not releasing', () => {
+    expect(
+      releaseStatusOfArtifact({
+        artifact: artifact('ready'),
+        lastDeployment: deployment('deleting'),
+      }),
+    ).toBe('removing');
+    expect(releaseTone('removing')).toBe('info');
+    expect(isMovingStatus('removing')).toBe(true);
+  });
+
   it('reports the release state when the build is the one on the server', () => {
     expect(
       releaseStatusOfArtifact({
@@ -194,5 +207,19 @@ describe('serversOf', () => {
 
   it('falls back to the id when nothing names the server', () => {
     expect(serversOf([], [{ id: '93' }])).toEqual([{ id: '93', name: '93' }]);
+  });
+});
+
+describe('buildStatusKey', () => {
+  // The status log said "Status: ready" next to a "Releasing" badge; it now
+  // uses the build's own label.
+  it('maps a build state to its label key', () => {
+    expect(buildStatusKey('ready')).toBe('ready');
+    expect(buildStatusKey('progress')).toBe('progress');
+  });
+
+  it('treats an unexpected state as unknown', () => {
+    expect(buildStatusKey('')).toBe('unknown');
+    expect(buildStatusKey('queued')).toBe('unknown');
   });
 });

@@ -23,11 +23,13 @@ import { FailedState } from '@/widgets/failed-state';
 
 import { useBaseContext } from '../../config/base-context';
 import useHandleInstallModule from '../../model/handle-install-module';
+import { installTargetLabel } from '../../model/handle-install-module/wording';
 
 import {
   getAvailableModuleActions,
   isBlockedHostGroupAction,
 } from './action-options';
+import { isHiddenInput, isRequiredInput } from './input-kinds';
 import { isAcceptedValue } from './version-choice';
 import { VersionChoiceField } from './VersionChoiceField';
 
@@ -71,10 +73,6 @@ function buildVariables(
   }, {});
 }
 
-function isHiddenInput(input: DTOs.ModuleInputV1) {
-  return input.type === 'hidden';
-}
-
 /** A secret the operator types, such as a database administrator password. */
 function isSecretInput(input: DTOs.ModuleInputV1) {
   return Boolean(input.sensitive) && input.type !== 'boolean';
@@ -97,7 +95,8 @@ function missingRequiredInputs(
 }
 
 export default function Installation() {
-  const { moduleInfo, serverID, hostGroupTarget } = useBaseContext();
+  const { moduleInfo, serverID, serverName, hostGroupTarget } =
+    useBaseContext();
   const { installModule } = useHandleInstallModule();
   const [values, setValues] = useState<Record<string, FieldValue>>({});
   const t = useDevetekTranslations('page.serverDetail.modules.installForm');
@@ -139,8 +138,10 @@ export default function Installation() {
 
   const visibleInputs =
     moduleDetail?.inputs.filter((input) => !isHiddenInput(input)) ?? [];
-  const requiredInputs = visibleInputs.filter((input) => input.required);
-  const advancedInputs = visibleInputs.filter((input) => !input.required);
+  const requiredInputs = visibleInputs.filter(isRequiredInput);
+  const advancedInputs = visibleInputs.filter(
+    (input) => !isRequiredInput(input),
+  );
   const activeTarget = useMemo((): ExplicitTarget | null => {
     if (targetMode === 'server' && serverID) {
       return {
@@ -211,10 +212,13 @@ export default function Installation() {
         action: action.name,
         actionTitle: action.title,
         target: activeTarget,
-        targetLabel:
-          activeTarget.type === 'hostgroup'
-            ? (hostGroupTarget?.label ?? activeTarget.id)
-            : `server ${activeTarget.id}`,
+        targetLabel: installTargetLabel({
+          type: activeTarget.type,
+          id: activeTarget.id,
+          serverName,
+          groupLabel: hostGroupTarget?.label,
+          serverFallback: (id) => t('theServer', { id }),
+        }),
         snapshotCount:
           activeTarget.type === 'hostgroup'
             ? hostGroupTarget?.memberCount
@@ -278,7 +282,7 @@ export default function Installation() {
         <label key={input.name} className="flex flex-col gap-1">
           <span className="text-sm font-semibold text-primary/80">
             {input.label || input.name}
-            {input.required && (
+            {isRequiredInput(input) && (
               <span aria-hidden className="ml-0.5 font-bold text-red-500">
                 *
               </span>
