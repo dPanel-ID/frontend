@@ -63,3 +63,6 @@ count.txt
 .vinxi
 version
 .build-*
+
+# mock API (pnpm dev:mock)
+.mock

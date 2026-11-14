@@ -1,49 +1,47 @@
-## Getting Started
+# dPanel frontend
 
-This project uses HTTPS on local. First make sure you've added these hosts to your `/etc/hosts` file (and clear your DNS cache afterwards):
+The web app behind [dnocs.devetek.app](https://dnocs.devetek.app): the dPanel
+dashboard (servers, applications, databases, load balancers, domains, teams)
+and the public documentation at [/docs](https://dnocs.devetek.app/docs/intro).
 
-```
-127.0.0.1       cloud-dev.terpusat.com
-127.0.0.1       pawon-dev.terpusat.com
-127.0.0.1       secureshell-dev.terpusat.com
-```
+It is a React 19 app built with TanStack Start and Router, Vite, Tailwind CSS
+and Zod. It talks to the dPanel API, whose public contract is at
+[pawon.devetek.app/swagger](https://pawon.devetek.app/swagger/index.html).
 
-Then, make sure you've installed `node` version `24` and `pnpm` at least version `10`.
+## Quick start
 
-```sh
-nvm install 24
-nvm use 24
-npm install -g pnpm@10
-pnpm --version
-```
-
-Make sure you have caddy installed:
-
-```sh
-brew install caddy
-```
-
-Run the installation on the project directory:
-
-```sh
-pnpm i
-```
-
-Make sure the dPanel manager API is running on `localhost:9100` with `the manager's development config`. If you test browser SSH, also run Secure Shell on `localhost:9101`. The local frontend uses `.env.development`, which points API calls to `https://pawon-dev.terpusat.com/api`; Caddy proxies that domain to the manager.
-
-Run `caddy` by executing `caddy run`. Finally, run the development server:
+You need Node.js 24 and pnpm 11 (`corepack enable` or `npm install -g pnpm@11`).
 
 ```bash
-export BASE_PATH="/"
-pnpm dev
+pnpm install
+pnpm dev:mock
 ```
 
-Open [https://cloud-dev.terpusat.com/](https://cloud-dev.terpusat.com/) with your browser to see the result.
+Open [http://localhost:3000/dashboard](http://localhost:3000/dashboard). You
+are signed in as **Demo User** against a simulated API, so no backend, account
+or credentials are needed. See [Mock API](CONTRIBUTING.md#mock-api) for what it
+can and cannot do.
 
-Use the HTTPS `cloud-dev.terpusat.com` URL for browser testing instead of `localhost:3000`. The dPanel development session cookie is secure and scoped to `terpusat.com`, so local auth works through the Caddy domains.
+## Commands
 
-## Troubleshoot
+| Command             | What it does                                                |
+| ------------------- | ----------------------------------------------------------- |
+| `pnpm dev:mock`     | App on port 3000 plus a mock API on port 4010. Start here.  |
+| `pnpm dev`          | App on port 3000 against the API in `.env.development`.     |
+| `pnpm test`         | Unit, component and docs tests (Vitest).                    |
+| `pnpm lint`         | ESLint.                                                     |
+| `pnpm type-check`   | TypeScript, no output.                                      |
+| `pnpm build:static` | The static site that is deployed (`.output-static/client`). |
+| `pnpm mock:spec`    | Refresh the API contract snapshot in `mock/swagger.json`.   |
+| `pnpm storybook`    | Storybook on port 6006.                                     |
 
-### Your connection is not private (HSTS)
+## Contributing
 
-For Google Chrome, you can type `thisisunsafe` anywhere on the warning page and it will load it without warning.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for the project layout, conventions,
+the mock API and how to open a pull request. Documentation pages live in
+[src/documentations](src/documentations/README.md).
+
+## Security
+
+Please do not open a public issue for a security problem. Report it privately
+through the repository's **Security** tab, **Report a vulnerability**.

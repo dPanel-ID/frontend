@@ -4,6 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev --port 3000 --host 0.0.0.0",
+    "dev:mock": "node scripts/mock/dev-mock.mjs",
+    "mock:api": "node scripts/mock/prepare-spec.mjs && prism mock .mock/openapi.json --port 4010",
+    "mock:spec": "curl -fsSL https://pawon.devetek.app/swagger/doc.json -o mock/swagger.json",
     "build": "vite build",
     "build:static": "STATIC_SPA=true VITE_STATIC_SPA=true BUILD_DIR=.output-static vite build && node scripts/seo/postbuild.mjs .output-static/client",
     "build:static:prerender": "STATIC_PRERENDER=true VITE_STATIC_PRERENDER=true BUILD_DIR=.output-static vite build",
@@ -73,6 +76,7 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
+    "@stoplight/prism-cli": "5.16.0",
     "@tanstack/devtools-vite": "^0.3.11",
     "@tanstack/eslint-config": "^0.3.0",
     "@testing-library/dom": "^10.4.0",
