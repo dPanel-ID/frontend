@@ -33,7 +33,6 @@ can and cannot do.
 | `pnpm type-check`   | TypeScript, no output.                                      |
 | `pnpm build:static` | The static site that is deployed (`.output-static/client`). |
 | `pnpm mock:spec`    | Refresh the API contract snapshot in `mock/swagger.json`.   |
-| `pnpm storybook`    | Storybook on port 6006.                                     |
 
 ## Contributing
 

@@ -143,7 +143,7 @@ These rules apply to every agent working in this frontend repository. They are m
 - Text must fit its container at mobile and desktop widths. Use truncation, stable grid tracks, fixed toolbar dimensions, and responsive constraints so labels, filenames, icons, and dynamic status text do not shift or overlap.
 - Map DTOs to a view model in the slice's `-lib` before a view sees them, so production-shaped data — empty-string statuses, null JSON, missing IDs, numeric IDs — is handled once and never crashes a card. Cover that mapper with a focused test.
 - Any frontend implementation touching a visible surface MUST run `pnpm run type-check` and `npx eslint <changed paths>`, and, when practical, build or browser-verify the affected route at 1440, 1024 and 375 in light and dark. If verification cannot be run, state exactly what was skipped and why.
-- When a module is redesigned, record it in `docs/design/` next to `SERVERS_UI_REDESIGN_PLAN.md`: what changed, what was removed, which gaps are the backend's, and what is left. Update `UI_UX_STANDARD.md` in the same pull request if the standard itself moved.
+- When a module is redesigned, describe it in the pull request: what changed, what was removed, which gaps are the backend's, and what is left. Update `docs/design/UI_UX_STANDARD.md` in the same pull request if the standard itself moved.
 
 ## QA Role For dPanel
 
