@@ -19,26 +19,31 @@ function themeCookieDomain(): string | undefined {
   return labels.length > 2 ? labels.slice(1).join('.') : undefined;
 }
 
+/** The theme saved in the cookie, or null when none or an unknown one is set. */
+function readSavedTheme(): Theme | null {
+  const storedTheme: string | undefined = Cookies.get(THEME_COOKIE);
+
+  return storedTheme && SUPPORTED_THEME.includes(storedTheme as Theme)
+    ? (storedTheme as Theme)
+    : null;
+}
+
 export const [DevetekThemeModel, useDevetekThemeModel] = buildContext(
   'DevetekThemeModel',
   () => {
-    const [userTheme, setUserThemeInternal] = useState((): Theme | null => {
-      try {
-        const storedTheme: string | undefined = Cookies.get()[THEME_COOKIE];
+    // Starts empty and is read from the cookie after mount, like the system
+    // theme below. The server, and the prerendered static pages, cannot see
+    // the cookie, so reading it during the first render would hydrate a
+    // different control (moon instead of sun) and fail with React #418. The
+    // page colours are already right before paint: `ThemeScript` sets the
+    // class from the cookie, and the layout effect below runs before paint.
+    const [userTheme, setUserThemeInternal] = useState<Theme | null>(null);
 
-        if (!storedTheme) {
-          throw Error('No user defined theme set yet');
-        }
+    useIsomorphicEffect(() => {
+      if (isSSR()) return;
 
-        if (!SUPPORTED_THEME.includes(storedTheme as Theme)) {
-          throw Error('Unknown saved theme');
-        }
-
-        return storedTheme as Theme;
-      } catch {
-        return null;
-      }
-    });
+      setUserThemeInternal(readSavedTheme());
+    }, []);
 
     // Resolved after mount rather than during render. The server has no
     // media query to read, so rendering the real preference straight away
