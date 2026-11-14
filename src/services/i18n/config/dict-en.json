@@ -4407,6 +4407,13 @@
     "teamMemberPromoteAdmin": {
       "success": "\"{name}\" is now an admin",
       "error": "Failed to make \"{name}\" an admin"
+    },
+    "authPublic": {
+      "loginInvalid": "Wrong username or password. You can also sign in with your email address.",
+      "signUpConflict": "An account with this email address or username already exists. Sign in instead, or choose another username.",
+      "usernameTaken": "That username is already taken. Choose another one.",
+      "authUnavailable": "Signing in is not available right now. Try again in a minute.",
+      "signUpUnavailable": "Creating an account is not available right now. Try again in a minute."
     }
   },
   "sidepanel": {
@@ -4781,6 +4788,16 @@
         "source": "Use one address or network, without spaces.",
         "sourceLength": "Use at most 64 characters.",
         "commentLength": "Use at most 64 characters."
+      }
+    },
+    "applicationRunEdit": {
+      "envValues": {
+        "hiddenNote": "Values are hidden. Unchanged ones keep their stored value.",
+        "shownNote": "Values are shown. Hide them before sharing your screen.",
+        "reveal": "Show values",
+        "hide": "Hide values",
+        "revealing": "Showing…",
+        "revealFailed": "Could not show the values"
       }
     }
   },

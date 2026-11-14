@@ -51,7 +51,7 @@ To use other values, create a new application, release it, point your load balan
 3. On **Preview**, tick **Run bootstrap playbooks** if you changed modules or the server's dependencies need to be applied again.
 4. Press **Save changes**.
 
-![The Update Application form, opened from Edit settings](../../assets/applications/app-edit.webp)
+![The Update Application form on its Environment step: the note that values are hidden with Show values, the build-time variables and the runtime variables with their values masked](../../assets/applications/app-edit.webp 'Opened from Edit settings. Unchanged hidden values keep what is stored.')
 
 dPanel updates the application definition (the saved description of how to build and run it) and submits the playbook inputs for it.
 

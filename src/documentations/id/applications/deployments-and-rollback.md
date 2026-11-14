@@ -65,6 +65,8 @@ dPanel merilis ulang build itu di server-server tersebut. Rollback hanya memulih
 
 Di **Di server**, setiap rilis punya tombol **Mulai**, **Restart**, dan **Hentikan** untuk layanannya, serta **Hapus**. Rilis yang sudah dihapus bisa dikembalikan dengan **Pulihkan**, atau dihapus selamanya dengan **Hapus permanen**.
 
+![Tampilan Di server sebuah aplikasi: satu rilis di home-server yang berstatus Running, dengan build, versi bahasa, serta tombol Start, Restart, Stop, Runtime, dan Delete](../../assets/applications/app-releases-on-servers.webp 'Setiap rilis menampilkan server, layanan, dan siapa yang merilisnya. Nama disamarkan di sini.')
+
 **Restart** tetap memakai variabel environment yang sudah dimiliki layanan. Setelah mengubah variabel, rilis lagi; lihat [Variabel environment](./environment-variables.md).
 
 ### Pindah ke runtime baru
