@@ -96,11 +96,15 @@ When the API changes, refresh the contract with `pnpm mock:spec` and commit
 
 ### Against a real backend
 
-`pnpm dev` uses `.env.development`. To point the app at another API, create
-`.env.local` (it is gitignored) and set `VITE_BACKEND`, for example
-`VITE_BACKEND="https://your-api.example.com/api"`. Sign-in uses a cookie set by
-the backend, so the app and the API must share a parent domain over HTTPS; the
-`Caddyfile` shows one way to serve both locally.
+`pnpm dev` serves the app on [http://localhost:3000](http://localhost:3000)
+against the API in `.env.development`. No proxy or extra setup is needed. To
+point the app at another API, create `.env.local` (it is gitignored, and
+`.env.example` lists every setting) and set `VITE_BACKEND`, for example
+`VITE_BACKEND="https://your-api.example.com/api"`.
+
+Sign-in uses a cookie set by the backend for its own domain, so a page on
+`localhost` cannot sign in to a hosted API. Use `pnpm dev:mock` for UI work,
+and [Explore the real API](#explore-the-real-api) to see real data.
 
 ## Explore the real API
 
@@ -202,6 +206,8 @@ errors; make sure it reports nothing new in the files you touched.
   a screenshot for UI changes (taken against the mock API or demo data).
 - Pull requests are squash-merged, so the title becomes the commit on `dev`.
   Use the same Conventional Commits format for it.
+- This project is released under the [MIT License](LICENSE). By opening a pull
+  request you agree that your contribution is licensed under the same terms.
 
 ## Reporting a security problem
 
