@@ -34,7 +34,7 @@ describe('toDnsRecordPage', () => {
             name: 'docs-demo.terpusat.me',
             content: '103.183.75.207',
             ttl: 300,
-          } as DTOs.DomainRecordItemV1,
+          },
         ],
         1,
       ),

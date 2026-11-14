@@ -10,7 +10,7 @@ const LinkWrapper = (props: LinkWrapperProps) => {
   const { className, children, url, onClick } = props;
 
   return (
-    <Link className={className} to={url.replace(/\/v2/, '') as any} onClick={onClick}>
+    <Link className={className} to={url.replace(/\/v2/, '')} onClick={onClick}>
       {children}
     </Link>
   );

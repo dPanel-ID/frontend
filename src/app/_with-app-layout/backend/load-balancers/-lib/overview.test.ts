@@ -25,7 +25,7 @@ const router = (over: Partial<DTOs.LoadBalancerV2>): DTOs.LoadBalancerV2 =>
     created_at: '2026-01-02 03:04:05',
     updated_at: '2026-01-02 03:04:05',
     ...over,
-  }) as DTOs.LoadBalancerV2;
+  });
 
 describe('loadBalancerStatusBucket', () => {
   it('buckets the backend router vocabulary', () => {

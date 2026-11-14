@@ -1,5 +1,3 @@
-import type { z } from 'zod';
-
 import { createAdapter } from '@/entities/shared/lib/createAdapter';
 import {
   resolveOwnershipOwner,
@@ -8,7 +6,6 @@ import {
 import { resolveOwnershipTeamId } from '@/entities/shared/lib/resolveOwnershipTeamId';
 
 import type { DTOs } from '@/shared/api';
-import type { KeysOnlyDeep } from '@/shared/libs/types/keys-only';
 
 import {
   schemaLoadBalancerCard,
@@ -49,7 +46,7 @@ export const toLoadBalancerCard = createAdapter<
     webserver: ctorWebserver(raw),
     features: ctorFeatures(raw),
     configuration: ctorConfiguration(raw),
-  } as KeysOnlyDeep<z.input<typeof schemaLoadBalancerCard>>);
+  });
 });
 
 export const toLoadBalancerDetails = createAdapter<
@@ -75,7 +72,7 @@ export const toLoadBalancerDetails = createAdapter<
     webserver: ctorWebserver(raw),
     features: ctorFeatures(raw),
     configuration: ctorConfiguration(raw),
-  } as KeysOnlyDeep<z.input<typeof schemaLoadBalancerDetails>>);
+  });
 });
 
 function ctorDomain(raw: LoadBalancerDto) {

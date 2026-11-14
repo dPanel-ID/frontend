@@ -17,7 +17,7 @@ describe('responseStatusCode', () => {
     'has no status for a %s response',
     (status) => {
       expect(
-        responseStatusCode({ $status: status } as Response<unknown>),
+        responseStatusCode({ $status: status }),
       ).toBeUndefined();
     },
   );

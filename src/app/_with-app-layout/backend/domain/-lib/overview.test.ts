@@ -26,7 +26,7 @@ describe('summarizeDomains', () => {
           id: 3,
           domain: 'c.com',
           provider: 'DigitalOcean',
-          organization: { id: 'o1', name: 'Platform' } as never,
+          organization: { id: 'o1', name: 'Platform' },
         }),
       ],
       pagination: pagination(3),

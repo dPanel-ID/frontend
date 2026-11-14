@@ -105,9 +105,7 @@ export default function OverviewTab() {
     const running = deployed.filter((application) =>
       application.deploys?.some((deployment) => {
         if (String(deployment.machine_id) !== serverId) return false;
-        const service = deployment.service as
-          | { active?: string; state?: string }
-          | undefined;
+        const service = deployment.service;
         return (
           service?.active === 'active' ||
           service?.state === 'running' ||

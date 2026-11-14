@@ -10,7 +10,7 @@ const conflict = (data: unknown) =>
     status: 'failed',
     error: 'server still has linked resources',
     data,
-  } as never);
+  });
 
 describe('getForgetOffer', () => {
   it('offers to remove a gone server with its resources', () => {

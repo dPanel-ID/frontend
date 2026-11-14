@@ -41,7 +41,7 @@ function parseScopedExecutionDetailResponse(
   response: ApiClientResponse<unknown>,
 ): ApiClientResponse<DTOs.HostGroupOperationExecutionDetailV1> {
   if (response.$status !== 'success') {
-    return response as ApiClientResponse<DTOs.HostGroupOperationExecutionDetailV1>;
+    return response;
   }
 
   try {

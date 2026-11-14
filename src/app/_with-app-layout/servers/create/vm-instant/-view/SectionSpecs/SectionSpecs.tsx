@@ -831,9 +831,7 @@ const SubOsTemplateCbo = () => {
 
   const responseData =
     response.$status === 'success' ? response : response.prevData;
-  const templateList = Array.isArray(responseData)
-    ? (responseData as unknown as OsTemplateItem[])
-    : [];
+  const templateList = Array.isArray(responseData) ? responseData : [];
 
   for (const template of templateList) {
     if (!template.id) continue;

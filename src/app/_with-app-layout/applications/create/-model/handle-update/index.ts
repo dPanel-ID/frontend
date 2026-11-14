@@ -132,7 +132,7 @@ function normalizeContractValue(value: unknown): unknown {
   }
 
   if (value && typeof value === 'object') {
-    return Object.keys(value as Record<string, unknown>)
+    return Object.keys(value)
       .sort()
       .reduce<Record<string, unknown>>((acc, key) => {
         const item = (value as Record<string, unknown>)[key];

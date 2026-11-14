@@ -11,7 +11,7 @@ function router(overrides: Partial<DTOs.LoadBalancerV2>): DTOs.LoadBalancerV2 {
     installer_status: 'ready',
     rules: [{ target: { application_id: '16' } }],
     ...overrides,
-  } as DTOs.LoadBalancerV2;
+  };
 }
 
 describe('indexLoadBalancersByApplication', () => {
