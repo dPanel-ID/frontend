@@ -1,0 +1,114 @@
+name: Auto-merge
+
+# Squash-merges a pull request into dev once the owner has approved its
+# current commit and the dev ruleset allows the merge (the `ci` check
+# passed, the branch is up to date, code-owner review given). The owner's
+# own pull requests cannot be approved by the owner; the owner merges them
+# directly, bypassing the ruleset.
+#
+# It runs after either side finishes, so the order does not matter:
+#   - CI completes on a pull request that is already approved, or
+#   - Owner approval completes on a pull request whose CI already passed.
+# `workflow_run` always runs this file from dev with the base repository's
+# token, so it also works for Dependabot and fork pull requests without
+# running their code.
+#
+# A merge made with GITHUB_TOKEN does not start other workflows, so the
+# push to dev would not deploy. After its own merge this job dispatches
+# Deploy Cloudflare once. A merge made by a person (the owner's own pull
+# requests) is a normal push and deploys through the push trigger.
+on:
+  workflow_run:
+    workflows:
+      - CI
+      - Owner approval
+    types:
+      - completed
+
+permissions: {}
+
+concurrency:
+  group: auto-merge-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+env:
+  OWNER: prakasa1904
+
+jobs:
+  merge:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      (github.event.workflow_run.event == 'pull_request' ||
+       github.event.workflow_run.event == 'pull_request_review')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: read
+      actions: write
+    steps:
+      - name: Merge if approved by the owner
+        id: merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          EVENT_PR: ${{ github.event.workflow_run.pull_requests[0].number }}
+        run: |
+          set -euo pipefail
+
+          pr="${EVENT_PR}"
+          if [ -z "$pr" ]; then
+            # Fork pull requests are not listed on the event; find it by commit.
+            pr=$(gh pr list --state open --search "$HEAD_SHA" --json number,headRefOid \
+              --jq "map(select(.headRefOid == \"$HEAD_SHA\")) | .[0].number // empty")
+          fi
+          if [ -z "$pr" ]; then
+            echo "No open pull request at $HEAD_SHA."
+            exit 0
+          fi
+
+          info=$(gh api graphql \
+            -F owner="${GH_REPO%/*}" -F name="${GH_REPO#*/}" -F number="$pr" \
+            -f query='query($owner: String!, $name: String!, $number: Int!) {
+              repository(owner: $owner, name: $name) {
+                pullRequest(number: $number) {
+                  state isDraft headRefOid baseRefName title
+                  latestOpinionatedReviews(first: 50) {
+                    nodes { state author { login } commit { oid } }
+                  }
+                }
+              }
+            }' --jq '.data.repository.pullRequest')
+
+          ready=$(jq -r --arg sha "$HEAD_SHA" --arg owner "$OWNER" '
+            .state == "OPEN" and (.isDraft | not) and .baseRefName == "dev"
+            and .headRefOid == $sha
+            and any(.latestOpinionatedReviews.nodes[];
+                    .author.login == $owner and .state == "APPROVED" and .commit.oid == $sha)
+          ' <<<"$info")
+          if [ "$ready" != "true" ]; then
+            echo "#$pr is not approved by $OWNER at $HEAD_SHA yet; nothing to do."
+            exit 0
+          fi
+
+          title=$(jq -r '.title' <<<"$info")
+          for attempt in 1 2 3; do
+            if gh pr merge "$pr" --squash --match-head-commit "$HEAD_SHA" \
+                --subject "$title (#$pr)" --body "Approved by the code owner."; then
+              echo "merged=true" >> "$GITHUB_OUTPUT"
+              echo "Merged #$pr."
+              exit 0
+            fi
+            sleep 15
+          done
+          # Usually CI is still running (the CI run will retry) or the
+          # branch is behind dev and needs an update first.
+          echo "::notice::#$pr is approved but dev does not allow the merge yet."
+
+      - name: Deploy dev
+        if: steps.merge.outputs.merged == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh workflow run deploy-cloudflare.yml --ref dev

@@ -1,0 +1,24 @@
+name: Owner approval
+
+# Records an approving review by the repository owner. It holds no token
+# permissions and runs no code from the pull request; the Auto-merge
+# workflow reacts when this run succeeds. Reviews by anyone else skip the
+# job, so they never start a merge.
+on:
+  pull_request_review:
+    types:
+      - submitted
+
+permissions: {}
+
+jobs:
+  owner-approval:
+    if: github.event.review.state == 'approved' && github.event.review.user.login == 'prakasa1904'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Note the approval
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          COMMIT: ${{ github.event.review.commit_id }}
+        run: echo "Owner approved #${PR_NUMBER} at ${COMMIT}."
