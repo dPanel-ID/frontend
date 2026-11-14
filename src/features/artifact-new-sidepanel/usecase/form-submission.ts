@@ -1,10 +1,10 @@
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
-import type { ExplicitTarget } from '@/shared/rules/host-group';
 
 import { ApiApplication, ApiArtifact, ApiDeploy } from '@/shared/api';
 import { iife } from '@/shared/libs/browser/fn';
+import type { ExplicitTarget } from '@/shared/rules/host-group';
 
 import { useEmit, useSubscribe } from '../model/events';
 import { useArtifactNewGeneralModel } from '../model/general';

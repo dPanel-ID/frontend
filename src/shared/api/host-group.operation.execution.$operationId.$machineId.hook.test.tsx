@@ -3,6 +3,7 @@
 import { renderHook } from '@testing-library/react/dist/@testing-library/react.pure.esm.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { useApiGet } from '@/shared/libs/api-client';
 import type { Response } from '@/shared/libs/api-client/rules/types';
 
 import * as ApiHostGroupOperationExecution from './host-group.operation.execution.$operationId.$machineId';
@@ -10,8 +11,6 @@ import * as ApiHostGroupOperationExecution from './host-group.operation.executio
 vi.mock('@/shared/libs/api-client', () => ({
   useApiGet: vi.fn(),
 }));
-
-import { useApiGet } from '@/shared/libs/api-client';
 
 const mockedUseApiGet = vi.mocked(useApiGet);
 

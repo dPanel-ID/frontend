@@ -12,7 +12,7 @@ export function getAvailableModuleActions(
 ) {
   const availableActions = (actions ?? []).filter(
     (action) =>
-      !isHostGroupTarget || !isBlockedHostGroupAction(action.name ?? ''),
+      !isHostGroupTarget || !isBlockedHostGroupAction(action.name),
   );
 
   const defaultAction =

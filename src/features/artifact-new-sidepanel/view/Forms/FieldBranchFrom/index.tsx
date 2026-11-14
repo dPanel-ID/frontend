@@ -2,16 +2,16 @@ import { useController } from 'react-hook-form';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import {
-  buildFrontendReturnUrl,
-  buildGithubAuthUrl,
-} from '@/shared/libs/browser/oauth';
 import { useEmit } from '@/features/artifact-new-sidepanel/model/events';
 import { useArtifactNewGeneralModel } from '@/features/artifact-new-sidepanel/model/general';
 
 import { isGithubAuthFailure } from '@/shared/libs/api-client/is-github-auth-failure';
-import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
+import {
+  buildFrontendReturnUrl,
+  buildGithubAuthUrl,
+} from '@/shared/libs/browser/oauth';
 import { Button } from '@/shared/presentation/atoms/Button';
+import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { ComboboxWithSearch } from '@/shared/presentation/molecules/ComboboxWithSearch';
 
 import { useGitBranchModel } from '../../../model/git-branch';

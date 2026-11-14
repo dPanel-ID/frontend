@@ -210,8 +210,8 @@ function ProxyPassDestinationsList(props: DestinationsListProps) {
 
             {(entryErrors?.address || entryErrors?.port) && (
               <div className="grid grid-cols-[1fr_96px] gap-x-2">
-                <ErrorInline t={tAll} message={entryErrors?.address?.message} />
-                <ErrorInline t={tAll} message={entryErrors?.port?.message} />
+                <ErrorInline t={tAll} message={entryErrors.address?.message} />
+                <ErrorInline t={tAll} message={entryErrors.port?.message} />
               </div>
             )}
           </div>

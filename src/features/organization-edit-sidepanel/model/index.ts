@@ -14,7 +14,7 @@ export const [OrgEditModelProvider, useOrgEditModel] = buildContext(
     const form = useForm({
       resolver: zodResolver(schemaOrgEdit),
       defaultValues: {
-        name: props.name ?? '',
+        name: props.name,
         description: props.description ?? '',
       },
     });

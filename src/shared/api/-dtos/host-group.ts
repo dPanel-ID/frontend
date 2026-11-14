@@ -1,4 +1,3 @@
-import type { MachineV1 } from '.';
 import type {
   HostGroupActionResponseDto,
   HostGroupActionTargetDto,
@@ -10,6 +9,8 @@ import type {
   HostGroupOperationTargetDto,
   HostGroupSummaryDto,
 } from '@/shared/rules/host-group';
+
+import type { MachineV1 } from '.';
 
 export interface HostGroupV1 extends HostGroupSummaryDto {
   members?: Array<MachineV1 | HostGroupDetailDto['members'][number]>;

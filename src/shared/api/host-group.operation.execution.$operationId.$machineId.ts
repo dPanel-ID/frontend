@@ -5,11 +5,11 @@ import { processError } from '@/shared/libs/api-client/lib/processor';
 import type {
   ApiClientResponse,
   GetRequestRecipe,
-  Response,
   WithApiGetOptions,
 } from '@/shared/libs/api-client/rules/types';
 
 import { schemaHostGroupOperationExecutionDetailV1 } from './-dtos/host-group-operation-execution';
+
 import type { DTOs } from '.';
 
 export interface RecipeParams {
@@ -66,10 +66,7 @@ export function useGet(params: WithApiGetOptions<RecipeParams>) {
   );
 
   return [
-    useAdapter(
-      response as Response<unknown>,
-      parseScopedExecutionDetailPayload,
-    ),
+    useAdapter(response, parseScopedExecutionDetailPayload),
     refresh,
   ] as const;
 }

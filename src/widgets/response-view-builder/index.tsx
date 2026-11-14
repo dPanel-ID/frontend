@@ -21,7 +21,7 @@ export function buildResponseView<Data, E extends {} = ResponseError>(
       (response.$status === 'loading' && response.prevError != null)
     ) {
       const errorPayload =
-        response.$status === 'failed' ? response : response.prevError!;
+        response.$status === 'failed' ? response : response.prevError;
 
       return <FallbackError {...(errorPayload as E)} />;
     }

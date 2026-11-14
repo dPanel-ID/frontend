@@ -3,8 +3,20 @@
 import { tanstackConfig } from '@tanstack/eslint-config';
 import eslintPluginImport from 'eslint-plugin-import';
 import eslintPluginReactHooks from 'eslint-plugin-react-hooks';
+import tseslint from 'typescript-eslint';
 
 const eslintConfig = [
+  {
+    // Generated build output; `pnpm run build:static` writes it into the repo.
+    ignores: [
+      '.output/**',
+      '.output-static/**',
+      '.nitro/**',
+      '.tanstack/**',
+      '.vinxi/**',
+      '.mock/**',
+    ],
+  },
   ...tanstackConfig,
   eslintPluginReactHooks.configs.flat.recommended,
   {
@@ -90,6 +102,12 @@ const eslintConfig = [
       ],
       'react-hooks/exhaustive-deps': 'error',
     },
+  },
+  {
+    // The root JS config files sit outside the TypeScript program, so lint
+    // them without type information instead of failing to parse them.
+    ...tseslint.configs.disableTypeChecked,
+    files: ['*.config.js'],
   },
 ];
 

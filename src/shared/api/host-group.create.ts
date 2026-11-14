@@ -1,5 +1,5 @@
-import { apiClient } from '@/shared/libs/api-client/lib/client';
 import { apiDoPost } from '@/shared/libs/api-client/lib/apiDoPost';
+import { apiClient } from '@/shared/libs/api-client/lib/client';
 import { processError } from '@/shared/libs/api-client/lib/processor';
 
 import { parseHostGroupSummaryPayload } from './host-group.parsers';

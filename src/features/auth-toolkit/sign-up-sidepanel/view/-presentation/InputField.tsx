@@ -2,7 +2,6 @@ import { useState } from 'react';
 import type { HTMLInputTypeAttribute } from 'react';
 
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
-
 import { useController, useFormContext } from 'react-hook-form';
 
 import { useDevetekTranslations } from '@/services/i18n';

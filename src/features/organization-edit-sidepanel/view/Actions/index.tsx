@@ -1,6 +1,7 @@
 import { LoaderCircleIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
+
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 

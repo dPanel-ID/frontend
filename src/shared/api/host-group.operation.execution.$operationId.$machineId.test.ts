@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { AdapterError } from '@/shared/libs/api-client/lib/error';
 import { apiClient } from '@/shared/libs/api-client/lib/client';
+import { AdapterError } from '@/shared/libs/api-client/lib/error';
 import type {
   ApiClientResponse,
 } from '@/shared/libs/api-client/rules/types';
