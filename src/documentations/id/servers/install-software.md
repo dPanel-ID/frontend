@@ -51,7 +51,7 @@ Di server yang sudah memiliki bahasa sebelum perubahan ini, versi-versi tersebut
 2. Formulirnya menampilkan role yang akan dijalankan dan hanya menanyakan hal yang tidak bisa diputuskan sendiri. Untuk MariaDB: **MariaDB Version**, **Root Password**, dan **Bind Address**. Atur **Bind Address** ke `127.0.0.1` kecuali ada mesin lain yang harus terhubung langsung: nilai bawaannya, `0.0.0.0`, membuat MariaDB mendengarkan di semua alamat jaringan, dan di DigitalOcean dan IDCloudHost tidak ada yang memblokir port 3306 sampai Anda menambahkan firewall.
 3. Tekan **Install role**, lalu konfirmasi.
 
-![Formulir pemasangan MariaDB, dengan versi, kata sandi root, dan bind address](../../assets/servers/server-module-install-form.webp)
+![Formulir pemasangan MariaDB: role yang dijalankan, termasuk role release-guard dan release-verify, versi 12.3, kata sandi root, dan bind address](../../assets/servers/server-module-install-form.webp)
 
 :::warning[Tentukan kata sandinya sendiri]
 Kata sandi root wajib diisi, minimal 8 karakter. Tidak ada nilai bawaan, karena basis data dengan kata sandi bawaan yang sudah tersebar bisa dimasuki siapa saja. dPanel hanya menyimpannya di server dan tidak menampilkannya lagi, jadi simpan salinannya di tempat yang aman.

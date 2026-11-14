@@ -51,7 +51,7 @@ On a server that had languages before this change, those versions show a **Previ
 2. The form lists the **Roles to run** and asks only for what it can't decide for you. For MariaDB that is **MariaDB Version**, **Root Password** and **Bind Address**. Set **Bind Address** to `127.0.0.1` unless another machine must connect directly: the default, `0.0.0.0`, makes MariaDB listen on every network address, and on DigitalOcean and IDCloudHost nothing blocks port 3306 until you add a firewall.
 3. Press **Install role** and confirm.
 
-![The MariaDB install form, with version, root password and bind address](../../assets/servers/server-module-install-form.webp)
+![The MariaDB install form: the roles to run, including the release guard and verify roles, version 12.3, root password and bind address](../../assets/servers/server-module-install-form.webp)
 
 :::warning[Choose the password yourself]
 The root password is required and must be at least 8 characters. There is no default, because a database installed with a published default password is open to anyone who knows it. dPanel stores it only on the server and never shows it again, so keep your own copy somewhere safe.

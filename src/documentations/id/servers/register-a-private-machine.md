@@ -114,7 +114,7 @@ Untuk terhubung lewat SSH, lihat [Menghubungkan server sendiri lewat SSH](./conn
 
 Buka servernya. Tab-nya sama dengan server lain: pemakaian langsung, modul, layanan, pengguna, jaringan, berkas, log, dan pengaturan. Bagian detail menjelaskan cara dPanel menjangkaunya: **Alamat lokal** (alamatnya di jaringan Anda sendiri), **Terhubung dari** (alamat publik yang dipakai jaringan Anda untuk keluar ke internet, atau **Tidak diketahui: agen terhubung dari jaringan privat**), dan **Koneksi**: **Lewat agen dPanel (tanpa IP publik atau SSH)**, bukan login SSH.
 
-![Halaman home-server: pemakaian CPU, memori, dan disk secara langsung, jumlah aplikasi, database, dan modul, serta detail Local address 172.17.0.2, koneksi lewat agen dPanel, dan versi agen](../../assets/servers/private-overview.webp)
+![Halaman home-server: pemakaian CPU, memori, dan disk secara langsung, jumlah aplikasi, database, dan modul, serta detail Local address 172.17.0.2, Terhubung dari, koneksi lewat agen dPanel, dan versi agen](../../assets/servers/private-overview.webp 'Alamat publik di Terhubung dari disamarkan di sini.')
 
 ## Langkah 3: Pasang database atau perangkat lunak lain
 

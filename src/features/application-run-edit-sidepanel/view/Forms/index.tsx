@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { EyeIcon, EyeOffIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { useFieldArray, useWatch } from 'react-hook-form';
 
+import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import {
@@ -61,6 +62,7 @@ function RunCommandSection() {
  * so they are saved as typed.
  */
 function useRevealValues() {
+  const t = useDevetekTranslations('sidepanel.applicationRunEdit.envValues');
   const { form, props } = useApplicationRunEditModel();
   const [openToaster] = useToaster();
   const [isRevealing, setIsRevealing] = useState(false);
@@ -96,7 +98,7 @@ function useRevealValues() {
       if (response.$status !== 'success') {
         openToaster({
           variant: 'error',
-          title: 'Could not show the values',
+          title: t('revealFailed'),
           message: getApiErrorDetail(response.error),
         });
         return;
@@ -112,6 +114,7 @@ function useRevealValues() {
 }
 
 function RunEnvsSection() {
+  const t = useDevetekTranslations('sidepanel.applicationRunEdit.envValues');
   const { form } = useApplicationRunEditModel();
   const { hasMasked, isShown, isRevealing, reveal, hide } = useRevealValues();
 
@@ -130,11 +133,7 @@ function RunEnvsSection() {
 
       {(hasMasked || isShown) && (
         <div className="flex items-center justify-between gap-2 rounded-md border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
-          <span>
-            {isShown
-              ? 'Values are shown. Hide them before sharing your screen.'
-              : 'Values are hidden. Unchanged ones keep their stored value.'}
-          </span>
+          <span>{isShown ? t('shownNote') : t('hiddenNote')}</span>
           <Button
             type="button"
             variant="outline"
@@ -148,7 +147,7 @@ function RunEnvsSection() {
             ) : (
               <EyeIcon className="size-3" />
             )}
-            {isShown ? 'Hide values' : isRevealing ? 'Showing…' : 'Show values'}
+            {isShown ? t('hide') : isRevealing ? t('revealing') : t('reveal')}
           </Button>
         </div>
       )}

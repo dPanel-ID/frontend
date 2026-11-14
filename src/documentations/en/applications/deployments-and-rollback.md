@@ -65,6 +65,8 @@ dPanel releases that build again on those servers. A rollback restores your code
 
 In **On servers**, each release has **Start**, **Restart** and **Stop** for its service, and **Delete**. A deleted release can be brought back with **Restore**, or removed for good with **Delete permanently**.
 
+![The On servers view of an application: one release on home-server, Running, with its build, language version and the Start, Restart, Stop, Runtime and Delete buttons](../../assets/applications/app-releases-on-servers.webp 'Each release shows its server, service and who released it. Names are blurred here.')
+
 **Restart** keeps the environment variables the service already had. After changing a variable, release again instead; see [Environment variables](./environment-variables.md).
 
 ### Move to the new runtime

@@ -48,11 +48,11 @@ Anda juga bisa meminta **Ask dPanel** mengerjakannya untuk Anda; lihat [Kumpulan
 
 dPanel menyembunyikan setiap nilai setelah disimpan: aplikasi web dan API menampilkan `••••••••` sebagai gantinya, dan `dnocs` hanya menampilkan namanya. Kalau Anda perlu melihat nilainya lagi, Anda bisa menampilkannya atas permintaan.
 
-1. Buka **Pengaturan**, lalu tekan **Ubah** di samping **Variabel lingkungan** pada bagian **Jalan**. Panelnya bertuliskan **Values are hidden. Unchanged ones keep their stored value.**
-2. Tekan **Show values**. Nilai aslinya mengisi kolom yang disembunyikan; apa pun yang sudah Anda ketik tetap seperti adanya.
-3. Setelah selesai, tekan **Hide values**, terutama sebelum Anda membagikan layar.
+1. Buka **Pengaturan**, lalu tekan **Ubah** di samping **Variabel lingkungan** pada bagian **Jalan**. Panelnya bertuliskan **Nilai disembunyikan. Nilai yang tidak diubah tetap memakai nilai tersimpan.**
+2. Tekan **Tampilkan nilai**. Nilai aslinya mengisi kolom yang disembunyikan; apa pun yang sudah Anda ketik tetap seperti adanya.
+3. Setelah selesai, tekan **Sembunyikan nilai**, terutama sebelum Anda membagikan layar.
 
-Nilai build-time ditampilkan dengan cara yang sama di **Ubah pengaturan**, pada langkah **Environment**, lewat tombol **Tampilkan nilai** dan **Sembunyikan nilai**.
+Nilai build-time ditampilkan dengan cara yang sama di **Ubah pengaturan**, pada langkah **Environment**, lewat tombol yang sama.
 
 Hanya orang yang boleh mengubah aplikasi yang bisa menampilkan nilai; orang yang hanya bisa melihat aplikasi tidak bisa. Setiap kali nilai ditampilkan, dPanel mencatat siapa yang melakukannya dan untuk aplikasi mana, tanpa pernah mencatat nilainya.
 
@@ -98,7 +98,7 @@ Ya. Layanan yang berjalan tetap memakai nilai saat ia dimulai, dan **Restart** t
 
 ### Bisakah saya melihat rahasia setelah disimpan?
 
-Bisa, jika Anda boleh mengubah aplikasinya. Tekan **Show values** di panel **Jalan**, atau **Tampilkan nilai** di **Ubah pengaturan** untuk nilai build-time, atau jalankan `dnocs application env list --id <ID aplikasi> --show-values`. Setiap kali dicatat. Lihat [Melihat nilai yang tersimpan](#melihat-nilai-yang-tersimpan).
+Bisa, jika Anda boleh mengubah aplikasinya. Tekan **Tampilkan nilai** di panel **Jalan**, atau di langkah **Environment** pada **Ubah pengaturan** untuk nilai build-time, atau jalankan `dnocs application env list --id <ID aplikasi> --show-values`. Setiap kali dicatat. Lihat [Melihat nilai yang tersimpan](#melihat-nilai-yang-tersimpan).
 
 ### Password database sebaiknya variabel build-time atau runtime?
 

@@ -114,7 +114,7 @@ To connect over SSH instead, see [Connect your own server over SSH](./connect-yo
 
 Open the server. It has the same tabs as any other server: live usage, modules, services, users, network, files, logs and settings. The details say how dPanel reaches it: **Local address** (its address on your own network), **Connects from** (the public address your network uses to reach the internet, or **Unknown: the agent connects from a private network**) and **Connection**: **Through the dPanel agent (no public IP or SSH)**, instead of an SSH login.
 
-![The home-server page: live CPU, memory and disk usage, counts of applications, databases and modules, and details with Local address 172.17.0.2, Connection through the dPanel agent and the agent version](../../assets/servers/private-overview.webp)
+![The home-server page: live CPU, memory and disk usage, counts of applications, databases and modules, and details with Local address 172.17.0.2, Connects from, Connection through the dPanel agent and the agent version](../../assets/servers/private-overview.webp 'The public address under Connects from is blurred here.')
 
 ## Step 3: Install a database or other software
 

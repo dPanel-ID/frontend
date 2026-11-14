@@ -28,7 +28,7 @@ Masuk lewat Google tidak memerlukan password tersendiri. Cocok kalau tim Anda su
 2. Isi email, username, password, dan ulangi password-nya.
 3. Tekan **Daftar**. dPanel mendaftarkan akun Anda lalu mengarahkan Anda begitu siap.
 
-Username yang Anda ketik adalah username untuk masuk, dalam huruf kecil. Kalau sudah dipakai orang lain, dPanel menampilkan **That username is already taken. Choose another one.** (username itu sudah dipakai; pilih yang lain).
+Username yang Anda ketik adalah username untuk masuk, dalam huruf kecil. Kalau sudah dipakai orang lain, dPanel menampilkan **Username itu sudah dipakai. Pilih yang lain.**
 
 ## Lupa password
 
@@ -84,9 +84,9 @@ Bisa. Buat akun lewat **Daftar**, lalu masuk dengan username dan password.
 
 `dnocs auth login` memerlukan username dan password. Atur password di **Edit profile** (password lama tidak ditanyakan), lalu masuk ke dnocs dengan username yang tertera di profil Anda. Atau buat token [akun layanan](../teams/service-accounts.md) dan jalankan dnocs dengan `DNOCS_TOKEN`.
 
-### Saat masuk muncul "Wrong username or password"
+### Saat masuk muncul "Username atau password salah"
 
-Periksa keduanya, atau masuk dengan alamat email sebagai pengganti username. Demi keamanan, dPanel menampilkan pesan yang sama baik akunnya tidak ada maupun password-nya salah. **Signing in is not available right now. Try again in a minute.** berarti masalahnya ada di sisi dPanel; tunggu sebentar lalu coba lagi.
+Periksa keduanya, atau masuk dengan alamat email sebagai pengganti username. Demi keamanan, dPanel menampilkan pesan yang sama baik akunnya tidak ada maupun password-nya salah. **Saat ini belum bisa masuk. Coba lagi sebentar lagi.** berarti masalahnya ada di sisi dPanel; tunggu sebentar lalu coba lagi.
 
 ### Bagaimana mengatur ulang password yang terlupa?
 

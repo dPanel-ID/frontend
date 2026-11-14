@@ -4,14 +4,15 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import { ApiUser } from '@/shared/api';
-import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import { readReturnUrl } from '../-lib/return-url';
 import type { LoginTraditional } from '../-rules/login';
+import { useAuthErrorMessage } from '../../-usecase/use-auth-error-message';
 
 export default function useLoginUsecase() {
   const t = useDevetekTranslations();
+  const localizedAuthError = useAuthErrorMessage();
 
   const [pushToast] = useToaster();
 
@@ -62,7 +63,7 @@ export default function useLoginUsecase() {
         title: t('toaster.loginByEmail.error', {
           email: username,
         }),
-        message: getApiErrorDetail(response.error),
+        message: localizedAuthError(response.error),
       });
 
       throw response.error;

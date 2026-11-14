@@ -7,8 +7,8 @@ import { useSidepanelEmit } from '@/services/sidepanel/model/event';
 import { useToaster } from '@/services/toaster';
 
 import { ApiUser } from '@/shared/api';
-import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 
+import { useAuthErrorMessage } from '../../-usecase/use-auth-error-message';
 import type { SignUpForm } from '../rules/login';
 
 export default function useSubmitUsecase() {
@@ -17,6 +17,7 @@ export default function useSubmitUsecase() {
   const sidepanelEmit = useSidepanelEmit();
 
   const t = useDevetekTranslations();
+  const localizedAuthError = useAuthErrorMessage();
 
   const [openToaster] = useToaster();
 
@@ -46,7 +47,7 @@ export default function useSubmitUsecase() {
         title: t('toaster.signUp.error', {
           email,
         }),
-        message: getApiErrorDetail(response.error),
+        message: localizedAuthError(response.error),
       });
       return;
     }

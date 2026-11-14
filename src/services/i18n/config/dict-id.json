@@ -4408,6 +4408,13 @@
     "loadBalancerCreate": {
       "success": "Load balancer berhasil dibuat.",
       "error": "Gagal membuat load balancer."
+    },
+    "authPublic": {
+      "loginInvalid": "Username atau password salah. Anda juga bisa masuk dengan alamat email.",
+      "signUpConflict": "Akun dengan alamat email atau username ini sudah ada. Masuk saja, atau pilih username lain.",
+      "usernameTaken": "Username itu sudah dipakai. Pilih yang lain.",
+      "authUnavailable": "Saat ini belum bisa masuk. Coba lagi sebentar lagi.",
+      "signUpUnavailable": "Saat ini belum bisa membuat akun. Coba lagi sebentar lagi."
     }
   },
   "sidepanel": {
@@ -4782,6 +4789,16 @@
         "source": "Gunakan satu alamat atau jaringan, tanpa spasi.",
         "sourceLength": "Gunakan paling banyak 64 karakter.",
         "commentLength": "Gunakan paling banyak 64 karakter."
+      }
+    },
+    "applicationRunEdit": {
+      "envValues": {
+        "hiddenNote": "Nilai disembunyikan. Nilai yang tidak diubah tetap memakai nilai tersimpan.",
+        "shownNote": "Nilai ditampilkan. Sembunyikan sebelum membagikan layar.",
+        "reveal": "Tampilkan nilai",
+        "hide": "Sembunyikan nilai",
+        "revealing": "Menampilkan…",
+        "revealFailed": "Nilai tidak dapat ditampilkan"
       }
     }
   },

@@ -34,7 +34,7 @@ Setiap item yang punya tombol **Ubah** membuka panel khusus untuk bagian itu saj
 
 Tekan **Simpan** di panel, atau **Batal** untuk menutupnya; jika ada perubahan yang belum disimpan, dPanel meminta konfirmasi lebih dulu. Perubahan berlaku mulai rilis berikutnya, jadi rilis lagi dengan **Bangun dan rilis** atau **Rilis ulang**.
 
-Nilai variabel disembunyikan di panel-panel ini. Biarkan nilai yang tersembunyi apa adanya untuk mempertahankannya, atau tekan **Show values** di **Edit Runtime Configuration** untuk melihat nilai runtime. Lihat [Variabel environment](./environment-variables.md#melihat-nilai-yang-tersimpan).
+Nilai variabel disembunyikan di panel-panel ini. Biarkan nilai yang tersembunyi apa adanya untuk mempertahankannya, atau tekan **Tampilkan nilai** di **Edit Runtime Configuration** untuk melihat nilai runtime. Lihat [Variabel environment](./environment-variables.md#melihat-nilai-yang-tersimpan).
 
 ## Pengaturan yang tetap
 
@@ -51,7 +51,7 @@ Untuk memakai nilai lain, buat aplikasi baru, rilis, arahkan load balancer Anda 
 3. Di **Pratinjau**, centang **Jalankan playbook bootstrap** jika Anda mengubah modul atau dependency server perlu dipasang ulang.
 4. Tekan **Simpan perubahan**.
 
-![Formulir Update Aplikasi yang dibuka dari Ubah pengaturan](../../assets/applications/app-edit.webp)
+![Formulir Update Aplikasi di langkah Environment: catatan bahwa nilai disembunyikan dengan tombol Show values, variabel build-time, dan variabel runtime yang nilainya disamarkan](../../assets/applications/app-edit.webp 'Dibuka dari Ubah pengaturan. Nilai tersembunyi yang tidak diubah tetap memakai nilai tersimpan.')
 
 dPanel memperbarui definisi aplikasi (deskripsi tersimpan tentang cara membangun dan menjalankannya) dan mengirim input playbook untuknya.
 
