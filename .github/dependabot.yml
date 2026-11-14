@@ -18,6 +18,13 @@ updates:
         update-types:
           - minor
           - patch
+        # These need code changes, so they come as their own PRs:
+        # TanStack Start/Router minors break build:static, and newer
+        # typescript-eslint and react-hooks rules add new lint errors.
+        exclude-patterns:
+          - "@tanstack/*"
+          - typescript-eslint
+          - eslint-plugin-react-hooks
 
   - package-ecosystem: github-actions
     directory: /
