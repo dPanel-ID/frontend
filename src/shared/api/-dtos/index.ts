@@ -32,3 +32,4 @@ export interface Pagination {
   total_page: number;
 }
 export * from './service-account';
+export * from './git-backup';

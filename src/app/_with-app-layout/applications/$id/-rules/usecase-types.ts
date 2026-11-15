@@ -39,6 +39,12 @@ export interface DeploymentRestorePayload {
   workerId: SchemaCommon.UnitId;
 }
 
+/** Back up the application's files on one server to a git branch. */
+export interface GitBackupPayload {
+  deploymentId: SchemaCommon.UnitId;
+  serverName: string;
+}
+
 /** Move a deployment's application between the new and previous runtime. */
 export interface RuntimeMovePayload {
   applicationId: SchemaCommon.UnitId;
