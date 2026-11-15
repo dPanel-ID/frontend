@@ -27,11 +27,13 @@ export interface GitBackupReportV1 {
   skipped_nested?: string[] | null;
 }
 
+// IDs arrive as JSON strings (the API's response filter turns IDs into
+// strings); older answers may still carry numbers.
 export interface GitBackupV1 {
-  id: number;
-  application_id: number;
-  deployment_id: number;
-  machine_id: number;
+  id: string | number;
+  application_id: string | number;
+  deployment_id: string | number;
+  machine_id: string | number;
   execution_id: string;
   branch: string;
   status: GitBackupStatusV1;

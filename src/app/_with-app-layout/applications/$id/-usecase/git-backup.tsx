@@ -132,7 +132,7 @@ export default function useGitBackupUsecase() {
       );
       if (controller.signal.aborted || response.$status !== 'success') return;
       const list = Array.isArray(response) ? response : [];
-      const current = list.find((item) => item.id === backupId);
+      const current = list.find((item) => String(item.id) === String(backupId));
       if (!current) return;
       setBackup(current);
       if (isGitBackupFinished(current.status)) setPhase('finished');
@@ -144,11 +144,15 @@ export default function useGitBackupUsecase() {
   }, [phase, deploymentId, backupId]);
 
   // Tell the owner how it ended even when the dialog was closed meanwhile.
-  const lastToastRef = useRef<number | null>(null);
+  const lastToastRef = useRef<string | null>(null);
   useEffect(() => {
-    if (phase !== 'finished' || !backup || lastToastRef.current === backup.id)
+    if (
+      phase !== 'finished' ||
+      !backup ||
+      lastToastRef.current === String(backup.id)
+    )
       return;
-    lastToastRef.current = backup.id;
+    lastToastRef.current = String(backup.id);
     if (target) return; // the open dialog shows the result
     openToaster(
       backup.status === 'failed'
