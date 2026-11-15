@@ -9,8 +9,10 @@ import useArtifactProgressCancelUsecase from './-usecase/artifact-progress-cance
 import useArtifactRollbackUsecase from './-usecase/artifact-rollback';
 import useDeploymentDeleteUsecase from './-usecase/deployment-delete';
 import useDeploymentRestoreUsecase from './-usecase/deployment-restore';
+import useGitBackupUsecase from './-usecase/git-backup';
 import useGithubLoginUsecase from './-usecase/github-login';
 import useRuntimeMoveUsecase from './-usecase/runtime-move';
+import { GitBackupDialog } from './-view/GitBackupDialog';
 
 export default function EventController() {
   const emit = useEmit();
@@ -64,6 +66,8 @@ export default function EventController() {
 
   const [handleGithubLogin] = useGithubLoginUsecase();
 
+  const [handleGitBackup, gitBackup] = useGitBackupUsecase();
+
   useSubscribe('@applications::detail/artifact-delete', handleArtifactDelete);
 
   useSubscribe(
@@ -87,6 +91,8 @@ export default function EventController() {
   );
 
   useSubscribe('@applications::detail/runtime-move', handleRuntimeMove);
+
+  useSubscribe('@applications::detail/deployment-git-backup', handleGitBackup);
 
   useSubscribe('@applications::detail/github-login', handleGithubLogin);
 
@@ -112,5 +118,5 @@ export default function EventController() {
     handleApplicationSetupEdit,
   );
 
-  return null;
+  return <GitBackupDialog state={gitBackup} />;
 }

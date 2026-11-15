@@ -6,6 +6,7 @@ import {
   ClockIcon,
   CodeIcon,
   GitBranchIcon,
+  GitBranchPlusIcon,
   HammerIcon,
   HashIcon,
   LayersIcon,
@@ -41,6 +42,7 @@ import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 
 import { deploymentTone, isMovingStatus } from '../../-lib/describe-detail';
 import { useEmit } from '../../-model/events';
+import { canBackUpToGit } from '../../-rules/git-backup';
 
 import { ArtifactCardPartials as Partials } from './_presentation/ArtifactCard/_Partials';
 
@@ -193,6 +195,7 @@ interface DeploymentCardProps {
   onClickDelete: () => void;
   onClickRestore: () => void;
   onClickRuntime: () => void;
+  onClickGitBackup: () => void;
 }
 
 function DeploymentCard({
@@ -202,6 +205,7 @@ function DeploymentCard({
   onClickDelete,
   onClickRestore,
   onClickRuntime,
+  onClickGitBackup,
 }: DeploymentCardProps) {
   const locale = useDevetekLocale();
   const t = useDevetekTranslations();
@@ -403,6 +407,12 @@ function DeploymentCard({
                 {t('page.applicationDetail.releases.runtime.button')}
               </Button>
             )}
+          {canBackUpToGit(data.state.status) && (
+            <Button variant="outline" size="sm" onClick={onClickGitBackup}>
+              <GitBranchPlusIcon className="size-3" />
+              {t('page.applicationDetail.releases.gitBackup.button')}
+            </Button>
+          )}
           {data.state.status === 'deleted' && (
             <Button variant="outline" size="sm" onClick={onClickRestore}>
               <UndoIcon className="size-3" />
@@ -481,6 +491,12 @@ export function DeploymentList({ list, artifactList }: DeploymentListProps) {
               applicationId: deployment.pointerIds.application,
               artifactId: deployment.pointerIds.artifact,
               workerId: deployment.pointerIds.machine,
+            })
+          }
+          onClickGitBackup={() =>
+            emit('@applications::detail/deployment-git-backup', {
+              deploymentId: deployment.id,
+              serverName: deployment.serverSnapshot.hostName,
             })
           }
           onClickRuntime={() =>
