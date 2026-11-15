@@ -12,6 +12,7 @@ describe('publicAuthErrorKey', () => {
       'loginInvalid',
     ],
     ['That username is already taken. Choose another one.', 'usernameTaken'],
+    ['This email is already used by another account.', 'emailTaken'],
     [
       '  Signing in is not available right now. Try again in a minute. ',
       'authUnavailable',
@@ -32,6 +33,7 @@ describe('publicAuthErrorKey', () => {
       'loginInvalid',
       'signUpConflict',
       'usernameTaken',
+      'emailTaken',
       'authUnavailable',
       'signUpUnavailable',
     ];
