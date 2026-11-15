@@ -19,7 +19,6 @@ import {
   FLEET_RESOURCES,
   buildFleetSeries,
   fleetSeverity,
-  shouldNamePeak,
 } from '../../-lib/fleet-utilisation';
 import type {
   FleetResource,
@@ -58,8 +57,10 @@ const RESOURCE_ICONS: Record<FleetResource, LucideIcon> = {
 
 /**
  * How hard the fleet is working, over time. Three small charts rather than one
- * combined: each plots its own resource with the fleet average and the worst
- * single machine, so an average can never hide a saturated server.
+ * combined: each plots its own resource with the fleet average and the
+ * busiest server, the one with the highest average over the selected range.
+ * The dotted line, the server named under the chart and the numbers beside it
+ * all describe that one server.
  */
 export default function FleetUtilisationPanel() {
   const t = useDevetekTranslations('page.dashboard.fleet');
@@ -163,7 +164,7 @@ function FleetLegend() {
           className="h-0 w-4 shrink-0 border-t-2 border-dashed"
           style={{ borderColor: FLEET_AVERAGE_COLOR }}
         />
-        {t('legend.peak')}
+        {t('legend.busiest')}
       </li>
     </ul>
   );
@@ -177,17 +178,23 @@ function FleetResourceCard(props: {
   const t = useDevetekTranslations('page.dashboard.fleet');
   const Icon = RESOURCE_ICONS[series.resource];
 
-  const severity = fleetSeverity(series.peak);
+  const { busiest } = series;
+  const severity = fleetSeverity(busiest?.peak);
   const peakColor = fleetPeakColor(severity);
   const labelFor = useMemo(() => bucketLabeller(bucket), [bucket]);
+  // The tooltip names the server, so the line and the note below can never
+  // be read as two different servers.
+  const busiestLabel = busiest
+    ? busiest.hostname || t('unknownServer')
+    : t('legend.busiest');
 
   const data = useMemo(
     () => ({
       labels: series.points.map((point) => labelFor(point.time)),
       datasets: [
         {
-          label: t('legend.peak'),
-          data: series.points.map((point) => point.max),
+          label: busiestLabel,
+          data: series.points.map((point) => point.busiest),
           borderColor: peakColor,
           backgroundColor: 'transparent',
           borderDash: [4, 4],
@@ -208,7 +215,7 @@ function FleetResourceCard(props: {
         },
       ],
     }),
-    [labelFor, peakColor, series.points, t],
+    [busiestLabel, labelFor, peakColor, series.points, t],
   );
 
   const options = useMemo(
@@ -255,7 +262,7 @@ function FleetResourceCard(props: {
         />
       </div>
 
-      <FleetPeakNote series={series} severity={severity} />
+      <FleetBusiestNote series={series} severity={severity} />
 
       {/*
         The same numbers as text: a canvas is unreadable to a screen reader,
@@ -270,7 +277,7 @@ function FleetResourceCard(props: {
             <tr>
               <th scope="col">{t('tableWhen')}</th>
               <th scope="col">{t('legend.average')}</th>
-              <th scope="col">{t('legend.peak')}</th>
+              <th scope="col">{busiestLabel}</th>
             </tr>
           </thead>
           <tbody>
@@ -283,9 +290,9 @@ function FleetResourceCard(props: {
                     : `${Math.round(point.avg)}%`}
                 </td>
                 <td>
-                  {point.max == null
+                  {point.busiest == null
                     ? t('noReading')
-                    : `${Math.round(point.max)}%`}
+                    : `${Math.round(point.busiest)}%`}
                 </td>
               </tr>
             ))}
@@ -297,50 +304,50 @@ function FleetResourceCard(props: {
 }
 
 /**
- * Names the worst machine, but only when that is news. A peak barely above
- * the fleet average is the same reading twice, and saying so every time would
- * train readers to ignore the line that matters.
+ * Names the busiest server and quotes its own average and peak for the range,
+ * so every number here belongs to the dotted line above it.
  */
-function FleetPeakNote(props: {
+function FleetBusiestNote(props: {
   series: FleetResourceSeries;
   severity: FleetSeverity;
 }) {
   const { series, severity } = props;
   const t = useDevetekTranslations('page.dashboard.fleet');
+  const { busiest } = series;
 
-  if (!shouldNamePeak(series)) {
+  if (!busiest) {
     return (
       <p className="mt-2 truncate text-xs text-muted-foreground">
-        {series.peak == null
-          ? t('noPeak')
-          : t('peakHealthy', { percent: Math.round(series.peak) })}
+        {t('noBusiest')}
       </p>
     );
   }
 
-  const tone: StatusTone = severity === 'critical' ? 'danger' : 'warning';
-  const hostname = series.peakMachineHostname || t('unknownServer');
+  const tone: StatusTone =
+    severity === 'critical'
+      ? 'danger'
+      : severity === 'warning'
+        ? 'warning'
+        : 'neutral';
+  const hostname = busiest.hostname || t('unknownServer');
 
   return (
-    <div className="mt-2 flex min-w-0 items-center gap-2">
+    <div className="mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
       <StatusPill
         tone={tone}
-        label={t('peakPercent', { percent: Math.round(series.peak ?? 0) })}
+        label={t('peakPercent', { percent: Math.round(busiest.peak) })}
       />
-      {series.peakMachineId ? (
-        <Link
-          to="/servers/$id"
-          params={{ id: series.peakMachineId }}
-          className="min-w-0 truncate text-xs font-semibold text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
-          title={hostname}
-        >
-          {hostname}
-        </Link>
-      ) : (
-        <span className="min-w-0 truncate text-xs text-muted-foreground">
-          {hostname}
-        </span>
-      )}
+      <Link
+        to="/servers/$id"
+        params={{ id: busiest.machineId }}
+        className="min-w-0 truncate text-xs font-semibold text-primary underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+        title={hostname}
+      >
+        {hostname}
+      </Link>
+      <span className="text-xs text-muted-foreground">
+        {t('busiestAverage', { percent: Math.round(busiest.average) })}
+      </span>
     </div>
   );
 }

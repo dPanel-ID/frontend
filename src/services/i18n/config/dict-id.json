@@ -513,10 +513,10 @@
       },
       "fleet": {
         "title": "Penggunaan sumber daya",
-        "description": "Seberapa berat kerja server Anda. Tiap grafik menampilkan rata-rata armada dan satu server tersibuk.",
+        "description": "Seberapa berat kerja server Anda. Tiap grafik menampilkan rata-rata armada dan server tersibuk: server dengan rata-rata tertinggi pada rentang yang dipilih.",
         "legend": {
           "average": "Rata-rata armada",
-          "peak": "Server tersibuk"
+          "busiest": "Server tersibuk (rata-rata tertinggi)"
         },
         "range": {
           "hour": "1 jam",
@@ -533,8 +533,8 @@
         "tableWhen": "Waktu",
         "noReading": "Tidak ada data",
         "peakPercent": "Puncak {percent}%",
-        "peakHealthy": "Server tersibuk mencapai {percent}%",
-        "noPeak": "Belum ada puncak tercatat",
+        "busiestAverage": "rata-rata {percent}% pada rentang ini",
+        "noBusiest": "Belum ada data pada rentang ini",
         "unknownServer": "server tanpa nama",
         "emptyTitle": "Belum ada laporan penggunaan",
         "emptyDescription": "Server Anda melaporkan penggunaan setiap 30 detik. Setelah server berjalan beberapa menit, penggunaannya akan muncul di sini.",

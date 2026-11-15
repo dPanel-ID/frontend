@@ -513,10 +513,10 @@
       },
       "fleet": {
         "title": "Resource usage",
-        "description": "How hard your servers are working. Each chart shows the fleet average and the busiest single server.",
+        "description": "How hard your servers are working. Each chart shows the fleet average and the busiest server: the one with the highest average over the selected range.",
         "legend": {
           "average": "Fleet average",
-          "peak": "Busiest server"
+          "busiest": "Busiest server (highest average)"
         },
         "range": {
           "hour": "1 hour",
@@ -533,8 +533,8 @@
         "tableWhen": "When",
         "noReading": "No reading",
         "peakPercent": "{percent}% peak",
-        "peakHealthy": "Busiest server peaked at {percent}%",
-        "noPeak": "No peak recorded yet",
+        "busiestAverage": "{percent}% average over this range",
+        "noBusiest": "No readings in this range yet",
         "unknownServer": "an unnamed server",
         "emptyTitle": "No usage reported yet",
         "emptyDescription": "Your servers report usage every 30 seconds. Once a server has been running for a few minutes, its usage appears here.",

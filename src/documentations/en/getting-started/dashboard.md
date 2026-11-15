@@ -43,7 +43,7 @@ Read it from the top.
 1. **The verdict.** Either everything is running normally, or a count of things that need your attention.
 2. **Four tiles.** **Servers**, **Applications** and **Load balancers**, each with how many are ready and how many need a look, and **Domains**. Press a tile to open that list. Cloud accounts and SSH keys are not counted here; open them from the sidebar.
 3. **Platform activity.** Every operation dPanel ran in this workspace, split into **Succeeded**, **Failed** and **In progress or cancelled**. Pick **24 hours**, **7 days** or **30 days**. Beside it: the number of operations, the success rate and how many failed.
-4. **Resource usage.** CPU, memory and disk across your servers. Each chart shows the fleet average and the busiest single server. Pick **1 hour**, **24 hours** or **3 days**.
+4. **Resource usage.** CPU, memory and disk across your servers. Each chart shows the fleet average and the busiest server: the server with the highest average over the range you pick. The dotted line, the server named under the chart, its peak and its average all belong to that one server. Pick **1 hour**, **24 hours** or **3 days**.
 5. **Needs your attention.** Servers that are not running, servers whose agent (the small dPanel program on each server that reports its health) stopped reporting, and operations that failed. **Open server** takes you to the server in question.
 6. **Recent activity.** The newest operations. A button such as **Show 7 more** below the list loads the rest. The **Activity** tab shows the full list.
 
