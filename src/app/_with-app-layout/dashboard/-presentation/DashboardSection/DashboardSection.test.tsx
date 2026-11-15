@@ -100,3 +100,47 @@ describe('DashboardSection help', () => {
     expect(screen.queryByRole('button')).toBeNull();
   });
 });
+
+describe('DashboardSection header', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('never truncates or shrinks the title', () => {
+    renderWithHelp();
+
+    const heading = screen.getByRole('heading', { name: 'Resource usage' });
+    expect(heading.className).not.toMatch(/\btruncate\b/);
+    expect(heading.className).not.toContain('text-ellipsis');
+    expect(heading.className).toContain('shrink-0');
+    // The block holding the title and its "?" never gives up width either.
+    expect(heading.parentElement?.parentElement?.className).toContain(
+      'shrink-0',
+    );
+  });
+
+  it('draws the legend on its own row between the header and the chart', () => {
+    render(
+      <DashboardSection
+        title="Resource usage"
+        help={{ text: HELP_TEXT, label: 'About resource usage' }}
+        legend={<ul aria-label="Legend" />}
+        action={<button type="button">24 hours</button>}
+      >
+        <p>charts</p>
+      </DashboardSection>,
+    );
+
+    const header = screen.getByRole('heading', { name: 'Resource usage' })
+      .parentElement!.parentElement!.parentElement!;
+    const legend = screen.getByRole('list', { name: 'Legend' });
+    // Not inside the header row with the title and range buttons.
+    expect(header.contains(legend)).toBe(false);
+    expect(header.contains(screen.getByText('24 hours'))).toBe(true);
+    // And placed before the chart content.
+    expect(
+      legend.compareDocumentPosition(screen.getByText('charts')) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+});

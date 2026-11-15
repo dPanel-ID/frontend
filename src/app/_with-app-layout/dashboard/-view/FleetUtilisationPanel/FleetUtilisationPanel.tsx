@@ -84,20 +84,16 @@ export default function FleetUtilisationPanel() {
     <DashboardSection
       title={t('title')}
       help={{ text: t('description'), label: t('helpAria') }}
+      legend={hasFailed ? undefined : <FleetLegend />}
       action={
-        <div className="flex flex-wrap items-center gap-3 sm:justify-end">
-          <FleetLegend />
-          <SegmentedControl
-            activeItemId={range}
-            onClickOption={setRange}
-            options={(Object.keys(FLEET_RANGES) as FleetRangeId[]).map(
-              (id) => ({
-                id,
-                text: t(FLEET_RANGES[id].labelKey),
-              }),
-            )}
-          />
-        </div>
+        <SegmentedControl
+          activeItemId={range}
+          onClickOption={setRange}
+          options={(Object.keys(FLEET_RANGES) as FleetRangeId[]).map((id) => ({
+            id,
+            text: t(FLEET_RANGES[id].labelKey),
+          }))}
+        />
       }
     >
       {hasFailed ? (
@@ -144,7 +140,7 @@ export default function FleetUtilisationPanel() {
   );
 }
 
-/** Legend in the card header, so identity is never colour-alone. */
+/** Legend above the charts, so identity is never colour-alone. */
 function FleetLegend() {
   const t = useDevetekTranslations('page.dashboard.fleet');
 

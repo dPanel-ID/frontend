@@ -70,23 +70,21 @@ export default function ActivityChart() {
     <DashboardSection
       title={t('title')}
       help={{ text: t('description'), label: t('helpAria') }}
+      legend={hasFailed ? undefined : <ActivityLegend />}
       action={
-        <div className="flex flex-wrap items-center gap-3 sm:justify-end">
-          <ActivityLegend />
-          <SegmentedControl
-            activeItemId={range}
-            onClickOption={setRange}
-            options={(Object.keys(ACTIVITY_RANGES) as ActivityRangeId[]).map(
-              (id) => ({
-                id,
-                text: t(ACTIVITY_RANGES[id].labelKey),
-                tooltipText: t('rangeTooltip', {
-                  range: t(ACTIVITY_RANGES[id].labelKey),
-                }),
+        <SegmentedControl
+          activeItemId={range}
+          onClickOption={setRange}
+          options={(Object.keys(ACTIVITY_RANGES) as ActivityRangeId[]).map(
+            (id) => ({
+              id,
+              text: t(ACTIVITY_RANGES[id].labelKey),
+              tooltipText: t('rangeTooltip', {
+                range: t(ACTIVITY_RANGES[id].labelKey),
               }),
-            )}
-          />
-        </div>
+            }),
+          )}
+        />
       }
     >
       {hasFailed ? (
@@ -115,8 +113,8 @@ export default function ActivityChart() {
 }
 
 /**
- * The legend lives in the card header rather than on the canvas, so identity
- * is never colour-alone while the plot keeps its full height.
+ * The legend sits on its own row above the chart rather than on the canvas,
+ * so identity is never colour-alone while the plot keeps its full height.
  */
 function ActivityLegend() {
   const t = useDevetekTranslations('page.dashboard.activityChart');
