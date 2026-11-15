@@ -6,9 +6,10 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { personOf } from '@/entities/user/lib/person';
 import { UserLink } from '@/entities/user/ui/UserLink';
 
-
 import type { DTOs } from '@/shared/api';
 import { Badge } from '@/shared/presentation/atoms/Badge';
+
+import { SUBTITLE_SEPARATOR, joinSubtitle } from '../../-lib/subtitle';
 
 export default function CloudProjectListRow(props: {
   cloudProject: DTOs.CloudProjectV1;
@@ -16,10 +17,14 @@ export default function CloudProjectListRow(props: {
 }) {
   const { cloudProject, serverCount } = props;
   const t = useDevetekTranslations('page.dashboard.cloudProjects');
-  const displayName = cloudProject.name || t('unknown');
-  const provider = cloudProject.provider || t('unknownProvider');
-  const team = cloudProject.organization?.name;
-  const person = personOf(cloudProject.user);
+  const displayName = cloudProject.name?.trim() || t('unknown');
+  const team = cloudProject.organization?.name?.trim();
+  // A team owner is plain text; a personal owner is a link to their profile.
+  const person = team ? undefined : personOf(cloudProject.user);
+  const meta = joinSubtitle([
+    cloudProject.provider?.trim() || t('unknownProvider'),
+    team,
+  ]);
   const updatedAt = cloudProject.updated_at
     ? t('updated', {
         date: dayjs(cloudProject.updated_at).format('YYYY-MM-DD HH:mm'),
@@ -27,25 +32,38 @@ export default function CloudProjectListRow(props: {
     : t('notUpdated');
 
   return (
-    <div className="flex min-w-0 items-center justify-between gap-3 rounded-lg border bg-background px-3 py-2">
+    <div className="flex min-w-0 items-center gap-3 rounded-lg border bg-background px-3 py-2">
       <span className="flex size-9 shrink-0 items-center justify-center rounded-md border bg-card text-amber-600">
         <CloudIcon className="size-4" />
       </span>
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm font-semibold text-primary">
+      <div className="min-w-0 flex-1">
+        <p
+          className="truncate text-sm font-semibold text-primary"
+          title={displayName}
+        >
           {displayName}
-        </span>
-        <span className="flex min-w-0 items-center gap-1 text-xs text-muted-foreground">
-          <span className="shrink-0">{provider} /</span>
-          {team || !person ? (
-            <span className="truncate">{team || t('unknownOwner')}</span>
-          ) : (
-            <UserLink {...person} className="shrink" />
+        </p>
+        <p
+          className="flex min-w-0 items-center text-xs text-muted-foreground"
+          data-testid="cloud-project-meta"
+        >
+          <span className="truncate" title={meta}>
+            {meta}
+          </span>
+          {person && (
+            <>
+              <span aria-hidden="true" className="shrink-0 whitespace-pre">
+                {SUBTITLE_SEPARATOR}
+              </span>
+              <UserLink {...person} className="shrink" />
+            </>
           )}
-          <span className="shrink-0">/ {updatedAt}</span>
-        </span>
-      </span>
-      <Badge variant="outline" className="shrink-0">
+        </p>
+        <p className="truncate text-xs tabular-nums text-muted-foreground">
+          {updatedAt}
+        </p>
+      </div>
+      <Badge variant="outline" className="shrink-0 self-center">
         {t('servers', { count: serverCount })}
       </Badge>
     </div>

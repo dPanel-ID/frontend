@@ -361,7 +361,6 @@
         "servers": "{count} server",
         "unknown": "Proyek cloud tanpa nama",
         "unknownProvider": "Provider tidak dikenal",
-        "unknownOwner": "Tidak ada pemilik",
         "updated": "Diperbarui {date}",
         "notUpdated": "Tidak ada timestamp pembaruan",
         "empty": "Belum ada proyek cloud yang terhubung."
