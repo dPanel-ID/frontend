@@ -11,8 +11,25 @@ export interface FleetPoint {
   time: number;
   /** Mean across the machines reporting in this bucket, or null if none did. */
   avg: number | null;
-  /** Worst single machine in this bucket, or null if none reported. */
-  max: number | null;
+  /**
+   * The busiest server's own reading in this bucket, or null when that server
+   * did not report. Never another server's reading: the line is one server.
+   */
+  busiest: number | null;
+}
+
+/**
+ * The one server drawn next to the fleet average: the server with the highest
+ * average for this resource over the selected range. The line, the name and
+ * the numbers under the chart all describe this same server.
+ */
+export interface FleetBusiestServer {
+  machineId: string;
+  hostname?: string;
+  /** Its average over the range. */
+  average: number;
+  /** The highest point on its line. */
+  peak: number;
 }
 
 export interface FleetResourceSeries {
@@ -20,11 +37,7 @@ export interface FleetResourceSeries {
   points: FleetPoint[];
   /** Latest bucket that actually had a reading. */
   currentAvg?: number;
-  currentMax?: number;
-  /** Worst reading anywhere in the window, and the machine that produced it. */
-  peak?: number;
-  peakMachineId?: string;
-  peakMachineHostname?: string;
+  busiest?: FleetBusiestServer;
   /** True when no bucket in the window carried a reading. */
   isEmpty: boolean;
 }
@@ -42,12 +55,12 @@ const RESOURCE_KEYS: Record<
   FleetResource,
   {
     avg: keyof DTOs.FleetUtilisationPointV2;
-    max: keyof DTOs.FleetUtilisationPointV2;
+    busiest: keyof DTOs.FleetUtilisationPointV2;
   }
 > = {
-  cpu: { avg: 'cpu_avg', max: 'cpu_max' },
-  memory: { avg: 'memory_avg', max: 'memory_max' },
-  disk: { avg: 'disk_avg', max: 'disk_max' },
+  cpu: { avg: 'cpu_avg', busiest: 'cpu_busiest' },
+  memory: { avg: 'memory_avg', busiest: 'memory_busiest' },
+  disk: { avg: 'disk_avg', busiest: 'disk_busiest' },
 };
 
 /** Reshapes the API payload into one series per resource. */
@@ -63,6 +76,7 @@ export function buildFleetSeries(
 
   for (const resource of FLEET_RESOURCES) {
     const keys = RESOURCE_KEYS[resource];
+    const busiest = busiestServer(payload?.busiest?.[resource]);
     const points: FleetPoint[] = rawPoints.map(({ point, time }) => {
       // A bucket with no machines reporting is a real gap, not a zero
       // reading, so it is plotted as null and the line breaks there.
@@ -70,22 +84,18 @@ export function buildFleetSeries(
       return {
         time,
         avg: reported ? numberOrNull(point[keys.avg]) : null,
-        max: reported ? numberOrNull(point[keys.max]) : null,
+        busiest: reported && busiest ? numberOrNull(point[keys.busiest]) : null,
       };
     });
 
     const withReading = points.filter((point) => point.avg != null);
     const latest = withReading.at(-1);
-    const peakEntry = payload?.peak?.[resource];
 
     resources[resource] = {
       resource,
       points,
       currentAvg: latest?.avg ?? undefined,
-      currentMax: latest?.max ?? undefined,
-      peak: peakEntry?.percent,
-      peakMachineId: peakEntry?.machine_id,
-      peakMachineHostname: peakEntry?.machine_hostname,
+      busiest: busiest && { ...busiest, peak: linePeak(points, busiest.peak) },
       isEmpty: withReading.length === 0,
     };
   }
@@ -95,6 +105,30 @@ export function buildFleetSeries(
     bucket: payload?.bucket === 'hour' ? 'hour' : 'day',
     machines: payload?.machines ?? 0,
     hasData: Boolean(payload?.has_data),
+  };
+}
+
+/**
+ * The peak quoted under the chart is read off the plotted line itself, so the
+ * number can never disagree with what the reader sees. The API's own figure is
+ * only used when the line has no points.
+ */
+function linePeak(points: FleetPoint[], fallback: number) {
+  const values = points
+    .map((point) => point.busiest)
+    .filter((value): value is number => value != null);
+  return values.length ? Math.max(...values) : fallback;
+}
+
+function busiestServer(
+  raw?: DTOs.FleetBusiestServerV2,
+): FleetBusiestServer | undefined {
+  if (!raw?.machine_id) return undefined;
+  return {
+    machineId: raw.machine_id,
+    hostname: raw.machine_hostname || undefined,
+    average: numberOrNull(raw.average) ?? 0,
+    peak: numberOrNull(raw.peak) ?? 0,
   };
 }
 
@@ -113,18 +147,6 @@ export function fleetSeverity(percent?: number | null): FleetSeverity {
   if (percent >= FLEET_CRITICAL_PERCENT) return 'critical';
   if (percent >= FLEET_WARNING_PERCENT) return 'warning';
   return 'healthy';
-}
-
-/**
- * Whether the peak is worth naming next to the chart. A peak only matters
- * when it is both above the warning line and meaningfully worse than the
- * average, otherwise it is just the fleet reading twice.
- */
-export function shouldNamePeak(series: FleetResourceSeries) {
-  if (series.peak == null || !series.peakMachineId) return false;
-  if (series.peak < FLEET_WARNING_PERCENT) return false;
-  if (series.currentAvg == null) return true;
-  return series.peak - series.currentAvg >= 5;
 }
 
 function numberOrNull(value: unknown): number | null {

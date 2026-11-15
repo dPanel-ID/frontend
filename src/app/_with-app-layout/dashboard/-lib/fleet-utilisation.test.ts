@@ -6,9 +6,7 @@ import {
   FLEET_RESOURCES,
   buildFleetSeries,
   fleetSeverity,
-  shouldNamePeak,
 } from './fleet-utilisation';
-import type { FleetResourceSeries } from './fleet-utilisation';
 
 function payload(
   overrides: Partial<DTOs.FleetUtilisationV2> = {},
@@ -45,7 +43,6 @@ describe('buildFleetSeries', () => {
       [...FLEET_RESOURCES].sort(),
     );
     expect(series.resources.cpu.currentAvg).toBe(40);
-    expect(series.resources.cpu.currentMax).toBe(98);
     expect(series.resources.disk.currentAvg).toBe(14);
     expect(series.machines).toBe(2);
     expect(series.hasData).toBe(true);
@@ -89,26 +86,82 @@ describe('buildFleetSeries', () => {
     expect(series.resources.cpu.currentAvg).toBe(30);
   });
 
-  it('carries the peak and the machine that produced it', () => {
+  it('draws, names and quotes one and the same busiest server', () => {
+    // web-01 has the single highest sample (cpu_max 100) in every bucket, but
+    // web-02 has the highest average, so web-02 is the busiest server. The
+    // line, the name and the peak must all be web-02's, never web-01's 100%.
     const series = buildFleetSeries(
       payload({
         points: [
           {
             timestamp: '2026-10-21T19:00:00Z',
             machines: 2,
-            cpu_avg: 40,
-            cpu_max: 98,
+            cpu_avg: 16,
+            cpu_max: 100,
+            cpu_busiest: 30,
+          },
+          {
+            timestamp: '2026-10-21T20:00:00Z',
+            machines: 2,
+            cpu_avg: 12,
+            cpu_max: 100,
+            cpu_busiest: 20,
           },
         ],
+        busiest: {
+          cpu: {
+            machine_id: '2',
+            machine_hostname: 'web-02',
+            average: 25,
+            peak: 30,
+          },
+        },
         peak: {
-          cpu: { machine_id: '7', machine_hostname: 'web-01', percent: 98 },
+          cpu: { machine_id: '1', machine_hostname: 'web-01', percent: 100 },
         },
       }),
     );
 
-    expect(series.resources.cpu.peak).toBe(98);
-    expect(series.resources.cpu.peakMachineHostname).toBe('web-01');
-    expect(series.resources.memory.peak).toBeUndefined();
+    const cpu = series.resources.cpu;
+    expect(cpu.busiest?.machineId).toBe('2');
+    expect(cpu.busiest?.hostname).toBe('web-02');
+    expect(cpu.busiest?.average).toBe(25);
+    expect(cpu.points.map((point) => point.busiest)).toEqual([30, 20]);
+    // The quoted peak is the top of the drawn line, not the raw sample max.
+    expect(cpu.busiest?.peak).toBe(
+      Math.max(...cpu.points.map((point) => point.busiest ?? 0)),
+    );
+    expect(cpu.busiest?.peak).toBe(30);
+    expect(series.resources.memory.busiest).toBeUndefined();
+  });
+
+  it('breaks the busiest line where that server did not report', () => {
+    const series = buildFleetSeries(
+      payload({
+        points: [
+          {
+            timestamp: '2026-10-21T19:00:00Z',
+            machines: 2,
+            cpu_avg: 20,
+            cpu_busiest: 35,
+          },
+          // Only another server reported here.
+          {
+            timestamp: '2026-10-21T20:00:00Z',
+            machines: 1,
+            cpu_avg: 5,
+            cpu_busiest: null,
+          },
+        ],
+        busiest: { cpu: { machine_id: '2', average: 35, peak: 35 } },
+      }),
+    );
+
+    expect(series.resources.cpu.points.map((point) => point.busiest)).toEqual([
+      35,
+      null,
+    ]);
+    expect(series.resources.cpu.busiest?.hostname).toBeUndefined();
   });
 
   it('orders points oldest first and drops unparseable timestamps', () => {
@@ -146,14 +199,15 @@ describe('buildFleetSeries', () => {
             timestamp: '2026-10-21T19:00:00Z',
             machines: 1,
             cpu_avg: 140,
-            cpu_max: -4,
+            cpu_busiest: -4,
           },
         ],
+        busiest: { cpu: { machine_id: '2', average: 0, peak: 0 } },
       }),
     );
 
     expect(series.resources.cpu.points[0]?.avg).toBe(100);
-    expect(series.resources.cpu.points[0]?.max).toBe(0);
+    expect(series.resources.cpu.points[0]?.busiest).toBe(0);
   });
 
   it('marks an all-quiet window empty without losing its buckets', () => {
@@ -199,40 +253,5 @@ describe('fleetSeverity', () => {
   it('treats an absent reading as healthy rather than critical', () => {
     expect(fleetSeverity(undefined)).toBe('healthy');
     expect(fleetSeverity(null)).toBe('healthy');
-  });
-});
-
-describe('shouldNamePeak', () => {
-  const series = (
-    overrides: Partial<FleetResourceSeries> = {},
-  ): FleetResourceSeries => ({
-    resource: 'cpu',
-    points: [],
-    isEmpty: false,
-    ...overrides,
-  });
-
-  it('names a peak that is high and well above the average', () => {
-    expect(
-      shouldNamePeak(series({ peak: 98, peakMachineId: '7', currentAvg: 40 })),
-    ).toBe(true);
-  });
-
-  it('stays quiet when the peak is below the warning line', () => {
-    expect(
-      shouldNamePeak(series({ peak: 60, peakMachineId: '7', currentAvg: 10 })),
-    ).toBe(false);
-  });
-
-  it('stays quiet when the peak is just the fleet reading twice', () => {
-    // One machine at 90% with a fleet average of 89% is not a hot server.
-    expect(
-      shouldNamePeak(series({ peak: 90, peakMachineId: '7', currentAvg: 89 })),
-    ).toBe(false);
-  });
-
-  it('needs a machine to name', () => {
-    expect(shouldNamePeak(series({ peak: 98, currentAvg: 10 }))).toBe(false);
-    expect(shouldNamePeak(series({ peakMachineId: '7' }))).toBe(false);
   });
 });
