@@ -5,6 +5,7 @@ import { useAuthBase } from '@/services/auth/usecase';
 
 import { FailedState } from '@/widgets/failed-state';
 
+import { loginPathKeepingAuthError } from '../../-lib/oauth-auth-error';
 import AppSkeleton from '../presentation/AppSkeleton';
 
 interface GuardProps {
@@ -28,7 +29,9 @@ export default function AuthGuard({ children }: GuardProps) {
     )
       return;
 
-    window.location.assign('/');
+    // A failed Google or GitHub sign-in comes back to the page it started
+    // from with `auth_error`; keep it so the login page can explain it.
+    window.location.assign(loginPathKeepingAuthError(window.location.href));
   }, [authBase]);
 
   if (authBase.$status === 'loading') {

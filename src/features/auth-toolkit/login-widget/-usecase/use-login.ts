@@ -3,12 +3,23 @@ import { useNavigate } from '@tanstack/react-router';
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
-import { ApiUser } from '@/shared/api';
+import { ApiAuth, ApiUser } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import { readReturnUrl } from '../-lib/return-url';
 import type { LoginTraditional } from '../-rules/login';
 import { useAuthErrorMessage } from '../../-usecase/use-auth-error-message';
+
+/**
+ * Where the browser goes after a Google or GitHub sign-in. Another dPanel
+ * service (such as db-manager) may have sent the user here to sign in; the
+ * backend checks the state again before redirecting.
+ */
+function signInReturnUrl() {
+  return (
+    readReturnUrl() ?? new URL('/dashboard', window.location.origin).toString()
+  );
+}
 
 export default function useLoginUsecase() {
   const t = useDevetekTranslations();
@@ -22,16 +33,21 @@ export default function useLoginUsecase() {
 
   const handleLoginWithGoogle = useHandler(() => {
     const backendEndpoint = import.meta.env.VITE_BACKEND ?? '';
-
-    // Another dPanel service (such as db-manager) may have sent the user here
-    // to sign in; the backend checks the state again before redirecting.
-    const returnUrl =
-      readReturnUrl() ??
-      new URL('/dashboard', window.location.origin).toString();
+    const returnUrl = signInReturnUrl();
 
     const constructedUrl = `${backendEndpoint}/v1/auth/google?state=${encodeURIComponent(returnUrl)}`;
 
     window.open(constructedUrl, '_self', 'noreferer');
+
+    return Promise.resolve('infinite' as const);
+  });
+
+  const handleLoginWithGithub = useHandler(() => {
+    window.open(
+      ApiAuth.GithubLogin.buildSignInUrl(signInReturnUrl()),
+      '_self',
+      'noreferer',
+    );
 
     return Promise.resolve('infinite' as const);
   });
@@ -72,6 +88,7 @@ export default function useLoginUsecase() {
 
   return {
     handleLoginWithGoogle,
+    handleLoginWithGithub,
     handleLoginTraditional,
   };
 }

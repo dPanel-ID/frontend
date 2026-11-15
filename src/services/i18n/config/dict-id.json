@@ -142,7 +142,8 @@
       "back": "Kembali",
       "create": "Buat",
       "reinstall": "Reinstall",
-      "restore": "Pulihkan"
+      "restore": "Pulihkan",
+      "dismiss": "Tutup"
     },
     "brands": {
       "googleCloud": "Google Cloud",
@@ -310,7 +311,9 @@
         "pleaseLogIntoYourAcc": "Silakan masuk ke akun anda",
         "orSignInWith": "Atau masuk dengan",
         "forgotPasswordQM": "Lupa password?",
-        "dontHaveAnAccQM": "Belum punya akun?"
+        "dontHaveAnAccQM": "Belum punya akun?",
+        "continueWithGoogle": "Lanjutkan dengan Google",
+        "continueWithGithub": "Lanjutkan dengan GitHub"
       },
       "asideGreeting": {
         "helloAgain": "Halo lagi,",
@@ -689,6 +692,36 @@
         "joined": "Bergabung",
         "lastUpdated": "Terakhir diperbarui",
         "activeWorkspace": "Workspace aktif"
+      },
+      "signInMethods": {
+        "title": "Metode masuk",
+        "description": "Cara Anda masuk ke dPanel. Simpan minimal satu agar Anda tidak kehilangan akses.",
+        "password": "Password",
+        "google": "Google",
+        "github": "GitHub",
+        "passwordHelp": "Username atau email Anda dengan password.",
+        "googleHelp": "Masuk dengan akun Google Anda.",
+        "githubHelp": "Masuk dengan akun GitHub Anda.",
+        "githubLinkedAs": "Masuk sebagai @{username}",
+        "passwordSet": "Sudah diatur",
+        "passwordNotSet": "Belum diatur",
+        "linked": "Tertaut",
+        "notLinked": "Belum tertaut",
+        "link": "Tautkan",
+        "linkAria": "Tautkan {provider} untuk masuk",
+        "unlink": "Lepas tautan",
+        "unlinkAria": "Lepas tautan {provider} dari metode masuk",
+        "onlyMethod": "Satu-satunya cara Anda masuk, jadi tidak bisa dihapus.",
+        "loadFailed": "Kami tidak dapat memuat metode masuk Anda.",
+        "unlinkDialog": {
+          "title": "Lepas tautan {provider}?",
+          "message": "Anda tidak akan bisa lagi masuk dengan {provider}. Anda bisa menautkannya lagi nanti."
+        },
+        "toaster": {
+          "unlinkSuccess": "{provider} tidak lagi menjadi metode masuk.",
+          "unlinkLastMethod": "Tambahkan metode masuk lain terlebih dahulu, agar Anda tetap bisa masuk.",
+          "unlinkError": "Kami tidak dapat melepas tautan {provider}. Silakan coba lagi."
+        }
       },
       "connections": {
         "title": "Keamanan akun",
@@ -4450,6 +4483,13 @@
       "usernameTaken": "Username itu sudah dipakai. Pilih yang lain.",
       "authUnavailable": "Saat ini belum bisa masuk. Coba lagi sebentar lagi.",
       "signUpUnavailable": "Saat ini belum bisa membuat akun. Coba lagi sebentar lagi."
+    },
+    "authRedirect": {
+      "signinFailed": "Proses masuk tidak selesai. Silakan coba lagi.",
+      "emailInUse": "Email ini sudah memiliki akun dPanel. Masuk dengan cara yang biasa Anda pakai, lalu tautkan GitHub dari profil Anda.",
+      "githubLinkedElsewhere": "Akun GitHub ini sudah ditautkan ke akun dPanel lain.",
+      "linkRequiresSession": "Silakan masuk lagi, lalu tautkan GitHub.",
+      "providerNotAvailable": "Masuk dengan GitHub sedang tidak tersedia. Silakan gunakan cara lain."
     }
   },
   "sidepanel": {

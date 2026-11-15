@@ -142,7 +142,8 @@
       "back": "Back",
       "create": "Create",
       "reinstall": "Reinstall",
-      "restore": "Restore"
+      "restore": "Restore",
+      "dismiss": "Dismiss"
     },
     "brands": {
       "googleCloud": "Google Cloud",
@@ -310,7 +311,9 @@
         "pleaseLogIntoYourAcc": "Please log into your account",
         "orSignInWith": "Or sign in with",
         "forgotPasswordQM": "Forgot password?",
-        "dontHaveAnAccQM": "Don't have an account?"
+        "dontHaveAnAccQM": "Don't have an account?",
+        "continueWithGoogle": "Continue with Google",
+        "continueWithGithub": "Continue with GitHub"
       },
       "asideGreeting": {
         "helloAgain": "Hello again,",
@@ -689,6 +692,36 @@
         "joined": "Joined",
         "lastUpdated": "Last updated",
         "activeWorkspace": "Active workspace"
+      },
+      "signInMethods": {
+        "title": "Sign-in methods",
+        "description": "The ways you can sign in to dPanel. Keep at least one, so you never lose access.",
+        "password": "Password",
+        "google": "Google",
+        "github": "GitHub",
+        "passwordHelp": "Your username or email with a password.",
+        "googleHelp": "Sign in with your Google account.",
+        "githubHelp": "Sign in with your GitHub account.",
+        "githubLinkedAs": "Signed in as @{username}",
+        "passwordSet": "Set",
+        "passwordNotSet": "Not set",
+        "linked": "Linked",
+        "notLinked": "Not linked",
+        "link": "Link",
+        "linkAria": "Link {provider} for sign-in",
+        "unlink": "Unlink",
+        "unlinkAria": "Unlink {provider} from sign-in",
+        "onlyMethod": "Your only way to sign in, so it cannot be removed.",
+        "loadFailed": "We couldn't load your sign-in methods.",
+        "unlinkDialog": {
+          "title": "Unlink {provider}?",
+          "message": "You will no longer be able to sign in with {provider}. You can link it again later."
+        },
+        "toaster": {
+          "unlinkSuccess": "{provider} is no longer a sign-in method.",
+          "unlinkLastMethod": "Add another sign-in method first, so you can still sign in.",
+          "unlinkError": "We couldn't unlink {provider}. Please try again."
+        }
       },
       "connections": {
         "title": "Account security",
@@ -4449,6 +4482,13 @@
       "usernameTaken": "That username is already taken. Choose another one.",
       "authUnavailable": "Signing in is not available right now. Try again in a minute.",
       "signUpUnavailable": "Creating an account is not available right now. Try again in a minute."
+    },
+    "authRedirect": {
+      "signinFailed": "Sign-in didn't complete. Please try again.",
+      "emailInUse": "This email already has a dPanel account. Sign in with your usual method, then link GitHub from your profile.",
+      "githubLinkedElsewhere": "This GitHub account is already linked to another dPanel account.",
+      "linkRequiresSession": "Please sign in again, then link GitHub.",
+      "providerNotAvailable": "GitHub sign-in isn't available right now. Please try another method."
     }
   },
   "sidepanel": {
