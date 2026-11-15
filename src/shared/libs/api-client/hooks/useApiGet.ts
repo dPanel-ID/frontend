@@ -172,6 +172,9 @@ export default function useApiGet<D>(
   useEffect(() => {
     if (skip) {
       abortFetch();
+      // Intentional: the in-flight request (an external system) is aborted
+      // here, and the response must reset in the same step to stay in sync.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResponse({ $status: 'initial' });
       return;
     }

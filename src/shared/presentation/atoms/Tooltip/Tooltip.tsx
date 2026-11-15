@@ -51,32 +51,34 @@ export default function Tooltip<As extends AsElement = 'div'>(
     setTooltipRect({ width, height });
   }, [display]);
 
-  const genMouseEnterExitHandler = (isEnter: boolean) => {
-    return () => {
-      if (refTimeoutShowHide.current) {
-        window.clearTimeout(refTimeoutShowHide.current);
+  // Event handlers only: the timeout ref is read when the pointer moves,
+  // never during render.
+  const handleMouseEnterExit = (isEnter: boolean) => {
+    if (refTimeoutShowHide.current) {
+      window.clearTimeout(refTimeoutShowHide.current);
+      refTimeoutShowHide.current = null;
+    }
+
+    if (isEnter && !refTimeoutShowHide.current) {
+      setComponentReady(true);
+      refTimeoutShowHide.current = window.setTimeout(() => {
+        setDisplay(true);
         refTimeoutShowHide.current = null;
-      }
+      }, delayMs);
+    }
 
-      if (isEnter && !refTimeoutShowHide.current) {
-        setComponentReady(true);
-        refTimeoutShowHide.current = window.setTimeout(() => {
-          setDisplay(true);
-          refTimeoutShowHide.current = null;
-        }, delayMs);
-      }
-
-      if (!isEnter && display) {
-        refTimeoutShowHide.current = window.setTimeout(
-          () => {
-            setDisplay(false);
-            setComponentReady(false);
-          },
-          passthrough ? 0 : delayMs,
-        );
-      }
-    };
+    if (!isEnter && display) {
+      refTimeoutShowHide.current = window.setTimeout(
+        () => {
+          setDisplay(false);
+          setComponentReady(false);
+        },
+        passthrough ? 0 : delayMs,
+      );
+    }
   };
+  const handleMouseEnter = () => handleMouseEnterExit(true);
+  const handleMouseLeave = () => handleMouseEnterExit(false);
 
   const [calculatedX, calculatedY] = iife(() => {
     if (!targetRect || !tooltipRect) return [0, 0];
@@ -124,8 +126,8 @@ export default function Tooltip<As extends AsElement = 'div'>(
           ...(asProps ?? {}),
           className,
           ref: refWrapper,
-          onMouseEnter: genMouseEnterExitHandler(true),
-          onMouseLeave: genMouseEnterExitHandler(false),
+          onMouseEnter: handleMouseEnter,
+          onMouseLeave: handleMouseLeave,
         },
         children,
       )}
@@ -136,10 +138,8 @@ export default function Tooltip<As extends AsElement = 'div'>(
           <div
             ref={refTooltip}
             className={cnTooltip}
-            onMouseEnter={
-              !passthrough ? genMouseEnterExitHandler(true) : undefined
-            }
-            onMouseLeave={genMouseEnterExitHandler(false)}
+            onMouseEnter={!passthrough ? handleMouseEnter : undefined}
+            onMouseLeave={handleMouseLeave}
             style={{
               pointerEvents: !display ? 'none' : 'all',
               top: calculatedY,
