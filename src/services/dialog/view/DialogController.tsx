@@ -19,6 +19,9 @@ import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { useDialogEmit, useDialogSubscribe } from '../model/event';
 import type { DialogActionFreeform, DialogPayload } from '../rules/types';
 
+/** Above this many actions the button row wraps instead of staying inline. */
+const MANY_ACTIONS = 2;
+
 export default function DialogController(): JSX.Element {
   const [dialogPayload, setDialogPayload] = useState<DialogPayload>();
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +40,13 @@ export default function DialogController(): JSX.Element {
     setIsOpen(false);
     setDialogPayload(undefined);
   });
+
+  // Two-button dialogs keep their single centered row. Three or more actions
+  // stack full-width on narrow screens and wrap on wider ones, so long labels
+  // never push the row past the dialog's edges.
+  const hasManyActions =
+    Array.isArray(dialogPayload?.actions) &&
+    dialogPayload.actions.length > MANY_ACTIONS;
 
   const renderActions = () => {
     if (dialogPayload == null) return null;
@@ -59,7 +69,10 @@ export default function DialogController(): JSX.Element {
 
       return (
         <Button
-          className="min-w-[108px]"
+          className={cn('min-w-[108px]', {
+            'h-auto min-h-10 w-full whitespace-normal sm:w-auto':
+              hasManyActions,
+          })}
           key={label}
           variant={isPrimary ? 'default' : 'secondary'}
           onClick={handleClick}
@@ -140,6 +153,7 @@ export default function DialogController(): JSX.Element {
   }
 
   const cnModal = cn('bg-card', {
+    'sm:max-w-2xl': hasManyActions,
     'border-4': dialogPayload?.variant !== 'info',
     'border-yellow-500 border-dashed': dialogPayload?.variant === 'warning',
     'border-red-500': dialogPayload?.variant === 'error',
@@ -149,17 +163,22 @@ export default function DialogController(): JSX.Element {
     <Dialog open={isOpen}>
       {dialogPayload && (
         <DialogContent className={cnModal}>
-          <DialogHeader>
+          <DialogHeader className="min-w-0">
             <DialogTitle className="flex flex-col items-center text-2xl">
               {heroIcon}
               {dialogPayload.title}
             </DialogTitle>
-            <DialogDescription className="text-center">
+            <DialogDescription className="text-center break-words">
               {dialogPayload.content}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="mt-2 flex justify-center gap-2">
+          <div
+            data-testid="dialog-actions"
+            className={cn('mt-2 flex min-w-0 justify-center gap-2', {
+              'flex-col sm:flex-row sm:flex-wrap': hasManyActions,
+            })}
+          >
             {renderActions()}
           </div>
 
