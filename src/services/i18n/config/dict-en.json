@@ -361,7 +361,6 @@
         "servers": "{count} servers",
         "unknown": "Unnamed cloud project",
         "unknownProvider": "Unknown provider",
-        "unknownOwner": "No owner",
         "updated": "Updated {date}",
         "notUpdated": "No update timestamp",
         "empty": "No cloud projects connected yet."

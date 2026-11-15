@@ -47,20 +47,24 @@ export default function CloudProjectsPanel(props: {
         </Link>
       }
     >
-      <div className="grid gap-3 xl:grid-cols-[220px_minmax(0,1fr)]">
-        <div className="rounded-lg border bg-background p-3">
-          <span className="flex size-10 items-center justify-center rounded-md border text-amber-600">
+      {/* The summary sits above the list: beside it, both columns were too
+          narrow in the half-width dashboard card. */}
+      <div className="grid gap-3">
+        <div className="flex min-w-0 items-center gap-3 rounded-lg border bg-background p-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-md border text-amber-600">
             <CloudIcon className="size-5" />
           </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-bold text-primary">{t('total')}</p>
+            <p className="text-xs text-muted-foreground">{t('totalHelp')}</p>
+          </div>
           {totalCloudProjects == null ? (
-            <Shimmer className="mt-4 h-8 w-16" />
+            <Shimmer className="h-8 w-12 shrink-0" />
           ) : (
-            <p className="mt-4 text-3xl font-bold tabular-nums text-primary">
+            <p className="shrink-0 text-3xl font-bold tabular-nums text-primary">
               {totalCloudProjects}
             </p>
           )}
-          <p className="mt-1 text-sm font-bold text-primary">{t('total')}</p>
-          <p className="mt-1 text-xs text-muted-foreground">{t('totalHelp')}</p>
         </div>
 
         <div className="grid gap-2">
