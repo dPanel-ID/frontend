@@ -11,6 +11,7 @@ const PUBLIC_AUTH_ERRORS = {
   'An account with this email address or username already exists. Sign in instead, or choose another username.':
     'signUpConflict',
   'That username is already taken. Choose another one.': 'usernameTaken',
+  'This email is already used by another account.': 'emailTaken',
   'Signing in is not available right now. Try again in a minute.':
     'authUnavailable',
   'Creating an account is not available right now. Try again in a minute.':

@@ -4481,12 +4481,14 @@
       "loginInvalid": "Username atau password salah. Anda juga bisa masuk dengan alamat email.",
       "signUpConflict": "Akun dengan alamat email atau username ini sudah ada. Masuk saja, atau pilih username lain.",
       "usernameTaken": "Username itu sudah dipakai. Pilih yang lain.",
+      "emailTaken": "Email ini sudah dipakai oleh akun lain.",
       "authUnavailable": "Saat ini belum bisa masuk. Coba lagi sebentar lagi.",
       "signUpUnavailable": "Saat ini belum bisa membuat akun. Coba lagi sebentar lagi."
     },
     "authRedirect": {
       "signinFailed": "Proses masuk tidak selesai. Silakan coba lagi.",
-      "emailInUse": "Email ini sudah memiliki akun dPanel. Masuk dengan cara yang biasa Anda pakai, lalu tautkan GitHub dari profil Anda.",
+      "emailInUse": "Akun GitHub ini tidak bisa dipakai untuk masuk di sini. Masuk dengan cara yang biasa Anda pakai, lalu tautkan GitHub dari profil Anda.",
+      "emailRequired": "Kami memerlukan alamat email dari akun Anda agar Anda bisa masuk. Pastikan akun tersebut punya email yang sudah diverifikasi, lalu coba lagi.",
       "githubLinkedElsewhere": "Akun GitHub ini sudah ditautkan ke akun dPanel lain.",
       "linkRequiresSession": "Silakan masuk lagi, lalu tautkan GitHub.",
       "providerNotAvailable": "Masuk dengan GitHub sedang tidak tersedia. Silakan gunakan cara lain."

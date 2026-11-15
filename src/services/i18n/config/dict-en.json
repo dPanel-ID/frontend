@@ -4480,12 +4480,14 @@
       "loginInvalid": "Wrong username or password. You can also sign in with your email address.",
       "signUpConflict": "An account with this email address or username already exists. Sign in instead, or choose another username.",
       "usernameTaken": "That username is already taken. Choose another one.",
+      "emailTaken": "This email is already used by another account.",
       "authUnavailable": "Signing in is not available right now. Try again in a minute.",
       "signUpUnavailable": "Creating an account is not available right now. Try again in a minute."
     },
     "authRedirect": {
       "signinFailed": "Sign-in didn't complete. Please try again.",
-      "emailInUse": "This email already has a dPanel account. Sign in with your usual method, then link GitHub from your profile.",
+      "emailInUse": "This GitHub account can't be used to sign in here. Sign in with your usual method, then link GitHub from your profile.",
+      "emailRequired": "We need the email address from your account to sign you in. Make sure it has a verified email, then try again.",
       "githubLinkedElsewhere": "This GitHub account is already linked to another dPanel account.",
       "linkRequiresSession": "Please sign in again, then link GitHub.",
       "providerNotAvailable": "GitHub sign-in isn't available right now. Please try another method."

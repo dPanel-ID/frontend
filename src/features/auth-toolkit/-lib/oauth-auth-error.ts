@@ -8,6 +8,7 @@ export const AUTH_ERROR_PARAM = 'auth_error';
 const AUTH_ERROR_KEYS = {
   signin_failed: 'signinFailed',
   email_in_use: 'emailInUse',
+  email_required: 'emailRequired',
   github_linked_elsewhere: 'githubLinkedElsewhere',
   link_requires_session: 'linkRequiresSession',
   provider_not_available: 'providerNotAvailable',
