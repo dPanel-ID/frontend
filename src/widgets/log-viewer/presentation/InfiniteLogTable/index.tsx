@@ -172,11 +172,16 @@ export default function InfiniteLogTable(props: InfiniteLogTableProps) {
     recordAnchor();
   };
 
-  // A new window starts at its newest line, following it.
+  // A new window starts at its newest line, following it. The state is
+  // adjusted during render; the refs and the parent are updated in the effect.
+  const [followWindowKey, setFollowWindowKey] = useState(windowKey);
+  if (followWindowKey !== windowKey) {
+    setFollowWindowKey(windowKey);
+    setFollowing(true);
+  }
   useEffect(() => {
     followingRef.current = true;
     directionRef.current = 'none';
-    setFollowing(true);
     onFollowChange(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only on a new window
   }, [windowKey]);

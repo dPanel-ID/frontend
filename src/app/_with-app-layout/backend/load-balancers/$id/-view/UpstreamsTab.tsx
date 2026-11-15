@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 
 import {
@@ -61,10 +61,14 @@ export function UpstreamsTab(props: {
   const [isAddingBackend, setIsAddingBackend] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
+  // New saved upstreams replace the draft and its baseline. Adjusted during
+  // render, so the stale rows are never painted.
+  const [rowsSource, setRowsSource] = useState(sourceRows);
+  if (rowsSource !== sourceRows) {
+    setRowsSource(sourceRows);
     setDraftRows(sourceRows);
     setBaselineRows(sourceRows);
-  }, [sourceRows]);
+  }
 
   const hasDraftChanges =
     serializeUpstreamDraftRows(draftRows) !==

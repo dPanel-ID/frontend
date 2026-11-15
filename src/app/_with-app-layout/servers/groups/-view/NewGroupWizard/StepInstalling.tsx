@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import {
   CircleAlertIcon,
@@ -50,9 +50,11 @@ export function StepInstalling(props: { created: CreatedCluster }) {
   const status = latest.status;
   const polling = isStillChanging(status);
 
-  useEffect(() => {
+  // Remember the latest status during render; the next render then polls
+  // (or stops polling) according to it.
+  if (seenStatus !== status) {
     setSeenStatus(status);
-  }, [status]);
+  }
 
   return (
     <div className="grid gap-4">

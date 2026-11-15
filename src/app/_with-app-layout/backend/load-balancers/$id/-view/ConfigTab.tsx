@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 
 import {
@@ -46,9 +46,13 @@ export function ConfigTab(props: {
   const [draft, setDraft] = useState(sourceConfig);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
+  // A new saved config replaces the draft. Adjusted during render, so the
+  // stale draft is never painted.
+  const [draftSource, setDraftSource] = useState(sourceConfig);
+  if (draftSource !== sourceConfig) {
+    setDraftSource(sourceConfig);
     setDraft(sourceConfig);
-  }, [sourceConfig]);
+  }
 
   const webserver = LOAD_BALANCER_WEBSERVER_ENGINE[details.webserver.engine];
   const hasDraftChanges =
