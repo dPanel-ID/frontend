@@ -83,9 +83,9 @@ export default function FleetUtilisationPanel() {
   return (
     <DashboardSection
       title={t('title')}
-      description={t('description')}
+      help={{ text: t('description'), label: t('helpAria') }}
       action={
-        <div className="flex flex-wrap items-center justify-end gap-3">
+        <div className="flex flex-wrap items-center gap-3 sm:justify-end">
           <FleetLegend />
           <SegmentedControl
             activeItemId={range}

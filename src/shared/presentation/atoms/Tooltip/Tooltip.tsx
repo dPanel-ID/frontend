@@ -1,4 +1,5 @@
 import { createElement, useLayoutEffect, useRef, useState } from 'react';
+import type { KeyboardEvent } from 'react';
 
 import { createPortal } from 'react-dom';
 
@@ -21,6 +22,7 @@ export default function Tooltip<As extends AsElement = 'div'>(
     delayMs = 250,
     gap = 0,
     passthrough = false,
+    openOnFocus = false,
   } = props;
 
   const [componentReady, setComponentReady] = useState(false);
@@ -79,6 +81,15 @@ export default function Tooltip<As extends AsElement = 'div'>(
   };
   const handleMouseEnter = () => handleMouseEnterExit(true);
   const handleMouseLeave = () => handleMouseEnterExit(false);
+  const focusHandlers = openOnFocus
+    ? {
+        onFocus: handleMouseEnter,
+        onBlur: handleMouseLeave,
+        onKeyDown: (event: KeyboardEvent) => {
+          if (event.key === 'Escape') handleMouseLeave();
+        },
+      }
+    : {};
 
   const [calculatedX, calculatedY] = iife(() => {
     if (!targetRect || !tooltipRect) return [0, 0];
@@ -128,6 +139,7 @@ export default function Tooltip<As extends AsElement = 'div'>(
           ref: refWrapper,
           onMouseEnter: handleMouseEnter,
           onMouseLeave: handleMouseLeave,
+          ...focusHandlers,
         },
         children,
       )}
@@ -137,6 +149,7 @@ export default function Tooltip<As extends AsElement = 'div'>(
         createPortal(
           <div
             ref={refTooltip}
+            role="tooltip"
             className={cnTooltip}
             onMouseEnter={!passthrough ? handleMouseEnter : undefined}
             onMouseLeave={handleMouseLeave}
