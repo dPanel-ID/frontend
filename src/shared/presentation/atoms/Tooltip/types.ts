@@ -1,16 +1,7 @@
 import type { ComponentProps, ReactNode } from 'react';
 
 export type AsElement =
-  | 'h1'
-  | 'h2'
-  | 'h3'
-  | 'h4'
-  | 'h5'
-  | 'h6'
-  | 'div'
-  | 'p'
-  | 'span'
-  | 'button';
+  'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div' | 'p' | 'span' | 'button';
 
 export interface TooltipProps<As extends AsElement> {
   as?: As;
@@ -23,6 +14,12 @@ export interface TooltipProps<As extends AsElement> {
   delayMs?: number;
   gap?: number;
   passthrough?: boolean;
+  /**
+   * Also open when keyboard focus lands inside the target and close when it
+   * leaves or Escape is pressed. Needed when the target is a control whose
+   * only purpose is to reveal the message, such as a help icon.
+   */
+  openOnFocus?: boolean;
 }
 
 export interface TargetRect {

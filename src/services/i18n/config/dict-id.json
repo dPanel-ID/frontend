@@ -514,6 +514,7 @@
       "fleet": {
         "title": "Penggunaan sumber daya",
         "description": "Seberapa berat kerja server Anda. Tiap grafik menampilkan rata-rata armada dan server tersibuk: server dengan rata-rata tertinggi pada rentang yang dipilih.",
+        "helpAria": "Tentang penggunaan sumber daya",
         "legend": {
           "average": "Rata-rata armada",
           "busiest": "Server tersibuk (rata-rata tertinggi)"
@@ -545,6 +546,7 @@
       "activityChart": {
         "title": "Aktivitas platform",
         "description": "Semua yang dilakukan dPanel di ruang kerja ini, pada rentang yang Anda pilih.",
+        "helpAria": "Tentang aktivitas platform",
         "legend": {
           "succeeded": "Berhasil",
           "failed": "Gagal",

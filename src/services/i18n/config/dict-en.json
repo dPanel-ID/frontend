@@ -514,6 +514,7 @@
       "fleet": {
         "title": "Resource usage",
         "description": "How hard your servers are working. Each chart shows the fleet average and the busiest server: the one with the highest average over the selected range.",
+        "helpAria": "About resource usage",
         "legend": {
           "average": "Fleet average",
           "busiest": "Busiest server (highest average)"
@@ -545,6 +546,7 @@
       "activityChart": {
         "title": "Platform activity",
         "description": "Everything dPanel has done across this workspace, over the range you pick.",
+        "helpAria": "About platform activity",
         "legend": {
           "succeeded": "Succeeded",
           "failed": "Failed",
