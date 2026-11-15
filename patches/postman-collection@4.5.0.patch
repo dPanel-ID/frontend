@@ -1,0 +1,33 @@
+diff --git a/lib/superstring/dynamic-variables.js b/lib/superstring/dynamic-variables.js
+index d026487c70597aa6e5f59023da8c5f4293761bf3..e533a2d0ec65dfff6a262d3de38f98e48475ab23 100644
+--- a/lib/superstring/dynamic-variables.js
++++ b/lib/superstring/dynamic-variables.js
+@@ -1,4 +1,27 @@
+-var faker = require('@faker-js/faker/locale/en'),
++// Patched (dnocs-fe): faker is pinned to a patched 10.x, whose API differs
++// from the 5.x this file was written for. Members are resolved when a
++// dynamic variable runs, not at load, so loading never fails; a variable
++// whose faker method no longer exists throws when it is used.
++var fakerModule = require('@faker-js/faker/locale/en'),
++    realFaker = fakerModule.faker || fakerModule,
++    faker = new Proxy({}, {
++        get: function (_, namespace) {
++            return new Proxy({}, {
++                get: function (__, method) {
++                    return function () {
++                        var ns = realFaker[namespace],
++                            fn = ns && ns[method];
++
++                        if (typeof fn !== 'function') {
++                            throw new Error('faker.' + String(namespace) + '.' + String(method) + ' is not available');
++                        }
++
++                        return fn.apply(ns, arguments);
++                    };
++                }
++            });
++        }
++    }),
+     uuid = require('uuid'),
+ 
+     // locale list generated from: https://github.com/chromium/chromium/blob/master/ui/base/l10n/l10n_util.cc

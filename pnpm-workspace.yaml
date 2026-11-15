@@ -13,6 +13,14 @@ overrides:
   seroval@<1.6.8: ^1.6.8
   seroval-plugins@<1.6.8: ^1.6.8
   uuid@<11.1.1: ^11.1.1
+  # postman-collection (mock API, via Prism) pins faker 5.5.3, and even its
+  # latest release does. patches/postman-collection@4.5.0.patch makes it load
+  # with faker 10; Prism reads OpenAPI specs only, so the Postman dynamic
+  # variables that call faker never run.
+  '@faker-js/faker@<10.5.0': ^10.5.0
+  minimatch@>=7.0.0 <11.0.1: ^11.0.1
   # TanStack Start 1.169+ needs Vite 8. Start stays on 1.168.61 (the last
   # release for Vite 7), so the router core it ships with is held to one copy.
   '@tanstack/router-core': 1.171.35
+patchedDependencies:
+  postman-collection@4.5.0: patches/postman-collection@4.5.0.patch
