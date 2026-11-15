@@ -7,6 +7,7 @@ import LoginButton from '../-presentation/LoginButton';
 import LoginField from '../-presentation/LoginField';
 import { schemaLoginTraditional } from '../-rules/login';
 import useLoginUsecase from '../-usecase/use-login';
+import { AuthRedirectErrorNotice } from '../../auth-redirect-error';
 import { useForgotPasswordModal } from '../../forgot-password-modal';
 import { useSignUpSidepanel } from '../../sign-up-sidepanel';
 
@@ -16,7 +17,11 @@ export default function LoginForm() {
   const [openModalForgotPassword] = useForgotPasswordModal();
   const [openSidepanelSignUp] = useSignUpSidepanel();
 
-  const { handleLoginTraditional, handleLoginWithGoogle } = useLoginUsecase();
+  const {
+    handleLoginTraditional,
+    handleLoginWithGithub,
+    handleLoginWithGoogle,
+  } = useLoginUsecase();
 
   const form = useForm({
     resolver: zodResolver(schemaLoginTraditional),
@@ -48,7 +53,12 @@ export default function LoginForm() {
           {t('page.landing.asideLogin.pleaseLogIntoYourAcc')}
         </h1>
 
-        <LoginButton variant="with-google" onClick={handleLoginWithGoogle} />
+        <AuthRedirectErrorNotice className="mb-4" />
+
+        <div className="grid w-full grid-cols-2 gap-2">
+          <LoginButton variant="with-google" onClick={handleLoginWithGoogle} />
+          <LoginButton variant="with-github" onClick={handleLoginWithGithub} />
+        </div>
 
         <div className="relative mt-4 w-full flex justify-center">
           <div className="absolute top-1/2 w-full h-0.25 border-t border-dashed border-primary/15" />

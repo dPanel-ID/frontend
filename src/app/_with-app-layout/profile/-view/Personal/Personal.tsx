@@ -4,6 +4,7 @@ import {
   Clock3Icon,
   GithubIcon,
   KeyRoundIcon,
+  LogInIcon,
   MailIcon,
   PencilIcon,
   ShieldCheckIcon,
@@ -14,6 +15,9 @@ import {
 import { useAuthLoggedIn } from '@/services/auth';
 import { useAuthModel } from '@/services/auth/model';
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
+
+import { AuthRedirectErrorNotice } from '@/features/auth-toolkit/auth-redirect-error';
+import { SignInMethodsList } from '@/features/auth-toolkit/sign-in-methods';
 
 import { workspaceToOrganizationId } from '@/shared/api/-dtos';
 import {
@@ -176,6 +180,15 @@ export default function Personal(props: PersonalProps) {
             />
           </div>
         </div>
+      </Section>
+
+      <Section
+        icon={LogInIcon}
+        title={t('page.profile.signInMethods.title')}
+        description={t('page.profile.signInMethods.description')}
+      >
+        <AuthRedirectErrorNotice className="mb-3" />
+        <SignInMethodsList />
       </Section>
 
       <Section
