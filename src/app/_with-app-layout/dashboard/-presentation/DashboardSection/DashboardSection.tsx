@@ -3,6 +3,7 @@ import type { MouseEvent, ReactNode } from 'react';
 
 import { CircleHelpIcon } from 'lucide-react';
 
+import { cn } from '@/shared/libs/tailwind/cn';
 import { Tooltip } from '@/shared/presentation/atoms/Tooltip';
 
 export interface DashboardSectionProps {
@@ -19,20 +20,42 @@ export interface DashboardSectionProps {
     /** Accessible name of the help button, such as "About resource usage". */
     label: string;
   };
+  /**
+   * Controls such as a range picker: right-aligned on the title row when they
+   * fit, wrapped onto the next line when they do not.
+   */
   action?: ReactNode;
+  /**
+   * A chart legend, drawn on its own row directly above the content instead
+   * of competing with the title and controls for the header's width.
+   */
+  legend?: ReactNode;
   children: ReactNode;
 }
 
 /** The standard panel shell every dashboard section sits in. */
 export default function DashboardSection(props: DashboardSectionProps) {
-  const { action, children, description, help, title } = props;
+  const { action, children, description, help, legend, title } = props;
 
   return (
     <section className="rounded-lg border bg-card p-4">
-      <div className="mb-4 flex min-w-0 flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0">
-          <div className="flex min-w-0 items-center gap-1.5">
-            <h2 className="truncate text-base font-bold text-primary">
+      {/*
+        The title never shrinks or truncates: the controls sit beside it only
+        while both fit, and wrap onto the next line otherwise.
+      */}
+      <div
+        className={cn(
+          'mb-4 flex flex-wrap justify-between gap-x-4 gap-y-2',
+          description ? 'items-start' : 'items-center',
+        )}
+      >
+        <div
+          className={cn(
+            description ? 'min-w-0 flex-[1_1_15rem]' : 'max-w-full shrink-0',
+          )}
+        >
+          <div className="flex items-center gap-1.5">
+            <h2 className="shrink-0 text-base font-bold text-primary">
               {title}
             </h2>
             {help && <SectionHelp text={help.text} label={help.label} />}
@@ -41,8 +64,9 @@ export default function DashboardSection(props: DashboardSectionProps) {
             <p className="mt-1 text-sm text-muted-foreground">{description}</p>
           )}
         </div>
-        {action && <div className="min-w-0 sm:shrink-0">{action}</div>}
+        {action && <div className="max-w-full shrink-0">{action}</div>}
       </div>
+      {legend && <div className="mb-3">{legend}</div>}
       {children}
     </section>
   );
