@@ -1,6 +1,7 @@
 import { useAuthLoggedIn } from '@/services/auth';
 
 import { AdapterServerFromDto } from '@/entities/server/adapter';
+import { AGENT_CHECK_INTERVAL_MS } from '@/entities/server/lib/agentHealth';
 
 import { ApiServer } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
@@ -19,13 +20,20 @@ export const [ServersModelProvider, useServersModel] = buildSelector(
 
   const { pagination, ownership, searchQuery, status } = useFilterModel();
 
-  const [responseServers, refresh] = ApiServer.Find.useGet({
+  // Polled quietly while the page is open so each card's agent last-seen
+  // time stays current for the "stopped reporting" warning.
+  const [responseServers, refresh, serversMeta] = ApiServer.Find.useGet({
     filter: ownership,
     userId,
     pageSize: SERVERS_PAGE_SIZE,
     page: pagination,
     searchQuery,
     status,
+    options: {
+      refreshIntervalMs: AGENT_CHECK_INTERVAL_MS,
+      silentRefresh: true,
+      refetchOnVisible: true,
+    },
   });
 
   useSubscribe('@resources::servers/servers-refresh', () => refresh());
@@ -41,5 +49,7 @@ export const [ServersModelProvider, useServersModel] = buildSelector(
         ),
       };
     }),
+    /** When the list was last read from the API (client clock). */
+    checkedAt: serversMeta.receivedAt,
   };
 });

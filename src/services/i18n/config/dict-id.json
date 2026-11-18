@@ -1643,7 +1643,10 @@
           "steps": {
             "cloudDescription": "Tempat server berjalan dan project cloud yang membayarnya.",
             "connectTitle": "Cara dPanel terhubung",
-            "connectDescription": "Cara server baru bergabung ke dPanel, dan apakah server mendapat IP publik."
+            "connectDescription": "Cara server baru bergabung ke dPanel, dan apakah server mendapat IP publik.",
+            "accessTitle": "Akses",
+            "accessDescriptionAgent": "Akun pengguna yang dibuat bersama VM. dPanel sendiri terhubung lewat agennya.",
+            "accessDescriptionSsh": "Login pertama yang dipakai dPanel untuk menyiapkan server."
           },
           "join": {
             "title": "Cara dPanel terhubung",
@@ -1699,6 +1702,29 @@
           "cloud": {
             "projectsHint": "Proyek cloud di workspace ini yang terhubung ke penyedia ini.",
             "projectsEmpty": "Belum ada proyek cloud untuk penyedia ini di workspace ini."
+          },
+          "readyIn": {
+            "agent": "Siap dalam sekitar 1–5 menit",
+            "ssh": "Siap dalam sekitar 10–20 menit",
+            "either": "Siap dalam sekitar 1–5 menit dengan agen dPanel, atau 10–20 menit lewat SSH"
+          },
+          "footnote": {
+            "agent": "dPanel membuat VM di akun cloud Anda. VM memasang agen dPanel saat pertama kali menyala. Penyedia menagih VM selama berjalan. Siap dalam sekitar 1 sampai 5 menit.",
+            "ssh": "dPanel membuat VM di akun cloud Anda, lalu terhubung lewat SSH dan memasang agennya. Penyedia menagih VM selama berjalan. Siap dalam sekitar 10 sampai 20 menit.",
+            "either": "dPanel membuat VM di akun cloud Anda lalu menghubungkannya. Penyedia menagih VM selama berjalan."
+          },
+          "login": {
+            "userTitle": "Pengguna bawaan",
+            "userTitleConsole": "Pengguna SSH dan konsol",
+            "passwordTitle": "Kata sandi awal",
+            "passwordTitleConsole": "Kata sandi konsol",
+            "passwordPlaceholder": "Wajib diisi",
+            "showPassword": "Tampilkan kata sandi",
+            "hidePassword": "Sembunyikan kata sandi",
+            "passwordHint": "Dikirim sebagai vm.password dan disembunyikan dari ringkasan.",
+            "passwordHintConsole": "Dikirim sebagai vm.console_password dan disembunyikan dari ringkasan.",
+            "userHintAgent": "Dikirim sebagai vm.username, pengguna yang dibuat bersama VM. Tidak ada SSH key dPanel yang ditambahkan; VM bergabung lewat agen dPanel.",
+            "userHintSsh": "Dikirim sebagai vm.username, pengguna yang dibuat bersama VM. SSH key yang Anda pilih ditambahkan ke VM agar dPanel bisa terhubung dan menyiapkannya."
           }
         }
       },
@@ -2028,7 +2054,16 @@
           "missing": "Isi {fields} sebelum memasang.",
           "malformed": "Periksa format {fields}.",
           "singleServerOnly": "Hapus dan siapkan ulang hanya berjalan di satu server; pilih satu server.",
-          "unreadable": "Opsi tidak dapat dibaca; periksa lalu coba lagi."
+          "unreadable": "Opsi tidak dapat dibaca; periksa lalu coba lagi.",
+          "password": {
+            "placeholder": "Pilih kata sandi",
+            "reveal": "Tampilkan kata sandi",
+            "hide": "Sembunyikan kata sandi",
+            "generate": "Buat",
+            "copy": "Salin kata sandi",
+            "copied": "Tersalin",
+            "generatedNote": "Simpan kata sandi ini sekarang. dPanel tidak menampilkannya lagi."
+          }
         }
       },
       "files": {

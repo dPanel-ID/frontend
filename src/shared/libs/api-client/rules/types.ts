@@ -44,8 +44,7 @@ export type ApiClientResponse<D> =
 // =============================================================================
 
 export type PureResponse<D, E = ResponseError> =
-  | ({ $status: 'success' } & D)
-  | ({ $status: 'failed' } & E);
+  ({ $status: 'success' } & D) | ({ $status: 'failed' } & E);
 
 export type Response<D, E = ResponseError> =
   | { $status: 'initial' }
@@ -95,6 +94,17 @@ export interface UseApiGetOptions {
   skip?: boolean;
   autoRetryWhenFails?: boolean;
   refreshIntervalMs?: number;
+  /**
+   * Background refreshes (the interval and refetchOnVisible) keep the last
+   * successful answer on screen: no loading state in between, and a failed
+   * background refresh keeps that answer instead of showing the error.
+   */
+  silentRefresh?: boolean;
+  /**
+   * Refetch when the tab comes back into view, and skip interval refreshes
+   * while it is hidden.
+   */
+  refetchOnVisible?: boolean;
 }
 
 export type WithApiGetOptions<T = unknown> = T & {

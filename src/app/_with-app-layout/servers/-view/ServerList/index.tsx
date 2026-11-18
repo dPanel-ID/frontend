@@ -35,6 +35,7 @@ const [guard, useServers] = guardedSelects({
 
 export default guard(function ServerList() {
   const handlersFor = useServerHandlers();
+  const checkedAt = useServersModel((s) => s.checkedAt);
 
   const [servers] = useServers((s) => [s.servers]);
   const {
@@ -114,6 +115,7 @@ export default guard(function ServerList() {
           server={server}
           handlers={handlersFor(server)}
           applicationCount={applicationCountByServerId.get(server.id) ?? 0}
+          agentCheckedAt={checkedAt}
         />
       ))}
     </div>

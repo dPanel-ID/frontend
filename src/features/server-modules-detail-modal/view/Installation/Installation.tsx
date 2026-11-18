@@ -30,6 +30,7 @@ import {
   isBlockedHostGroupAction,
 } from './action-options';
 import { isHiddenInput, isRequiredInput } from './input-kinds';
+import { generateSecretFor, isSecretInput } from './secret-input';
 import { isAcceptedValue } from './version-choice';
 import { VersionChoiceField } from './VersionChoiceField';
 
@@ -71,11 +72,6 @@ function buildVariables(
     }
     return acc;
   }, {});
-}
-
-/** A secret the operator types, such as a database administrator password. */
-function isSecretInput(input: DTOs.ModuleInputV1) {
-  return Boolean(input.sensitive) && input.type !== 'boolean';
 }
 
 /**
@@ -317,7 +313,18 @@ export default function Installation() {
           ) : isSecretInput(input) ? (
             <PasswordInput
               value={String(value)}
-              placeholder="Choose a password"
+              placeholder={t('password.placeholder')}
+              revealLabel={t('password.reveal')}
+              hideLabel={t('password.hide')}
+              generateLabel={t('password.generate')}
+              copyLabel={t('password.copy')}
+              copiedLabel={t('password.copied')}
+              generatedNote={t('password.generatedNote')}
+              onGenerate={() => {
+                const generated = generateSecretFor(input);
+                if (generated) handleChange(input.name, generated);
+                return generated;
+              }}
               onChange={(event) => handleChange(input.name, event.target.value)}
             />
           ) : (

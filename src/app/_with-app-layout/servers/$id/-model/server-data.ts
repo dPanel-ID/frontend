@@ -1,5 +1,6 @@
 import { AdapterOsServiceFromDto } from '@/entities/os-service/adapter';
 import { AdapterServerFromDto } from '@/entities/server/adapter';
+import { AGENT_CHECK_INTERVAL_MS } from '@/entities/server/lib/agentHealth';
 import type { SchemaCommon } from '@/entities/shared/rules/schema';
 
 import { ApiServer, ApiService } from '@/shared/api';
@@ -17,9 +18,17 @@ export const [ServerDataModelProvider, useServerDataModel] = buildSelector(
 )((props: ServerDataModelProps) => {
   const { serverId } = props;
 
-  const [responseServerDetail, refreshServerDetail] =
+  // Polled quietly while the page is open (and read again when the tab
+  // returns) so the agent's last report stays current: the "stopped
+  // reporting" warning trusts only a fresh reading.
+  const [responseServerDetail, refreshServerDetail, detailMeta] =
     ApiServer.Detail.$Id.useGet({
       serverId,
+      options: {
+        refreshIntervalMs: AGENT_CHECK_INTERVAL_MS,
+        silentRefresh: true,
+        refetchOnVisible: true,
+      },
     });
 
   const [responseServices, refreshServices] =
@@ -64,6 +73,8 @@ export const [ServerDataModelProvider, useServerDataModel] = buildSelector(
     refreshServices,
     refreshModules,
     refreshModuleInventory,
+    /** When the detail was last read from the API (client clock). */
+    detailCheckedAt: detailMeta.receivedAt,
     detail: useAdapter(responseServerDetail, (raw) =>
       AdapterServerFromDto.toServerDetail(raw).unwrap(),
     ),

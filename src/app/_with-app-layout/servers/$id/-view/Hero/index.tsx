@@ -81,6 +81,7 @@ export default guard(function Hero() {
   const locale = useDevetekLocale();
   const { id } = useParams({ from: '/_with-app-layout/servers/$id/' });
   const [server] = useServerDetail((s) => [s]);
+  const [detailCheckedAt] = useServerDataModel((s) => [s.detailCheckedAt]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
@@ -266,7 +267,11 @@ export default guard(function Hero() {
           </div>
         )}
 
-        <AgentHealthNotice server={server} canUpgrade />
+        <AgentHealthNotice
+          server={server}
+          checkedAt={detailCheckedAt}
+          canUpgrade
+        />
 
         {status === 'failed' && (
           <ExecutionErrorBanner
