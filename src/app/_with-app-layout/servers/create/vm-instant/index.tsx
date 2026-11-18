@@ -39,6 +39,7 @@ import { LINK__DOCUMENTATION } from '@/widgets/aside-help-support/config/links';
 import { FormProvider, useForm } from './-model';
 import { formSchema } from './-model/form';
 import { resolveJoinMethod } from './-model/join';
+import type { JoinMethod } from './-model/join';
 import {
   getFixedLoginUser,
   isAlibabaCloudProvider,
@@ -49,6 +50,7 @@ import {
   isZonalProvider,
   usesManagedNetwork,
 } from './-model/provider';
+import { useJoinMethod } from './-model/use-join-method';
 import useLaunch from './-usecase/use-launch';
 import { SectionCloud } from './-view/SectionCloud';
 import { SectionConnect } from './-view/SectionConnect';
@@ -74,40 +76,56 @@ function LaunchCloudServerPage() {
     <>
       <title>Launch a cloud server | dnocs</title>
 
-      <FlowHero
-        accent="sky"
-        icon={CloudLightningIcon}
-        badge="Recommended"
-        title="Launch a cloud server"
-        description="Pick a provider, a location and a size. dPanel creates the VM in your cloud account and sets it up for you."
-        duration="Ready in about 10–20 minutes"
-        headnote={
-          <Breadcrumb
-            items={[
-              { text: 'Dashboard', url: '/dashboard' },
-              { text: 'Servers', url: '/servers' },
-              { text: 'Create Server', url: '/servers/create' },
-            ]}
-          />
-        }
-        aside={
-          <a
-            href={LINK__DOCUMENTATION}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-lg border bg-background/60 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-background"
-          >
-            <FileTextIcon className="size-4" />
-            Docs
-          </a>
-        }
-      />
-
       <FormProvider>
+        <LaunchHero />
         <PresetProvider />
         <LaunchFlow />
       </FormProvider>
     </>
+  );
+}
+
+/** How long until the server is ready, by how it joins; both until a
+ * provider is picked. */
+function readyInKey(joinMethod: JoinMethod | undefined) {
+  if (joinMethod === 'agent') return 'readyIn.agent' as const;
+  if (joinMethod === 'ssh') return 'readyIn.ssh' as const;
+  return 'readyIn.either' as const;
+}
+
+function LaunchHero() {
+  const t = useDevetekTranslations('page.servers.create.vmInstant');
+  const joinMethod = useJoinMethod();
+
+  return (
+    <FlowHero
+      accent="sky"
+      icon={CloudLightningIcon}
+      badge="Recommended"
+      title="Launch a cloud server"
+      description="Pick a provider, a location and a size. dPanel creates the VM in your cloud account and sets it up for you."
+      duration={t(readyInKey(joinMethod))}
+      headnote={
+        <Breadcrumb
+          items={[
+            { text: 'Dashboard', url: '/dashboard' },
+            { text: 'Servers', url: '/servers' },
+            { text: 'Create Server', url: '/servers/create' },
+          ]}
+        />
+      }
+      aside={
+        <a
+          href={LINK__DOCUMENTATION}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-1.5 rounded-lg border bg-background/60 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-background"
+        >
+          <FileTextIcon className="size-4" />
+          Docs
+        </a>
+      }
+    />
   );
 }
 
@@ -233,8 +251,11 @@ function LaunchFlow() {
           {
             key: 'access' as const,
             icon: UserRoundIcon,
-            title: 'Access',
-            description: 'The first login dPanel uses to set up the server.',
+            title: t('steps.accessTitle'),
+            description:
+              joinMethod === 'agent'
+                ? t('steps.accessDescriptionAgent')
+                : t('steps.accessDescriptionSsh'),
             content: <SectionLogin />,
           },
         ]
@@ -454,7 +475,13 @@ function LaunchFlow() {
               Clear form
             </Button>
           }
-          footnote="dPanel creates the VM in your cloud account, then installs its agent. The provider bills the VM while it runs. Ready in about 10 to 20 minutes."
+          footnote={
+            !provider
+              ? t('footnote.either')
+              : joinMethod === 'agent'
+                ? t('footnote.agent')
+                : t('footnote.ssh')
+          }
         />
       </div>
     </div>

@@ -3,65 +3,69 @@ import { useState } from 'react';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useWatch } from 'react-hook-form';
 
+import { useDevetekTranslations } from '@/services/i18n';
+
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Input } from '@/shared/presentation/atoms/Input';
 
 import { useForm } from '../../-model';
 import {
-  isAwsProvider,
   isBiznetGioProvider,
   isDigitalOceanProvider,
-  isGcpProvider,
 } from '../../-model/provider';
+import { useJoinMethod } from '../../-model/use-join-method';
 import { ErrorInline } from '../../-presentation/ErrorInline';
 
+/**
+ * The Access step: the user the VM is created with and, where the provider
+ * asks for one, its first password. Providers with a fixed login user (AWS,
+ * GCP, Alibaba Cloud, Tencent Cloud) skip this step, see getFixedLoginUser.
+ */
 export default function SectionLogin() {
+  const t = useDevetekTranslations('page.servers.create.vmInstant.login');
   const { form, formErrors } = useForm();
   const [showPassword, setShowPassword] = useState(false);
   const provider = useWatch({ control: form.control, name: 'provider' }) as
-    | string
-    | undefined;
+    string | undefined;
+  const joinMethod = useJoinMethod();
   const usesBiznetGio = isBiznetGioProvider(provider);
-  const usesGcp = isGcpProvider(provider);
-  const usesDigitalOcean = isDigitalOceanProvider(provider);
-  const usesAws = isAwsProvider(provider);
-  const hidesCredentials = usesGcp || usesDigitalOcean || usesAws;
+  // DigitalOcean takes a username only: the VM gets no password, and over
+  // SSH the chosen key is how dPanel logs in.
+  const usernameOnly = isDigitalOceanProvider(provider);
 
   return (
     <div className="space-y-5">
-      <div
-        className={hidesCredentials ? 'space-y-2' : 'grid gap-4 lg:grid-cols-2'}
-      >
-        {!usesAws && !usesGcp && (
-          <div className="space-y-2">
-            <h6 className="text-sm font-semibold">
-              {usesBiznetGio ? 'SSH and Console User' : 'Default User'}
-            </h6>
-            <Input
-              className="w-full bg-background"
-              placeholder={usesBiznetGio ? 'dpanel1' : 'dpanel'}
-              {...form.register('login.username')}
-            />
-            <ErrorInline message={formErrors.login?.username?.message} />
-          </div>
-        )}
+      <div className={usernameOnly ? 'space-y-2' : 'grid gap-4 lg:grid-cols-2'}>
+        <div className="space-y-2">
+          <h6 className="text-sm font-semibold">
+            {usesBiznetGio ? t('userTitleConsole') : t('userTitle')}
+          </h6>
+          <Input
+            className="w-full bg-background"
+            placeholder={usesBiznetGio ? 'dpanel1' : 'dpanel'}
+            {...form.register('login.username')}
+          />
+          <ErrorInline message={formErrors.login?.username?.message} />
+        </div>
 
-        {!hidesCredentials && (
+        {!usernameOnly && (
           <div className="space-y-2">
             <h6 className="text-sm font-semibold">
-              {usesBiznetGio ? 'Console Password' : 'Bootstrap Password'}
+              {usesBiznetGio ? t('passwordTitleConsole') : t('passwordTitle')}
             </h6>
             <div className="flex items-center gap-2">
               <Input
                 className="w-full bg-background"
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Required"
+                placeholder={t('passwordPlaceholder')}
                 {...form.register('login.password')}
               />
               <Button
                 asChild
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                title={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={
+                  showPassword ? t('hidePassword') : t('showPassword')
+                }
+                title={showPassword ? t('hidePassword') : t('showPassword')}
                 buttonStyle="outline"
                 buttonColor="secondary"
                 size="icon"
@@ -79,21 +83,15 @@ export default function SectionLogin() {
               </Button>
             </div>
             <p className="text-xs leading-relaxed text-muted-foreground">
-              {usesBiznetGio
-                ? 'Sent as vm.console_password and hidden from review.'
-                : 'Sent as vm.password and hidden from review.'}
+              {usesBiznetGio ? t('passwordHintConsole') : t('passwordHint')}
             </p>
             <ErrorInline message={formErrors.login?.password?.message} />
           </div>
         )}
 
-        {hidesCredentials && (
+        {usernameOnly && (
           <p className="text-xs leading-relaxed text-muted-foreground">
-            {usesAws
-              ? 'The selected dPanel SSH key is injected into the EC2 instance during provider VM creation. Username and password are not requested by the AWS VM contract.'
-              : usesGcp
-                ? 'dPanel logs in as ubuntu with the selected SSH key. The dpanel user is created by setup and cannot be the login user.'
-                : 'Sent as vm.username. The selected dPanel SSH key is injected into the provider VM request for setup.'}
+            {joinMethod === 'agent' ? t('userHintAgent') : t('userHintSsh')}
           </p>
         )}
       </div>

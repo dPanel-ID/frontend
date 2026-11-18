@@ -27,6 +27,12 @@ export interface AgentHealthNoticeProps {
    * instructions alone.
    */
   canUpgrade?: boolean;
+  /**
+   * When the page read this server from the API (client clock). The
+   * "stopped reporting" warning shows only while that reading is fresh; the
+   * page keeps it fresh by polling (AGENT_CHECK_INTERVAL_MS).
+   */
+  checkedAt?: number;
   className?: string;
 }
 
@@ -36,7 +42,7 @@ export interface AgentHealthNoticeProps {
  * nothing when the agent is fine.
  */
 export function AgentHealthNotice(props: AgentHealthNoticeProps) {
-  const { canUpgrade = false, className, server } = props;
+  const { canUpgrade = false, checkedAt, className, server } = props;
   const t = useDevetekTranslations('entities.server.agentHealth');
   const locale = useDevetekLocale();
   const [openToaster] = useToaster();
@@ -44,7 +50,7 @@ export function AgentHealthNotice(props: AgentHealthNoticeProps) {
   const [queuedVersion, setQueuedVersion] = useState<string>();
 
   const now = useNow();
-  const health = agentHealth(server, now);
+  const health = agentHealth(server, now, checkedAt);
   if (!health.quietSince && !health.upgrade) return null;
 
   // Every agent runs as dpanel-agent.service (backend
@@ -186,13 +192,18 @@ function CommandLine(props: { command: string }) {
   );
 }
 
-/** The current time, refreshed every minute so "stopped reporting" appears
- * on a page left open. */
+/** The current time, refreshed every minute and when the tab comes back into
+ * view, so an old reading stops counting as fresh. */
 function useNow() {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
-    const timer = window.setInterval(() => setNow(Date.now()), 60_000);
-    return () => window.clearInterval(timer);
+    const tick = () => setNow(Date.now());
+    const timer = window.setInterval(tick, 60_000);
+    document.addEventListener('visibilitychange', tick);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener('visibilitychange', tick);
+    };
   }, []);
   return now;
 }

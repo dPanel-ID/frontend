@@ -58,6 +58,7 @@ import type { ServerCardProps } from './types';
  */
 export default function ServerCard(props: ServerCardProps) {
   const {
+    agentCheckedAt,
     applicationCount = 0,
     badge,
     handlers,
@@ -246,7 +247,11 @@ export default function ServerCard(props: ServerCardProps) {
             />
           </div>
 
-          <AgentHealthNotice server={server} canUpgrade={!readOnly} />
+          <AgentHealthNotice
+            server={server}
+            checkedAt={agentCheckedAt}
+            canUpgrade={!readOnly}
+          />
 
           {status === 'failed' && (
             <ExecutionErrorBanner

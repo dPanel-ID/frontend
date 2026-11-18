@@ -16,6 +16,9 @@ export interface ServerCardProps {
   /** Load balancers on the server, when the caller already knows; the card
    * reads it from the selected workspace otherwise. */
   loadBalancerCount?: number;
+  /** When the server was last read from the API (client clock); the agent
+   * warning trusts only a fresh reading. */
+  agentCheckedAt?: number;
   /** Shown beside the status, such as the workspace on the admin list. */
   badge?: ReactNode;
 }

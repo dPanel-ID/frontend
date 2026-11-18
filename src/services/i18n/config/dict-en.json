@@ -1643,7 +1643,10 @@
           "steps": {
             "cloudDescription": "Where the server runs and which cloud project pays for it.",
             "connectTitle": "How dPanel connects",
-            "connectDescription": "How the new server joins dPanel, and whether it gets a public IP."
+            "connectDescription": "How the new server joins dPanel, and whether it gets a public IP.",
+            "accessTitle": "Access",
+            "accessDescriptionAgent": "The user account the VM is created with. dPanel itself connects through its agent.",
+            "accessDescriptionSsh": "The first login dPanel uses to set up the server."
           },
           "join": {
             "title": "How dPanel connects",
@@ -1699,6 +1702,29 @@
           "cloud": {
             "projectsHint": "Cloud projects in this workspace connected to this provider.",
             "projectsEmpty": "No cloud project for this provider in this workspace yet."
+          },
+          "readyIn": {
+            "agent": "Ready in about 1–5 minutes",
+            "ssh": "Ready in about 10–20 minutes",
+            "either": "Ready in about 1–5 minutes with the dPanel agent, or 10–20 minutes over SSH"
+          },
+          "footnote": {
+            "agent": "dPanel creates the VM in your cloud account. The VM installs the dPanel agent when it first starts. The provider bills the VM while it runs. Ready in about 1 to 5 minutes.",
+            "ssh": "dPanel creates the VM in your cloud account, then connects over SSH and installs its agent. The provider bills the VM while it runs. Ready in about 10 to 20 minutes.",
+            "either": "dPanel creates the VM in your cloud account and connects it. The provider bills the VM while it runs."
+          },
+          "login": {
+            "userTitle": "Default user",
+            "userTitleConsole": "SSH and console user",
+            "passwordTitle": "Bootstrap password",
+            "passwordTitleConsole": "Console password",
+            "passwordPlaceholder": "Required",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
+            "passwordHint": "Sent as vm.password and hidden from review.",
+            "passwordHintConsole": "Sent as vm.console_password and hidden from review.",
+            "userHintAgent": "Sent as vm.username, the user the VM is created with. No dPanel SSH key is added; the VM joins through the dPanel agent.",
+            "userHintSsh": "Sent as vm.username, the user the VM is created with. The SSH key you chose is added to the VM so dPanel can connect and set it up."
           }
         }
       },
@@ -2028,7 +2054,16 @@
           "missing": "Fill in {fields} before installing.",
           "malformed": "Check the format of {fields}.",
           "singleServerOnly": "Delete and reprovision run on one server only; choose a single server.",
-          "unreadable": "The options could not be read; check them and try again."
+          "unreadable": "The options could not be read; check them and try again.",
+          "password": {
+            "placeholder": "Choose a password",
+            "reveal": "Show password",
+            "hide": "Hide password",
+            "generate": "Generate",
+            "copy": "Copy password",
+            "copied": "Copied",
+            "generatedNote": "Save this password now. dPanel doesn't show it again."
+          }
         }
       },
       "files": {

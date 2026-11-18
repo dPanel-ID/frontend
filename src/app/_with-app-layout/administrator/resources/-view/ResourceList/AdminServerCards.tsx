@@ -12,10 +12,12 @@ interface AdminServerCardsProps {
   servers: ServerCardModel[];
   /** Keyed by server ID. */
   stats: Record<string, AdminServerStats>;
+  /** When the servers were last read from the API (client clock). */
+  checkedAt?: number;
 }
 
 export default function AdminServerCards(props: AdminServerCardsProps) {
-  const { servers, stats } = props;
+  const { checkedAt, servers, stats } = props;
 
   return (
     <div className="flex flex-col gap-3">
@@ -29,6 +31,7 @@ export default function AdminServerCards(props: AdminServerCardsProps) {
             server={server}
             applicationCount={stats[server.id]?.applications ?? 0}
             loadBalancerCount={stats[server.id]?.load_balancers ?? 0}
+            agentCheckedAt={checkedAt}
             badge={
               <>
                 <CopyableId id={server.id} />

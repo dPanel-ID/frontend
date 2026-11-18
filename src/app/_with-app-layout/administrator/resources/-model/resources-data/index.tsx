@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { AdapterServerFromDto } from '@/entities/server/adapter';
+import { AGENT_CHECK_INTERVAL_MS } from '@/entities/server/lib/agentHealth';
 
 import { ApiAdmin } from '@/shared/api';
 import type { AdminResourceType } from '@/shared/api/admin.resource.find';
@@ -47,13 +48,20 @@ export const [AdminResourcesDataModelProvider, useAdminResourcesDataModel] =
     });
 
     // The servers tab shows the servers page's own cards, which need the
-    // full server, not a summary row.
-    const [serversResponse, refreshServers] = ApiAdmin.Server.Find.useGet({
-      search,
-      page,
-      limit: RESOURCES_PAGE_SIZE,
-      options: { skip: type !== 'servers' },
-    });
+    // full server, not a summary row. Polled quietly so the agent warning
+    // on each card reads a fresh last-seen time.
+    const [serversResponse, refreshServers, serversMeta] =
+      ApiAdmin.Server.Find.useGet({
+        search,
+        page,
+        limit: RESOURCES_PAGE_SIZE,
+        options: {
+          skip: type !== 'servers',
+          refreshIntervalMs: AGENT_CHECK_INTERVAL_MS,
+          silentRefresh: true,
+          refetchOnVisible: true,
+        },
+      });
 
     const servers = useAdapter(serversResponse, (raw) => ({
       servers: (raw.machines ?? []).map((machine) =>
@@ -67,6 +75,8 @@ export const [AdminResourcesDataModelProvider, useAdminResourcesDataModel] =
     return {
       type,
       servers,
+      /** When the servers were last read from the API (client clock). */
+      serversCheckedAt: serversMeta.receivedAt,
       refreshServers,
       searchInput,
       search,

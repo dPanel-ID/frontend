@@ -65,6 +65,7 @@ describe('host-group scoped execution detail hook', () => {
         ],
       } as Response<unknown>,
       refresh,
+      { receivedAt: undefined },
     ]);
 
     const { result } = renderHook(() =>
@@ -93,6 +94,7 @@ describe('host-group scoped execution detail hook', () => {
         ...buildSafeDetail(),
       },
       refresh,
+      { receivedAt: undefined },
     ]);
 
     const { result } = renderHook(() =>

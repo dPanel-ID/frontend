@@ -26,6 +26,7 @@ export default function ResourceList() {
     changePage,
     refresh,
     refreshServers,
+    serversCheckedAt,
   ] = useAdminResourcesDataModel((s) => [
     s.type,
     s.resources,
@@ -35,6 +36,7 @@ export default function ResourceList() {
     s.changePage,
     s.refresh,
     s.refreshServers,
+    s.serversCheckedAt,
   ]);
 
   const isServers = type === 'servers';
@@ -75,6 +77,7 @@ export default function ResourceList() {
         <AdminServerCards
           servers={shownServers.servers}
           stats={shownServers.stats}
+          checkedAt={serversCheckedAt}
         />
       ) : (
         <div className="flex flex-col gap-3">
