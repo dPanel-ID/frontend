@@ -17,10 +17,18 @@ dPanel launches Ubuntu Droplets in your own DigitalOcean team. It signs in with 
 
 DigitalOcean lets you choose exactly what a token may do. Don't give dPanel a **Full Access** token. Don't pick **Read Only** either: dPanel can't launch a server with it.
 
-1. Sign in to the [DigitalOcean control panel](https://cloud.digitalocean.com). In the left menu, open **Applications & API**, then the **Tokens** tab.
-2. Press **Generate New Token**, and name it `dpanel`.
-3. Pick an **Expiration**. The default, 90 days, is a good balance; you will have to [rotate](./cloud-credentials-security.md#rotating-a-credential) the token when it ends.
-4. Under **Scopes**, choose **Custom Scopes**. Type each resource type below into **Search by resource type**, and tick only these scopes, 21 in all:
+1. Sign in to the [DigitalOcean control panel](https://cloud.digitalocean.com). In the left menu, under **Account**, open **API**. The page is called **Applications & API**; stay on its **Tokens** tab.
+2. Press **Generate New Token**.
+
+   ![The DigitalOcean Applications & API page on the Tokens tab, with the Generate New Token button](../../../assets/servers/digitalocean-token-list.webp)
+
+3. Under **Token Name**, type a name you will recognise later, such as `dpanel`.
+4. Pick an **Expiration**. The default, 90 days, is a good balance; you will have to [rotate](./cloud-credentials-security.md#rotating-a-credential) the token when it ends.
+5. Under **Scopes**, choose **Custom Scopes**.
+
+   ![The Create A New Personal Access Token form with a token name, 90 days expiration and Custom Scopes selected](../../../assets/servers/digitalocean-token-create.webp)
+
+   Type each resource type below into **Search by resource type**, and tick only these scopes, 21 in all:
 
 | Resource type | Scopes to tick                                | What it is for                                                                                               |
 | ------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
@@ -34,8 +42,11 @@ DigitalOcean lets you choose exactly what a token may do. Don't give dPanel a **
 | `actions`     | `read`                                        | Part of the tested token; see the note below                                                                 |
 | `snapshot`    | `read`                                        | Part of the tested token; see the note below                                                                 |
 
-5. Before you go on, read the **Selected custom scopes summary** and check it matches the table.
-6. Press **Generate Token**. DigitalOcean shows the token only once: copy it with the copy icon next to it, and keep it somewhere safe until you paste it into dPanel in the next step.
+6. Before you go on, scroll to the **Selected custom scopes summary**. It should say **21 scopes** in total: 19 under **Fully Scoped Access** and 2 (`image` and `snapshot`) under **Read Access**.
+
+   ![The Selected custom scopes summary listing the 21 scopes, above the Generate Token button](../../../assets/servers/digitalocean-token-scopes-summary.webp)
+
+7. Press **Generate Token**. DigitalOcean shows the token only once: copy it with the copy icon next to it, and keep it somewhere safe until you paste it into dPanel in the next step.
 
 DigitalOcean guides: [Create a personal access token](https://docs.digitalocean.com/reference/api/create-personal-access-token/), [Token scopes](https://docs.digitalocean.com/reference/api/scopes/).
 

@@ -17,10 +17,18 @@ dPanel meluncurkan Droplet Ubuntu di team DigitalOcean Anda sendiri. dPanel masu
 
 DigitalOcean membolehkan Anda menentukan persis apa yang boleh dilakukan sebuah token. Jangan beri dPanel token **Full Access**. Jangan pilih **Read Only** juga: dPanel tidak bisa meluncurkan server dengannya.
 
-1. Masuk ke [control panel DigitalOcean](https://cloud.digitalocean.com). Di menu kiri, buka **Applications & API**, lalu tab **Tokens**.
-2. Tekan **Generate New Token**, dan beri nama `dpanel`.
-3. Pilih **Expiration** (masa berlaku). Bawaannya, 90 hari, cukup seimbang; Anda harus [merotasi](./cloud-credentials-security.md#merotasi-kredensial) token saat masa itu habis.
-4. Di **Scopes**, pilih **Custom Scopes**. Ketik setiap jenis resource di bawah ke kotak **Search by resource type**, lalu centang hanya scope berikut, total 21:
+1. Masuk ke [control panel DigitalOcean](https://cloud.digitalocean.com). Di menu kiri, di bawah **Account**, buka **API**. Halamannya berjudul **Applications & API**; tetap di tab **Tokens**.
+2. Tekan **Generate New Token**.
+
+   ![Halaman Applications & API DigitalOcean di tab Tokens, dengan tombol Generate New Token](../../../assets/servers/digitalocean-token-list.webp)
+
+3. Di **Token Name**, ketik nama yang mudah Anda kenali nanti, misalnya `dpanel`.
+4. Pilih **Expiration** (masa berlaku). Bawaannya, 90 hari, cukup seimbang; Anda harus [merotasi](./cloud-credentials-security.md#merotasi-kredensial) token saat masa itu habis.
+5. Di **Scopes**, pilih **Custom Scopes**.
+
+   ![Formulir Create A New Personal Access Token dengan nama token, masa berlaku 90 hari, dan Custom Scopes terpilih](../../../assets/servers/digitalocean-token-create.webp)
+
+   Ketik setiap jenis resource di bawah ke kotak **Search by resource type**, lalu centang hanya scope berikut, total 21:
 
 | Jenis resource | Scope yang dicentang                          | Untuk apa                                                                                                 |
 | -------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
@@ -34,8 +42,11 @@ DigitalOcean membolehkan Anda menentukan persis apa yang boleh dilakukan sebuah 
 | `actions`      | `read`                                        | Bagian dari token yang sudah diuji; lihat catatan di bawah                                                |
 | `snapshot`     | `read`                                        | Bagian dari token yang sudah diuji; lihat catatan di bawah                                                |
 
-5. Sebelum lanjut, baca **Selected custom scopes summary** dan pastikan isinya sama dengan tabel.
-6. Tekan **Generate Token**. DigitalOcean hanya menampilkan token sekali: salin dengan ikon salin di sebelahnya, dan simpan di tempat aman sampai Anda menempelnya ke dPanel di langkah berikutnya.
+6. Sebelum lanjut, gulir ke **Selected custom scopes summary**. Totalnya harus **21 scopes**: 19 di **Fully Scoped Access** dan 2 (`image` dan `snapshot`) di **Read Access**.
+
+   ![Selected custom scopes summary yang menampilkan 21 scope, di atas tombol Generate Token](../../../assets/servers/digitalocean-token-scopes-summary.webp)
+
+7. Tekan **Generate Token**. DigitalOcean hanya menampilkan token sekali: salin dengan ikon salin di sebelahnya, dan simpan di tempat aman sampai Anda menempelnya ke dPanel di langkah berikutnya.
 
 Panduan DigitalOcean: [Membuat personal access token](https://docs.digitalocean.com/reference/api/create-personal-access-token/), [Cakupan token](https://docs.digitalocean.com/reference/api/scopes/).
 
