@@ -57,7 +57,10 @@ Ini persis set yang dipakai untuk menguji dPanel: token dengan scope ini meluncu
 ## 2. Hubungkan ke dPanel
 
 1. Di sidebar, buka **Proyek Cloud**. Judul halamannya **Akun cloud**.
-2. Tekan **Hubungkan akun cloud**.
+2. Tekan **Hubungkan akun cloud**, di kanan atas.
+
+   ![Halaman Akun cloud dPanel, dibuka dari Proyek Cloud di sidebar, dengan tombol untuk menghubungkan akun cloud](../../../assets/servers/cloud-accounts-connect-button.webp)
+
 3. Isi **Connection name**, misalnya `DigitalOcean SGP`.
 4. Di **Cloud provider**, pilih **DigitalOcean**.
 5. Tempel tokennya di **API token**.
@@ -65,11 +68,17 @@ Ini persis set yang dipakai untuk menguji dPanel: token dengan scope ini meluncu
 
 ![Formulir Connect Cloud Account dengan DigitalOcean terpilih dan kolom API token masih kosong](../../../assets/servers/cloud-account-connect-digitalocean.webp)
 
-dPanel langsung menyimpan akun itu sebagai **Siap**, tanpa menguji tokennya. Untuk memeriksanya sebelum meluncurkan apa pun:
+dPanel langsung menyimpan akun itu sebagai **Siap**, tanpa menguji tokennya.
+
+![Akun DigitalOcean yang baru di daftar Akun cloud, dengan status Siap](../../../assets/servers/cloud-account-ready-digitalocean.webp)
+
+Untuk memeriksa tokennya sebelum meluncurkan apa pun:
 
 1. Tekan **Buat server**, lalu **Luncurkan server cloud**.
 2. Pilih **DigitalOcean**, lalu akun cloud yang baru Anda hubungkan.
-3. Tunggu daftar **Region**. Kalau terisi region DigitalOcean, misalnya `sgp1`, tokennya berfungsi. Anda boleh menutup formulir tanpa meluncurkan apa pun.
+3. Buka daftar **Region**. Kalau terisi region DigitalOcean, misalnya `sgp1`, tokennya berfungsi. Anda boleh menutup formulir tanpa meluncurkan apa pun.
+
+   ![Formulir peluncuran dengan akun cloud DigitalOcean terpilih dan daftar Region berisi region DigitalOcean](../../../assets/servers/create-region-list-digitalocean.webp)
 
 Kalau **Region** tetap kosong atau menampilkan error, periksa apakah token sudah ditempel utuh dan scope di atas sudah dicentang.
 

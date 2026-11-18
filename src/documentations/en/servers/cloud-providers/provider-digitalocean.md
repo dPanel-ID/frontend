@@ -57,7 +57,10 @@ This is the exact set dPanel is tested with: a token with these scopes launches 
 ## 2. Connect it to dPanel
 
 1. In the sidebar, open **Cloud Projects**. The page is titled **Cloud accounts**.
-2. Press **Connect a cloud account**.
+2. Press **Connect a cloud account**, at the top right.
+
+   ![The dPanel Cloud accounts page, opened from Cloud Projects in the sidebar, with the Connect a cloud account button](../../../assets/servers/cloud-accounts-connect-button.webp)
+
 3. Fill in **Connection name**, for example `DigitalOcean SGP`.
 4. Under **Cloud provider**, pick **DigitalOcean**.
 5. Paste the token into **API token**.
@@ -65,11 +68,17 @@ This is the exact set dPanel is tested with: a token with these scopes launches 
 
 ![The Connect Cloud Account form with DigitalOcean selected and the API token field empty](../../../assets/servers/cloud-account-connect-digitalocean.webp)
 
-dPanel saves the account as **Ready** straight away, without testing the token. To check it before you launch anything:
+dPanel saves the account as **Ready** straight away, without testing the token.
+
+![The new DigitalOcean account in the Cloud accounts list, with the status Ready](../../../assets/servers/cloud-account-ready-digitalocean.webp)
+
+To check the token before you launch anything:
 
 1. Press **Create a server**, then **Launch a cloud server**.
 2. Pick **DigitalOcean**, then the cloud account you just connected.
-3. Wait for the **Region** list. If it fills with DigitalOcean regions, such as `sgp1`, the token works. You can leave the form without launching.
+3. Open the **Region** list. If it fills with DigitalOcean regions, such as `sgp1`, the token works. You can leave the form without launching.
+
+   ![The launch form with the DigitalOcean cloud account picked and the Region list showing DigitalOcean regions](../../../assets/servers/create-region-list-digitalocean.webp)
 
 If **Region** stays empty or shows an error, check that you pasted the whole token and ticked the scopes above.
 
