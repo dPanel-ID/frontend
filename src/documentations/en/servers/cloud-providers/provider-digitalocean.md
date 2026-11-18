@@ -6,7 +6,7 @@ sidebar_icon: provider:digitalocean
 sidebar_label: DigitalOcean
 ---
 
-dPanel launches Ubuntu Droplets in your own DigitalOcean team. It signs in with a custom-scoped personal access token that you create for it, limited to Droplets, SSH keys and the lists the launch form reads.
+dPanel launches Ubuntu Droplets in your own DigitalOcean team. It signs in with a custom-scoped personal access token that you create for it, limited to Droplets and what a launch needs around them.
 
 ## What you need first
 
@@ -15,28 +15,32 @@ dPanel launches Ubuntu Droplets in your own DigitalOcean team. It signs in with 
 
 ## 1. Create a custom-scoped token
 
-DigitalOcean lets you choose exactly what a token may do. Don't give dPanel a **Full Access** token.
+DigitalOcean lets you choose exactly what a token may do. Don't give dPanel a **Full Access** token. Don't pick **Read Only** either: dPanel can't launch a server with it.
 
-1. In the [DigitalOcean control panel](https://cloud.digitalocean.com), go to **API**, then **Tokens**.
+1. Sign in to the [DigitalOcean control panel](https://cloud.digitalocean.com). In the left menu, open **Applications & API**, then the **Tokens** tab.
 2. Press **Generate New Token**, and name it `dpanel`.
-3. Pick an expiry. 90 days is a good balance; you will have to [rotate](./cloud-credentials-security.md#rotating-a-credential) it when it ends.
-4. Under **Scopes**, choose **Custom Scopes** and tick only these:
+3. Pick an **Expiration**. The default, 90 days, is a good balance; you will have to [rotate](./cloud-credentials-security.md#rotating-a-credential) the token when it ends.
+4. Under **Scopes**, choose **Custom Scopes**. Type each resource type below into **Search by resource type**, and tick only these scopes, 21 in all:
 
-| Scope                                              | Why dPanel needs it                                  |
-| -------------------------------------------------- | ---------------------------------------------------- |
-| `droplet:create`, `droplet:read`, `droplet:delete` | Create the Droplet, wait for it, delete it later     |
-| `ssh_key:create`, `ssh_key:read`                   | Import your dPanel SSH key as `dpanel-<server name>` |
-| `regions:read`                                     | The **Region** list                                  |
-| `sizes:read`                                       | The **Size** sliders and the Droplet size list       |
-| `image:read`                                       | The Ubuntu image list                                |
-| `vpc:read`                                         | The networks in a region                             |
+| Resource type | Scopes to tick                                | What it is for                                                                                               |
+| ------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `droplet`     | `create`, `read`, `update`, `delete`, `admin` | Create the Droplet, wait until it is running and has an IP address, and delete it when you delete the server |
+| `ssh_key`     | `create`, `read`, `update`, `delete`          | Import your dPanel SSH key, only when a server joins over SSH                                                |
+| `regions`     | `read`                                        | The **Region** list                                                                                          |
+| `sizes`       | `read`                                        | The **Size** sliders and the Droplet size list                                                               |
+| `image`       | `read`                                        | The Ubuntu release list                                                                                      |
+| `vpc`         | `create`, `read`, `update`, `delete`          | The **Network** list, and placing the Droplet in the network you pick                                        |
+| `tag`         | `create`, `read`, `delete`                    | Part of the tested token; see the note below                                                                 |
+| `actions`     | `read`                                        | Part of the tested token; see the note below                                                                 |
+| `snapshot`    | `read`                                        | Part of the tested token; see the note below                                                                 |
 
-5. Press **Generate Token**, and copy it. DigitalOcean shows it only once.
+5. Before you go on, read the **Selected custom scopes summary** and check it matches the table.
+6. Press **Generate Token**. DigitalOcean shows the token only once: copy it with the copy icon next to it, and keep it somewhere safe until you paste it into dPanel in the next step.
 
 DigitalOcean guides: [Create a personal access token](https://docs.digitalocean.com/reference/api/create-personal-access-token/), [Token scopes](https://docs.digitalocean.com/reference/api/scopes/).
 
-:::note[Extra scopes]
-The list above covers the API calls dPanel makes (`/v2/regions`, `/v2/sizes`, `/v2/images`, `/v2/vpcs`, `/v2/droplets`) and the DigitalOcean library calls it makes to create Droplets, list them and import SSH keys. DigitalOcean sometimes requires extra read scopes for a create action, such as `actions:read` while waiting for a Droplet. The token page tells you which scopes a create scope depends on; accept them. If a launch fails with `403`, the error names the missing scope.
+:::note[Why 21 scopes]
+This is the exact set dPanel is tested with: a token with these scopes launches a Droplet from start to finish. dPanel itself only asks DigitalOcean to list regions, sizes, Ubuntu images, networks and Droplets, to create and delete Droplets, and to add an SSH key. dPanel doesn't use the other scopes by name, but they belong to the tested token. A token with fewer scopes has not been tested, so it may fail halfway through a launch. If a launch fails with `403`, the error names the missing scope: add it to the token.
 :::
 
 ## 2. Connect it to dPanel
@@ -50,7 +54,13 @@ The list above covers the API calls dPanel makes (`/v2/regions`, `/v2/sizes`, `/
 
 ![The Connect Cloud Account form with DigitalOcean selected and the API token field empty](../../../assets/servers/cloud-account-connect-digitalocean.webp)
 
-dPanel saves the account as **Ready** without testing it. The launch form is the first real test: if **Region** stays empty or errors, check the token and its scopes.
+dPanel saves the account as **Ready** straight away, without testing the token. To check it before you launch anything:
+
+1. Press **Create a server**, then **Launch a cloud server**.
+2. Pick **DigitalOcean**, then the cloud account you just connected.
+3. Wait for the **Region** list. If it fills with DigitalOcean regions, such as `sgp1`, the token works. You can leave the form without launching.
+
+If **Region** stays empty or shows an error, check that you pasted the whole token and ticked the scopes above.
 
 ## 3. DigitalOcean fields in the launch form
 
@@ -73,7 +83,7 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick DigitalOcean in
 
 ## DigitalOcean gotchas
 
-- **An SSH key appears in your team, with SSH only.** Each launch that joins over SSH imports your dPanel public key as `dpanel-<server name>` under **Settings**, **Security**. Deleting the server does not remove it. With the dPanel agent, no key is imported.
+- **An SSH key appears in your team, with SSH only.** Each launch that joins over SSH imports your dPanel public key as `dpanel-<server name>-key` under **Settings**, **Security**. Deleting the server does not remove it. With the dPanel agent, no key is imported.
 - **No firewall from dPanel.** dPanel creates no Cloud Firewall. A new Droplet accepts traffic on every port until you add one. If you add a firewall, allow TCP 80 and 443 for your apps, and TCP 22 if the server joins over SSH or you log in over SSH yourself.
 - **Droplet limit.** New teams can only run a few Droplets. A launch that fails with a limit error needs a higher limit from DigitalOcean.
 - **No backups.** dPanel turns on neither DigitalOcean backups nor monitoring. Enable them in the control panel if you want them; backups cost extra.
@@ -81,10 +91,10 @@ Follow [Create a cloud server](./create-a-cloud-server.md). Pick DigitalOcean in
 
 ## Security
 
-- With custom scopes, the token can create, read and delete Droplets and SSH keys, and read regions, sizes, images and VPCs. It can't touch Spaces, databases, DNS or billing.
+- With the custom scopes above, the token can manage Droplets, SSH keys, VPCs and tags, and read regions, sizes, images, snapshots and actions. It can't touch Spaces, databases, DNS or billing.
 - With **Full Access**, it can do anything in the team, so don't.
 - To rotate the token, create a new one in the same team and replace it with **Update credentials** on the cloud account. See [Rotating a credential](./cloud-credentials-security.md#rotating-a-credential).
-- To cut dPanel off, delete the token under **API**, **Tokens**. Running servers keep running. See [what happens when you revoke](./cloud-credentials-security.md#if-you-revoke-a-credential).
+- To cut dPanel off, delete the token under **Applications & API**, **Tokens**, and disconnect the cloud account in dPanel: on its row in **Cloud accounts**, open the ⋯ menu, choose **Delete**, and confirm **Disconnect cloud account**. Running servers keep running, and DigitalOcean keeps billing for them. See [what happens when you revoke](./cloud-credentials-security.md#if-you-revoke-a-credential).
 - More in [Cloud credentials and security](./cloud-credentials-security.md).
 
 ## Frequently asked questions
