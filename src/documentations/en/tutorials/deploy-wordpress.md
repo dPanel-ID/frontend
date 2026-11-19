@@ -49,7 +49,8 @@ This is the code dPanel puts on your server. It is a normal WordPress install wi
 
    ![Size and image: server name wordpress-1, Ubuntu 24.04 LTS, 2 cores, 4 GB RAM and 20 GB storage](../../assets/tutorials/wordpress-size.webp)
 
-5. When the review panel says **Ready to launch**, press **Launch server**.
+5. Some providers, such as IDCloudHost, also ask for a first password for the server. Press **Generate** next to it, then **Copy** and keep it in your password manager: you only need it to log in from the provider's console.
+6. When the review panel says **Ready to launch**, press **Launch server**.
 
 The server appears in the list. Wait until its status is **Ready**, usually 5 to 15 minutes. The full form is described in [Create a cloud server](../servers/cloud-providers/create-a-cloud-server.md). Already have a machine? [Connect it with the dPanel agent](../servers/register-a-private-machine.md) instead, and skip this step.
 
@@ -62,7 +63,7 @@ WordPress needs three pieces of software, which dPanel calls **modules**: a data
 1. Open the server and go to its **Modules** tab. Press **Add module**.
 2. Press **Install** on **MariaDB**. In the form:
    - **MariaDB Version**: keep the default.
-   - **Root Password**: at least 8 characters. Save it in your password manager; dPanel does not show it again, and WordPress does not use it.
+   - **Root Password**: press **Generate**. dPanel fills in a strong password and shows it once: press **Copy** and keep it in your password manager. dPanel does not show it again, and WordPress does not use it.
    - **Bind Address**: change it to `127.0.0.1`, so the database answers only to programs on this server and is never open to the internet.
 
    ![The MariaDB form: version 12.3, the root password field, and Bind Address set to 127.0.0.1](../../assets/tutorials/wordpress-mariadb.webp)
@@ -76,23 +77,7 @@ Install one module at a time and let each finish: dPanel runs a server's install
 
 **You should see:** MariaDB, PHP and FrankenPHP on the **Modules** tab, each marked **Installed**.
 
-## Step 3: Create the WordPress database
-
-WordPress keeps posts, pages, users and settings in its own database, reached with its own user, so it never needs the root password.
-
-1. On **Modules**, press **Add module**, then **Manage** on **MariaDB**.
-2. Under **Databases**, press **Create database**.
-3. Enter **Database Name** `wordpress`, **Database User** `wp`, and a **Database Password** of at least 8 characters. Copy the password: you need it in step 4.
-
-   ![The Create database form: database name wordpress, user wp, and the password field](../../assets/tutorials/wordpress-database.webp)
-
-4. Press **Install role** and confirm.
-
-The user `wp` gets every privilege on the `wordpress` database and nothing else, and can sign in only from the server itself, which is exactly how WordPress connects.
-
-**You should see:** `wordpress` listed under **Databases**, and the password saved somewhere safe.
-
-## Step 4: Create and deploy the application
+## Step 3: Create the application and its database
 
 1. Open **Applications** and press **Create Application**. The form has five steps.
 2. **Repository**: pick the GitHub account that holds your fork, search for `wordpress`, select **wordpress-example**, and keep the **main** branch. Press **Continue**.
@@ -112,18 +97,16 @@ The user `wp` gets every privilege on the `wordpress` database and nothing else,
 
    ![Build and runtime commands: ./scripts/build.sh, ./scripts/start.sh and the suggested port](../../assets/tutorials/wordpress-commands.webp)
 
-5. **Environment**: leave **Build-time variables** empty. Under **Runtime variables**, paste the list below, then replace the password with the one from step 3 and both addresses with the domain you will publish in step 5.
+5. **Environment**: leave **Build-time variables** empty. Under **Runtime variables**, paste the list below, and replace both addresses with the domain you will publish in step 4.
 
    ```text
-   WORDPRESS_DB_HOST=127.0.0.1:3306
-   WORDPRESS_DB_NAME=wordpress
-   WORDPRESS_DB_USER=wp
-   WORDPRESS_DB_PASSWORD=the-password-from-step-3
    WORDPRESS_TABLE_PREFIX=wp_
    WORDPRESS_HOME=https://blog.example.com
    WORDPRESS_SITEURL=https://blog.example.com
    WORDPRESS_MEMORY_LIMIT=256M
    ```
+
+   WordPress keeps posts, pages, users and settings in its own database, reached with its own user, so it never needs the root password. Create both right here: under **Database for this app**, press **Create database**, keep **Variable names** on **WordPress (WORDPRESS_DB\_\*)**, set **Database name** to `wordpress` and **Database user** to `wp`, then press **Create database** and confirm. dPanel creates them on your server's MariaDB with a strong password it makes for you, and adds `WORDPRESS_DB_HOST`, `WORDPRESS_DB_NAME`, `WORDPRESS_DB_USER` and `WORDPRESS_DB_PASSWORD` to the runtime variables. There is nothing to type, copy or remember. The user `wp` gets every privilege on the `wordpress` database and nothing else, and can sign in only from the server itself, which is exactly how WordPress connects.
 
    ![Runtime variables filled in with the eight WORDPRESS_ settings](../../assets/tutorials/wordpress-environment.webp)
 
@@ -133,7 +116,7 @@ dPanel copies your repository to the server, runs `./scripts/build.sh`, and star
 
 **You should see:** the application's current deployment marked ready, with **1** under **Serving now**. It is not on the internet yet: that is the next step.
 
-## Step 5: Publish it on your domain with HTTPS
+## Step 4: Publish it on your domain with HTTPS
 
 A load balancer is the front door: it answers visitors on your domain, handles HTTPS, and passes each request to WordPress.
 
@@ -156,7 +139,7 @@ A load balancer is the front door: it answers visitors on your domain, handles H
 
 dPanel creates the DNS record, writes the route to Caddy, and requests a free Let's Encrypt certificate. The load balancer turns **Ready** in a minute or two. See [Load balancers](../networking/load-balancers.md).
 
-## Step 6: Finish the WordPress install
+## Step 5: Finish the WordPress install
 
 Open your address, for example `https://blog.example.com`. WordPress shows its installer, which proves the database connection works.
 
@@ -175,19 +158,19 @@ Your posts and settings live in the database, which a release does not touch eit
 
 ## When something does not work
 
-| What you see                                 | What to check                                                                                                                                                                                                               |
-| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A module stays in installing, or fails       | Open the server's **Logs**, or ask the assistant why the job failed. Install the module again after fixing the cause.                                                                                                       |
-| `wordpress-example` is missing from the list | Pick the GitHub account that holds your fork. If you did not fork it, do so, then search again.                                                                                                                             |
-| The build fails                              | Open the application and read the build log of the failed release. See [Application logs](../applications/application-logs.md).                                                                                             |
-| "Error establishing a database connection"   | The four `WORDPRESS_DB_*` variables must match the database from step 3. Fix them under the application's **Settings**, then deploy again: a changed variable reaches the server with the next release, not with a restart. |
-| The site redirects to the wrong address      | `WORDPRESS_HOME` and `WORDPRESS_SITEURL` must be exactly the address visitors use, with `https://`. Fix them and deploy again.                                                                                              |
-| The domain does not answer                   | Wait a few minutes for DNS and the certificate. Check the load balancer's detail page and its logs. A red **Load balancer change failed** banner has **See why it failed**.                                                 |
-| Anything else                                | See [Common problems and fixes](../troubleshooting/faq.md).                                                                                                                                                                 |
+| What you see                                 | What to check                                                                                                                                                                                                                                                                                          |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| A module stays in installing, or fails       | Open the server's **Logs**, or ask the assistant why the job failed. Install the module again after fixing the cause.                                                                                                                                                                                  |
+| `wordpress-example` is missing from the list | Pick the GitHub account that holds your fork. If you did not fork it, do so, then search again.                                                                                                                                                                                                        |
+| The build fails                              | Open the application and read the build log of the failed release. See [Application logs](../applications/application-logs.md).                                                                                                                                                                        |
+| "Error establishing a database connection"   | The four `WORDPRESS_DB_*` variables must match the database. **Create database** in step 3 writes them for you; if you changed them, set them back. Fix them under the application's **Settings**, then deploy again: a changed variable reaches the server with the next release, not with a restart. |
+| The site redirects to the wrong address      | `WORDPRESS_HOME` and `WORDPRESS_SITEURL` must be exactly the address visitors use, with `https://`. Fix them and deploy again.                                                                                                                                                                         |
+| The domain does not answer                   | Wait a few minutes for DNS and the certificate. Check the load balancer's detail page and its logs. A red **Load balancer change failed** banner has **See why it failed**.                                                                                                                            |
+| Anything else                                | See [Common problems and fixes](../troubleshooting/faq.md).                                                                                                                                                                                                                                            |
 
 ## The same steps from the terminal
 
-The [dnocs CLI](../ai/ai-in-the-terminal.md) does steps 2 and 3 without the web forms, and creates the passwords for you without printing them:
+The [dnocs CLI](../ai/ai-in-the-terminal.md) does step 2 and the database part of step 3 without the web forms, and creates the passwords for you without printing them:
 
 ```bash
 dnocs module install mariadb --server-id 304 --var mariadb.mariadb_bind_address=127.0.0.1 --generate-secrets
@@ -226,7 +209,7 @@ Yes, if it has a build script and a start script that serve WordPress on the por
 
 ### Do I need a domain to try this?
 
-You need one for step 5, where the load balancer publishes the site with HTTPS. Steps 1 to 4 work without one.
+You need one for step 4, where the load balancer publishes the site with HTTPS. Steps 1 to 3 work without one.
 
 ### Why set the bind address to 127.0.0.1?
 

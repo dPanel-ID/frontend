@@ -49,7 +49,8 @@ Inilah kode yang dipasang dPanel di server Anda. Isinya instalasi WordPress bias
 
    ![Ukuran dan image: nama server wordpress-1, Ubuntu 24.04 LTS, 2 core, RAM 4 GB, dan storage 20 GB](../../assets/tutorials/wordpress-size.webp)
 
-5. Saat panel review bertuliskan **Ready to launch**, tekan **Launch server**.
+5. Beberapa provider, seperti IDCloudHost, juga meminta kata sandi awal untuk server. Tekan **Buat** di sebelahnya, lalu **Salin** dan simpan di pengelola kata sandi Anda: Anda hanya membutuhkannya untuk masuk dari konsol provider.
+6. Saat panel review bertuliskan **Ready to launch**, tekan **Launch server**.
 
 Server muncul di daftar. Tunggu sampai statusnya **Ready**, biasanya 5 sampai 15 menit. Formulir lengkapnya dijelaskan di [Membuat server cloud](../servers/cloud-providers/create-a-cloud-server.md). Sudah punya mesin sendiri? [Hubungkan dengan agen dPanel](../servers/register-a-private-machine.md) saja, lalu lewati langkah ini.
 
@@ -62,7 +63,7 @@ WordPress butuh tiga perangkat lunak, yang di dPanel disebut **modul**: basis da
 1. Buka server, lalu tab **Modul**. Tekan **Tambah modul**.
 2. Tekan **Install** pada **MariaDB**. Di formulirnya:
    - **MariaDB Version**: biarkan bawaannya.
-   - **Root Password**: minimal 8 karakter. Simpan di pengelola kata sandi Anda; dPanel tidak menampilkannya lagi, dan WordPress tidak memakainya.
+   - **Root Password**: tekan **Buat**. dPanel mengisi kata sandi yang kuat dan menampilkannya sekali: tekan **Salin** dan simpan di pengelola kata sandi Anda. dPanel tidak menampilkannya lagi, dan WordPress tidak memakainya.
    - **Bind Address**: ganti menjadi `127.0.0.1`, agar basis data hanya menjawab program di server ini dan tidak pernah terbuka ke internet.
 
    ![Formulir MariaDB: versi 12.3, kolom root password, dan Bind Address berisi 127.0.0.1](../../assets/tutorials/wordpress-mariadb.webp)
@@ -76,23 +77,7 @@ Pasang satu modul setiap kali dan biarkan selesai: dPanel menjalankan pemasangan
 
 **Yang seharusnya Anda lihat:** MariaDB, PHP, dan FrankenPHP di tab **Modul**, masing-masing berstatus **Terpasang**.
 
-## Langkah 3: Buat basis data WordPress
-
-WordPress menyimpan pos, halaman, pengguna, dan pengaturan di basis datanya sendiri, yang dijangkau dengan penggunanya sendiri, jadi tidak pernah butuh root password.
-
-1. Di tab **Modul**, tekan **Tambah modul**, lalu **Kelola** pada **MariaDB**.
-2. Di bagian **Database**, tekan **Create database**.
-3. Isi **Database Name** `wordpress`, **Database User** `wp`, dan **Database Password** minimal 8 karakter. Salin kata sandinya: Anda membutuhkannya di langkah 4.
-
-   ![Formulir Create database: nama basis data wordpress, pengguna wp, dan kolom kata sandi](../../assets/tutorials/wordpress-database.webp)
-
-4. Tekan **Install role** dan konfirmasi.
-
-Pengguna `wp` mendapat semua hak atas basis data `wordpress` dan tidak ada yang lain, dan hanya bisa masuk dari server itu sendiri, persis seperti cara WordPress terhubung.
-
-**Yang seharusnya Anda lihat:** `wordpress` tampil di **Database**, dan kata sandinya sudah tersimpan di tempat aman.
-
-## Langkah 4: Buat dan rilis aplikasi
+## Langkah 3: Buat aplikasi beserta basis datanya
 
 1. Buka **Aplikasi**, lalu tekan **Buat Aplikasi**. Formulirnya punya lima langkah.
 2. **Repositori**: pilih akun GitHub tempat fork Anda, cari `wordpress`, pilih **wordpress-example**, dan biarkan branch **main**. Tekan **Lanjut**.
@@ -112,18 +97,16 @@ Pengguna `wp` mendapat semua hak atas basis data `wordpress` dan tidak ada yang 
 
    ![Perintah build dan runtime: ./scripts/build.sh, ./scripts/start.sh, dan port yang disarankan](../../assets/tutorials/wordpress-commands.webp)
 
-5. **Environment**: biarkan variabel build-time kosong. Di **Variabel runtime**, tempel daftar di bawah, lalu ganti kata sandinya dengan yang dari langkah 3 dan kedua alamatnya dengan domain yang akan Anda publikasikan di langkah 5.
+5. **Environment**: biarkan variabel build-time kosong. Di **Variabel runtime**, tempel daftar di bawah, lalu ganti kedua alamatnya dengan domain yang akan Anda publikasikan di langkah 4.
 
    ```text
-   WORDPRESS_DB_HOST=127.0.0.1:3306
-   WORDPRESS_DB_NAME=wordpress
-   WORDPRESS_DB_USER=wp
-   WORDPRESS_DB_PASSWORD=kata-sandi-dari-langkah-3
    WORDPRESS_TABLE_PREFIX=wp_
    WORDPRESS_HOME=https://blog.example.com
    WORDPRESS_SITEURL=https://blog.example.com
    WORDPRESS_MEMORY_LIMIT=256M
    ```
+
+   WordPress menyimpan pos, halaman, pengguna, dan pengaturan di basis datanya sendiri, yang dijangkau dengan penggunanya sendiri, jadi tidak pernah butuh root password. Buat keduanya di sini: di **Database untuk aplikasi ini**, tekan **Buat database**, biarkan **Nama variabel** pada **WordPress (WORDPRESS_DB\_\*)**, isi **Nama database** dengan `wordpress` dan **Pengguna database** dengan `wp`, lalu tekan **Buat database** dan konfirmasi. dPanel membuat keduanya di MariaDB server Anda dengan kata sandi kuat yang dibuatkan untuk Anda, lalu menambahkan `WORDPRESS_DB_HOST`, `WORDPRESS_DB_NAME`, `WORDPRESS_DB_USER`, dan `WORDPRESS_DB_PASSWORD` ke variabel runtime. Tidak ada yang perlu diketik, disalin, atau diingat. Pengguna `wp` mendapat semua hak atas basis data `wordpress` dan tidak ada yang lain, dan hanya bisa masuk dari server itu sendiri, persis seperti cara WordPress terhubung.
 
    ![Variabel runtime berisi delapan pengaturan WORDPRESS_](../../assets/tutorials/wordpress-environment.webp)
 
@@ -133,7 +116,7 @@ dPanel menyalin repositori Anda ke server, menjalankan `./scripts/build.sh`, dan
 
 **Yang seharusnya Anda lihat:** deployment aplikasi saat ini berstatus siap, dengan **1** di **Serving now**. Aplikasi belum ada di internet: itu langkah berikutnya.
 
-## Langkah 5: Publikasikan di domain Anda dengan HTTPS
+## Langkah 4: Publikasikan di domain Anda dengan HTTPS
 
 Load balancer adalah pintu depan: ia menjawab pengunjung di domain Anda, mengurus HTTPS, dan meneruskan setiap permintaan ke WordPress.
 
@@ -156,7 +139,7 @@ Load balancer adalah pintu depan: ia menjawab pengunjung di domain Anda, menguru
 
 dPanel membuat record DNS, menulis rute ke Caddy, dan meminta sertifikat Let's Encrypt gratis. Load balancer berstatus **Ready** dalam satu atau dua menit. Lihat [Load balancer](../networking/load-balancers.md).
 
-## Langkah 6: Selesaikan pemasangan WordPress
+## Langkah 5: Selesaikan pemasangan WordPress
 
 Buka alamat Anda, misalnya `https://blog.example.com`. WordPress menampilkan penginstalnya, yang membuktikan koneksi basis data berjalan.
 
@@ -175,19 +158,19 @@ Pos dan pengaturan Anda ada di basis data, yang juga tidak disentuh oleh rilis. 
 
 ## Kalau ada yang tidak berjalan
 
-| Yang Anda lihat                                  | Yang perlu diperiksa                                                                                                                                                                                                   |
-| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Modul tidak kunjung selesai dipasang, atau gagal | Buka **Log** server, atau tanyakan ke asisten kenapa job-nya gagal. Pasang ulang modulnya setelah penyebabnya diperbaiki.                                                                                              |
-| `wordpress-example` tidak ada di daftar          | Pilih akun GitHub tempat fork Anda. Kalau belum di-fork, fork dulu, lalu cari lagi.                                                                                                                                    |
-| Build gagal                                      | Buka aplikasinya dan baca log build dari rilis yang gagal. Lihat [Log aplikasi](../applications/application-logs.md).                                                                                                  |
-| "Error establishing a database connection"       | Keempat variabel `WORDPRESS_DB_*` harus cocok dengan basis data dari langkah 3. Perbaiki di **Pengaturan** aplikasi, lalu rilis lagi: variabel yang diubah sampai ke server pada rilis berikutnya, bukan saat restart. |
-| Situs mengarahkan ke alamat yang salah           | `WORDPRESS_HOME` dan `WORDPRESS_SITEURL` harus sama persis dengan alamat yang dipakai pengunjung, dengan `https://`. Perbaiki, lalu rilis lagi.                                                                        |
-| Domain tidak menjawab                            | Tunggu beberapa menit untuk DNS dan sertifikat. Periksa halaman detail load balancer dan log-nya. Banner merah **Perubahan load balancer gagal** punya tombol **Lihat penyebab gagal**.                                |
-| Masalah lain                                     | Lihat [Masalah umum dan solusinya](../troubleshooting/faq.md).                                                                                                                                                         |
+| Yang Anda lihat                                  | Yang perlu diperiksa                                                                                                                                                                                                                                                                                    |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Modul tidak kunjung selesai dipasang, atau gagal | Buka **Log** server, atau tanyakan ke asisten kenapa job-nya gagal. Pasang ulang modulnya setelah penyebabnya diperbaiki.                                                                                                                                                                               |
+| `wordpress-example` tidak ada di daftar          | Pilih akun GitHub tempat fork Anda. Kalau belum di-fork, fork dulu, lalu cari lagi.                                                                                                                                                                                                                     |
+| Build gagal                                      | Buka aplikasinya dan baca log build dari rilis yang gagal. Lihat [Log aplikasi](../applications/application-logs.md).                                                                                                                                                                                   |
+| "Error establishing a database connection"       | Keempat variabel `WORDPRESS_DB_*` harus cocok dengan basis datanya. **Buat database** di langkah 3 menuliskannya untuk Anda; kalau Anda mengubahnya, kembalikan. Perbaiki di **Pengaturan** aplikasi, lalu rilis lagi: variabel yang diubah sampai ke server pada rilis berikutnya, bukan saat restart. |
+| Situs mengarahkan ke alamat yang salah           | `WORDPRESS_HOME` dan `WORDPRESS_SITEURL` harus sama persis dengan alamat yang dipakai pengunjung, dengan `https://`. Perbaiki, lalu rilis lagi.                                                                                                                                                         |
+| Domain tidak menjawab                            | Tunggu beberapa menit untuk DNS dan sertifikat. Periksa halaman detail load balancer dan log-nya. Banner merah **Perubahan load balancer gagal** punya tombol **Lihat penyebab gagal**.                                                                                                                 |
+| Masalah lain                                     | Lihat [Masalah umum dan solusinya](../troubleshooting/faq.md).                                                                                                                                                                                                                                          |
 
 ## Langkah yang sama dari terminal
 
-[CLI dnocs](../ai/ai-in-the-terminal.md) bisa mengerjakan langkah 2 dan 3 tanpa formulir web, dan membuatkan kata sandinya tanpa menampilkannya:
+[CLI dnocs](../ai/ai-in-the-terminal.md) bisa mengerjakan langkah 2 dan bagian basis data di langkah 3 tanpa formulir web, dan membuatkan kata sandinya tanpa menampilkannya:
 
 ```bash
 dnocs module install mariadb --server-id 304 --var mariadb.mariadb_bind_address=127.0.0.1 --generate-secrets
@@ -226,7 +209,7 @@ Bisa, asalkan repositorinya punya skrip build dan skrip start yang menjalankan W
 
 ### Apakah saya perlu domain untuk mencobanya?
 
-Domain dibutuhkan di langkah 5, saat load balancer memublikasikan situs dengan HTTPS. Langkah 1 sampai 4 bisa dikerjakan tanpa domain.
+Domain dibutuhkan di langkah 4, saat load balancer memublikasikan situs dengan HTTPS. Langkah 1 sampai 3 bisa dikerjakan tanpa domain.
 
 ### Mengapa bind address diatur ke 127.0.0.1?
 
