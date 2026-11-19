@@ -83,6 +83,7 @@ export default function ServerCard(props: ServerCardProps) {
 
   const [loadBalancersResponse] = ApiLoadBalancer.Find.useGet({
     machineId: server.id,
+    excludeDeleted: true,
     page: 1,
     limit: 1,
     options: { skip: !shouldFetchOverview || loadBalancerCount != null },

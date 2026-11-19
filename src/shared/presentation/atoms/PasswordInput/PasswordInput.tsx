@@ -9,6 +9,7 @@ import {
   WandSparklesIcon,
 } from 'lucide-react';
 
+import { secretFieldAutofillProps } from '@/shared/libs/browser/autofill';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Input } from '@/shared/presentation/atoms/Input';
 import type { InputProps } from '@/shared/presentation/atoms/Input';
@@ -82,7 +83,7 @@ export function PasswordInput(props: PasswordInputProps) {
       <Input
         {...rest}
         type={isRevealed ? 'text' : 'password'}
-        autoComplete="new-password"
+        {...secretFieldAutofillProps}
         spellCheck={false}
         aria-describedby={
           showGenerated ? `${describedById} ${noteId}` : describedById

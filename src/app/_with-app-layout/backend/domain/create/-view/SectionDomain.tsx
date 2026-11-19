@@ -2,6 +2,7 @@ import type { useForm } from 'react-hook-form';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { plainFieldAutofillProps } from '@/shared/libs/browser/autofill';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
 import { TextArea } from '@/shared/presentation/atoms/TextArea';
@@ -30,7 +31,7 @@ export function DomainIdentitySection(props: {
           <Input
             id="domain-create-domain"
             placeholder={t('page.domainCreate.fields.domain.placeholder')}
-            autoComplete="off"
+            {...plainFieldAutofillProps}
             disabled={isSubmitting}
             aria-invalid={Boolean(form.formState.errors.domain)}
             {...form.register('domain')}

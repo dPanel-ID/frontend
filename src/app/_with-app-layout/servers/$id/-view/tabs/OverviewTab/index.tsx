@@ -81,9 +81,12 @@ export default function OverviewTab() {
   const [loadBalancersResponse, refreshLoadBalancers] =
     ApiLoadBalancer.Find.useGet({
       machineId: serverId,
+      // A deleted load balancer keeps its record until removed; it no
+      // longer runs here, so it does not count.
+      excludeDeleted: true,
       page: 1,
       limit: 1,
-      options: { skip: !server },
+      options: { skip: !server, silentRefresh: true, refetchOnVisible: true },
     });
 
   useSubscribe('@servers::detail/server-services-refresh', () => {

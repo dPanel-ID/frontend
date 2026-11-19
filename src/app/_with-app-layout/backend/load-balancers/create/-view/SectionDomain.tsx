@@ -24,8 +24,20 @@ export function DomainField(props: {
   gatewayAddress?: string;
   /** The gateway is picked but has no public address to point a record at. */
   gatewayHasNoPublicAddress?: boolean;
+  /**
+   * Reads the managed domains again, keeping the shown list meanwhile. Called
+   * when the user turns to a managed domain and each time the list opens, so
+   * a domain added in another tab shows without reloading the page.
+   */
+  onRefreshDomains?: () => void;
 }) {
-  const { form, domains, gatewayAddress, gatewayHasNoPublicAddress } = props;
+  const {
+    form,
+    domains,
+    gatewayAddress,
+    gatewayHasNoPublicAddress,
+    onRefreshDomains,
+  } = props;
   const t = useDevetekTranslations();
   const [isExternal, setIsExternal] = useState(true);
   const domain = useController({ control: form.control, name: 'domain' });
@@ -38,17 +50,26 @@ export function DomainField(props: {
     name: 'internalDomainMetadata.subdomain',
   });
 
-  const domainItems = useMemo(() => {
-    if (domains.$status !== 'success') return [];
+  // While a refresh loads, the last list stays: the combobox must not empty.
+  const domainList =
+    domains.$status === 'success'
+      ? domains.list
+      : domains.$status === 'loading'
+        ? domains.prevData?.list
+        : undefined;
 
-    return domains.list.map((item) => ({
+  const domainItems = useMemo(() => {
+    if (!domainList) return [];
+
+    return domainList.map((item) => ({
       value: item.id,
       label: `.${item.domain.hostname}`,
       description: item.ownership.owner,
     }));
-  }, [domains]);
+  }, [domainList]);
 
   const changeDomainMode = (nextExternal: boolean) => {
+    if (!nextExternal) onRefreshDomains?.();
     setIsExternal(nextExternal);
     form.setValue('domain', '');
     form.setValue('internalDomainMetadata', {
@@ -58,9 +79,7 @@ export function DomainField(props: {
   };
 
   const selectInternalDomain = (id: string) => {
-    if (domains.$status !== 'success') return;
-
-    const selected = domains.list.find((item) => item.id === id);
+    const selected = domainList?.find((item) => item.id === id);
     if (!selected) return;
 
     internalDomainId.field.onChange(id);
@@ -73,10 +92,9 @@ export function DomainField(props: {
     );
   };
 
-  const selectedDomain =
-    domains.$status === 'success'
-      ? domains.list.find((item) => item.id === internalDomainId.field.value)
-      : undefined;
+  const selectedDomain = domainList?.find(
+    (item) => item.id === internalDomainId.field.value,
+  );
 
   return (
     <Card className="rounded-lg p-4 shadow-none">
@@ -144,6 +162,9 @@ export function DomainField(props: {
             items={domainItems}
             value={internalDomainId.field.value}
             onChange={selectInternalDomain}
+            onOpenChange={(open) => {
+              if (open) onRefreshDomains?.();
+            }}
             placeholder={t('page.loadBalancersCreate.gateway.selectDomain')}
           />
         </div>

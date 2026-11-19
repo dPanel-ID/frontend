@@ -24,6 +24,7 @@ export default function Combobox<V>(props: ComboboxProps<V>) {
     searchPlaceholder,
     emptySearchText,
     onChange,
+    onOpenChange,
   } = props;
   const searchable = searchPlaceholder !== undefined;
   const [query, setQuery] = useState('');
@@ -58,6 +59,7 @@ export default function Combobox<V>(props: ComboboxProps<V>) {
       onOpenChange={(next) => {
         setOpen(next);
         if (!next) setQuery('');
+        onOpenChange?.(next);
       }}
     >
       <PopoverTrigger asChild>
@@ -155,6 +157,8 @@ interface ComboboxProps<V> {
   searchPlaceholder?: string;
   /** Shown when the search matches nothing. */
   emptySearchText?: string;
+  /** Called when the list opens or closes, e.g. to read fresh items. */
+  onOpenChange?: (open: boolean) => void;
 }
 
 export interface ComboboxItem<V> {
