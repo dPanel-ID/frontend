@@ -1,6 +1,10 @@
 import { KeyRoundIcon } from 'lucide-react';
 
 import type { DTOs } from '@/shared/api';
+import {
+  plainFieldAutofillProps,
+  secretFieldAutofillProps,
+} from '@/shared/libs/browser/autofill';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
 import { TextArea } from '@/shared/presentation/atoms/TextArea';
@@ -79,6 +83,7 @@ function CredentialField(props: {
   const inputId = `cloud-project-credential-${fieldKey}`;
   const label = field.label || fieldKey;
   const options = field.options ?? [];
+  const isSecret = Boolean(field.secret) || field.type === 'password';
 
   if (!fieldKey) return null;
 
@@ -115,7 +120,7 @@ function CredentialField(props: {
       ) : shouldRenderTextarea(field) ? (
         <TextArea
           id={inputId}
-          autoComplete="off"
+          {...plainFieldAutofillProps}
           className={field.secret ? 'font-mono text-xs' : undefined}
           disabled={disabled}
           placeholder={field.placeholder}
@@ -130,10 +135,11 @@ function CredentialField(props: {
       ) : (
         <Input
           id={inputId}
-          autoComplete="off"
+          {...(isSecret ? secretFieldAutofillProps : plainFieldAutofillProps)}
+          spellCheck={false}
           disabled={disabled}
           placeholder={field.placeholder}
-          type={field.secret || field.type === 'password' ? 'password' : 'text'}
+          type={isSecret ? 'password' : 'text'}
           aria-invalid={Boolean(fieldError)}
           {...form.register(fieldName, {
             validate: (value) =>

@@ -339,6 +339,7 @@ function CreateFlow() {
               <DomainField
                 form={form}
                 domains={resources.domains}
+                onRefreshDomains={resources.refreshDomains}
                 gatewayAddress={getServerPublicAddress(selectedServer)}
                 gatewayHasNoPublicAddress={Boolean(
                   selectedServer && !getServerPublicAddress(selectedServer),

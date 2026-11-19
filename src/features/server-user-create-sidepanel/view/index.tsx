@@ -6,6 +6,7 @@ import { useToaster } from '@/services/toaster';
 
 import { ApiServer, ApiServiceAccounts } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
+import { secretFieldAutofillProps } from '@/shared/libs/browser/autofill';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { Input } from '@/shared/presentation/atoms/Input';
 import {
@@ -268,6 +269,7 @@ export default function ServerUserCreateSidepanel(props: Props) {
               <span className="text-sm font-medium">Password</span>
               <Input
                 type="password"
+                {...secretFieldAutofillProps}
                 value={password}
                 placeholder="Input password"
                 onChange={(e) => setPassword(e.target.value)}

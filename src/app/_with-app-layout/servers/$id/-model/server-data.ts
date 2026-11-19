@@ -1,6 +1,9 @@
+import { useState } from 'react';
+
 import { AdapterOsServiceFromDto } from '@/entities/os-service/adapter';
 import { AdapterServerFromDto } from '@/entities/server/adapter';
 import { AGENT_CHECK_INTERVAL_MS } from '@/entities/server/lib/agentHealth';
+import { moduleStatusPollMs } from '@/entities/server-modules/lib/status-polling';
 import type { SchemaCommon } from '@/entities/shared/rules/schema';
 
 import { ApiServer, ApiService } from '@/shared/api';
@@ -40,12 +43,31 @@ export const [ServerDataModelProvider, useServerDataModel] = buildSelector(
       },
     });
 
+  // Read again quietly while a module installs or uninstalls, so its status
+  // turns Installed (or Failed) by itself when the job ends; no polling once
+  // every module has settled.
+  const [modulesPollMs, setModulesPollMs] = useState(0);
   const [responseModules, refreshModules] = ApiServer.Modules.$Id.useGet({
     serverId: String(serverId),
     options: {
       skip: responseServerDetail.$status !== 'success',
+      refreshIntervalMs: modulesPollMs,
+      silentRefresh: true,
+      refetchOnVisible: true,
     },
   });
+  const nextModulesPollMs = moduleStatusPollMs(
+    responseModules.$status === 'success'
+      ? responseModules.modules
+      : responseModules.$status === 'loading'
+        ? responseModules.prevData?.modules
+        : undefined,
+  );
+  // Remember the latest answer during render; the next render polls (or
+  // stops) according to it.
+  if (nextModulesPollMs !== modulesPollMs) {
+    setModulesPollMs(nextModulesPollMs);
+  }
 
   const refreshModuleInventory = async () => {
     const result = await ApiServer.Modules.$Id.Refresh.doPost({

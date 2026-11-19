@@ -6,6 +6,7 @@ import { AdapterApplicationFromDto } from '@/entities/application/adapter';
 import { AdapterDomainFromDto } from '@/entities/domain/adapter';
 import { AdapterServerFromDto } from '@/entities/server/adapter';
 import { toServerModuleFromCatalog } from '@/entities/server-modules/lib/catalog';
+import { moduleStatusPollMs } from '@/entities/server-modules/lib/status-polling';
 
 import { ApiApplication, ApiDomain, ApiModule, ApiServer } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
@@ -43,10 +44,14 @@ export function useLoadBalancerCreateResources(
       limit: 12,
     });
 
-  const [responseDomains, refreshDomains] = ApiDomain.Find.useGet({
+  // A domain is often added in another tab while this form is open: read
+  // the list again when the tab returns, keeping the shown list meanwhile.
+  const [responseDomains, refetchDomains] = ApiDomain.Find.useGet({
     page: 1,
     perPage: 12,
+    options: { silentRefresh: true, refetchOnVisible: true },
   });
+  const refreshDomains = () => refetchDomains({ background: true });
 
   const [responseModules, refreshModules] = ApiModule.Find.useGet({
     serverId: selectedServerId || undefined,
@@ -55,11 +60,18 @@ export function useLoadBalancerCreateResources(
     },
   });
 
+  // The gateway engine (Caddy, APISIX) may be installing on the picked
+  // server: read the server's modules again while one is changing, so the
+  // engine turns Installed without pressing Refresh.
+  const [serverModulesPollMs, setServerModulesPollMs] = useState(0);
   const [responseServerModules, refreshServerModules] =
     ApiServer.Modules.$Id.useGet({
       serverId: String(selectedServerId ?? ''),
       options: {
         skip: !selectedServerId,
+        refreshIntervalMs: serverModulesPollMs,
+        silentRefresh: true,
+        refetchOnVisible: true,
       },
     });
 
@@ -100,6 +112,19 @@ export function useLoadBalancerCreateResources(
           module.installerType === 'infrastructure',
       ),
   }));
+  const nextServerModulesPollMs = selectedServerId
+    ? moduleStatusPollMs(
+        responseServerModules.$status === 'success'
+          ? responseServerModules.modules
+          : responseServerModules.$status === 'loading'
+            ? responseServerModules.prevData?.modules
+            : undefined,
+      )
+    : 0;
+  if (nextServerModulesPollMs !== serverModulesPollMs) {
+    setServerModulesPollMs(nextServerModulesPollMs);
+  }
+
   const serverModuleInventory = useMemo(() => {
     if (responseServerModules.$status === 'success') {
       return responseServerModules.modules ?? [];

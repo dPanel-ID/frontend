@@ -865,6 +865,16 @@
         "reconnectHint": "GitHub would not confirm the saved account. Sign in again to restore access to your repositories.",
         "connectedTo": "Connected to GitHub as {login}",
         "checking": "Checking GitHub"
+      },
+      "delete": {
+        "confirmTitle": "Delete application",
+        "confirmDescription": "Delete \"{name}\" permanently? Its builds and release history are removed too. This cannot be undone.",
+        "deleted": "Application \"{name}\" has been deleted.",
+        "failedTitle": "Couldn't delete \"{name}\"",
+        "stillReleasedTitle": "Remove its releases first",
+        "stillReleasedDescription": "\"{name}\" is still released on a server. Delete each release on the Deployments tab and wait until it is removed, then delete the application.",
+        "openDeployments": "Open Deployments",
+        "close": "Close"
       }
     },
     "applicationDetail": {
@@ -895,7 +905,7 @@
         "deleteThisAppDescription": "Permanently remove this application and all its data. This action cannot be undone.",
         "consequences": {
           "removes": "Removes the application, its builds and its release history from dNocs.",
-          "stops": "Stops the service on every server it runs on.",
+          "stops": "An application still released on a server can't be deleted yet: remove its releases on the Deployments tab first.",
           "keeps": "Leaves your server and your Git repository untouched."
         }
       },

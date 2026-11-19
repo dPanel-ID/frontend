@@ -16,6 +16,7 @@ import IconProxmox from '@/shared/assets/ico-proxmox.png';
 import IconTencentCloud from '@/shared/assets/ico-tencentcloud.svg';
 import IconDigitalOcean from '@/shared/assets/logo-digitalocean.png';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
+import { plainFieldAutofillProps } from '@/shared/libs/browser/autofill';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
@@ -45,21 +46,32 @@ function getProviderIconUrl(provider: DTOs.CloudProviderContractV1) {
 }
 
 function getLocalProviderIcon(provider: DTOs.CloudProviderContractV1) {
-  const tokens = [
-    provider.id,
-    provider.name,
-    ...(provider.aliases ?? []),
-  ].map(normalizeProviderToken);
+  const tokens = [provider.id, provider.name, ...(provider.aliases ?? [])].map(
+    normalizeProviderToken,
+  );
 
-  if (tokens.some((token) => token === 'biznetgio' || token === 'biznetgioneolite')) {
+  if (
+    tokens.some(
+      (token) => token === 'biznetgio' || token === 'biznetgioneolite',
+    )
+  ) {
     return IconBiznetGio;
   }
 
-  if (tokens.some((token) => token === 'aws' || token.includes('amazonwebservices') || token.includes('amazonaws'))) {
+  if (
+    tokens.some(
+      (token) =>
+        token === 'aws' ||
+        token.includes('amazonwebservices') ||
+        token.includes('amazonaws'),
+    )
+  ) {
     return IconAmazonWebServices;
   }
 
-  if (tokens.some((token) => token === 'gcp' || token.includes('googlecloud'))) {
+  if (
+    tokens.some((token) => token === 'gcp' || token.includes('googlecloud'))
+  ) {
     return IconGoogleCloudPlatform;
   }
 
@@ -67,7 +79,9 @@ function getLocalProviderIcon(provider: DTOs.CloudProviderContractV1) {
     return IconIDCloudHost;
   }
 
-  if (tokens.some((token) => token.includes('digitalocean') || token === 'do')) {
+  if (
+    tokens.some((token) => token.includes('digitalocean') || token === 'do')
+  ) {
     return IconDigitalOcean;
   }
 
@@ -164,6 +178,7 @@ export default function FormBase(props: FormBaseProps) {
             <Input
               id="cloud-project-name"
               placeholder="Production cloud account"
+              {...plainFieldAutofillProps}
               aria-invalid={Boolean(nameControl.fieldState.error)}
               {...nameControl.field}
             />

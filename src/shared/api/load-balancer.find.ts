@@ -15,6 +15,12 @@ export interface RecipeParams {
   by?: string;
   domain?: string;
   engine?: string;
+  /**
+   * Leaves out load balancers already deleted from their server. Their
+   * records stay (status "deleted") until removed, so lists show them;
+   * counts of what runs on a server should not.
+   */
+  excludeDeleted?: boolean;
   id?: string;
   /** Backend `installer_status` filter: ready, progress, failed and so on. */
   installerStatus?: string;
@@ -33,6 +39,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     by,
     domain,
     engine,
+    excludeDeleted,
     id,
     installerStatus,
     machineId,
@@ -49,6 +56,7 @@ export function recipe(params: RecipeParams): GetRequestRecipe {
     by,
     domain,
     engine,
+    exclude_deleted: excludeDeleted,
     id,
     installer_status: installerStatus || undefined,
     machine_id: machineId,

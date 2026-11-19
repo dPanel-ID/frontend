@@ -100,6 +100,22 @@ export function getApiErrorDetail(error: unknown) {
   return error instanceof Error ? error.message : String(error);
 }
 
+/**
+ * The HTTP status of a failed API call: the backend's code on a
+ * BaseResponseError, the transport status on an AxiosError. Undefined for an
+ * error that never reached the API.
+ */
+export function getApiErrorStatus(error: unknown): number | undefined {
+  const status =
+    error instanceof BaseResponseError
+      ? Number(error.code)
+      : isAxiosError(error)
+        ? error.response?.status
+        : undefined;
+
+  return status && Number.isFinite(status) && status > 0 ? status : undefined;
+}
+
 export function normalizeApiError(error: unknown) {
   if (error instanceof BaseResponseError) return error;
   if (!isAxiosError(error)) return error;

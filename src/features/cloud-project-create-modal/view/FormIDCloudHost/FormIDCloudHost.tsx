@@ -1,6 +1,7 @@
 import { ExternalLinkIcon } from 'lucide-react';
 
 import type { DTOs } from '@/shared/api';
+import { plainFieldAutofillProps } from '@/shared/libs/browser/autofill';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { TextArea } from '@/shared/presentation/atoms/TextArea';
 
@@ -68,6 +69,8 @@ export default function FormIDCloudHost(props: {
           </label>
           <TextArea
             id="idcloudhost-token"
+            {...plainFieldAutofillProps}
+            spellCheck={false}
             rows={4}
             className="font-mono text-xs"
             placeholder={tokenField?.placeholder || 'Paste API token'}

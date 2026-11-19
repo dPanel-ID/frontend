@@ -32,9 +32,12 @@ vi.mock('@/shared/presentation/molecules/Combobox', () => ({
     items: Array<{ value: string; label: string }>;
     value: string;
     onChange: (value: string) => void;
+    onOpenChange?: (open: boolean) => void;
   }) => (
     <select
       aria-label="zone"
+      // Focusing the select stands in for opening the list.
+      onFocus={() => props.onOpenChange?.(true)}
       value={props.value}
       onChange={(event) => props.onChange(event.target.value)}
     >
@@ -61,6 +64,17 @@ const domains = {
 } as unknown as CreateResources['domains'];
 
 const onSubmit = vi.fn();
+
+function RefreshHarness(props: {
+  domains: CreateResources['domains'];
+  onRefreshDomains: () => void;
+}) {
+  const form = useForm<LoadBalancerCreationFormValues>({
+    defaultValues: DEFAULT_VALUES,
+  });
+
+  return <DomainField form={form} {...props} />;
+}
 
 function RecordHarness(props: {
   gatewayAddress?: string;
@@ -160,5 +174,34 @@ describe('DomainField', () => {
 
     expect(screen.getByText('gatewayNoPublicAddress')).toBeTruthy();
     expect(screen.getByText('gatewayNoPublicAddressHint')).toBeTruthy();
+  });
+
+  // A domain added in another tab only showed after reloading the page.
+  it('reads the managed domains again when the user turns to them and opens the list', () => {
+    const onRefreshDomains = vi.fn();
+    render(
+      <RefreshHarness domains={domains} onRefreshDomains={onRefreshDomains} />,
+    );
+    expect(onRefreshDomains).not.toHaveBeenCalled();
+
+    switchToManaged();
+    expect(onRefreshDomains).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      fireEvent.focus(screen.getByLabelText('zone'));
+    });
+    expect(onRefreshDomains).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps listing the known domains while a refresh loads', () => {
+    const loading = {
+      $status: 'loading',
+      prevData: domains as { list: unknown[] },
+    } as unknown as CreateResources['domains'];
+    render(<RefreshHarness domains={loading} onRefreshDomains={vi.fn()} />);
+
+    switchToManaged();
+
+    expect(screen.getByRole('option', { name: '.example.com' })).toBeTruthy();
   });
 });

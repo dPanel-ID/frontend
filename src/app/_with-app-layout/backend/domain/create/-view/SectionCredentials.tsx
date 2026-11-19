@@ -7,6 +7,10 @@ import type {
   ProviderContract,
   ProviderField,
 } from '@/shared/api/domain.providers';
+import {
+  plainFieldAutofillProps,
+  secretFieldAutofillProps,
+} from '@/shared/libs/browser/autofill';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
@@ -105,6 +109,7 @@ export function CredentialInput(props: {
   const fieldError = form.formState.errors.credentials?.[fieldKey]?.message;
   const inputId = `domain-create-credential-${fieldKey}`;
   const options = field.options ?? [];
+  const isSecret = Boolean(field.secret) || field.type === 'password';
 
   if (!fieldKey) return null;
 
@@ -141,7 +146,7 @@ export function CredentialInput(props: {
             field.secret && 'font-mono text-xs',
           )}
           placeholder={field.placeholder}
-          autoComplete="off"
+          {...plainFieldAutofillProps}
           spellCheck={false}
           disabled={isSubmitting}
           aria-invalid={Boolean(fieldError)}
@@ -150,9 +155,10 @@ export function CredentialInput(props: {
       ) : (
         <Input
           id={inputId}
-          type={field.secret || field.type === 'password' ? 'password' : 'text'}
+          type={isSecret ? 'password' : 'text'}
           placeholder={field.placeholder}
-          autoComplete="off"
+          {...(isSecret ? secretFieldAutofillProps : plainFieldAutofillProps)}
+          spellCheck={false}
           disabled={isSubmitting}
           aria-invalid={Boolean(fieldError)}
           {...form.register(fieldName)}

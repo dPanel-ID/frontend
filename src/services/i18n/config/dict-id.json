@@ -865,6 +865,16 @@
         "reconnectHint": "GitHub tidak dapat memverifikasi akun yang tersimpan. Masuk kembali untuk memulihkan akses ke repositori Anda.",
         "connectedTo": "Terhubung ke GitHub sebagai {login}",
         "checking": "Memeriksa GitHub"
+      },
+      "delete": {
+        "confirmTitle": "Hapus aplikasi",
+        "confirmDescription": "Hapus \"{name}\" secara permanen? Build dan riwayat rilisnya ikut terhapus. Tindakan ini tidak bisa dibatalkan.",
+        "deleted": "Aplikasi \"{name}\" telah dihapus.",
+        "failedTitle": "Gagal menghapus \"{name}\"",
+        "stillReleasedTitle": "Hapus rilisnya dulu",
+        "stillReleasedDescription": "\"{name}\" masih dirilis di server. Hapus setiap rilis di tab Rilis dan tunggu sampai terhapus, lalu hapus aplikasinya.",
+        "openDeployments": "Buka Rilis",
+        "close": "Tutup"
       }
     },
     "applicationDetail": {
@@ -895,7 +905,7 @@
         "deleteThisAppDescription": "Hapus permanen aplikasi ini beserta seluruh datanya. Tindakan ini tidak bisa dibatalkan.",
         "consequences": {
           "removes": "Menghapus aplikasi, build, dan riwayat rilisnya dari dNocs.",
-          "stops": "Menghentikan layanan di setiap server tempatnya berjalan.",
+          "stops": "Aplikasi yang masih dirilis di server belum bisa dihapus: hapus dulu rilisnya di tab Rilis.",
           "keeps": "Tidak mengubah server maupun repositori Git Anda."
         }
       },
