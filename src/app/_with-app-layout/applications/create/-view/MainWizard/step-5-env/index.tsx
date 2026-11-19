@@ -19,6 +19,8 @@ import { TextArea } from '@/shared/presentation/atoms/TextArea';
 import { useFormStore } from '../../../-model/store/form';
 import { Sectioned } from '../../../-presentation/Sectioned';
 
+import DatabaseConnect from './DatabaseConnect';
+
 export default function Step5Env() {
   const t = useDevetekTranslations('page.applicationsCreate.wizard.step5.env');
   const [buildEnvText, runtimeEnvText, setBuildEnvText, setRuntimeEnvText] =
@@ -114,6 +116,8 @@ export default function Step5Env() {
             onChange={(event) => setBuildEnvText(event.target.value)}
           />
         </label>
+
+        <DatabaseConnect />
 
         <label className="grid gap-1.5">
           <span className="text-sm font-semibold">{t('runtimeTitle')}</span>

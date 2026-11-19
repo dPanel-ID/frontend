@@ -1,12 +1,10 @@
-import { useState } from 'react';
-
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useWatch } from 'react-hook-form';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { generateVMPassword } from '@/shared/libs/browser/password';
 import { Input } from '@/shared/presentation/atoms/Input';
+import { PasswordInput } from '@/shared/presentation/atoms/PasswordInput';
 
 import { useForm } from '../../-model';
 import {
@@ -24,9 +22,9 @@ import { ErrorInline } from '../../-presentation/ErrorInline';
 export default function SectionLogin() {
   const t = useDevetekTranslations('page.servers.create.vmInstant.login');
   const { form, formErrors } = useForm();
-  const [showPassword, setShowPassword] = useState(false);
   const provider = useWatch({ control: form.control, name: 'provider' }) as
     string | undefined;
+  const password = useWatch({ control: form.control, name: 'login.password' });
   const joinMethod = useJoinMethod();
   const usesBiznetGio = isBiznetGioProvider(provider);
   // DigitalOcean takes a username only: the VM gets no password, and over
@@ -53,35 +51,28 @@ export default function SectionLogin() {
             <h6 className="text-sm font-semibold">
               {usesBiznetGio ? t('passwordTitleConsole') : t('passwordTitle')}
             </h6>
-            <div className="flex items-center gap-2">
-              <Input
-                className="w-full bg-background"
-                type={showPassword ? 'text' : 'password'}
-                placeholder={t('passwordPlaceholder')}
-                {...form.register('login.password')}
-              />
-              <Button
-                asChild
-                aria-label={
-                  showPassword ? t('hidePassword') : t('showPassword')
+            <PasswordInput
+              className="w-full bg-background"
+              placeholder={t('passwordPlaceholder')}
+              revealLabel={t('showPassword')}
+              hideLabel={t('hidePassword')}
+              generateLabel={t('generatePassword')}
+              copyLabel={t('copyPassword')}
+              copiedLabel={t('copiedPassword')}
+              generatedNote={t('generatedPasswordNote')}
+              {...form.register('login.password')}
+              value={password ?? ''}
+              onGenerate={() => {
+                const generated = generateVMPassword();
+                if (generated) {
+                  form.setValue('login.password', generated, {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                  });
                 }
-                title={showPassword ? t('hidePassword') : t('showPassword')}
-                buttonStyle="outline"
-                buttonColor="secondary"
-                size="icon"
-              >
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((value) => !value)}
-                >
-                  {showPassword ? (
-                    <EyeOffIcon className="size-4" />
-                  ) : (
-                    <EyeIcon className="size-4" />
-                  )}
-                </button>
-              </Button>
-            </div>
+                return generated;
+              }}
+            />
             <p className="text-xs leading-relaxed text-muted-foreground">
               {usesBiznetGio ? t('passwordHintConsole') : t('passwordHint')}
             </p>

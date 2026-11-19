@@ -18,7 +18,8 @@ const cryptoRandomBytes: RandomBytes = (bytes) => {
 };
 
 /**
- * A random password from GENERATED_PASSWORD_ALPHABET. Bytes at or above the
+ * A random password from alphabet (GENERATED_PASSWORD_ALPHABET by default,
+ * at most 256 characters). Bytes at or above the
  * largest multiple of the alphabet size are thrown away (rejection
  * sampling), so every character is equally likely: a plain byte % size would
  * favour the first characters.
@@ -26,8 +27,8 @@ const cryptoRandomBytes: RandomBytes = (bytes) => {
 export function generatePassword(
   length = GENERATED_PASSWORD_LENGTH,
   randomBytes: RandomBytes = cryptoRandomBytes,
+  alphabet = GENERATED_PASSWORD_ALPHABET,
 ): string {
-  const alphabet = GENERATED_PASSWORD_ALPHABET;
   const size = alphabet.length;
   const limit = 256 - (256 % size);
   const buffer = new Uint8Array(Math.max(length, 16));
@@ -43,4 +44,41 @@ export function generatePassword(
   }
 
   return password;
+}
+
+/**
+ * Characters of a generated cloud VM password: letters and digits only,
+ * without look-alikes. Biznet Gio rejects symbols in console passwords, and
+ * the same set suits every other provider, as the API's own generator does.
+ */
+export const VM_PASSWORD_ALPHABET =
+  'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+/** Tries before giving up on a draw without each character class. */
+const VM_PASSWORD_ATTEMPTS = 64;
+
+/**
+ * A first password for a new cloud VM: 24 letters and digits with at least
+ * one lowercase letter, one uppercase letter and one digit, as IDCloudHost
+ * and Biznet Gio require. Returns undefined only when every draw misses a
+ * class, which a working random source practically never does.
+ */
+export function generateVMPassword(
+  randomBytes: RandomBytes = cryptoRandomBytes,
+): string | undefined {
+  for (let attempt = 0; attempt < VM_PASSWORD_ATTEMPTS; attempt += 1) {
+    const password = generatePassword(
+      GENERATED_PASSWORD_LENGTH,
+      randomBytes,
+      VM_PASSWORD_ALPHABET,
+    );
+    if (
+      /[a-z]/.test(password) &&
+      /[A-Z]/.test(password) &&
+      /\d/.test(password)
+    ) {
+      return password;
+    }
+  }
+  return undefined;
 }

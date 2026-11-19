@@ -1381,7 +1381,36 @@
             "hide": "Hide values",
             "shownNote": "Values are shown. Hide them before sharing your screen.",
             "revealing": "Showing…",
-            "revealFailed": "Could not show the values"
+            "revealFailed": "Could not show the values",
+            "database": {
+              "title": "Database for this app",
+              "desc": "Create a database and its user on this server. dPanel makes a strong password and writes the connection settings into the runtime variables below, so you never type or paste it.",
+              "open": "Create database",
+              "openAnother": "Create another",
+              "engine": "Database server",
+              "style": "Variable names",
+              "styles": {
+                "wordpress": "WordPress (WORDPRESS_DB_*)",
+                "laravel": "Laravel (DB_*)",
+                "url": "One DATABASE_URL"
+              },
+              "name": "Database name",
+              "user": "Database user",
+              "passwordNote": "The password is generated in your browser, sent once to create the user, and kept in the variables below (hidden after you save). You don't need to write it down.",
+              "cancel": "Cancel",
+              "create": "Create database",
+              "creating": "Creating…",
+              "confirmTitle": "Create this database?",
+              "confirmBody": "dPanel creates the database {name} and the user {user} on this server's {engine}, then fills the runtime variables with their settings.",
+              "badName": "Use letters, digits and underscores for the database name (PostgreSQL: lowercase, starting with a letter).",
+              "badUser": "Use letters, digits and underscores for the user, at most 32 characters (PostgreSQL: lowercase, starting with a letter).",
+              "nameTaken": "A database named {name} already exists on this server. Choose another name.",
+              "notReady": "The database options are still loading. Try again in a moment.",
+              "failed": "The database could not be created",
+              "queued": "Creating database {name} on the server.",
+              "created": "Database {name} is being created on the server. Its settings are in {keys} below, password included.",
+              "noDatabaseServer": "Need a database? Install MariaDB or PostgreSQL on this server first (server page, Modules tab). Then dPanel can create one here and fill in its password for you."
+            }
           }
         },
         "step6": {
@@ -1723,6 +1752,10 @@
             "hidePassword": "Hide password",
             "passwordHint": "Sent as vm.password and hidden from review.",
             "passwordHintConsole": "Sent as vm.console_password and hidden from review.",
+            "generatePassword": "Generate",
+            "copyPassword": "Copy password",
+            "copiedPassword": "Copied",
+            "generatedPasswordNote": "Save this password now, for example in your password manager. You need it to log in from the provider's console, and dPanel doesn't show it again.",
             "userHintAgent": "Sent as vm.username, the user the VM is created with. No dPanel SSH key is added; the VM joins through the dPanel agent.",
             "userHintSsh": "Sent as vm.username, the user the VM is created with. The SSH key you chose is added to the VM so dPanel can connect and set it up."
           }

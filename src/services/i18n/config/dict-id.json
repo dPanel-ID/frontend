@@ -1381,7 +1381,36 @@
             "hide": "Sembunyikan nilai",
             "shownNote": "Nilai ditampilkan. Sembunyikan sebelum membagikan layar.",
             "revealing": "Menampilkan…",
-            "revealFailed": "Nilai tidak dapat ditampilkan"
+            "revealFailed": "Nilai tidak dapat ditampilkan",
+            "database": {
+              "title": "Database untuk aplikasi ini",
+              "desc": "Buat database beserta penggunanya di server ini. dPanel membuat kata sandi yang kuat dan menuliskan pengaturan koneksinya ke variabel runtime di bawah, jadi Anda tidak perlu mengetik atau menempelkannya.",
+              "open": "Buat database",
+              "openAnother": "Buat lagi",
+              "engine": "Server database",
+              "style": "Nama variabel",
+              "styles": {
+                "wordpress": "WordPress (WORDPRESS_DB_*)",
+                "laravel": "Laravel (DB_*)",
+                "url": "Satu DATABASE_URL"
+              },
+              "name": "Nama database",
+              "user": "Pengguna database",
+              "passwordNote": "Kata sandi dibuat di browser Anda, dikirim sekali untuk membuat pengguna, dan disimpan di variabel di bawah (disembunyikan setelah disimpan). Anda tidak perlu mencatatnya.",
+              "cancel": "Batal",
+              "create": "Buat database",
+              "creating": "Membuat…",
+              "confirmTitle": "Buat database ini?",
+              "confirmBody": "dPanel membuat database {name} dan pengguna {user} di {engine} server ini, lalu mengisi variabel runtime dengan pengaturannya.",
+              "badName": "Gunakan huruf, angka, dan garis bawah untuk nama database (PostgreSQL: huruf kecil, diawali huruf).",
+              "badUser": "Gunakan huruf, angka, dan garis bawah untuk pengguna, paling banyak 32 karakter (PostgreSQL: huruf kecil, diawali huruf).",
+              "nameTaken": "Database bernama {name} sudah ada di server ini. Pilih nama lain.",
+              "notReady": "Opsi database masih dimuat. Coba lagi sebentar lagi.",
+              "failed": "Database tidak dapat dibuat",
+              "queued": "Membuat database {name} di server.",
+              "created": "Database {name} sedang dibuat di server. Pengaturannya ada di {keys} di bawah, termasuk kata sandinya.",
+              "noDatabaseServer": "Butuh database? Pasang MariaDB atau PostgreSQL di server ini dulu (halaman server, tab Modules). Setelah itu dPanel bisa membuatnya di sini dan mengisikan kata sandinya untuk Anda."
+            }
           }
         },
         "step6": {
@@ -1723,6 +1752,10 @@
             "hidePassword": "Sembunyikan kata sandi",
             "passwordHint": "Dikirim sebagai vm.password dan disembunyikan dari ringkasan.",
             "passwordHintConsole": "Dikirim sebagai vm.console_password dan disembunyikan dari ringkasan.",
+            "generatePassword": "Buat",
+            "copyPassword": "Salin kata sandi",
+            "copiedPassword": "Tersalin",
+            "generatedPasswordNote": "Simpan kata sandi ini sekarang, misalnya di pengelola kata sandi Anda. Anda memerlukannya untuk masuk dari konsol penyedia, dan dPanel tidak menampilkannya lagi.",
             "userHintAgent": "Dikirim sebagai vm.username, pengguna yang dibuat bersama VM. Tidak ada SSH key dPanel yang ditambahkan; VM bergabung lewat agen dPanel.",
             "userHintSsh": "Dikirim sebagai vm.username, pengguna yang dibuat bersama VM. SSH key yang Anda pilih ditambahkan ke VM agar dPanel bisa terhubung dan menyiapkannya."
           }

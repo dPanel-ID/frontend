@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest';
 import {
   GENERATED_PASSWORD_ALPHABET,
   GENERATED_PASSWORD_LENGTH,
+  VM_PASSWORD_ALPHABET,
   generatePassword,
+  generateVMPassword,
 } from './password';
 
 describe('generatePassword', () => {
@@ -66,5 +68,47 @@ describe('generatePassword', () => {
     }
     expect(counts.size).toBe(59);
     expect(new Set(counts.values())).toEqual(new Set([12]));
+  });
+});
+
+describe('generateVMPassword', () => {
+  it('is 24 letters and digits with each character class', () => {
+    for (let run = 0; run < 200; run += 1) {
+      const password = generateVMPassword();
+      expect(password).toHaveLength(GENERATED_PASSWORD_LENGTH);
+      expect(password).toMatch(/^[a-km-zA-HJ-NP-Z2-9]+$/);
+      expect(password).toMatch(/[a-z]/);
+      expect(password).toMatch(/[A-Z]/);
+      expect(password).toMatch(/[0-9]/);
+    }
+  });
+
+  it('meets the launch form password rule', () => {
+    const rule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/;
+    expect(generateVMPassword()).toMatch(rule);
+  });
+
+  it('draws again when a password misses a character class', () => {
+    // The first 24 usable bytes map to "a" only; the next draw mixes all
+    // three classes.
+    let call = 0;
+    const password = generateVMPassword((buffer) => {
+      for (let index = 0; index < buffer.length; index += 1) {
+        buffer[index] = call === 0 ? 0 : ([0, 25, 49][index % 3] ?? 0);
+      }
+      call += 1;
+    });
+    expect(call).toBe(2);
+    expect(password).toBe(
+      (
+        VM_PASSWORD_ALPHABET.charAt(0) +
+        VM_PASSWORD_ALPHABET.charAt(25) +
+        VM_PASSWORD_ALPHABET.charAt(49)
+      ).repeat(8),
+    );
+  });
+
+  it('gives up rather than loop forever on a broken random source', () => {
+    expect(generateVMPassword((buffer) => buffer.fill(0))).toBeUndefined();
   });
 });
