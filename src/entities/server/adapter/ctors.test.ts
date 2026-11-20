@@ -81,7 +81,7 @@ describe('ctorCloud', () => {
 
 describe('ctorHost', () => {
   const host = (raw: Partial<DTOs.MachineV1>) =>
-    ctorHost({ id: 362, ...raw } as unknown as DTOs.MachineV1);
+    ctorHost({ id: 362, ...raw });
 
   // A private AWS VM (cp-01, server 362) is recorded with its private IP
   // and showed it as its "Public address" (2026-11-20).
