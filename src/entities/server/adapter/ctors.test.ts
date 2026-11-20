@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { DTOs } from '@/shared/api';
 
-import { ctorCloud, ctorCreator } from './ctors';
+import { ctorCloud, ctorCreator, ctorHost } from './ctors';
 
 function machine(user?: Partial<DTOs.MachineV1['user']>): DTOs.MachineV1 {
   return { id: 112, user } as unknown as DTOs.MachineV1;
@@ -76,5 +76,46 @@ describe('ctorCloud', () => {
   it('has no cloud for a machine registered from its own terminal', () => {
     const raw = { id: 112, provider: 'private', connectivity: 'private' };
     expect(ctorCloud(raw as unknown as DTOs.MachineV1)).toBeUndefined();
+  });
+});
+
+describe('ctorHost', () => {
+  const host = (raw: Partial<DTOs.MachineV1>) =>
+    ctorHost({ id: 362, ...raw });
+
+  // A private AWS VM (cp-01, server 362) is recorded with its private IP
+  // and showed it as its "Public address" (2026-11-20).
+  it('never takes a private VM private IP for its public address', () => {
+    expect(
+      host({ connectivity: 'private', address: '10.88.31.75' }),
+    ).toMatchObject({ address: '10.88.31.75', publicAddress: undefined });
+  });
+
+  it('keeps the reported local address over the recorded one', () => {
+    expect(
+      host({
+        connectivity: 'private',
+        address: '10.88.31.75',
+        lan_address: '10.88.31.80',
+      }),
+    ).toMatchObject({ address: '10.88.31.80', publicAddress: undefined });
+  });
+
+  it('keeps a private server public IP as its public address', () => {
+    expect(
+      host({
+        connectivity: 'private',
+        address: '34.101.60.146',
+        lan_address: '10.184.0.20',
+      }),
+    ).toMatchObject({ address: '10.184.0.20', publicAddress: '34.101.60.146' });
+  });
+
+  it('leaves a public server address as it is', () => {
+    expect(host({ address: '34.101.60.146' })).toMatchObject({
+      address: '34.101.60.146',
+      publicAddress: undefined,
+      private: false,
+    });
   });
 });

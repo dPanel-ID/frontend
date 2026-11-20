@@ -29,6 +29,7 @@ import {
   buildApplicationStats,
   buildLoadBalancerStats,
   buildServerStats,
+  liveServers,
 } from '../-lib/stats';
 import { TELEMETRY_LIMIT } from '../-lib/telemetry';
 import type { TelemetrySample } from '../-lib/telemetry';
@@ -144,7 +145,10 @@ export default function DashboardView(props: DashboardViewProps) {
   });
   const membersData = responseData(membersResponse);
 
-  const servers = serversData?.machines ?? EMPTY_SERVERS;
+  const servers = useMemo(
+    () => liveServers(serversData?.machines ?? EMPTY_SERVERS),
+    [serversData?.machines],
+  );
   const applications = applicationsData?.applications ?? EMPTY_APPLICATIONS;
   const loadBalancers = loadBalancersData?.routers ?? EMPTY_LOAD_BALANCERS;
   const members = membersData?.org_peoples ?? EMPTY_MEMBERS;
