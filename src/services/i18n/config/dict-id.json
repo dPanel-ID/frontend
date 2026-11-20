@@ -2009,6 +2009,7 @@
         "publicAddressHelp": "Alamat publik yang dipakai jaringan Anda untuk ke internet. Arahkan domain ke sini hanya jika port 80 dan 443 diteruskan ke mesin ini.",
         "cloudPublicAddress": "Alamat publik",
         "cloudPublicAddressHelp": "IP publik VM dari penyedia cloud Anda. Arahkan record A domain ke sini.",
+        "cloudPublicAddressNone": "Tidak ada. VM ini tidak punya IP publik, jadi internet tidak bisa menjangkaunya langsung. dPanel menjangkaunya melalui agent.",
         "lanAddressUnknown": "Belum dilaporkan",
         "serviceNotRunning": "Layanan tidak berjalan: {units}. Buka tab Modul atau Layanan.",
         "serviceNotRunningShort": "layanan tidak berjalan",

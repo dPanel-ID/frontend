@@ -217,7 +217,16 @@ export default function OverviewTab() {
               }
               mono={!isPrivate || !!server.host.address}
             />
-            {isPrivate && !publicIP && (
+            {/* A cloud VM created without a public IP has none: its
+                private IP is its local address above, never a public one. */}
+            {isPrivate && !publicIP && isAgentCloudServer(server) && (
+              <Row
+                icon={GlobeIcon}
+                label={t('cloudPublicAddress')}
+                value={t('cloudPublicAddressNone')}
+              />
+            )}
+            {isPrivate && !publicIP && !isAgentCloudServer(server) && (
               <Row
                 icon={GlobeIcon}
                 label={t('publicAddress')}

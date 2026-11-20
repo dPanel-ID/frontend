@@ -2009,6 +2009,7 @@
         "publicAddressHelp": "The public address your network uses to reach the internet. Point a domain here only if ports 80 and 443 are forwarded to this machine.",
         "cloudPublicAddress": "Public address",
         "cloudPublicAddressHelp": "The VM's public IP from your cloud provider. Point a domain's A record here.",
+        "cloudPublicAddressNone": "None. This VM has no public IP, so the internet cannot reach it directly. dPanel reaches it through its agent.",
         "lanAddressUnknown": "Not reported yet",
         "serviceNotRunning": "Service not running: {units}. Open the Modules or Services tab.",
         "serviceNotRunningShort": "service not running",
