@@ -307,6 +307,58 @@ export function clusterStatusTone(status?: string): {
   }
 }
 
+/**
+ * A node's setup state as the API reports it. It mirrors the cluster's
+ * install, not the live Kubernetes node condition: a node whose service
+ * stopped after setup still reads "installed". Older APIs called a finished
+ * setup "ready"; it is shown as installed too, so it never reads as healthy.
+ */
+export type ClusterNodeSetup =
+  | 'pending'
+  | 'joining'
+  | 'installed'
+  | 'removing'
+  | 'removed'
+  | 'failed'
+  | 'unknown';
+
+export function clusterNodeSetup(status?: string): ClusterNodeSetup {
+  const normalized = String(status ?? '')
+    .trim()
+    .toLowerCase();
+  switch (normalized) {
+    case 'ready':
+    case 'installed':
+      return 'installed';
+    case 'pending':
+    case 'joining':
+    case 'removing':
+    case 'removed':
+    case 'failed':
+      return normalized;
+    default:
+      return 'unknown';
+  }
+}
+
+export function clusterNodeSetupTone(
+  setup: ClusterNodeSetup,
+): ClusterStatusTone {
+  switch (setup) {
+    case 'installed':
+      return 'success';
+    case 'joining':
+    case 'removing':
+      return 'info';
+    case 'pending':
+      return 'warning';
+    case 'failed':
+      return 'danger';
+    default:
+      return 'neutral';
+  }
+}
+
 const KIND_LABELS: Record<string, string> = {
   kubernetes: 'Kubernetes',
   postgresql: 'PostgreSQL',

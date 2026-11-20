@@ -7,6 +7,8 @@ import {
   canInstallCluster,
   clusterEngineLabel,
   clusterKindLabel,
+  clusterNodeSetup,
+  clusterNodeSetupTone,
   defaultRoleFor,
   defaultVersionOf,
   hasBlockingIssue,
@@ -198,5 +200,39 @@ describe('cluster labels', () => {
   it('keeps unknown names and empty values', () => {
     expect(clusterEngineLabel('patroni')).toBe('patroni');
     expect(clusterKindLabel(undefined)).toBe('');
+  });
+});
+
+// The cluster page showed a node "ready" while kubectl said NotReady: the
+// node status is dPanel's setup state, never the live Kubernetes condition.
+describe('clusterNodeSetup', () => {
+  it('shows a finished setup as installed, never as ready', () => {
+    expect(clusterNodeSetup('installed')).toBe('installed');
+    expect(clusterNodeSetup('ready')).toBe('installed');
+    expect(clusterNodeSetup('READY')).toBe('installed');
+  });
+
+  it('keeps the other setup states', () => {
+    for (const status of [
+      'pending',
+      'joining',
+      'removing',
+      'removed',
+      'failed',
+    ] as const) {
+      expect(clusterNodeSetup(status)).toBe(status);
+    }
+  });
+
+  it('reports anything else as unknown', () => {
+    expect(clusterNodeSetup(undefined)).toBe('unknown');
+    expect(clusterNodeSetup('NotReady')).toBe('unknown');
+  });
+
+  it('tones the setup states', () => {
+    expect(clusterNodeSetupTone('installed')).toBe('success');
+    expect(clusterNodeSetupTone('failed')).toBe('danger');
+    expect(clusterNodeSetupTone('joining')).toBe('info');
+    expect(clusterNodeSetupTone('unknown')).toBe('neutral');
   });
 });

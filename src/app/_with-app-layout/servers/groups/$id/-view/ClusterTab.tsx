@@ -15,6 +15,8 @@ import {
   canUninstallCluster,
   clusterEngineLabel,
   clusterKindLabel,
+  clusterNodeSetup,
+  clusterNodeSetupTone,
   isClusterTransitioning,
 } from '@/features/server-groups/shared/lib/cluster';
 import { ClusterExecution } from '@/features/server-groups/view/ClusterExecution';
@@ -211,6 +213,9 @@ export default function ClusterTab() {
       <h3 className="px-4 pt-4 text-sm font-semibold text-primary">
         {t('nodes')}
       </h3>
+      <p className="px-4 pt-1 text-xs text-muted-foreground">
+        {t('setupNote')}
+      </p>
       {cluster.nodes.length === 0 ? (
         <DataPanelState state="empty" title={t('noNodes')} />
       ) : (
@@ -223,8 +228,11 @@ export default function ClusterTab() {
               <TableHead className={cn(dataTable.head, 'w-28')}>
                 {t('table.role')}
               </TableHead>
-              <TableHead className={cn(dataTable.head, 'w-32')}>
-                {t('table.status')}
+              <TableHead
+                className={cn(dataTable.head, 'w-32')}
+                title={t('setupHelp')}
+              >
+                {t('table.setup')}
               </TableHead>
               <TableHead className={cn(dataTable.head, 'w-24')}>
                 {t('table.arch')}
@@ -267,10 +275,7 @@ export default function ClusterTab() {
                 </TableCell>
                 <TableCell className={dataTable.cell}>
                   {node.status ? (
-                    <StatusPill
-                      tone={nodeTone(node.status)}
-                      label={node.status}
-                    />
+                    <NodeSetupPill status={node.status} />
                   ) : (
                     <span className="text-muted-foreground">-</span>
                   )}
@@ -339,6 +344,24 @@ function nodeTone(status: string) {
     default:
       return 'neutral' as const;
   }
+}
+
+/**
+ * The node's setup state. It says whether dPanel finished installing the
+ * node, not whether Kubernetes can use it right now, so it never reads
+ * "ready".
+ */
+function NodeSetupPill(props: { status: string }) {
+  const t = useDevetekTranslations('page.serverGroups.cluster');
+  const setup = clusterNodeSetup(props.status);
+
+  return (
+    <StatusPill
+      tone={clusterNodeSetupTone(setup)}
+      label={setup === 'unknown' ? props.status : t(`nodeSetup.${setup}`)}
+      title={t('setupHelp')}
+    />
+  );
 }
 
 function Fact(props: { label: string; children: React.ReactNode }) {

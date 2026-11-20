@@ -3881,12 +3881,23 @@
           "server": "Server",
           "role": "Peran",
           "status": "Status",
+          "setup": "Pemasangan",
           "arch": "Arsitektur",
           "region": "Region",
           "joined": "Bergabung",
           "access": "Akses klaster"
         },
         "noNodes": "Belum ada node tercatat.",
+        "setupNote": "Pemasangan menunjukkan apakah dPanel sudah selesai memasang setiap server. Ini bukan pemeriksaan kesehatan langsung: node bisa berhenti bekerja nanti. Untuk melihat apakah Kubernetes bisa memakai node saat ini, jalankan kubectl get nodes.",
+        "setupHelp": "Apakah dPanel sudah selesai memasang server ini ke klaster. Ini bukan status node Kubernetes yang sebenarnya saat ini.",
+        "nodeSetup": {
+          "pending": "Menunggu",
+          "joining": "Bergabung",
+          "installed": "Terpasang",
+          "removing": "Sedang dilepas",
+          "removed": "Dilepas",
+          "failed": "Gagal"
+        },
         "loadFailed": "Klaster gagal dimuat.",
         "polling": "Masih berubah; disegarkan setiap beberapa detik.",
         "install": "Pasang lagi",
