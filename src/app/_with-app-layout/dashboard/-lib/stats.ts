@@ -44,6 +44,20 @@ export function buildResourceStats<T>(
   );
 }
 
+/**
+ * Servers that still exist. A deleted server keeps its record until it is
+ * removed for good, so the server list returns it; the dashboard describes
+ * what runs now and must not count, chart or warn about it.
+ */
+export function liveServers(servers: DTOs.MachineV1[]) {
+  return servers.filter(
+    (server) =>
+      String(server.status ?? '')
+        .trim()
+        .toLowerCase() !== 'deleted',
+  );
+}
+
 export function buildServerStats(servers: DTOs.MachineV1[]) {
   return buildResourceStats(servers, (server) => server.status);
 }
