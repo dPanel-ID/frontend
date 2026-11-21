@@ -32,7 +32,10 @@ export const [WorkersModelProvider, useWorkersModel] = buildSelector(
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
 
+  // Only ready servers can take a release; deleted ones keep their record
+  // and must not be offered as targets.
   const [responseWorkers, refreshWorkers] = ApiServer.Find.useGet({
+    status: 'ready',
     searchQuery,
     page,
     pageSize: 3,
