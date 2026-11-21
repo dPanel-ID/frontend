@@ -7,6 +7,7 @@ import { useToaster } from '@/services/toaster';
 import { ApiBundle } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
+import { containerRuntime } from '../container-runtime';
 import { useFormStore } from '../store/form';
 import type {
   DependencyConfig,
@@ -175,6 +176,14 @@ export default function useHandleDeploy() {
       .map((id) => requiredBinaryConfigs[id])
       .filter((config): config is NonNullable<typeof config> => Boolean(config))
       .map(runtimeFromRequiredBinary);
+    // A container-only application runs on Docker, stored as its language.
+    const dockerRuntime = containerRuntime(
+      selectedDependencyIds,
+      dependencyConfigs,
+    );
+    if (requiredBinaries.length === 0 && dockerRuntime) {
+      requiredBinaries.push(dockerRuntime);
+    }
 
     if (appSourceGithubRepo) {
       const [repoOrganization, repoName] = appSourceGithubRepo

@@ -8,6 +8,7 @@ import { ApiApplication } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
+import { containerRuntime } from '../container-runtime';
 import type { RuntimeDependency, RuntimeItem } from '../handle-deploy/config';
 import { getVarsGit } from '../handle-deploy/config';
 import { useFormStore } from '../store/form';
@@ -305,6 +306,14 @@ export default function useHandleUpdateApplication() {
       .map((id) => requiredBinaryConfigs[id])
       .filter((config): config is NonNullable<typeof config> => Boolean(config))
       .map(runtimeFromRequiredBinary);
+    // A container-only application runs on Docker, stored as its language.
+    const dockerRuntime = containerRuntime(
+      selectedDependencyIds,
+      dependencyConfigs,
+    );
+    if (requiredBinaries.length === 0 && dockerRuntime) {
+      requiredBinaries.push(dockerRuntime);
+    }
     const appDefinition = buildUpdatedAppDefinition({
       appBuildCommand,
       appPort,
