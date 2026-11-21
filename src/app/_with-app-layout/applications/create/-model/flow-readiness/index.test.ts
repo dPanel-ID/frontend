@@ -107,6 +107,92 @@ describe('evaluateFlowReadiness', () => {
     }
   });
 
+  describe('an application that only runs containers', () => {
+    const docker = {
+      id: 'dep-docker',
+      moduleId: 'docker',
+      name: 'docker',
+      version: '29.4.3',
+      category: ['containers'],
+      selectionId: 'docker',
+    } as never;
+    const node = {
+      id: 'dep-node',
+      name: 'node',
+      category: ['language'],
+      selectionId: 'node',
+    } as never;
+
+    it('needs no language binary when only Docker is selected', () => {
+      const readiness = evaluateFlowReadiness(
+        input({
+          selectedDependencyIds: ['dep-docker'],
+          dependencyConfigs: { 'dep-docker': docker },
+          selectedRequiredBinaryIds: [],
+          requiredBinaryConfigs: {},
+        }),
+      );
+
+      expect(readiness['2-server-dependencies']).toBe(true);
+      expect(readiness['3-details']).toBe(true);
+    });
+
+    it('still needs a binary when a language module is selected too', () => {
+      expect(
+        evaluateFlowReadiness(
+          input({
+            selectedDependencyIds: ['dep-docker', 'dep-node'],
+            dependencyConfigs: { 'dep-docker': docker, 'dep-node': node },
+            selectedRequiredBinaryIds: [],
+            requiredBinaryConfigs: {},
+          }),
+        )['3-details'],
+      ).toBe(false);
+    });
+
+    it('needs a runtime when neither a language nor Docker is selected', () => {
+      expect(
+        evaluateFlowReadiness(
+          input({
+            selectedDependencyIds: ['dep-redis'],
+            dependencyConfigs: {
+              'dep-redis': {
+                id: 'dep-redis',
+                moduleId: 'redis',
+                name: 'redis',
+                category: ['database'],
+              } as never,
+            },
+            selectedRequiredBinaryIds: [],
+            requiredBinaryConfigs: {},
+          }),
+        )['3-details'],
+      ).toBe(false);
+    });
+
+    it('still checks the name, commands and port', () => {
+      expect(
+        evaluateFlowReadiness(
+          input({
+            selectedDependencyIds: ['dep-docker'],
+            dependencyConfigs: { 'dep-docker': docker },
+            selectedRequiredBinaryIds: [],
+            requiredBinaryConfigs: {},
+            appRunCommand: '',
+          }),
+        )['3-details'],
+      ).toBe(false);
+    });
+  });
+
+  it('needs a language binary when a language module is selected', () => {
+    expect(
+      evaluateFlowReadiness(input({ selectedRequiredBinaryIds: [] }))[
+        '3-details'
+      ],
+    ).toBe(false);
+  });
+
   it('treats environment variables as optional', () => {
     expect(evaluateFlowReadiness(input())['4-env']).toBe(true);
   });

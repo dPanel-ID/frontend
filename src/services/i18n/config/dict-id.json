@@ -1205,7 +1205,7 @@
         "blocked": {
           "source": "Pilih repositori dan branch yang akan dibangun.",
           "server": "Pilih server tempat pemasangan, lalu atur setiap dependensi yang Anda pilih.",
-          "details": "Nama (hanya huruf, angka, dan spasi), bahasa, perintah build, perintah jalan, dan port yang bebas semuanya diperlukan.",
+          "details": "Nama (hanya huruf, angka, dan spasi), bahasa (atau Docker untuk aplikasi yang hanya menjalankan container), perintah build, perintah jalan, dan port yang bebas semuanya diperlukan.",
           "env": "",
           "preview": "Selesaikan langkah sebelumnya terlebih dahulu."
         }
@@ -1324,7 +1324,7 @@
             "requiredBinariesTitle": "Binary yang dibutuhkan",
             "requiredBinariesDesc": "Pilih binary runtime dari modul yang dipilih untuk aplikasi ini. Nilai ini disimpan di definisi aplikasi dan tidak bisa diubah dari sini.",
             "requiredBinariesSelectServer": "Pilih modul aplikasi sebelum memilih binary yang dibutuhkan.",
-            "requiredBinariesEmpty": "Belum ada modul runtime bahasa yang dipilih. Kembali dan pilih modul bahasa untuk aplikasi ini.",
+            "requiredBinariesEmpty": "Belum ada modul bahasa yang dipilih. Aplikasi yang hanya menjalankan container Docker tidak memerlukannya; selain itu, kembali dan pilih modul bahasa untuk aplikasi ini.",
             "requiredBinariesSelected": "Dipilih untuk aplikasi ini",
             "useRequiredBinary": "Gunakan runtime terpilih",
             "useRequiredBinaryVersion": "Pilih versi modul terpilih",

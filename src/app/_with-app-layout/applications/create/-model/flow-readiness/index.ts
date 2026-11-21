@@ -1,4 +1,5 @@
 import { isValidApplicationName } from '../../../-rules/application-name';
+import { containerRuntime } from '../container-runtime';
 import { useFormStore } from '../store/form';
 import type { DependencyConfig, FlowMode, Progress } from '../store/form.types';
 
@@ -69,6 +70,21 @@ export function evaluateFlowReadiness(
     .filter((id) => isLanguageDependency(dependencyConfigs[id]))
     .map((id) => `binary:${dependencyConfigs[id]?.selectionId || id}`);
 
+  // An application that only runs containers (Docker selected, no language
+  // module) has Docker as its runtime and no binary to pick.
+  const runsOnlyContainers =
+    selectedDependencyBinaryIds.length === 0 &&
+    containerRuntime(selectedDependencyIds, dependencyConfigs) !== undefined;
+
+  const runtimeReady =
+    runsOnlyContainers ||
+    (selectedRequiredBinaryIds.length > 0 &&
+      selectedRequiredBinaryIds.every(
+        (id) =>
+          Boolean(requiredBinaryConfigs[id]) &&
+          selectedDependencyBinaryIds.includes(id),
+      ));
+
   const source = Boolean(
     (appSourceMode === 'bundle' && appSourceBundleIdent) ||
     (appSourceMode === 'github' &&
@@ -86,12 +102,7 @@ export function evaluateFlowReadiness(
   const details = Boolean(
     // The API refuses the whole payload for a name it does not accept.
     isValidApplicationName(appName) &&
-    selectedRequiredBinaryIds.length > 0 &&
-    selectedRequiredBinaryIds.every(
-      (id) =>
-        Boolean(requiredBinaryConfigs[id]) &&
-        selectedDependencyBinaryIds.includes(id),
-    ) &&
+    runtimeReady &&
     appBuildCommand.some((command) => command.trim()) &&
     appRunCommand &&
     appPort &&
