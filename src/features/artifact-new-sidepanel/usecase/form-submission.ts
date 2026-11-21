@@ -1,9 +1,7 @@
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
-
 import { ApiApplication, ApiArtifact, ApiDeploy } from '@/shared/api';
-import { iife } from '@/shared/libs/browser/fn';
 import type { ExplicitTarget } from '@/shared/rules/host-group';
 
 import { useEmit, useSubscribe } from '../model/events';
@@ -26,6 +24,24 @@ export function resolveDeploymentRequestTarget(params: {
     explicitTarget,
     workerId: explicitTarget ? '' : params.workerId,
   } as const;
+}
+
+/**
+ * The deployment request for "Build and release". It never sets no_deploy:
+ * the build is released onto the target as soon as it is ready.
+ */
+export function buildReleaseRequest(params: {
+  applicationId: string;
+  artifactId: string;
+  target: ReturnType<typeof resolveDeploymentRequestTarget>;
+}) {
+  return {
+    applicationId: params.applicationId,
+    artifactId: params.artifactId,
+    workerId: params.target.workerId,
+    isPrimary: true,
+    target: params.target.explicitTarget,
+  };
 }
 
 export default function useFormSubmissionUsecase() {
@@ -103,28 +119,18 @@ export default function useFormSubmissionUsecase() {
         return;
       }
 
-      const responseDeployCreation = await iife(() => {
-        if (targetMode === 'server' && workerId === props.currentServerId) {
-          return Promise.resolve(null);
-        }
-
-        // Create deployment with artifact ID, on worker is not the same as selected worker
-        // It expect to create new deployment with status pending
-        // status will "pending" when no_deploy set true
-        return ApiDeploy.Create.doPost({
+      // Creating the artifact only records the build. The deployment request
+      // builds it and releases it onto the chosen server or group, the same
+      // server the application already runs on included.
+      const responseDeployCreation = await ApiDeploy.Create.doPost(
+        buildReleaseRequest({
           applicationId: props.applicationId,
-          workerId: deploymentTarget.workerId,
           artifactId: String(createdArtifactId),
-          isPrimary: true,
-          noDeploy: true,
-          target: deploymentTarget.explicitTarget,
-        });
-      });
+          target: deploymentTarget,
+        }),
+      );
 
-      if (
-        responseDeployCreation != null &&
-        responseDeployCreation.$status !== 'success'
-      ) {
+      if (responseDeployCreation.$status !== 'success') {
         openToaster({
           variant: 'warning',
           message: t('deployCreateWarning'),
@@ -142,7 +148,6 @@ export default function useFormSubmissionUsecase() {
 
       if (
         deploymentTarget.explicitTarget?.type === 'hostgroup' &&
-        responseDeployCreation != null &&
         responseDeployCreation.$status === 'success' &&
         'operation_id' in responseDeployCreation &&
         responseDeployCreation.operation_id

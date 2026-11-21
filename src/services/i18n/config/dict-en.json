@@ -4703,8 +4703,8 @@
         "branchDetailsFailed": "Failed to load branch details for {branch}, please try again later.",
         "createFailedTitle": "Failed to create artifact",
         "missingArtifactId": "The artifact was created, but the API response did not include an artifact ID.",
-        "deployCreateWarning": "Artifact created successfully, however deploy creation failed.",
-        "success": "Successfully created artifact."
+        "deployCreateWarning": "The build was saved, but its release could not be started. Release it from the releases list.",
+        "success": "Build started. It is released onto the server as soon as it is ready."
       }
     },
     "loadBalancerDetails": {
