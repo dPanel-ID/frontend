@@ -1,5 +1,7 @@
 import { useToaster } from '@/services/toaster';
 
+import { parseEnvText } from '@/entities/application/lib/env-text';
+
 import { ApiApplication } from '@/shared/api';
 
 import { useApplicationRunEditModel } from '../model';
@@ -23,10 +25,8 @@ export default function useFormSubmissionUsecase() {
           run: {
             ...rawAppDefinition.run,
             command: values.command,
-            environment: values.envs.map((env) => ({
-              key: env.key,
-              value: env.value,
-            })),
+            // A line left masked keeps its stored value, as a row does.
+            environment: parseEnvText(values.envText).variables,
           },
         },
       },

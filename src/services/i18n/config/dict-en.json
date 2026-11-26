@@ -1206,7 +1206,7 @@
           "source": "Choose a repository and the branch to build from.",
           "server": "Choose the server to install on, and set up each dependency you picked.",
           "details": "A name (letters, numbers and spaces only), a language (or Docker for an app that only runs containers), a build command, a start command and a free port are all needed.",
-          "env": "",
+          "env": "Fix the environment variable lines marked in red first.",
           "preview": "Finish the earlier steps first."
         }
       },
@@ -1383,9 +1383,9 @@
             "title": "Environment variables",
             "desc": "Separate build-time variables from runtime variables so secrets and deployment behavior stay clear.",
             "buildTitle": "Build-time variables",
-            "buildDesc": "One KEY=value pair per line. Used only while building the artifact.",
+            "buildDesc": "One variable per line, as KEY_NAME=\"VALUE\". Used only while building the artifact.",
             "runtimeTitle": "Runtime variables",
-            "runtimeDesc": "One KEY=value pair per line. Used by the running service.",
+            "runtimeDesc": "One variable per line, as KEY_NAME=\"VALUE\". Used by the running service.",
             "hiddenNote": "Values are hidden. Unchanged ones keep their stored value.",
             "reveal": "Show values",
             "hide": "Hide values",
@@ -4508,6 +4508,34 @@
         "deleteSuccess": "{name} was deleted",
         "revokeError": "Couldn't revoke {name}",
         "revokeSuccess": "{name} was revoked"
+      }
+    },
+    "envVariablesEditor": {
+      "modeLabel": "Edit as",
+      "modeRows": "Per variable",
+      "modeText": "Text",
+      "rowsBlocked": "Fix the lines listed above to switch back to Per variable.",
+      "empty": "No environment variables",
+      "columnKey": "Key",
+      "columnValue": "Value",
+      "add": "Add Variable",
+      "rowKey": "Key {index}",
+      "rowValue": "Value {index}",
+      "rowRemove": "Remove variable {index}",
+      "textHelp": "One variable per line, written as KEY_NAME=\"VALUE\". KEY=value without quotes and \"export\" also work. Empty lines and lines starting with # are ignored; after a value without quotes, \" #\" starts a comment. A value stays on one line: write a line break as \\n inside double quotes. Removing a line removes the variable when you save.",
+      "errorCount": "{count, plural, one {# line needs fixing before you can save} other {# lines need fixing before you can save}}",
+      "moreErrors": "{count, plural, one {and # more} other {and # more}}",
+      "errors": {
+        "missingEquals": "Line {line}: missing \"=\". Write it as KEY_NAME=\"VALUE\".",
+        "missingKey": "Line {line}: the name before \"=\" is missing.",
+        "invalidKey": "Line {line}: \"{key}\" is not a valid name. Use letters, digits and underscores, and do not start with a digit.",
+        "duplicateKey": "Line {line}: {key} appears twice (lines {first} and {line}). Keep one of them.",
+        "unclosedQuote": "Line {line}: the quote around the value of {key} is never closed.",
+        "multiline": "Line {line}: the value of {key} goes over several lines, which is not supported. Keep it on one line and write each line break as \\n inside double quotes.",
+        "textAfterQuote": "Line {line}: there is text after the closing quote. Put the whole value inside the quotes.",
+        "rowMissingKey": "Add a name for this value.",
+        "rowInvalidKey": "Use letters, digits and underscores, and do not start with a digit.",
+        "rowDuplicateKey": "{key} is already used in row {first}."
       }
     }
   },

@@ -16,7 +16,7 @@ An **environment variable** is a named setting, such as `PORT=9307`, that your p
 
 ## Set them when you create the application
 
-In step 4, **Environment**, type one `KEY=value` pair per line in **Build-time variables** or **Runtime variables**.
+In step 4, **Environment**, write one variable per line, such as `KEY=value` or `KEY="value"`, in **Build-time variables** or **Runtime variables**. See [Edit many variables at once](#edit-many-variables-at-once) for every form a line can take.
 
 ![The Environment step, with one build-time variable and two runtime variables](../../assets/applications/apps-create-environment.webp)
 
@@ -43,6 +43,28 @@ You can also ask **Ask dPanel** to do this for you; see [Prompt cookbook](../ai/
 :::note[Restart is not enough]
 **Restart** on a release starts the service again with the values it already had on the server. Only a release (**Build and release**, **Redeploy** or a rollback) writes the new values to the server.
 :::
+
+## Edit many variables at once
+
+Every place that edits variables has two views, switched with **Per variable** and **Text** above the list. Both edit the same list, so you can switch at any time without losing what you typed.
+
+In **Text**, write one variable per line and press **Save**: a new line adds a variable, a changed line updates it, and a line you delete removes it. This is the quickest way to paste the contents of a `.env` file.
+
+```bash
+# Lines starting with # are ignored, and so are empty lines
+APP_NAME="My shop"
+APP_KEY='base64:abc=='
+export LOG_LEVEL=info   # "export" and a comment after the value are fine
+MESSAGE="Line one\nLine two"
+```
+
+- `KEY_NAME="VALUE"` is the usual form. Inside double quotes, write `\"` for a quote, `\\` for a backslash and `\n` for a line break.
+- `KEY=value` without quotes and `'VALUE'` in single quotes also work. Single quotes keep the value exactly as written.
+- After a value without quotes, a space followed by `#` starts a comment. A `#` inside a value, as in `COLOR=#fff` or a URL, is kept. Put a value in quotes to keep ` #` in it.
+- A name uses letters, digits and underscores, and does not start with a digit.
+- A value stays on one line. For a certificate or another value with several lines, write each line break as `\n` inside double quotes.
+
+If a line cannot be read, dPanel lists it under the box with its line number, for example _Line 12: missing "="_, marks the line number in red, and keeps **Save** off until it is fixed. While values are hidden, a line shows `KEY="••••••••"`; leave it as it is to keep the stored value, or type over it to change it. **Show values** fills in the real values in this view too.
 
 ## See a saved value
 

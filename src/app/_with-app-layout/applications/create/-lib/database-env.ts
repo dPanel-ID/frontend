@@ -1,3 +1,5 @@
+import { formatEnvValue } from '@/entities/application/lib/env-text';
+
 import type { DTOs } from '@/shared/api';
 
 /** Database servers an application can get its own database on. */
@@ -175,7 +177,8 @@ function escapeRegExp(text: string) {
 /**
  * Sets each KEY=value in env text: a line that already sets KEY (with or
  * without "export") is replaced where it stands, any other key is added at
- * the end. Other lines and comments stay as they are.
+ * the end. Other lines and comments stay as they are. A value is quoted
+ * only when it would not read back the same without quotes.
  */
 export function upsertEnvText(
   text: string,
@@ -188,10 +191,10 @@ export function upsertEnvText(
     let found = false;
     for (let index = 0; index < lines.length; index += 1) {
       if (!pattern.test(lines[index] ?? '')) continue;
-      lines[index] = `${key}=${value}`;
+      lines[index] = `${key}=${formatEnvValue(value, 'none')}`;
       found = true;
     }
-    if (!found) missing.push(`${key}=${value}`);
+    if (!found) missing.push(`${key}=${formatEnvValue(value, 'none')}`);
   }
   return [...lines, ...missing].join('\n');
 }

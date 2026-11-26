@@ -4,6 +4,9 @@ import { useAuthLoggedIn } from '@/services/auth';
 import { useDialog } from '@/services/dialog';
 import { useToaster } from '@/services/toaster';
 
+import { parseEnvText as parseEnvVariables } from '@/entities/application/lib/env-text';
+import type { EnvVariable } from '@/entities/application/lib/env-text';
+
 import { ApiBundle } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
@@ -17,21 +20,14 @@ import type {
 import type { RuntimeDependency, RuntimeItem } from './config';
 import { getVarsGit, getVarsLaravel, getVarsWordpress } from './config';
 
+/** The variables in KEY_NAME="VALUE" text (the env step blocks bad lines). */
 function parseEnvText(value: string) {
-  return value
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .reduce<Array<Record<string, string>>>((acc, line) => {
-      const separatorIndex = line.indexOf('=');
-      if (separatorIndex <= 0) return acc;
-
-      acc.push({
-        key: line.slice(0, separatorIndex).trim(),
-        value: line.slice(separatorIndex + 1).trim(),
-      });
-      return acc;
-    }, []);
+  return parseEnvVariables(value).variables.map(
+    ({ key, value: text }): Record<string, string> & EnvVariable => ({
+      key,
+      value: text,
+    }),
+  );
 }
 
 function runtimeFromRequiredBinary(

@@ -6,7 +6,7 @@ import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import {
-  SECRET_MASK,
+  hasMaskedEnvText,
   hideRevealedEnvText,
   revealMaskedEnvText,
 } from '@/entities/application/lib/secret-mask';
@@ -14,7 +14,7 @@ import {
 import { ApiApplication } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { Button } from '@/shared/presentation/atoms/Button';
-import { TextArea } from '@/shared/presentation/atoms/TextArea';
+import { EnvVariablesEditor } from '@/widgets/env-variables-editor';
 
 import { useFormStore } from '../../../-model/store/form';
 import { Sectioned } from '../../../-presentation/Sectioned';
@@ -41,8 +41,7 @@ export default function Step5Env() {
   // stored value. Showing them is a separate, logged call.
   const hasMasked =
     !!updateApplicationId &&
-    (buildEnvText.includes(SECRET_MASK) ||
-      runtimeEnvText.includes(SECRET_MASK));
+    (hasMaskedEnvText(buildEnvText) || hasMaskedEnvText(runtimeEnvText));
   const isShown = !!updateApplicationId && !hasMasked && revealed !== null;
 
   const hideValues = () => {
@@ -104,33 +103,35 @@ export default function Step5Env() {
           </div>
         )}
 
-        <label className="grid gap-1.5">
+        <div className="grid gap-1.5">
           <span className="text-sm font-semibold">{t('buildTitle')}</span>
           <span className="text-xs text-muted-foreground">
             {t('buildDesc')}
           </span>
-          <TextArea
-            className="min-h-36 font-mono text-sm"
-            placeholder={'NODE_ENV=production\nCI=true'}
-            value={buildEnvText}
-            onChange={(event) => setBuildEnvText(event.target.value)}
+          <EnvVariablesEditor
+            label={t('buildTitle')}
+            defaultMode="text"
+            text={buildEnvText}
+            onTextChange={setBuildEnvText}
+            textPlaceholder={'NODE_ENV="production"\nCI="true"'}
           />
-        </label>
+        </div>
 
         <DatabaseConnect />
 
-        <label className="grid gap-1.5">
+        <div className="grid gap-1.5">
           <span className="text-sm font-semibold">{t('runtimeTitle')}</span>
           <span className="text-xs text-muted-foreground">
             {t('runtimeDesc')}
           </span>
-          <TextArea
-            className="min-h-36 font-mono text-sm"
-            placeholder={'APP_ENV=production\nLOG_LEVEL=info'}
-            value={runtimeEnvText}
-            onChange={(event) => setRuntimeEnvText(event.target.value)}
+          <EnvVariablesEditor
+            label={t('runtimeTitle')}
+            defaultMode="text"
+            text={runtimeEnvText}
+            onTextChange={setRuntimeEnvText}
+            textPlaceholder={'APP_ENV="production"\nLOG_LEVEL="info"'}
           />
-        </label>
+        </div>
       </Sectioned>
     </div>
   );

@@ -29,6 +29,8 @@ function input(
     },
     selectedRequiredBinaryIds: ['binary:node'],
     requiredBinaryConfigs: { 'binary:node': {} },
+    buildEnvText: '',
+    runtimeEnvText: '',
     ...overrides,
   };
 }
@@ -195,6 +197,28 @@ describe('evaluateFlowReadiness', () => {
 
   it('treats environment variables as optional', () => {
     expect(evaluateFlowReadiness(input())['4-env']).toBe(true);
+  });
+
+  it('accepts every supported line format', () => {
+    expect(
+      evaluateFlowReadiness(
+        input({
+          buildEnvText: '# build\nNODE_ENV=production\nexport CI="true"',
+          runtimeEnvText: "APP_KEY='base64:abc'\nLOG_LEVEL=info # quiet",
+        }),
+      )['4-env'],
+    ).toBe(true);
+  });
+
+  it('waits for a bad environment line to be fixed', () => {
+    expect(
+      evaluateFlowReadiness(input({ buildEnvText: 'NODE_ENV production' }))[
+        '4-env'
+      ],
+    ).toBe(false);
+    expect(
+      evaluateFlowReadiness(input({ runtimeEnvText: 'A=1\nA=2' }))['4-env'],
+    ).toBe(false);
   });
 });
 

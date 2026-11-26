@@ -1,3 +1,5 @@
+import { parseEnvText } from '@/entities/application/lib/env-text';
+
 import { isValidApplicationName } from '../../../-rules/application-name';
 import { containerRuntime } from '../container-runtime';
 import { useFormStore } from '../store/form';
@@ -31,6 +33,8 @@ export interface FlowReadinessInput {
   dependencyConfigs: Record<string, DependencyConfig>;
   selectedRequiredBinaryIds: string[];
   requiredBinaryConfigs: Record<string, unknown>;
+  buildEnvText: string;
+  runtimeEnvText: string;
 }
 
 function isLanguageDependency(config?: DependencyConfig) {
@@ -64,6 +68,8 @@ export function evaluateFlowReadiness(
     requiredBinaryConfigs,
     selectedDependencyIds,
     selectedRequiredBinaryIds,
+    buildEnvText,
+    runtimeEnvText,
   } = input;
 
   const selectedDependencyBinaryIds = selectedDependencyIds
@@ -114,8 +120,12 @@ export function evaluateFlowReadiness(
     '1-source': source,
     '2-server-dependencies': serverAndDependencies,
     '3-details': details,
-    // Environment variables are optional, and the preview only reports.
-    '4-env': true,
+    // Environment variables are optional, but a line that cannot be read
+    // would be dropped or misread, so it has to be fixed first.
+    '4-env':
+      parseEnvText(buildEnvText).errors.length === 0 &&
+      parseEnvText(runtimeEnvText).errors.length === 0,
+    // The preview only reports.
     '5-preview': true,
   };
 }
@@ -152,6 +162,8 @@ export function useFlowReadiness(): FlowReadiness {
     dependencyConfigs,
     selectedRequiredBinaryIds,
     requiredBinaryConfigs,
+    buildEnvText,
+    runtimeEnvText,
   ] = useFormStore((s) => [
     s.flowMode,
     s.appSourceMode,
@@ -168,6 +180,8 @@ export function useFlowReadiness(): FlowReadiness {
     s.dependencyConfigs,
     s.selectedRequiredBinaryIds,
     s.requiredBinaryConfigs,
+    s.buildEnvText,
+    s.runtimeEnvText,
   ]);
 
   const byStep = evaluateFlowReadiness({
@@ -186,6 +200,8 @@ export function useFlowReadiness(): FlowReadiness {
     dependencyConfigs,
     selectedRequiredBinaryIds,
     requiredBinaryConfigs,
+    buildEnvText,
+    runtimeEnvText,
   });
 
   const steps = flowStepKeys(flowMode);

@@ -1,3 +1,5 @@
+import { mapEnvTextValues, parseEnvText } from './env-text';
+
 /**
  * The API masks every build and runtime variable value with this text.
  * Sending it back unchanged keeps the stored value; the real values are
@@ -24,24 +26,18 @@ export function revealMaskedValues<
   );
 }
 
-/** Same for KEY=VALUE lines, as the application update page edits them. */
+/**
+ * Same for environment text (see env-text.ts): only the value of a masked
+ * line changes; comments, spacing and every other line stay as written.
+ */
 export function revealMaskedEnvText(
   text: string,
   revealed: Array<{ key: string; value: string }>,
 ) {
   const values = new Map(revealed.map((item) => [item.key, item.value]));
-  return text
-    .split('\n')
-    .map((line) => {
-      const separator = line.indexOf('=');
-      if (separator <= 0) return line;
-      const key = line.slice(0, separator).trim();
-      const value = line.slice(separator + 1);
-      return isMaskedValue(value.trim()) && values.has(key)
-        ? `${line.slice(0, separator)}=${values.get(key)}`
-        : line;
-    })
-    .join('\n');
+  return mapEnvTextValues(text, (entry) =>
+    isMaskedValue(entry.value) ? values.get(entry.key) : undefined,
+  );
 }
 
 /**
@@ -59,22 +55,25 @@ export function hideRevealedValues<
   );
 }
 
-/** Same for KEY=VALUE lines. */
+/** Same for environment text. */
 export function hideRevealedEnvText(
   text: string,
   revealed: Array<{ key: string; value: string }>,
 ) {
   const values = new Map(revealed.map((item) => [item.key, item.value]));
-  return text
-    .split('\n')
-    .map((line) => {
-      const separator = line.indexOf('=');
-      if (separator <= 0) return line;
-      const key = line.slice(0, separator).trim();
-      const value = line.slice(separator + 1);
-      return value && values.get(key) === value
-        ? `${line.slice(0, separator)}=${SECRET_MASK}`
-        : line;
-    })
-    .join('\n');
+  return mapEnvTextValues(text, (entry) =>
+    entry.value && values.get(entry.key) === entry.value
+      ? SECRET_MASK
+      : undefined,
+  );
+}
+
+/** Whether any variable in environment text still holds the mask. */
+export function hasMaskedEnvText(text: string) {
+  return (
+    text.includes(SECRET_MASK) &&
+    parseEnvText(text).variables.some((variable) =>
+      isMaskedValue(variable.value),
+    )
+  );
 }
