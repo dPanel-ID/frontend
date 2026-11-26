@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useAuthLoggedIn } from '@/services/auth';
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { envVariablesToText } from '@/entities/application/lib/env-text';
 import { resolveServerModuleLogo } from '@/entities/server-modules/config/registry';
 import { titleizeModuleValue } from '@/entities/server-modules/lib/catalog';
 
@@ -247,15 +248,14 @@ function buildInitialFormState(
 function envTextFromDefinition(
   environment?: Array<{ key?: string; value?: string | null }> | null,
 ) {
-  return (environment ?? [])
-    .map((item) => {
-      const key = String(item.key || '').trim();
-      if (!key) return null;
-
-      return `${key}=${item.value ?? ''}`;
-    })
-    .filter((line): line is string => Boolean(line))
-    .join('\n');
+  return envVariablesToText(
+    (environment ?? [])
+      .map((item) => ({
+        key: String(item.key || '').trim(),
+        value: item.value ?? '',
+      }))
+      .filter((item) => item.key),
+  );
 }
 
 function buildInitialServers(

@@ -1,5 +1,12 @@
+import { useMemo } from 'react';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
+
+import {
+  envVariablesToText,
+  parseEnvText,
+} from '@/entities/application/lib/env-text';
 
 import { buildContext } from '@/shared/libs/react-factories/buildContext';
 
@@ -16,12 +23,19 @@ export const [ApplicationRunEditModelProvider, useApplicationRunEditModel] =
         resolver: zodResolver(schemaApplicationRunEdit),
         defaultValues: {
           command: props.command,
-          envs: props.envs.map((env) => ({
-            key: env.key,
-            value: env.value ?? '',
-          })),
+          envText: envVariablesToText(
+            props.envs
+              .filter((env) => env.key)
+              .map((env) => ({ key: env.key, value: env.value ?? '' })),
+          ),
         },
       });
+
+      const envText = useWatch({ control: form.control, name: 'envText' });
+      const hasEnvErrors = useMemo(
+        () => parseEnvText(envText).errors.length > 0,
+        [envText],
+      );
 
       return {
         props,
@@ -29,6 +43,7 @@ export const [ApplicationRunEditModelProvider, useApplicationRunEditModel] =
         onSuccess,
         isSubmitting: form.formState.isSubmitting,
         hasChanges: form.formState.isDirty,
+        hasEnvErrors,
       };
     },
   );

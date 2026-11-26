@@ -1206,7 +1206,7 @@
           "source": "Pilih repositori dan branch yang akan dibangun.",
           "server": "Pilih server tempat pemasangan, lalu atur setiap dependensi yang Anda pilih.",
           "details": "Nama (hanya huruf, angka, dan spasi), bahasa (atau Docker untuk aplikasi yang hanya menjalankan container), perintah build, perintah jalan, dan port yang bebas semuanya diperlukan.",
-          "env": "",
+          "env": "Perbaiki dulu baris environment variable yang ditandai merah.",
           "preview": "Selesaikan langkah sebelumnya terlebih dahulu."
         }
       },
@@ -1383,9 +1383,9 @@
             "title": "Variabel environment",
             "desc": "Pisahkan variabel build-time dan runtime agar secret dan perilaku deployment tetap jelas.",
             "buildTitle": "Variabel build-time",
-            "buildDesc": "Satu pasangan KEY=value per baris. Hanya digunakan saat build artifact.",
+            "buildDesc": "Satu variabel per baris, ditulis KEY_NAME=\"VALUE\". Hanya digunakan saat build artifact.",
             "runtimeTitle": "Variabel runtime",
-            "runtimeDesc": "Satu pasangan KEY=value per baris. Digunakan oleh service yang berjalan.",
+            "runtimeDesc": "Satu variabel per baris, ditulis KEY_NAME=\"VALUE\". Digunakan oleh service yang berjalan.",
             "hiddenNote": "Nilai disembunyikan. Nilai yang tidak diubah tetap memakai nilai tersimpan.",
             "reveal": "Tampilkan nilai",
             "hide": "Sembunyikan nilai",
@@ -4509,6 +4509,34 @@
         "deleteSuccess": "{name} dihapus",
         "revokeError": "Tidak bisa mencabut {name}",
         "revokeSuccess": "{name} dicabut"
+      }
+    },
+    "envVariablesEditor": {
+      "modeLabel": "Ubah sebagai",
+      "modeRows": "Per variabel",
+      "modeText": "Teks",
+      "rowsBlocked": "Perbaiki baris yang disebut di atas untuk kembali ke Per variabel.",
+      "empty": "Belum ada environment variable",
+      "columnKey": "Kunci",
+      "columnValue": "Nilai",
+      "add": "Tambah Variabel",
+      "rowKey": "Kunci {index}",
+      "rowValue": "Nilai {index}",
+      "rowRemove": "Hapus variabel {index}",
+      "textHelp": "Satu variabel per baris, ditulis KEY_NAME=\"VALUE\". KEY=value tanpa tanda kutip dan \"export\" juga bisa. Baris kosong dan baris yang diawali # diabaikan; setelah nilai tanpa tanda kutip, \" #\" memulai komentar. Nilai harus satu baris: tulis ganti baris sebagai \\n di dalam tanda kutip ganda. Menghapus baris akan menghapus variabelnya saat disimpan.",
+      "errorCount": "{count, plural, other {# baris perlu diperbaiki sebelum bisa disimpan}}",
+      "moreErrors": "{count, plural, other {dan # lainnya}}",
+      "errors": {
+        "missingEquals": "Baris {line}: tidak ada \"=\". Tulis sebagai KEY_NAME=\"VALUE\".",
+        "missingKey": "Baris {line}: nama sebelum \"=\" belum diisi.",
+        "invalidKey": "Baris {line}: \"{key}\" bukan nama yang valid. Gunakan huruf, angka, dan garis bawah, dan jangan diawali angka.",
+        "duplicateKey": "Baris {line}: {key} muncul dua kali (baris {first} dan {line}). Simpan salah satunya.",
+        "unclosedQuote": "Baris {line}: tanda kutip pada nilai {key} tidak ditutup.",
+        "multiline": "Baris {line}: nilai {key} ditulis dalam beberapa baris, dan itu tidak didukung. Tulis dalam satu baris dan ganti setiap ganti baris dengan \\n di dalam tanda kutip ganda.",
+        "textAfterQuote": "Baris {line}: ada teks setelah tanda kutip penutup. Letakkan seluruh nilai di dalam tanda kutip.",
+        "rowMissingKey": "Isi nama untuk nilai ini.",
+        "rowInvalidKey": "Gunakan huruf, angka, dan garis bawah, dan jangan diawali angka.",
+        "rowDuplicateKey": "{key} sudah dipakai di baris {first}."
       }
     }
   },

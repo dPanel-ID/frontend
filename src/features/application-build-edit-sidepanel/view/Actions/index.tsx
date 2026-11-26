@@ -9,7 +9,8 @@ import { useApplicationBuildEditModel } from '../../model';
 import { useEmit } from '../../model/events';
 
 export default function Actions() {
-  const { isSubmitting, hasChanges } = useApplicationBuildEditModel();
+  const { isSubmitting, hasChanges, hasEnvErrors } =
+    useApplicationBuildEditModel();
 
   const t = useDevetekTranslations();
 
@@ -29,7 +30,7 @@ export default function Actions() {
     <>
       <Button
         onClick={handleClickSubmit}
-        disabled={isSubmitting || !hasChanges}
+        disabled={isSubmitting || !hasChanges || hasEnvErrors}
       >
         {isSubmitting ? (
           <LoaderCircleIcon className="animate-spin" />
@@ -37,7 +38,11 @@ export default function Actions() {
           t('common.actions.save')
         )}
       </Button>
-      <Button className={cnCancel} variant="outline" onClick={handleClickCancel}>
+      <Button
+        className={cnCancel}
+        variant="outline"
+        onClick={handleClickCancel}
+      >
         {t('common.actions.cancel')}
       </Button>
     </>

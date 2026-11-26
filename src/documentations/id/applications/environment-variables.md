@@ -16,7 +16,7 @@ dPanel meneruskan variabel environment ke aplikasi Anda dari dua daftar terpisah
 
 ## Mengisinya saat membuat aplikasi
 
-Di langkah 4, **Environment**, ketik satu pasangan `KEY=value` per baris di **Variabel build-time** atau **Variabel runtime**.
+Di langkah 4, **Environment**, tulis satu variabel per baris, misalnya `KEY=value` atau `KEY="value"`, di **Variabel build-time** atau **Variabel runtime**. Lihat [Mengubah banyak variabel sekaligus](#mengubah-banyak-variabel-sekaligus) untuk semua bentuk baris yang bisa dipakai.
 
 ![Langkah Environment dengan satu variabel build-time dan dua variabel runtime](../../assets/applications/apps-create-environment.webp)
 
@@ -43,6 +43,28 @@ Anda juga bisa meminta **Ask dPanel** mengerjakannya untuk Anda; lihat [Kumpulan
 :::note[Restart saja tidak cukup]
 **Restart** pada sebuah rilis menjalankan ulang layanan dengan nilai yang sudah ada di server. Hanya rilis (**Bangun dan rilis**, **Rilis ulang**, atau rollback) yang menulis nilai baru ke server.
 :::
+
+## Mengubah banyak variabel sekaligus
+
+Setiap tempat untuk mengubah variabel punya dua tampilan, dipilih dengan **Per variabel** dan **Teks** di atas daftarnya. Keduanya mengubah daftar yang sama, jadi Anda bisa berpindah kapan saja tanpa kehilangan apa yang sudah diketik.
+
+Di **Teks**, tulis satu variabel per baris lalu tekan **Simpan**: baris baru menambah variabel, baris yang diubah memperbaruinya, dan baris yang dihapus menghapus variabelnya. Ini cara tercepat untuk menempelkan isi file `.env`.
+
+```bash
+# Baris yang diawali # diabaikan, begitu juga baris kosong
+APP_NAME="Toko saya"
+APP_KEY='base64:abc=='
+export LOG_LEVEL=info   # "export" dan komentar setelah nilai boleh dipakai
+MESSAGE="Baris satu\nBaris dua"
+```
+
+- `KEY_NAME="VALUE"` adalah bentuk yang biasa. Di dalam tanda kutip ganda, tulis `\"` untuk tanda kutip, `\\` untuk garis miring terbalik, dan `\n` untuk ganti baris.
+- `KEY=value` tanpa tanda kutip dan `'VALUE'` dengan tanda kutip tunggal juga bisa. Tanda kutip tunggal menyimpan nilai persis seperti yang ditulis.
+- Setelah nilai tanpa tanda kutip, spasi yang diikuti `#` memulai komentar. `#` di dalam nilai, seperti `COLOR=#fff` atau sebuah URL, tetap disimpan. Beri tanda kutip pada nilai agar ` #` tetap ada di dalamnya.
+- Nama memakai huruf, angka, dan garis bawah, dan tidak diawali angka.
+- Nilai harus satu baris. Untuk sertifikat atau nilai lain yang terdiri dari beberapa baris, tulis setiap ganti baris sebagai `\n` di dalam tanda kutip ganda.
+
+Jika ada baris yang tidak bisa dibaca, dPanel menampilkannya di bawah kotak beserta nomor barisnya, misalnya _Baris 12: tidak ada "="_, menandai nomor barisnya dengan merah, dan menonaktifkan **Simpan** sampai diperbaiki. Saat nilai disembunyikan, baris tampil sebagai `KEY="••••••••"`; biarkan apa adanya untuk mempertahankan nilai tersimpan, atau ketik di atasnya untuk mengubahnya. **Tampilkan nilai** juga mengisi nilai sebenarnya di tampilan ini.
 
 ## Melihat nilai yang tersimpan
 

@@ -1,5 +1,7 @@
 import { useToaster } from '@/services/toaster';
 
+import { parseEnvText } from '@/entities/application/lib/env-text';
+
 import { ApiApplication } from '@/shared/api';
 
 import { useApplicationBuildEditModel } from '../model';
@@ -27,10 +29,7 @@ export default function useFormSubmissionUsecase() {
       ...(step.archive ? { archive: step.archive } : {}),
     }));
 
-    const newEnvs = values.envs.map((env) => ({
-      key: env.key,
-      value: env.value,
-    }));
+    const newEnvs = parseEnvText(values.envText).variables;
 
     const response = await ApiApplication.Update.$Id.doPost({
       applicationId,

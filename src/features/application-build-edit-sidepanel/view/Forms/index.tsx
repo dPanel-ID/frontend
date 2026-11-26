@@ -1,8 +1,9 @@
 import { PlusIcon, Trash2Icon } from 'lucide-react';
-import { useFieldArray } from 'react-hook-form';
+import { useFieldArray, useWatch } from 'react-hook-form';
 
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Input } from '@/shared/presentation/atoms/Input';
+import { EnvVariablesEditor } from '@/widgets/env-variables-editor';
 
 import { useApplicationBuildEditModel } from '../../model';
 
@@ -92,89 +93,22 @@ function BuildStepsSection() {
   );
 }
 
-/** One header for the key and value columns, instead of a label per row. */
-function EnvHeader() {
-  return (
-    <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)_2.25rem] gap-2">
-      <FieldLabel>Key</FieldLabel>
-      <FieldLabel>Value</FieldLabel>
-    </div>
-  );
-}
-
 function BuildEnvsSection() {
   const { form } = useApplicationBuildEditModel();
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: 'envs',
-  });
-
-  const handleAdd = () => {
-    append({ key: '', value: '' });
-  };
+  const envText = useWatch({ control: form.control, name: 'envText' });
 
   return (
     <div className="flex flex-col gap-1 pb-4">
       <SectionTitle>Environment Variables</SectionTitle>
 
-      <div className="flex flex-col gap-2">
-        {fields.length === 0 ? (
-          <p className="text-xs text-muted-foreground italic">
-            No environment variables
-          </p>
-        ) : (
-          <EnvHeader />
-        )}
-
-        {fields.map((field, index) => (
-          <div
-            key={field.id}
-            className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)_auto] items-start gap-2"
-          >
-            <div className="min-w-0">
-              <Input
-                {...form.register(`envs.${index}.key`)}
-                placeholder="KEY"
-                aria-label={`Key ${index + 1}`}
-                className="h-9 text-sm font-mono"
-              />
-              {form.formState.errors.envs?.[index]?.key?.message && (
-                <p className="text-xs text-destructive mt-0.5">
-                  {String(form.formState.errors.envs[index].key.message)}
-                </p>
-              )}
-            </div>
-            <Input
-              {...form.register(`envs.${index}.value`)}
-              placeholder="value"
-              aria-label={`Value ${index + 1}`}
-              className="h-9 text-sm font-mono"
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              aria-label={`Remove variable ${index + 1}`}
-              className="size-9 p-0 shrink-0 text-muted-foreground hover:text-destructive"
-              onClick={() => remove(index)}
-            >
-              <Trash2Icon className="size-4" />
-            </Button>
-          </div>
-        ))}
-      </div>
-
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        className="mt-2 w-full gap-1"
-        onClick={handleAdd}
-      >
-        <PlusIcon className="size-3" />
-        Add Variable
-      </Button>
+      <EnvVariablesEditor
+        label="Environment Variables"
+        text={envText}
+        onTextChange={(next) =>
+          form.setValue('envText', next, { shouldDirty: true })
+        }
+        textPlaceholder={'NODE_ENV="production"\nCI="true"'}
+      />
     </div>
   );
 }
