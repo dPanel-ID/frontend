@@ -70,8 +70,10 @@ Anda juga bisa meminta asisten menyiapkannya, misalnya "Pasang aplikasi saya di 
    - **Pola Jalur URL**: `/*` menangkap semua request. Path yang berakhiran `/*` diberi lencana **Wildcard**.
    - **Aplikasi**: pilih aplikasinya. dPanel memakai server dan port aplikasi itu.
 4. Di **Cara gateway menjangkau aplikasi ini**, pilih cara gateway terhubung ke aplikasi. Port aplikasi harus bisa dijangkau dari gateway, jadi izinkan port itu di firewall dPanel kalau firewall itu menyala, dan di firewall penyedia Anda. Ini penting kalau aplikasi berjalan di server lain, atau di penyedia lain:
-   - **Alamat terdaftar** (bawaan): alamat server yang terdaftar di dPanel. Berlaku lintas penyedia.
-   - **Jaringan privat**: IP privat server. Pakai hanya kalau gateway dan server itu satu jaringan.
+   - **Alamat terdaftar**: alamat server yang terdaftar di dPanel. Berlaku lintas penyedia.
+   - **Jaringan privat**: IP privat server. Pakai kalau gateway dan server itu satu jaringan, atau keduanya terhubung ke internet lewat satu alamat publik yang sama.
+
+   dPanel menandai satu pilihan **Disarankan** dan memilihnya: **Jaringan privat** kalau setiap server lain satu jaringan privat dengan gateway, atau memakai alamat publik yang sama dengan gateway, dan **Alamat terdaftar** untuk selain itu.
    - **Target kustom**: ketik alamat IP, atau URL origin seperti `https://origin.example.com` untuk aplikasi yang sudah dilayani domain lain. Dengan URL, gateway terhubung lewat HTTPS dan meminta domain tersebut. Kosongkan port untuk memakai 443 (`https`), 80 (`http`), atau port aplikasi untuk IP.
 
    Aplikasi yang di-deploy di server gateway sendiri dijangkau lewat `localhost`.
@@ -169,6 +171,8 @@ Kotak **Sertifikat** menampilkan penerbit dan sisa hari, misalnya **Let's Encryp
 
 ![Tab Upstream dengan satu backend yang mengirim /* ke sebuah aplikasi](../../assets/networking/lb-detail-upstreams.webp)
 
+Untuk mengubah cara gateway menjangkau aplikasi pada backend yang sudah ada, tekan **Ubah alamat** di backend itu, pilih **Alamat terdaftar** atau **Alamat privat**, lalu periksa alamat yang tercantum untuk setiap server. **Tambah backend** → **Aplikasi** memberi pilihan yang sama, dengan pilihan yang disarankan sudah terpilih.
+
 Perubahan di **Upstream** dan **Konfigurasi** masih berupa draf sampai Anda menekan **Simpan perubahan**. Menyimpan memperbarui definisi routing dan menjalankan ulang setup gateway. **Reset draft** membuang drafnya.
 
 ![Tab Konfigurasi dengan Aktifkan SSL dan Aktifkan proxy Cloudflare](../../assets/networking/lb-detail-config.webp)
@@ -239,7 +243,9 @@ Engine yang Anda pilih di gateway: Caddy (bawaan), Apache APISIX, atau HAProxy. 
 
 ### Bisakah aplikasinya berjalan di server atau penyedia lain?
 
-Bisa. Di langkah **Routing**, pada **Cara gateway menjangkau aplikasi ini**, pilih **Alamat terdaftar**, **Jaringan privat**, atau **Target kustom**. Target kustom bisa berupa alamat IP atau URL origin yang sudah melayani aplikasinya.
+Bisa. Di langkah **Routing**, pada **Cara gateway menjangkau aplikasi ini**, pilih **Alamat terdaftar**, **Jaringan privat**, atau **Target kustom**. Target kustom bisa berupa alamat IP atau URL origin yang sudah melayani aplikasinya. Untuk load balancer yang sudah ada, pakai **Ubah alamat** di backend pada tab **Upstream**.
+
+Kalau rute ke server lain kehabisan waktu (timeout) dan server-servernya memakai satu alamat publik yang sama (satu alamat NAT untuk semuanya), ubah rutenya ke **Alamat privat**: gateway tidak bisa menjangkau server lain lewat alamat publik bersama itu.
 
 ### Mengapa server saya tidak bisa dipilih sebagai gateway?
 

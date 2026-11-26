@@ -165,6 +165,7 @@ export function getApplicationDtoRuntimePort(application: DTOs.ApplicationV1) {
 export function serializeUpstreamDraftRows(rows: UpstreamDraft[]) {
   return JSON.stringify(
     rows.map((row) => ({
+      addressMode: row.addressMode ?? '',
       applicationId: row.applicationId ?? '',
       destination: row.destination.trim(),
       href: row.href ?? '',

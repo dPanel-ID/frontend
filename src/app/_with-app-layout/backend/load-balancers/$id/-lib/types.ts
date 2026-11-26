@@ -15,7 +15,8 @@ export type AddBackendMode = 'application' | 'address';
 export type RawLoadBalancerDetailsDto = DTOs.RouterV1 | DTOs.LoadBalancerV2;
 
 export interface UpstreamDraft {
-  /** Stored address mode of an application route; empty for new rows. */
+  /** Address mode of an application route: as stored, as chosen in the
+   * editor, or empty to let the API choose. */
   addressMode?: ApplicationAddressMode;
   /** Stored custom upstreams of an application route, sent back on save. */
   applicationUpstreams?: ApplicationUpstream[];

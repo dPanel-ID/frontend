@@ -70,8 +70,10 @@ You can also ask the assistant to set one up, for example "Put my app on app.exa
    - **Matching Path**: `/*` takes every request. A path ending in `/*` shows a **Wildcard** badge.
    - **Application**: pick the application. dPanel uses the application's server and port.
 4. Under **How the gateway reaches this application**, choose how the gateway connects to the application. The application's port must be reachable from the gateway, so allow it in the dPanel firewall if that is on, and in your provider's firewall. This matters when the application runs on another server, or at another provider:
-   - **Registered address** (the default): the server address registered in dPanel. It works across providers.
-   - **Private network**: the server's private IP. Use it only when the gateway and the server share one network.
+   - **Registered address**: the server address registered in dPanel. It works across providers.
+   - **Private network**: the server's private IP. Use it when the gateway and the server share one network, or when both reach the internet through one shared public address.
+
+   dPanel marks one choice **Recommended** and selects it: **Private network** when every other server shares a private network with the gateway, or has the same public address as the gateway, and **Registered address** otherwise.
    - **Custom targets**: type IP addresses, or an origin URL such as `https://origin.example.com` for an app another domain already serves. With a URL, the gateway connects over HTTPS and asks for that domain. Leave the port empty to use 443 for `https`, 80 for `http`, or the app's port for an IP.
 
    An application deployed on the gateway server itself is reached on `localhost`.
@@ -169,6 +171,8 @@ The **Certificate** tile shows the issuer and the days left, such as **Let's Enc
 
 ![The Upstreams tab with one backend sending /* to an application](../../assets/networking/lb-detail-upstreams.webp)
 
+To change how the gateway reaches an application on an existing backend, press **Change address** on that backend, pick **Registered address** or **Private address**, and check the addresses listed for each server. **Add backend** → **Application** offers the same choice, with the recommended one selected.
+
 Changes on **Upstreams** and **Config** are drafts until you press **Save changes**. Saving updates the routing definition and runs the gateway setup again. **Reset draft** throws the draft away.
 
 ![The Config tab with Enable SSL and Enable Cloudflare proxy](../../assets/networking/lb-detail-config.webp)
@@ -239,7 +243,9 @@ The engine you pick on the gateway: Caddy (the default), Apache APISIX or HAProx
 
 ### Can the application run on another server or provider?
 
-Yes. In the **Routing** step, under **How the gateway reaches this application**, pick **Registered address**, **Private network** or **Custom targets**. A custom target can be an IP address or an origin URL that already serves the app.
+Yes. In the **Routing** step, under **How the gateway reaches this application**, pick **Registered address**, **Private network** or **Custom targets**. A custom target can be an IP address or an origin URL that already serves the app. For an existing load balancer, use **Change address** on the backend in the **Upstreams** tab.
+
+If a route to another server times out and the servers share one public address (one NAT address for all of them), switch the route to **Private address**: the gateway cannot reach the other server through their shared public address.
 
 ### Why can't I pick my server as the gateway?
 

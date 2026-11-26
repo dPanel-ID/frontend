@@ -10,14 +10,13 @@ import {
   getApplicationDeploymentServers,
   getApplicationRouteTargets,
   getUpstreamDrafts,
+  serializeUpstreamDraftRows,
   toLoadBalancerUpdatePayload,
 } from './upstream-drafts';
 
 const detailsFrom = (rules: DTOs.LoadBalancerRuleV2[]) =>
   ({
-    configuration: configuration.parse(
-      ctorConfiguration({ id: '91', rules }),
-    ),
+    configuration: configuration.parse(ctorConfiguration({ id: '91', rules })),
   }) as LoadBalancerDetails;
 
 const pinned = detailsFrom([
@@ -99,6 +98,80 @@ describe('saving application routes', () => {
     expect(rule?.upstreams).toEqual([
       { address: 'https://origin.example.com', port: '443' },
     ]);
+  });
+});
+
+describe('changing the address mode of an application route', () => {
+  const registered = detailsFrom([
+    {
+      path_match: '/',
+      type: 'proxy_pass',
+      wildcard: true,
+      target: {
+        application_id: '129',
+        address_mode: 'registered',
+        resolved_upstreams: [
+          { address: '151.243.222.218', port: '8567', machine_id: '253' },
+        ],
+      },
+    },
+  ]);
+
+  it('counts a changed mode as an unsaved change', () => {
+    const rows = getUpstreamDrafts(registered);
+    const changed = rows.map((row) => ({
+      ...row,
+      addressMode: 'private' as const,
+    }));
+
+    expect(serializeUpstreamDraftRows(changed)).not.toBe(
+      serializeUpstreamDraftRows(rows),
+    );
+  });
+
+  it('sends the new mode and no resolved addresses', () => {
+    const rows = getUpstreamDrafts(registered).map((row) => ({
+      ...row,
+      addressMode: 'private' as const,
+    }));
+
+    expect(toLoadBalancerUpdatePayload(registered, rows).rules).toEqual([
+      {
+        addressMode: 'private',
+        applicationId: '129',
+        pathMatch: '/',
+        type: 'proxy_pass',
+        wildcard: true,
+      },
+    ]);
+  });
+
+  it('drops custom targets when a custom route switches to private', () => {
+    const rows = getUpstreamDrafts(pinned).map((row) => ({
+      ...row,
+      addressMode: 'private' as const,
+    }));
+    const [rule] = toLoadBalancerUpdatePayload(pinned, rows).rules;
+
+    expect(rule).toMatchObject({ addressMode: 'private', applicationId: '74' });
+    expect(rule?.upstreams).toBeUndefined();
+  });
+
+  it('sends no mode for a new route the API should choose for', () => {
+    const [rule] = toLoadBalancerUpdatePayload(registered, [
+      {
+        applicationId: '200',
+        destination: 'app (#200)',
+        id: 'draft-1',
+        kind: 'application',
+        match: '/*',
+        order: 1,
+        port: '80',
+        protocol: 'http',
+      },
+    ]).rules;
+
+    expect(rule).not.toHaveProperty('addressMode');
   });
 });
 
