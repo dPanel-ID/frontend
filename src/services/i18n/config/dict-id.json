@@ -2616,7 +2616,8 @@
           "privateResolved": "IP privat, dicari saat load balancer dibuat",
           "sameServer": "Server yang sama",
           "customPortAuto": "otomatis",
-          "customHint": "Gunakan URL origin seperti https://origin-gcp.example.com untuk menjangkau aplikasi yang sudah dilayani domain lain: gateway terhubung lewat HTTPS dan meminta domain tersebut. Kosongkan port untuk memakai 443 (https), 80 (http), atau port aplikasi untuk IP. Satu rute berisi URL semua atau IP semua."
+          "customHint": "Gunakan URL origin seperti https://origin-gcp.example.com untuk menjangkau aplikasi yang sudah dilayani domain lain: gateway terhubung lewat HTTPS dan meminta domain tersebut. Kosongkan port untuk memakai 443 (https), 80 (http), atau port aplikasi untuk IP. Satu rute berisi URL semua atau IP semua.",
+          "recommended": "Disarankan"
         },
         "l4TlsHint": "Tidak dipakai untuk L4: koneksi diteruskan apa adanya, jadi database tetap memakai TLS-nya sendiri dari ujung ke ujung."
       },
@@ -2817,7 +2818,28 @@
           "registered": "Alamat terdaftar",
           "private": "Alamat privat",
           "custom": "Alamat kustom",
-          "legacy": "Alamat privat (lama)"
+          "legacy": "Alamat privat (lama)",
+          "change": "Ubah alamat",
+          "chooseTitle": "Cara gateway menjangkau aplikasi ini",
+          "recommended": "Disarankan",
+          "registeredDescription": "Alamat server yang terdaftar di dPanel. Berlaku lintas penyedia.",
+          "privateDescription": "IP privat server. Untuk server dalam satu jaringan privat, atau di balik satu alamat publik bersama.",
+          "customKept": "Rute ini memakai target kustom. Pilih alamat di atas untuk menggantinya.",
+          "previewLoading": "Memeriksa cara gateway menjangkau setiap server…",
+          "previewFailed": "Jaringan server tidak bisa diperiksa. Anda tetap bisa memilih alamat.",
+          "previewTitle": "Tujuan lalu lintas",
+          "noDeployments": "Aplikasi ini belum di-deploy.",
+          "noPrivateAddress": "alamat privat tidak ditemukan; alamat lain server ini dipakai",
+          "networkUnknown": "jaringan tidak diketahui (server offline); alamat terdaftarnya dipakai",
+          "sameServer": "Server yang sama",
+          "saveHint": "Tekan Simpan untuk menerapkan perubahan. Load balancer akan diterapkan ulang.",
+          "reason": {
+            "same_server": "Semua deployment berjalan di server gateway, yang menjangkaunya lewat localhost.",
+            "shared_private_network": "Gateway dan server aplikasi berada di satu jaringan privat, jadi alamat privat disarankan.",
+            "shared_public_address": "Server ini memakai satu alamat publik yang sama dengan gateway, yang tidak bisa menjangkaunya lewat alamat itu, jadi alamat privat disarankan.",
+            "no_shared_network": "Ada server yang tidak berada di jaringan privat yang sama dengan gateway, jadi alamat terdaftar disarankan.",
+            "network_unknown": "Jaringan salah satu server tidak bisa dibaca, jadi alamat terdaftar disarankan."
+          }
         },
         "targets": "Alamat target",
         "server": "Server",

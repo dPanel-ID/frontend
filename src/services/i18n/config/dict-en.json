@@ -2615,7 +2615,8 @@
           "privateResolved": "private IP, found when the load balancer is created",
           "sameServer": "Same server",
           "customPortAuto": "auto",
-          "customHint": "Use an origin URL such as https://origin-gcp.example.com to reach an app another domain already serves: the gateway connects over HTTPS and asks for that domain. Leave the port empty to use 443 for https, 80 for http, or the app’s port for an IP. Keep one route’s targets all URLs or all IPs."
+          "customHint": "Use an origin URL such as https://origin-gcp.example.com to reach an app another domain already serves: the gateway connects over HTTPS and asks for that domain. Leave the port empty to use 443 for https, 80 for http, or the app’s port for an IP. Keep one route’s targets all URLs or all IPs.",
+          "recommended": "Recommended"
         },
         "l4TlsHint": "Not used for L4: connections pass through, so a database keeps its own TLS end to end."
       },
@@ -2816,7 +2817,28 @@
           "registered": "Registered address",
           "private": "Private address",
           "custom": "Custom address",
-          "legacy": "Private address (legacy)"
+          "legacy": "Private address (legacy)",
+          "change": "Change address",
+          "chooseTitle": "How the gateway reaches this application",
+          "recommended": "Recommended",
+          "registeredDescription": "The server address registered in dPanel. Works across providers.",
+          "privateDescription": "The server’s private IP. For servers in one private network, or behind one shared public address.",
+          "customKept": "This route uses custom targets. Pick an address above to replace them.",
+          "previewLoading": "Checking how the gateway reaches each server…",
+          "previewFailed": "Could not check the servers’ networks. You can still pick an address.",
+          "previewTitle": "Where traffic goes",
+          "noDeployments": "This application is not deployed yet.",
+          "noPrivateAddress": "no private address found; another address of this server is used",
+          "networkUnknown": "network unknown (server offline); its registered address is used",
+          "sameServer": "Same server",
+          "saveHint": "Press Save to apply the change. The load balancer is applied again.",
+          "reason": {
+            "same_server": "Every deployment runs on the gateway server, which reaches it on localhost.",
+            "shared_private_network": "The gateway and the application’s servers share a private network, so the private address is recommended.",
+            "shared_public_address": "These servers share one public address with the gateway, which cannot reach them through it, so the private address is recommended.",
+            "no_shared_network": "A server shares no private network with the gateway, so the registered address is recommended.",
+            "network_unknown": "A server’s network could not be read, so the registered address is recommended."
+          }
         },
         "targets": "Targets",
         "server": "Server",

@@ -47,6 +47,12 @@ import {
 } from '../-lib/upstream-drafts';
 
 import { DetailSurface, EmptyInline } from './-presentation/surfaces';
+import {
+  ApplicationAddressModeChoice,
+  getRecommendedAddressMode,
+  useApplicationReach,
+} from './ApplicationAddressMode';
+import type { ChoosableAddressMode } from './ApplicationAddressMode';
 
 export function UpstreamsTab(props: {
   details: LoadBalancerDetails;
@@ -116,6 +122,15 @@ export function UpstreamsTab(props: {
       },
     ]);
     setIsAddingBackend(false);
+  };
+
+  const changeAddressMode = (
+    rowId: string,
+    addressMode: ChoosableAddressMode,
+  ) => {
+    setDraftRows((rows) =>
+      rows.map((row) => (row.id === rowId ? { ...row, addressMode } : row)),
+    );
   };
 
   const resetDraft = () => {
@@ -202,6 +217,7 @@ export function UpstreamsTab(props: {
       {isAddingBackend ? (
         <AddBackendDraftPanel
           lbKind={details.configuration.lbKind}
+          serverId={details.gateway?.server.id}
           onAdd={addRow}
           onCancel={() => setIsAddingBackend(false)}
         />
@@ -215,6 +231,8 @@ export function UpstreamsTab(props: {
               index={index}
               row={row}
               totalRows={draftRows.length}
+              serverId={details.gateway?.server.id}
+              onChangeAddressMode={changeAddressMode}
               onMove={moveRow}
               onRemove={removeRow}
             />
@@ -233,8 +251,10 @@ export function AddBackendDraftPanel(props: {
   lbKind: LoadBalancerDetails['configuration']['lbKind'];
   onAdd: (row: Omit<UpstreamDraft, 'id' | 'order'>) => void;
   onCancel: () => void;
+  /** The load balancer's server, to preview how it reaches the app. */
+  serverId?: string;
 }) {
-  const { lbKind, onAdd, onCancel } = props;
+  const { lbKind, onAdd, onCancel, serverId } = props;
   const t = useDevetekTranslations();
   const [mode, setMode] = useState<AddBackendMode>('application');
   const [match, setMatch] = useState(lbKind === 'l4' ? 'TCP' : '/*');
@@ -243,6 +263,18 @@ export function AddBackendDraftPanel(props: {
   const [applicationSearch, setApplicationSearch] = useState('');
   const [selectedApplication, setSelectedApplication] =
     useState<ApplicationCard>();
+  // The mode the person picked; until then the recommended one is used.
+  const [chosenAddressMode, setChosenAddressMode] =
+    useState<ChoosableAddressMode>();
+  const reach = useApplicationReach(
+    lbKind === 'l4' ? undefined : serverId,
+    selectedApplication?.id,
+  );
+  const addressMode = chosenAddressMode ?? getRecommendedAddressMode(reach);
+  const selectApplication = (application: ApplicationCard) => {
+    setSelectedApplication(application);
+    setChosenAddressMode(undefined);
+  };
   const [responseApplications] = ApiApplication.Find.useGet({
     page: 1,
     limit: 12,
@@ -275,6 +307,8 @@ export function AddBackendDraftPanel(props: {
         ),
         href: `/applications/${selectedApplication.id}`,
         kind: 'application',
+        // Without a pick or a preview the API chooses the mode by its rule.
+        ...(addressMode ? { addressMode } : {}),
         match,
         port: getApplicationCardRuntimePort(selectedApplication),
         protocol: 'http',
@@ -378,7 +412,7 @@ export function AddBackendDraftPanel(props: {
                       key={application.id}
                       application={application}
                       selected={selectedApplication?.id === application.id}
-                      onSelect={() => setSelectedApplication(application)}
+                      onSelect={() => selectApplication(application)}
                     />
                   ))}
                 </div>
@@ -387,6 +421,14 @@ export function AddBackendDraftPanel(props: {
                   {t('page.loadBalancersDetail.upstreams.noApplications')}
                 </BackendPickerState>
               )
+            ) : null}
+
+            {selectedApplication && lbKind !== 'l4' ? (
+              <ApplicationAddressModeChoice
+                reach={reach}
+                value={addressMode}
+                onChange={setChosenAddressMode}
+              />
             ) : null}
           </div>
         ) : (
@@ -505,13 +547,25 @@ export function BackendPickerState(props: { children: ReactNode }) {
 
 export function UpstreamEditorCard(props: {
   index: number;
+  onChangeAddressMode?: (rowId: string, mode: ChoosableAddressMode) => void;
   onMove: (rowId: string, direction: -1 | 1) => void;
   onRemove: (rowId: string) => void;
   row: UpstreamDraft;
+  /** The load balancer's server, to preview how it reaches the app. */
+  serverId?: string;
   totalRows: number;
 }) {
-  const { index, onMove, onRemove, row, totalRows } = props;
+  const {
+    index,
+    onChangeAddressMode,
+    onMove,
+    onRemove,
+    row,
+    serverId,
+    totalRows,
+  } = props;
   const t = useDevetekTranslations();
+  const [isChangingAddressMode, setIsChangingAddressMode] = useState(false);
   const applicationId =
     row.kind === 'application' ? getApplicationIdFromDraftRow(row) : '';
   const [responseApplication] = ApiApplication.Detail.$Id.useGet({
@@ -551,6 +605,19 @@ export function UpstreamEditorCard(props: {
                     `page.loadBalancersDetail.upstreams.addressMode.${row.addressMode ?? 'legacy'}`,
                   )}
                 </Badge>
+              ) : null}
+              {row.kind === 'application' &&
+              row.applicationId &&
+              onChangeAddressMode ? (
+                <Button
+                  size="sm"
+                  buttonStyle="ghost"
+                  buttonColor="secondary"
+                  aria-expanded={isChangingAddressMode}
+                  onClick={() => setIsChangingAddressMode((value) => !value)}
+                >
+                  {t('page.loadBalancersDetail.upstreams.addressMode.change')}
+                </Button>
               ) : null}
             </div>
             <p className="mt-2 truncate text-sm font-semibold">
@@ -623,6 +690,17 @@ export function UpstreamEditorCard(props: {
         />
       </div>
 
+      {isChangingAddressMode &&
+      row.kind === 'application' &&
+      row.applicationId &&
+      onChangeAddressMode ? (
+        <ApplicationRowAddressMode
+          row={row}
+          serverId={serverId}
+          onChange={(mode) => onChangeAddressMode(row.id, mode)}
+        />
+      ) : null}
+
       {row.kind === 'application' && row.applicationId ? (
         <ApplicationRouteTargets
           row={row}
@@ -633,6 +711,30 @@ export function UpstreamEditorCard(props: {
           }
         />
       ) : null}
+    </div>
+  );
+}
+
+/** Changes how an existing application route reaches the application. */
+export function ApplicationRowAddressMode(props: {
+  onChange: (mode: ChoosableAddressMode) => void;
+  row: UpstreamDraft;
+  serverId?: string;
+}) {
+  const { onChange, row, serverId } = props;
+  const t = useDevetekTranslations();
+  const reach = useApplicationReach(serverId, row.applicationId);
+
+  return (
+    <div className="mt-3 grid gap-2 rounded-lg border bg-card p-3">
+      <ApplicationAddressModeChoice
+        reach={reach}
+        value={row.addressMode}
+        onChange={onChange}
+      />
+      <p className="text-xs text-muted-foreground">
+        {t('page.loadBalancersDetail.upstreams.addressMode.saveHint')}
+      </p>
     </div>
   );
 }

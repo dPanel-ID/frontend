@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import {
   ArrowRightIcon,
   BadgeCheckIcon,
@@ -13,6 +15,7 @@ import { useDevetekTranslations } from '@/services/i18n';
 
 import type { ApplicationCard } from '@/entities/application/rules/schema';
 
+import { ApiLoadBalancer } from '@/shared/api';
 import { cn } from '@/shared/libs/tailwind/cn';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
@@ -61,6 +64,35 @@ export function ApplicationReach(props: {
   const servers = application.additionalInfo.servers;
   const remoteServers = servers.filter((server) => server.id !== gatewayId);
   const current: AddressMode = mode.field.value ?? 'registered';
+
+  // dPanel recommends private when the servers share a private network or
+  // one public address with the gateway; it replaces the default until the
+  // person picks a mode.
+  const [reach] = ApiLoadBalancer.ApplicationReach.useGet({
+    applicationId: application.id,
+    serverId: gatewayId,
+    options: { skip: !gatewayId || remoteServers.length === 0 },
+  });
+  const recommended =
+    reach.$status === 'success' ? reach.recommended_mode : undefined;
+  const privateAddresses = new Map(
+    reach.$status === 'success'
+      ? reach.targets.map((target) => [
+          target.machine_id,
+          target.private_address,
+        ])
+      : [],
+  );
+  const { isDirty } = mode.fieldState;
+  const { setValue } = form;
+  useEffect(() => {
+    // Not a pick: the field stays untouched, so a later recommendation (for
+    // another gateway) still replaces it.
+    if (recommended && !isDirty) {
+      setValue(`l7rules.${ruleIndex}.addressModeIfProxyPassApp`, recommended);
+    }
+  }, [recommended, isDirty, ruleIndex, setValue]);
+  const badgeMode = recommended ?? 'registered';
 
   const selectMode = (next: AddressMode) => {
     mode.field.onChange(next);
@@ -124,9 +156,9 @@ export function ApplicationReach(props: {
               <span className="min-w-0">
                 <span className="flex items-center gap-1.5 text-sm font-semibold">
                   {t(`modes.${option}.title`)}
-                  {option === 'registered' && (
+                  {option === badgeMode && (
                     <span className="rounded-full border px-1.5 text-[10px] font-semibold uppercase text-muted-foreground">
-                      {t('default')}
+                      {recommended ? t('recommended') : t('default')}
                     </span>
                   )}
                 </span>
@@ -226,7 +258,7 @@ export function ApplicationReach(props: {
               ? 'localhost'
               : current === 'registered'
                 ? server.address
-                : undefined;
+                : privateAddresses.get(server.id);
 
             return (
               <li
