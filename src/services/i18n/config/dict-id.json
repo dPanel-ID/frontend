@@ -2854,7 +2854,24 @@
         "sslDesc": "Layani load balancer dengan perilaku HTTPS/TLS saat engine gateway mendukungnya.",
         "cloudflare": "Aktifkan proxy Cloudflare",
         "cloudflareDesc": "Tandai record domain terkelola sebagai proxied melalui Cloudflare saat provider domain mendukungnya.",
-        "protocol": "Protokol"
+        "protocol": "Protokol",
+        "http": {
+          "title": "Batas gateway",
+          "description": "Batas opsional untuk load balancer ini. Kosongkan kolom untuk memakai bawaan gateway.",
+          "caddyOnly": "Batas ini hanya berlaku pada engine Caddy.",
+          "requestBodyMax": "Ukuran body request terbesar",
+          "requestBodyMaxHint": "Misalnya 100MB (1KB sampai 10GB). Unggahan yang lebih besar mendapat 413. Bawaan: tanpa batas.",
+          "readBodyTimeout": "Batas waktu body request",
+          "readBodyTimeoutHint": "Waktu bagi pengunjung untuk mengirim unggahan, misalnya 120s (1s sampai 1h). Bawaan: 10s.",
+          "responseTimeout": "Batas waktu respons",
+          "responseTimeoutHint": "Waktu gateway menunggu dan mengirim respons, misalnya 300s (1s sampai 24h). Bawaan: 60s.",
+          "healthPath": "Path health check",
+          "healthPathHint": "Misalnya /up. Rute dengan beberapa upstream melewati upstream yang gagal. Bawaan: mati.",
+          "healthInterval": "Interval health check",
+          "healthIntervalHint": "Jeda antar pemeriksaan. Bawaan: 10s.",
+          "healthTimeout": "Batas waktu health check",
+          "healthTimeoutHint": "Batas waktu tiap pemeriksaan. Bawaan: 5s."
+        }
       },
       "logs": {
         "accessTitle": "Log akses",

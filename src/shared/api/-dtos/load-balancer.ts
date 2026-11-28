@@ -71,6 +71,18 @@ export interface LoadBalancerConfigV2 {
     allow_from?: string[];
     idle_timeout?: string;
   };
+  /** Gateway limits of an HTTP load balancer (Caddy only). Replaced as a
+   * whole on update; an empty object restores the gateway defaults. */
+  http?: LoadBalancerHttpSettingsV2;
+}
+
+export interface LoadBalancerHttpSettingsV2 {
+  request_body_max?: string;
+  read_body_timeout?: string;
+  response_timeout?: string;
+  health_path?: string;
+  health_interval?: string;
+  health_timeout?: string;
 }
 
 export interface LoadBalancerV2 {
