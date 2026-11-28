@@ -9,6 +9,7 @@ import type { ReleaseFoldersView } from '@/entities/application/lib/release-fold
 import type { DTOs } from '@/shared/api';
 
 import { upsertEnvText } from './database-env';
+import { runtimeKey } from './primary-runtime';
 
 /** Release step of the definition, as the wizard edits it. */
 export interface ReleaseDraft {
@@ -387,4 +388,34 @@ export function presetModuleVariables(
   if (!picked) return null;
   variables[versionInput.name] = picked;
   return variables;
+}
+
+/** What the form already has, for hiding preset notes it has settled. */
+export interface PresetHintContext {
+  /** Module IDs of the dependencies picked for the application. */
+  moduleIds: string[];
+  /** The runtime variables, as typed. */
+  runtimeEnvText: string;
+}
+
+/**
+ * The preset's notes that still apply. "Add FrankenPHP" and "APP_URL is not
+ * set" stayed on screen after the person had done both (2026-11-28), so
+ * each goes once the form has what it asks for.
+ */
+export function visiblePresetHints(
+  hints: string[],
+  context: PresetHintContext,
+): string[] {
+  const hasFrankenPHP = context.moduleIds.some(
+    (id) => runtimeKey(id) === 'frankenphp',
+  );
+  const hasAppURL = parseEnvText(context.runtimeEnvText).variables.some(
+    (variable) => variable.key === 'APP_URL' && variable.value.trim() !== '',
+  );
+  return hints.filter((code) => {
+    if (code === 'frankenphp_required') return !hasFrankenPHP;
+    if (code === 'app_url_missing') return !hasAppURL;
+    return true;
+  });
 }

@@ -1,3 +1,5 @@
+import { orderRuntimesByPrimary } from '../../-lib/primary-runtime';
+
 interface BundleVars {
   appName: string;
   appDomain: string;
@@ -311,8 +313,12 @@ export const getVarsGit = (vars: GitVars) => {
     skipPreflight,
   } = vars;
 
-  const normalizedRuntimes =
-    requiredBinaries?.filter((runtime) => runtime.name) ?? [];
+  // The language the repository asks for (the preset's) leads, whatever
+  // order the runtimes were picked in.
+  const normalizedRuntimes = orderRuntimesByPrimary(
+    requiredBinaries?.filter((runtime) => runtime.name) ?? [],
+    appProgLang,
+  );
   const primaryRuntime = normalizedRuntimes[0] ?? {
     name: appProgLang,
     version: appProgLangVersion,

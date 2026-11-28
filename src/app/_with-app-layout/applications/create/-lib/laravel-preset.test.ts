@@ -12,6 +12,7 @@ import {
   presetFormPatch,
   presetModuleVariables,
   sortPreflightChecks,
+  visiblePresetHints,
 } from './laravel-preset';
 
 function laravelPreset(
@@ -410,5 +411,47 @@ describe('pre-flight gating', () => {
         { code: 'php_version_unsupported', level: 'error' },
       ]).map((check) => check.code),
     ).toEqual(['php_version_unsupported', 'composer_lock_missing']);
+  });
+});
+
+describe('visiblePresetHints', () => {
+  const hints = ['app_key_managed', 'frankenphp_required', 'app_url_missing'];
+
+  it('keeps every note while the form has nothing yet', () => {
+    expect(
+      visiblePresetHints(hints, {
+        moduleIds: ['php', 'nodejs'],
+        runtimeEnvText: '',
+      }),
+    ).toEqual(hints);
+  });
+
+  // Both notes stayed after FrankenPHP was picked and APP_URL typed
+  // (2026-11-28).
+  it('drops the notes the form has settled', () => {
+    expect(
+      visiblePresetHints(hints, {
+        moduleIds: ['php', 'frankenphp'],
+        runtimeEnvText: 'APP_ENV=production\nAPP_URL="https://app.example.com"',
+      }),
+    ).toEqual(['app_key_managed']);
+  });
+
+  it('matches a namespaced module ID', () => {
+    expect(
+      visiblePresetHints(['frankenphp_required'], {
+        moduleIds: ['dpanel.frankenphp'],
+        runtimeEnvText: '',
+      }),
+    ).toEqual([]);
+  });
+
+  it('keeps the APP_URL note for an empty value', () => {
+    expect(
+      visiblePresetHints(['app_url_missing'], {
+        moduleIds: [],
+        runtimeEnvText: 'APP_URL=',
+      }),
+    ).toEqual(['app_url_missing']);
   });
 });
