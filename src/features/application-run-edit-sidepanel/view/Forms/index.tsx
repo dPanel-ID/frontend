@@ -6,6 +6,7 @@ import { useWatch } from 'react-hook-form';
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
+import { isLaravelFramework } from '@/entities/application/lib/app-framework';
 import {
   hasMaskedEnvText,
   hideRevealedEnvText,
@@ -18,6 +19,7 @@ import { Button } from '@/shared/presentation/atoms/Button';
 import {
   EnvVariablesEditor,
   ObjectStorageHelper,
+  RedisHelper,
 } from '@/widgets/env-variables-editor';
 
 import { useApplicationRunEditModel } from '../../model';
@@ -104,9 +106,12 @@ function useRevealValues() {
 
 function RunEnvsSection() {
   const t = useDevetekTranslations('sidepanel.applicationRunEdit.envValues');
-  const { form } = useApplicationRunEditModel();
+  const { form, props } = useApplicationRunEditModel();
   const { hasMasked, isShown, isRevealing, reveal, hide } = useRevealValues();
   const envText = useWatch({ control: form.control, name: 'envText' });
+  const isLaravel = isLaravelFramework(props.framework);
+  const setEnvText = (next: string) =>
+    form.setValue('envText', next, { shouldDirty: true });
 
   const revealButton = (
     <Button
@@ -135,9 +140,7 @@ function RunEnvsSection() {
       <EnvVariablesEditor
         label="Environment Variables"
         text={envText}
-        onTextChange={(next) =>
-          form.setValue('envText', next, { shouldDirty: true })
-        }
+        onTextChange={setEnvText}
         notice={
           hasBanner ? (isShown ? t('shownNote') : t('hiddenNote')) : undefined
         }
@@ -145,13 +148,17 @@ function RunEnvsSection() {
         textPlaceholder={'APP_ENV="production"\nLOG_LEVEL="info"'}
       />
 
-      <div className="mt-3">
-        <ObjectStorageHelper
+      <div className="mt-3 grid gap-3">
+        <RedisHelper
+          serverId={props.serverId ?? ''}
+          appName={props.applicationName}
           envText={envText}
-          onEnvTextChange={(next) =>
-            form.setValue('envText', next, { shouldDirty: true })
-          }
+          onEnvTextChange={setEnvText}
+          laravel={isLaravel}
         />
+        {isLaravel && (
+          <ObjectStorageHelper envText={envText} onEnvTextChange={setEnvText} />
+        )}
       </div>
     </div>
   );

@@ -71,7 +71,7 @@ Periksa ringkasannya: aplikasi, repositori, branch, server, perintah, port, dan 
 
 ## Setelah itu
 
-Muncul dialog **Successfully created your app!**. Tekan **OK** untuk kembali ke daftar. Lalu dPanel:
+dPanel menampilkan **Aplikasi Anda sudah dibuat** dan membuka halaman aplikasi baru itu. Lalu dPanel:
 
 1. Membuat playbook untuk aplikasi ini (daftar langkah penyiapan yang dijalankan worker-nya) dan memasang modul yang Anda pilih.
 2. Meng-clone branch di server dan menjalankan langkah build.

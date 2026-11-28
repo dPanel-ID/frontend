@@ -168,11 +168,11 @@ This step holds the **runtime variables**, the settings the running app reads.
 
 ### Preview
 
-Check the summary. **Pre-flight checks** compares what the repository asks for (the PHP version and extensions, the Node.js version) with what you chose, and should say **All good**. An error, such as a PHP version the app does not support, holds the button until you fix it. Press **Deploy application**, then **OK**.
+Check the summary. **Pre-flight checks** compares what the repository asks for (the PHP version and extensions, the Node.js version) with what you chose, and should say **All good**. An error, such as a PHP version the app does not support, holds the button until you fix it. Press **Deploy application**.
 
 ![The Preview with every setting, the dependencies and Pre-flight checks: All good](../../assets/tutorials/laravel-app-preview.webp)
 
-The first deploy takes about 5 minutes, because dPanel installs PHP, Node.js and FrankenPHP first. Open **Applications**, then **Laravel**, to follow it. It shows **Releasing**, then **Running**.
+The first deploy takes about 5 minutes, because dPanel installs PHP, Node.js and FrankenPHP first. dPanel opens the application's page, where you follow it. It shows **Releasing**, then **Running**.
 
 **You should see:** the application marked **Running**, with **1 Serving now**.
 

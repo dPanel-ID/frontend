@@ -5,6 +5,7 @@ import { BracesIcon, EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
+import { isLaravelFramework } from '@/entities/application/lib/app-framework';
 import {
   hasMaskedEnvText,
   hideRevealedEnvText,
@@ -17,13 +18,13 @@ import { Button } from '@/shared/presentation/atoms/Button';
 import {
   EnvVariablesEditor,
   ObjectStorageHelper,
+  RedisHelper,
 } from '@/widgets/env-variables-editor';
 
 import { useFormStore } from '../../../-model/store/form';
 import { Sectioned } from '../../../-presentation/Sectioned';
 
 import DatabaseConnect from './DatabaseConnect';
-import RedisConnect from './RedisConnect';
 
 export default function Step5Env() {
   const t = useDevetekTranslations('page.applicationsCreate.wizard.step5.env');
@@ -35,6 +36,14 @@ export default function Step5Env() {
       s.setRuntimeEnvText,
     ]);
   const updateApplicationId = useFormStore((s) => s.updateApplicationId);
+  const [hostedServerID, appName, appFramework] = useFormStore((s) => [
+    s.hostedServerID,
+    s.appName,
+    s.appFramework,
+  ]);
+  // Laravel's own variables (storage disk, Redis drivers) only for an app
+  // identified as Laravel; any other app gets generic ones.
+  const isLaravel = isLaravelFramework(appFramework);
   const [openToaster] = useToaster();
   const [isRevealing, setIsRevealing] = useState(false);
   const [revealed, setRevealed] = useState<{
@@ -123,12 +132,20 @@ export default function Step5Env() {
 
         <DatabaseConnect />
 
-        <RedisConnect />
-
-        <ObjectStorageHelper
+        <RedisHelper
+          serverId={hostedServerID ? String(hostedServerID) : ''}
+          appName={appName}
           envText={runtimeEnvText}
           onEnvTextChange={setRuntimeEnvText}
+          laravel={isLaravel}
         />
+
+        {isLaravel && (
+          <ObjectStorageHelper
+            envText={runtimeEnvText}
+            onEnvTextChange={setRuntimeEnvText}
+          />
+        )}
 
         <div className="grid gap-1.5">
           <span className="text-sm font-semibold">{t('runtimeTitle')}</span>

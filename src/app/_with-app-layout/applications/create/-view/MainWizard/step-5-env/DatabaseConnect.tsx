@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 
 import { CheckCircle2Icon, DatabaseIcon } from 'lucide-react';
 
@@ -6,12 +6,33 @@ import { useDialog } from '@/services/dialog';
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
+import {
+  DATABASE_ENGINES,
+  DATABASE_PREFIX_MAX,
+  databaseEnvEntries,
+  existingDatabaseNames,
+  existingEnvKeys,
+  guessDatabaseEnvStyle,
+  installedDatabaseEngines,
+  installedDatabasePort,
+  normalizeDatabasePrefix,
+  styleForEngine,
+  suggestDatabaseName,
+} from '@/entities/application/lib/database-env';
+import type {
+  DatabaseEngine,
+  DatabaseEnvStyle,
+} from '@/entities/application/lib/database-env';
+import { upsertEnvText } from '@/entities/application/lib/env-text';
+import { useServerModules } from '@/entities/server-modules/model/use-server-modules';
+
 import { ApiModule } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { generatePassword } from '@/shared/libs/browser/password';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
 import { Input } from '@/shared/presentation/atoms/Input';
+import { PasswordInput } from '@/shared/presentation/atoms/PasswordInput';
 import {
   Select,
   SelectContent,
@@ -20,35 +41,18 @@ import {
   SelectValue,
 } from '@/shared/presentation/atoms/Select';
 
-import {
-  DATABASE_ENGINES,
-  DATABASE_ENV_STYLES,
-  databaseEnvEntries,
-  existingDatabaseNames,
-  guessDatabaseEnvStyle,
-  installedDatabaseEngines,
-  suggestDatabaseName,
-  upsertEnvText,
-} from '../../../-lib/database-env';
-import type {
-  DatabaseEngine,
-  DatabaseEnvStyle,
-} from '../../../-lib/database-env';
 import { useFormStore } from '../../../-model/store/form';
 
-import { useServerModules } from './useServerModules';
-
-const ENGINE_LABELS: Record<DatabaseEngine, string> = {
-  mariadb: 'MariaDB',
-  postgresql: 'PostgreSQL',
-};
-
 /**
- * Creates a database and its user on the application's server and writes
- * the connection settings, password included, into the runtime variables,
- * so nobody types or pastes a database password. The password is generated
- * here, sent once with the database's install request and kept only in the
- * application's variables (masked once saved) and on the server.
+ * Creates a database and its user on the application's server (MariaDB,
+ * PostgreSQL or MongoDB) and writes the connection settings, password
+ * included, into the runtime variables, so nobody types or pastes a
+ * database password. The password is generated here, sent once with the
+ * database's install request and kept only in the application's variables
+ * (masked once saved) and on the server. Variables the app already has are
+ * replaced only after the person confirms; a custom prefix keeps several
+ * databases apart. MongoDB also needs its administrator password, typed by
+ * the person and sent only with the request.
  */
 export default function DatabaseConnect() {
   const t = useDevetekTranslations(
@@ -82,6 +86,9 @@ export default function DatabaseConnect() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [created, setCreated] = useState<{ name: string; keys: string[] }>();
+  const [prefix, setPrefix] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
+  const id = useId();
 
   const childModule = engine ? DATABASE_ENGINES[engine].childModule : '';
   const [detail] = ApiModule.Detail.$Name.useGet({
@@ -102,9 +109,21 @@ export default function DatabaseConnect() {
   const suggested = suggestDatabaseName(appName);
   const databaseName = name ?? suggested;
   const databaseUser = user ?? name ?? suggested;
-  const style =
-    chosenStyle ?? guessDatabaseEnvStyle(runtimeEnvText, repository, framework);
   const rules = DATABASE_ENGINES[engine];
+  const style = styleForEngine(
+    engine,
+    chosenStyle ?? guessDatabaseEnvStyle(runtimeEnvText, repository, framework),
+  );
+  const port = installedDatabasePort(modules, engine);
+  const entriesFor = (password: string) =>
+    databaseEnvEntries(style, {
+      engine,
+      name: databaseName,
+      user: databaseUser,
+      password,
+      port,
+      prefix,
+    });
   const moduleDetail = detail.$status === 'success' ? detail : undefined;
   const installAction = moduleDetail?.action_details.find(
     (action) => action.name === 'install',
@@ -113,6 +132,12 @@ export default function DatabaseConnect() {
   const validate = () => {
     if (!rules.namePattern.test(databaseName)) return t('badName');
     if (!rules.userPattern.test(databaseUser)) return t('badUser');
+    if (style === 'prefix' && !normalizeDatabasePrefix(prefix)) {
+      return t('badPrefix');
+    }
+    if (rules.needsAdminPassword && !adminPassword) {
+      return t('adminPasswordRequired');
+    }
     if (existingDatabaseNames(modules, engine).has(databaseName)) {
       return t('nameTaken', { name: databaseName });
     }
@@ -135,6 +160,9 @@ export default function DatabaseConnect() {
             database_name: databaseName,
             database_user: databaseUser,
             database_password: password,
+            ...(rules.needsAdminPassword
+              ? { admin_password: adminPassword }
+              : {}),
           },
           ref: {
             name: moduleDetail.input_catalog.ref_name,
@@ -150,14 +178,11 @@ export default function DatabaseConnect() {
         });
         return;
       }
-      const entries = databaseEnvEntries(style, {
-        engine,
-        name: databaseName,
-        user: databaseUser,
-        password,
-      });
+      const entries = entriesFor(password);
       setRuntimeEnvText(upsertEnvText(runtimeEnvText, entries));
       setCreated({ name: databaseName, keys: entries.map(([key]) => key) });
+      // The administrator password was only for this request.
+      setAdminPassword('');
       setIsOpen(false);
       refetchInventory();
       openToaster({
@@ -173,14 +198,20 @@ export default function DatabaseConnect() {
     const error = validate();
     setFormError(error);
     if (error) return;
+    // A second database written with the same names would silently take
+    // over the first one's variables: say which ones it replaces.
+    const replaced = existingEnvKeys(runtimeEnvText, entriesFor('x'));
+    const body = t('confirmBody', {
+      engine: rules.label,
+      name: databaseName,
+      user: databaseUser,
+    });
     openDialog({
-      title: t('confirmTitle'),
-      content: t('confirmBody', {
-        engine: ENGINE_LABELS[engine],
-        name: databaseName,
-        user: databaseUser,
-      }),
-      variant: 'info',
+      title: replaced.length ? t('replaceTitle') : t('confirmTitle'),
+      content: replaced.length
+        ? `${body} ${t('replaceBody', { keys: replaced.join(', ') })}`
+        : body,
+      variant: replaced.length ? 'warning' : 'info',
       actions: { variant: 'YesNo', yes: create },
     });
   };
@@ -241,7 +272,7 @@ export default function DatabaseConnect() {
                   <SelectContent>
                     {engines.map((item) => (
                       <SelectItem key={item} value={item}>
-                        {ENGINE_LABELS[item]}
+                        {DATABASE_ENGINES[item].label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -260,7 +291,7 @@ export default function DatabaseConnect() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {DATABASE_ENV_STYLES.map((item) => (
+                  {rules.styles.map((item) => (
                     <SelectItem key={item} value={item}>
                       {t(`styles.${item}`)}
                     </SelectItem>
@@ -268,6 +299,33 @@ export default function DatabaseConnect() {
                 </SelectContent>
               </Select>
             </label>
+            {style === 'prefix' && (
+              <div className="grid gap-1.5">
+                <label
+                  htmlFor={`${id}-prefix`}
+                  className="text-xs font-semibold"
+                >
+                  {t('prefix')}
+                </label>
+                <Input
+                  id={`${id}-prefix`}
+                  className="bg-card font-mono uppercase"
+                  value={prefix}
+                  placeholder="ANALYTICS"
+                  maxLength={DATABASE_PREFIX_MAX + 2}
+                  aria-describedby={`${id}-prefix-hint`}
+                  onChange={(event) =>
+                    setPrefix(event.target.value.trim().toUpperCase())
+                  }
+                />
+                <span
+                  id={`${id}-prefix-hint`}
+                  className="text-xs text-muted-foreground"
+                >
+                  {t('prefixHint')}
+                </span>
+              </div>
+            )}
             <label className="grid gap-1.5">
               <span className="text-xs font-semibold">{t('name')}</span>
               <Input
@@ -285,6 +343,29 @@ export default function DatabaseConnect() {
               />
             </label>
           </div>
+          {rules.needsAdminPassword && (
+            <div className="grid gap-1.5">
+              <label htmlFor={`${id}-admin`} className="text-xs font-semibold">
+                {t('adminPassword')}
+              </label>
+              <PasswordInput
+                id={`${id}-admin`}
+                className="bg-card font-mono"
+                value={adminPassword}
+                autoComplete="off"
+                revealLabel={t('reveal')}
+                hideLabel={t('hide')}
+                aria-describedby={`${id}-admin-hint`}
+                onChange={(event) => setAdminPassword(event.target.value)}
+              />
+              <span
+                id={`${id}-admin-hint`}
+                className="text-xs text-muted-foreground"
+              >
+                {t('adminPasswordHint')}
+              </span>
+            </div>
+          )}
           <p className="text-xs leading-relaxed text-muted-foreground">
             {t('passwordNote')}
           </p>
@@ -297,6 +378,7 @@ export default function DatabaseConnect() {
               onClick={() => {
                 setIsOpen(false);
                 setFormError('');
+                setAdminPassword('');
               }}
             >
               {t('cancel')}

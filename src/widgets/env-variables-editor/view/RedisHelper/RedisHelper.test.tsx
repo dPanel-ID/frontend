@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { useEffect } from 'react';
+import { useState } from 'react';
 
 import {
   cleanup,
@@ -9,9 +9,7 @@ import {
 } from '@testing-library/react/dist/@testing-library/react.pure.esm.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { FormStoreProvider, useFormStore } from '../../../-model/store/form';
-
-import RedisConnect from './RedisConnect';
+import RedisHelper from '.';
 
 vi.mock('@/services/i18n', () => ({
   useDevetekTranslations:
@@ -44,29 +42,24 @@ vi.mock('@/shared/api', () => ({
 
 let envText = '';
 
-function EnvProbe(props: { onChange: (text: string) => void }) {
-  const text = useFormStore((s) => s.runtimeEnvText);
-  const { onChange } = props;
-  useEffect(() => onChange(text), [onChange, text]);
-  return null;
+function Harness(props: { initial: string; laravel: boolean }) {
+  const [text, setText] = useState(props.initial);
+  return (
+    <RedisHelper
+      serverId="42"
+      appName="My Blog"
+      envText={text}
+      onEnvTextChange={(next) => {
+        envText = next;
+        setText(next);
+      }}
+      laravel={props.laravel}
+    />
+  );
 }
 
-function renderHelper(runtimeEnvText = '') {
-  return render(
-    <FormStoreProvider
-      hostedServerID={42}
-      appName="My Blog"
-      appSourceGithubRepo="dPanel-ID/laravel-example"
-      runtimeEnvText={runtimeEnvText}
-    >
-      <RedisConnect />
-      <EnvProbe
-        onChange={(text) => {
-          envText = text;
-        }}
-      />
-    </FormStoreProvider>,
-  );
+function renderHelper(runtimeEnvText = '', laravel = true) {
+  return render(<Harness initial={runtimeEnvText} laravel={laravel} />);
 }
 
 afterEach(() => {
@@ -74,7 +67,7 @@ afterEach(() => {
   envText = '';
 });
 
-describe('RedisConnect', () => {
+describe('RedisHelper', () => {
   // Redis picked in the previous step was still installing, and the helper
   // never noticed it had finished (2026-11-28).
   it('reads the modules again while Redis is installing', () => {
@@ -147,5 +140,29 @@ describe('RedisConnect', () => {
     expect(envText).toContain('REDIS_HOST=10.0.0.5');
     expect(envText).toContain('REDIS_PASSWORD=typed-secret-value');
     expect(document.body.textContent).not.toContain('typed-secret-value');
+  });
+
+  // An application that is not Laravel gets the connection only: no key
+  // prefix and no Laravel driver variables.
+  it('writes only the connection for an application that is not Laravel', () => {
+    inventory = [
+      {
+        module_name: 'redis',
+        status: 'installed',
+        variables: { redis_bind_interface: '127.0.0.1', redis_port: 6379 },
+      },
+    ];
+    renderHelper('PORT=3000', false);
+    fireEvent.click(screen.getByRole('button', { name: 'open' }));
+    expect(screen.queryByLabelText('prefix')).toBeNull();
+    expect(screen.queryByText('driversTitle')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'apply' }));
+
+    expect(envText.split('\n')).toEqual([
+      'PORT=3000',
+      'REDIS_HOST=127.0.0.1',
+      'REDIS_PORT=6379',
+      'REDIS_URL=redis://127.0.0.1:6379',
+    ]);
   });
 });

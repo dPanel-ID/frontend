@@ -44,21 +44,42 @@ You can also ask **Ask dPanel** to do this for you; see [Prompt cookbook](../ai/
 **Restart** on a release starts the service again with the values it already had on the server. Only a release (**Build and release**, **Redeploy** or a rollback) writes the new values to the server.
 :::
 
+## Create a database for this app
+
+When MariaDB, PostgreSQL or MongoDB is installed on the app's server (server page, **Modules** tab), the **Environment** step shows **Database for this app**. dPanel creates the database and its user with a strong password and writes the connection settings into the runtime variables, so you never type or paste the password.
+
+1. Press **Create database**.
+2. With more than one database server, choose it under **Database server**.
+3. Under **Variable names**, choose how your app reads its settings. dPanel picks the usual names for the app's framework: **Laravel (DB\_\*)** for Laravel, **WordPress (WORDPRESS_DB\_\*)** for WordPress, and **One DATABASE_URL** for anything else.
+4. Keep the database name and user dPanel suggests from the app's name, or type your own.
+5. For MongoDB, type the **MongoDB administrator password** you chose when you installed it. MongoDB needs it to create a user; it is sent once with this request and dPanel does not keep it.
+6. Press **Create database**, then **Yes**.
+
+| Variable names   | What dPanel writes                                                                                                                                                         |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| One DATABASE_URL | `DATABASE_URL`, such as `postgresql://user:password@127.0.0.1:5432/name`                                                                                                   |
+| Laravel (DB\_\*) | `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`; for MongoDB `DB_CONNECTION=mongodb`, `DB_URI`, `DB_DATABASE` and `MONGODB_URI`         |
+| WordPress        | `WORDPRESS_DB_HOST`, `WORDPRESS_DB_NAME`, `WORDPRESS_DB_USER`, `WORDPRESS_DB_PASSWORD` (MariaDB only)                                                                      |
+| Custom prefix    | With the prefix `ANALYTICS`: `ANALYTICS_DATABASE_URL`, `ANALYTICS_DB_HOST`, `ANALYTICS_DB_PORT`, `ANALYTICS_DB_DATABASE`, `ANALYTICS_DB_USERNAME`, `ANALYTICS_DB_PASSWORD` |
+
+:::tip[More than one database]
+An app can use several databases, even on different database servers. Give each one after the first a **Custom prefix**, so its settings never replace another one's. When the variables a database would write are already set, dPanel names them and asks before it replaces them.
+:::
+
 ## Connect Redis
 
-**Redis** is a fast store your app can use for its cache, queued jobs and sessions. When Redis is installed on the app's server (server page, **Modules** tab), the **Environment** step shows **Redis for this app**.
+**Redis** is a fast store your app can use, for example for a cache, queued jobs or sessions. When Redis is installed on the app's server (server page, **Modules** tab), **Redis for this app** shows in the **Environment** step and under **Settings**, **Run**, **Environment variables**.
 
 1. Press **Connect Redis**.
-2. Keep the **Key prefix** dPanel suggests from the app's name, such as `my_blog_`. It keeps this app's keys apart from other apps that use the same Redis.
-3. If dPanel asks for a **Redis password**, type the one you chose when you installed Redis. dPanel does not keep it, so it cannot fill it in for you. Redis that only listens on the server itself usually has none.
-4. Under **Use Redis for**, keep the boxes for the cache, queued jobs and sessions you want on Redis.
-5. Press **Fill in variables**.
+2. If dPanel asks for a **Redis password**, type the one you chose when you installed Redis. dPanel does not keep it, so it cannot fill it in for you. Redis that only listens on the server itself usually has none.
+3. For a Laravel app, keep the **Key prefix** dPanel suggests from the app's name, such as `my_blog_`, which keeps this app's keys apart from other apps that use the same Redis. Under **Use Redis for**, keep the boxes for the cache, queued jobs and sessions you want on Redis.
+4. Press **Fill in variables**. Under **Settings**, then press **Save** and deploy.
 
-dPanel writes `REDIS_HOST` (`127.0.0.1`, the server itself), `REDIS_PORT`, `REDIS_PREFIX`, `REDIS_PASSWORD` when there is one, and `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis` and `SESSION_DRIVER=redis` for the boxes you kept. With queued jobs on Redis, turn on the **Queue worker** too.
+dPanel writes `REDIS_HOST` (`127.0.0.1`, the server itself), `REDIS_PORT` and `REDIS_PASSWORD` when there is one. A Laravel app also gets `REDIS_PREFIX`, and `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis` and `SESSION_DRIVER=redis` for the boxes you kept; with queued jobs on Redis, turn on the **Queue worker** too. Any other app gets `REDIS_URL`, such as `redis://127.0.0.1:6379`, which most Redis clients read.
 
 ## Use object storage for uploads
 
-By default, files your app's users upload stay on the server. To keep them in an S3-compatible bucket instead (Amazon S3 or another provider), use **Object storage for uploads**, in the **Environment** step and under **Settings**, **Run**, **Environment variables**.
+By default, files your app's users upload stay on the server. To keep a Laravel app's uploads in an S3-compatible bucket instead (Amazon S3 or another provider), use **Object storage for uploads**, in the **Environment** step and under **Settings**, **Run**, **Environment variables**. It shows for apps dPanel recognises as Laravel.
 
 1. Press **Use object storage**.
 2. Fill in **Access key ID**, **Secret access key**, **Bucket** and **Region**. Leave **Endpoint** empty for Amazon S3; for another provider, type its S3 address and usually tick **Use path-style addresses**.

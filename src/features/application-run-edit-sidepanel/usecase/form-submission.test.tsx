@@ -36,6 +36,28 @@ vi.mock('@/shared/api', () => ({
     Update: { $Id: { doPost: update } },
     EnvironmentReveal: { $Id: { doPost: reveal } },
   },
+  // The server runs an installed Redis.
+  ApiServer: {
+    Modules: {
+      $Id: {
+        useGet: (params: { options?: { skip?: boolean } }) => [
+          params.options?.skip
+            ? { $status: 'initial' }
+            : {
+                $status: 'success',
+                modules: [
+                  {
+                    module_name: 'redis',
+                    status: 'installed',
+                    variables: { redis_bind_interface: '127.0.0.1' },
+                  },
+                ],
+              },
+          vi.fn(),
+        ],
+      },
+    },
+  },
 }));
 
 function Controller() {
@@ -55,10 +77,10 @@ const props: ApplicationRunEditSidepanelProps = {
   ],
 };
 
-function renderPanel() {
+function renderPanel(extra: Partial<ApplicationRunEditSidepanelProps> = {}) {
   return render(
     <EventsProvider>
-      <ApplicationRunEditModelProvider {...props}>
+      <ApplicationRunEditModelProvider {...props} {...extra}>
         <Controller />
         <Forms />
         <Actions />
@@ -201,5 +223,37 @@ describe('Runtime configuration, text mode', () => {
       { key: 'DB_PASSWORD', value: SECRET_MASK },
       { key: 'APP_KEY', value: 'from-row' },
     ]);
+  });
+});
+
+describe('Runtime configuration, connection helpers', () => {
+  it('offers Redis and object storage for a Laravel application', () => {
+    renderPanel({ serverId: '42', framework: 'laravel' });
+    // Redis first, then object storage.
+    expect(screen.getAllByRole('button', { name: 'open' }).length).toBe(2);
+
+    fireEvent.click(screen.getAllByRole('button', { name: 'open' })[0]!);
+    expect(screen.getByText('driversTitle')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'apply' }));
+    fireEvent.click(screen.getByRole('button', { name: 'modeText' }));
+    expect(textBox().value).toContain('REDIS_HOST=127.0.0.1');
+    expect(textBox().value).toContain('CACHE_STORE=redis');
+  });
+
+  it('keeps Laravel variables away from any other application', () => {
+    renderPanel({ serverId: '42', framework: 'nextjs' });
+    // Only the Redis helper: object storage is Laravel's.
+    expect(screen.getAllByRole('button', { name: 'open' }).length).toBe(1);
+    fireEvent.click(screen.getByRole('button', { name: 'open' }));
+    expect(screen.queryByText('driversTitle')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'apply' }));
+    fireEvent.click(screen.getByRole('button', { name: 'modeText' }));
+    expect(textBox().value).toContain('REDIS_URL=redis://127.0.0.1:6379');
+    expect(textBox().value).not.toContain('CACHE_STORE');
+  });
+
+  it('offers no Redis helper without a server', () => {
+    renderPanel();
+    expect(screen.queryByRole('button', { name: 'open' })).toBeNull();
   });
 });

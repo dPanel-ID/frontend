@@ -14,6 +14,8 @@ export interface DeploymentTargetOption {
   address?: string;
   defaultUser?: string;
   hostGroupId?: string;
+  /** Reached through its agent instead of SSH. */
+  private?: boolean;
   provider?: string;
   region?: string;
   sshPort?: string;
@@ -24,6 +26,36 @@ export interface DeploymentTargetOption {
 export interface DeploymentTargetsData {
   pagination: ServerFindDto['pagination'];
   servers: DeploymentTargetOption[];
+}
+
+type ServerItem = NonNullable<ServerFindDto['machines']>[number];
+
+/**
+ * One server as a deployment target card shows it. A server reached through
+ * its agent is marked private: it has no SSH login to show.
+ */
+export function toDeploymentTargetOption(
+  server: ServerItem,
+): DeploymentTargetOption | null {
+  if (!server.id) return null;
+
+  const system = [server.distributor ?? server.os_family, server.version]
+    .filter(Boolean)
+    .join(' ');
+
+  return {
+    id: String(server.id),
+    hostname: server.hostname || `Server ${server.id}`,
+    address: server.address || server.domain,
+    defaultUser: server.default_user,
+    hostGroupId: server.host_group_id || undefined,
+    private: server.connectivity === 'private',
+    provider: server.provider,
+    region: server.region,
+    sshPort: server.ssh_port,
+    status: server.status,
+    system,
+  };
 }
 
 export const [WorkersModelProvider, useWorkersModel] = buildSelector(
@@ -51,29 +83,7 @@ export const [WorkersModelProvider, useWorkersModel] = buildSelector(
     return {
       pagination,
       servers: (machines ?? [])
-        .map((server): DeploymentTargetOption | null => {
-          if (!server.id) return null;
-
-          const system = [
-            server.distributor ?? server.os_family,
-            server.version,
-          ]
-            .filter(Boolean)
-            .join(' ');
-
-          return {
-            id: String(server.id),
-            hostname: server.hostname || `Server ${server.id}`,
-            address: server.address || server.domain,
-            defaultUser: server.default_user,
-            hostGroupId: server.host_group_id || undefined,
-            provider: server.provider,
-            region: server.region,
-            sshPort: server.ssh_port,
-            status: server.status,
-            system,
-          };
-        })
+        .map(toDeploymentTargetOption)
         .filter(excludeNully),
     };
   };

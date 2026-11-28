@@ -5,3 +5,5 @@ export type {
 } from './presentation/EnvVariablesEditor';
 export { default as ObjectStorageHelper } from './presentation/ObjectStorageHelper';
 export type { ObjectStorageHelperProps } from './presentation/ObjectStorageHelper';
+export { default as RedisHelper } from './view/RedisHelper';
+export type { RedisHelperProps } from './view/RedisHelper';

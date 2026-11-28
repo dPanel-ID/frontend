@@ -96,6 +96,7 @@ describe('redisEnvEntries', () => {
       redisEnvEntries({
         server,
         password: '',
+        laravel: true,
         prefix: 'my_blog_',
         drivers: ['cache', 'queue', 'session'],
       }),
@@ -113,10 +114,42 @@ describe('redisEnvEntries', () => {
     const entries = redisEnvEntries({
       server,
       password: 'typed-by-the-user',
+      laravel: true,
       prefix: 'shop_',
       drivers: ['cache'],
     });
     expect(entries).toContainEqual(['REDIS_PASSWORD', 'typed-by-the-user']);
     expect(entries.map(([key]) => key)).not.toContain('QUEUE_CONNECTION');
+  });
+
+  it('writes only the connection for an application that is not Laravel', () => {
+    expect(
+      redisEnvEntries({
+        server,
+        password: '',
+        laravel: false,
+        prefix: 'my_blog_',
+        drivers: ['cache', 'queue', 'session'],
+      }),
+    ).toEqual([
+      ['REDIS_HOST', '127.0.0.1'],
+      ['REDIS_PORT', '6379'],
+      ['REDIS_URL', 'redis://127.0.0.1:6379'],
+    ]);
+  });
+
+  it('puts an encoded password into REDIS_URL', () => {
+    const entries = redisEnvEntries({
+      server: { host: '10.0.0.5', port: 6380 },
+      password: 'p@ss/word',
+      laravel: false,
+      prefix: '',
+      drivers: [],
+    });
+    expect(entries).toContainEqual(['REDIS_PASSWORD', 'p@ss/word']);
+    expect(entries).toContainEqual([
+      'REDIS_URL',
+      'redis://:p%40ss%2Fword@10.0.0.5:6380',
+    ]);
   });
 });

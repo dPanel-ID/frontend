@@ -1453,9 +1453,10 @@
               "engine": "Database server",
               "style": "Variable names",
               "styles": {
-                "wordpress": "WordPress (WORDPRESS_DB_*)",
+                "url": "One DATABASE_URL",
                 "laravel": "Laravel (DB_*)",
-                "url": "One DATABASE_URL"
+                "wordpress": "WordPress (WORDPRESS_DB_*)",
+                "prefix": "Custom prefix (PREFIX_DATABASE_URL, PREFIX_DB_*)"
               },
               "name": "Database name",
               "user": "Database user",
@@ -1465,41 +1466,24 @@
               "creating": "Creating…",
               "confirmTitle": "Create this database?",
               "confirmBody": "dPanel creates the database {name} and the user {user} on this server's {engine}, then fills the runtime variables with their settings.",
-              "badName": "Use letters, digits and underscores for the database name (PostgreSQL: lowercase, starting with a letter).",
+              "badName": "Use letters, digits and underscores for the database name (PostgreSQL: lowercase, starting with a letter; MongoDB: at most 63 characters).",
               "badUser": "Use letters, digits and underscores for the user, at most 32 characters (PostgreSQL: lowercase, starting with a letter).",
               "nameTaken": "A database named {name} already exists on this server. Choose another name.",
               "notReady": "The database options are still loading. Try again in a moment.",
               "failed": "The database could not be created",
               "queued": "Creating database {name} on the server.",
               "created": "Database {name} is being created on the server. Its settings are in {keys} below, password included.",
-              "noDatabaseServer": "Need a database? Install MariaDB or PostgreSQL on this server first (server page, Modules tab). Then dPanel can create one here and fill in its password for you."
-            },
-            "redis": {
-              "title": "Redis for this app",
-              "desc": "Connect the app to the Redis on this server for a faster cache, queues and sessions.",
-              "open": "Connect Redis",
-              "openAgain": "Change Redis settings",
-              "applied": "Redis is set in {keys} below.",
-              "target": "The app connects to Redis at {host}, port {port}.",
-              "prefix": "Key prefix",
-              "prefixHint": "Keeps this app's keys apart from other apps using the same Redis.",
-              "password": "Redis password",
-              "passwordOptional": "Redis password (if you set one)",
-              "passwordHint": "This Redis asks for a password. Type the one you chose when you installed it: dPanel doesn't keep it.",
-              "passwordOptionalHint": "dPanel can't tell whether this Redis has a password. If you set one when you installed it, type it here; otherwise leave it empty.",
+              "noDatabaseServer": "Need a database? Install MariaDB, PostgreSQL or MongoDB on this server first (server page, Modules tab). Then dPanel can create one here and fill in its password for you.",
+              "prefix": "Prefix",
+              "prefixHint": "For example ANALYTICS: the settings go into ANALYTICS_DATABASE_URL and ANALYTICS_DB_*, so this database never replaces another one's variables.",
+              "badPrefix": "Start the prefix with a letter and use capital letters, digits and single underscores, at most 32 characters.",
+              "adminPassword": "MongoDB administrator password",
+              "adminPasswordHint": "MongoDB asks for the administrator password you chose when you installed it before it creates a user. It is sent once with this request; dPanel doesn't keep it.",
+              "adminPasswordRequired": "Type the MongoDB administrator password.",
               "reveal": "Show password",
               "hide": "Hide password",
-              "driversTitle": "Use Redis for",
-              "drivers": {
-                "cache": "Cache (CACHE_STORE=redis)",
-                "queue": "Queued jobs (QUEUE_CONNECTION=redis)",
-                "session": "Sessions (SESSION_DRIVER=redis)"
-              },
-              "badPrefix": "Use letters, digits, underscores, colons, dots or hyphens for the prefix.",
-              "passwordRequired": "Type the Redis password.",
-              "cancel": "Cancel",
-              "apply": "Fill in variables",
-              "noRedis": "Need a cache or queue? Install Redis on this server first (server page, Modules tab). Then dPanel can connect this app to it here."
+              "replaceTitle": "Replace these variables?",
+              "replaceBody": "These variables are already set and will be replaced: {keys}. To keep a database you connected earlier, choose a custom prefix instead."
             }
           }
         },
@@ -1593,7 +1577,7 @@
           "healthPath": "Page to check",
           "healthHint": "Laravel 11 and newer answer on /up. Leave it empty to skip the check.",
           "processesTitle": "Worker and scheduler",
-          "processesDesc": "Extra processes that run your code next to the website. Both are off: each one uses memory, so turn one on when your app needs it.",
+          "processesDesc": "Extra processes that run your code next to the website. Each one uses memory, so turn on only the ones your app needs.",
           "process": {
             "worker": {
               "title": "Queue worker",
@@ -1627,6 +1611,10 @@
           "overrideTitle": "Deploy anyway",
           "overrideDesc": "The build will most likely fail with the problem above. Tick this only if you know the server has what the repository asks for."
         }
+      },
+      "created": {
+        "title": "Your app is created",
+        "desc": "dPanel is preparing it now. Follow the first deployment on this page."
       }
     },
     "applicationsUpdate": {
@@ -4759,6 +4747,33 @@
           "badBucket": "Use 3-63 lowercase letters, digits, dots or hyphens.",
           "badEndpoint": "Use an address that starts with https:// or http://."
         }
+      },
+      "redis": {
+        "title": "Redis for this app",
+        "desc": "Connect the app to the Redis on this server, for example for a cache, queues or sessions.",
+        "open": "Connect Redis",
+        "openAgain": "Change Redis settings",
+        "applied": "Redis is set in {keys}.",
+        "target": "The app connects to Redis at {host}, port {port}.",
+        "prefix": "Key prefix",
+        "prefixHint": "Keeps this app's keys apart from other apps using the same Redis.",
+        "password": "Redis password",
+        "passwordOptional": "Redis password (if you set one)",
+        "passwordHint": "This Redis asks for a password. Type the one you chose when you installed it: dPanel doesn't keep it.",
+        "passwordOptionalHint": "dPanel can't tell whether this Redis has a password. If you set one when you installed it, type it here; otherwise leave it empty.",
+        "reveal": "Show password",
+        "hide": "Hide password",
+        "driversTitle": "Use Redis for",
+        "drivers": {
+          "cache": "Cache (CACHE_STORE=redis)",
+          "queue": "Queued jobs (QUEUE_CONNECTION=redis)",
+          "session": "Sessions (SESSION_DRIVER=redis)"
+        },
+        "badPrefix": "Use letters, digits, underscores, colons, dots or hyphens for the prefix.",
+        "passwordRequired": "Type the Redis password.",
+        "cancel": "Cancel",
+        "apply": "Fill in variables",
+        "noRedis": "Need a cache or queue? Install Redis on this server first (server page, Modules tab). Then dPanel can connect this app to it here."
       }
     }
   },
@@ -4989,7 +5004,8 @@
         "onError": "Failed to get deployment targets, please <a>try again.</a>",
         "pagination": "Page {page} of {totalPage}",
         "sshPort": "SSH {port}",
-        "unknown": "unknown"
+        "unknown": "unknown",
+        "throughAgent": "Through the agent"
       },
       "toaster": {
         "missingWorker": "Select a deployment target before creating an artifact.",

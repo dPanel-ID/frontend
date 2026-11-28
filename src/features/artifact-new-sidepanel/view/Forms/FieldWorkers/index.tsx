@@ -94,7 +94,9 @@ const WorkersList = guard(() => {
   });
 
   const selectedServer = servers.find((server) => server.id === field.value);
-  const previousServerIdRef = useRef<string | undefined>(field.value || undefined);
+  const previousServerIdRef = useRef<string | undefined>(
+    field.value || undefined,
+  );
   const activeHostGroupId = hostGroupId || selectedServer?.hostGroupId || '';
   const [hostGroupResponse] = ApiHostGroup.Detail.$Id.useGet({
     id: activeHostGroupId,
@@ -187,15 +189,19 @@ const WorkersList = guard(() => {
                 icon: Globe2Icon,
                 label: server.address,
               },
+              // A server reached through its agent has no SSH login to
+              // show.
               {
                 icon: TerminalIcon,
-                label: server.sshPort
-                  ? t('sshPort', { port: server.sshPort })
-                  : undefined,
+                label: server.private
+                  ? t('throughAgent')
+                  : server.sshPort
+                    ? t('sshPort', { port: server.sshPort })
+                    : undefined,
               },
               {
                 icon: UserRoundIcon,
-                label: server.defaultUser,
+                label: server.private ? undefined : server.defaultUser,
               },
               {
                 icon: CloudIcon,
@@ -308,10 +314,7 @@ const WorkersList = guard(() => {
               ))}
             </SelectContent>
           </Select>
-          <p
-            className="text-xs text-muted-foreground"
-            aria-live="polite"
-          >
+          <p className="text-xs text-muted-foreground" aria-live="polite">
             {targetSelection.activeMode === 'server'
               ? 'Deploy to the selected server.'
               : 'Deploy to the selected server group snapshot.'}

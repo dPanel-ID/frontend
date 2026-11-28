@@ -4,11 +4,14 @@ import {
   DATABASE_ENGINES,
   databaseEnvEntries,
   existingDatabaseNames,
+  existingEnvKeys,
   guessDatabaseEnvStyle,
   installedDatabaseEngines,
+  installedDatabasePort,
+  normalizeDatabasePrefix,
   suggestDatabaseName,
-  upsertEnvText,
 } from './database-env';
+import { upsertEnvText } from './env-text';
 
 const credentials = {
   engine: 'mariadb' as const,
@@ -18,15 +21,16 @@ const credentials = {
 };
 
 describe('installedDatabaseEngines', () => {
-  it('lists installed MariaDB and PostgreSQL only, MariaDB first', () => {
+  it('lists installed database servers, MariaDB first', () => {
     expect(
       installedDatabaseEngines([
+        { module_name: 'mongodb', status: 'installed' },
         { module_name: 'postgresql', status: 'installed' },
         { module_name: 'redis', status: 'installed' },
         { module_name: 'MariaDB', status: 'installed' },
         { module_name: 'mariadb-database', status: 'installed' },
       ]),
-    ).toEqual(['mariadb', 'postgresql']);
+    ).toEqual(['mariadb', 'postgresql', 'mongodb']);
   });
 
   it('skips a database server that is not installed yet', () => {
@@ -91,11 +95,19 @@ describe('guessDatabaseEnvStyle', () => {
     );
   });
 
-  it('picks Laravel names for DB_ variables or a Laravel repository', () => {
+  it('uses the generic DATABASE_URL while the framework is not identified', () => {
     expect(guessDatabaseEnvStyle('APP_ENV=production\nDB_HOST=x', null)).toBe(
-      'laravel',
+      'url',
     );
-    expect(guessDatabaseEnvStyle('', 'acme/laravel-shop')).toBe('laravel');
+    expect(guessDatabaseEnvStyle('', 'acme/laravel-shop', 'unknown')).toBe(
+      'url',
+    );
+  });
+
+  it('picks WordPress names for a site identified as WordPress', () => {
+    expect(guessDatabaseEnvStyle('', 'acme/blog', 'wordpress')).toBe(
+      'wordpress',
+    );
   });
 
   it('picks Laravel names for a repository dPanel recognised as Laravel', () => {
@@ -136,6 +148,99 @@ describe('databaseEnvEntries', () => {
     expect(databaseEnvEntries('url', credentials)).toEqual([
       ['DATABASE_URL', 'mysql://my_blog:aB3-x_Y9@127.0.0.1:3306/my_blog'],
     ]);
+  });
+});
+
+describe('databaseEnvEntries with other engines and styles', () => {
+  const mongo = { ...credentials, engine: 'mongodb' as const };
+
+  it('connects MongoDB with a URL that signs in to its own database', () => {
+    expect(databaseEnvEntries('url', mongo)).toEqual([
+      [
+        'DATABASE_URL',
+        'mongodb://my_blog:aB3-x_Y9@127.0.0.1:27017/my_blog?authSource=my_blog',
+      ],
+    ]);
+  });
+
+  it('writes the Laravel MongoDB variables', () => {
+    const url =
+      'mongodb://my_blog:aB3-x_Y9@127.0.0.1:27018/my_blog?authSource=my_blog';
+    expect(databaseEnvEntries('laravel', { ...mongo, port: 27018 })).toEqual([
+      ['DB_CONNECTION', 'mongodb'],
+      ['DB_URI', url],
+      ['DB_DATABASE', 'my_blog'],
+      ['MONGODB_URI', url],
+    ]);
+  });
+
+  it('falls back to DATABASE_URL for a style the engine cannot use', () => {
+    expect(
+      databaseEnvEntries('wordpress', { ...credentials, engine: 'postgresql' }),
+    ).toEqual([
+      ['DATABASE_URL', 'postgresql://my_blog:aB3-x_Y9@127.0.0.1:5432/my_blog'],
+    ]);
+  });
+
+  it('puts every variable behind a custom prefix', () => {
+    expect(
+      databaseEnvEntries('prefix', {
+        ...credentials,
+        engine: 'postgresql',
+        port: 5433,
+        prefix: 'analytics_',
+      }),
+    ).toEqual([
+      [
+        'ANALYTICS_DATABASE_URL',
+        'postgresql://my_blog:aB3-x_Y9@127.0.0.1:5433/my_blog',
+      ],
+      ['ANALYTICS_DB_HOST', '127.0.0.1'],
+      ['ANALYTICS_DB_PORT', '5433'],
+      ['ANALYTICS_DB_DATABASE', 'my_blog'],
+      ['ANALYTICS_DB_USERNAME', 'my_blog'],
+      ['ANALYTICS_DB_PASSWORD', 'aB3-x_Y9'],
+    ]);
+  });
+});
+
+describe('normalizeDatabasePrefix', () => {
+  it.each([
+    ['analytics', 'ANALYTICS'],
+    [' shop_2_ ', 'SHOP_2'],
+    ['2shop', ''],
+    ['a__b', ''],
+    ['a-b', ''],
+    ['', ''],
+    ['A'.repeat(33), ''],
+  ])('%s becomes %s', (input, expected) => {
+    expect(normalizeDatabasePrefix(input)).toBe(expected);
+  });
+});
+
+describe('installedDatabasePort', () => {
+  it('reads the port the module was installed with', () => {
+    const modules = [
+      {
+        module_name: 'mongodb',
+        status: 'installed',
+        variables: { mongodb_net_port: 27018 },
+      },
+      { module_name: 'postgresql', status: 'installed', variables: {} },
+    ];
+    expect(installedDatabasePort(modules, 'mongodb')).toBe(27018);
+    expect(installedDatabasePort(modules, 'postgresql')).toBe(5432);
+  });
+});
+
+describe('existingEnvKeys', () => {
+  it('lists the keys the variables already set', () => {
+    expect(
+      existingEnvKeys('DB_HOST=x\n# DB_PORT=1\nAPP_ENV=production', [
+        ['DB_HOST', '127.0.0.1'],
+        ['DB_PORT', '3306'],
+      ]),
+    ).toEqual(['DB_HOST']);
   });
 });
 
