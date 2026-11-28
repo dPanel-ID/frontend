@@ -37,6 +37,17 @@ export interface UpstreamDraft {
 
 export interface RuntimeConfigDraft {
   cloudflareProxied: boolean;
+  /** Gateway limits (config.http); an empty field keeps the default. */
+  http: HttpSettingsDraft;
   protocol: string;
   sslEnabled: boolean;
+}
+
+export interface HttpSettingsDraft {
+  healthInterval: string;
+  healthPath: string;
+  healthTimeout: string;
+  readBodyTimeout: string;
+  requestBodyMax: string;
+  responseTimeout: string;
 }

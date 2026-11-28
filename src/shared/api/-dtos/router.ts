@@ -1,4 +1,5 @@
 import type { ExecutionErrorDetailV1 } from './execution-error-detail';
+import type { LoadBalancerHttpSettingsV2 } from './load-balancer';
 import type { MachineV1 } from './machine';
 import type { OrganizationV1 } from './organization';
 import type { UserPublicContactV1 } from './user';
@@ -56,6 +57,7 @@ export interface RouterConfigV1 {
   lb_kind?: 'l4' | 'l7';
   protocol?: string;
   ssl_enabled?: boolean;
+  http?: LoadBalancerHttpSettingsV2;
 }
 
 export interface RouterV1 {

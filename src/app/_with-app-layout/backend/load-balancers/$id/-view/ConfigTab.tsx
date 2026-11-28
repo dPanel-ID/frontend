@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 
 import {
   CloudIcon,
+  GaugeIcon,
   Globe2Icon,
   RouteIcon,
   SaveIcon,
@@ -19,6 +20,7 @@ import { LOAD_BALANCER_WEBSERVER_ENGINE } from '@/entities/load-balancer/ui/cons
 
 import { ApiLoadBalancer } from '@/shared/api';
 import { Button } from '@/shared/presentation/atoms/ButtonV2';
+import { Input } from '@/shared/presentation/atoms/Input';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
 import { Switch } from '@/shared/presentation/atoms/Switch';
 
@@ -27,7 +29,11 @@ import {
   serializeRuntimeConfigDraft,
   toLoadBalancerConfigPayload,
 } from '../-lib/runtime-config';
-import type { IconComponent, RawLoadBalancerDetailsDto } from '../-lib/types';
+import type {
+  HttpSettingsDraft,
+  IconComponent,
+  RawLoadBalancerDetailsDto,
+} from '../-lib/types';
 
 import { DetailSurface } from './-presentation/surfaces';
 
@@ -55,6 +61,11 @@ export function ConfigTab(props: {
   }
 
   const webserver = LOAD_BALANCER_WEBSERVER_ENGINE[details.webserver.engine];
+  const isL4 = details.configuration.lbKind === 'l4';
+  // Only Caddy (and the legacy nginx records it renders) applies config.http.
+  const appliesHttpSettings =
+    details.webserver.engine === 'caddy' ||
+    details.webserver.engine === 'nginx';
   const hasDraftChanges =
     serializeRuntimeConfigDraft(draft) !==
     serializeRuntimeConfigDraft(sourceConfig);
@@ -131,6 +142,13 @@ export function ConfigTab(props: {
               setDraft((current) => ({ ...current, cloudflareProxied }))
             }
           />
+          {!isL4 && (
+            <HttpSettingsCard
+              disabled={!appliesHttpSettings}
+              value={draft.http}
+              onChange={(http) => setDraft((current) => ({ ...current, http }))}
+            />
+          )}
         </div>
 
         <div className="grid gap-3 rounded-lg border bg-background p-4">
@@ -160,6 +178,72 @@ export function ConfigTab(props: {
         </div>
       </div>
     </DetailSurface>
+  );
+}
+
+const HTTP_SETTINGS_INPUTS = [
+  { field: 'requestBodyMax', key: 'requestBodyMax', placeholder: '100MB' },
+  { field: 'readBodyTimeout', key: 'readBodyTimeout', placeholder: '10s' },
+  { field: 'responseTimeout', key: 'responseTimeout', placeholder: '60s' },
+  { field: 'healthPath', key: 'healthPath', placeholder: '/up' },
+  { field: 'healthInterval', key: 'healthInterval', placeholder: '10s' },
+  { field: 'healthTimeout', key: 'healthTimeout', placeholder: '5s' },
+] as const satisfies ReadonlyArray<{
+  field: keyof HttpSettingsDraft;
+  key: string;
+  placeholder: string;
+}>;
+
+function HttpSettingsCard(props: {
+  disabled: boolean;
+  onChange: (value: HttpSettingsDraft) => void;
+  value: HttpSettingsDraft;
+}) {
+  const { disabled, onChange, value } = props;
+  const t = useDevetekTranslations();
+
+  return (
+    <div className="rounded-lg border bg-background p-4">
+      <div className="flex min-w-0 gap-3">
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border bg-card">
+          <GaugeIcon className="size-5" />
+        </span>
+        <span className="min-w-0">
+          <span className="block font-bold">
+            {t('page.loadBalancersDetail.config.http.title')}
+          </span>
+          <span className="mt-1 block text-sm leading-relaxed text-muted-foreground">
+            {t(
+              disabled
+                ? 'page.loadBalancersDetail.config.http.caddyOnly'
+                : 'page.loadBalancersDetail.config.http.description',
+            )}
+          </span>
+        </span>
+      </div>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        {HTTP_SETTINGS_INPUTS.map(({ field, key, placeholder }) => (
+          <label key={field} className="grid gap-1.5 text-sm">
+            <span className="font-semibold">
+              {t(`page.loadBalancersDetail.config.http.${key}`)}
+            </span>
+            <Input
+              inputSize="sm"
+              className="font-mono"
+              disabled={disabled}
+              value={value[field]}
+              placeholder={placeholder}
+              onChange={(event) =>
+                onChange({ ...value, [field]: event.target.value })
+              }
+            />
+            <span className="text-xs leading-relaxed text-muted-foreground">
+              {t(`page.loadBalancersDetail.config.http.${key}Hint`)}
+            </span>
+          </label>
+        ))}
+      </div>
+    </div>
   );
 }
 

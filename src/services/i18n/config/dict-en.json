@@ -2853,7 +2853,24 @@
         "sslDesc": "Serve the load balancer with HTTPS/TLS behavior when the gateway engine supports it.",
         "cloudflare": "Enable Cloudflare proxy",
         "cloudflareDesc": "Mark the managed domain record as proxied through Cloudflare when the domain provider supports it.",
-        "protocol": "Protocol"
+        "protocol": "Protocol",
+        "http": {
+          "title": "Gateway limits",
+          "description": "Optional limits for this load balancer. Leave a field empty to keep the gateway default.",
+          "caddyOnly": "These limits apply on the Caddy engine only.",
+          "requestBodyMax": "Largest request body",
+          "requestBodyMaxHint": "Such as 100MB (1KB to 10GB). Larger uploads get 413. Default: no limit.",
+          "readBodyTimeout": "Request body time limit",
+          "readBodyTimeoutHint": "Time a visitor may take to send an upload, such as 120s (1s to 1h). Default: 10s.",
+          "responseTimeout": "Response time limit",
+          "responseTimeoutHint": "Time the gateway waits for and sends a response, such as 300s (1s to 24h). Default: 60s.",
+          "healthPath": "Health check path",
+          "healthPathHint": "Such as /up. Routes with several upstreams skip the ones that fail it. Default: off.",
+          "healthInterval": "Health check interval",
+          "healthIntervalHint": "Time between checks. Default: 10s.",
+          "healthTimeout": "Health check time limit",
+          "healthTimeoutHint": "Time limit of each check. Default: 5s."
+        }
       },
       "logs": {
         "accessTitle": "Access log",
