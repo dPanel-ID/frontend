@@ -4889,7 +4889,12 @@
         "frankenphp_module_missing": "The start command uses FrankenPHP, but the FrankenPHP module is not selected. Add it in step 2.",
         "composer_lock_missing": "The repository has no composer.lock, so each build may install different package versions.",
         "repository_unreadable": "dPanel could not read the repository's requirements, so they were not checked.",
-        "s3_package_missing": "FILESYSTEM_DISK is s3, but composer.lock has no {package}. Uploads will fail until you add it with composer require {package}."
+        "s3_package_missing": "FILESYSTEM_DISK is s3, but composer.lock has no {package}. Uploads will fail until you add it with composer require {package}.",
+        "frankenphp_php_mismatch": "FrankenPHP serves requests with its own PHP {served}, while Composer and Artisan use PHP {selected}. Pick PHP {served} in step 2 so both match.",
+        "frankenphp_php_unsupported": "{package} needs PHP {required}, but FrankenPHP serves requests with its own PHP {served}.",
+        "frankenphp_extension_missing": "{package} needs the PHP extension {extension}, which FrankenPHP's own PHP does not include. The PHP Extensions module only adds it to the app's PHP for Composer and Artisan.",
+        "octane_listens_everywhere": "Octane listens on every network address with its own settings. Add --caddyfile={caddyfile} to the start command, with the release command that writes it, so only the load balancer reaches the app.",
+        "octane_admin_port_unavailable": "Octane needs port {port} for its admin API (the app's port plus 1000), but it is above 65535 or another app on this server uses it. Choose another port."
       }
     }
   },

@@ -106,7 +106,7 @@ Open **Applications** and press **Create Application**. The form has five steps:
 ### Server & modules
 
 1. Select your server.
-2. **What this Laravel app needs** lists **PHP 8.4**, **Node.js 22** and **FrankenPHP**. Press **Add** on each one (or **Use … on this server** when that version is already installed). Nothing is added until you press a button.
+2. **What this Laravel app needs** lists **PHP 8.5**, **Node.js 22** and **FrankenPHP**. FrankenPHP answers requests with its own PHP 8.5, so dPanel picks the same PHP for Composer and Artisan whenever your `composer.json` allows it. Press **Add** on each one (or **Use … on this server** when that version is already installed). Nothing is added until you press a button.
 3. Under **Installed on selected server**, press **PostgreSQL** and **Redis** so the app lists them as what it uses.
 4. Press **Continue**.
 
@@ -123,12 +123,12 @@ The form is filled in. Check it:
 
 3. **Build steps**: `composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist`, then `npm ci && npm run build`. The build needs no database and no `APP_KEY`.
 4. **Runtime command**: Laravel Octane on FrankenPHP, because this repository uses Octane. An app without Octane gets FrankenPHP's classic mode (`frankenphp php-server`), which needs no change to your code.
-5. **Application port**: keep the free port dPanel suggests. Your app listens on it on the server; visitors never see it.
+5. **Application port**: keep the free port dPanel suggests. Your app listens on it on the server; visitors never see it. When the load balancer runs on the same server, dPanel keeps this port reachable from the server itself only.
 
    ![The build steps, the Octane runtime command and the application port](../../assets/tutorials/laravel-app-build.webp)
 
 6. **Release and processes**:
-   - **Release commands**: `php artisan storage:link --force`, `php artisan migrate --force` and `php artisan optimize`.
+   - **Release commands**: `php artisan storage:link --force`, `php artisan migrate --force` and `php artisan optimize`. Octane apps get one more command first: it writes `bootstrap/cache/frankenphp.Caddyfile`, which tells Octane to listen only where the load balancer reaches it.
    - **After the restart**: `php artisan reload`, which restarts the queue worker, the scheduler and Octane on the new code.
    - **Health check**: `/up`. dPanel asks the app for this page after each restart and marks the deploy failed if it does not answer `200`.
    - **Release folders**: on. `storage`, `.env` and `database/database.sqlite` are kept between releases, and the last 3 releases stay on the server.
