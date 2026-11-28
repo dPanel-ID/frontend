@@ -124,7 +124,7 @@ Bisa, jika Anda boleh mengubah aplikasinya. Tekan **Tampilkan nilai** di panel *
 
 ### Password database sebaiknya variabel build-time atau runtime?
 
-Runtime. Hanya layanan yang berjalan yang terhubung ke database, jadi build tidak membutuhkannya. Pengecualiannya adalah build yang menjalankan migrasi database, seperti build Laravel: build itu juga membutuhkannya.
+Runtime. Hanya aplikasi yang berjalan yang terhubung ke database, jadi build tidak membutuhkannya. Jalankan migrasi database sebagai **perintah rilis** (preset Laravel menambahkan `php artisan migrate --force` untuk Anda): perintah rilis berjalan setelah build dengan variabel runtime, jadi password cukup ada di satu tempat. Lihat [Perintah rilis dan proses](./update-or-delete.md#perintah-rilis-dan-proses).
 
 ### Bolehkah saya menaruh variabel di file .env di repositori?
 

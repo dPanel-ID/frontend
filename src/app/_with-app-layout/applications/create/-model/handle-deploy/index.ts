@@ -10,6 +10,7 @@ import type { EnvVariable } from '@/entities/application/lib/env-text';
 import { ApiBundle } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
+import { lifecycleDefinition } from '../../-lib/laravel-preset';
 import { containerRuntime } from '../container-runtime';
 import { useFormStore } from '../store/form';
 import type {
@@ -130,6 +131,9 @@ export default function useHandleDeploy() {
       selectedDependencyIds,
       requiredBinaryConfigs,
       selectedRequiredBinaryIds,
+      appFramework,
+      lifecycle,
+      preflightOverride,
     } = formValues;
 
     if (!appName || !appSourceBundleIdent || !hostedServerID) return null;
@@ -219,6 +223,9 @@ export default function useHandleDeploy() {
         runtimeEnvVariables,
         dependencyRuntimeItems,
         requiredBinaries,
+        framework: appFramework,
+        lifecycle: lifecycleDefinition(lifecycle),
+        skipPreflight: preflightOverride,
       });
     }
 
@@ -319,6 +326,7 @@ export default function useHandleDeploy() {
   });
 
   return {
+    compileConfig,
     handleDeploy,
   };
 }

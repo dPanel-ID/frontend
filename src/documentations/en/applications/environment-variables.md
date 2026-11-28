@@ -124,7 +124,7 @@ Yes, if you may change the application. Press **Show values** in the **Run** pan
 
 ### Should a database password be a build-time or a runtime variable?
 
-Runtime. Only the running service connects to the database, so the build never needs it. The exception is a build that runs database migrations, as Laravel's does: then the build needs it too.
+Runtime. Only the running application connects to the database, so the build never needs it. Run database migrations as a **release command** (the Laravel preset adds `php artisan migrate --force` for you): release commands run after the build with the runtime variables, so the password is needed in one place only. See [Release commands and processes](./update-or-delete.md#release-commands-and-processes).
 
 ### Can I put variables in a .env file in my repository?
 

@@ -2,6 +2,7 @@ import { useEmit, useSubscribe } from './-model/events';
 import useApplicationBuildEditUsecase from './-usecase/application-build-edit';
 import useApplicationDeleteUsecase from './-usecase/application-delete';
 import useApplicationEditUsecase from './-usecase/application-edit';
+import useApplicationLifecycleEditUsecase from './-usecase/application-lifecycle-edit';
 import useApplicationRunEditUsecase from './-usecase/application-run-edit';
 import useApplicationSetupEditUsecase from './-usecase/application-setup-edit';
 import useArtifactDeleteUsecase from './-usecase/artifact-delete';
@@ -37,6 +38,10 @@ export default function EventController() {
   });
 
   const [handleApplicationSetupEdit] = useApplicationSetupEditUsecase({
+    onSuccess: () => emit('@applications::detail/app-detail-refresh', null),
+  });
+
+  const [handleApplicationLifecycleEdit] = useApplicationLifecycleEditUsecase({
     onSuccess: () => emit('@applications::detail/app-detail-refresh', null),
   });
 
@@ -116,6 +121,11 @@ export default function EventController() {
   useSubscribe(
     '@applications::detail/application-setup-edit',
     handleApplicationSetupEdit,
+  );
+
+  useSubscribe(
+    '@applications::detail/application-lifecycle-edit',
+    handleApplicationLifecycleEdit,
   );
 
   return <GitBackupDialog state={gitBackup} />;

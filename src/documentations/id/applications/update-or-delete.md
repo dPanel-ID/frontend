@@ -10,14 +10,15 @@ Anda bisa mengubah cara aplikasi dPanel dibangun dan dijalankan kapan saja, dari
 
 ## Meninjau pengaturannya
 
-Buka aplikasinya dan masuk ke **Pengaturan**. **Cara aplikasi ini disiapkan** menampilkan empat bagian.
+Buka aplikasinya dan masuk ke **Pengaturan**. **Cara aplikasi ini disiapkan** menampilkan lima bagian.
 
-| Bagian     | Isinya                                                                     |
-| ---------- | -------------------------------------------------------------------------- |
-| Repositori | Repositori, bahasa, dan framework-nya.                                     |
-| Deployment | Batas waktu build dan deskripsi.                                           |
-| Build      | Runtime bahasa, langkah build, dan variabel environment saat build.        |
-| Jalan      | Nama layanan, port, perintah jalan, dan variabel environment saat runtime. |
+| Bagian           | Isinya                                                                                |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| Repositori       | Repositori, bahasa, dan framework-nya.                                                |
+| Deployment       | Batas waktu build dan deskripsi.                                                      |
+| Build            | Runtime bahasa, langkah build, dan variabel environment saat build.                   |
+| Jalan            | Nama layanan, port, perintah jalan, dan variabel environment saat runtime.            |
+| Rilis dan proses | Perintah rilis, perintah setelah restart, proses tambahan, dan pemeriksaan kesehatan. |
 
 ![Tab Pengaturan dengan bagian Repositori, Build, Jalan, dan Zona berbahaya](../../assets/applications/app-settings.webp)
 
@@ -31,10 +32,24 @@ Setiap item yang punya tombol **Ubah** membuka panel khusus untuk bagian itu saj
 | Bahasa                                      | Edit Setup Configuration   | Bahasa dan versinya.                   |
 | Langkah build, Variabel lingkungan (Build)  | Edit Build Configuration   | Langkah build dan variabel build-time. |
 | Perintah jalan, Variabel lingkungan (Jalan) | Edit Runtime Configuration | Perintah jalan dan variabel runtime.   |
+| Rilis dan proses                            | Rilis dan proses           | Lihat bagian berikutnya.               |
 
 Tekan **Simpan** di panel, atau **Batal** untuk menutupnya; jika ada perubahan yang belum disimpan, dPanel meminta konfirmasi lebih dulu. Perubahan berlaku mulai rilis berikutnya, jadi rilis lagi dengan **Bangun dan rilis** atau **Rilis ulang**.
 
 Nilai variabel disembunyikan di panel-panel ini. Biarkan nilai yang tersembunyi apa adanya untuk mempertahankannya, atau tekan **Tampilkan nilai** di **Edit Runtime Configuration** untuk melihat nilai runtime. Lihat [Variabel environment](./environment-variables.md#melihat-nilai-yang-tersimpan).
+
+## Perintah rilis dan proses
+
+**Rilis dan proses** mengatur apa yang berjalan di sekitar setiap deployment. Bagian ini ada di setiap aplikasi, bukan hanya Laravel; aplikasi yang tidak pernah memakainya tetap di-deploy seperti sebelumnya.
+
+| Bagian                | Fungsinya                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Perintah rilis        | Dijalankan sekali per deployment, setelah build dan sebelum restart, dengan variabel **runtime**. Pakai untuk migrasi database. Jika satu gagal, versi yang sudah berjalan tetap melayani. |
+| Setelah restart       | Dijalankan setelah versi baru aktif, misalnya `php artisan reload` agar queue worker memakai kode baru.                                                                                    |
+| Proses                | Proses tambahan di samping website, dengan kode dan variabel yang sama: **service** berjalan terus (queue worker), **schedule** menjalankan perintahnya setiap menit (scheduler).          |
+| Pemeriksaan kesehatan | Setelah restart, dPanel membuka sebuah halaman aplikasi, misalnya `/up`, dari server itu sendiri. Jawaban selain status yang diharapkan membuat deployment gagal.                          |
+
+Tekan **Ubah** di bagian itu untuk mengubahnya. Sakelar di atas perintah rilis mematikannya tanpa menghapusnya; bagian yang dikosongkan dihapus. Seperti pengaturan lain, perubahan berlaku mulai rilis berikutnya.
 
 ## Pengaturan yang tetap
 

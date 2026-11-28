@@ -70,6 +70,8 @@ export interface ApplicationPayloadV1 {
   workdir?: string;
   workspace_id?: string;
   workspace_type?: string;
+  /** Deploy even when the pre-flight checks found a blocking problem. */
+  skip_preflight?: boolean;
 }
 
 export interface ApplicationIACConfigV1 {
@@ -238,6 +240,104 @@ export interface AppDefinition {
       value: string;
     }> | null;
   };
+  /** Commands run after the build, before the restart, with the runtime variables. Null removes it. */
+  release?: AppDefinitionRelease | null;
+  /** Commands run after the restart (and the health check). Null removes it. */
+  post_deploy?: AppDefinitionPostDeploy | null;
+  /** Extra processes next to the web service; [] removes them all. */
+  processes?: AppDefinitionProcess[] | null;
+  /** HTTP check of the restarted service. Null removes it. */
+  health_check?: AppDefinitionHealthCheck | null;
+}
+
+export interface AppDefinitionRelease {
+  /** Missing means on. */
+  enabled?: boolean;
+  commands?: string[];
+  /** Per command, a duration such as "15m". */
+  timeout?: string;
+}
+
+export interface AppDefinitionPostDeploy {
+  commands?: string[];
+  timeout?: string;
+}
+
+export type AppDefinitionProcessType = 'service' | 'schedule';
+
+export interface AppDefinitionProcess {
+  name: string;
+  type?: AppDefinitionProcessType | string;
+  command: string;
+  instances?: number;
+}
+
+export interface AppDefinitionHealthCheck {
+  path: string;
+  expected_status?: number;
+  timeout?: string;
+  retries?: number;
+}
+
+/** What dPanel read from a repository it recognised as Laravel. */
+export interface ApplicationPresetFactsV1 {
+  laravel_version?: string;
+  php_constraint?: string;
+  octane?: boolean;
+  node?: boolean;
+  package_manager?: string;
+  node_engines?: string;
+  health_route?: boolean;
+  composer_lock?: boolean;
+}
+
+export interface ApplicationPresetModuleV1 {
+  name: string;
+  /** PHP: a branch such as 8.4. Node.js: a major such as 22. */
+  version?: string;
+  role?: 'language' | 'dependency' | string;
+}
+
+export interface ApplicationPresetHintV1 {
+  code: string;
+  message?: string;
+}
+
+export type ApplicationPreflightLevelV1 = 'error' | 'warning';
+
+export interface ApplicationPreflightCheckV1 {
+  code: string;
+  level: ApplicationPreflightLevelV1 | string;
+  message?: string;
+  params?: Record<string, string> | null;
+}
+
+export interface ApplicationPresetV1 {
+  framework?: string;
+  detected?: boolean;
+  facts?: ApplicationPresetFactsV1 | null;
+  /** Not masked: these are defaults, never secrets. */
+  definition?: AppDefinition | null;
+  /** Offered, off by default; not part of the definition. */
+  processes?: AppDefinitionProcess[] | null;
+  modules?: ApplicationPresetModuleV1[] | null;
+  hints?: ApplicationPresetHintV1[] | null;
+  checks?: ApplicationPreflightCheckV1[] | null;
+}
+
+export interface ApplicationPreflightPayloadV1 {
+  repo_org: string;
+  repo_name: string;
+  branch: string;
+  workdir?: string;
+  app_definition: AppDefinition;
+  modules?: string[];
+}
+
+export interface ApplicationPreflightV1 {
+  framework?: string;
+  blocking?: boolean;
+  checks?: ApplicationPreflightCheckV1[] | null;
 }
 
 interface AppConfig {

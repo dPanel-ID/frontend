@@ -1,3 +1,4 @@
+import type { LifecycleView } from '@/entities/application/lib/lifecycle';
 import type { SchemaCommon } from '@/entities/shared/rules/schema';
 import type {
   UnitEnvironmentKV,
@@ -88,4 +89,12 @@ export interface ApplicationSetupEditPayload {
 export interface ApplicationEditPayload {
   applicationId: SchemaCommon.UnitId;
   applicationName: string;
+}
+
+export interface ApplicationLifecycleEditPayload {
+  applicationId: SchemaCommon.UnitId;
+  applicationName: string;
+  lifecycle: LifecycleView;
+  /** The application has a port (a health check needs one). */
+  hasPort: boolean;
 }

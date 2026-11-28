@@ -8,9 +8,12 @@ import {
   RocketIcon,
   SlidersHorizontalIcon,
   TimerIcon,
+  WorkflowIcon,
 } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
+
+import { toLifecycleView } from '@/entities/application/lib/lifecycle';
 
 import { capitalizeFirstLetter } from '@/shared/libs/browser/string';
 import {
@@ -26,6 +29,7 @@ import DangerZone from '../../DangerZone';
 import { Row, Section } from '../OverviewTab/_Partials';
 
 import { EnvTable, Field, StepsList } from './_ConfigBlocks';
+import { LifecycleSummary } from './_LifecycleSummary';
 
 const FallbackLoading = () => (
   <div className="h-64 animate-pulse rounded-2xl border bg-card" />
@@ -85,6 +89,17 @@ export default guard(function SettingsTab() {
       applicationName: appName,
     });
   };
+  const lifecycleView = toLifecycleView(rawAppDefinition);
+  const editLifecycle = () => {
+    if (!rawAppDefinition) return;
+    emit('@applications::detail/application-lifecycle-edit', {
+      applicationId: appId,
+      applicationName: appName,
+      lifecycle: lifecycleView,
+      hasPort: Number(rawAppDefinition.run?.port ?? 0) > 0,
+    });
+  };
+
   const buildTimeout = rawAppDefinition?.build?.timeout;
   const description = rawAppDefinition?.run?.description;
 
@@ -248,6 +263,27 @@ export default guard(function SettingsTab() {
           </Section>
         )}
       </div>
+
+      {rawAppDefinition && (
+        <Section
+          icon={WorkflowIcon}
+          title={t('sections.lifecycle')}
+          description={t('sections.lifecycleHint')}
+          action={
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={editLifecycle}
+            >
+              <PencilIcon className="size-3.5" />
+              {t('editLifecycle')}
+            </Button>
+          }
+        >
+          <LifecycleSummary view={lifecycleView} />
+        </Section>
+      )}
 
       {!lifecycle && (
         <Section

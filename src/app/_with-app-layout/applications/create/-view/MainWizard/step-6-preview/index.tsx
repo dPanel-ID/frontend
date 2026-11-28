@@ -7,7 +7,9 @@ import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import { useFormStore } from '../../../-model/store/form';
 import { useServersStore } from '../../../-model/store/servers';
 import { Sectioned } from '../../../-presentation/Sectioned';
+import { usePreflight } from '../../../-usecase/preflight';
 import { useSubmitFlow } from '../../../-usecase/submit-flow';
+import PreflightPanel from '../../LaravelPreset/PreflightPanel';
 
 function SummaryRow(props: { label: string; value?: string | number | null }) {
   return (
@@ -42,6 +44,9 @@ export default function Step6Preview() {
     runtimeEnvText,
     updateTriggerBootstrap,
     setUpdateTriggerBootstrap,
+    lifecycle,
+    preflightOverride,
+    setPreflightOverride,
   ] = useFormStore((s) => [
     s.appName,
     s.appSourceGithubRepo,
@@ -56,7 +61,21 @@ export default function Step6Preview() {
     s.runtimeEnvText,
     s.updateTriggerBootstrap,
     s.setUpdateTriggerBootstrap,
+    s.lifecycle,
+    s.preflightOverride,
+    s.setPreflightOverride,
   ]);
+  const {
+    enabled: isPreflightEnabled,
+    preflight,
+    retry: retryPreflight,
+  } = usePreflight();
+  const releaseCommands = (lifecycle.release?.commands ?? []).filter(
+    (command) => command.trim(),
+  );
+  const enabledProcesses = lifecycle.offeredProcesses.filter((process) =>
+    lifecycle.enabledProcessNames.includes(process.name),
+  );
   const [serversStore, { knownServersById }] = useServersStore();
   const selectedServer =
     (hostedServerID ? knownServersById[hostedServerID] : undefined) ??
@@ -101,6 +120,40 @@ export default function Step6Preview() {
           />
           <SummaryRow label={t('runCommand')} value={appRunCommand} />
           <SummaryRow label={t('port')} value={appPort} />
+          {releaseCommands.length > 0 && (
+            <SummaryRow
+              label={t('release')}
+              value={
+                lifecycle.release?.enabled === false
+                  ? t('releaseOff')
+                  : releaseCommands.join(' && ')
+              }
+            />
+          )}
+          {lifecycle.postDeployCommands.some((command) => command.trim()) && (
+            <SummaryRow
+              label={t('postDeploy')}
+              value={lifecycle.postDeployCommands
+                .filter((command) => command.trim())
+                .join(' && ')}
+            />
+          )}
+          {lifecycle.healthCheck?.path.trim() && (
+            <SummaryRow
+              label={t('healthCheck')}
+              value={lifecycle.healthCheck.path}
+            />
+          )}
+          {lifecycle.offeredProcesses.length > 0 && (
+            <SummaryRow
+              label={t('processes')}
+              value={
+                enabledProcesses.length
+                  ? enabledProcesses.map((process) => process.name).join(', ')
+                  : t('processesNone')
+              }
+            />
+          )}
           <SummaryRow
             label={t('buildEnv')}
             value={buildEnvText ? t('configured') : t('notConfigured')}
@@ -125,6 +178,16 @@ export default function Step6Preview() {
             ))}
           </div>
         </div>
+
+        {isPreflightEnabled && (
+          <PreflightPanel
+            preflight={preflight}
+            override={preflightOverride}
+            onOverrideChange={setPreflightOverride}
+            onRetry={() => void retryPreflight()}
+            disabled={isSubmitting}
+          />
+        )}
 
         {flowMode === 'update' ? (
           <div className="flex items-start gap-3 rounded-lg border bg-background p-3">

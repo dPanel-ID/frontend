@@ -1106,7 +1106,9 @@
           "buildHint": "Cara kode Anda diubah menjadi sesuatu yang bisa dipasang",
           "runHint": "Cara aplikasi yang terpasang dijalankan dan dijaga tetap hidup",
           "deployment": "Deployment",
-          "deploymentHint": "Kapan aplikasi ini di-deploy dan berapa lama satu deployment boleh berjalan."
+          "deploymentHint": "Kapan aplikasi ini di-deploy dan berapa lama satu deployment boleh berjalan.",
+          "lifecycle": "Rilis dan proses",
+          "lifecycleHint": "Yang berjalan di sekitar setiap deployment: perintah sebelum dan sesudah restart, proses tambahan seperti queue worker, dan pemeriksaan kesehatan."
         },
         "labels": {
           "repository": "Repositori",
@@ -1127,7 +1129,19 @@
           "configuration": "Tidak ada konfigurasi"
         },
         "editDeployment": "Ubah",
-        "defaultTimeout": "Bawaan"
+        "defaultTimeout": "Bawaan",
+        "editLifecycle": "Ubah",
+        "lifecycle": {
+          "empty": "Tidak ada yang berjalan di sekitar deployment. Tambahkan perintah rilis (seperti migrasi database), worker, atau pemeriksaan kesehatan lewat Ubah.",
+          "release": "Perintah rilis",
+          "releaseOff": "Mati: disimpan tapi tidak dijalankan",
+          "postDeploy": "Setelah restart",
+          "processes": "Proses",
+          "healthCheck": "Pemeriksaan kesehatan",
+          "none": "Tidak ada",
+          "everyMinute": "Setiap menit",
+          "instances": "{count}×"
+        }
       },
       "tabs": {
         "ariaLabel": "Bagian aplikasi",
@@ -1207,7 +1221,8 @@
           "server": "Pilih server tempat pemasangan, lalu atur setiap dependensi yang Anda pilih.",
           "details": "Nama (hanya huruf, angka, dan spasi), bahasa (atau Docker untuk aplikasi yang hanya menjalankan container), perintah build, perintah jalan, dan port yang bebas semuanya diperlukan.",
           "env": "Perbaiki dulu baris environment variable yang ditandai merah.",
-          "preview": "Selesaikan langkah sebelumnya terlebih dahulu."
+          "preview": "Selesaikan langkah sebelumnya terlebih dahulu.",
+          "preflight": "Perbaiki masalah pemeriksaan awal di bawah, atau centang Tetap deploy. Pemeriksaan masih berjalan? Tunggu sebentar."
         }
       },
       "wizard": {
@@ -1446,11 +1461,110 @@
             "updateNote": "dPanel akan mengupdate definisi aplikasi dan mengirim input playbook terpilih untuk aplikasi ini.",
             "deploy": "Deploy",
             "update": "Update aplikasi",
-            "branch": "Branch"
+            "branch": "Branch",
+            "release": "Perintah rilis",
+            "releaseOff": "Mati",
+            "postDeploy": "Setelah restart",
+            "healthCheck": "Pemeriksaan kesehatan",
+            "processes": "Worker dan scheduler",
+            "processesNone": "Mati"
           }
         }
       },
-      "heroDuration": "Biasanya siap dalam 5–15 menit"
+      "heroDuration": "Biasanya siap dalam 5–15 menit",
+      "preset": {
+        "title": "Laravel terdeteksi",
+        "applied": "Pengaturan sudah diisi",
+        "desc": "dPanel membaca repositori ini dan mengisi pengaturan yang dibutuhkan aplikasi Laravel: runtime, build, rilis, perintah start, dan pemeriksaan kesehatan. Periksa sambil jalan; semuanya bisa Anda ubah.",
+        "facts": {
+          "laravel": "Laravel",
+          "php": "PHP yang dibutuhkan",
+          "server": "Server web",
+          "octane": "Octane di FrankenPHP",
+          "classic": "FrankenPHP",
+          "frontEnd": "Build front-end",
+          "health": "Pemeriksaan kesehatan",
+          "none": "Tidak ada",
+          "unknown": "Tidak ditemukan"
+        },
+        "hints": {
+          "app_key_managed": "APP_KEY: dPanel membuatnya saat aplikasi dibuat dan menyimpannya untuk Anda. Jangan buat yang baru: kunci baru membuat semua pengguna keluar dan data terenkripsi tidak bisa dibaca.",
+          "app_url_missing": "APP_URL belum diisi. Setelah aplikasi punya domain, tambahkan APP_URL=\"https://domain-anda\" ke variabel runtime agar tautan dan email memakainya.",
+          "frankenphp_required": "Aplikasi dilayani oleh FrankenPHP. Tambahkan modul FrankenPHP di langkah berikutnya; dPanel menyarankannya di sana."
+        },
+        "modules": {
+          "title": "Yang dibutuhkan aplikasi Laravel ini",
+          "desc": "Pakai salinan yang sudah ada di server ini, atau tambahkan dari katalog. Tidak ada yang ditambahkan sebelum Anda menekan tombol.",
+          "version": "{version}",
+          "anyVersion": "versi apa pun",
+          "roleLanguage": "Bahasa: tersedia saat build dan saat aplikasi berjalan",
+          "roleDependency": "Program yang menjalankan aplikasi",
+          "selected": "Dipilih",
+          "useInstalled": "Pakai {version} di server ini",
+          "useInstalledAria": "Pakai {module} {version} yang sudah ada di server ini",
+          "add": "Tambah",
+          "addAria": "Tambahkan {module} {version} ke server ini",
+          "noOption": "{module} {version} tidak tersedia untuk server ini. Pilih versi lain di katalog di bawah.",
+          "unavailable": "Tidak tersedia untuk server ini"
+        },
+        "lifecycle": {
+          "title": "Rilis dan proses",
+          "desc": "Yang dijalankan di sekitar build pada setiap deployment. Langkah umum Laravel sudah diisi.",
+          "releaseTitle": "Perintah rilis",
+          "releaseDesc": "Dijalankan sekali per deployment, setelah build dan sebelum restart, dengan variabel runtime (termasuk pengaturan database Anda). Jika satu gagal, versi yang sedang berjalan tetap melayani.",
+          "releaseEnabled": "Jalankan perintah rilis",
+          "releaseEmpty": "Tidak ada perintah rilis.",
+          "commandLabel": "Perintah {n}",
+          "removeCommand": "Hapus perintah {n}",
+          "addCommand": "Tambah perintah",
+          "postDeployTitle": "Setelah restart",
+          "postDeployDesc": "Dijalankan setelah versi baru aktif, misalnya agar queue worker memakai kode baru.",
+          "postDeployEmpty": "Tidak ada yang dijalankan setelah restart.",
+          "healthTitle": "Pemeriksaan kesehatan",
+          "healthDesc": "Setelah restart, dPanel membuka halaman ini di aplikasi dan menandai deployment gagal jika jawabannya bukan 200.",
+          "healthPath": "Halaman yang diperiksa",
+          "healthHint": "Laravel 11 ke atas menjawab di /up. Kosongkan untuk melewati pemeriksaan.",
+          "processesTitle": "Worker dan scheduler",
+          "processesDesc": "Proses tambahan yang menjalankan kode Anda di samping website. Keduanya mati: masing-masing memakai memori, jadi nyalakan saat aplikasi Anda membutuhkannya.",
+          "process": {
+            "worker": {
+              "title": "Queue worker",
+              "desc": "Menjalankan job di antrean, seperti email dan notifikasi. Nyalakan jika aplikasi Anda memakai antrean: dengan antrean database bawaan Laravel (QUEUE_CONNECTION bukan sync), job tidak akan berjalan tanpanya."
+            },
+            "scheduler": {
+              "title": "Scheduler",
+              "desc": "Menjalankan php artisan schedule:run setiap menit, untuk tugas terjadwal aplikasi Anda. Nyalakan jika aplikasi Anda menjadwalkan tugas."
+            },
+            "other": "Berjalan di samping website dengan kode dan variabel yang sama."
+          }
+        },
+        "preflight": {
+          "title": "Pemeriksaan awal",
+          "desc": "Sebelum deploy, dPanel membandingkan yang diminta repositori (versi dan ekstensi PHP, versi Node.js) dengan pilihan Anda.",
+          "running": "Memeriksa",
+          "runningDesc": "Membaca kebutuhan repositori…",
+          "unavailable": "Belum diperiksa",
+          "failedDesc": "Pemeriksaan tidak bisa dijalankan. Anda tetap bisa deploy; dPanel memeriksa lagi sebelum build.",
+          "retry": "Periksa lagi",
+          "errorCount": "{count} perlu diperbaiki",
+          "warningCount": "{count} perlu dilihat",
+          "ok": "Semua aman",
+          "levelError": "Wajib diperbaiki",
+          "levelWarning": "Periksa",
+          "overrideTitle": "Tetap deploy",
+          "overrideDesc": "Build kemungkinan besar gagal karena masalah di atas. Centang hanya jika Anda yakin server punya yang diminta repositori.",
+          "checks": {
+            "php_version_unsupported": "{package} membutuhkan PHP {required}, tetapi yang dipilih PHP {selected}. Pilih versi PHP yang sesuai di langkah 2.",
+            "php_extension_missing": "{package} membutuhkan ekstensi PHP {extension}, yang tidak ada di PHP dPanel. Tambahkan dengan modul PHP Extensions di server ini.",
+            "php_runtime_missing": "Aplikasi Laravel membutuhkan PHP, tetapi PHP bukan bahasa yang dipilih.",
+            "node_runtime_missing": "Build menjalankan npm, pnpm, atau yarn, tetapi Node.js belum dipilih. Tambahkan Node.js di langkah 2.",
+            "node_version_mismatch": "package.json meminta Node.js {required}, tetapi yang dipilih Node.js {selected}.",
+            "frankenphp_module_missing": "Perintah start memakai FrankenPHP, tetapi modul FrankenPHP belum dipilih. Tambahkan di langkah 2.",
+            "composer_lock_missing": "Repositori tidak punya composer.lock, jadi setiap build bisa memasang versi paket yang berbeda.",
+            "repository_unreadable": "dPanel tidak bisa membaca kebutuhan repositori, jadi tidak diperiksa."
+          }
+        }
+      }
     },
     "applicationsUpdate": {
       "headerTitle": "Update Aplikasi",
@@ -5061,6 +5175,67 @@
         "hide": "Sembunyikan nilai",
         "revealing": "Menampilkan…",
         "revealFailed": "Nilai tidak dapat ditampilkan"
+      }
+    },
+    "applicationLifecycleEdit": {
+      "title": "Rilis dan proses",
+      "intro": "Semua ini berjalan dengan variabel runtime aplikasi di setiap deployment. Perubahan berlaku mulai deployment berikutnya.",
+      "saved": "Rilis dan proses {name} disimpan. Berlaku mulai deployment berikutnya.",
+      "saveFailed": "Rilis dan proses tidak bisa disimpan",
+      "commandLabel": "Perintah {n}",
+      "removeCommand": "Hapus perintah {n}",
+      "addCommand": "Tambah perintah",
+      "timeout": "Batas waktu per perintah",
+      "commandTimeoutHint": "Misalnya 15m; dari 10s sampai 2h. Kosong berarti 15m.",
+      "release": {
+        "title": "Perintah rilis",
+        "desc": "Dijalankan setelah build dan sebelum restart, misalnya php artisan migrate --force. Jika satu gagal, versi yang berjalan tetap melayani.",
+        "enabled": "Jalankan perintah rilis",
+        "empty": "Tidak ada perintah rilis."
+      },
+      "postDeploy": {
+        "title": "Setelah restart",
+        "desc": "Dijalankan setelah versi baru aktif dan sehat, misalnya php artisan reload.",
+        "empty": "Tidak ada yang dijalankan setelah restart."
+      },
+      "processes": {
+        "title": "Proses",
+        "desc": "Proses tambahan di samping website, dengan kode dan variabel yang sama. Service berjalan terus; schedule menjalankan perintahnya setiap menit.",
+        "empty": "Tidak ada proses tambahan.",
+        "name": "Nama",
+        "type": "Jenis",
+        "service": "Service (selalu berjalan)",
+        "schedule": "Schedule (setiap menit)",
+        "command": "Perintah",
+        "instances": "Salinan",
+        "add": "Tambah proses",
+        "remove": "Hapus proses {name}"
+      },
+      "health": {
+        "title": "Pemeriksaan kesehatan",
+        "desc": "Setelah restart, dPanel membuka halaman ini dari server itu sendiri; jawaban lain membuat deployment gagal.",
+        "enabled": "Periksa aplikasi setelah restart",
+        "path": "Halaman",
+        "status": "Status yang diharapkan",
+        "timeout": "Batas waktu per percobaan",
+        "retries": "Percobaan (jeda 3 detik)",
+        "off": "Tidak ada pemeriksaan kesehatan."
+      },
+      "errors": {
+        "commandTooLong": "Perintah paling banyak 4096 karakter.",
+        "tooManyCommands": "Paling banyak 20 perintah.",
+        "badCommandTimeout": "Gunakan durasi seperti 15m, dari 10s sampai 2h.",
+        "badProcessName": "Huruf kecil, angka, dan tanda hubung, diawali huruf, paling banyak 32.",
+        "reservedProcessName": "web adalah website itu sendiri; pilih nama lain.",
+        "processCommandRequired": "Isi perintah yang dijalankan proses ini.",
+        "badInstances": "Dari 1 sampai 8 salinan.",
+        "tooManyProcesses": "Paling banyak 10 proses.",
+        "duplicateProcessName": "Setiap proses perlu nama sendiri.",
+        "badHealthPath": "Diawali / tanpa spasi, paling banyak 512 karakter.",
+        "badStatus": "Status dari 100 sampai 599.",
+        "badHealthTimeout": "Gunakan durasi seperti 5s, dari 1s sampai 1m.",
+        "badRetries": "Dari 1 sampai 60 percobaan.",
+        "healthNeedsPort": "Pemeriksaan kesehatan membutuhkan port aplikasi, dan aplikasi ini tidak punya."
       }
     }
   },

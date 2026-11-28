@@ -1,5 +1,11 @@
 import type { DTOs } from '@/shared/api';
 
+import type {
+  LifecycleDraft,
+  PreflightState,
+  PresetInfo,
+} from '../../-lib/laravel-preset';
+
 export interface FormStore {
   flowMode: FlowMode;
   updateApplicationId: string | null;
@@ -46,6 +52,16 @@ export interface FormStore {
   dependencyConfigs: Record<string, DependencyConfig>;
   selectedRequiredBinaryIds: string[];
   requiredBinaryConfigs: Record<string, RequiredBinaryConfig>;
+
+  /** Framework dPanel recognised in the repository, such as laravel. */
+  appFramework: string;
+  /** The preset applied for the chosen repository and branch. */
+  laravelPreset: PresetInfo | null;
+  /** Release, post-deploy, processes and health check. */
+  lifecycle: LifecycleDraft;
+  preflight: PreflightState;
+  /** The user chose to deploy despite a blocking pre-flight result. */
+  preflightOverride: boolean;
 }
 
 export interface FormActions {
@@ -86,6 +102,16 @@ export interface FormActions {
   ) => void;
 
   setDynamicConfig: (dynamicConfig: FormStore['dynamicConfig']) => void;
+
+  /**
+   * Applies a preset for repository@branch `key`, keeping runtime
+   * variables the user typed. False when the response has no preset.
+   */
+  applyPreset: (preset: DTOs.ApplicationPresetV1, key: string) => boolean;
+  clearPreset: () => void;
+  setLifecycle: (lifecycle: Partial<LifecycleDraft>) => void;
+  setPreflight: (preflight: PreflightState) => void;
+  setPreflightOverride: (preflightOverride: boolean) => void;
 }
 
 export type AppSourceMode = 'bundle' | 'github';
@@ -131,6 +157,8 @@ export type FormInitialState = Partial<
     | 'dependencyConfigs'
     | 'selectedRequiredBinaryIds'
     | 'requiredBinaryConfigs'
+    | 'appFramework'
+    | 'lifecycle'
   >
 >;
 

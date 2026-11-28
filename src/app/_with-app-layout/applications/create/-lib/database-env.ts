@@ -112,12 +112,17 @@ export function suggestDatabaseName(appName: string): string {
 
 /**
  * The variable names an application most likely reads: WordPress's own,
- * Laravel's DB_*, or one DATABASE_URL for anything else.
+ * Laravel's DB_*, or one DATABASE_URL for anything else. They always go
+ * into the runtime variables: release commands such as migrations run
+ * with those, so the build needs none of them.
  */
 export function guessDatabaseEnvStyle(
   runtimeEnvText: string,
   repository?: string | null,
+  framework?: string | null,
 ): DatabaseEnvStyle {
+  // A repository dPanel recognised as Laravel reads DB_*.
+  if ((framework ?? '').toLowerCase() === 'laravel') return 'laravel';
   const repo = (repository ?? '').toLowerCase();
   if (/^\s*WORDPRESS_/m.test(runtimeEnvText) || repo.includes('wordpress')) {
     return 'wordpress';

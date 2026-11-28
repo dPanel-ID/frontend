@@ -26,6 +26,8 @@ import type {
 } from '../../../-model/store/form.types';
 import { Sectioned } from '../../../-presentation/Sectioned';
 import { isValidApplicationName } from '../../../../-rules/application-name';
+import LifecycleSection from '../../LaravelPreset/LifecycleSection';
+import PresetPanel from '../../LaravelPreset/PresetPanel';
 import { CommandSettingsSection, useCommandPortState } from '../step-4-deploy';
 
 interface LanguageDependencyItem {
@@ -551,6 +553,7 @@ export default function Step3Config() {
 
   return (
     <div className="flex flex-col gap-4">
+      <PresetPanel compact />
       <Sectioned
         sectionIcon={PencilLineIcon}
         sectionTitle={t('title')}
@@ -582,6 +585,7 @@ export default function Step3Config() {
       </Sectioned>
 
       <CommandSettingsSection portState={portState} />
+      <LifecycleSection />
     </div>
   );
 }
