@@ -112,14 +112,31 @@ export interface RedisEnvOptions {
   server: Pick<RedisServerInfo, 'host' | 'port'>;
   /** Only written when not empty. */
   password: string;
+  /**
+   * Whether the application is identified as Laravel. Laravel gets its own
+   * REDIS_PREFIX and driver variables; any other application gets the
+   * connection only, as REDIS_HOST, REDIS_PORT and one REDIS_URL.
+   */
+  laravel: boolean;
+  /** Laravel only. */
   prefix: string;
+  /** Laravel only. */
   drivers: RedisDriver[];
 }
 
+/** redis://[:password@]host:port, the form most Redis clients read. */
+export function redisURL(
+  server: Pick<RedisServerInfo, 'host' | 'port'>,
+  password: string,
+): string {
+  const auth = password ? `:${encodeURIComponent(password)}@` : '';
+  return `redis://${auth}${server.host}:${server.port}`;
+}
+
 /**
- * The runtime variables that connect a Laravel app to Redis, and switch
- * the chosen drivers to it. A password is written only when there is one;
- * like every variable it is masked once saved.
+ * The runtime variables that connect an app to Redis and, for Laravel,
+ * switch the chosen drivers to it. A password is written only when there
+ * is one; like every variable it is masked once saved.
  */
 export function redisEnvEntries(
   options: RedisEnvOptions,
@@ -129,6 +146,10 @@ export function redisEnvEntries(
     ['REDIS_PORT', String(options.server.port)],
   ];
   if (options.password) entries.push(['REDIS_PASSWORD', options.password]);
+  if (!options.laravel) {
+    entries.push(['REDIS_URL', redisURL(options.server, options.password)]);
+    return entries;
+  }
   entries.push(['REDIS_PREFIX', options.prefix.trim()]);
   for (const driver of REDIS_DRIVERS) {
     if (options.drivers.includes(driver)) {

@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 
 import { useAuthLoggedIn } from '@/services/auth';
-import { useDialog } from '@/services/dialog';
+import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
 import { parseEnvText as parseEnvVariables } from '@/entities/application/lib/env-text';
@@ -11,6 +11,7 @@ import { useDeployPreflightGuard } from '@/entities/deploy-preflight';
 import { ApiBundle } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
+import { createdApplicationRoute } from '../../-lib/created-app-route';
 import { lifecycleDefinition } from '../../-lib/laravel-preset';
 import { containerRuntime } from '../container-runtime';
 import { useFormStore } from '../store/form';
@@ -110,7 +111,7 @@ export default function useHandleDeploy() {
   const formValues = useFormStore((s) => s);
 
   const [openToaster] = useToaster();
-  const [openDialog] = useDialog();
+  const t = useDevetekTranslations('page.applicationsCreate.created');
   const guardPreflight = useDeployPreflightGuard();
 
   const compileConfig = (
@@ -281,20 +282,14 @@ export default function useHandleDeploy() {
       return false;
     }
 
-    openDialog({
-      title: 'Successfully created your app!',
-      content: 'Now sit back and relax while we prepare your app.',
-      variant: 'info',
-      actions: {
-        variant: 'Ok',
-        ok: () => {
-          navigate({
-            to: '/applications',
-            replace: true,
-          });
-        },
-      },
+    // Straight to the new application's page, where its first deployment
+    // shows; the list is the fallback when the response has no ID.
+    openToaster({
+      variant: 'success',
+      title: t('title'),
+      message: t('desc'),
     });
+    navigate(createdApplicationRoute(response.id));
 
     return true;
   };

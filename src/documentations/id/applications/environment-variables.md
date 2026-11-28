@@ -44,21 +44,42 @@ Anda juga bisa meminta **Ask dPanel** mengerjakannya untuk Anda; lihat [Kumpulan
 **Restart** pada sebuah rilis menjalankan ulang layanan dengan nilai yang sudah ada di server. Hanya rilis (**Bangun dan rilis**, **Rilis ulang**, atau rollback) yang menulis nilai baru ke server.
 :::
 
+## Membuat database untuk aplikasi ini
+
+Jika MariaDB, PostgreSQL, atau MongoDB sudah terpasang di server aplikasi (halaman server, tab **Modul**), langkah **Environment** menampilkan **Database untuk aplikasi ini**. dPanel membuat database beserta penggunanya dengan kata sandi yang kuat dan menulis pengaturan koneksinya ke variabel runtime, jadi Anda tidak perlu mengetik atau menempelkan kata sandinya.
+
+1. Tekan **Buat database**.
+2. Jika ada lebih dari satu server database, pilih di **Server database**.
+3. Di **Nama variabel**, pilih cara aplikasi membaca pengaturannya. dPanel memilih nama yang biasa dipakai framework aplikasi: **Laravel (DB\_\*)** untuk Laravel, **WordPress (WORDPRESS_DB\_\*)** untuk WordPress, dan **Satu DATABASE_URL** untuk yang lain.
+4. Biarkan nama database dan pengguna yang disarankan dPanel dari nama aplikasi, atau ketik sendiri.
+5. Untuk MongoDB, ketik **Kata sandi administrator MongoDB** yang Anda pilih saat memasangnya. MongoDB memerlukannya untuk membuat pengguna; kata sandi ini dikirim sekali bersama permintaan ini dan tidak disimpan dPanel.
+6. Tekan **Buat database**, lalu **Ya**.
+
+| Nama variabel     | Yang ditulis dPanel                                                                                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Satu DATABASE_URL | `DATABASE_URL`, misalnya `postgresql://user:password@127.0.0.1:5432/name`                                                                                                |
+| Laravel (DB\_\*)  | `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`; untuk MongoDB `DB_CONNECTION=mongodb`, `DB_URI`, `DB_DATABASE`, dan `MONGODB_URI`    |
+| WordPress         | `WORDPRESS_DB_HOST`, `WORDPRESS_DB_NAME`, `WORDPRESS_DB_USER`, `WORDPRESS_DB_PASSWORD` (hanya MariaDB)                                                                   |
+| Prefix sendiri    | Dengan prefix `ANALYTICS`: `ANALYTICS_DATABASE_URL`, `ANALYTICS_DB_HOST`, `ANALYTICS_DB_PORT`, `ANALYTICS_DB_DATABASE`, `ANALYTICS_DB_USERNAME`, `ANALYTICS_DB_PASSWORD` |
+
+:::tip[Lebih dari satu database]
+Satu aplikasi bisa memakai beberapa database, bahkan di server database yang berbeda. Beri setiap database setelah yang pertama **Prefix sendiri**, supaya pengaturannya tidak pernah menimpa milik database lain. Jika variabel yang akan ditulis sebuah database sudah ada, dPanel menyebutkannya dan bertanya dulu sebelum menggantinya.
+:::
+
 ## Menghubungkan Redis
 
-**Redis** adalah penyimpanan cepat yang bisa dipakai aplikasi untuk cache, antrean job, dan sesi. Jika Redis sudah terpasang di server aplikasi (halaman server, tab **Modul**), langkah **Environment** menampilkan **Redis untuk aplikasi ini**.
+**Redis** adalah penyimpanan cepat yang bisa dipakai aplikasi, misalnya untuk cache, antrean job, atau sesi. Jika Redis sudah terpasang di server aplikasi (halaman server, tab **Modul**), **Redis untuk aplikasi ini** muncul di langkah **Environment** dan di **Pengaturan**, **Jalan**, **Variabel lingkungan**.
 
 1. Tekan **Hubungkan Redis**.
-2. Biarkan **Prefix kunci** yang disarankan dPanel dari nama aplikasi, misalnya `my_blog_`. Prefix ini memisahkan kunci aplikasi ini dari aplikasi lain yang memakai Redis yang sama.
-3. Jika dPanel meminta **Password Redis**, ketik password yang Anda pilih saat memasang Redis. dPanel tidak menyimpannya, jadi tidak bisa mengisinya untuk Anda. Redis yang hanya mendengarkan di server itu sendiri biasanya tidak memakai password.
-4. Di **Gunakan Redis untuk**, biarkan tercentang cache, antrean job, dan sesi yang ingin Anda pindahkan ke Redis.
-5. Tekan **Isi variabel**.
+2. Jika dPanel meminta **Password Redis**, ketik password yang Anda pilih saat memasang Redis. dPanel tidak menyimpannya, jadi tidak bisa mengisinya untuk Anda. Redis yang hanya mendengarkan di server itu sendiri biasanya tidak memakai password.
+3. Untuk aplikasi Laravel, biarkan **Prefix kunci** yang disarankan dPanel dari nama aplikasi, misalnya `my_blog_`, yang memisahkan kunci aplikasi ini dari aplikasi lain yang memakai Redis yang sama. Di **Gunakan Redis untuk**, biarkan tercentang cache, antrean job, dan sesi yang ingin Anda pindahkan ke Redis.
+4. Tekan **Isi variabel**. Di **Pengaturan**, lalu tekan **Simpan** dan deploy.
 
-dPanel menulis `REDIS_HOST` (`127.0.0.1`, server itu sendiri), `REDIS_PORT`, `REDIS_PREFIX`, `REDIS_PASSWORD` jika ada, serta `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis`, dan `SESSION_DRIVER=redis` untuk kotak yang tercentang. Jika antrean job memakai Redis, nyalakan juga **Queue worker**.
+dPanel menulis `REDIS_HOST` (`127.0.0.1`, server itu sendiri), `REDIS_PORT`, dan `REDIS_PASSWORD` jika ada. Aplikasi Laravel juga mendapat `REDIS_PREFIX`, serta `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis`, dan `SESSION_DRIVER=redis` untuk kotak yang tercentang; jika antrean job memakai Redis, nyalakan juga **Queue worker**. Aplikasi lain mendapat `REDIS_URL`, misalnya `redis://127.0.0.1:6379`, yang dibaca sebagian besar klien Redis.
 
 ## Memakai object storage untuk unggahan
 
-Secara bawaan, file yang diunggah pengguna aplikasi tetap di server. Untuk menyimpannya di bucket yang kompatibel dengan S3 (Amazon S3 atau penyedia lain), gunakan **Object storage untuk unggahan**, di langkah **Environment** dan di **Pengaturan**, **Jalan**, **Variabel lingkungan**.
+Secara bawaan, file yang diunggah pengguna aplikasi tetap di server. Untuk menyimpan unggahan aplikasi Laravel di bucket yang kompatibel dengan S3 (Amazon S3 atau penyedia lain), gunakan **Object storage untuk unggahan**, di langkah **Environment** dan di **Pengaturan**, **Jalan**, **Variabel lingkungan**. Bagian ini muncul untuk aplikasi yang dikenali dPanel sebagai Laravel.
 
 1. Tekan **Gunakan object storage**.
 2. Isi **Access key ID**, **Secret access key**, **Bucket**, dan **Region**. Kosongkan **Endpoint** untuk Amazon S3; untuk penyedia lain, ketik alamat S3-nya dan biasanya centang **Gunakan alamat path-style**.

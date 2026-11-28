@@ -92,6 +92,10 @@ export interface ApplicationRunEditPayload {
   rawAppDefinition: AppDefinition;
   command: string;
   envs: UnitEnvironmentKV[];
+  /** The server the application runs on, for the Redis helper. */
+  serverId?: string;
+  /** The application's framework, saved or detected ("laravel"). */
+  framework?: string;
 }
 
 export interface ApplicationSetupEditPayload {

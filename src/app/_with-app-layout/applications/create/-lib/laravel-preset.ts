@@ -1,4 +1,7 @@
-import { parseEnvText } from '@/entities/application/lib/env-text';
+import {
+  parseEnvText,
+  upsertEnvText,
+} from '@/entities/application/lib/env-text';
 import {
   keepReleasesOf,
   normalizeSharedPath,
@@ -8,7 +11,6 @@ import type { ReleaseFoldersView } from '@/entities/application/lib/release-fold
 
 import type { DTOs } from '@/shared/api';
 
-import { upsertEnvText } from './database-env';
 import { runtimeKey } from './primary-runtime';
 
 /** Release step of the definition, as the wizard edits it. */

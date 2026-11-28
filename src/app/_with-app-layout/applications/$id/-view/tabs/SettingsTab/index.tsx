@@ -13,6 +13,7 @@ import {
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { knownFramework } from '@/entities/application/lib/app-framework';
 import { toLifecycleView } from '@/entities/application/lib/lifecycle';
 import { toReleaseFoldersView } from '@/entities/application/lib/release-folders';
 
@@ -55,10 +56,13 @@ export default guard(function SettingsTab() {
     s.identity.name,
     s.configDefs,
   ]);
-  const [gitDetail, rawAppDefinition] = useAppDataModel((s) => [
-    s.gitDetail,
-    s.rawAppDefinition,
-  ]);
+  const [gitDetail, rawAppDefinition, rawFramework, selectedServerId] =
+    useAppDataModel((s) => [
+      s.gitDetail,
+      s.rawAppDefinition,
+      s.rawFramework,
+      s.selectedServerId,
+    ]);
 
   const lifecycle = configDefs.lifecycle;
 
@@ -81,6 +85,11 @@ export default guard(function SettingsTab() {
       rawAppDefinition,
       command: lifecycle.run.command,
       envs: lifecycle.run.envs,
+      serverId: selectedServerId,
+      framework: knownFramework(
+        rawFramework,
+        gitDetail.$status === 'success' ? gitDetail.repo_framework : '',
+      ),
     });
   };
 

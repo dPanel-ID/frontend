@@ -11,5 +11,12 @@ export interface ApplicationRunEditSidepanelProps {
     key: string;
     value?: string;
   }>;
+  /** The server the application runs on; the Redis helper needs it. */
+  serverId?: string;
+  /**
+   * The application's framework. Laravel's own helpers (object storage,
+   * Redis drivers) show only for "laravel".
+   */
+  framework?: string;
   onSuccess?: () => void;
 }

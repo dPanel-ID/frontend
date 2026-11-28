@@ -21,6 +21,8 @@ export default function useApplicationRunEditUsecase(params: Params) {
       rawAppDefinition: payload.rawAppDefinition,
       command: payload.command,
       envs: payload.envs,
+      serverId: payload.serverId,
+      framework: payload.framework,
     });
   });
 

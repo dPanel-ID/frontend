@@ -3,6 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useAuthLoggedIn } from '@/services/auth';
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { knownFramework } from '@/entities/application/lib/app-framework';
 import { envVariablesToText } from '@/entities/application/lib/env-text';
 import { resolveServerModuleLogo } from '@/entities/server-modules/config/registry';
 import { titleizeModuleValue } from '@/entities/server-modules/lib/catalog';
@@ -197,6 +198,9 @@ function buildInitialFormState(
         .filter((command) => command.trim()) ?? [],
     buildEnvText: envTextFromDefinition(rawBuild?.environment),
     appDomain: application.domain || '',
+    // Framework-specific helpers (Laravel's storage and Redis drivers) read
+    // it; the update flow never runs the preset or its checks.
+    appFramework: knownFramework(application.framework),
     appName: application.name || '',
     appPort: originalPort,
     appRunCommand: rawRun?.command || '',
@@ -267,10 +271,18 @@ function buildInitialServers(
       const id = Number(machine?.id ?? deploy.machine_id);
       if (!id) return acc;
 
+      // A server reached through its agent shows that, not SSH.
+      const isPrivate = machine?.connectivity === 'private';
+      const registeredAddress = machine?.address?.trim();
       acc.push({
         id,
         hostname: machine?.hostname || `Server ${id}`,
-        publicIP: machine?.address || machine?.domain || '-',
+        publicIP:
+          registeredAddress ||
+          (isPrivate ? machine.lan_address : machine?.domain) ||
+          '-',
+        private: isPrivate,
+        hasPublicAddress: isPrivate && !!registeredAddress,
         agentVersion: machine?.agent_version,
         defaultUser: machine?.default_user,
         domain: machine?.domain,

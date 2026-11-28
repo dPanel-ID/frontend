@@ -1453,9 +1453,10 @@
               "engine": "Server database",
               "style": "Nama variabel",
               "styles": {
-                "wordpress": "WordPress (WORDPRESS_DB_*)",
+                "url": "Satu DATABASE_URL",
                 "laravel": "Laravel (DB_*)",
-                "url": "Satu DATABASE_URL"
+                "wordpress": "WordPress (WORDPRESS_DB_*)",
+                "prefix": "Prefix sendiri (PREFIX_DATABASE_URL, PREFIX_DB_*)"
               },
               "name": "Nama database",
               "user": "Pengguna database",
@@ -1465,41 +1466,24 @@
               "creating": "Membuat…",
               "confirmTitle": "Buat database ini?",
               "confirmBody": "dPanel membuat database {name} dan pengguna {user} di {engine} server ini, lalu mengisi variabel runtime dengan pengaturannya.",
-              "badName": "Gunakan huruf, angka, dan garis bawah untuk nama database (PostgreSQL: huruf kecil, diawali huruf).",
+              "badName": "Gunakan huruf, angka, dan garis bawah untuk nama database (PostgreSQL: huruf kecil, diawali huruf; MongoDB: paling banyak 63 karakter).",
               "badUser": "Gunakan huruf, angka, dan garis bawah untuk pengguna, paling banyak 32 karakter (PostgreSQL: huruf kecil, diawali huruf).",
               "nameTaken": "Database bernama {name} sudah ada di server ini. Pilih nama lain.",
               "notReady": "Opsi database masih dimuat. Coba lagi sebentar lagi.",
               "failed": "Database tidak dapat dibuat",
               "queued": "Membuat database {name} di server.",
               "created": "Database {name} sedang dibuat di server. Pengaturannya ada di {keys} di bawah, termasuk kata sandinya.",
-              "noDatabaseServer": "Butuh database? Pasang MariaDB atau PostgreSQL di server ini dulu (halaman server, tab Modules). Setelah itu dPanel bisa membuatnya di sini dan mengisikan kata sandinya untuk Anda."
-            },
-            "redis": {
-              "title": "Redis untuk aplikasi ini",
-              "desc": "Hubungkan aplikasi ke Redis di server ini untuk cache, antrean, dan sesi yang lebih cepat.",
-              "open": "Hubungkan Redis",
-              "openAgain": "Ubah pengaturan Redis",
-              "applied": "Redis diatur di {keys} di bawah.",
-              "target": "Aplikasi terhubung ke Redis di {host}, port {port}.",
-              "prefix": "Prefix kunci",
-              "prefixHint": "Memisahkan kunci aplikasi ini dari aplikasi lain yang memakai Redis yang sama.",
-              "password": "Password Redis",
-              "passwordOptional": "Password Redis (jika Anda mengaturnya)",
-              "passwordHint": "Redis ini meminta password. Ketik password yang Anda pilih saat memasangnya: dPanel tidak menyimpannya.",
-              "passwordOptionalHint": "dPanel tidak bisa mengetahui apakah Redis ini memakai password. Jika Anda mengaturnya saat memasang, ketik di sini; jika tidak, biarkan kosong.",
-              "reveal": "Tampilkan password",
-              "hide": "Sembunyikan password",
-              "driversTitle": "Gunakan Redis untuk",
-              "drivers": {
-                "cache": "Cache (CACHE_STORE=redis)",
-                "queue": "Antrean job (QUEUE_CONNECTION=redis)",
-                "session": "Sesi (SESSION_DRIVER=redis)"
-              },
-              "badPrefix": "Gunakan huruf, angka, garis bawah, titik dua, titik, atau tanda hubung untuk prefix.",
-              "passwordRequired": "Ketik password Redis.",
-              "cancel": "Batal",
-              "apply": "Isi variabel",
-              "noRedis": "Butuh cache atau antrean? Pasang Redis di server ini dulu (halaman server, tab Modul). Setelah itu dPanel bisa menghubungkan aplikasi ini ke Redis di sini."
+              "noDatabaseServer": "Butuh database? Pasang MariaDB, PostgreSQL, atau MongoDB di server ini dulu (halaman server, tab Modules). Setelah itu dPanel bisa membuatnya di sini dan mengisikan kata sandinya untuk Anda.",
+              "prefix": "Prefix",
+              "prefixHint": "Misalnya ANALYTICS: pengaturannya masuk ke ANALYTICS_DATABASE_URL dan ANALYTICS_DB_*, jadi database ini tidak pernah menimpa variabel database lain.",
+              "badPrefix": "Awali prefix dengan huruf dan gunakan huruf kapital, angka, serta satu garis bawah di antaranya, paling banyak 32 karakter.",
+              "adminPassword": "Kata sandi administrator MongoDB",
+              "adminPasswordHint": "MongoDB meminta kata sandi administrator yang Anda pilih saat memasangnya sebelum membuat pengguna. Kata sandi ini dikirim sekali bersama permintaan ini; dPanel tidak menyimpannya.",
+              "adminPasswordRequired": "Ketik kata sandi administrator MongoDB.",
+              "reveal": "Tampilkan kata sandi",
+              "hide": "Sembunyikan kata sandi",
+              "replaceTitle": "Ganti variabel ini?",
+              "replaceBody": "Variabel ini sudah ada dan akan diganti: {keys}. Untuk mempertahankan database yang sudah Anda hubungkan sebelumnya, pilih prefix sendiri."
             }
           }
         },
@@ -1593,7 +1577,7 @@
           "healthPath": "Halaman yang diperiksa",
           "healthHint": "Laravel 11 ke atas menjawab di /up. Kosongkan untuk melewati pemeriksaan.",
           "processesTitle": "Worker dan scheduler",
-          "processesDesc": "Proses tambahan yang menjalankan kode Anda di samping website. Keduanya mati: masing-masing memakai memori, jadi nyalakan saat aplikasi Anda membutuhkannya.",
+          "processesDesc": "Proses tambahan yang menjalankan kode Anda di samping website. Masing-masing memakai memori, jadi nyalakan hanya yang dibutuhkan aplikasi Anda.",
           "process": {
             "worker": {
               "title": "Queue worker",
@@ -1627,6 +1611,10 @@
           "overrideTitle": "Tetap deploy",
           "overrideDesc": "Build kemungkinan besar gagal karena masalah di atas. Centang hanya jika Anda yakin server punya yang diminta repositori."
         }
+      },
+      "created": {
+        "title": "Aplikasi Anda sudah dibuat",
+        "desc": "dPanel sedang menyiapkannya. Ikuti deployment pertamanya di halaman ini."
       }
     },
     "applicationsUpdate": {
@@ -4760,6 +4748,33 @@
           "badBucket": "Gunakan 3-63 huruf kecil, angka, titik, atau tanda hubung.",
           "badEndpoint": "Gunakan alamat yang diawali https:// atau http://."
         }
+      },
+      "redis": {
+        "title": "Redis untuk aplikasi ini",
+        "desc": "Hubungkan aplikasi ke Redis di server ini, misalnya untuk cache, antrean, atau sesi.",
+        "open": "Hubungkan Redis",
+        "openAgain": "Ubah pengaturan Redis",
+        "applied": "Redis diatur di {keys}.",
+        "target": "Aplikasi terhubung ke Redis di {host}, port {port}.",
+        "prefix": "Prefix kunci",
+        "prefixHint": "Memisahkan kunci aplikasi ini dari aplikasi lain yang memakai Redis yang sama.",
+        "password": "Password Redis",
+        "passwordOptional": "Password Redis (jika Anda mengaturnya)",
+        "passwordHint": "Redis ini meminta password. Ketik password yang Anda pilih saat memasangnya: dPanel tidak menyimpannya.",
+        "passwordOptionalHint": "dPanel tidak bisa mengetahui apakah Redis ini memakai password. Jika Anda mengaturnya saat memasang, ketik di sini; jika tidak, biarkan kosong.",
+        "reveal": "Tampilkan password",
+        "hide": "Sembunyikan password",
+        "driversTitle": "Gunakan Redis untuk",
+        "drivers": {
+          "cache": "Cache (CACHE_STORE=redis)",
+          "queue": "Antrean job (QUEUE_CONNECTION=redis)",
+          "session": "Sesi (SESSION_DRIVER=redis)"
+        },
+        "badPrefix": "Gunakan huruf, angka, garis bawah, titik dua, titik, atau tanda hubung untuk prefix.",
+        "passwordRequired": "Ketik password Redis.",
+        "cancel": "Batal",
+        "apply": "Isi variabel",
+        "noRedis": "Butuh cache atau antrean? Pasang Redis di server ini dulu (halaman server, tab Modul). Setelah itu dPanel bisa menghubungkan aplikasi ini ke Redis di sini."
       }
     }
   },
@@ -4990,7 +5005,8 @@
         "onError": "Gagal memuat target deployment, mohon <a>coba lagi.</a>",
         "pagination": "Halaman {page} dari {totalPage}",
         "sshPort": "SSH {port}",
-        "unknown": "unknown"
+        "unknown": "unknown",
+        "throughAgent": "Melalui agent"
       },
       "toaster": {
         "missingWorker": "Pilih target deployment sebelum membuat artefak.",

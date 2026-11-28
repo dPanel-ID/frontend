@@ -86,6 +86,13 @@ export const [AppDataModelProvider, useAppDataModel] = buildSelector(
           ''
         : '',
 
+    // The framework saved with the application; framework-specific
+    // helpers also accept the one detected in its repository.
+    rawFramework:
+      appDetailResponse.$status === 'success'
+        ? (appDetailResponse.framework ?? '')
+        : '',
+
     applicationId,
     selectedServerId: latestServerId,
   };

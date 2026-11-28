@@ -71,7 +71,7 @@ Check the summary: application, repository, branch, server, commands, port, and 
 
 ## What happens next
 
-A dialog confirms **Successfully created your app!** Press **OK** to go back to the list. dPanel then:
+dPanel confirms **Your app is created** and opens the new application's page. dPanel then:
 
 1. Creates a playbook for this application (the list of setup steps its worker runs), and installs the modules you picked.
 2. Clones the branch on the server and runs the build steps.

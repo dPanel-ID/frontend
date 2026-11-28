@@ -168,11 +168,11 @@ Langkah ini berisi **variabel runtime**, yaitu pengaturan yang dibaca aplikasi s
 
 ### Pratinjau
 
-Periksa ringkasannya. **Pemeriksaan awal** membandingkan apa yang diminta repositori (versi dan ekstensi PHP, versi Node.js) dengan pilihan Anda, dan seharusnya bertuliskan **Semua aman**. Error, misalnya versi PHP yang tidak didukung aplikasi, menahan tombol sampai Anda memperbaikinya. Tekan **Rilis aplikasi**, lalu **OK**.
+Periksa ringkasannya. **Pemeriksaan awal** membandingkan apa yang diminta repositori (versi dan ekstensi PHP, versi Node.js) dengan pilihan Anda, dan seharusnya bertuliskan **Semua aman**. Error, misalnya versi PHP yang tidak didukung aplikasi, menahan tombol sampai Anda memperbaikinya. Tekan **Rilis aplikasi**.
 
 ![Pratinjau dengan semua pengaturan, dependency, dan Pemeriksaan awal: Semua aman](../../assets/tutorials/laravel-app-preview.webp)
 
-Rilis pertama butuh sekitar 5 menit, karena dPanel memasang PHP, Node.js, dan FrankenPHP terlebih dulu. Buka **Aplikasi**, lalu **Laravel**, untuk mengikutinya. Statusnya **Releasing**, lalu **Berjalan**.
+Rilis pertama butuh sekitar 5 menit, karena dPanel memasang PHP, Node.js, dan FrankenPHP terlebih dulu. dPanel membuka halaman aplikasi, tempat Anda mengikutinya. Statusnya **Releasing**, lalu **Berjalan**.
 
 **Yang seharusnya Anda lihat:** aplikasi bertanda **Berjalan**, dengan **1 Serving now**.
 

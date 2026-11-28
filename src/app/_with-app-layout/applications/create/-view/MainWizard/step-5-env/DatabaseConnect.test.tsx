@@ -21,13 +21,24 @@ vi.mock('@/services/i18n', () => ({
   useDevetekLocale: () => 'en',
 }));
 
-const { run, toaster } = vi.hoisted(() => ({ run: vi.fn(), toaster: vi.fn() }));
+const { run, toaster, dialogs } = vi.hoisted(() => ({
+  run: vi.fn(),
+  toaster: vi.fn(),
+  dialogs: [] as Array<{ title: string; content: string; variant: string }>,
+}));
 vi.mock('@/services/toaster', () => ({ useToaster: () => [toaster] }));
 // The confirmation answers yes at once.
 vi.mock('@/services/dialog', () => ({
   useDialog: () => [
-    (payload: { actions: { yes: () => Promise<void> } }) =>
-      void payload.actions.yes(),
+    (payload: {
+      title: string;
+      content: string;
+      variant: string;
+      actions: { yes: () => Promise<void> };
+    }) => {
+      dialogs.push(payload);
+      void payload.actions.yes();
+    },
   ],
 }));
 
@@ -101,6 +112,7 @@ afterEach(() => {
   cleanup();
   vi.clearAllMocks();
   envText = '';
+  dialogs.length = 0;
 });
 
 describe('DatabaseConnect', () => {
@@ -138,6 +150,71 @@ describe('DatabaseConnect', () => {
     expect(screen.getByRole('status').textContent).toContain('created');
     // The password itself is never shown in the helper.
     expect(document.body.textContent).not.toContain(password);
+    // WORDPRESS_DB_PASSWORD was already set: the confirmation said so.
+    expect(dialogs[0]).toMatchObject({
+      title: 'replaceTitle',
+      variant: 'warning',
+    });
+    expect(dialogs[0]?.content).toContain(
+      'replaceBody {"keys":"WORDPRESS_DB_PASSWORD"}',
+    );
+  });
+
+  it('asks a plain confirmation when no variable is replaced', async () => {
+    renderHelper('A=1');
+    fireEvent.click(screen.getByRole('button', { name: 'open' }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'create' }));
+      await Promise.resolve();
+    });
+    expect(dialogs[0]).toMatchObject({
+      title: 'confirmTitle',
+      variant: 'info',
+    });
+  });
+
+  it('creates a MongoDB database with the administrator password typed once', async () => {
+    inventory = [
+      {
+        module_name: 'mongodb',
+        status: 'installed',
+        variables: { mongodb_net_port: 27018 },
+      },
+    ];
+    renderHelper();
+    fireEvent.click(screen.getByRole('button', { name: 'open' }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'create' }));
+      await Promise.resolve();
+    });
+    expect(run).not.toHaveBeenCalled();
+    expect(document.body.textContent).toContain('adminPasswordRequired');
+
+    fireEvent.change(screen.getByLabelText('adminPassword'), {
+      target: { value: 'typed-admin-secret' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'create' }));
+      await Promise.resolve();
+    });
+    const request = run.mock.calls[0]?.[0];
+    expect(request).toMatchObject({
+      name: 'mongodb-database',
+      payload: {
+        variables: {
+          database_name: 'my_blog',
+          database_user: 'my_blog',
+          admin_password: 'typed-admin-secret',
+        },
+      },
+    });
+    const password = request.payload.variables.database_password as string;
+    // No WordPress names for MongoDB: one connection string.
+    expect(envText).toBe(
+      `DATABASE_URL=mongodb://my_blog:${password}@127.0.0.1:27018/my_blog?authSource=my_blog`,
+    );
+    expect(envText).not.toContain('typed-admin-secret');
+    expect(document.body.textContent).not.toContain('typed-admin-secret');
   });
 
   it('refuses a database name that already exists', async () => {
