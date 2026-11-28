@@ -12,6 +12,7 @@ import { ApiApplication } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
+import { orderRuntimesByPrimary } from '../../-lib/primary-runtime';
 import { containerRuntime } from '../container-runtime';
 import type { RuntimeDependency, RuntimeItem } from '../handle-deploy/config';
 import { getVarsGit } from '../handle-deploy/config';
@@ -189,7 +190,11 @@ function buildUpdatedAppDefinition(params: {
   } = params;
   const rawBuild = rawAppDefinition?.build?.target?.machine;
   const rawRun = rawAppDefinition?.run;
-  const normalizedRuntimes = requiredBinaries.filter((runtime) => runtime.name);
+  // Keep the stored language first: the form lists runtimes alphabetically.
+  const normalizedRuntimes = orderRuntimesByPrimary(
+    requiredBinaries.filter((runtime) => runtime.name),
+    rawAppDefinition?.setup?.language?.name,
+  );
   const primaryRuntime =
     normalizedRuntimes[0] ?? rawAppDefinition?.setup?.language ?? {};
   const primaryRuntimeName = String(primaryRuntime.name || '');

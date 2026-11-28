@@ -6,7 +6,7 @@ import { useDialog } from '@/services/dialog';
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
-import { ApiModule, ApiServer } from '@/shared/api';
+import { ApiModule } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { generatePassword } from '@/shared/libs/browser/password';
 import { Button } from '@/shared/presentation/atoms/Button';
@@ -35,6 +35,8 @@ import type {
   DatabaseEnvStyle,
 } from '../../../-lib/database-env';
 import { useFormStore } from '../../../-model/store/form';
+
+import { useServerModules } from './useServerModules';
 
 const ENGINE_LABELS: Record<DatabaseEngine, string> = {
   mariadb: 'MariaDB',
@@ -65,10 +67,7 @@ export default function DatabaseConnect() {
   const setRuntimeEnvText = useFormStore((s) => s.setRuntimeEnvText);
   const serverId = hostedServerID ? String(hostedServerID) : '';
 
-  const [inventory, refetchInventory] = ApiServer.Modules.$Id.useGet({
-    serverId,
-    options: { skip: !serverId },
-  });
+  const [inventory, refetchInventory] = useServerModules(serverId);
   const modules =
     inventory.$status === 'success' ? inventory.modules : undefined;
   const engines = useMemo(() => installedDatabaseEngines(modules), [modules]);

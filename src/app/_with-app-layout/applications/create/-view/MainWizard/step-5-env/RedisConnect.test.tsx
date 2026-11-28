@@ -21,16 +21,22 @@ vi.mock('@/services/i18n', () => ({
 }));
 
 let inventory: unknown[] = [];
+let lastRefreshIntervalMs: number | undefined;
 vi.mock('@/shared/api', () => ({
   ApiServer: {
     Modules: {
       $Id: {
-        useGet: (params: { options?: { skip?: boolean } }) => [
-          params.options?.skip
-            ? { $status: 'initial' }
-            : { $status: 'success', modules: inventory },
-          vi.fn(),
-        ],
+        useGet: (params: {
+          options?: { skip?: boolean; refreshIntervalMs?: number };
+        }) => {
+          lastRefreshIntervalMs = params.options?.refreshIntervalMs;
+          return [
+            params.options?.skip
+              ? { $status: 'initial' }
+              : { $status: 'success', modules: inventory },
+            vi.fn(),
+          ];
+        },
       },
     },
   },
@@ -69,6 +75,21 @@ afterEach(() => {
 });
 
 describe('RedisConnect', () => {
+  // Redis picked in the previous step was still installing, and the helper
+  // never noticed it had finished (2026-11-28).
+  it('reads the modules again while Redis is installing', () => {
+    inventory = [{ module_name: 'redis', status: 'installing', variables: {} }];
+    renderHelper();
+    expect(screen.getByText('noRedis')).toBeTruthy();
+    expect(lastRefreshIntervalMs).toBe(5_000);
+  });
+
+  it('stops reading once the modules have settled', () => {
+    inventory = [{ module_name: 'redis', status: 'installed', variables: {} }];
+    renderHelper();
+    expect(lastRefreshIntervalMs).toBe(0);
+  });
+
   it('points to the Modules tab when the server has no Redis', () => {
     inventory = [{ module_name: 'mariadb', status: 'installed' }];
     renderHelper();

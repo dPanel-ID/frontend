@@ -4,7 +4,6 @@ import { CheckCircle2Icon, ZapIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import { ApiServer } from '@/shared/api';
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
@@ -21,6 +20,8 @@ import {
 } from '../../../-lib/redis-env';
 import type { RedisDriver } from '../../../-lib/redis-env';
 import { useFormStore } from '../../../-model/store/form';
+
+import { useServerModules } from './useServerModules';
 
 /**
  * Connects the app to the Redis installed on its server: fills REDIS_HOST,
@@ -41,10 +42,7 @@ export default function RedisConnect() {
   const setRuntimeEnvText = useFormStore((s) => s.setRuntimeEnvText);
   const serverId = hostedServerID ? String(hostedServerID) : '';
 
-  const [inventory] = ApiServer.Modules.$Id.useGet({
-    serverId,
-    options: { skip: !serverId },
-  });
+  const [inventory] = useServerModules(serverId);
   const modules =
     inventory.$status === 'success' ? inventory.modules : undefined;
   const redis = useMemo(() => installedRedis(modules), [modules]);
