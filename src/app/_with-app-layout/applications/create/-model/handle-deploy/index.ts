@@ -20,7 +20,7 @@ import type {
 } from '../store/form.types';
 
 import type { RuntimeDependency, RuntimeItem } from './config';
-import { getVarsGit, getVarsLaravel, getVarsWordpress } from './config';
+import { getVarsGit, getVarsWordpress } from './config';
 
 /** The variables in KEY_NAME="VALUE" text (the env step blocks bad lines). */
 function parseEnvText(value: string) {
@@ -247,47 +247,6 @@ export default function useHandleDeploy() {
           mariadbPassword: String(mariadbPassword),
           envVariables: legacyEnvVariables,
         });
-
-      case 'laravel': {
-        const laravelDBConnection = [
-          {
-            key: 'DB_CONNECTION',
-            value: 'mysql',
-          },
-          {
-            key: 'DB_HOST',
-            value: 'localhost',
-          },
-          {
-            key: 'DB_PORT',
-            value: '3306',
-          },
-          {
-            key: 'DB_DATABASE',
-            value: String(mariadbDbName),
-          },
-          {
-            key: 'DB_USERNAME',
-            value: String(mariadbUsername),
-          },
-          {
-            key: 'DB_PASSWORD',
-            value: String(mariadbPassword),
-          },
-        ];
-        legacyEnvVariables.push(...laravelDBConnection);
-
-        return getVarsLaravel({
-          appName,
-          appDomain,
-          serverID: hostedServerID,
-          userID: Number(userProfile.id),
-          mariadbDbName: String(mariadbDbName),
-          mariadbUsername: String(mariadbUsername),
-          mariadbPassword: String(mariadbPassword),
-          envVariables: legacyEnvVariables,
-        });
-      }
 
       default:
         return null;
