@@ -1,6 +1,6 @@
 ---
 title: Deploy Laravel with PostgreSQL
-description: Go from an empty dPanel account to a Laravel app on your domain with HTTPS: a server, PostgreSQL, PHP, FrankenPHP, Node.js, two runtimes and a load balancer.
+description: Go from an empty dPanel account to a Laravel app on your domain with HTTPS. dPanel recognises Laravel and fills in the runtimes, build, migrations, health check and application key for you.
 sidebar_position: 3
 sidebar_icon: rocket
 sidebar_label: Laravel
@@ -8,10 +8,11 @@ sidebar_label: Laravel
 
 This tutorial takes you from an empty dPanel account to a Laravel application answering on your own domain with HTTPS. You launch an Ubuntu server, install PostgreSQL, PHP, FrankenPHP and Node.js on it, create a database, deploy the [dPanel-ID/laravel-example](https://github.com/dPanel-ID/laravel-example) repository, and put a load balancer in front of it.
 
-Laravel differs from WordPress in two ways that matter here:
+dPanel recognises a Laravel repository (it has an `artisan` file) and fills in the settings for you: the runtimes, the build, the release commands, the start command and the health check. You check them and change what you need. Three things are worth knowing:
 
-- **It needs two runtimes.** The build runs Composer with PHP, then `npm` to build the front end with Vite. The application declares both PHP and Node.js, and dPanel puts only declared runtimes on the build's path.
-- **The build talks to the database.** It runs the migrations, so the database variables are needed while building as well as while running.
+- **It needs two runtimes.** The build runs Composer with PHP, then `npm` to build the front end with Vite, so the application declares both PHP and Node.js.
+- **Migrations run in the release step, not in the build.** After the build and before the restart, dPanel runs `php artisan migrate --force` and the other release commands with the **runtime** variables, so your database settings live in one place. If a release command fails, the version already running keeps serving.
+- **dPanel keeps the application key.** It creates `APP_KEY` when the application is created and never replaces it, so sessions and encrypted data survive every deploy.
 
 It takes about 45 minutes, most of it waiting for the server and the installs. Every step happens in the dPanel web app; you never need SSH.
 
@@ -37,69 +38,38 @@ Wait until the server's status is **Ready**, usually 10 to 20 minutes. See [Crea
 
 **You should see:** the server listed under **Servers** with the status **Ready**.
 
-## Step 2: Install PostgreSQL, PHP, FrankenPHP and Node.js
+## Step 2: Install PostgreSQL
 
 1. Open the server and go to **Modules**. Press **Add module**.
 2. Press **Install** on **PostgreSQL**. Note the administrator user and set its password, and copy it somewhere safe. Press **Install role** and confirm.
-3. When PostgreSQL shows **Installed**, install **PHP** with **PHP Version** `8.5`.
-4. Then install **FrankenPHP**, which serves the application through Laravel Octane.
-5. Then install **Node.js**. Note the version it installs, for example `26.13.0`: the application declares the same version in step 4.
 
 ![The module catalogue on a server, grouped by category](../../assets/servers/server-module-catalog.webp)
 
-Install one module at a time and let each finish. See [Install software](../servers/install-software.md).
+You do not need to install PHP, Node.js or FrankenPHP here: the application form offers them in step 3 with the versions your repository asks for. See [Install software](../servers/install-software.md).
 
-**You should see:** PostgreSQL, PHP, FrankenPHP and Node.js on the **Modules** tab, each marked **Installed**.
+**You should see:** PostgreSQL on the **Modules** tab, marked **Installed**.
 
-## Step 3: Create the Laravel database
-
-1. On **Modules**, press **Add module**, then **Manage** on **PostgreSQL**.
-2. Under **Databases**, press **Create database**.
-3. Enter **Database Name** `laravel`, **Database User** `laravel`, and a **Database Password** of at least 8 characters. Copy the password: you need it in step 4. PostgreSQL names use lowercase letters, digits and underscores.
-4. Press **Install role**.
-
-![The Databases section of the database module, with the Create database button](../../assets/servers/server-module-databases.webp)
-
-**You should see:** `laravel` listed under **Databases**, and the password saved somewhere safe.
-
-## Step 4: Create and deploy the application
+## Step 3: Create and deploy the application
 
 1. Open **Applications** and press **Create Application**.
-2. **Repository**: pick your GitHub account, search for `laravel-example`, select it, keep the **main** branch, and press **Continue**.
-3. **Server & modules**: select your server. Under **Installed on selected server**, select **PHP**, **FrankenPHP** and **Node.js** so they are reused, not installed again. Press **Continue**.
-4. **App setup**:
+2. **Repository**: pick your GitHub account, search for `laravel-example`, select it and keep the **main** branch. A **Laravel detected** panel appears: dPanel read the repository (the Laravel version, the PHP version it asks for, whether it uses Octane, how it builds its front end) and filled in the settings. Press **Continue**.
+3. **Server & modules**: select your server. **What this Laravel app needs** lists PHP (8.4, or the version your `composer.json` asks for), Node.js 22 and FrankenPHP. Press **Use … on this server** for one that is already installed, or **Add** for one that is not. Nothing is added until you press a button. Press **Continue**.
+4. **App setup**: the form is filled in. Check it:
    - **Application name**: `Laravel` (letters, numbers and spaces only).
-   - **Required binaries**: check that **both** PHP 8.5 and Node.js are selected. dPanel selects every language module you picked in step 2 and stores all of them on the application, which is what puts `npm` on the build's path. FrankenPHP appears under **Other dependencies**.
-   - **Build steps**: `./scripts/build.sh`. It installs the Composer and npm packages, builds the front end, generates the application key and runs the migrations.
-   - **Runtime command**: `./scripts/start.sh`. It starts Laravel Octane on FrankenPHP, on the port dPanel gives it.
+   - **Required binaries**: PHP and Node.js are both selected, which puts `npm` on the build's path. FrankenPHP appears under **Other dependencies**.
+   - **Build steps**: `composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist`, then `npm ci && npm run build` (pnpm or yarn when the repository uses them). The build needs no database and no application key.
+   - **Runtime command**: Laravel Octane on FrankenPHP for this repository (`php artisan octane:frankenphp …`). A Laravel app without Octane gets FrankenPHP's classic mode, which serves the `public/` folder.
    - **Application port**: keep the free port dPanel suggests.
-5. **Environment**: paste the database list into **both** **Build-time variables** and **Runtime variables**, with your password and your domain:
+   - **Release and processes**: the **Release commands** are `php artisan storage:link --force`, `php artisan migrate --force` and `php artisan optimize`. **After the restart** runs `php artisan reload`. The **Health check** asks `/up`, the page Laravel 11 and newer answer on. The **Queue worker** and the **Scheduler** are off: turn the worker on if your app queues jobs (Laravel's default database queue needs it), and the scheduler if it schedules tasks. Each uses memory, so leave them off until you need them.
+5. **Environment**: the **Runtime variables** already hold `APP_ENV=production`, `APP_DEBUG=false` and `LOG_CHANNEL=stderr` (and the Octane settings). Then:
+   - Press **Create database** under **Database for this app**, pick **PostgreSQL**, keep the names dPanel suggests and confirm. dPanel creates the database and its user with a strong password and writes `DB_CONNECTION=pgsql` and the other `DB_*` settings into the **Runtime variables**. You never type the password.
+   - Add your address: `APP_URL=https://app.example.com`.
+   - Leave **Build-time variables** empty, and do not add `APP_KEY`: dPanel creates it.
+6. **Preview**: check the summary. **Pre-flight checks** compares what the repository asks for (the PHP version and extensions in `composer.json` and `composer.lock`, the Node.js version in `package.json`) with what you chose. An error, such as a PHP version the app does not support, holds the deploy button: fix it, or tick **Deploy anyway** if you know better. Warnings do not hold anything. Press **Deploy application**.
 
-   ```text
-   APP_ENV=production
-   APP_DEBUG=false
-   APP_URL=https://app.example.com
-   DB_CONNECTION=pgsql
-   DB_HOST=127.0.0.1
-   DB_PORT=5432
-   DB_DATABASE=laravel
-   DB_USERNAME=laravel
-   DB_PASSWORD=the-password-from-step-3
-   ```
+![The App setup step for Laravel: Node.js and PHP both selected under Required binaries, FrankenPHP under Other dependencies](../../assets/tutorials/laravel-app-setup-runtimes.webp)
 
-   Then add these to **Runtime variables** only:
-
-   ```text
-   OCTANE_SERVER=frankenphp
-   OCTANE_DISABLE_CADDY_ADMIN=true
-   LOG_CHANNEL=stderr
-   ```
-
-6. **Preview**: check the summary and press **Deploy application**.
-
-![The App setup step for Laravel: Node.js 26.13.0 and PHP 8.5 both selected under Required binaries, FrankenPHP under Other dependencies](../../assets/tutorials/laravel-app-setup-runtimes.webp)
-
-The first build takes 3 to 6 minutes. Open the application to follow it; it shows **Running** when the release is live. See [Create an application](../applications/create-an-application.md) and [Environment variables](../applications/environment-variables.md).
+The first build takes 3 to 6 minutes, longer if dPanel installs PHP, Node.js and FrankenPHP first. Open the application to follow it; it shows **Running** when the release is live and `/up` answered. See [Create an application](../applications/create-an-application.md) and [Environment variables](../applications/environment-variables.md).
 
 :::warning[npm: command not found]
 If the build log stops at `npm: command not found`, Node.js is not declared on the application. Open the application's settings, add **nodejs** with the installed version under the additional languages, save, and deploy again.
@@ -107,7 +77,7 @@ If the build log stops at `npm: command not found`, Node.js is not declared on t
 
 **You should see:** the application marked **Running**. It is not on the internet yet: that is the next step.
 
-## Step 5: Publish it on your domain with HTTPS
+## Step 4: Publish it on your domain with HTTPS
 
 1. Open **Load Balancers** and press **Create a load balancer**. The form has four steps: **Gateway**, **Domain**, **Routing** and **Review**.
 2. **Gateway**: under **Gateway server**, select the same server. Under **Web server engine**, pick **Caddy Server** and press **Install** if it is not installed yet.
@@ -119,13 +89,15 @@ After a minute or two, open `https://app.example.com/`: the Laravel welcome page
 
 ## When something does not work
 
-| What you see                              | What to check                                                                                                                                                                |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm: command not found` in the build log | Declare Node.js on the application, as in the warning above.                                                                                                                 |
-| The build fails at `php artisan migrate`  | The `DB_*` variables must also be in **Build-time variables**, and match the database from step 3.                                                                           |
-| The application starts, then stops        | Read its runtime log. See [Application logs](../applications/application-logs.md).                                                                                           |
-| The domain does not answer                | Wait a few minutes for DNS and the certificate, then check the load balancer's detail page and logs. A red **Load balancer change failed** banner has **See why it failed**. |
-| Anything else                             | See [Common problems and fixes](../troubleshooting/faq.md).                                                                                                                  |
+| What you see                              | What to check                                                                                                                                                                  |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `npm: command not found` in the build log | Declare Node.js on the application, as in the warning above.                                                                                                                   |
+| A release command fails                   | The deployment log shows the command and its output; the previous version keeps serving. For `php artisan migrate`, check the `DB_*` **Runtime variables** match the database. |
+| The deployment fails at the health check  | The log shows the last answer of `/up` and the app's last lines. A 500 often means a missing variable; read the [runtime log](../applications/application-logs.md).            |
+| `MissingAppKeyException`                  | `APP_KEY` was removed from the runtime variables. Deploy again: dPanel creates one when it is missing. Sessions signed with an older key end.                                  |
+| The application starts, then stops        | Read its runtime log. See [Application logs](../applications/application-logs.md).                                                                                             |
+| The domain does not answer                | Wait a few minutes for DNS and the certificate, then check the load balancer's detail page and logs. A red **Load balancer change failed** banner has **See why it failed**.   |
+| Anything else                             | See [Common problems and fixes](../troubleshooting/faq.md).                                                                                                                    |
 
 A variable change applies from the next release: deploy again after changing one.
 
@@ -135,7 +107,7 @@ A variable change applies from the next release: deploy again after changing one
 
 > Create an application named Laravel from github.com/my-org/laravel-example on server laravel-1. Language PHP 8.5 with Node.js as an extra runtime, build command ./scripts/build.sh, start command ./scripts/start.sh.
 
-It asks for `DB_PASSWORD` as a field on the approval card, so the password never goes into the chat. More ready-made requests are in the [Prompt cookbook](../ai/prompt-cookbook.md).
+It asks for `DB_PASSWORD` as a field on the approval card, so the password never goes into the chat. dPanel creates `APP_KEY` for a Laravel repository, whichever way you create the application. More ready-made requests are in the [Prompt cookbook](../ai/prompt-cookbook.md).
 
 ## Clean up
 
@@ -147,9 +119,17 @@ Delete in this order: the load balancer, the application, then the server. See [
 
 The build runs `npm` to bundle the front end with Vite. dPanel puts only the runtimes declared on the application on the build's path, so Node.js must be declared next to PHP.
 
-### Why do the database variables go in both lists?
+### Do the database variables go in the build-time variables too?
 
-The build runs the migrations, so it needs the database while building. The running application needs it too. **Build-time variables** reach only the build; **Runtime variables** reach only the running service.
+No. The build only installs packages and builds the front end. Migrations run as a release command, with the **Runtime variables**, so the `DB_*` settings belong there only.
+
+### Can I change the preset?
+
+Yes. Every field the preset fills in stays editable in the form and later under the application's **Settings**, in **Release and processes**. dPanel applies the preset once, when you pick the repository and branch.
+
+### Can I run a queue worker or the scheduler later?
+
+Yes. Open the application's **Settings**, press **Edit** on **Release and processes**, and add a process: a **service** for `php artisan queue:work`, or a **schedule** for `php artisan schedule:run`. It starts with the next deployment.
 
 ### Can I use MariaDB instead of PostgreSQL?
 

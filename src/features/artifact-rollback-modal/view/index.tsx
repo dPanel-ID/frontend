@@ -5,6 +5,7 @@ import { ModalLayoutGeneral } from '@/services/modal/ui/presentation';
 import { useToaster } from '@/services/toaster';
 
 import { AdapterCicdDeploymentFromDto } from '@/entities/cicd-deployment/adapter';
+import { useDeployPreflightGuard } from '@/entities/deploy-preflight';
 
 import { ApiDeploy } from '@/shared/api';
 import { useAdapter } from '@/shared/libs/api-client';
@@ -27,6 +28,7 @@ export default function ArtifactRollbackModal(props: Props) {
 
   const emitModal = useModalEmit();
   const [openToaster] = useToaster();
+  const guardPreflight = useDeployPreflightGuard();
 
   const [responseDeployments] = ApiDeploy.Find.useGet({
     applicationId,
@@ -67,12 +69,12 @@ export default function ArtifactRollbackModal(props: Props) {
     });
   };
 
-  const handleConfirm = async () => {
+  const rollback = async (serverIds: string[], skipPreflight: boolean) => {
     setIsLoading(true);
 
     let successCount = 0;
 
-    for (const serverId of selectedIds) {
+    for (const [index, serverId] of serverIds.entries()) {
       const hostname =
         targets.find((t) => t.id === serverId)?.hostname ?? serverId;
 
@@ -80,7 +82,17 @@ export default function ArtifactRollbackModal(props: Props) {
         applicationId,
         artifactId,
         workerId: serverId,
+        skipPreflight,
       });
+
+      // Refused on pre-flight checks: this server and the ones after it
+      // are left as they are unless the user deploys anyway.
+      if (
+        !skipPreflight &&
+        guardPreflight(response, () => rollback(serverIds.slice(index), true))
+      ) {
+        break;
+      }
 
       if (response.$status === 'success') {
         successCount++;
@@ -104,6 +116,8 @@ export default function ArtifactRollbackModal(props: Props) {
       onSuccess();
     }
   };
+
+  const handleConfirm = () => rollback([...selectedIds], false);
 
   return (
     <ModalLayoutGeneral>

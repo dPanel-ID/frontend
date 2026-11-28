@@ -54,14 +54,14 @@ export default function DatabaseConnect() {
   );
   const [openDialog] = useDialog();
   const [openToaster] = useToaster();
-  const [hostedServerID, appName, repository, runtimeEnvText] = useFormStore(
-    (s) => [
+  const [hostedServerID, appName, repository, runtimeEnvText, framework] =
+    useFormStore((s) => [
       s.hostedServerID,
       s.appName,
       s.appSourceGithubRepo,
       s.runtimeEnvText,
-    ],
-  );
+      s.appFramework,
+    ]);
   const setRuntimeEnvText = useFormStore((s) => s.setRuntimeEnvText);
   const serverId = hostedServerID ? String(hostedServerID) : '';
 
@@ -104,7 +104,7 @@ export default function DatabaseConnect() {
   const databaseName = name ?? suggested;
   const databaseUser = user ?? name ?? suggested;
   const style =
-    chosenStyle ?? guessDatabaseEnvStyle(runtimeEnvText, repository);
+    chosenStyle ?? guessDatabaseEnvStyle(runtimeEnvText, repository, framework);
   const rules = DATABASE_ENGINES[engine];
   const moduleDetail = detail.$status === 'success' ? detail : undefined;
   const installAction = moduleDetail?.action_details.find(

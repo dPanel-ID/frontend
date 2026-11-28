@@ -51,6 +51,9 @@ import type { DependencyConfig } from '../../../-model/store/form.types';
 import type { ApplicationCreateServerOption } from '../../../-model/store/servers';
 import { useServersStore } from '../../../-model/store/servers';
 
+import PresetModules from './PresetModules';
+import type { PresetInstalledOption } from './PresetModules';
+
 type FieldValue = unknown;
 
 function defaultFieldValue(input: DTOs.ModuleInputV1): FieldValue {
@@ -1028,6 +1031,24 @@ const SectionDependencies = () => {
     toggleDependency(selectionId);
   };
 
+  const presetInstalledOptions = installedModuleGroups.flatMap(
+    (moduleGroup): PresetInstalledOption[] =>
+      moduleGroup.installations
+        .filter(isInstalledDependencySelectable)
+        .map((installation) => {
+          const selectionId = installedDependencySelectionId(installation);
+          return {
+            moduleName: moduleGroup.id.toLowerCase(),
+            version: moduleVersion(installation),
+            selected: selectedDependencyIds.includes(selectionId),
+            onUse: () => {
+              if (selectedDependencyIds.includes(selectionId)) return;
+              handleToggleInstalledVersion(moduleGroup, installation);
+            },
+          };
+        }),
+  );
+
   return (
     <Card className="rounded-2xl shadow-none">
       <div className="border-b p-3 sm:p-5">
@@ -1051,6 +1072,12 @@ const SectionDependencies = () => {
           </div>
         ) : (
           <>
+            <PresetModules
+              catalogById={moduleById}
+              refName={catalog?.repository.ref.name}
+              installed={presetInstalledOptions}
+            />
+
             <div className="rounded-lg border bg-background p-3">
               <div className="flex flex-col gap-1">
                 <h4 className="text-sm font-semibold">{t('installedTitle')}</h4>

@@ -98,6 +98,12 @@ describe('guessDatabaseEnvStyle', () => {
     expect(guessDatabaseEnvStyle('', 'acme/laravel-shop')).toBe('laravel');
   });
 
+  it('picks Laravel names for a repository dPanel recognised as Laravel', () => {
+    expect(guessDatabaseEnvStyle('PORT=3000', 'acme/shop', 'laravel')).toBe(
+      'laravel',
+    );
+  });
+
   it('falls back to DATABASE_URL', () => {
     expect(guessDatabaseEnvStyle('PORT=3000', 'acme/api')).toBe('url');
   });

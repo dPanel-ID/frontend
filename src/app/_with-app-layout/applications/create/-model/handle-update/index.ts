@@ -6,6 +6,7 @@ import { useToaster } from '@/services/toaster';
 
 import { parseEnvText as parseEnvVariables } from '@/entities/application/lib/env-text';
 import type { EnvVariable } from '@/entities/application/lib/env-text';
+import { useDeployPreflightGuard } from '@/entities/deploy-preflight';
 
 import { ApiApplication } from '@/shared/api';
 import type { DTOs } from '@/shared/api';
@@ -249,8 +250,9 @@ export default function useHandleUpdateApplication() {
   const { userProfile } = useAuthLoggedIn();
   const formValues = useFormStore((s) => s);
   const [openToaster] = useToaster();
+  const guardPreflight = useDeployPreflightGuard();
 
-  const handleUpdate = useHandler(async () => {
+  const submit = async (skipPreflight: boolean): Promise<boolean> => {
     const {
       appBuildCommand,
       appDomain,
@@ -426,12 +428,25 @@ export default function useHandleUpdateApplication() {
       };
       payload.bootstrap = true;
       payload.deploy = compiledConfig.deploy;
+      if (skipPreflight) payload.skip_preflight = true;
     }
 
     const response = await ApiApplication.Update.$Id.doPost({
       applicationId: updateApplicationId,
       payload,
     });
+
+    // The bootstrap was refused on pre-flight checks: the settings are
+    // saved, nothing was deployed. The same request with skip_preflight
+    // deploys anyway.
+    if (
+      !skipPreflight &&
+      guardPreflight(response, () => {
+        void submit(true);
+      })
+    ) {
+      return false;
+    }
 
     if (response.$status !== 'success') {
       openToaster({
@@ -454,7 +469,11 @@ export default function useHandleUpdateApplication() {
     });
 
     return true;
-  });
+  };
+
+  const handleUpdate = useHandler((skipPreflight = false) =>
+    submit(skipPreflight),
+  );
 
   return {
     handleUpdate,

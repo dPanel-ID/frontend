@@ -465,6 +465,12 @@ interface GitVars {
   runtimeEnvVariables?: Array<Record<string, string>>;
   dependencyRuntimeItems?: RuntimeItem[];
   requiredBinaries?: RuntimeDependency[];
+  /** Framework dPanel recognised, such as laravel; empty for none. */
+  framework?: string;
+  /** Release, post-deploy, processes and health check sections. */
+  lifecycle?: Record<string, unknown>;
+  /** Deploy despite a blocking pre-flight result. */
+  skipPreflight?: boolean;
 }
 
 export interface RuntimeDependency {
@@ -681,6 +687,9 @@ export const getVarsGit = (vars: GitVars) => {
     runtimeEnvVariables,
     dependencyRuntimeItems,
     requiredBinaries,
+    framework,
+    lifecycle,
+    skipPreflight,
   } = vars;
 
   const normalizedRuntimes =
@@ -738,6 +747,7 @@ export const getVarsGit = (vars: GitVars) => {
             build_application_from_input: {
               version: 'v0.0.1-alpha.0',
               setup: {
+                ...(framework ? { framework } : {}),
                 language: {
                   name: primaryRuntime.name,
                   version: primaryRuntime.version || appProgLangVersion,
@@ -769,6 +779,7 @@ export const getVarsGit = (vars: GitVars) => {
                 no_service: false,
                 environment: runtimeEnvironment,
               },
+              ...(lifecycle ?? {}),
             },
           },
         },
@@ -807,6 +818,8 @@ export const getVarsGit = (vars: GitVars) => {
     default_branch: gitDefaultBranch,
     domain: appDomain,
     name: appName,
+    ...(framework ? { framework } : {}),
+    ...(skipPreflight ? { skip_preflight: true } : {}),
     runtime_items: dependencyRuntimeItems ?? [],
     repo_name: repoName,
     repo_org: repoOrganization,

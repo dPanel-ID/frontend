@@ -14,8 +14,11 @@ import { FlowActions } from '@/shared/presentation/organisms/FlowActions';
 import { FLOW_ACCENTS } from '@/shared/presentation/organisms/FlowHero';
 import { FlowStepper } from '@/shared/presentation/organisms/FlowStepper';
 
+import { isPreflightBlocking } from '../../-lib/laravel-preset';
 import { useFlowNav } from '../../-model/flow-nav';
 import type { FlowStepKey } from '../../-model/flow-readiness';
+import { useFormStore } from '../../-model/store/form';
+import { useLaravelPreset } from '../../-usecase/laravel-preset';
 import { useSubmitFlow } from '../../-usecase/submit-flow';
 import Step1Source from '../MainWizard/step-1-source';
 import Step2Details from '../MainWizard/step-2-details';
@@ -83,6 +86,19 @@ export default function MainFlow() {
 
   const nav = useFlowNav();
   const { isSubmitting, isUpdate, submit } = useSubmitFlow();
+  useLaravelPreset();
+  const [appFramework, preflight, preflightOverride] = useFormStore((s) => [
+    s.appFramework,
+    s.preflight,
+    s.preflightOverride,
+  ]);
+  // A recognised framework waits for its pre-flight checks, and a blocking
+  // result holds the deploy until the user chooses to deploy anyway.
+  const isPreflightHeld =
+    !isUpdate &&
+    appFramework !== '' &&
+    (preflight.status === 'loading' ||
+      isPreflightBlocking(preflight, preflightOverride));
 
   const meta = STEPS[nav.current];
   const Icon = meta.icon;
@@ -144,12 +160,18 @@ export default function MainFlow() {
       <FlowActions
         isBackHidden={nav.isFirst}
         isBackDisabled={isSubmitting}
-        isNextDisabled={nav.isLast ? !nav.ready : !nav.canContinue}
+        isNextDisabled={
+          nav.isLast ? !nav.ready || isPreflightHeld : !nav.canContinue
+        }
         isNextLoading={nav.isLast && isSubmitting}
         isSubmit={nav.isLast}
         backLabel={tCreate('actions.back')}
         nextLabel={nav.isLast ? submitLabel : tCreate('actions.continue')}
-        blockedHint={t(meta.blockedKey)}
+        blockedHint={
+          nav.isLast && nav.ready && isPreflightHeld
+            ? t('blocked.preflight')
+            : t(meta.blockedKey)
+        }
         onBack={nav.goToPrevious}
         onNext={() => {
           if (nav.isLast) {

@@ -1106,7 +1106,9 @@
           "buildHint": "How your code is turned into something installable",
           "runHint": "How the installed application is started and kept running",
           "deployment": "Deployment",
-          "deploymentHint": "When this application deploys and how long a deployment may take."
+          "deploymentHint": "When this application deploys and how long a deployment may take.",
+          "lifecycle": "Release and processes",
+          "lifecycleHint": "What runs around every deployment: commands before and after the restart, extra processes such as a queue worker, and the health check."
         },
         "labels": {
           "repository": "Repository",
@@ -1127,7 +1129,19 @@
           "configuration": "No configuration available"
         },
         "editDeployment": "Edit",
-        "defaultTimeout": "Default"
+        "defaultTimeout": "Default",
+        "editLifecycle": "Edit",
+        "lifecycle": {
+          "empty": "Nothing extra runs around deployments. Add release commands (such as database migrations), a worker or a health check with Edit.",
+          "release": "Release commands",
+          "releaseOff": "Off: kept but not run",
+          "postDeploy": "After the restart",
+          "processes": "Processes",
+          "healthCheck": "Health check",
+          "none": "None",
+          "everyMinute": "Every minute",
+          "instances": "{count}×"
+        }
       },
       "tabs": {
         "ariaLabel": "Application sections",
@@ -1207,7 +1221,8 @@
           "server": "Choose the server to install on, and set up each dependency you picked.",
           "details": "A name (letters, numbers and spaces only), a language (or Docker for an app that only runs containers), a build command, a start command and a free port are all needed.",
           "env": "Fix the environment variable lines marked in red first.",
-          "preview": "Finish the earlier steps first."
+          "preview": "Finish the earlier steps first.",
+          "preflight": "Fix the pre-flight problems below, or tick Deploy anyway. Checks still running? Wait a moment."
         }
       },
       "wizard": {
@@ -1446,11 +1461,98 @@
             "updateNote": "dPanel will update the application definition and submit the selected playbook inputs for this application.",
             "deploy": "Deploy",
             "update": "Update application",
-            "branch": "Branch"
+            "branch": "Branch",
+            "release": "Release commands",
+            "releaseOff": "Off",
+            "postDeploy": "After the restart",
+            "healthCheck": "Health check",
+            "processes": "Worker and scheduler",
+            "processesNone": "Off"
           }
         }
       },
-      "heroDuration": "Usually ready in 5–15 minutes"
+      "heroDuration": "Usually ready in 5–15 minutes",
+      "preset": {
+        "title": "Laravel detected",
+        "applied": "Settings filled in",
+        "desc": "dPanel read this repository and filled in the settings a Laravel app needs: runtimes, build, release, start command and health check. Check them as you go; you can change any of them.",
+        "facts": {
+          "laravel": "Laravel",
+          "php": "PHP required",
+          "server": "Web server",
+          "octane": "Octane on FrankenPHP",
+          "classic": "FrankenPHP",
+          "frontEnd": "Front-end build",
+          "health": "Health check",
+          "none": "None",
+          "unknown": "Not found"
+        },
+        "hints": {
+          "app_key_managed": "APP_KEY: dPanel creates it when the app is created and keeps it for you. Don't set a new one: a new key signs everyone out and makes encrypted data unreadable.",
+          "app_url_missing": "APP_URL is not set yet. Once the app has a domain, add APP_URL=\"https://your-domain\" to the runtime variables so links and emails use it.",
+          "frankenphp_required": "The app is served by FrankenPHP. Add the FrankenPHP module in the next step; dPanel suggests it there."
+        },
+        "modules": {
+          "title": "What this Laravel app needs",
+          "desc": "Use the copy already on this server, or add it from the catalog. Nothing is added until you press a button.",
+          "version": "{version}",
+          "anyVersion": "any version",
+          "roleLanguage": "Language: on the build's path and the app's",
+          "roleDependency": "Program the app runs with",
+          "selected": "Selected",
+          "useInstalled": "Use {version} on this server",
+          "useInstalledAria": "Use {module} {version}, already on this server",
+          "add": "Add",
+          "addAria": "Add {module} {version} to this server",
+          "noOption": "{module} {version} is not offered for this server. Choose a version under the catalog below.",
+          "unavailable": "Not offered for this server"
+        },
+        "lifecycle": {
+          "title": "Release and processes",
+          "desc": "What runs around the build on every deployment. Laravel's usual steps are filled in.",
+          "releaseTitle": "Release commands",
+          "releaseDesc": "Run once per deployment, after the build and before the restart, with the runtime variables (your database settings included). If one fails, the running version keeps serving.",
+          "releaseEnabled": "Run release commands",
+          "releaseEmpty": "No release commands.",
+          "commandLabel": "Command {n}",
+          "removeCommand": "Remove command {n}",
+          "addCommand": "Add command",
+          "postDeployTitle": "After the restart",
+          "postDeployDesc": "Run once the new version is up, for example to tell queue workers to pick up the new code.",
+          "postDeployEmpty": "Nothing runs after the restart.",
+          "healthTitle": "Health check",
+          "healthDesc": "dPanel asks the app for this page after the restart and marks the deployment failed if it does not answer 200.",
+          "healthPath": "Page to check",
+          "healthHint": "Laravel 11 and newer answer on /up. Leave it empty to skip the check.",
+          "processesTitle": "Worker and scheduler",
+          "processesDesc": "Extra processes that run your code next to the website. Both are off: each one uses memory, so turn one on when your app needs it.",
+          "process": {
+            "worker": {
+              "title": "Queue worker",
+              "desc": "Runs queued jobs, such as emails and notifications. Turn it on if your app queues jobs: with Laravel's default database queue (QUEUE_CONNECTION is not sync), nothing queued runs without it."
+            },
+            "scheduler": {
+              "title": "Scheduler",
+              "desc": "Runs php artisan schedule:run every minute, for the tasks in your app's schedule. Turn it on if your app schedules tasks."
+            },
+            "other": "Runs next to the website with the same code and variables."
+          }
+        },
+        "preflight": {
+          "title": "Pre-flight checks",
+          "desc": "Before deploying, dPanel compares what the repository asks for (PHP version and extensions, Node.js version) with what you chose.",
+          "running": "Checking",
+          "runningDesc": "Reading the repository's requirements…",
+          "unavailable": "Not checked",
+          "failedDesc": "The checks could not run. You can still deploy; dPanel checks again before it builds.",
+          "retry": "Check again",
+          "errorCount": "{count} to fix",
+          "warningCount": "{count} to look at",
+          "ok": "All good",
+          "overrideTitle": "Deploy anyway",
+          "overrideDesc": "The build will most likely fail with the problem above. Tick this only if you know the server has what the repository asks for."
+        }
+      }
     },
     "applicationsUpdate": {
       "headerTitle": "Update Application",
@@ -4604,6 +4706,25 @@
     "teamMemberPromoteAdmin": {
       "title": "Make Admin",
       "message": "Allow \"{name}\" to manage members and workspace settings?"
+    },
+    "deployPreflight": {
+      "title": "Pre-flight checks found a problem",
+      "body": "dPanel compared what the repository asks for with this application's settings and found something that will most likely break the build:",
+      "anywayNote": "Deploy anyway only if you know the server has what the repository asks for. Cancel deploys nothing.",
+      "deployAnyway": "Deploy anyway",
+      "cancel": "Cancel",
+      "levelError": "Must fix",
+      "levelWarning": "Check",
+      "checks": {
+        "php_version_unsupported": "{package} needs PHP {required}, but PHP {selected} is selected. Pick a PHP version that fits in step 2.",
+        "php_extension_missing": "{package} needs the PHP extension {extension}, which dPanel's PHP does not include. Add it with the PHP Extensions module on this server.",
+        "php_runtime_missing": "A Laravel app needs PHP, but PHP is not the selected language.",
+        "node_runtime_missing": "The build runs npm, pnpm or yarn, but Node.js is not selected. Add Node.js in step 2.",
+        "node_version_mismatch": "package.json asks for Node.js {required}, but Node.js {selected} is selected.",
+        "frankenphp_module_missing": "The start command uses FrankenPHP, but the FrankenPHP module is not selected. Add it in step 2.",
+        "composer_lock_missing": "The repository has no composer.lock, so each build may install different package versions.",
+        "repository_unreadable": "dPanel could not read the repository's requirements, so they were not checked."
+      }
     }
   },
   "toaster": {
@@ -5077,6 +5198,67 @@
         "hide": "Hide values",
         "revealing": "Showing…",
         "revealFailed": "Could not show the values"
+      }
+    },
+    "applicationLifecycleEdit": {
+      "title": "Release and processes",
+      "intro": "These run with the app's runtime variables on every deployment. Changes apply from the next deployment.",
+      "saved": "Release and processes of {name} saved. They apply from the next deployment.",
+      "saveFailed": "Could not save release and processes",
+      "commandLabel": "Command {n}",
+      "removeCommand": "Remove command {n}",
+      "addCommand": "Add command",
+      "timeout": "Time limit per command",
+      "commandTimeoutHint": "Such as 15m; from 10s to 2h. Empty uses 15m.",
+      "release": {
+        "title": "Release commands",
+        "desc": "Run after the build and before the restart, such as php artisan migrate --force. If one fails, the running version keeps serving.",
+        "enabled": "Run release commands",
+        "empty": "No release commands."
+      },
+      "postDeploy": {
+        "title": "After the restart",
+        "desc": "Run once the new version is up and healthy, such as php artisan reload.",
+        "empty": "Nothing runs after the restart."
+      },
+      "processes": {
+        "title": "Processes",
+        "desc": "Extra processes next to the website, with the same code and variables. A service runs all the time; a schedule runs its command every minute.",
+        "empty": "No extra processes.",
+        "name": "Name",
+        "type": "Type",
+        "service": "Service (always running)",
+        "schedule": "Schedule (every minute)",
+        "command": "Command",
+        "instances": "Copies",
+        "add": "Add process",
+        "remove": "Remove process {name}"
+      },
+      "health": {
+        "title": "Health check",
+        "desc": "After the restart, dPanel asks the app for this page from the server itself; another answer fails the deployment.",
+        "enabled": "Check the app after the restart",
+        "path": "Page",
+        "status": "Expected status",
+        "timeout": "Time limit per try",
+        "retries": "Tries (3 seconds apart)",
+        "off": "No health check."
+      },
+      "errors": {
+        "commandTooLong": "A command can be at most 4096 characters.",
+        "tooManyCommands": "At most 20 commands.",
+        "badCommandTimeout": "Use a duration such as 15m, from 10s to 2h.",
+        "badProcessName": "Lowercase letters, digits and dashes, starting with a letter, at most 32.",
+        "reservedProcessName": "web is the website itself; choose another name.",
+        "processCommandRequired": "Enter the command this process runs.",
+        "badInstances": "From 1 to 8 copies.",
+        "tooManyProcesses": "At most 10 processes.",
+        "duplicateProcessName": "Each process needs its own name.",
+        "badHealthPath": "Start with / and use no spaces, at most 512 characters.",
+        "badStatus": "A status from 100 to 599.",
+        "badHealthTimeout": "Use a duration such as 5s, from 1s to 1m.",
+        "badRetries": "From 1 to 60 tries.",
+        "healthNeedsPort": "A health check needs the app's port, and this app has none."
       }
     }
   },

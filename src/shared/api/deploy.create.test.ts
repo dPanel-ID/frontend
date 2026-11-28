@@ -87,3 +87,14 @@ describe('deployment host-group action response boundary', () => {
     });
   });
 });
+
+describe('deployment create recipe', () => {
+  it('sends skip_preflight only when asked to deploy anyway', async () => {
+    const { recipe } = await import('./deploy.create');
+    const base = { applicationId: '13', artifactId: '99', workerId: '7' };
+    expect(recipe(base).data).not.toHaveProperty('skip_preflight');
+    expect(recipe({ ...base, skipPreflight: true }).data).toMatchObject({
+      skip_preflight: true,
+    });
+  });
+});

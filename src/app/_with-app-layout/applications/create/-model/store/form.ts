@@ -2,6 +2,12 @@ import { createStore } from 'zustand';
 
 import buildZustandStore from '@/shared/libs/react-factories/buildZustandStore';
 
+import {
+  EMPTY_LIFECYCLE,
+  IDLE_PREFLIGHT,
+  presetFormPatch,
+} from '../../-lib/laravel-preset';
+
 import type {
   FormActions as Actions,
   FormInitialState,
@@ -57,7 +63,64 @@ export const [FormStoreProvider, useFormStore] = buildZustandStore(
       dependencyConfigs: {},
       selectedRequiredBinaryIds: [],
       requiredBinaryConfigs: {},
+      appFramework: '',
+      laravelPreset: null,
+      lifecycle: EMPTY_LIFECYCLE,
+      preflight: IDLE_PREFLIGHT,
+      preflightOverride: false,
       ...initialState,
+
+      applyPreset: (preset, key) => {
+        const patch = presetFormPatch(preset, {
+          runtimeEnvText: get().runtimeEnvText,
+          key,
+        });
+        if (!patch) return false;
+        set({
+          appFramework: patch.appFramework,
+          appProgLang: patch.appProgLang,
+          appProgLangVersion: patch.appProgLangVersion,
+          appBuildCommand: patch.appBuildCommand.length
+            ? patch.appBuildCommand
+            : [''],
+          appRunCommand: patch.appRunCommand,
+          runtimeEnvText: patch.runtimeEnvText,
+          lifecycle: patch.lifecycle,
+          laravelPreset: patch.laravelPreset,
+          preflight: IDLE_PREFLIGHT,
+          preflightOverride: false,
+        });
+        return true;
+      },
+      clearPreset: () => {
+        set({
+          appFramework: '',
+          laravelPreset: null,
+          lifecycle: EMPTY_LIFECYCLE,
+          preflight: IDLE_PREFLIGHT,
+          preflightOverride: false,
+        });
+      },
+      setLifecycle: (lifecycle) => {
+        set((state) => ({
+          lifecycle: { ...state.lifecycle, ...lifecycle },
+          preflightOverride: false,
+        }));
+      },
+      setPreflight: (preflight) => {
+        // An override answers one result; checks of another definition
+        // must be looked at again.
+        set((state) => ({
+          preflight,
+          preflightOverride:
+            state.preflight.key === preflight.key
+              ? state.preflightOverride
+              : false,
+        }));
+      },
+      setPreflightOverride: (preflightOverride) => {
+        set({ preflightOverride });
+      },
 
       setFlowMode: (flowMode) => {
         set({ flowMode });

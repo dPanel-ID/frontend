@@ -2,6 +2,8 @@ import { useDialog } from '@/services/dialog';
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
+import { useDeployPreflightGuard } from '@/entities/deploy-preflight';
+
 import { ApiApplication, ApiDeploy } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
@@ -25,6 +27,7 @@ export default function useRuntimeMoveUsecase(params: Params) {
 
   const [openDialog] = useDialog();
   const [openToaster] = useToaster();
+  const guardPreflight = useDeployPreflightGuard();
 
   const handleUsecase = useHandler((payload: RuntimeMovePayload) => {
     const { applicationId, artifactId, workerId } = payload;
@@ -42,12 +45,25 @@ export default function useRuntimeMoveUsecase(params: Params) {
         });
         return;
       }
+      await redeploy(runtime, false);
+    };
+
+    // The runtime choice is stored either way; a pre-flight refusal only
+    // holds the redeploy until the user deploys anyway.
+    const redeploy = async (runtime: Runtime, skipPreflight: boolean) => {
       const deployed = await ApiDeploy.Create.doPost({
         applicationId: String(applicationId),
         artifactId: String(artifactId),
         workerId: String(workerId),
         bootstrap: true,
+        skipPreflight,
       });
+      if (
+        !skipPreflight &&
+        guardPreflight(deployed, () => redeploy(runtime, true))
+      ) {
+        return;
+      }
       if (deployed.$status !== 'success') {
         openToaster({
           variant: 'error',

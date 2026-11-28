@@ -9,6 +9,8 @@ import * as Find from './application.find';
 import * as IAC$Id from './application.iac.$id';
 import * as Logs$Id from './application.logs.$id';
 import * as LogsRaw$Id from './application.logs.raw.$id';
+import * as Preflight from './application.preflight';
+import * as Preset from './application.preset';
 import * as Update$Id from './application.update.$id';
 
 const Root = {
@@ -39,6 +41,8 @@ const Root = {
     $Id: Logs$Id,
     Raw: LogsRaw$Id,
   },
+  Preflight,
+  Preset,
   Update: {
     $Id: {
       ...Update$Id,

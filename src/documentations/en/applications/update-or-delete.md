@@ -10,14 +10,15 @@ You can change how a dPanel application is built and run at any time, from one s
 
 ## Review the setup
 
-Open the application and go to **Settings**. **How this application is set up** shows four blocks.
+Open the application and go to **Settings**. **How this application is set up** shows five blocks.
 
-| Block      | Shows                                                                                 |
-| ---------- | ------------------------------------------------------------------------------------- |
-| Repository | The repository, its language and framework.                                           |
-| Deployment | The build time limit and the description.                                             |
-| Build      | The language runtime, the build steps, and the build-time environment variables.      |
-| Run        | The service name, the port, the start command, and the runtime environment variables. |
+| Block                 | Shows                                                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| Repository            | The repository, its language and framework.                                              |
+| Deployment            | The build time limit and the description.                                                |
+| Build                 | The language runtime, the build steps, and the build-time environment variables.         |
+| Run                   | The service name, the port, the start command, and the runtime environment variables.    |
+| Release and processes | Release commands, commands run after the restart, extra processes, and the health check. |
 
 ![The Settings tab, with the Repository, Build and Run blocks and the Danger zone](../../assets/applications/app-settings.webp)
 
@@ -31,10 +32,24 @@ Each item with an **Edit** button opens a panel for just that part.
 | Language                                   | Edit Setup Configuration   | The language and its version.             |
 | Build steps, Environment variables (Build) | Edit Build Configuration   | The build steps and build-time variables. |
 | Start command, Environment variables (Run) | Edit Runtime Configuration | The start command and runtime variables.  |
+| Release and processes                      | Release and processes      | See the next section.                     |
 
 Press **Save** in the panel, or **Cancel** to close it; with unsaved changes, dPanel asks you to confirm first. The change applies from the next release, so release again with **Build and release** or **Redeploy**.
 
 Variable values are hidden in these panels. Leave a hidden value as it is to keep it, or press **Show values** in **Edit Runtime Configuration** to see the runtime values. See [Environment variables](./environment-variables.md#see-a-saved-value).
+
+## Release commands and processes
+
+**Release and processes** controls what runs around every deployment. Every application has it, not only Laravel ones; one that never used it deploys exactly as before.
+
+| Part              | What it does                                                                                                                                                                                |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Release commands  | Run once per deployment, after the build and before the restart, with the **runtime** variables. Use them for database migrations. If one fails, the version already running keeps serving. |
+| After the restart | Run once the new version is up, for example `php artisan reload` so queue workers pick up the new code.                                                                                     |
+| Processes         | Extra processes next to the website, with the same code and variables: a **service** runs all the time (a queue worker), a **schedule** runs its command every minute (a scheduler).        |
+| Health check      | After the restart, dPanel asks the app for a page, such as `/up`, from the server itself. Another answer than the expected status fails the deployment.                                     |
+
+Press **Edit** on the block to change them. The switch above the release commands turns them off without deleting them; an emptied part is removed. Like every setting, the change applies from the next release.
 
 ## What stays fixed
 

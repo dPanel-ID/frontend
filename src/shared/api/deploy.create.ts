@@ -24,11 +24,12 @@ export interface RecipeParams {
   isPrimary?: boolean;
   bootstrap?: boolean;
   applicationPhase?: string;
+  /** Deploy even though the pre-flight checks found a blocking problem. */
+  skipPreflight?: boolean;
 }
 
 export type DeployCreateResponse =
-  | DTOs.DeployV1
-  | DTOs.HostGroupDeploymentActionResponseV1;
+  DTOs.DeployV1 | DTOs.HostGroupDeploymentActionResponseV1;
 
 export function recipe(params: RecipeParams): DoRequestRecipe {
   const {
@@ -39,6 +40,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
     noDeploy,
     bootstrap,
     applicationPhase,
+    skipPreflight,
   } = params;
 
   return {
@@ -53,6 +55,7 @@ export function recipe(params: RecipeParams): DoRequestRecipe {
       no_deploy: noDeploy,
       is_primary: isPrimary,
       target: workerId ? undefined : params.target,
+      ...(skipPreflight ? { skip_preflight: true } : {}),
     },
   };
 }
