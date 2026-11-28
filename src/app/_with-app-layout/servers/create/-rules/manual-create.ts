@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { isUnreachableServerAddress } from '../-lib/server-address';
+
 type Translate = (key: string) => string;
 
 const IPV4_SEGMENT = '(25[0-5]|2[0-4][0-9]|1?[0-9]{1,2})';
@@ -44,6 +46,10 @@ export function createManualServerCreateSchema(t: Translate) {
         .refine(
           isServerAddress,
           t('page.servers.create.validation.addressInvalid'),
+        )
+        .refine(
+          (value) => !isUnreachableServerAddress(value),
+          t('page.servers.create.validation.addressUnreachable'),
         ),
       ssh_port: z
         .string()

@@ -14,27 +14,39 @@ This guide walks through the whole thing with a real machine called `home-server
 
 ## What you need first
 
-- A Linux machine with systemd, such as Ubuntu, Debian or Raspberry Pi OS, on Intel/AMD (`amd64`) or ARM (`arm64`).
-- A terminal on that machine, sitting in front of it or through the login you already use, where you can run commands with `sudo` (as administrator).
-- Internet access from the machine. It only connects out, so nothing has to be opened on your router.
+- A **64-bit Linux** machine (Intel/AMD `x86_64` or ARM `arm64`) that runs **systemd**. Ubuntu or Debian are recommended; Raspberry Pi OS 64-bit, Fedora and most other full Linux systems work too.
+- A terminal on that machine, sitting in front of it or through the login you already use, where you are **root** or can run commands with `sudo`.
+- **Outbound HTTPS** (port 443) from the machine to dPanel and to `github.com`, where the agent is downloaded from. It only connects out, so nothing has to be opened on your router.
 - A dPanel account. You don't need an SSH key, a cloud account or dnocs on the machine.
+
+| Your machine                   | Can it run the agent?                                                                                              |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| Linux server, VPS or PC        | Yes                                                                                                                |
+| Raspberry Pi                   | Yes, with a 64-bit system (`uname -m` prints `aarch64`)                                                            |
+| Windows PC                     | Yes, inside Ubuntu on WSL2 with systemd turned on: see [Windows (WSL2)](#windows-wsl2)                             |
+| Mac                            | No. Use a Linux virtual machine on the Mac, a VPS, or a [cloud server](./cloud-providers/create-a-cloud-server.md) |
+| Phone or tablet                | No. Use a VPS, a Linux PC or a cloud server; you can still manage it from your phone                               |
+| Docker container, Alpine Linux | No: they don't run systemd. Use a full Linux server or VM                                                          |
 
 ## Step 1: Connect the machine
 
 The easiest way is from the dPanel website. You copy one command and run it on the machine.
 
 1. In dPanel, pick the workspace the machine should belong to, open **Servers**, then **Create Server**.
-2. On the **Connect a server with the dPanel agent** card, type a name for the server if you like, for example `home-server`. Leave it empty and the server takes the machine's own name once it connects.
-3. Choose **Get install command**. dPanel shows a one-line command in a dark box. Choose **Copy**.
-4. On the machine, paste the command into the terminal and run it. It looks like this:
+2. On the **Connect a server with the dPanel agent** card, choose what kind of machine it is. For a **Linux server or VPS** the card goes straight on; for a **Windows PC** it first shows the WSL2 steps (see [Windows (WSL2)](#windows-wsl2)); for a **Mac** or a **phone or tablet** it explains why the agent can't run there and what to use instead.
+3. Type a name for the server if you like, for example `my-server`. Leave it empty and the server takes the machine's own name once it connects.
+4. Choose **Get install command**. dPanel shows a one-line command in a dark box. Choose **Copy**.
+5. On the machine, paste the command into the terminal and run it. It looks like this:
 
    ```bash
    curl -fsSL --data 'code=dpe_…' https://…/api/v2/agent/install | sudo bash
    ```
 
-   It may ask for your password, because of `sudo`.
+   It may ask for your password, because of `sudo`. **Already root, or no `sudo` on the machine?** Open **Already root, or no curl on the machine?** under the command for the same command without `sudo`, and one that uses `wget` for a machine without `curl`.
 
-5. Back in dPanel, the card says **Waiting for the machine…** and changes to **Connected!** as soon as the agent connects, usually in under a minute. Choose **Open server**.
+   The command checks the machine first and stops with a clear message if something is missing. At the end it waits up to 90 seconds for the agent to connect and prints **Done: this machine is connected to dPanel** or what went wrong and what to check.
+
+6. Back in dPanel, the card says **Waiting for the machine…**, then **Installing** once the command runs there, and **Connected!** as soon as the agent connects, usually within a few minutes. If the install stops, the card shows why. Choose **Open server**.
 
 ![The Connect a server with the dPanel agent card after Get install command: the one-line command with a Copy button, how long it works, and the Waiting status with Open server](../../assets/servers/private-create-chooser.webp 'The card waits for the machine and changes to Connected! by itself. The code in the command is shown here as a placeholder.')
 
@@ -85,6 +97,34 @@ To get the one-line command of the website from a computer where you use dnocs, 
 The machine now appears on your **Servers** page with the status **Ready** and a **Private** badge, which means dPanel reaches it through its agent. Its address is its address on your own network.
 
 ![The servers page listing home-server with a Private badge, status Ready, provider Private server, no public IP, and its local address](../../assets/servers/private-servers-list.webp)
+
+## Windows (WSL2)
+
+A Windows PC runs the agent inside Ubuntu on WSL2 (the Windows Subsystem for Linux), with systemd turned on. On Windows 10 (version 2004 or newer) or Windows 11:
+
+1. Open **PowerShell as administrator** and install Ubuntu:
+
+   ```powershell
+   wsl --install -d Ubuntu
+   ```
+
+   Restart if Windows asks, then open **Ubuntu** from the Start menu and create your Linux user and password.
+
+2. In the Ubuntu window, turn on systemd, which the agent needs:
+
+   ```bash
+   printf '[boot]\nsystemd=true\n' | sudo tee /etc/wsl.conf
+   ```
+
+3. Back in PowerShell, restart WSL, then open Ubuntu again:
+
+   ```powershell
+   wsl --shutdown
+   ```
+
+4. In dPanel, choose **Windows PC** on the card, get the install command and run it in the Ubuntu window.
+
+Your server and its apps run only while the PC is on and awake and Ubuntu is running. For a server that stays online, use a VPS or a [cloud server](./cloud-providers/create-a-cloud-server.md).
 
 ## Why the agent is the default
 
@@ -193,7 +233,7 @@ You can also reinstall the agent yourself: open the server's **Settings** tab an
 
 Running `sudo dnocs machine register` again on the same machine reconnects the same server in dPanel and gives its agent a new credential. A machine belongs to one workspace at a time. A command from **Get install command** always adds a new server; to repair the agent of a server you already have, use **Reinstall** (above).
 
-A workspace can connect up to 10 machines this way. Cloud servers that dPanel creates for you don't count toward that limit.
+Your personal space can connect up to 10 machines this way, and so can each team workspace. Cloud servers that dPanel creates for you don't count toward that limit, and neither do servers whose install never connected and failed.
 
 ## Remove it
 
@@ -211,12 +251,46 @@ No, not to be managed by dPanel. The agent only connects out. You need ports 80 
 
 ### Can I use a Raspberry Pi?
 
-Yes, a 64-bit (`arm64`) Linux with systemd, such as 64-bit Raspberry Pi OS or Ubuntu.
+Yes, a 64-bit (`arm64`) Linux with systemd, such as 64-bit Raspberry Pi OS or Ubuntu. Run `uname -m` on it: `aarch64` is right, `armv7l` means a 32-bit system, which the agent can't run on.
 
 ### The server says Waiting for agent. What does that mean?
 
-dPanel has created the server and is waiting for you to run its install command on the machine. The command works for 2 hours. If nothing connects by then, the server shows **Failed** with a note that its install command expired. Delete that server (a server whose command never ran can be deleted at once), then choose **Get install command** again and run the new command on the machine.
+dPanel has created the server and is waiting for you to run its install command on the machine. The command works for 2 hours. If nothing connects by then, the server shows **Failed** with a note that the install command was never run on the machine. Delete that server (a server whose command never ran can be deleted at once), then choose **Get install command** again and run the new command on the machine.
 
 ### The command waits and the server never turns Ready. What do I check?
 
-That the machine can reach the internet over HTTPS (port 443), and that `sudo systemctl status dpanel-agent` shows the agent running. `sudo journalctl -u dpanel-agent -n 50` shows its last messages.
+Read the last lines the command printed: it says what went wrong. The server page in dPanel shows the same reason. Then check on the machine:
+
+```bash
+sudo systemctl status dpanel-agent
+sudo journalctl -u dpanel-agent -n 50
+```
+
+The machine must reach dPanel and `github.com` over HTTPS (port 443). A company network, a proxy or a firewall that blocks outgoing HTTPS keeps the agent from connecting. Once the agent connects, the server turns **Ready** by itself, even after it showed **Failed**.
+
+### What does the server's error mean?
+
+When a machine added with the install command does not connect, the server shows one of these:
+
+- **The install command was never run on the machine.** The command expired before anyone ran it. Get a new one and run it on the machine.
+- **The install ran on the machine but stopped:** followed by the reason. Fix it and run the command again (get a new one if it expired).
+- **The dPanel Agent was installed but couldn't connect to dPanel.** The agent is on the machine but can't reach dPanel; check its status and journal as above.
+
+| Reason shown                                    | What to do                                                                                               |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| The command was not run as root                 | Run it with `sudo`, or as root (`su -`) with the command that has no `sudo`                              |
+| The machine does not run Linux                  | Use a Linux machine; on Windows see [Windows (WSL2)](#windows-wsl2)                                      |
+| The machine does not run systemd                | Use a full Linux server or VM; on WSL2 turn on systemd; Docker containers and Alpine can't run the agent |
+| The machine is not 64-bit                       | Install a 64-bit system (on a Raspberry Pi, the 64-bit Raspberry Pi OS)                                  |
+| A required tool is missing                      | Install `curl`, `tar` and `sha256sum` (package `coreutils`) with the system's package manager            |
+| The dPanel Agent could not be downloaded        | Let the machine reach `github.com` over HTTPS                                                            |
+| The downloaded agent failed its integrity check | Run the command again; if it keeps failing, something on the network changes downloads                   |
+| The owner's Linux user could not be created     | Check that `useradd` works on the machine and the disk is not full                                       |
+| The agent files could not be written            | Free disk space under `/opt`, then run the command again                                                 |
+| The dpanel-agent service did not start          | Read `sudo journalctl -u dpanel-agent -n 50`                                                             |
+| dPanel did not accept the install code          | The command expired or was already used: get a new one                                                   |
+| The agent could not reach dPanel                | Allow outgoing HTTPS (port 443) to dPanel                                                                |
+
+### Can I add a machine on my home network over SSH?
+
+No. SSH joins need an address dPanel can reach from the internet, so local, private network (LAN, such as `192.168.x.x` or `10.x.x.x`) and example addresses are refused. Connect such a machine with the agent install command instead; it needs no public IP.

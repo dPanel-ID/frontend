@@ -1679,7 +1679,8 @@
           "sshPortRequired": "SSH port is required.",
           "sshPortInvalid": "Use a valid TCP port between 1 and 65535.",
           "linuxUserRequired": "Linux user is required.",
-          "linuxUserInvalid": "Use a valid Linux username, for example root or dpanel."
+          "linuxUserInvalid": "Use a valid Linux username, for example root or dpanel.",
+          "addressUnreachable": "dPanel connects over SSH from the internet, so use the server's public IP or domain. Local, private network (LAN) and example addresses can't be reached: to add such a machine, choose Connect with the dPanel agent instead."
         },
         "chooser": {
           "agent": {
@@ -1692,16 +1693,17 @@
               "key": "No dPanel SSH key on your server"
             },
             "noExtras": "The command needs no dnocs, no sign-in on the machine, no public IP, no open port and no dPanel SSH key.",
-            "requirements": "Needs Linux with systemd on amd64 or arm64, sudo, and outbound internet.",
+            "requirements": "Needs a 64-bit Linux (x86_64 or arm64) with systemd, Ubuntu or Debian recommended, root or sudo, and outbound HTTPS (port 443).",
             "limits": "Files, services, logs, the terminal, modules such as MariaDB or Docker, and app deploys all work through the agent.",
             "steps": {
               "name": "Name the server if you like, then get the install command.",
-              "run": "Run the command on the machine. It asks for sudo, because it installs the agent as a system service.",
+              "run": "Run the command on the machine as root or with sudo. It checks the machine, installs the agent as a system service and waits until it connects.",
+              "runWsl": "Run the command in the Ubuntu window. It checks the machine, installs the agent and waits until it connects.",
               "ready": "The server shows Ready here, usually within a minute."
             },
             "install": {
               "nameLabel": "Server name (optional)",
-              "namePlaceholder": "home-server",
+              "namePlaceholder": "my-server",
               "nameHint": "Letters, digits and hyphens. Leave it empty and the server takes the machine's own name once it connects.",
               "nameInvalid": "Use letters, digits and hyphens, start with a letter and end with a letter or digit, up to 63 characters.",
               "get": "Get install command",
@@ -1711,18 +1713,25 @@
               "expiryNoTime": "Works once, for 2 hours. Get a new command for another machine.",
               "phase": {
                 "waiting": "Waiting",
+                "started": "Installing",
                 "ready": "Connected",
                 "failed": "Failed",
                 "expired": "Expired"
               },
               "message": {
                 "waiting": "Waiting for the machine… Run the command on it; this updates by itself.",
+                "started": "The command is running on the machine. Waiting for the agent to connect…",
                 "ready": "Connected! {name} is ready.",
                 "failed": "{name} could not be connected. Open the server to see why.",
                 "expired": "This command has expired before the machine connected. Get a new one."
               },
               "openServer": "Open server",
-              "another": "Get a new command"
+              "another": "Get a new command",
+              "variants": {
+                "summary": "Already root, or no curl on the machine?",
+                "root": "In a root shell (for example after \"su -\"), where sudo may not be installed:",
+                "wget": "On a machine with wget but no curl, as root:"
+              }
             },
             "cli": {
               "summary": "Prefer the CLI?",
@@ -1733,7 +1742,42 @@
             "copy": "Copy",
             "copied": "Copied",
             "copyFailed": "The command could not be copied. Select it and copy it by hand.",
-            "guide": "Read the step-by-step guide"
+            "guide": "Read the step-by-step guide",
+            "machine": {
+              "title": "What kind of machine is it?",
+              "options": {
+                "linux": "Linux server or VPS",
+                "windows": "Windows PC",
+                "raspberry": "Raspberry Pi",
+                "mac": "Mac",
+                "mobile": "Phone or tablet"
+              },
+              "raspberry": "A Raspberry Pi needs a 64-bit system, such as the 64-bit Raspberry Pi OS or Ubuntu Server. Run <code>uname -m</code> on it: it should print aarch64."
+            },
+            "windows": {
+              "title": "On Windows, the agent runs in Ubuntu inside WSL2:",
+              "powershell": "Run in PowerShell (as administrator)",
+              "ubuntu": "Run in Ubuntu",
+              "steps": {
+                "install": "Install Ubuntu in WSL2, restart if Windows asks, then open Ubuntu from the Start menu and create your user.",
+                "systemd": "Turn on systemd in Ubuntu, which the agent needs.",
+                "restart": "Restart WSL, then open Ubuntu again.",
+                "run": "Get the install command below and run it in the Ubuntu window."
+              },
+              "stayOn": "Your apps run only while the PC is on and awake, with Ubuntu running. For a server that stays online, use a VPS or a cloud server."
+            },
+            "unsupported": {
+              "mac": {
+                "title": "A Mac cannot run the dPanel agent",
+                "body": "The agent needs Linux with systemd. Use a Linux virtual machine on the Mac (for example Ubuntu in UTM or Multipass), a VPS, or create a cloud server from dPanel."
+              },
+              "mobile": {
+                "title": "A phone or tablet cannot run the dPanel agent",
+                "body": "The agent needs a Linux computer with systemd. Use a VPS, a PC running Linux, or create a cloud server from dPanel; you can still manage it from your phone."
+              },
+              "cloud": "Create a cloud server",
+              "guide": "Read the guide"
+            }
           },
           "cloud": {
             "badge": "New VM",
@@ -2122,7 +2166,9 @@
         "terminalTitle": "Terminal on {name}",
         "closeTerminal": "Close terminal",
         "privateHint": "Private server: dPanel reaches it through its agent, with no public IP or SSH",
-        "agentHint": "dPanel reaches this server through its agent, not over SSH"
+        "agentHint": "dPanel reaches this server through its agent, not over SSH",
+        "agentInstallFailed": "The server did not connect",
+        "agentInstallHelp": "What this means and how to fix it"
       },
       "tabs": {
         "ariaLabel": "Server sections",

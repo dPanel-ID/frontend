@@ -1679,7 +1679,8 @@
           "sshPortRequired": "Port SSH wajib diisi.",
           "sshPortInvalid": "Gunakan port TCP valid antara 1 dan 65535.",
           "linuxUserRequired": "User Linux wajib diisi.",
-          "linuxUserInvalid": "Gunakan username Linux yang valid, contohnya root atau dpanel."
+          "linuxUserInvalid": "Gunakan username Linux yang valid, contohnya root atau dpanel.",
+          "addressUnreachable": "dPanel terhubung lewat SSH dari internet, jadi gunakan IP publik atau domain server. Alamat lokal, jaringan privat (LAN), dan alamat contoh tidak bisa dijangkau: untuk menambahkan mesin seperti itu, pilih Hubungkan dengan agen dPanel."
         },
         "chooser": {
           "agent": {
@@ -1692,16 +1693,17 @@
               "key": "Tidak ada SSH key dPanel di server Anda"
             },
             "noExtras": "Perintah ini tidak butuh dnocs, tidak perlu masuk akun di mesin, tidak perlu IP publik, port terbuka, atau SSH key dPanel.",
-            "requirements": "Butuh Linux dengan systemd di amd64 atau arm64, sudo, dan akses internet keluar.",
+            "requirements": "Butuh Linux 64-bit (x86_64 atau arm64) dengan systemd, disarankan Ubuntu atau Debian, akses root atau sudo, dan HTTPS keluar (port 443).",
             "limits": "File, layanan, log, terminal, modul seperti MariaDB atau Docker, dan deploy aplikasi semuanya berjalan lewat agen.",
             "steps": {
               "name": "Beri nama server jika mau, lalu ambil perintah pemasangannya.",
-              "run": "Jalankan perintah itu di mesin. Perintah meminta sudo, karena memasang agen sebagai layanan sistem.",
+              "run": "Jalankan perintah itu di mesin sebagai root atau dengan sudo. Perintah memeriksa mesin, memasang agen sebagai layanan sistem, lalu menunggu sampai terhubung.",
+              "runWsl": "Jalankan perintah itu di jendela Ubuntu. Perintah memeriksa mesin, memasang agen, lalu menunggu sampai terhubung.",
               "ready": "Server tampil Siap di sini, biasanya dalam satu menit."
             },
             "install": {
               "nameLabel": "Nama server (opsional)",
-              "namePlaceholder": "home-server",
+              "namePlaceholder": "server-saya",
               "nameHint": "Huruf, angka, dan tanda hubung. Biarkan kosong, dan server memakai nama mesinnya sendiri begitu terhubung.",
               "nameInvalid": "Gunakan huruf, angka, dan tanda hubung, diawali huruf dan diakhiri huruf atau angka, maksimal 63 karakter.",
               "get": "Ambil perintah pemasangan",
@@ -1711,18 +1713,25 @@
               "expiryNoTime": "Hanya bisa dipakai sekali, selama 2 jam. Ambil perintah baru untuk mesin lain.",
               "phase": {
                 "waiting": "Menunggu",
+                "started": "Memasang",
                 "ready": "Terhubung",
                 "failed": "Gagal",
                 "expired": "Kedaluwarsa"
               },
               "message": {
                 "waiting": "Menunggu mesinnya… Jalankan perintah di mesin itu; bagian ini diperbarui sendiri.",
+                "started": "Perintah sedang berjalan di mesin. Menunggu agen terhubung…",
                 "ready": "Terhubung! {name} sudah siap.",
                 "failed": "{name} tidak bisa dihubungkan. Buka servernya untuk melihat penyebabnya.",
                 "expired": "Perintah ini kedaluwarsa sebelum mesinnya terhubung. Ambil perintah baru."
               },
               "openServer": "Buka server",
-              "another": "Ambil perintah baru"
+              "another": "Ambil perintah baru",
+              "variants": {
+                "summary": "Sudah root, atau tidak ada curl di mesin?",
+                "root": "Di shell root (misalnya setelah \"su -\"), yang mungkin tidak punya sudo:",
+                "wget": "Di mesin yang punya wget tapi tidak punya curl, sebagai root:"
+              }
             },
             "cli": {
               "summary": "Lebih suka CLI?",
@@ -1733,7 +1742,42 @@
             "copy": "Salin",
             "copied": "Tersalin",
             "copyFailed": "Perintah tidak bisa disalin. Pilih teksnya lalu salin secara manual.",
-            "guide": "Baca panduan langkah demi langkah"
+            "guide": "Baca panduan langkah demi langkah",
+            "machine": {
+              "title": "Mesin apa yang ingin Anda tambahkan?",
+              "options": {
+                "linux": "Server Linux atau VPS",
+                "windows": "PC Windows",
+                "raspberry": "Raspberry Pi",
+                "mac": "Mac",
+                "mobile": "HP atau tablet"
+              },
+              "raspberry": "Raspberry Pi butuh sistem 64-bit, misalnya Raspberry Pi OS 64-bit atau Ubuntu Server. Jalankan <code>uname -m</code> di sana: hasilnya harus aarch64."
+            },
+            "windows": {
+              "title": "Di Windows, agen berjalan di Ubuntu di dalam WSL2:",
+              "powershell": "Jalankan di PowerShell (sebagai administrator)",
+              "ubuntu": "Jalankan di Ubuntu",
+              "steps": {
+                "install": "Pasang Ubuntu di WSL2, mulai ulang jika Windows meminta, lalu buka Ubuntu dari menu Start dan buat user Anda.",
+                "systemd": "Nyalakan systemd di Ubuntu, yang dibutuhkan agen.",
+                "restart": "Mulai ulang WSL, lalu buka Ubuntu lagi.",
+                "run": "Ambil perintah pemasangan di bawah lalu jalankan di jendela Ubuntu."
+              },
+              "stayOn": "Aplikasi Anda hanya berjalan selama PC menyala dan tidak tidur, dengan Ubuntu terbuka. Untuk server yang selalu online, gunakan VPS atau server cloud."
+            },
+            "unsupported": {
+              "mac": {
+                "title": "Mac tidak bisa menjalankan agen dPanel",
+                "body": "Agen butuh Linux dengan systemd. Gunakan mesin virtual Linux di Mac (misalnya Ubuntu di UTM atau Multipass), VPS, atau buat server cloud dari dPanel."
+              },
+              "mobile": {
+                "title": "HP atau tablet tidak bisa menjalankan agen dPanel",
+                "body": "Agen butuh komputer Linux dengan systemd. Gunakan VPS, PC dengan Linux, atau buat server cloud dari dPanel; Anda tetap bisa mengelolanya dari HP."
+              },
+              "cloud": "Buat server cloud",
+              "guide": "Baca panduannya"
+            }
           },
           "cloud": {
             "badge": "VM baru",
@@ -2122,7 +2166,9 @@
         "terminalTitle": "Terminal di {name}",
         "closeTerminal": "Tutup terminal",
         "privateHint": "Server privat: dPanel menjangkaunya lewat agen, tanpa IP publik atau SSH",
-        "agentHint": "dPanel menjangkau server ini lewat agennya, bukan lewat SSH"
+        "agentHint": "dPanel menjangkau server ini lewat agennya, bukan lewat SSH",
+        "agentInstallFailed": "Server tidak terhubung",
+        "agentInstallHelp": "Apa artinya dan cara memperbaikinya"
       },
       "tabs": {
         "ariaLabel": "Bagian server",

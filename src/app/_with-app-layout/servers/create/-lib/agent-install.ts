@@ -1,7 +1,17 @@
 import type { DTOs } from '@/shared/api';
+import type { Dto as AgentInstallStatusDto } from '@/shared/api/server.agent-install-status.$id';
 
-/** Where a server added with the install command stands. */
-export type AgentInstallPhase = 'waiting' | 'ready' | 'failed' | 'expired';
+/**
+ * Where a server added with the install command stands: `waiting` until the
+ * command runs on a machine, `started` once it did, then `ready`, `failed`
+ * or, when the code ran out first, `expired`.
+ */
+export type AgentInstallPhase =
+  | 'waiting'
+  | 'started'
+  | 'ready'
+  | 'failed'
+  | 'expired';
 
 const FAILED_STATUSES = ['failed', 'error', 'cancelled', 'deleting', 'deleted'];
 
@@ -22,11 +32,50 @@ export function agentInstallPhase(
   return expired ? 'expired' : 'waiting';
 }
 
+/** What the card shows about a running install. */
+export interface AgentInstallProgress {
+  phase: AgentInstallPhase;
+  /** Stable reason the install stopped (for example no_systemd), or ''. */
+  reason: string;
+  /** The server's error, which says what happened and what to do. */
+  error: string;
+}
+
+/**
+ * The progress of an install from the install-status endpoint. A connected
+ * agent wins over everything; a reported reason or a failed server is a
+ * failure; a fetched script means the command started on the machine.
+ */
+export function agentInstallProgress(
+  dto: AgentInstallStatusDto | undefined,
+  expired: boolean,
+): AgentInstallProgress {
+  const reason = dto?.install_reason?.trim() ?? '';
+  const error = dto?.error?.trim() ?? '';
+  if (dto?.connected) return { phase: 'ready', reason: '', error: '' };
+
+  const phase = agentInstallPhase(dto?.status, false);
+  if (phase === 'ready') return { phase, reason: '', error: '' };
+  if (phase === 'failed' || reason) {
+    return { phase: 'failed', reason, error };
+  }
+  if (expired) return { phase: 'expired', reason: '', error: '' };
+  return {
+    phase: dto?.script_downloaded_at ? 'started' : 'waiting',
+    reason: '',
+    error: '',
+  };
+}
+
 /** The install command as the card shows it. */
 export interface AgentInstallTicket {
   serverId: string;
   serverName: string;
   command: string;
+  /** The command for a root shell (no sudo); '' when the API gave none. */
+  rootCommand: string;
+  /** The command with wget instead of curl; '' when the API gave none. */
+  wgetCommand: string;
   /** When the single-use code stops working; null when the API gave none. */
   expiresAt: Date | null;
 }
@@ -39,6 +88,8 @@ export interface AgentInstallTicket {
 export function toAgentInstallTicket(dto: {
   server?: DTOs.MachineV1;
   command?: string;
+  root_command?: string;
+  wget_command?: string;
   expires_at?: string;
 }): AgentInstallTicket | null {
   const serverId =
@@ -52,6 +103,8 @@ export function toAgentInstallTicket(dto: {
     serverId,
     serverName: dto.server?.hostname?.trim() || serverId,
     command,
+    rootCommand: dto.root_command?.trim() ?? '',
+    wgetCommand: dto.wget_command?.trim() ?? '',
     expiresAt:
       expiresAt && !Number.isNaN(expiresAt.getTime()) ? expiresAt : null,
   };
