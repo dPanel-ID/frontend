@@ -77,6 +77,15 @@ export const [AppDataModelProvider, useAppDataModel] = buildSelector(
           '')
         : '',
 
+    // The branch the application builds: its newest build's, else the one
+    // it was created from.
+    rawBranch:
+      appDetailResponse.$status === 'success'
+        ? appDetailResponse.artifacts?.[0]?.branch ||
+          appDetailResponse.default_branch ||
+          ''
+        : '',
+
     applicationId,
     selectedServerId: latestServerId,
   };
