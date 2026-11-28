@@ -45,6 +45,7 @@ import { useEmit } from '../../-model/events';
 import { canBackUpToGit } from '../../-rules/git-backup';
 
 import { ArtifactCardPartials as Partials } from './_presentation/ArtifactCard/_Partials';
+import { ServerReleases } from './_ServerReleases';
 
 type DeployStatus = CicdDeployment['state']['status'];
 
@@ -191,6 +192,8 @@ function normalizeActiveState(value?: string): OsServiceState | undefined {
 interface DeploymentCardProps {
   data: CicdDeployment;
   artifact: CicdArtifact | undefined;
+  /** The app deploys into release folders: list them and offer rollback. */
+  usesReleaseFolders: boolean;
   onClickActivity: (activity: 'start' | 'stop' | 'restart') => void;
   onClickDelete: () => void;
   onClickRestore: () => void;
@@ -201,6 +204,7 @@ interface DeploymentCardProps {
 function DeploymentCard({
   data,
   artifact,
+  usesReleaseFolders,
   onClickActivity,
   onClickDelete,
   onClickRestore,
@@ -369,6 +373,13 @@ function DeploymentCard({
           </p>
         )}
 
+        {usesReleaseFolders && data.state.status !== 'deleted' && (
+          <ServerReleases
+            deploymentId={String(data.id)}
+            serverName={data.serverSnapshot.hostName}
+          />
+        )}
+
         {data.osService && (
           <div className="flex justify-end gap-2">
             <Button
@@ -456,9 +467,15 @@ DeploymentCard.ShimmerPlaceholder = function ShimmerPlaceholder() {
 export interface DeploymentListProps {
   list: CicdDeployment[];
   artifactList: CicdArtifact[];
+  /** The app deploys into release folders (deploy_strategy "releases"). */
+  usesReleaseFolders?: boolean;
 }
 
-export function DeploymentList({ list, artifactList }: DeploymentListProps) {
+export function DeploymentList({
+  list,
+  artifactList,
+  usesReleaseFolders = false,
+}: DeploymentListProps) {
   const artifactMap = new Map(artifactList.map((a) => [a.id, a]));
   const emit = useEmit();
 
@@ -474,6 +491,7 @@ export function DeploymentList({ list, artifactList }: DeploymentListProps) {
           key={deployment.id}
           data={deployment}
           artifact={artifactMap.get(deployment.pointerIds.artifact)}
+          usesReleaseFolders={usesReleaseFolders}
           onClickActivity={(activity) =>
             handleActivity({
               activity,
@@ -484,6 +502,7 @@ export function DeploymentList({ list, artifactList }: DeploymentListProps) {
           onClickDelete={() =>
             emit('@applications::detail/deployment-delete', {
               deploymentId: deployment.id,
+              usesReleaseFolders,
             })
           }
           onClickRestore={() =>

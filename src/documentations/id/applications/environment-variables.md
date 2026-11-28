@@ -44,6 +44,32 @@ Anda juga bisa meminta **Ask dPanel** mengerjakannya untuk Anda; lihat [Kumpulan
 **Restart** pada sebuah rilis menjalankan ulang layanan dengan nilai yang sudah ada di server. Hanya rilis (**Bangun dan rilis**, **Rilis ulang**, atau rollback) yang menulis nilai baru ke server.
 :::
 
+## Menghubungkan Redis
+
+**Redis** adalah penyimpanan cepat yang bisa dipakai aplikasi untuk cache, antrean job, dan sesi. Jika Redis sudah terpasang di server aplikasi (halaman server, tab **Modul**), langkah **Environment** menampilkan **Redis untuk aplikasi ini**.
+
+1. Tekan **Hubungkan Redis**.
+2. Biarkan **Prefix kunci** yang disarankan dPanel dari nama aplikasi, misalnya `my_blog_`. Prefix ini memisahkan kunci aplikasi ini dari aplikasi lain yang memakai Redis yang sama.
+3. Jika dPanel meminta **Password Redis**, ketik password yang Anda pilih saat memasang Redis. dPanel tidak menyimpannya, jadi tidak bisa mengisinya untuk Anda. Redis yang hanya mendengarkan di server itu sendiri biasanya tidak memakai password.
+4. Di **Gunakan Redis untuk**, biarkan tercentang cache, antrean job, dan sesi yang ingin Anda pindahkan ke Redis.
+5. Tekan **Isi variabel**.
+
+dPanel menulis `REDIS_HOST` (`127.0.0.1`, server itu sendiri), `REDIS_PORT`, `REDIS_PREFIX`, `REDIS_PASSWORD` jika ada, serta `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis`, dan `SESSION_DRIVER=redis` untuk kotak yang tercentang. Jika antrean job memakai Redis, nyalakan juga **Queue worker**.
+
+## Memakai object storage untuk unggahan
+
+Secara bawaan, file yang diunggah pengguna aplikasi tetap di server. Untuk menyimpannya di bucket yang kompatibel dengan S3 (Amazon S3 atau penyedia lain), gunakan **Object storage untuk unggahan**, di langkah **Environment** dan di **Pengaturan**, **Jalan**, **Variabel lingkungan**.
+
+1. Tekan **Gunakan object storage**.
+2. Isi **Access key ID**, **Secret access key**, **Bucket**, dan **Region**. Kosongkan **Endpoint** untuk Amazon S3; untuk penyedia lain, ketik alamat S3-nya dan biasanya centang **Gunakan alamat path-style**.
+3. Tekan **Isi variabel**, lalu simpan dan deploy.
+
+dPanel menulis `FILESYSTEM_DISK=s3`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET`, `AWS_ENDPOINT`, dan `AWS_USE_PATH_STYLE_ENDPOINT` ke variabel runtime. Seperti nilai lainnya, kunci-kunci ini disembunyikan setelah disimpan.
+
+:::warning[Tambahkan paket composer]
+Laravel memerlukan paket `league/flysystem-aws-s3-v3` untuk terhubung ke bucket. Jalankan `composer require league/flysystem-aws-s3-v3` lalu commit `composer.lock`. Jika `FILESYSTEM_DISK=s3` diatur tetapi paketnya tidak ada, pemeriksaan pra-deploy memperingatkan Anda sebelum deploy.
+:::
+
 ## Mengubah banyak variabel sekaligus
 
 Setiap tempat untuk mengubah variabel punya dua tampilan, dipilih dengan **Per variabel** dan **Teks** di atas daftarnya. Keduanya mengubah daftar yang sama, jadi Anda bisa berpindah kapan saja tanpa kehilangan apa yang sudah diketik.

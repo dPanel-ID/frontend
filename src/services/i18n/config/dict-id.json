@@ -1094,6 +1094,32 @@
           "stepCount": "{count, plural, other {# langkah}}",
           "skippedCount": "{count, plural, other {# langkah tidak diperlukan}}",
           "outputAfterStep": "Keluaran langkah ini muncul di Keluaran log setelah langkahnya selesai."
+        },
+        "serverReleases": {
+          "title": "Rilis di server ini",
+          "running": "Sedang deploy",
+          "failed": "Rilis di server ini tidak bisa dimuat.",
+          "retry": "Coba lagi",
+          "empty": "Rilis akan muncul di sini setelah deploy berikutnya.",
+          "current": "Aktif",
+          "previous": "Sebelumnya",
+          "rollBack": "Rollback",
+          "rollBackTo": "Rollback ke {release}",
+          "beforeReleaseFolders": "Sebelum folder rilis",
+          "footer": "{count} rilis terakhir disimpan. Diperbarui {when}.",
+          "footerNotReported": "{count} rilis terakhir disimpan.",
+          "rollback": {
+            "title": "Rollback server ini?",
+            "body": "dPanel mengembalikan aplikasi yang aktif di {server} ke rilis dari {release}, lalu memulai ulang aplikasi.",
+            "noMigrations": "Perubahan database tidak dibatalkan. Jika rilis yang lebih baru mengubah database (migrasi), kode lama akan berjalan dengan database yang lebih baru.",
+            "keepsSettings": "Hanya kode yang berganti. Variabel dan pengaturan aplikasi saat ini tetap seperti sekarang.",
+            "noReleaseCommands": "Perintah rilis tidak dijalankan. Perintah setelah restart tetap dijalankan, begitu juga health check.",
+            "restarts": "Situs web serta worker atau scheduler dimulai ulang dengan kode lama.",
+            "confirm": "Rollback",
+            "cancel": "Batal",
+            "started": "Mengembalikan {server} ke {release}. Pantau di tab ini.",
+            "failed": "Rollback tidak bisa dimulai"
+          }
         }
       },
       "configuration": {
@@ -1140,7 +1166,10 @@
           "healthCheck": "Pemeriksaan kesehatan",
           "none": "Tidak ada",
           "everyMinute": "Setiap menit",
-          "instances": "{count}×"
+          "instances": "{count}×",
+          "releaseFolders": "Folder rilis",
+          "releaseFoldersOn": "Aktif, menyimpan {count} rilis",
+          "releaseFoldersOff": "Mati: setiap deploy mengganti file di tempat."
         }
       },
       "tabs": {
@@ -1179,6 +1208,15 @@
         "loadBalancerSubtitle": "Permintaan yang masuk ke load balancer di depan aplikasi ini",
         "loadBalancerEmpty": "Tidak ada permintaan pada rentang ini.",
         "loadBalancerEmptyHint": "Coba perlebar rentang waktu, atau kirim permintaan ke domain di atas."
+      },
+      "deploymentDelete": {
+        "title": "Hapus deployment",
+        "body": "Hapus deployment {id}? Aplikasi berhenti di server ini dan file-nya dihapus.",
+        "keepsData": "Unggahan, storage, file .env, dan database SQLite ada di folder bersama, yang tetap disimpan kecuali Anda memilih lain. Jika aplikasi di-deploy lagi ke server ini, data itu dipakai kembali.",
+        "deleteData": "Hapus juga data aplikasi (unggahan, storage, .env, database SQLite)",
+        "deleteDataHint": "Tindakan ini tidak bisa dibatalkan. Biarkan tidak dicentang untuk menyimpan data di server.",
+        "deleted": "Deployment {id} sedang dihapus.",
+        "failed": "Tidak bisa menghapus deployment {id}"
       }
     },
     "applicationsCreate": {
@@ -1435,6 +1473,33 @@
               "queued": "Membuat database {name} di server.",
               "created": "Database {name} sedang dibuat di server. Pengaturannya ada di {keys} di bawah, termasuk kata sandinya.",
               "noDatabaseServer": "Butuh database? Pasang MariaDB atau PostgreSQL di server ini dulu (halaman server, tab Modules). Setelah itu dPanel bisa membuatnya di sini dan mengisikan kata sandinya untuk Anda."
+            },
+            "redis": {
+              "title": "Redis untuk aplikasi ini",
+              "desc": "Hubungkan aplikasi ke Redis di server ini untuk cache, antrean, dan sesi yang lebih cepat.",
+              "open": "Hubungkan Redis",
+              "openAgain": "Ubah pengaturan Redis",
+              "applied": "Redis diatur di {keys} di bawah.",
+              "target": "Aplikasi terhubung ke Redis di {host}, port {port}.",
+              "prefix": "Prefix kunci",
+              "prefixHint": "Memisahkan kunci aplikasi ini dari aplikasi lain yang memakai Redis yang sama.",
+              "password": "Password Redis",
+              "passwordOptional": "Password Redis (jika Anda mengaturnya)",
+              "passwordHint": "Redis ini meminta password. Ketik password yang Anda pilih saat memasangnya: dPanel tidak menyimpannya.",
+              "passwordOptionalHint": "dPanel tidak bisa mengetahui apakah Redis ini memakai password. Jika Anda mengaturnya saat memasang, ketik di sini; jika tidak, biarkan kosong.",
+              "reveal": "Tampilkan password",
+              "hide": "Sembunyikan password",
+              "driversTitle": "Gunakan Redis untuk",
+              "drivers": {
+                "cache": "Cache (CACHE_STORE=redis)",
+                "queue": "Antrean job (QUEUE_CONNECTION=redis)",
+                "session": "Sesi (SESSION_DRIVER=redis)"
+              },
+              "badPrefix": "Gunakan huruf, angka, garis bawah, titik dua, titik, atau tanda hubung untuk prefix.",
+              "passwordRequired": "Ketik password Redis.",
+              "cancel": "Batal",
+              "apply": "Isi variabel",
+              "noRedis": "Butuh cache atau antrean? Pasang Redis di server ini dulu (halaman server, tab Modul). Setelah itu dPanel bisa menghubungkan aplikasi ini ke Redis di sini."
             }
           }
         },
@@ -1467,7 +1532,10 @@
             "postDeploy": "Setelah restart",
             "healthCheck": "Pemeriksaan kesehatan",
             "processes": "Worker dan scheduler",
-            "processesNone": "Mati"
+            "processesNone": "Mati",
+            "releaseFolders": "Folder rilis",
+            "releaseFoldersOn": "Aktif, menyimpan {count} rilis",
+            "releaseFoldersOff": "Mati"
           }
         }
       },
@@ -1536,7 +1604,14 @@
               "desc": "Menjalankan php artisan schedule:run setiap menit, untuk tugas terjadwal aplikasi Anda. Nyalakan jika aplikasi Anda menjadwalkan tugas."
             },
             "other": "Berjalan di samping website dengan kode dan variabel yang sama."
-          }
+          },
+          "releaseFoldersTitle": "Folder rilis",
+          "releaseFoldersDesc": "Setiap deploy dibangun di folder baru. Situs Anda baru pindah ke folder itu setelah perintah rilis dan health check berhasil, jadi deploy yang gagal tidak menjatuhkan situs, dan Anda bisa rollback dengan satu klik.",
+          "releaseFoldersEnabled": "Gunakan folder rilis",
+          "releaseFoldersShared": "Disimpan di antara rilis",
+          "releaseFoldersNoShared": "Tidak ada yang disimpan di antara rilis.",
+          "releaseFoldersKeep": "dPanel menyimpan {count} rilis terakhir di server untuk rollback. Anda bisa mengubahnya nanti di Pengaturan.",
+          "releaseFoldersOff": "Mati: setiap deploy mengganti file di folder aplikasi, seperti sebelumnya."
         },
         "preflight": {
           "title": "Pemeriksaan awal",
@@ -4656,6 +4731,35 @@
         "rowMissingKey": "Isi nama untuk nilai ini.",
         "rowInvalidKey": "Gunakan huruf, angka, dan garis bawah, dan jangan diawali angka.",
         "rowDuplicateKey": "{key} sudah dipakai di baris {first}."
+      },
+      "objectStorage": {
+        "title": "Object storage untuk unggahan",
+        "desc": "Simpan file unggahan di bucket yang kompatibel dengan S3, bukan di server. dPanel mengisi variabelnya untuk Anda.",
+        "open": "Gunakan object storage",
+        "openAgain": "Ganti bucket",
+        "applied": "Unggahan disimpan ke bucket yang diatur di variabel di bawah (FILESYSTEM_DISK=s3). Aplikasi Anda memerlukan paket composer {package}.",
+        "fields": {
+          "accessKeyId": "Access key ID",
+          "secretAccessKey": "Secret access key",
+          "region": "Region",
+          "bucket": "Bucket",
+          "endpoint": "Endpoint (opsional)"
+        },
+        "endpointHint": "Kosongkan untuk Amazon S3. Untuk penyedia lain, isi alamat S3-nya.",
+        "reveal": "Tampilkan secret",
+        "hide": "Sembunyikan secret",
+        "pathStyle": "Gunakan alamat path-style",
+        "pathStyleHint": "Nyalakan untuk sebagian besar penyedia yang kompatibel dengan S3, misalnya storage yang Anda kelola sendiri. Biarkan mati untuk Amazon S3.",
+        "packageNote": "Aplikasi Anda memerlukan paket composer {package}. Tambahkan dengan composer require {package} lalu commit composer.lock, atau unggahan akan gagal.",
+        "secretNote": "Kunci hanya masuk ke variabel runtime di bawah, yang disembunyikan setelah Anda menyimpan.",
+        "cancel": "Batal",
+        "apply": "Isi variabel",
+        "errors": {
+          "required": "Isi kolom ini.",
+          "badRegion": "Gunakan region seperti us-east-1.",
+          "badBucket": "Gunakan 3-63 huruf kecil, angka, titik, atau tanda hubung.",
+          "badEndpoint": "Gunakan alamat yang diawali https:// atau http://."
+        }
       }
     }
   },
@@ -4724,7 +4828,8 @@
         "node_version_mismatch": "package.json meminta Node.js {required}, tetapi yang dipilih Node.js {selected}.",
         "frankenphp_module_missing": "Perintah start memakai FrankenPHP, tetapi modul FrankenPHP belum dipilih. Tambahkan di langkah 2.",
         "composer_lock_missing": "Repositori tidak punya composer.lock, jadi setiap build bisa memasang versi paket yang berbeda.",
-        "repository_unreadable": "dPanel tidak bisa membaca kebutuhan repositori, jadi tidak diperiksa."
+        "repository_unreadable": "dPanel tidak bisa membaca kebutuhan repositori, jadi tidak diperiksa.",
+        "s3_package_missing": "FILESYSTEM_DISK bernilai s3, tetapi composer.lock tidak memuat {package}. Unggahan akan gagal sampai Anda menambahkannya dengan composer require {package}."
       }
     }
   },
@@ -5259,7 +5364,31 @@
         "badStatus": "Status dari 100 sampai 599.",
         "badHealthTimeout": "Gunakan durasi seperti 5s, dari 1s sampai 1m.",
         "badRetries": "Dari 1 sampai 60 percobaan.",
-        "healthNeedsPort": "Pemeriksaan kesehatan membutuhkan port aplikasi, dan aplikasi ini tidak punya."
+        "healthNeedsPort": "Pemeriksaan kesehatan membutuhkan port aplikasi, dan aplikasi ini tidak punya.",
+        "badKeepReleases": "Simpan antara {min} dan {max} rilis.",
+        "tooManySharedPaths": "Paling banyak {max} path.",
+        "sharedPathAbsolute": "{path}: gunakan path di dalam folder aplikasi, tanpa / atau ~ di depan.",
+        "sharedPathParent": "{path}: path tidak boleh naik dengan \"..\".",
+        "sharedPathInvalid": "{path}: ini bukan path yang valid.",
+        "sharedPathTooLong": "{path}: path ini terlalu panjang.",
+        "sharedPathDuplicate": "{path} tercantum dua kali."
+      },
+      "releaseFolders": {
+        "title": "Folder rilis",
+        "desc": "Deploy tanpa downtime dan rollback dengan satu klik.",
+        "enabled": "Gunakan folder rilis",
+        "point": {
+          "build": "Setiap deploy membangun aplikasi Anda di folder baru, di samping folder yang sedang aktif.",
+          "switch": "Aplikasi baru pindah ke folder baru setelah perintah rilis berhasil dan health check lolos. Jika ada yang gagal, versi yang sekarang tetap melayani.",
+          "rollback": "Beberapa rilis terakhir tetap ada di server, jadi Anda bisa kembali ke salah satunya dari tab Rilis.",
+          "shared": "File yang harus bertahan saat deploy (unggahan di storage, .env, database SQLite) disimpan di folder bersama yang dipakai setiap rilis."
+        },
+        "turnOnNote": "Berlaku pada deploy berikutnya. Di server yang sudah menjalankan aplikasi ini, file seperti storage dipindahkan sekali ke folder bersama saat deploy itu.",
+        "turnOffNote": "Mematikan folder rilis tidak didukung di server yang sudah memakainya. Untuk kembali, hapus aplikasi dari server itu di tab Rilis lalu deploy lagi. Sampai saat itu, server tersebut tetap memakai folder rilis.",
+        "sharedPaths": "Disimpan di antara rilis",
+        "sharedPathsHint": "Satu path per baris, relatif terhadap folder aplikasi, misalnya storage atau .env. Path yang tidak ada dilewati. Paling banyak {max}.",
+        "keepReleases": "Jumlah rilis yang disimpan",
+        "keepReleasesHint": "Rilis yang lebih lama dihapus setelah setiap deploy."
       }
     }
   },

@@ -248,7 +248,23 @@ export interface AppDefinition {
   processes?: AppDefinitionProcess[] | null;
   /** HTTP check of the restarted service. Null removes it. */
   health_check?: AppDefinitionHealthCheck | null;
+  /**
+   * How a deploy lays out the app's files on the server. Missing or empty
+   * means "in_place", the behaviour of every app made before release
+   * folders existed.
+   */
+  deploy_strategy?: AppDeployStrategy | '' | null;
+  /**
+   * With "releases": paths, relative to the build folder, kept in the
+   * shared folder and linked into every release. At most 20.
+   */
+  shared_paths?: string[] | null;
+  /** With "releases": how many releases stay on the server (1-10; 0 = 3). */
+  keep_releases?: number | null;
 }
+
+/** "releases" builds every deploy in its own folder and switches to it. */
+export type AppDeployStrategy = 'in_place' | 'releases';
 
 export interface AppDefinitionRelease {
   /** Missing means on. */
@@ -352,12 +368,7 @@ interface AutoDeploy {
 }
 
 export type BuildProgressStatusV1 =
-  | 'none'
-  | 'waiting'
-  | 'running'
-  | 'succeeded'
-  | 'failed'
-  | 'skipped';
+  'none' | 'waiting' | 'running' | 'succeeded' | 'failed' | 'skipped';
 
 export interface BuildStepV1 {
   name: string;

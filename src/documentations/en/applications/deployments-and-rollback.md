@@ -88,6 +88,52 @@ dPanel refuses to delete a build that a release still uses, or one that is still
 
 From the terminal, list the builds with `dnocs application detail artifact list --id <application ID>`, then delete one with `dnocs application detail artifact delete --id <application ID> --artifact-id <build ID>`. The same rules apply. A server cannot be deleted while builds made on it remain. See [AI in the terminal](../ai/ai-in-the-terminal.md) to install dnocs.
 
+## Release folders: deploy without downtime
+
+**Release folders** change how a deploy lands on the server. Without them, each deploy replaces the files in the app's folder while the app keeps running. With them:
+
+1. Each deploy builds your app in a new folder, a **release**, next to the one that is live.
+2. dPanel runs the release commands (for example database migrations) in the new release. Your live site switches to it only after they succeed, the app restarts and the health check passes. If anything fails, the current version keeps serving.
+3. Files that must survive a deploy, such as uploads in `storage`, the `.env` file and an SQLite database, live in a **shared folder** that every release uses.
+
+New Laravel apps use release folders from the start. dPanel keeps the last 3 releases on each server, so you can switch back to one in seconds.
+
+### Turn release folders on or off
+
+1. Open the application and go to **Settings**.
+2. Under **Release and processes**, press **Edit**.
+3. Turn on **Release folders**. Adjust **Kept between releases** (one path per line, relative to the app's folder; a path that does not exist is skipped; at most 20) and **Releases to keep** (1 to 10).
+4. Press **Save**, then deploy.
+
+It takes effect on the next deploy. On a server that already runs the app, files such as `storage` are moved to the shared folder once, during that deploy.
+
+:::warning[Turning it off]
+Turning release folders off is not supported on a server that already uses them. To go back, delete the deployment on that server and deploy the app again. Until then, that server keeps using release folders.
+:::
+
+### Roll back to an earlier release
+
+With release folders, each server in **On servers** shows **Releases on this server**: every release kept there, newest first, with when it was built and its commit. **Live** marks the one serving now, and **Previous** the one before it. A release named **Before release folders** holds the files the app had before it moved to release folders.
+
+1. In **On servers**, find the server.
+2. Press **Roll back** on the release you want.
+3. Read the dialog and press **Roll back**.
+
+dPanel switches the live app on that server to the older release and restarts the website and any worker or scheduler. Commands set to run after the restart run, and so does the health check. This takes seconds, because nothing is built.
+
+:::danger[What a rollback does not undo]
+- **Database changes stay.** If a newer release ran a migration, the older code runs against the newer database. Write migrations that the previous version can live with, or roll the database back yourself.
+- **Variables and settings stay.** Only the code switches; the app's current environment variables and settings are kept.
+- **Release commands do not run.**
+
+:::
+
+**Roll back** is not offered while a deploy or another rollback is running on that server. A list that reads **Releases appear here after the next deploy** belongs to an app that has not been deployed with release folders yet.
+
+### Delete a deployment that uses release folders
+
+When you press **Delete** on a release in **On servers**, its uploads, `storage`, `.env` file and SQLite database are kept in the shared folder by default, so deploying to that server again finds them. Tick **Also delete the app's data** in the dialog to remove them too. That cannot be undone.
+
 ## Statuses
 
 | Build     | Release       | Meaning                                        |
@@ -118,3 +164,11 @@ The build card names the person who ran it. Select the name to open their public
 ### Why can't I delete a build?
 
 A release still uses it, or it is still building. Delete the release under **On servers** first, or wait for the build to finish.
+
+### What is the difference between the two rollbacks?
+
+**Roll back** on a build releases that build again: dPanel places it on the servers you tick, which takes as long as a release. **Roll back** under **Releases on this server** switches back to a release that is still on that server, which takes seconds. The second is there only for apps that use release folders.
+
+### Does a rollback undo my database migrations?
+
+No, neither kind does. See [What a rollback does not undo](#roll-back-to-an-earlier-release).

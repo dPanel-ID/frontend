@@ -255,6 +255,49 @@ describe('lifecycleDefinition', () => {
     });
   });
 
+  it('keeps the release folders a new Laravel preset suggests', () => {
+    const preset = laravelPreset();
+    preset.definition = {
+      ...preset.definition,
+      deploy_strategy: 'releases',
+      shared_paths: ['storage', '.env', 'database/database.sqlite'],
+      keep_releases: 3,
+    };
+    const patch = presetFormPatch(preset, { runtimeEnvText: '', key: 'k' });
+    expect(patch?.lifecycle.releaseFolders).toEqual({
+      enabled: true,
+      sharedPaths: ['storage', '.env', 'database/database.sqlite'],
+      keepReleases: 3,
+    });
+    const definition = lifecycleDefinition(patch!.lifecycle);
+    expect(definition.deploy_strategy).toBe('releases');
+    expect(definition.shared_paths).toEqual([
+      'storage',
+      '.env',
+      'database/database.sqlite',
+    ]);
+    expect(definition.keep_releases).toBe(3);
+
+    // Turned off in the wizard: nothing is sent, the app deploys in place.
+    const off = lifecycleDefinition({
+      ...patch!.lifecycle,
+      releaseFolders: { ...patch!.lifecycle.releaseFolders!, enabled: false },
+    });
+    expect(off.deploy_strategy).toBeUndefined();
+    expect(off.shared_paths).toBeUndefined();
+  });
+
+  it('sends no release folders for a preset without them', () => {
+    const patch = presetFormPatch(laravelPreset(), {
+      runtimeEnvText: '',
+      key: 'k',
+    });
+    expect(patch?.lifecycle.releaseFolders).toBeNull();
+    expect(
+      lifecycleDefinition(patch!.lifecycle).deploy_strategy,
+    ).toBeUndefined();
+  });
+
   it('drops a cleared health check and blank commands', () => {
     const definition = lifecycleDefinition({
       ...EMPTY_LIFECYCLE,

@@ -1,4 +1,9 @@
-import { HeartPulseIcon, RefreshCwIcon, WorkflowIcon } from 'lucide-react';
+import {
+  FolderTreeIcon,
+  HeartPulseIcon,
+  RefreshCwIcon,
+  WorkflowIcon,
+} from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -151,6 +156,61 @@ export default function LifecycleSection() {
           </span>
         </label>
       </Block>
+
+      {lifecycle.releaseFolders && (
+        <Block
+          title={t('releaseFoldersTitle')}
+          desc={t('releaseFoldersDesc')}
+          aside={
+            <Switch
+              id="wizard-release-folders"
+              checked={lifecycle.releaseFolders.enabled}
+              aria-label={t('releaseFoldersEnabled')}
+              onCheckedChange={(checked) =>
+                setLifecycle({
+                  releaseFolders: {
+                    ...lifecycle.releaseFolders!,
+                    enabled: checked === true,
+                  },
+                })
+              }
+            />
+          }
+        >
+          {lifecycle.releaseFolders.enabled ? (
+            <div className="grid gap-2 text-xs">
+              <span className="flex items-center gap-2 font-semibold">
+                <FolderTreeIcon className="size-3.5" aria-hidden />
+                {t('releaseFoldersShared')}
+              </span>
+              {lifecycle.releaseFolders.sharedPaths.length ? (
+                <ul className="flex flex-wrap gap-1.5">
+                  {lifecycle.releaseFolders.sharedPaths.map((path) => (
+                    <li key={path}>
+                      <code className="rounded bg-muted/50 px-1.5 py-0.5">
+                        {path}
+                      </code>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <span className="text-muted-foreground">
+                  {t('releaseFoldersNoShared')}
+                </span>
+              )}
+              <span className="text-muted-foreground">
+                {t('releaseFoldersKeep', {
+                  count: lifecycle.releaseFolders.keepReleases,
+                })}
+              </span>
+            </div>
+          ) : (
+            <p className="rounded-lg border border-dashed px-3 py-2 text-xs text-muted-foreground">
+              {t('releaseFoldersOff')}
+            </p>
+          )}
+        </Block>
+      )}
 
       {lifecycle.offeredProcesses.length > 0 && (
         <Block title={t('processesTitle')} desc={t('processesDesc')}>

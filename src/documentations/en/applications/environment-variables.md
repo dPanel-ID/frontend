@@ -44,6 +44,32 @@ You can also ask **Ask dPanel** to do this for you; see [Prompt cookbook](../ai/
 **Restart** on a release starts the service again with the values it already had on the server. Only a release (**Build and release**, **Redeploy** or a rollback) writes the new values to the server.
 :::
 
+## Connect Redis
+
+**Redis** is a fast store your app can use for its cache, queued jobs and sessions. When Redis is installed on the app's server (server page, **Modules** tab), the **Environment** step shows **Redis for this app**.
+
+1. Press **Connect Redis**.
+2. Keep the **Key prefix** dPanel suggests from the app's name, such as `my_blog_`. It keeps this app's keys apart from other apps that use the same Redis.
+3. If dPanel asks for a **Redis password**, type the one you chose when you installed Redis. dPanel does not keep it, so it cannot fill it in for you. Redis that only listens on the server itself usually has none.
+4. Under **Use Redis for**, keep the boxes for the cache, queued jobs and sessions you want on Redis.
+5. Press **Fill in variables**.
+
+dPanel writes `REDIS_HOST` (`127.0.0.1`, the server itself), `REDIS_PORT`, `REDIS_PREFIX`, `REDIS_PASSWORD` when there is one, and `CACHE_STORE=redis`, `QUEUE_CONNECTION=redis` and `SESSION_DRIVER=redis` for the boxes you kept. With queued jobs on Redis, turn on the **Queue worker** too.
+
+## Use object storage for uploads
+
+By default, files your app's users upload stay on the server. To keep them in an S3-compatible bucket instead (Amazon S3 or another provider), use **Object storage for uploads**, in the **Environment** step and under **Settings**, **Run**, **Environment variables**.
+
+1. Press **Use object storage**.
+2. Fill in **Access key ID**, **Secret access key**, **Bucket** and **Region**. Leave **Endpoint** empty for Amazon S3; for another provider, type its S3 address and usually tick **Use path-style addresses**.
+3. Press **Fill in variables**, then save and deploy.
+
+dPanel writes `FILESYSTEM_DISK=s3`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `AWS_BUCKET`, `AWS_ENDPOINT` and `AWS_USE_PATH_STYLE_ENDPOINT` into the runtime variables. Like every value, the keys are hidden once saved.
+
+:::warning[Add the composer package]
+Laravel needs the package `league/flysystem-aws-s3-v3` to talk to a bucket. Run `composer require league/flysystem-aws-s3-v3` and commit `composer.lock`. When `FILESYSTEM_DISK=s3` is set and the package is missing, the pre-flight checks warn you before the deploy.
+:::
+
 ## Edit many variables at once
 
 Every place that edits variables has two views, switched with **Per variable** and **Text** above the list. Both edit the same list, so you can switch at any time without losing what you typed.

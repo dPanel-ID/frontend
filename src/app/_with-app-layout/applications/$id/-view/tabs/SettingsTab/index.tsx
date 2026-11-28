@@ -14,6 +14,7 @@ import {
 import { useDevetekTranslations } from '@/services/i18n';
 
 import { toLifecycleView } from '@/entities/application/lib/lifecycle';
+import { toReleaseFoldersView } from '@/entities/application/lib/release-folders';
 
 import { capitalizeFirstLetter } from '@/shared/libs/browser/string';
 import {
@@ -90,12 +91,14 @@ export default guard(function SettingsTab() {
     });
   };
   const lifecycleView = toLifecycleView(rawAppDefinition);
+  const releaseFoldersView = toReleaseFoldersView(rawAppDefinition);
   const editLifecycle = () => {
     if (!rawAppDefinition) return;
     emit('@applications::detail/application-lifecycle-edit', {
       applicationId: appId,
       applicationName: appName,
       lifecycle: lifecycleView,
+      releaseFolders: releaseFoldersView,
       hasPort: Number(rawAppDefinition.run?.port ?? 0) > 0,
     });
   };
@@ -281,7 +284,10 @@ export default guard(function SettingsTab() {
             </Button>
           }
         >
-          <LifecycleSummary view={lifecycleView} />
+          <LifecycleSummary
+            view={lifecycleView}
+            releaseFolders={releaseFoldersView}
+          />
         </Section>
       )}
 

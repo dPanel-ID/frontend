@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import { usesReleaseFolders } from '@/entities/application/lib/release-folders';
+
 import { iife } from '@/shared/libs/browser/fn';
 import {
   couple,
@@ -35,6 +37,7 @@ export default guard(function Releases() {
   const emit = useEmit();
 
   const [appSource] = useAppDetail((s) => [s.identity.source]);
+  const [rawAppDefinition] = useAppDataModel((s) => [s.rawAppDefinition]);
   const deploy = useDeployNewBuild();
 
   const [tab, setTab] = useState<ReleasesTab>('builds');
@@ -105,6 +108,7 @@ export default guard(function Releases() {
       <DeploymentList
         list={deployments.list}
         artifactList={builds?.list ?? []}
+        usesReleaseFolders={usesReleaseFolders(rawAppDefinition)}
       />
     );
   });

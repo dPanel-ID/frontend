@@ -12,6 +12,7 @@ import useDeploymentDeleteUsecase from './-usecase/deployment-delete';
 import useDeploymentRestoreUsecase from './-usecase/deployment-restore';
 import useGitBackupUsecase from './-usecase/git-backup';
 import useGithubLoginUsecase from './-usecase/github-login';
+import useReleaseRollbackUsecase from './-usecase/release-rollback';
 import useRuntimeMoveUsecase from './-usecase/runtime-move';
 import { GitBackupDialog } from './-view/GitBackupDialog';
 
@@ -69,6 +70,13 @@ export default function EventController() {
     onSuccess: handleDefaultSuccess,
   });
 
+  const [handleReleaseRollback] = useReleaseRollbackUsecase({
+    onSuccess: () => {
+      emit('@applications::detail/deployment-history-refresh', null);
+      emit('@applications::detail/deployment-releases-refresh', null);
+    },
+  });
+
   const [handleGithubLogin] = useGithubLoginUsecase();
 
   const [handleGitBackup, gitBackup] = useGitBackupUsecase();
@@ -96,6 +104,11 @@ export default function EventController() {
   );
 
   useSubscribe('@applications::detail/runtime-move', handleRuntimeMove);
+
+  useSubscribe(
+    '@applications::detail/deployment-release-rollback',
+    handleReleaseRollback,
+  );
 
   useSubscribe('@applications::detail/deployment-git-backup', handleGitBackup);
 
