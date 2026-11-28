@@ -55,7 +55,7 @@ No. dPanel signs in with an SSH key, never a password. The Linux user you enter 
 
 ### Does my server need a public IP address?
 
-For this page, yes: dPanel must be able to reach the **Server address** and **SSH port** you enter. A server [connected with the dPanel agent](./register-a-private-machine.md) needs no public IP, because it only connects out.
+For this page, yes: dPanel must be able to reach the **Server address** and **SSH port** you enter. Addresses dPanel can never reach from the internet are refused: local ones such as `localhost` or `0.0.0.0`, private network (LAN) ones such as `192.168.x.x`, `10.x.x.x` or `172.16.x.x`, the shared `100.64.x.x` range, and example names such as `example.com` or `server.local`. A server [connected with the dPanel agent](./register-a-private-machine.md) needs no public IP, because it only connects out.
 
 ### What happens if I remove the server from dPanel?
 

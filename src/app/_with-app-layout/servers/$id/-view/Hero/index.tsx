@@ -275,11 +275,20 @@ export default guard(function Hero() {
 
         {status === 'failed' && (
           <ExecutionErrorBanner
-            title={t('setupFailed')}
+            title={isPrivate ? t('agentInstallFailed') : t('setupFailed')}
             state={server.state}
             emptyMessage={t('noErrorDetail')}
             onClickDetail={() => setIsErrorDialogOpen(true)}
           />
+        )}
+        {status === 'failed' && isPrivate && (
+          <Link
+            to="/docs/$section/$page"
+            params={{ section: 'servers', page: 'register-a-private-machine' }}
+            className="self-start text-xs font-semibold text-violet-600 underline-offset-2 hover:underline dark:text-violet-300"
+          >
+            {t('agentInstallHelp')}
+          </Link>
         )}
       </div>
 

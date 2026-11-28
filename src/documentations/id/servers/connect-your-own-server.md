@@ -55,7 +55,7 @@ Tidak. dPanel masuk dengan SSH key, tidak pernah dengan kata sandi. User Linux y
 
 ### Apakah server saya butuh alamat IP publik?
 
-Untuk halaman ini, ya: dPanel harus bisa menjangkau **Alamat server** dan **Port SSH** yang Anda isi. Server yang [dihubungkan dengan agen dPanel](./register-a-private-machine.md) tidak butuh IP publik, karena hanya terhubung ke luar.
+Untuk halaman ini, ya: dPanel harus bisa menjangkau **Alamat server** dan **Port SSH** yang Anda isi. Alamat yang tidak akan pernah bisa dijangkau dPanel dari internet ditolak: alamat lokal seperti `localhost` atau `0.0.0.0`, alamat jaringan privat (LAN) seperti `192.168.x.x`, `10.x.x.x`, atau `172.16.x.x`, rentang bersama `100.64.x.x`, dan nama contoh seperti `example.com` atau `server.local`. Server yang [dihubungkan dengan agen dPanel](./register-a-private-machine.md) tidak butuh IP publik, karena hanya terhubung ke luar.
 
 ### Apa yang terjadi jika saya menghapus server dari dPanel?
 

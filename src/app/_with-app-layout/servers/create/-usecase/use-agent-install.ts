@@ -3,14 +3,14 @@ import { useEffect, useState } from 'react';
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
-import type { DTOs } from '@/shared/api';
 import { ApiServer } from '@/shared/api';
+import type { Dto as AgentInstallStatusDto } from '@/shared/api/server.agent-install-status.$id';
 import { apiDoGet } from '@/shared/libs/api-client';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
 import {
-  agentInstallPhase,
+  agentInstallProgress,
   msUntilExpiry,
   toAgentInstallTicket,
 } from '../-lib/agent-install';
@@ -20,9 +20,10 @@ import type { AgentInstallTicket } from '../-lib/agent-install';
 const STATUS_POLL_MS = 4000;
 
 /**
- * Gets a one-line agent install command for a new server, then follows the
- * server until its agent connects. The command is kept in memory only, for
- * the person who asked for it.
+ * Gets a one-line agent install command for a new server, then follows its
+ * install: waiting for the machine, started there, connected, or stopped
+ * with a reason. The command is kept in memory only, for the person who
+ * asked for it.
  */
 export default function useAgentInstall() {
   const t = useDevetekTranslations();
@@ -31,12 +32,13 @@ export default function useAgentInstall() {
   const [ticket, setTicket] = useState<AgentInstallTicket | null>(null);
   const [isRequesting, setIsRequesting] = useState(false);
   const [expired, setExpired] = useState(false);
-  const [status, setStatus] = useState<string>();
+  const [status, setStatus] = useState<AgentInstallStatusDto>();
 
-  const phase = ticket ? agentInstallPhase(status, expired) : null;
-  const isWaiting = phase === 'waiting';
+  const progress = ticket ? agentInstallProgress(status, expired) : null;
+  const phase = progress?.phase ?? null;
+  const isWaiting = phase === 'waiting' || phase === 'started';
 
-  // Follow the server while its agent has not connected: ready and failed
+  // Follow the install while its agent has not connected: ready and failed
   // end the polling, and so does an expired code.
   useEffect(() => {
     if (!ticket || !isWaiting) return undefined;
@@ -45,13 +47,13 @@ export default function useAgentInstall() {
     let timer: number | undefined;
 
     const poll = async () => {
-      const response = await apiDoGet<DTOs.MachineV1>(
-        ApiServer.Detail.$Id.recipe({ serverId: ticket.serverId }),
+      const response = await apiDoGet<AgentInstallStatusDto>(
+        ApiServer.AgentInstallStatus.$Id.recipe({ serverId: ticket.serverId }),
         { signal: controller.signal },
       );
       if (controller.signal.aborted) return;
       // A failed read keeps the last known status and tries again.
-      if (response.$status === 'success') setStatus(response.status);
+      if (response.$status === 'success') setStatus(response);
       timer = window.setTimeout(poll, STATUS_POLL_MS);
     };
 
@@ -94,7 +96,7 @@ export default function useAgentInstall() {
         return;
       }
       setExpired(false);
-      setStatus(response.server?.status);
+      setStatus({ status: response.server?.status });
       setTicket(next);
     } finally {
       setIsRequesting(false);
@@ -107,5 +109,5 @@ export default function useAgentInstall() {
     setStatus(undefined);
   });
 
-  return { ticket, phase, isRequesting, request, reset } as const;
+  return { ticket, phase, progress, isRequesting, request, reset } as const;
 }

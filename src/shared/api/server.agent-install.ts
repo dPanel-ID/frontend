@@ -35,6 +35,10 @@ export interface Dto {
    * valid for 2 hours, so it is shown to the person who asked for it only.
    */
   command?: string;
+  /** The same command for a shell that is already root (no sudo). */
+  root_command?: string;
+  /** The same command with wget, for a machine without curl. */
+  wget_command?: string;
   /** RFC 3339 time the code stops working. */
   expires_at?: string;
 }

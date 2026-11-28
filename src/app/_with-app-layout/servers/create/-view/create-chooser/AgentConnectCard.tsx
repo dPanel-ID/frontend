@@ -3,13 +3,20 @@ import { useId, useState } from 'react';
 
 import { Link } from '@tanstack/react-router';
 import {
+  AlertTriangleIcon,
   ArrowRightIcon,
   CheckIcon,
   ChevronDownIcon,
   ClockIcon,
+  CpuIcon,
+  LaptopIcon,
+  MonitorIcon,
   PlugZapIcon,
   RotateCcwIcon,
+  ServerIcon,
+  SmartphoneIcon,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 import { useDevetekLocale, useDevetekTranslations } from '@/services/i18n';
 
@@ -35,10 +42,31 @@ const PRINT_COMMAND = 'dnocs server agent-install';
 
 const PHASE_TONES: Record<AgentInstallPhase, StatusTone> = {
   waiting: 'info',
+  started: 'info',
   ready: 'success',
   failed: 'danger',
   expired: 'warning',
 };
+
+/** The kinds of machine a person may want to add, asked before the command. */
+type MachineKind = 'linux' | 'windows' | 'raspberry' | 'mac' | 'mobile';
+
+const MACHINE_KINDS: Array<{ kind: MachineKind; icon: LucideIcon }> = [
+  { kind: 'linux', icon: ServerIcon },
+  { kind: 'windows', icon: MonitorIcon },
+  { kind: 'raspberry', icon: CpuIcon },
+  { kind: 'mac', icon: LaptopIcon },
+  { kind: 'mobile', icon: SmartphoneIcon },
+];
+
+/** The agent runs on these; Macs and phones cannot run it. */
+const SUPPORTED_KINDS: MachineKind[] = ['linux', 'windows', 'raspberry'];
+
+/** Windows joins through Ubuntu in WSL2 with systemd turned on. */
+const WSL_INSTALL_COMMAND = 'wsl --install -d Ubuntu';
+const WSL_SYSTEMD_COMMAND =
+  "printf '[boot]\\nsystemd=true\\n' | sudo tee /etc/wsl.conf";
+const WSL_RESTART_COMMAND = 'wsl --shutdown';
 
 /**
  * Recommended path of /servers/create: any server the user already has (a
@@ -106,20 +134,7 @@ export default function AgentConnectCard() {
         </div>
 
         <div className="flex min-w-0 flex-col gap-4 lg:col-span-3">
-          <ol className="flex flex-col gap-3">
-            {(['name', 'run', 'ready'] as const).map((step, index) => (
-              <li key={step} className="flex items-start gap-3">
-                <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-violet-400/30 bg-violet-500/10 text-xs font-semibold text-violet-500 dark:text-violet-300">
-                  {index + 1}
-                </span>
-                <span className="text-sm leading-relaxed text-muted-foreground">
-                  {t(`steps.${step}`)}
-                </span>
-              </li>
-            ))}
-          </ol>
-
-          <InstallCommand />
+          <MachineInstall />
 
           <CliAlternative />
 
@@ -137,6 +152,170 @@ export default function AgentConnectCard() {
   );
 }
 
+/**
+ * Asks what the machine is before handing out the command: Linux gets it
+ * right away, Windows the WSL2 steps first, a Raspberry Pi the 64-bit note,
+ * and a Mac or a phone an honest "not supported" with what to use instead.
+ */
+function MachineInstall() {
+  const t = useDevetekTranslations('page.servers.create.chooser.agent');
+  const groupId = useId();
+  const [kind, setKind] = useState<MachineKind | null>(null);
+  const supported = kind != null && SUPPORTED_KINDS.includes(kind);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <p id={groupId} className="text-sm font-semibold">
+          {t('machine.title')}
+        </p>
+        <div
+          role="radiogroup"
+          aria-labelledby={groupId}
+          className="grid grid-cols-2 gap-2 sm:grid-cols-3"
+        >
+          {MACHINE_KINDS.map(({ icon: Icon, kind: option }) => (
+            <button
+              key={option}
+              type="button"
+              role="radio"
+              aria-checked={kind === option}
+              onClick={() => setKind(option)}
+              className={cn(
+                'flex min-w-0 items-center gap-2 rounded-xl border bg-background/60 px-3 py-2 text-left text-sm font-medium transition-colors hover:border-violet-400/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50',
+                kind === option &&
+                  'border-violet-500 bg-violet-500/10 text-violet-700 dark:text-violet-200',
+              )}
+            >
+              <Icon className="size-4 shrink-0" />
+              <span className="min-w-0">{t(`machine.options.${option}`)}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {kind === 'windows' && <WindowsSteps />}
+      {kind === 'raspberry' && (
+        <p className="rounded-xl border border-amber-400/40 bg-amber-500/10 p-3 text-sm leading-relaxed text-amber-900 dark:text-amber-100">
+          {t.rich('machine.raspberry', {
+            code: (chunks) => (
+              <code className="rounded bg-border/50 px-1 py-0.5 font-mono text-xs">
+                {chunks}
+              </code>
+            ),
+          })}
+        </p>
+      )}
+      {(kind === 'mac' || kind === 'mobile') && <Unsupported kind={kind} />}
+
+      {supported && (
+        <>
+          <ol className="flex flex-col gap-3">
+            {(['name', 'run', 'ready'] as const).map((step, index) => (
+              <li key={step} className="flex items-start gap-3">
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-violet-400/30 bg-violet-500/10 text-xs font-semibold text-violet-500 dark:text-violet-300">
+                  {index + 1}
+                </span>
+                <span className="text-sm leading-relaxed text-muted-foreground">
+                  {t(
+                    kind === 'windows' && step === 'run'
+                      ? 'steps.runWsl'
+                      : `steps.${step}`,
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
+          <InstallCommand />
+        </>
+      )}
+    </div>
+  );
+}
+
+/** Ubuntu in WSL2 with systemd, the one way a Windows PC runs the agent. */
+function WindowsSteps() {
+  const t = useDevetekTranslations('page.servers.create.chooser.agent');
+  const steps = [
+    {
+      key: 'install',
+      command: WSL_INSTALL_COMMAND,
+      where: t('windows.powershell'),
+    },
+    {
+      key: 'systemd',
+      command: WSL_SYSTEMD_COMMAND,
+      where: t('windows.ubuntu'),
+    },
+    {
+      key: 'restart',
+      command: WSL_RESTART_COMMAND,
+      where: t('windows.powershell'),
+    },
+  ] as const;
+
+  return (
+    <div className="flex flex-col gap-3 rounded-xl border bg-background/60 p-4">
+      <p className="text-sm font-semibold">{t('windows.title')}</p>
+      {steps.map((step, index) => (
+        <div key={step.key} className="flex flex-col gap-2">
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {index + 1}. {t(`windows.steps.${step.key}`)}
+          </p>
+          <CommandBox
+            command={step.command}
+            label={step.where}
+            copyLabel={t('copy')}
+            copiedLabel={t('copied')}
+            copyFailedMessage={t('copyFailed')}
+          />
+        </div>
+      ))}
+      <p className="text-sm leading-relaxed text-muted-foreground">
+        4. {t('windows.steps.run')}
+      </p>
+      <p className="flex items-start gap-2 text-xs leading-relaxed text-amber-700 dark:text-amber-200">
+        <AlertTriangleIcon className="mt-0.5 size-3.5 shrink-0" />
+        {t('windows.stayOn')}
+      </p>
+    </div>
+  );
+}
+
+/** A Mac or a phone cannot run the agent; say so and offer what works. */
+function Unsupported({ kind }: { kind: 'mac' | 'mobile' }) {
+  const t = useDevetekTranslations('page.servers.create.chooser.agent');
+
+  return (
+    <div className="flex flex-col gap-3 rounded-xl border border-amber-400/40 bg-amber-500/10 p-4 text-sm text-amber-900 dark:text-amber-100">
+      <p className="flex items-start gap-2 font-semibold">
+        <AlertTriangleIcon className="mt-0.5 size-4 shrink-0" />
+        {t(`unsupported.${kind}.title`)}
+      </p>
+      <p className="leading-relaxed opacity-90">
+        {t(`unsupported.${kind}.body`)}
+      </p>
+      <div className="flex flex-wrap gap-x-4 gap-y-2">
+        <Link
+          to="/servers/create/vm-instant"
+          className="inline-flex items-center gap-1.5 font-semibold underline-offset-2 hover:underline"
+        >
+          {t('unsupported.cloud')}
+          <ArrowRightIcon className="size-4" />
+        </Link>
+        <Link
+          to="/docs/$section/$page"
+          params={{ section: 'servers', page: 'register-a-private-machine' }}
+          className="inline-flex items-center gap-1.5 font-semibold underline-offset-2 hover:underline"
+        >
+          {t('unsupported.guide')}
+          <ArrowRightIcon className="size-4" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 /** Name the server, get the one-line command, then watch it connect. */
 function InstallCommand() {
   const t = useDevetekTranslations('page.servers.create.chooser.agent');
@@ -144,7 +323,8 @@ function InstallCommand() {
   const nameId = useId();
   const hintId = useId();
   const [name, setName] = useState('');
-  const { isRequesting, phase, request, reset, ticket } = useAgentInstall();
+  const { isRequesting, phase, progress, request, reset, ticket } =
+    useAgentInstall();
 
   const nameValid = schemaAgentServerName.safeParse(name).success;
 
@@ -224,6 +404,10 @@ function InstallCommand() {
             copiedLabel={t('copied')}
             copyFailedMessage={t('copyFailed')}
           />
+          <CommandVariants
+            rootCommand={ticket.rootCommand}
+            wgetCommand={ticket.wgetCommand}
+          />
           <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
             <ClockIcon className="mt-0.5 size-3.5 shrink-0" />
             {expiresAt
@@ -242,11 +426,13 @@ function InstallCommand() {
           <StatusPill
             tone={PHASE_TONES[phase]}
             label={t(`install.phase.${phase}`)}
-            pulse={phase === 'waiting'}
+            pulse={phase === 'waiting' || phase === 'started'}
             className="shrink-0"
           />
           <span className="min-w-0 text-sm leading-relaxed text-muted-foreground">
-            {t(`install.message.${phase}`, { name: ticket.serverName })}
+            {phase === 'failed' && progress?.error
+              ? progress.error
+              : t(`install.message.${phase}`, { name: ticket.serverName })}
           </span>
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-2">
@@ -276,6 +462,52 @@ function InstallCommand() {
         </div>
       </div>
     </div>
+  );
+}
+
+/** The same command for a root shell without sudo, or without curl. */
+function CommandVariants(props: { rootCommand: string; wgetCommand: string }) {
+  const { rootCommand, wgetCommand } = props;
+  const t = useDevetekTranslations('page.servers.create.chooser.agent');
+  if (!rootCommand && !wgetCommand) return null;
+
+  return (
+    <details className="group rounded-xl border bg-background/40">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50 [&::-webkit-details-marker]:hidden">
+        {t('install.variants.summary')}
+        <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="flex flex-col gap-3 border-t px-4 py-3">
+        {rootCommand && (
+          <>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {t('install.variants.root')}
+            </p>
+            <CommandBox
+              command={rootCommand}
+              label={t('runOnMachine')}
+              copyLabel={t('copy')}
+              copiedLabel={t('copied')}
+              copyFailedMessage={t('copyFailed')}
+            />
+          </>
+        )}
+        {wgetCommand && (
+          <>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {t('install.variants.wget')}
+            </p>
+            <CommandBox
+              command={wgetCommand}
+              label={t('runOnMachine')}
+              copyLabel={t('copy')}
+              copiedLabel={t('copied')}
+              copyFailedMessage={t('copyFailed')}
+            />
+          </>
+        )}
+      </div>
+    </details>
   );
 }
 

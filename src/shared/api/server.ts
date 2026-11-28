@@ -1,4 +1,5 @@
 import * as AgentInstall from './server.agent-install';
+import * as AgentInstallStatus$Id from './server.agent-install-status.$id';
 import * as AgentUpgrade$Id from './server.agent-upgrade.$id';
 import * as Create from './server.create';
 import * as Delete$Id from './server.delete.$id';
@@ -91,6 +92,9 @@ const Root = {
     },
   },
   AgentInstall,
+  AgentInstallStatus: {
+    $Id: AgentInstallStatus$Id,
+  },
   AgentUpgrade: {
     $Id: AgentUpgrade$Id,
   },

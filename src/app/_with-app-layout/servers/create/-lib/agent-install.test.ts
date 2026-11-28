@@ -4,6 +4,7 @@ import { schemaAgentServerName } from '../-rules/agent-install';
 
 import {
   agentInstallPhase,
+  agentInstallProgress,
   msUntilExpiry,
   toAgentInstallTicket,
 } from './agent-install';
@@ -23,6 +24,53 @@ describe('agentInstallPhase', () => {
   });
 });
 
+describe('agentInstallProgress', () => {
+  it('waits until the command runs, then shows it started', () => {
+    expect(agentInstallProgress({ status: 'progress' }, false).phase).toBe(
+      'waiting',
+    );
+    expect(
+      agentInstallProgress(
+        { status: 'progress', script_downloaded_at: '2026-11-28T10:00:00Z' },
+        false,
+      ).phase,
+    ).toBe('started');
+  });
+
+  it('reports a stopped install with its reason and error', () => {
+    expect(
+      agentInstallProgress(
+        {
+          status: 'failed',
+          error: 'The install ran on the machine but stopped',
+          install_reason: 'no_systemd',
+        },
+        false,
+      ),
+    ).toEqual({
+      phase: 'failed',
+      reason: 'no_systemd',
+      error: 'The install ran on the machine but stopped',
+    });
+  });
+
+  it('is ready once the agent connected, even after a reported stop', () => {
+    expect(
+      agentInstallProgress(
+        { status: 'failed', connected: true, install_reason: 'not_connected' },
+        true,
+      ).phase,
+    ).toBe('ready');
+  });
+
+  it('expires only a server that is still waiting', () => {
+    expect(agentInstallProgress({ status: 'progress' }, true).phase).toBe(
+      'expired',
+    );
+    expect(agentInstallProgress(undefined, false).phase).toBe('waiting');
+  });
+});
+
 describe('toAgentInstallTicket', () => {
   it('maps a numeric server ID, its name and the expiry', () => {
     expect(
@@ -35,8 +83,21 @@ describe('toAgentInstallTicket', () => {
       serverId: '206',
       serverName: 'home-server',
       command: "curl -fsSL --data 'code=x' https://example.test | sudo bash",
+      rootCommand: '',
+      wgetCommand: '',
       expiresAt: new Date('2026-11-11T12:00:00Z'),
     });
+  });
+
+  it('keeps the root and wget variants', () => {
+    const ticket = toAgentInstallTicket({
+      server: { id: 9 },
+      command: 'curl x | sudo bash',
+      root_command: 'curl x | bash',
+      wget_command: 'wget x | bash',
+    });
+    expect(ticket?.rootCommand).toBe('curl x | bash');
+    expect(ticket?.wgetCommand).toBe('wget x | bash');
   });
 
   it('falls back to the ID and drops an unreadable expiry', () => {
