@@ -20,6 +20,7 @@ export default function useApplicationLifecycleEditUsecase(params: Params) {
         applicationId: payload.applicationId,
         applicationName: payload.applicationName,
         lifecycle: payload.lifecycle,
+        releaseFolders: payload.releaseFolders,
         hasPort: payload.hasPort,
       });
     },

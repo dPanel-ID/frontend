@@ -13,6 +13,7 @@ export const KNOWN_PREFLIGHT_CHECKS = new Set([
   'node_version_mismatch',
   'frankenphp_module_missing',
   'composer_lock_missing',
+  's3_package_missing',
   'repository_unreadable',
 ]);
 

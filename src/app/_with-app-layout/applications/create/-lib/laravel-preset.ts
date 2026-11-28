@@ -1,4 +1,10 @@
 import { parseEnvText } from '@/entities/application/lib/env-text';
+import {
+  keepReleasesOf,
+  normalizeSharedPath,
+  usesReleaseFolders,
+} from '@/entities/application/lib/release-folders';
+import type { ReleaseFoldersView } from '@/entities/application/lib/release-folders';
 
 import type { DTOs } from '@/shared/api';
 
@@ -31,6 +37,11 @@ export interface LifecycleDraft {
   /** Processes the preset offers (worker, scheduler); off until enabled. */
   offeredProcesses: DTOs.AppDefinitionProcess[];
   enabledProcessNames: string[];
+  /**
+   * Release folders, when the preset suggests them. Null sends nothing,
+   * so the app deploys in place like every app made before them.
+   */
+  releaseFolders: ReleaseFoldersView | null;
 }
 
 export const EMPTY_LIFECYCLE: LifecycleDraft = {
@@ -39,6 +50,7 @@ export const EMPTY_LIFECYCLE: LifecycleDraft = {
   healthCheck: null,
   offeredProcesses: [],
   enabledProcessNames: [],
+  releaseFolders: null,
 };
 
 /** What the wizard keeps of a preset to explain it and pick modules. */
@@ -129,6 +141,20 @@ function healthCheckDraft(
   };
 }
 
+/** The preset's release-folder settings; null when it suggests none. */
+function releaseFoldersDraft(
+  definition: DTOs.AppDefinition,
+): ReleaseFoldersView | null {
+  if (!usesReleaseFolders(definition)) return null;
+  return {
+    enabled: true,
+    sharedPaths: compact(definition.shared_paths)
+      .map((path) => normalizeSharedPath(String(path)))
+      .filter(Boolean),
+    keepReleases: keepReleasesOf(definition.keep_releases),
+  };
+}
+
 /**
  * Turns a preset into the form values it suggests. Null when the
  * repository is not one dPanel has a preset for. Runtime variables the
@@ -174,6 +200,7 @@ export function presetFormPatch(
         Boolean(process.name && process.command),
       ),
       enabledProcessNames: [],
+      releaseFolders: releaseFoldersDraft(definition),
     },
     laravelPreset: {
       key: current.key,
@@ -189,20 +216,25 @@ export function presetFormPatch(
 }
 
 /**
- * The release, post-deploy, processes and health check sections the
- * wizard sends. A section left empty is left out, so the definition
- * deploys as one without it.
+ * The release, post-deploy, processes, health check and release-folder
+ * sections the wizard sends. A section left empty is left out, so the
+ * definition deploys as one without it.
  */
+export type LifecycleDefinition = Pick<
+  DTOs.AppDefinition,
+  | 'release'
+  | 'post_deploy'
+  | 'processes'
+  | 'health_check'
+  | 'deploy_strategy'
+  | 'shared_paths'
+  | 'keep_releases'
+>;
+
 export function lifecycleDefinition(
   lifecycle: LifecycleDraft,
-): Pick<
-  DTOs.AppDefinition,
-  'release' | 'post_deploy' | 'processes' | 'health_check'
-> {
-  const result: Pick<
-    DTOs.AppDefinition,
-    'release' | 'post_deploy' | 'processes' | 'health_check'
-  > = {};
+): LifecycleDefinition {
+  const result: LifecycleDefinition = {};
   const releaseCommands = cleanCommands(lifecycle.release?.commands);
   if (lifecycle.release && releaseCommands.length) {
     result.release = {
@@ -230,6 +262,15 @@ export function lifecycleDefinition(
       timeout: lifecycle.healthCheck.timeout,
       retries: lifecycle.healthCheck.retries,
     };
+  }
+
+  // Only when the preset suggested them and the user kept them on.
+  if (lifecycle.releaseFolders?.enabled) {
+    result.deploy_strategy = 'releases';
+    result.shared_paths = lifecycle.releaseFolders.sharedPaths
+      .map(normalizeSharedPath)
+      .filter((item, index, list) => item && list.indexOf(item) === index);
+    result.keep_releases = lifecycle.releaseFolders.keepReleases;
   }
   return result;
 }

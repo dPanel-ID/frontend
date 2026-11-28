@@ -274,3 +274,32 @@ export function mapEnvTextValues(
   }
   return changed ? lines.join('\n') : text;
 }
+
+function escapeRegExp(text: string) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Sets each KEY=value in env text: a line that already sets KEY (with or
+ * without "export") is replaced where it stands, any other key is added at
+ * the end. Other lines and comments stay as they are. A value is quoted
+ * only when it would not read back the same without quotes.
+ */
+export function upsertEnvText(
+  text: string,
+  entries: Array<[string, string]>,
+): string {
+  const lines = text === '' ? [] : text.replace(/\n+$/, '').split('\n');
+  const missing: string[] = [];
+  for (const [key, value] of entries) {
+    const pattern = new RegExp(`^\\s*(export\\s+)?${escapeRegExp(key)}\\s*=`);
+    let found = false;
+    for (let index = 0; index < lines.length; index += 1) {
+      if (!pattern.test(lines[index] ?? '')) continue;
+      lines[index] = `${key}=${formatEnvValue(value, 'none')}`;
+      found = true;
+    }
+    if (!found) missing.push(`${key}=${formatEnvValue(value, 'none')}`);
+  }
+  return [...lines, ...missing].join('\n');
+}

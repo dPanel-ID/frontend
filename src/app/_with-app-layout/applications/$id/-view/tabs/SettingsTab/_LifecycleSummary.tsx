@@ -2,6 +2,7 @@ import { useDevetekTranslations } from '@/services/i18n';
 
 import type { LifecycleView } from '@/entities/application/lib/lifecycle';
 import { isLifecycleEmpty } from '@/entities/application/lib/lifecycle';
+import type { ReleaseFoldersView } from '@/entities/application/lib/release-folders';
 
 import { Badge } from '@/shared/presentation/atoms/Badge';
 
@@ -26,16 +27,19 @@ function Commands(props: { commands: string[]; empty: string }) {
 }
 
 /**
- * Release commands, post-deploy commands, processes and the health check
- * of any application, read-only; the section's Edit button changes them.
+ * Release commands, post-deploy commands, processes, release folders and
+ * the health check of any application, read-only; the section's Edit button changes them.
  */
-export function LifecycleSummary(props: { view: LifecycleView }) {
+export function LifecycleSummary(props: {
+  view: LifecycleView;
+  releaseFolders: ReleaseFoldersView;
+}) {
   const t = useDevetekTranslations(
     'page.applicationDetail.configuration.lifecycle',
   );
-  const { view } = props;
+  const { view, releaseFolders } = props;
 
-  if (isLifecycleEmpty(view)) {
+  if (isLifecycleEmpty(view) && !releaseFolders.enabled) {
     return (
       <p className="rounded-xl border border-dashed px-3 py-4 text-sm text-muted-foreground">
         {t('empty')}
@@ -86,6 +90,25 @@ export function LifecycleSummary(props: { view: LifecycleView }) {
           </ul>
         ) : (
           <p className="text-xs text-muted-foreground">{t('none')}</p>
+        )}
+      </Field>
+
+      <Field label={t('releaseFolders')}>
+        {releaseFolders.enabled ? (
+          <div className="grid gap-1.5">
+            <Badge variant="secondary" className="w-fit text-xs">
+              {t('releaseFoldersOn', { count: releaseFolders.keepReleases })}
+            </Badge>
+            {releaseFolders.sharedPaths.length > 0 && (
+              <p className="break-all font-mono text-[11px] text-muted-foreground">
+                {releaseFolders.sharedPaths.join(', ')}
+              </p>
+            )}
+          </div>
+        ) : (
+          <p className="text-xs text-muted-foreground">
+            {t('releaseFoldersOff')}
+          </p>
         )}
       </Field>
 

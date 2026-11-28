@@ -14,12 +14,16 @@ import {
 import { ApiApplication } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { Button } from '@/shared/presentation/atoms/Button';
-import { EnvVariablesEditor } from '@/widgets/env-variables-editor';
+import {
+  EnvVariablesEditor,
+  ObjectStorageHelper,
+} from '@/widgets/env-variables-editor';
 
 import { useFormStore } from '../../../-model/store/form';
 import { Sectioned } from '../../../-presentation/Sectioned';
 
 import DatabaseConnect from './DatabaseConnect';
+import RedisConnect from './RedisConnect';
 
 export default function Step5Env() {
   const t = useDevetekTranslations('page.applicationsCreate.wizard.step5.env');
@@ -118,6 +122,13 @@ export default function Step5Env() {
         </div>
 
         <DatabaseConnect />
+
+        <RedisConnect />
+
+        <ObjectStorageHelper
+          envText={runtimeEnvText}
+          onEnvTextChange={setRuntimeEnvText}
+        />
 
         <div className="grid gap-1.5">
           <span className="text-sm font-semibold">{t('runtimeTitle')}</span>

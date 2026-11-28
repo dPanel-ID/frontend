@@ -15,7 +15,10 @@ import {
 import { ApiApplication } from '@/shared/api';
 import { getApiErrorDetail } from '@/shared/libs/api-client/lib/error';
 import { Button } from '@/shared/presentation/atoms/Button';
-import { EnvVariablesEditor } from '@/widgets/env-variables-editor';
+import {
+  EnvVariablesEditor,
+  ObjectStorageHelper,
+} from '@/widgets/env-variables-editor';
 
 import { useApplicationRunEditModel } from '../../model';
 
@@ -141,6 +144,15 @@ function RunEnvsSection() {
         actions={hasBanner ? revealButton : undefined}
         textPlaceholder={'APP_ENV="production"\nLOG_LEVEL="info"'}
       />
+
+      <div className="mt-3">
+        <ObjectStorageHelper
+          envText={envText}
+          onEnvTextChange={(next) =>
+            form.setValue('envText', next, { shouldDirty: true })
+          }
+        />
+      </div>
     </div>
   );
 }

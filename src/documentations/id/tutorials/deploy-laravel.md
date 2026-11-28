@@ -61,10 +61,12 @@ PHP, Node.js, dan FrankenPHP tidak perlu dipasang di sini: formulir aplikasi men
    - **Perintah runtime**: Laravel Octane di FrankenPHP untuk repositori ini (`php artisan octane:frankenphp …`). Aplikasi Laravel tanpa Octane memakai mode klasik FrankenPHP, yang menyajikan folder `public/`.
    - **Port aplikasi**: biarkan port kosong yang disarankan dPanel.
    - **Rilis dan proses**: **Perintah rilis** berisi `php artisan storage:link --force`, `php artisan migrate --force`, dan `php artisan optimize`. **Setelah restart** menjalankan `php artisan reload`. **Pemeriksaan kesehatan** membuka `/up`, halaman yang dijawab Laravel 11 ke atas. **Queue worker** dan **Scheduler** mati: nyalakan worker jika aplikasi Anda memakai antrean (antrean database bawaan Laravel membutuhkannya), dan scheduler jika aplikasi menjadwalkan tugas. Masing-masing memakai memori, jadi biarkan mati sampai Anda membutuhkannya.
+   - **Folder rilis**: aktif. Setiap deploy dibangun di folder baru, dan situs Anda baru pindah ke folder itu setelah perintah rilis dan health check berhasil. `storage`, `.env`, dan `database/database.sqlite` disimpan di antara rilis, dan 3 rilis terakhir tetap ada di server untuk rollback satu klik. Lihat [Folder rilis](../applications/deployments-and-rollback.md#folder-rilis-deploy-tanpa-downtime).
 5. **Environment**: **Variabel runtime** sudah berisi `APP_ENV=production`, `APP_DEBUG=false`, dan `LOG_CHANNEL=stderr` (serta pengaturan Octane). Lalu:
    - Tekan **Buat database** di **Database untuk aplikasi ini**, pilih **PostgreSQL**, biarkan nama yang disarankan dPanel, dan konfirmasi. dPanel membuat basis data dan penggunanya dengan kata sandi kuat, lalu menulis `DB_CONNECTION=pgsql` dan pengaturan `DB_*` lainnya ke **Variabel runtime**. Anda tidak pernah mengetik kata sandinya.
    - Tambahkan alamat Anda: `APP_URL=https://app.example.com`.
    - Biarkan **Variabel build-time** kosong, dan jangan tambahkan `APP_KEY`: dPanel yang membuatnya.
+   - Opsional: tekan **Hubungkan Redis** jika Redis terpasang di server, untuk cache, antrean, dan sesi yang lebih cepat, atau **Gunakan object storage** untuk menyimpan unggahan di bucket. Lihat [Variabel environment](../applications/environment-variables.md#menghubungkan-redis).
 6. **Pratinjau**: periksa ringkasannya. **Pemeriksaan awal** membandingkan yang diminta repositori (versi dan ekstensi PHP di `composer.json` dan `composer.lock`, versi Node.js di `package.json`) dengan pilihan Anda. Error, misalnya versi PHP yang tidak didukung aplikasi, menahan tombol rilis: perbaiki, atau centang **Tetap deploy** jika Anda yakin. Peringatan tidak menahan apa pun. Tekan **Rilis aplikasi**.
 
 ![Langkah Setup aplikasi untuk Laravel: Node.js dan PHP sama-sama terpilih di Binary yang dibutuhkan, FrankenPHP di Other dependencies](../../assets/tutorials/laravel-app-setup-runtimes.webp)
@@ -134,3 +136,7 @@ Bisa. Buka **Pengaturan** aplikasi, tekan **Ubah** di **Rilis dan proses**, lalu
 ### Bisakah memakai MariaDB, bukan PostgreSQL?
 
 Bisa. Pasang **MariaDB**, buat basis data dari halaman **Kelola**-nya, lalu atur `DB_CONNECTION=mysql` dan `DB_PORT=3306`.
+
+### Bagaimana cara rollback deploy yang bermasalah?
+
+Buka tab **Rilis** aplikasi, pindah ke **Di server**, lalu tekan **Rollback** pada rilis sebelumnya di **Rilis di server ini**. Prosesnya hanya beberapa detik. Migrasi database tidak dibatalkan. Lihat [Rollback ke rilis sebelumnya](../applications/deployments-and-rollback.md#rollback-ke-rilis-sebelumnya).

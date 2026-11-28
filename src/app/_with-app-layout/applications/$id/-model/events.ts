@@ -14,6 +14,7 @@ import type {
   DeploymentDeletePayload,
   DeploymentRestorePayload,
   GitBackupPayload,
+  ReleaseRollbackPayload,
   RuntimeMovePayload,
 } from '../-rules/usecase-types';
 
@@ -27,6 +28,8 @@ type EventsRegistry = Rescope<
     'deployment-delete': DeploymentDeletePayload;
     'deployment-restore': DeploymentRestorePayload;
     'deployment-git-backup': GitBackupPayload;
+    'deployment-release-rollback': ReleaseRollbackPayload;
+    'deployment-releases-refresh': null;
     'runtime-move': RuntimeMovePayload;
     'deployment-history-refresh': null;
     'application-delete': ApplicationDeletePayload;

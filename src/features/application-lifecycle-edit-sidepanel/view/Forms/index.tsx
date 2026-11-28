@@ -1,4 +1,9 @@
-import { PlusIcon, Trash2Icon } from 'lucide-react';
+import {
+  InfoIcon,
+  PlusIcon,
+  Trash2Icon,
+  TriangleAlertIcon,
+} from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
@@ -6,6 +11,7 @@ import type {
   LifecycleProcessView,
   LifecycleView,
 } from '@/entities/application/lib/lifecycle';
+import { RELEASE_FOLDER_LIMITS } from '@/entities/application/lib/release-folders';
 
 import { Button } from '@/shared/presentation/atoms/Button';
 import { ErrorInline } from '@/shared/presentation/atoms/ErrorInline';
@@ -18,6 +24,7 @@ import {
   SelectValue,
 } from '@/shared/presentation/atoms/Select';
 import { Switch } from '@/shared/presentation/atoms/Switch';
+import { TextArea } from '@/shared/presentation/atoms/TextArea';
 import { CommandListEditor } from '@/shared/presentation/molecules/CommandListEditor';
 
 import { useApplicationLifecycleEditModel } from '../../model';
@@ -56,6 +63,150 @@ function FieldLabel(props: { htmlFor: string; children: React.ReactNode }) {
 function numberOr(value: string, fallback: number) {
   const number = Number.parseInt(value, 10);
   return Number.isFinite(number) ? number : fallback;
+}
+
+/**
+ * Release folders: each deploy builds in its own folder and the live app
+ * switches only once the release commands and the health check pass.
+ * Turning it off again is explained, not blocked: the server keeps its
+ * folders until the app is removed and deployed again.
+ */
+function ReleaseFoldersBlock() {
+  const t = useDevetekTranslations(
+    'sidepanel.applicationLifecycleEdit.releaseFolders',
+  );
+  const tErrors = useDevetekTranslations(
+    'sidepanel.applicationLifecycleEdit.errors',
+  );
+  const {
+    props,
+    foldersDraft,
+    setFoldersDraft,
+    folders,
+    errors,
+    isSubmitting,
+  } = useApplicationLifecycleEditModel();
+  const wasEnabled = props.releaseFolders.enabled;
+
+  const update = (patch: Partial<typeof foldersDraft>) =>
+    setFoldersDraft((current) => ({ ...current, ...patch }));
+
+  const pathErrors = folders.sharedPaths
+    .map((path, index) => {
+      const code = errors[`releaseFolders.sharedPaths.${index}`];
+      return code ? tErrors(code, { path }) : '';
+    })
+    .filter(Boolean);
+  const listError = errors['releaseFolders.sharedPaths'];
+  const keepError = errors['releaseFolders.keepReleases'];
+
+  return (
+    <Block
+      title={t('title')}
+      desc={t('desc')}
+      aside={
+        <Switch
+          checked={foldersDraft.enabled}
+          disabled={isSubmitting}
+          aria-label={t('enabled')}
+          onCheckedChange={(checked) => update({ enabled: checked === true })}
+        />
+      }
+    >
+      <ul className="grid list-disc gap-1 pl-5 text-xs leading-relaxed text-muted-foreground">
+        <li>{t('point.build')}</li>
+        <li>{t('point.switch')}</li>
+        <li>{t('point.rollback')}</li>
+        <li>{t('point.shared')}</li>
+      </ul>
+
+      {foldersDraft.enabled && !wasEnabled && (
+        <p
+          role="status"
+          className="flex items-start gap-2 rounded-lg border border-sky-500/30 bg-sky-500/10 px-3 py-2 text-xs leading-relaxed text-sky-800 dark:text-sky-200"
+        >
+          <InfoIcon className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+          <span>{t('turnOnNote')}</span>
+        </p>
+      )}
+      {!foldersDraft.enabled && wasEnabled && (
+        <p
+          role="alert"
+          className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs leading-relaxed text-amber-800 dark:text-amber-200"
+        >
+          <TriangleAlertIcon className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+          <span>{t('turnOffNote')}</span>
+        </p>
+      )}
+
+      {foldersDraft.enabled && (
+        <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,12rem)]">
+          <div className="grid gap-1.5">
+            <FieldLabel htmlFor="lifecycle-shared-paths">
+              {t('sharedPaths')}
+            </FieldLabel>
+            <TextArea
+              id="lifecycle-shared-paths"
+              className="font-mono text-xs"
+              rows={4}
+              value={foldersDraft.sharedPathsText}
+              placeholder={'storage\n.env\ndatabase/database.sqlite'}
+              disabled={isSubmitting}
+              aria-describedby="lifecycle-shared-paths-hint"
+              aria-invalid={pathErrors.length > 0 || Boolean(listError)}
+              onChange={(event) =>
+                update({ sharedPathsText: event.target.value })
+              }
+            />
+            <span
+              id="lifecycle-shared-paths-hint"
+              className="text-xs text-muted-foreground"
+            >
+              {t('sharedPathsHint', { max: RELEASE_FOLDER_LIMITS.sharedPaths })}
+            </span>
+            {listError && (
+              <ErrorInline
+                message={tErrors(listError, {
+                  max: RELEASE_FOLDER_LIMITS.sharedPaths,
+                })}
+              />
+            )}
+            {pathErrors.map((message) => (
+              <ErrorInline key={message} message={message} />
+            ))}
+          </div>
+          <div className="grid content-start gap-1.5">
+            <FieldLabel htmlFor="lifecycle-keep-releases">
+              {t('keepReleases')}
+            </FieldLabel>
+            <Input
+              id="lifecycle-keep-releases"
+              type="number"
+              min={RELEASE_FOLDER_LIMITS.keepMin}
+              max={RELEASE_FOLDER_LIMITS.keepMax}
+              value={String(foldersDraft.keepReleases)}
+              disabled={isSubmitting}
+              onChange={(event) =>
+                update({ keepReleases: numberOr(event.target.value, 0) })
+              }
+            />
+            {keepError ? (
+              <ErrorInline
+                message={tErrors(keepError, {
+                  min: RELEASE_FOLDER_LIMITS.keepMin,
+                  max: RELEASE_FOLDER_LIMITS.keepMax,
+                })}
+              />
+            ) : (
+              <span className="text-xs text-muted-foreground">
+                {t('keepReleasesHint')}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+    </Block>
+  );
 }
 
 export default function Forms() {
@@ -450,6 +601,8 @@ export default function Forms() {
           </p>
         )}
       </Block>
+
+      <ReleaseFoldersBlock />
     </div>
   );
 }

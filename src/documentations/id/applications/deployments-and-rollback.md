@@ -88,6 +88,53 @@ dPanel menolak menghapus build yang masih dipakai sebuah rilis, atau yang masih 
 
 Dari terminal, tampilkan daftar build dengan `dnocs application detail artifact list --id <ID aplikasi>`, lalu hapus satu build dengan `dnocs application detail artifact delete --id <ID aplikasi> --artifact-id <ID build>`. Aturan yang sama berlaku. Server tidak bisa dihapus selama masih ada build yang dibuat di server itu. Lihat [AI di terminal](../ai/ai-in-the-terminal.md) untuk memasang dnocs.
 
+## Folder rilis: deploy tanpa downtime
+
+**Folder rilis** mengubah cara deploy masuk ke server. Tanpa folder rilis, setiap deploy mengganti file di folder aplikasi selagi aplikasi tetap berjalan. Dengan folder rilis:
+
+1. Setiap deploy membangun aplikasi Anda di folder baru, sebuah **rilis**, di samping folder yang sedang aktif.
+2. dPanel menjalankan perintah rilis (misalnya migrasi database) di rilis baru. Situs Anda baru pindah ke rilis itu setelah perintahnya berhasil, aplikasi dimulai ulang, dan health check lolos. Jika ada yang gagal, versi yang sekarang tetap melayani.
+3. File yang harus bertahan saat deploy, misalnya unggahan di `storage`, file `.env`, dan database SQLite, disimpan di **folder bersama** yang dipakai setiap rilis.
+
+Aplikasi Laravel baru langsung memakai folder rilis. dPanel menyimpan 3 rilis terakhir di setiap server, jadi Anda bisa kembali ke salah satunya dalam hitungan detik.
+
+### Menyalakan atau mematikan folder rilis
+
+1. Buka aplikasinya, lalu masuk ke **Pengaturan**.
+2. Di **Rilis dan proses**, tekan **Ubah**.
+3. Nyalakan **Folder rilis**. Sesuaikan **Disimpan di antara rilis** (satu path per baris, relatif terhadap folder aplikasi; path yang tidak ada dilewati; paling banyak 20) dan **Jumlah rilis yang disimpan** (1 sampai 10).
+4. Tekan **Simpan**, lalu deploy.
+
+Pengaturan ini berlaku pada deploy berikutnya. Di server yang sudah menjalankan aplikasi, file seperti `storage` dipindahkan sekali ke folder bersama saat deploy itu.
+
+:::warning[Mematikannya]
+Mematikan folder rilis tidak didukung di server yang sudah memakainya. Untuk kembali, hapus deployment di server itu lalu deploy aplikasinya lagi. Sampai saat itu, server tersebut tetap memakai folder rilis.
+:::
+
+### Rollback ke rilis sebelumnya
+
+Dengan folder rilis, setiap server di **Di server** menampilkan **Rilis di server ini**: semua rilis yang disimpan di sana, terbaru lebih dulu, dengan waktu build dan commit-nya. **Aktif** menandai rilis yang melayani sekarang, dan **Sebelumnya** rilis sebelum itu. Rilis bernama **Sebelum folder rilis** berisi file yang dimiliki aplikasi sebelum pindah ke folder rilis.
+
+1. Di **Di server**, cari servernya.
+2. Tekan **Rollback** pada rilis yang Anda inginkan.
+3. Baca dialognya, lalu tekan **Rollback**.
+
+dPanel memindahkan aplikasi yang aktif di server itu ke rilis lama, lalu memulai ulang situs web serta worker atau scheduler. Perintah setelah restart tetap dijalankan, begitu juga health check. Prosesnya hanya beberapa detik, karena tidak ada yang dibangun ulang.
+
+:::danger[Yang tidak dibatalkan oleh rollback]
+
+- **Perubahan database tetap ada.** Jika rilis yang lebih baru menjalankan migrasi, kode lama berjalan dengan database yang lebih baru. Tulis migrasi yang masih bisa dipakai versi sebelumnya, atau kembalikan databasenya sendiri.
+- **Variabel dan pengaturan tetap.** Hanya kode yang berganti; variabel environment dan pengaturan aplikasi saat ini tetap dipakai.
+- **Perintah rilis tidak dijalankan.**
+
+:::
+
+**Rollback** tidak ditawarkan selama deploy atau rollback lain sedang berjalan di server itu. Daftar yang bertuliskan **Rilis akan muncul di sini setelah deploy berikutnya** milik aplikasi yang belum pernah di-deploy dengan folder rilis.
+
+### Menghapus deployment yang memakai folder rilis
+
+Saat Anda menekan **Hapus** pada rilis di **Di server**, unggahan, `storage`, file `.env`, dan database SQLite-nya tetap disimpan di folder bersama secara bawaan, sehingga deploy berikutnya ke server itu menemukannya lagi. Centang **Hapus juga data aplikasi** di dialog untuk ikut menghapusnya. Tindakan ini tidak bisa dibatalkan.
+
 ## Status
 
 | Build      | Rilis           | Artinya                                              |
@@ -118,3 +165,11 @@ Kartu build menyebut orang yang menjalankannya. Pilih namanya untuk membuka prof
 ### Mengapa saya tidak bisa menghapus build?
 
 Build itu masih dipakai sebuah rilis, atau masih dibangun. Hapus dulu rilisnya di **Di server**, atau tunggu build-nya selesai.
+
+### Apa bedanya kedua rollback?
+
+**Kembalikan** pada sebuah build merilis ulang build itu: dPanel menaruhnya di server yang Anda centang, yang lamanya sama dengan sebuah rilis. **Rollback** di **Rilis di server ini** kembali ke rilis yang masih ada di server itu, dalam hitungan detik. Yang kedua hanya ada untuk aplikasi yang memakai folder rilis.
+
+### Apakah rollback membatalkan migrasi database saya?
+
+Tidak, keduanya tidak. Lihat [Yang tidak dibatalkan oleh rollback](#rollback-ke-rilis-sebelumnya).

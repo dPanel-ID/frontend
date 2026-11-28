@@ -31,3 +31,35 @@ export interface DeployV1 {
   machine?: MachineV1;
   service?: Partial<ServiceOriginDetailV1>;
 }
+
+/** One release folder of an application on one server. */
+export interface DeployReleaseV1 {
+  /** <UTC yyyymmddHHMMSS>-<short commit>, or 00000000000000-in-place. */
+  name: string;
+  created_at?: string | null;
+  commit?: string | null;
+  current?: boolean;
+  previous?: boolean;
+}
+
+/** GET /v1/deploy/{id}/releases: the release folders on that server. */
+export interface DeployReleasesV1 {
+  strategy?: 'in_place' | 'releases' | '' | null;
+  keep_releases?: number | null;
+  current?: string | null;
+  previous?: string | null;
+  /** Newest first. */
+  releases?: DeployReleaseV1[] | null;
+  /** When the server last reported them; null before the first report. */
+  reported_at?: string | null;
+  rollback_available?: boolean;
+  /** A deploy or rollback is in progress on that server. */
+  running?: boolean;
+}
+
+/** POST /v1/deploy/{id}/rollback. */
+export interface DeployRollbackV1 {
+  execution_id?: string;
+  /** Empty when the server picks the previous release. */
+  release?: string;
+}

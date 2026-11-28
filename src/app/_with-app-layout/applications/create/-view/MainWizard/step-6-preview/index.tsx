@@ -144,6 +144,18 @@ export default function Step6Preview() {
               value={lifecycle.healthCheck.path}
             />
           )}
+          {lifecycle.releaseFolders && (
+            <SummaryRow
+              label={t('releaseFolders')}
+              value={
+                lifecycle.releaseFolders.enabled
+                  ? t('releaseFoldersOn', {
+                      count: lifecycle.releaseFolders.keepReleases,
+                    })
+                  : t('releaseFoldersOff')
+              }
+            />
+          )}
           {lifecycle.offeredProcesses.length > 0 && (
             <SummaryRow
               label={t('processes')}

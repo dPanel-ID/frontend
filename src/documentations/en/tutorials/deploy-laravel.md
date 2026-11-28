@@ -61,10 +61,12 @@ You do not need to install PHP, Node.js or FrankenPHP here: the application form
    - **Runtime command**: Laravel Octane on FrankenPHP for this repository (`php artisan octane:frankenphp …`). A Laravel app without Octane gets FrankenPHP's classic mode, which serves the `public/` folder.
    - **Application port**: keep the free port dPanel suggests.
    - **Release and processes**: the **Release commands** are `php artisan storage:link --force`, `php artisan migrate --force` and `php artisan optimize`. **After the restart** runs `php artisan reload`. The **Health check** asks `/up`, the page Laravel 11 and newer answer on. The **Queue worker** and the **Scheduler** are off: turn the worker on if your app queues jobs (Laravel's default database queue needs it), and the scheduler if it schedules tasks. Each uses memory, so leave them off until you need them.
+   - **Release folders**: on. Each deploy builds in a new folder, and your site switches to it only after the release commands and the health check pass. `storage`, `.env` and `database/database.sqlite` are kept between releases, and the last 3 releases stay on the server for a one-click rollback. See [Release folders](../applications/deployments-and-rollback.md#release-folders-deploy-without-downtime).
 5. **Environment**: the **Runtime variables** already hold `APP_ENV=production`, `APP_DEBUG=false` and `LOG_CHANNEL=stderr` (and the Octane settings). Then:
    - Press **Create database** under **Database for this app**, pick **PostgreSQL**, keep the names dPanel suggests and confirm. dPanel creates the database and its user with a strong password and writes `DB_CONNECTION=pgsql` and the other `DB_*` settings into the **Runtime variables**. You never type the password.
    - Add your address: `APP_URL=https://app.example.com`.
    - Leave **Build-time variables** empty, and do not add `APP_KEY`: dPanel creates it.
+   - Optional: press **Connect Redis** when Redis is installed on the server, for a faster cache, queues and sessions, or **Use object storage** to keep uploads in a bucket. See [Environment variables](../applications/environment-variables.md#connect-redis).
 6. **Preview**: check the summary. **Pre-flight checks** compares what the repository asks for (the PHP version and extensions in `composer.json` and `composer.lock`, the Node.js version in `package.json`) with what you chose. An error, such as a PHP version the app does not support, holds the deploy button: fix it, or tick **Deploy anyway** if you know better. Warnings do not hold anything. Press **Deploy application**.
 
 ![The App setup step for Laravel: Node.js and PHP both selected under Required binaries, FrankenPHP under Other dependencies](../../assets/tutorials/laravel-app-setup-runtimes.webp)
@@ -134,3 +136,7 @@ Yes. Open the application's **Settings**, press **Edit** on **Release and proces
 ### Can I use MariaDB instead of PostgreSQL?
 
 Yes. Install **MariaDB**, create the database from its **Manage** page, and set `DB_CONNECTION=mysql` and `DB_PORT=3306`.
+
+### How do I roll back a bad deploy?
+
+Open the application's **Deployments** tab, switch to **On servers**, and press **Roll back** on the previous release under **Releases on this server**. It takes seconds. Database migrations are not undone. See [Roll back to an earlier release](../applications/deployments-and-rollback.md#roll-back-to-an-earlier-release).

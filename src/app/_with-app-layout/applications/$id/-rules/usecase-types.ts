@@ -1,4 +1,5 @@
 import type { LifecycleView } from '@/entities/application/lib/lifecycle';
+import type { ReleaseFoldersView } from '@/entities/application/lib/release-folders';
 import type { SchemaCommon } from '@/entities/shared/rules/schema';
 import type {
   UnitEnvironmentKV,
@@ -32,6 +33,21 @@ export interface ArtifactRollbackPayload {
 
 export interface DeploymentDeletePayload {
   deploymentId: SchemaCommon.UnitId;
+  /**
+   * The app keeps its data in a shared folder (release folders), which the
+   * dialog offers to delete too. Other apps lose their whole folder.
+   */
+  usesReleaseFolders?: boolean;
+}
+
+/** Switch the live release on one server back to an older one. */
+export interface ReleaseRollbackPayload {
+  deploymentId: SchemaCommon.UnitId;
+  /** The release folder's name. */
+  release: string;
+  /** How the release reads on screen (date and commit). */
+  releaseLabel: string;
+  serverName: string;
 }
 
 export interface DeploymentRestorePayload {
@@ -95,6 +111,7 @@ export interface ApplicationLifecycleEditPayload {
   applicationId: SchemaCommon.UnitId;
   applicationName: string;
   lifecycle: LifecycleView;
+  releaseFolders: ReleaseFoldersView;
   /** The application has a port (a health check needs one). */
   hasPort: boolean;
 }
