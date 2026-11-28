@@ -1549,20 +1549,8 @@
           "errorCount": "{count} to fix",
           "warningCount": "{count} to look at",
           "ok": "All good",
-          "levelError": "Must fix",
-          "levelWarning": "Check",
           "overrideTitle": "Deploy anyway",
-          "overrideDesc": "The build will most likely fail with the problem above. Tick this only if you know the server has what the repository asks for.",
-          "checks": {
-            "php_version_unsupported": "{package} needs PHP {required}, but PHP {selected} is selected. Pick a PHP version that fits in step 2.",
-            "php_extension_missing": "{package} needs the PHP extension {extension}, which dPanel's PHP does not include. Add it with the PHP Extensions module on this server.",
-            "php_runtime_missing": "A Laravel app needs PHP, but PHP is not the selected language.",
-            "node_runtime_missing": "The build runs npm, pnpm or yarn, but Node.js is not selected. Add Node.js in step 2.",
-            "node_version_mismatch": "package.json asks for Node.js {required}, but Node.js {selected} is selected.",
-            "frankenphp_module_missing": "The start command uses FrankenPHP, but the FrankenPHP module is not selected. Add it in step 2.",
-            "composer_lock_missing": "The repository has no composer.lock, so each build may install different package versions.",
-            "repository_unreadable": "dPanel could not read the repository's requirements, so they were not checked."
-          }
+          "overrideDesc": "The build will most likely fail with the problem above. Tick this only if you know the server has what the repository asks for."
         }
       }
     },
@@ -4701,6 +4689,25 @@
     "teamMemberPromoteAdmin": {
       "title": "Make Admin",
       "message": "Allow \"{name}\" to manage members and workspace settings?"
+    },
+    "deployPreflight": {
+      "title": "Pre-flight checks found a problem",
+      "body": "dPanel compared what the repository asks for with this application's settings and found something that will most likely break the build:",
+      "anywayNote": "Deploy anyway only if you know the server has what the repository asks for. Cancel deploys nothing.",
+      "deployAnyway": "Deploy anyway",
+      "cancel": "Cancel",
+      "levelError": "Must fix",
+      "levelWarning": "Check",
+      "checks": {
+        "php_version_unsupported": "{package} needs PHP {required}, but PHP {selected} is selected. Pick a PHP version that fits in step 2.",
+        "php_extension_missing": "{package} needs the PHP extension {extension}, which dPanel's PHP does not include. Add it with the PHP Extensions module on this server.",
+        "php_runtime_missing": "A Laravel app needs PHP, but PHP is not the selected language.",
+        "node_runtime_missing": "The build runs npm, pnpm or yarn, but Node.js is not selected. Add Node.js in step 2.",
+        "node_version_mismatch": "package.json asks for Node.js {required}, but Node.js {selected} is selected.",
+        "frankenphp_module_missing": "The start command uses FrankenPHP, but the FrankenPHP module is not selected. Add it in step 2.",
+        "composer_lock_missing": "The repository has no composer.lock, so each build may install different package versions.",
+        "repository_unreadable": "dPanel could not read the repository's requirements, so they were not checked."
+      }
     }
   },
   "toaster": {

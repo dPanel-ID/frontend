@@ -1549,20 +1549,8 @@
           "errorCount": "{count} perlu diperbaiki",
           "warningCount": "{count} perlu dilihat",
           "ok": "Semua aman",
-          "levelError": "Wajib diperbaiki",
-          "levelWarning": "Periksa",
           "overrideTitle": "Tetap deploy",
-          "overrideDesc": "Build kemungkinan besar gagal karena masalah di atas. Centang hanya jika Anda yakin server punya yang diminta repositori.",
-          "checks": {
-            "php_version_unsupported": "{package} membutuhkan PHP {required}, tetapi yang dipilih PHP {selected}. Pilih versi PHP yang sesuai di langkah 2.",
-            "php_extension_missing": "{package} membutuhkan ekstensi PHP {extension}, yang tidak ada di PHP dPanel. Tambahkan dengan modul PHP Extensions di server ini.",
-            "php_runtime_missing": "Aplikasi Laravel membutuhkan PHP, tetapi PHP bukan bahasa yang dipilih.",
-            "node_runtime_missing": "Build menjalankan npm, pnpm, atau yarn, tetapi Node.js belum dipilih. Tambahkan Node.js di langkah 2.",
-            "node_version_mismatch": "package.json meminta Node.js {required}, tetapi yang dipilih Node.js {selected}.",
-            "frankenphp_module_missing": "Perintah start memakai FrankenPHP, tetapi modul FrankenPHP belum dipilih. Tambahkan di langkah 2.",
-            "composer_lock_missing": "Repositori tidak punya composer.lock, jadi setiap build bisa memasang versi paket yang berbeda.",
-            "repository_unreadable": "dPanel tidak bisa membaca kebutuhan repositori, jadi tidak diperiksa."
-          }
+          "overrideDesc": "Build kemungkinan besar gagal karena masalah di atas. Centang hanya jika Anda yakin server punya yang diminta repositori."
         }
       }
     },
@@ -4702,6 +4690,25 @@
     "teamMemberPromoteAdmin": {
       "title": "Jadikan Admin",
       "message": "Izinkan \"{name}\" untuk mengelola anggota dan pengaturan workspace?"
+    },
+    "deployPreflight": {
+      "title": "Pemeriksaan awal menemukan masalah",
+      "body": "dPanel membandingkan yang diminta repositori dengan pengaturan aplikasi ini dan menemukan hal yang kemungkinan besar membuat build gagal:",
+      "anywayNote": "Tetap deploy hanya jika Anda yakin server punya yang diminta repositori. Batal tidak men-deploy apa pun.",
+      "deployAnyway": "Tetap deploy",
+      "cancel": "Batal",
+      "levelError": "Wajib diperbaiki",
+      "levelWarning": "Periksa",
+      "checks": {
+        "php_version_unsupported": "{package} membutuhkan PHP {required}, tetapi yang dipilih PHP {selected}. Pilih versi PHP yang sesuai di langkah 2.",
+        "php_extension_missing": "{package} membutuhkan ekstensi PHP {extension}, yang tidak ada di PHP dPanel. Tambahkan dengan modul PHP Extensions di server ini.",
+        "php_runtime_missing": "Aplikasi Laravel membutuhkan PHP, tetapi PHP bukan bahasa yang dipilih.",
+        "node_runtime_missing": "Build menjalankan npm, pnpm, atau yarn, tetapi Node.js belum dipilih. Tambahkan Node.js di langkah 2.",
+        "node_version_mismatch": "package.json meminta Node.js {required}, tetapi yang dipilih Node.js {selected}.",
+        "frankenphp_module_missing": "Perintah start memakai FrankenPHP, tetapi modul FrankenPHP belum dipilih. Tambahkan di langkah 2.",
+        "composer_lock_missing": "Repositori tidak punya composer.lock, jadi setiap build bisa memasang versi paket yang berbeda.",
+        "repository_unreadable": "dPanel tidak bisa membaca kebutuhan repositori, jadi tidak diperiksa."
+      }
     }
   },
   "toaster": {

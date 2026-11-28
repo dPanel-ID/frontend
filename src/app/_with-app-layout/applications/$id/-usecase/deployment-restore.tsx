@@ -1,6 +1,8 @@
 import { useDialog } from '@/services/dialog';
 import { useToaster } from '@/services/toaster';
 
+import { useDeployPreflightGuard } from '@/entities/deploy-preflight';
+
 import { ApiDeploy } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
 
@@ -15,16 +17,25 @@ export default function useDeploymentRestoreUsecase(params: Params) {
 
   const [openDialog] = useDialog();
   const [openToaster] = useToaster();
+  const guardPreflight = useDeployPreflightGuard();
 
   const handleUsecase = useHandler((payload: DeploymentRestorePayload) => {
     const { applicationId, artifactId, workerId } = payload;
 
-    const handleRestoreDeployment = async () => {
+    const handleRestoreDeployment = async (skipPreflight = false) => {
       const response = await ApiDeploy.Create.doPost({
         applicationId,
         artifactId,
         workerId,
+        skipPreflight,
       });
+
+      if (
+        !skipPreflight &&
+        guardPreflight(response, () => handleRestoreDeployment(true))
+      ) {
+        return;
+      }
 
       if (response.$status === 'success') {
         openToaster({
@@ -48,7 +59,7 @@ export default function useDeploymentRestoreUsecase(params: Params) {
       variant: 'warning',
       actions: {
         variant: 'YesNo',
-        yes: handleRestoreDeployment,
+        yes: () => handleRestoreDeployment(),
       },
     });
   });

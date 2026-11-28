@@ -1,13 +1,9 @@
-import {
-  AlertTriangleIcon,
-  CheckCircle2Icon,
-  ShieldCheckIcon,
-  XCircleIcon,
-} from 'lucide-react';
+import { CheckCircle2Icon, ShieldCheckIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
-import type { DTOs } from '@/shared/api';
+import { PreflightCheckList } from '@/entities/deploy-preflight';
+
 import { Button } from '@/shared/presentation/atoms/Button';
 import { Checkbox } from '@/shared/presentation/atoms/Checkbox';
 import { Spinner } from '@/shared/presentation/atoms/Spinner';
@@ -15,58 +11,12 @@ import { StatusPill } from '@/shared/presentation/molecules/StatusPill';
 
 import type { PreflightState } from '../../-lib/laravel-preset';
 
-const KNOWN_CHECKS = new Set([
-  'php_version_unsupported',
-  'php_extension_missing',
-  'php_runtime_missing',
-  'node_runtime_missing',
-  'node_version_mismatch',
-  'frankenphp_module_missing',
-  'composer_lock_missing',
-  'repository_unreadable',
-]);
-
 export interface PreflightPanelProps {
   preflight: PreflightState;
   override: boolean;
   onOverrideChange: (override: boolean) => void;
   onRetry: () => void;
   disabled?: boolean;
-}
-
-function CheckRow(props: { check: DTOs.ApplicationPreflightCheckV1 }) {
-  const t = useDevetekTranslations('page.applicationsCreate.preset.preflight');
-  const { check } = props;
-  const isError = check.level === 'error';
-  const params = Object.fromEntries(
-    Object.entries(check.params ?? {}).map(([key, value]) => [
-      key,
-      String(value as string | null),
-    ]),
-  );
-  const text = KNOWN_CHECKS.has(check.code)
-    ? t(`checks.${check.code}`, params)
-    : check.message || check.code;
-  const Icon = isError ? XCircleIcon : AlertTriangleIcon;
-
-  return (
-    <li className="flex items-start gap-2 text-sm">
-      <Icon
-        aria-hidden="true"
-        className={
-          isError
-            ? 'mt-0.5 size-4 shrink-0 text-red-600 dark:text-red-400'
-            : 'mt-0.5 size-4 shrink-0 text-amber-600 dark:text-amber-300'
-        }
-      />
-      <span className="min-w-0">
-        <span className="sr-only">
-          {isError ? t('levelError') : t('levelWarning')}:{' '}
-        </span>
-        {text}
-      </span>
-    </li>
-  );
 }
 
 /**
@@ -132,11 +82,10 @@ export function PreflightPanel(props: PreflightPanelProps) {
       )}
 
       {preflight.status === 'done' && preflight.checks.length > 0 && (
-        <ul className="mt-3 grid gap-2">
-          {preflight.checks.map((check, index) => (
-            <CheckRow key={`${check.code}-${index}`} check={check} />
-          ))}
-        </ul>
+        <PreflightCheckList
+          className="mt-3 grid gap-2"
+          checks={preflight.checks}
+        />
       )}
 
       {preflight.status === 'done' && preflight.blocking && (

@@ -6,6 +6,7 @@ import { useToaster } from '@/services/toaster';
 
 import { parseEnvText as parseEnvVariables } from '@/entities/application/lib/env-text';
 import type { EnvVariable } from '@/entities/application/lib/env-text';
+import { useDeployPreflightGuard } from '@/entities/deploy-preflight';
 
 import { ApiBundle } from '@/shared/api';
 import useHandler from '@/shared/libs/react-hooks/useHandler';
@@ -110,8 +111,11 @@ export default function useHandleDeploy() {
 
   const [openToaster] = useToaster();
   const [openDialog] = useDialog();
+  const guardPreflight = useDeployPreflightGuard();
 
-  const compileConfig = (): Record<string, unknown> | null => {
+  const compileConfig = (
+    forceSkipPreflight = false,
+  ): Record<string, unknown> | null => {
     const {
       appProgLang,
       appProgLangVersion,
@@ -225,7 +229,7 @@ export default function useHandleDeploy() {
         requiredBinaries,
         framework: appFramework,
         lifecycle: lifecycleDefinition(lifecycle),
-        skipPreflight: preflightOverride,
+        skipPreflight: preflightOverride || forceSkipPreflight,
       });
     }
 
@@ -290,13 +294,24 @@ export default function useHandleDeploy() {
     }
   };
 
-  const handleDeploy = useHandler(async () => {
-    const compiledConfig = compileConfig();
+  const submit = async (skipPreflight: boolean): Promise<boolean> => {
+    const compiledConfig = compileConfig(skipPreflight);
     if (!compiledConfig) return false;
 
     const response = await ApiBundle.Create.doPost({
       payload: compiledConfig,
     });
+
+    // The server's own pre-flight checks refused it (for example the
+    // checks on the review step could not run): offer to deploy anyway.
+    if (
+      !skipPreflight &&
+      guardPreflight(response, () => {
+        void submit(true);
+      })
+    ) {
+      return false;
+    }
 
     if (response.$status !== 'success') {
       openToaster({
@@ -323,7 +338,11 @@ export default function useHandleDeploy() {
     });
 
     return true;
-  });
+  };
+
+  const handleDeploy = useHandler((skipPreflight = false) =>
+    submit(skipPreflight),
+  );
 
   return {
     compileConfig,

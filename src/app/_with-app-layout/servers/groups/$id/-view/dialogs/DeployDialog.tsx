@@ -4,6 +4,12 @@ import { HardDriveUploadIcon, LoaderCircleIcon } from 'lucide-react';
 
 import { useDevetekTranslations } from '@/services/i18n';
 
+import {
+  PreflightCheckList,
+  getPreflightRefusal,
+} from '@/entities/deploy-preflight';
+import type { PreflightRefusal } from '@/entities/deploy-preflight';
+
 import { useRetainedResponseData } from '@/features/server-groups/usecase/use-retained-response-data';
 
 import { ApiApplication, ApiArtifact, ApiDeploy } from '@/shared/api';
@@ -26,6 +32,7 @@ import { DialogError, DialogShell, Field } from './DialogShell';
 /** Picks an application build and deploys it to every server in the group. */
 export function DeployDialog() {
   const t = useDevetekTranslations('page.serverGroups.detail.dialogs.deploy');
+  const tPreflight = useDevetekTranslations('dialog.deployPreflight');
   const {
     canRunActions,
     dialog,
@@ -41,6 +48,9 @@ export function DeployDialog() {
   const [artifactId, setArtifactId] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // A pre-flight refusal for the chosen build: shown in place, with
+  // "Deploy anyway" as the primary action until the choice changes.
+  const [refusal, setRefusal] = useState<PreflightRefusal | null>(null);
 
   const [applicationsResponse, refreshApplications] =
     ApiApplication.Find.useGet({
@@ -64,6 +74,7 @@ export function DeployDialog() {
     setApplicationId('');
     setArtifactId('');
     setError('');
+    setRefusal(null);
   };
 
   const handleDeploy = async () => {
@@ -75,15 +86,23 @@ export function DeployDialog() {
 
     setIsSubmitting(true);
     setError('');
+    const skipPreflight = refusal !== null;
 
     const response = await ApiDeploy.Create.doPost({
       applicationId,
       artifactId,
       workerId: '',
       target: { type: 'hostgroup', id: groupId },
+      skipPreflight,
     });
 
     setIsSubmitting(false);
+
+    const nextRefusal = skipPreflight ? null : getPreflightRefusal(response);
+    if (nextRefusal) {
+      setRefusal(nextRefusal);
+      return;
+    }
 
     if (response.$status === 'failed') {
       setError(getApiErrorDetail(response.error));
@@ -126,7 +145,11 @@ export function DeployDialog() {
             ) : (
               <HardDriveUploadIcon className="size-4" />
             )}
-            {isSubmitting ? t('queueing') : t('deploy')}
+            {isSubmitting
+              ? t('queueing')
+              : refusal
+                ? tPreflight('deployAnyway')
+                : t('deploy')}
           </button>
         </>
       }
@@ -145,6 +168,7 @@ export function DeployDialog() {
           onValueChange={(value) => {
             setApplicationId(value);
             setArtifactId('');
+            setRefusal(null);
           }}
         >
           <SelectTrigger>
@@ -181,7 +205,10 @@ export function DeployDialog() {
         <Select
           disabled={!applicationId || artifactsResponse.$status === 'loading'}
           value={artifactId}
-          onValueChange={setArtifactId}
+          onValueChange={(value) => {
+            setArtifactId(value);
+            setRefusal(null);
+          }}
         >
           <SelectTrigger>
             <SelectValue placeholder={t('artifactPlaceholder')} />
@@ -205,6 +232,24 @@ export function DeployDialog() {
             </span>
           )}
       </Field>
+
+      {refusal && (
+        <div
+          role="alert"
+          className="grid gap-2 rounded-lg border border-amber-400/40 bg-amber-500/5 p-3 text-sm"
+        >
+          <p className="font-semibold">{tPreflight('title')}</p>
+          <p className="text-xs text-muted-foreground">{tPreflight('body')}</p>
+          {refusal.checks.length ? (
+            <PreflightCheckList checks={refusal.checks} />
+          ) : (
+            <p className="text-xs">{refusal.message}</p>
+          )}
+          <p className="text-xs text-muted-foreground">
+            {tPreflight('anywayNote')}
+          </p>
+        </div>
+      )}
 
       <DialogError message={error} />
     </DialogShell>

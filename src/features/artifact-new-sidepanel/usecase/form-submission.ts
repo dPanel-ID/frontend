@@ -1,6 +1,8 @@
 import { useDevetekTranslations } from '@/services/i18n';
 import { useToaster } from '@/services/toaster';
 
+import { useDeployPreflightGuard } from '@/entities/deploy-preflight';
+
 import { ApiApplication, ApiArtifact, ApiDeploy } from '@/shared/api';
 import type { ExplicitTarget } from '@/shared/rules/host-group';
 
@@ -34,6 +36,8 @@ export function buildReleaseRequest(params: {
   applicationId: string;
   artifactId: string;
   target: ReturnType<typeof resolveDeploymentRequestTarget>;
+  /** Deploy despite a blocking pre-flight result. */
+  skipPreflight?: boolean;
 }) {
   return {
     applicationId: params.applicationId,
@@ -41,6 +45,7 @@ export function buildReleaseRequest(params: {
     workerId: params.target.workerId,
     isPrimary: true,
     target: params.target.explicitTarget,
+    ...(params.skipPreflight ? { skipPreflight: true } : {}),
   };
 }
 
@@ -50,6 +55,7 @@ export default function useFormSubmissionUsecase() {
 
   const [openToaster] = useToaster();
   const sidepanelEmit = useEmit();
+  const guardPreflight = useDeployPreflightGuard();
 
   const handleSubmit = form.handleSubmit(
     async (values) => {
@@ -122,43 +128,57 @@ export default function useFormSubmissionUsecase() {
       // Creating the artifact only records the build. The deployment request
       // builds it and releases it onto the chosen server or group, the same
       // server the application already runs on included.
-      const responseDeployCreation = await ApiDeploy.Create.doPost(
-        buildReleaseRequest({
-          applicationId: props.applicationId,
-          artifactId: String(createdArtifactId),
-          target: deploymentTarget,
-        }),
-      );
-
-      if (responseDeployCreation.$status !== 'success') {
-        openToaster({
-          variant: 'warning',
-          message: t('deployCreateWarning'),
-        });
-      } else {
-        openToaster({
-          variant: 'success',
-          message: t('success'),
-        });
-      }
-
-      sidepanelEmit('#artifact-new-sidepanel/sidepanel-close', {
-        bypass: true,
-      });
-
-      if (
-        deploymentTarget.explicitTarget?.type === 'hostgroup' &&
-        responseDeployCreation.$status === 'success' &&
-        'operation_id' in responseDeployCreation &&
-        responseDeployCreation.operation_id
-      ) {
-        props.onOperationQueued?.(
-          deploymentTarget.explicitTarget.id,
-          responseDeployCreation.operation_id,
+      const release = async (skipPreflight: boolean) => {
+        const responseDeployCreation = await ApiDeploy.Create.doPost(
+          buildReleaseRequest({
+            applicationId: props.applicationId,
+            artifactId: String(createdArtifactId),
+            target: deploymentTarget,
+            skipPreflight,
+          }),
         );
-      }
 
-      props.onSuccess?.(workerId);
+        // Refused on pre-flight checks: nothing was deployed. The dialog
+        // offers to release anyway; the sidepanel stays open meanwhile.
+        if (
+          !skipPreflight &&
+          guardPreflight(responseDeployCreation, () => release(true))
+        ) {
+          return;
+        }
+
+        if (responseDeployCreation.$status !== 'success') {
+          openToaster({
+            variant: 'warning',
+            message: t('deployCreateWarning'),
+          });
+        } else {
+          openToaster({
+            variant: 'success',
+            message: t('success'),
+          });
+        }
+
+        sidepanelEmit('#artifact-new-sidepanel/sidepanel-close', {
+          bypass: true,
+        });
+
+        if (
+          deploymentTarget.explicitTarget?.type === 'hostgroup' &&
+          responseDeployCreation.$status === 'success' &&
+          'operation_id' in responseDeployCreation &&
+          responseDeployCreation.operation_id
+        ) {
+          props.onOperationQueued?.(
+            deploymentTarget.explicitTarget.id,
+            responseDeployCreation.operation_id,
+          );
+        }
+
+        props.onSuccess?.(workerId);
+      };
+
+      await release(false);
     },
     (errors) => {
       if (errors.workerId) {
