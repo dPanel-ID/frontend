@@ -23,11 +23,9 @@ export function useDeployNewBuild(): DeployNewBuild {
   const emit = useEmit();
   const navigate = useNavigate();
 
-  const [appDetail, gitDetail, selectedServerId] = useAppDataModel((s) => [
-    s.appDetail,
-    s.gitDetail,
-    s.selectedServerId,
-  ]);
+  const [appDetail, gitDetail, selectedServerId, rawBranch] = useAppDataModel(
+    (s) => [s.appDetail, s.gitDetail, s.selectedServerId, s.rawBranch],
+  );
 
   const [openArtifactNewSidepanel] = useArtifactNewSidepanel();
 
@@ -59,6 +57,10 @@ export function useDeployNewBuild(): DeployNewBuild {
       repoOrganization,
       applicationId: appDetail.id,
       currentServerId: selectedServerId || appDetail.deploymentTargets[0]?.id,
+      // Redeploy builds the branch the application already follows.
+      defaultBranch:
+        rawBranch ||
+        (gitDetail.$status === 'success' ? gitDetail.default_branch : ''),
       appConfig: appDetail.configDefs,
       onOperationQueued: (groupId, operationId) => {
         navigate({

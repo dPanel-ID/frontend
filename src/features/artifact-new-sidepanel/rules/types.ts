@@ -6,6 +6,11 @@ export interface ArtifactNewSidepanelProps {
   repoName: string;
   applicationId: SchemaCommon.UnitId;
   currentServerId?: SchemaCommon.UnitId;
+  /**
+   * The branch picked when the panel opens, usually the one the application
+   * last built. "Redeploy" opened the panel with no branch at all.
+   */
+  defaultBranch?: string;
   appConfig: SchemaApplicationParts.ConfigDefs;
   onSuccess?: (newWorkerId: SchemaCommon.UnitId) => void;
   onOperationQueued?: (groupId: string, operationId: string) => void;
