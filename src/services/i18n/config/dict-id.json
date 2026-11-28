@@ -4890,7 +4890,12 @@
         "frankenphp_module_missing": "Perintah start memakai FrankenPHP, tetapi modul FrankenPHP belum dipilih. Tambahkan di langkah 2.",
         "composer_lock_missing": "Repositori tidak punya composer.lock, jadi setiap build bisa memasang versi paket yang berbeda.",
         "repository_unreadable": "dPanel tidak bisa membaca kebutuhan repositori, jadi tidak diperiksa.",
-        "s3_package_missing": "FILESYSTEM_DISK bernilai s3, tetapi composer.lock tidak memuat {package}. Unggahan akan gagal sampai Anda menambahkannya dengan composer require {package}."
+        "s3_package_missing": "FILESYSTEM_DISK bernilai s3, tetapi composer.lock tidak memuat {package}. Unggahan akan gagal sampai Anda menambahkannya dengan composer require {package}.",
+        "frankenphp_php_mismatch": "FrankenPHP melayani permintaan dengan PHP miliknya sendiri, {served}, sedangkan Composer dan Artisan memakai PHP {selected}. Pilih PHP {served} di langkah 2 agar keduanya sama.",
+        "frankenphp_php_unsupported": "{package} membutuhkan PHP {required}, tetapi FrankenPHP melayani permintaan dengan PHP miliknya sendiri, {served}.",
+        "frankenphp_extension_missing": "{package} membutuhkan ekstensi PHP {extension}, yang tidak ada di PHP milik FrankenPHP. Modul PHP Extensions hanya menambahkannya ke PHP aplikasi untuk Composer dan Artisan.",
+        "octane_listens_everywhere": "Dengan pengaturan bawaannya, Octane mendengarkan di semua alamat jaringan. Tambahkan --caddyfile={caddyfile} ke perintah start, beserta perintah rilis yang menulis file itu, agar hanya load balancer yang bisa menjangkau aplikasi.",
+        "octane_admin_port_unavailable": "Octane membutuhkan port {port} untuk API admin-nya (port aplikasi ditambah 1000), tetapi port itu di atas 65535 atau dipakai aplikasi lain di server ini. Pilih port lain."
       }
     }
   },

@@ -15,6 +15,11 @@ export const KNOWN_PREFLIGHT_CHECKS = new Set([
   'composer_lock_missing',
   's3_package_missing',
   'repository_unreadable',
+  'frankenphp_php_mismatch',
+  'frankenphp_php_unsupported',
+  'frankenphp_extension_missing',
+  'octane_listens_everywhere',
+  'octane_admin_port_unavailable',
 ]);
 
 export function PreflightCheckRow(props: {

@@ -106,7 +106,7 @@ Buka **Aplikasi** dan tekan **Buat Aplikasi**. Formulirnya punya lima langkah: *
 ### Server & modul
 
 1. Pilih server Anda.
-2. **Yang dibutuhkan aplikasi Laravel ini** berisi **PHP 8.4**, **Node.js 22**, dan **FrankenPHP**. Tekan **Tambah** pada masing-masing (atau **Gunakan … di server ini** jika versi itu sudah terpasang). Tidak ada yang ditambahkan sebelum Anda menekan tombol.
+2. **Yang dibutuhkan aplikasi Laravel ini** berisi **PHP 8.5**, **Node.js 22**, dan **FrankenPHP**. FrankenPHP menjawab permintaan dengan PHP 8.5 miliknya sendiri, jadi dPanel memilih PHP yang sama untuk Composer dan Artisan selama `composer.json` Anda mengizinkannya. Tekan **Tambah** pada masing-masing (atau **Gunakan … di server ini** jika versi itu sudah terpasang). Tidak ada yang ditambahkan sebelum Anda menekan tombol.
 3. Di **Terinstal di server terpilih**, tekan **PostgreSQL** dan **Redis** agar aplikasi mencatatnya sebagai yang dipakai.
 4. Tekan **Lanjut**.
 
@@ -123,12 +123,12 @@ Formulir sudah terisi. Periksa:
 
 3. **Langkah build**: `composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist`, lalu `npm ci && npm run build`. Build tidak butuh database maupun `APP_KEY`.
 4. **Perintah runtime**: Laravel Octane di FrankenPHP, karena repositori ini memakai Octane. Aplikasi tanpa Octane mendapat mode klasik FrankenPHP (`frankenphp php-server`), yang tidak butuh perubahan pada kode Anda.
-5. **Port aplikasi**: biarkan port kosong yang disarankan dPanel. Aplikasi mendengarkan di port itu di server; pengunjung tidak pernah melihatnya.
+5. **Port aplikasi**: biarkan port kosong yang disarankan dPanel. Aplikasi mendengarkan di port itu di server; pengunjung tidak pernah melihatnya. Jika load balancer berjalan di server yang sama, dPanel membuat port ini hanya bisa dijangkau dari server itu sendiri.
 
    ![Langkah build, perintah runtime Octane, dan port aplikasi](../../assets/tutorials/laravel-app-build.webp)
 
 6. **Rilis dan proses**:
-   - **Perintah rilis**: `php artisan storage:link --force`, `php artisan migrate --force`, dan `php artisan optimize`.
+   - **Perintah rilis**: `php artisan storage:link --force`, `php artisan migrate --force`, dan `php artisan optimize`. Aplikasi Octane mendapat satu perintah tambahan di awal: perintah itu menulis `bootstrap/cache/frankenphp.Caddyfile`, yang membuat Octane hanya mendengarkan di alamat yang dijangkau load balancer.
    - **Setelah restart**: `php artisan reload`, yang me-restart queue worker, scheduler, dan Octane dengan kode baru.
    - **Pemeriksaan kesehatan**: `/up`. dPanel meminta halaman ini setelah setiap restart dan menandai rilis gagal jika jawabannya bukan `200`.
    - **Folder rilis**: menyala. `storage`, `.env`, dan `database/database.sqlite` dipertahankan antar-rilis, dan 3 rilis terakhir tetap ada di server.
